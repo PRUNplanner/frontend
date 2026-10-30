@@ -40,7 +40,9 @@ function mountPagination(pageCount: number, start = 1) {
 		{ global: { plugins: [i18n] } }
 	);
 	const labels = () =>
-		wrapper.findAll("button").map((b) => b.text() || b.attributes("aria-label"));
+		wrapper
+			.findAll("button")
+			.map((b) => b.text() || b.attributes("aria-label"));
 	return { wrapper, page, labels };
 }
 
@@ -60,20 +62,58 @@ describe("PPagination", () => {
 		expect(next.attributes("disabled")).toBeUndefined();
 		await next.trigger("click");
 		expect(page.value).toBe(2);
-		expect(wrapper.findAll("button")[3].attributes("disabled")).toBeDefined();
+		expect(
+			wrapper.findAll("button")[3].attributes("disabled")
+		).toBeDefined();
 		await wrapper.findAll("button")[0].trigger("click");
 		expect(page.value).toBe(1);
 	});
 
 	it("folds long ranges into … jumps", async () => {
 		const { wrapper, page, labels } = mountPagination(20, 10);
-		expect(labels()).toEqual(["Previous page", "1", "…", "8", "9", "10", "11", "12", "…", "20", "Next page"]);
+		expect(labels()).toEqual([
+			"Previous page",
+			"1",
+			"…",
+			"8",
+			"9",
+			"10",
+			"11",
+			"12",
+			"…",
+			"20",
+			"Next page",
+		]);
 		expect(wrapper.findAll('[aria-label="More pages"]')).toHaveLength(2);
 		// the right … jumps past the window
 		await wrapper.findAll('[aria-label="More pages"]')[1].trigger("click");
 		expect(page.value).toBe(13);
 
-		expect(mountPagination(20, 1).labels()).toEqual(["Previous page", "1", "2", "3", "4", "5", "6", "7", "…", "20", "Next page"]);
-		expect(mountPagination(20, 20).labels()).toEqual(["Previous page", "1", "…", "14", "15", "16", "17", "18", "19", "20", "Next page"]);
+		expect(mountPagination(20, 1).labels()).toEqual([
+			"Previous page",
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"…",
+			"20",
+			"Next page",
+		]);
+		expect(mountPagination(20, 20).labels()).toEqual([
+			"Previous page",
+			"1",
+			"…",
+			"14",
+			"15",
+			"16",
+			"17",
+			"18",
+			"19",
+			"20",
+			"Next page",
+		]);
 	});
 });

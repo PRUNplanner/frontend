@@ -1,10 +1,4 @@
-import {
-	describe,
-	it,
-	expect,
-	beforeEach,
-	vi,
-} from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ref, reactive, isReactive, toRaw } from "vue";
 import { toasts } from "@/ui/useToast";
 import {

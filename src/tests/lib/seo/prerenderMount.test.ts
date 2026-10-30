@@ -67,7 +67,9 @@ describe("prepareMount", () => {
 		mountApp({ mount } as unknown as App);
 
 		expect(mount).toHaveBeenCalledWith(document.getElementById("app"));
-		expect(document.getElementById("app")!.hasAttribute("data-prerendered")).toBe(false);
+		expect(
+			document.getElementById("app")!.hasAttribute("data-prerendered")
+		).toBe(false);
 	});
 
 	it("hydrates the landing page as it is", async () => {
@@ -76,7 +78,9 @@ describe("prepareMount", () => {
 		await prepareMount(router, "en_US");
 
 		expect(document.body.innerHTML).toContain("ptoast-host");
-		expect(document.getElementById("app")!.innerHTML).toBe("<h1>landing</h1>");
+		expect(document.getElementById("app")!.innerHTML).toBe(
+			"<h1>landing</h1>"
+		);
 	});
 
 	it("clears the landing page and its teleports when a session goes on to /empire", async () => {
@@ -84,7 +88,9 @@ describe("prepareMount", () => {
 
 		await prepareMount(router, "en_US");
 
-		expect(document.body.innerHTML).toBe('<div id="app" data-prerendered=""></div>');
+		expect(document.body.innerHTML).toBe(
+			'<div id="app" data-prerendered=""></div>'
+		);
 	});
 
 	it("mounts fresh over the English prerender when another locale is stored", async () => {
@@ -92,6 +98,8 @@ describe("prepareMount", () => {
 
 		await prepareMount(router, "de_DE");
 
-		expect(document.body.innerHTML).toBe('<div id="app" data-prerendered=""></div>');
+		expect(document.body.innerHTML).toBe(
+			'<div id="app" data-prerendered=""></div>'
+		);
 	});
 });

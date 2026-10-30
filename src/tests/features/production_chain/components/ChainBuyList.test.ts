@@ -12,7 +12,9 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 import { buyList } from "@/features/production_chain/productionChain.util";
 
-const { copy } = vi.hoisted(() => ({ copy: vi.fn(async (_value: string) => true) }));
+const { copy } = vi.hoisted(() => ({
+	copy: vi.fn(async (_value: string) => true),
+}));
 vi.mock("@/util/data", async (original) => ({
 	...(await original<typeof import("@/util/data")>()),
 	copyToClipboard: copy,
@@ -69,8 +71,13 @@ describe("ChainBuyList", () => {
 	it("buys for a chosen number of days", async () => {
 		const result = solveChain(chainInput([["DW", 100]]), ctx);
 		const { wrapper } = await mountComponent(ChainBuyList, { result });
-		const days = wrapper.find("input[aria-label='production_chains.buy_list.days_label']");
-		const units = () => wrapper.find("[data-testid='chain-buy-list'] tbody td:nth-child(2)").text();
+		const days = wrapper.find(
+			"input[aria-label='production_chains.buy_list.days_label']"
+		);
+		const units = () =>
+			wrapper
+				.find("[data-testid='chain-buy-list'] tbody td:nth-child(2)")
+				.text();
 		const ten = units();
 		await days.setValue("");
 		expect(units()).toBe(ten);

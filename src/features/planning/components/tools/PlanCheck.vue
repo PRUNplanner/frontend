@@ -191,8 +191,7 @@
 		).overview;
 	});
 	const allCosts = computed(
-		() =>
-			profit.value - (sensitivity.value.result.cost * pct.value) / 100
+		() => profit.value - (sensitivity.value.result.cost * pct.value) / 100
 	);
 	const priceSource = computed(() =>
 		props.cxUuid
@@ -318,7 +317,11 @@
 								</div>
 								<div class="flex justify-between gap-4">
 									<span class="text-muted">
-										{{ t("plan.tools.plan_check.tooltip.value") }}
+										{{
+											t(
+												"plan.tools.plan_check.tooltip.value"
+											)
+										}}
 									</span>
 									<span class="tabular-nums">
 										{{ money(Math.abs(row.slope)) }} ȼ
@@ -330,16 +333,20 @@
 									class="flex justify-between gap-4">
 									<span class="text-muted">
 										{{
-											t("plan.tools.plan_check.tooltip.profit", {
-												change: `${sign < 0 ? "−" : "+"}${pct} %`,
-											})
+											t(
+												"plan.tools.plan_check.tooltip.profit",
+												{
+													change: `${sign < 0 ? "−" : "+"}${pct} %`,
+												}
+											)
 										}}
 									</span>
 									<span class="tabular-nums">
 										{{
 											money(
 												profit +
-													(sign * row.slope * pct) / 100
+													(sign * row.slope * pct) /
+														100
 											)
 										}}
 										ȼ
@@ -397,7 +404,9 @@
 							})
 						}}
 					</span>
-					<span>{{ t("plan.tools.plan_check.footnote.break_even") }}</span>
+					<span>{{
+						t("plan.tools.plan_check.footnote.break_even")
+					}}</span>
 				</p>
 			</div>
 
@@ -433,12 +442,21 @@
 							}}
 							{{
 								typeof top.breakEven === "number"
-									? t("plan.tools.plan_check.means.break_even", {
-											change: signedPct(top.breakEven),
-										})
+									? t(
+											"plan.tools.plan_check.means.break_even",
+											{
+												change: signedPct(
+													top.breakEven
+												),
+											}
+										)
 									: top.breakEven === "never" && profit < 0
-										? t("plan.tools.plan_check.means.never_loss")
-										: t(`plan.tools.plan_check.means.${top.breakEven}`)
+										? t(
+												"plan.tools.plan_check.means.never_loss"
+											)
+										: t(
+												`plan.tools.plan_check.means.${top.breakEven}`
+											)
 							}}
 						</span>
 					</p>
@@ -471,14 +489,25 @@
 						</div>
 						<div class="flex justify-between gap-3 py-1.5">
 							<dt>
-								{{ t("plan.tools.plan_check.means.all_costs", { pct }) }}
+								{{
+									t("plan.tools.plan_check.means.all_costs", {
+										pct,
+									})
+								}}
 							</dt>
 							<dd class="font-bold tabular-nums">
 								{{ money(allCosts) }} ȼ
 							</dd>
 						</div>
-						<div class="flex justify-between items-center gap-3 py-1.5">
-							<dt>{{ t("plan.tools.plan_check.means.most_sensitive") }}</dt>
+						<div
+							class="flex justify-between items-center gap-3 py-1.5">
+							<dt>
+								{{
+									t(
+										"plan.tools.plan_check.means.most_sensitive"
+									)
+								}}
+							</dt>
 							<dd class="flex gap-1">
 								<span
 									v-for="r in sensitivity.rows.slice(0, 3)"

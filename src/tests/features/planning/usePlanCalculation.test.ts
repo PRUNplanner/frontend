@@ -82,7 +82,8 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("recalculates for its own CX only", async () => {
-		const cx = (uuid: string) => ({ ...cx_definition, uuid }) as unknown as CX;
+		const cx = (uuid: string) =>
+			({ ...cx_definition, uuid }) as unknown as CX;
 		planningStore.setCXs([cx("own"), cx("other")]);
 
 		const scope = effectScope();

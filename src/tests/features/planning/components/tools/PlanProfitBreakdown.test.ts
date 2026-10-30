@@ -108,7 +108,9 @@ describe("PlanProfitBreakdown", () => {
 
 	it("shows a segment's numbers in its tooltip", async () => {
 		const wrapper = await mountTool();
-		const tip = await hoverTooltip(wrapper.find("button[aria-label*='FE']"));
+		const tip = await hoverTooltip(
+			wrapper.find("button[aria-label*='FE']")
+		);
 		expect(tip).toContain("plan.tools.profit_breakdown.tooltip.produced");
 		expect(tip).toContain("10.00");
 		expect(tip).toContain("90.00 ȼ");
@@ -183,7 +185,9 @@ describe("PlanProfitBreakdown", () => {
 		expect(chip.classes()).toContain("bg-black/70");
 		expect(wrapper.find("ul li span").classes()).toContain("bg-black/40");
 
-		const tip = await hoverTooltip(wrapper.find("button[aria-label*='ZZZ']"));
+		const tip = await hoverTooltip(
+			wrapper.find("button[aria-label*='ZZZ']")
+		);
 		expect(tip).toContain("ZZZ");
 		expect(tip).toContain("500.00 ȼ");
 	});

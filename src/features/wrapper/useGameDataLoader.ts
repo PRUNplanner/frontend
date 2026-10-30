@@ -139,12 +139,10 @@ export function useGameDataLoader(
 
 	// failed steps run again through the orchestrator
 	function retry(): void {
-		all
-			.filter((s) => s.error != null)
-			.forEach((s) => {
-				s.error = null;
-				s.triggered = false;
-			});
+		all.filter((s) => s.error != null).forEach((s) => {
+			s.error = null;
+			s.triggered = false;
+		});
 	}
 
 	const allLoaded = computed(() =>

@@ -38,7 +38,10 @@ const plans = Object.fromEntries(
 );
 const ctx = createSearchContext(index, plans, 1790694000000);
 const refs: PlanetSearchReference[] = [
-	...Object.keys(plans).map((planUuid) => ({ kind: "plan" as const, planUuid })),
+	...Object.keys(plans).map((planUuid) => ({
+		kind: "plan" as const,
+		planUuid,
+	})),
 	...SEARCH_CX.map((code) => ({ kind: "cx" as const, code })),
 ];
 

@@ -136,7 +136,9 @@
 			...(rest.length
 				? [
 						{
-							label: t("plan.tools.plan_check.compare.other_planets"),
+							label: t(
+								"plan.tools.plan_check.compare.other_planets"
+							),
 							value: "other",
 							children: rest.map((p) => ({
 								label: p.plan_name,
@@ -345,7 +347,10 @@
 	}
 
 	const columns = computed<PDataTableColumn<Row>[]>(() => [
-		{ key: "figure", title: t("plan.tools.plan_check.compare.columns.figure") },
+		{
+			key: "figure",
+			title: t("plan.tools.plan_check.compare.columns.figure"),
+		},
 		{ key: "a", align: "right", titleAlign: "right" },
 		{ key: "b", align: "right", titleAlign: "right" },
 		{
@@ -367,8 +372,7 @@
 
 	// the key figures with the payback of the difference after ROI
 	type Row = ICompareRow | { key: "payback" };
-	const rowClass = (row: Row) =>
-		row.key === "payback" ? "bg-white/5" : "";
+	const rowClass = (row: Row) => (row.key === "payback" ? "bg-white/5" : "");
 	const tableRows = computed<Row[]>(() => {
 		const i = rows.value.findIndex((r) => r.key === "roi") + 1;
 		return [
@@ -401,7 +405,11 @@
 	 * Materials the other plan pushes into a worse market flag
 	 */
 
-	const RANK: Record<MarketFlagLevel, number> = { red: 2, amber: 1, muted: 0 };
+	const RANK: Record<MarketFlagLevel, number> = {
+		red: 2,
+		amber: 1,
+		muted: 0,
+	};
 	const rank = (c?: IMarketCheck) => (c?.level ? RANK[c.level] : 0);
 	const checksOf = (
 		c: IPlanCalculation,
@@ -416,10 +424,7 @@
 			).map((m) => [m.ticker, m])
 		);
 	const pushed = computed(() => {
-		const result = new Map<
-			string,
-			IFlaggedCheck
-		>();
+		const result = new Map<string, IFlaggedCheck>();
 		if (!other.value) return result;
 		const a = checksOf(
 			mine.value,
@@ -433,17 +438,16 @@
 		);
 		for (const [ticker, check] of b)
 			if (rank(check) > rank(a.get(ticker)) && check.level !== "muted")
-				result.set(
-					ticker,
-					check as IFlaggedCheck
-				);
+				result.set(ticker, check as IFlaggedCheck);
 		return result;
 	});
 	function pushedNote(c: IMarketCheck): string {
 		return t("plan.tools.plan_check.compare.changes.flag", {
 			ticker: c.ticker,
 			name: otherName.value,
-			side: t(`plan.tools.plan_check.side.${c.delta > 0 ? "sell" : "buy"}`),
+			side: t(
+				`plan.tools.plan_check.side.${c.delta > 0 ? "sell" : "buy"}`
+			),
 			value: formatNumber(Math.abs(c.delta)),
 			share: formatShare(c.sharePct),
 			exchange:
@@ -509,7 +513,9 @@
 						class="w-full sm:w-72"
 						searchable
 						:options="options"
-						:aria-label="t('plan.tools.plan_check.compare.picker')" />
+						:aria-label="
+							t('plan.tools.plan_check.compare.picker')
+						" />
 				</div>
 			</div>
 
@@ -530,12 +536,17 @@
 						:row-key="rowKey"
 						:row-class="rowClass">
 						<template #header-a>
-							<span class="inline-flex flex-col items-end gap-0.5">
+							<span
+								class="inline-flex flex-col items-end gap-0.5">
 								<span class="inline-flex items-center gap-1.5">
 									<span
 										aria-hidden="true"
 										class="size-2.5 rounded-xs bg-(--chart-ink)/72" />
-									{{ t("plan.tools.plan_check.compare.this_plan") }}
+									{{
+										t(
+											"plan.tools.plan_check.compare.this_plan"
+										)
+									}}
 								</span>
 								<span
 									class="inline-flex @[640px]:hidden items-center gap-1.5 max-w-28">
@@ -579,7 +590,9 @@
 							</span>
 						</template>
 						<template #cell-a="{ row }">
-							<span v-if="row.key === 'payback'" class="text-muted">
+							<span
+								v-if="row.key === 'payback'"
+								class="text-muted">
 								–
 							</span>
 							<span
@@ -601,7 +614,9 @@
 							</span>
 						</template>
 						<template #cell-b="{ row }">
-							<span v-if="row.key === 'payback'" class="text-muted">
+							<span
+								v-if="row.key === 'payback'"
+								class="text-muted">
 								–
 							</span>
 							<span v-else class="tabular-nums whitespace-nowrap">
@@ -640,11 +655,14 @@
 								role="img"
 								class="flex flex-col gap-1"
 								:aria-label="
-									t('plan.tools.plan_check.compare.bars_label', {
-										a: value(row.key, row.a),
-										b: value(row.key, row.b),
-										name: otherName,
-									})
+									t(
+										'plan.tools.plan_check.compare.bars_label',
+										{
+											a: value(row.key, row.a),
+											b: value(row.key, row.b),
+											name: otherName,
+										}
+									)
 								">
 								<div
 									class="h-1.5 rounded-r-sm bg-(--chart-ink)/72"
@@ -664,7 +682,9 @@
 					<div
 						class="flex flex-col gap-2 border border-white/10 rounded p-3 text-sm">
 						<h3 class="font-bold text-white">
-							{{ t("plan.tools.plan_check.compare.verdict.title") }}
+							{{
+								t("plan.tools.plan_check.compare.verdict.title")
+							}}
 						</h3>
 						<p data-verdict>{{ verdict }}</p>
 					</div>
@@ -675,7 +695,9 @@
 							class="flex flex-wrap items-baseline justify-between gap-x-3">
 							<h3 class="font-bold text-white">
 								{{
-									t("plan.tools.plan_check.compare.changes.title")
+									t(
+										"plan.tools.plan_check.compare.changes.title"
+									)
 								}}
 							</h3>
 							<span class="text-xs text-muted">
@@ -690,7 +712,9 @@
 							</span>
 						</div>
 						<p v-if="!changes.length" class="text-muted">
-							{{ t("plan.tools.plan_check.compare.changes.none") }}
+							{{
+								t("plan.tools.plan_check.compare.changes.none")
+							}}
 						</p>
 						<ul v-else class="flex flex-col gap-1">
 							<li v-for="c in shown" :key="c.ticker">
@@ -849,11 +873,14 @@
 							}}
 						</button>
 						<p
-							v-for="c in shown.filter((s) => pushed.has(s.ticker))"
+							v-for="c in shown.filter((s) =>
+								pushed.has(s.ticker)
+							)"
 							:key="`flag-${c.ticker}`"
 							class="flex gap-1.5 text-xs text-muted-strong"
 							data-pushed-flag>
-							<MarketFlagIcon :level="pushed.get(c.ticker)!.level" />
+							<MarketFlagIcon
+								:level="pushed.get(c.ticker)!.level" />
 							{{ pushedNote(pushed.get(c.ticker)!) }}
 						</p>
 					</div>

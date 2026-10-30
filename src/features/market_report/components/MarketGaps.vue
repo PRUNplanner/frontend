@@ -170,7 +170,11 @@
 </script>
 
 <template>
-	<MarketBlock :ready="!!books" :failed="failed" size="h-120" @retry="load(true)">
+	<MarketBlock
+		:ready="!!books"
+		:failed="failed"
+		size="h-120"
+		@retry="load(true)">
 		<div class="flex flex-col gap-3">
 			<PDataTable
 				v-model:sort="sort"
@@ -184,7 +188,9 @@
 						<MarketTickerChip
 							:ticker="row.ticker"
 							:category="row.category" />
-						<span class="truncate text-ink-strong">{{ row.label }}</span>
+						<span class="truncate text-ink-strong">{{
+							row.label
+						}}</span>
 					</div>
 				</template>
 				<template #cell-low="{ row }">
@@ -206,7 +212,9 @@
 							class="shrink-0 w-16 h-1.5 rounded-full bg-white/8">
 							<span
 								class="block h-full rounded-full bg-positive"
-								:style="{ width: `${(row.gap / maxGap) * 100}%` }" />
+								:style="{
+									width: `${(row.gap / maxGap) * 100}%`,
+								}" />
 						</span>
 						<b class="min-w-19 whitespace-nowrap text-positive">
 							{{ formatChange(row.gap) }}
@@ -215,7 +223,10 @@
 				</template>
 				<template #cell-now="{ row }">
 					<span class="flex flex-col leading-tight">
-						<b :class="row.open == null ? 'text-ink' : 'text-positive'">
+						<b
+							:class="
+								row.open == null ? 'text-ink' : 'text-positive'
+							">
 							{{ nowText(row) }}
 						</b>
 						<span class="text-xs text-muted tabular-nums">
@@ -253,7 +264,9 @@
 						</b>
 						<span
 							class="text-xs truncate"
-							:class="r.open == null ? 'text-muted' : 'text-positive'">
+							:class="
+								r.open == null ? 'text-muted' : 'text-positive'
+							">
 							{{ r.label
 							}}{{ basis === "vwap" ? ` · ${nowText(r)}` : "" }}
 						</span>

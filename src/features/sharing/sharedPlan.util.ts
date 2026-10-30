@@ -1,7 +1,10 @@
 // Util
 import { deepClone } from "@/util/data";
 import { formatNumber, formatPayback } from "@/util/numbers";
-import { diffPlan, type IPlanDiffable } from "@/features/planning_data/planDiff";
+import {
+	diffPlan,
+	type IPlanDiffable,
+} from "@/features/planning_data/planDiff";
 import { changeLineText } from "@/features/save_conflict/changeLineText";
 
 // Types & Interfaces

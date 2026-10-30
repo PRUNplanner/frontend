@@ -161,7 +161,10 @@ describe("GameData API Calls", async () => {
 	});
 
 	it("callDataPlanetSearchIndex", async () => {
-		mock.onGet("/data/planets/search-index/").reply(200, planet_search_index);
+		mock.onGet("/data/planets/search-index/").reply(
+			200,
+			planet_search_index
+		);
 
 		const result = await callDataPlanetSearchIndex();
 
@@ -231,7 +234,9 @@ describe("GameData API Calls", async () => {
 			};
 			mock.onGet("/data/cxpc/spark/UNIVERSE/?days=3").reply(200, payload);
 
-			expect(await callCXSparklines("UNIVERSE", 3)).toStrictEqual(payload);
+			expect(await callCXSparklines("UNIVERSE", 3)).toStrictEqual(
+				payload
+			);
 		});
 
 		it("rejects a non-numeric value", async () => {

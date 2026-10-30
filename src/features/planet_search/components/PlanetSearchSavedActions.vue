@@ -57,7 +57,9 @@
 	function startSave() {
 		saveName.value =
 			props.chips
-				.map((c) => chipLabel(c, props.filter.minDaily, t, props.refName))
+				.map((c) =>
+					chipLabel(c, props.filter.minDaily, t, props.refName)
+				)
 				.join(" · ") || t("planet_search.header.default_name");
 		saving.value = true;
 	}
@@ -116,10 +118,7 @@
 						">
 						{{ t("planet_search.header.load") }}
 					</PButton>
-					<PButton
-						size="sm"
-						type="error"
-						@click="emit('delete', s)">
+					<PButton size="sm" type="error" @click="emit('delete', s)">
 						{{ t("planet_search.header.delete") }}
 					</PButton>
 				</div>

@@ -105,7 +105,9 @@ export function useSelectList(
 	// re-renders two options instead of the whole list
 	function highlightOf(option: PSelectOption, idx: number): number {
 		const local = highlightedIndex.value - selectableOffsets.value[idx];
-		return local >= 0 && local < (option.children?.length ?? 1) ? local : -1;
+		return local >= 0 && local < (option.children?.length ?? 1)
+			? local
+			: -1;
 	}
 
 	/** the highlighted option's id, for aria-activedescendant */

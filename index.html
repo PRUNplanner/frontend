@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>PRUNplanner: Base and Empire Planner for Prosperous Universe</title>
+		<title>
+			PRUNplanner: Base and Empire Planner for Prosperous Universe
+		</title>
 		<meta
 			name="description"
 			content="Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players." />
@@ -48,7 +50,11 @@
 				"applicationCategory": "GameApplication",
 				"operatingSystem": "Web",
 				"isAccessibleForFree": true,
-				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
+				},
 				"inLanguage": ["en-US", "de-DE", "ru-RU", "zh-CN"],
 				"image": "https://prunplanner.org/images/og/prunplanner.jpg",
 				"sameAs": ["https://github.com/PRUNplanner"]
@@ -71,7 +77,8 @@
 						!!(user.accessToken && user.refreshToken) ||
 						(!!locale && locale !== "en_US");
 				} catch {}
-				if (skip) document.documentElement.classList.add("skip-prerender");
+				if (skip)
+					document.documentElement.classList.add("skip-prerender");
 				else {
 					// the hero image, fetched with the HTML; its img is lazy, so
 					// the hidden page fetches nothing (HomepageTour.vue)
@@ -83,7 +90,10 @@
 						"imagesrcset",
 						"/images/homepage/plan-640.webp 640w, /images/homepage/plan-1280.webp 1280w, /images/homepage/plan.webp 2880w"
 					);
-					hero.setAttribute("imagesizes", "(min-width: 1240px) 1180px, 100vw");
+					hero.setAttribute(
+						"imagesizes",
+						"(min-width: 1240px) 1180px, 100vw"
+					);
 					document.head.appendChild(hero);
 				}
 			})();

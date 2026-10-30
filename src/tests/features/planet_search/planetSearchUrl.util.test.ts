@@ -47,11 +47,20 @@ function randomState(): IPlanetSearchState {
 			...pick(["6f1c2a4e-8d9b-4c3a-9e2f-1a2b3c4d5e6f", "abc"], 0.5).map(
 				(planUuid) => ({ kind: "plan" as const, planUuid })
 			),
-			...pick(SEARCH_CX, 0.3).map((code) => ({ kind: "cx" as const, code })),
+			...pick(SEARCH_CX, 0.3).map((code) => ({
+				kind: "cx" as const,
+				code,
+			})),
 		],
 		maxJumps: Math.floor(rnd() * 31),
 	};
-	const sorts = [{ key: "name", dir: "asc" as const }, { key: "mat:FEO", dir: "desc" as const }, { key: "ref:cx:NC1", dir: "asc" as const }, { key: "ref:plan:abc", dir: "desc" as const }, { key: "fert", dir: "desc" as const }];
+	const sorts = [
+		{ key: "name", dir: "asc" as const },
+		{ key: "mat:FEO", dir: "desc" as const },
+		{ key: "ref:cx:NC1", dir: "asc" as const },
+		{ key: "ref:plan:abc", dir: "desc" as const },
+		{ key: "fert", dir: "desc" as const },
+	];
 	return {
 		filter,
 		// a random chain of up to 4 distinct keys
@@ -166,9 +175,13 @@ describe("planet search url", () => {
 			pins: ["OT-580b", "KW-688c", "A", "B"],
 		});
 
-		expect(decodeSearch({ j: "2.5", sort: "name:up" }).filter.maxJumps).toBe(10);
+		expect(
+			decodeSearch({ j: "2.5", sort: "name:up" }).filter.maxJumps
+		).toBe(10);
 		expect(decodeSearch({ sort: "ref:cx:ZZ9:asc" }).sort).toEqual([]);
-		expect(decodeSearch({ sort: "fert:asc" }).sort).toEqual([{ key: "fert", dir: "asc" }]);
+		expect(decodeSearch({ sort: "fert:asc" }).sort).toEqual([
+			{ key: "fert", dir: "asc" },
+		]);
 		// chains: invalid parts and repeated keys drop, at most 4 keys
 		expect(
 			decodeSearch({
@@ -180,6 +193,8 @@ describe("planet search url", () => {
 			{ key: "fert", dir: "desc" },
 			{ key: "ref:cx:AI1", dir: "asc" },
 		]);
-		expect(decodeSearch({ q: null, m: [null] }).filter).toEqual(defaultFilter());
+		expect(decodeSearch({ q: null, m: [null] }).filter).toEqual(
+			defaultFilter()
+		);
 	});
 });

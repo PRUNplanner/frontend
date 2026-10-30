@@ -87,11 +87,15 @@
 				})),
 				others: p.resources
 					.filter((r) => !materials.value.includes(r.material_ticker))
-					.sort((a, b) => a.material_ticker.localeCompare(b.material_ticker)),
+					.sort((a, b) =>
+						a.material_ticker.localeCompare(b.material_ticker)
+					),
 				extras: environmentExtras(p),
 				cogc: activeProgram(p, props.ctx.now),
 				infrastructure: planetInfrastructure(p),
-				planJumps: planRefs.value.map((r) => planetJumps(p, r, props.ctx)),
+				planJumps: planRefs.value.map((r) =>
+					planetJumps(p, r, props.ctx)
+				),
 				cxJumps: SEARCH_CX.map((code) =>
 					planetJumps(p, { kind: "cx", code }, props.ctx)
 				),
@@ -121,9 +125,12 @@
 <template>
 	<table class="w-full text-sm border-separate border-spacing-0">
 		<thead class="sticky top-0 z-20">
-			<tr class="child:bg-black child:border-b child:border-white/10 child:px-2 child:py-2 child:text-left child:align-bottom child:whitespace-nowrap">
+			<tr
+				class="child:bg-black child:border-b child:border-white/10 child:px-2 child:py-2 child:text-left child:align-bottom child:whitespace-nowrap">
 				<th class="sticky left-0 z-30" :class="actionWidth">
-					<span class="sr-only">{{ t("planet_search.results.actions") }}</span>
+					<span class="sr-only">{{
+						t("planet_search.results.actions")
+					}}</span>
 				</th>
 				<th class="sticky z-30 w-px" :class="planetLeft">
 					<PlanetSearchSortHeader
@@ -154,14 +161,26 @@
 						:label="m" />
 				</th>
 				<!-- the only flexible column; hidden, an empty one takes the slack -->
-				<th v-if="show('other')">{{ t("planet_search.results.other") }}</th>
-				<th v-else aria-hidden="true" />
-				<th v-if="show('extras')" class="w-px" :title="t('planet_search.results.extras')">
-					<ConstructionSharp class="w-4 h-4" aria-hidden="true" />
-					<span class="sr-only">{{ t("planet_search.results.extras") }}</span>
+				<th v-if="show('other')">
+					{{ t("planet_search.results.other") }}
 				</th>
-				<th v-if="show('cogc')" class="w-px">{{ t("planet_search.results.cogc_infra") }}</th>
-				<th v-for="r in planRefs" :key="r.kind === 'plan' ? r.planUuid : ''" class="w-px px-1!">
+				<th v-else aria-hidden="true" />
+				<th
+					v-if="show('extras')"
+					class="w-px"
+					:title="t('planet_search.results.extras')">
+					<ConstructionSharp class="w-4 h-4" aria-hidden="true" />
+					<span class="sr-only">{{
+						t("planet_search.results.extras")
+					}}</span>
+				</th>
+				<th v-if="show('cogc')" class="w-px">
+					{{ t("planet_search.results.cogc_infra") }}
+				</th>
+				<th
+					v-for="r in planRefs"
+					:key="r.kind === 'plan' ? r.planUuid : ''"
+					class="w-px px-1!">
 					<div :class="jumpWidth">
 						<PlanetSearchSortHeader
 							v-bind="sortProps"
@@ -207,18 +226,33 @@
 						<PlanetFullIcon :planet="row.planet" />
 					</div>
 					<div
-						v-if="displayName(row.planet) !== row.planet.planet_natural_id"
+						v-if="
+							displayName(row.planet) !==
+							row.planet.planet_natural_id
+						"
 						class="text-xs text-muted font-mono">
 						{{ row.planet.planet_natural_id }}
 					</div>
 				</td>
-				<td v-if="show('fert')" class="text-right tabular-nums" :class="row.fertility === null ? 'text-muted' : 'text-positive'">
-					{{ row.fertility === null ? "—" : formatNumber(row.fertility, 0) }}
+				<td
+					v-if="show('fert')"
+					class="text-right tabular-nums"
+					:class="
+						row.fertility === null ? 'text-muted' : 'text-positive'
+					">
+					{{
+						row.fertility === null
+							? "—"
+							: formatNumber(row.fertility, 0)
+					}}
 				</td>
 				<td v-if="show('plots')">
 					<PlanetPlots :planet="row.planet" />
 				</td>
-				<td v-for="m in row.materials" :key="m.ticker" class="whitespace-nowrap">
+				<td
+					v-for="m in row.materials"
+					:key="m.ticker"
+					class="whitespace-nowrap">
 					<MaterialTile
 						v-if="m.resource"
 						:ticker="m.ticker"
@@ -228,7 +262,11 @@
 					<span
 						v-else
 						class="opacity-35"
-						:title="t('planet_search.results.not_present', { material: m.ticker })">
+						:title="
+							t('planet_search.results.not_present', {
+								material: m.ticker,
+							})
+						">
 						<MaterialTile
 							:ticker="m.ticker"
 							:amount="0"
@@ -237,7 +275,8 @@
 					</span>
 				</td>
 				<td v-if="show('other')">
-					<div class="flex flex-row flex-wrap gap-1 min-w-[170px] child:whitespace-nowrap">
+					<div
+						class="flex flex-row flex-wrap gap-1 min-w-[170px] child:whitespace-nowrap">
 						<MaterialTile
 							v-for="r in row.others"
 							:key="r.material_ticker"
@@ -254,25 +293,52 @@
 							v-for="e in row.extras"
 							:key="e.ticker"
 							:title="t(`planet_search.reasons.${e.reason}`)">
-							<MaterialTile :ticker="e.ticker" :enable-popover="false" />
+							<MaterialTile
+								:ticker="e.ticker"
+								:enable-popover="false" />
 						</span>
 					</div>
 				</td>
 				<td v-if="show('cogc')" class="whitespace-nowrap">
 					<div>
-						{{ row.cogc ? t(`game.cogc_program.${row.cogc}`) : t("planet_search.results.no_cogc") }}
+						{{
+							row.cogc
+								? t(`game.cogc_program.${row.cogc}`)
+								: t("planet_search.results.no_cogc")
+						}}
 					</div>
 					<div class="text-xs text-muted">
-						{{ row.infrastructure.join(" · ") || t("planet_search.results.no_infrastructure") }}
+						{{
+							row.infrastructure.join(" · ") ||
+							t("planet_search.results.no_infrastructure")
+						}}
 					</div>
 				</td>
-				<td v-for="(j, ji) in row.planJumps" :key="ji" class="px-1! text-right tabular-nums font-bold text-positive">
-					<span v-if="j === -1" :title="t('planet_search.results.unreachable')">—</span>
+				<td
+					v-for="(j, ji) in row.planJumps"
+					:key="ji"
+					class="px-1! text-right tabular-nums font-bold text-positive">
+					<span
+						v-if="j === -1"
+						:title="t('planet_search.results.unreachable')"
+						>—</span
+					>
 					<template v-else>{{ j }}</template>
 				</td>
 				<template v-for="(j, ci) in row.cxJumps" :key="ci">
-					<td v-if="show(SEARCH_CX[ci])" class="px-1! text-right tabular-nums" :class="{ 'text-positive font-bold': pickedCX.has(SEARCH_CX[ci]) }">
-						<span v-if="j === -1" :title="t('planet_search.results.unreachable')">—</span>
+					<td
+						v-if="show(SEARCH_CX[ci])"
+						class="px-1! text-right tabular-nums"
+						:class="{
+							'text-positive font-bold': pickedCX.has(
+								SEARCH_CX[ci]
+							),
+						}">
+						<span
+							v-if="j === -1"
+							:title="t('planet_search.results.unreachable')"
+							>—</span
+						>
 						<template v-else>{{ j }}</template>
 					</td>
 				</template>

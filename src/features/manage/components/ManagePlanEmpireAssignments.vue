@@ -144,10 +144,7 @@
 	watch(
 		[() => props.empires, () => props.plans],
 		() =>
-			matrix.load(
-				props.empires,
-				new Set(props.plans.map((p) => p.uuid))
-			),
+			matrix.load(props.empires, new Set(props.plans.map((p) => p.uuid))),
 		{ immediate: true }
 	);
 
@@ -190,7 +187,8 @@
 
 	// Toolbar: search, empire filter, unassigned only, sorting
 	const search: Ref<string | null | undefined> = ref("");
-	const filterEmpire: Ref<string | number | null | undefined> = ref(undefined);
+	const filterEmpire: Ref<string | number | null | undefined> =
+		ref(undefined);
 	const unassignedOnly: Ref<boolean> = ref(false);
 	const sortAsc: Ref<boolean> = ref(true);
 
@@ -543,10 +541,7 @@
 			<span>
 				{{
 					$t("management.assignments.plan_count", {
-						plans: $t(
-							"management.assignments.plans",
-							plans.length
-						),
+						plans: $t("management.assignments.plans", plans.length),
 						empires: $t(
 							"management.assignments.empires",
 							empires.length
@@ -684,7 +679,9 @@
 					</th>
 					<th class="border-b border-white/10">
 						<span class="sr-only">
-							{{ $t("management.assignments.row_actions_header") }}
+							{{
+								$t("management.assignments.row_actions_header")
+							}}
 						</span>
 					</th>
 					<th
@@ -708,7 +705,9 @@
 								}}
 							</div>
 							<PCheckbox
-								:checked="headerStates.get(e.empireUuid) === 'all'"
+								:checked="
+									headerStates.get(e.empireUuid) === 'all'
+								"
 								:indeterminate="
 									headerStates.get(e.empireUuid) === 'some'
 								"
@@ -723,7 +722,9 @@
 												{ empire: e.empireName }
 											)
 								"
-								@update:checked="toggleAllShown(e.empireUuid)" />
+								@update:checked="
+									toggleAllShown(e.empireUuid)
+								" />
 						</div>
 					</th>
 				</tr>
@@ -738,7 +739,9 @@
 					:view-count="planningStore.shared[r.planUuid]?.view_count"
 					:busy="busyPlan === r.planUuid"
 					:selected="selected.has(r.planUuid)"
-					@select="(uuid: string) => select([uuid], !selected.has(uuid))"
+					@select="
+						(uuid: string) => select([uuid], !selected.has(uuid))
+					"
 					@toggle="toggle"
 					@menu="openMenu" />
 				<tr v-if="shownRows.length === 0">
@@ -765,9 +768,7 @@
 			@select="(uuid: string) => select([uuid], !selected.has(uuid))"
 			@toggle="toggle"
 			@menu="openMenu" />
-		<div
-			v-if="shownRows.length === 0"
-			class="p-10 text-center text-muted">
+		<div v-if="shownRows.length === 0" class="p-10 text-center text-muted">
 			{{ $t("management.assignments.no_match") }}
 		</div>
 	</div>

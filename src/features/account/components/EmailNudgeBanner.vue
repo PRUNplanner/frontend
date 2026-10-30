@@ -40,16 +40,7 @@
 
 	// the number in the copy: all the user's plans, not only this empire's
 	const planCount: Ref<number | null> = ref(null);
-	const {
-		state,
-		show,
-		later,
-		never,
-		undo,
-		resend,
-		trackAction,
-		trackShown,
-	} =
+	const { state, show, later, never, undo, resend, trackAction, trackShown } =
 		useEmailNudge(() => planCount.value ?? knownPlans);
 
 	const showDialog: Ref<boolean> = ref(false);
@@ -66,7 +57,10 @@
 					.execute()
 					.then(
 						(plans) =>
-							(planCount.value = Math.max(plans.length, knownPlans))
+							(planCount.value = Math.max(
+								plans.length,
+								knownPlans
+							))
 					)
 					.catch(reportError);
 		},
@@ -82,7 +76,10 @@
 	function onNever(): void {
 		never();
 		toast(t("account.email_nudge.never_toast"), {
-			action: { label: t("account.email_nudge.buttons.undo"), onClick: undo },
+			action: {
+				label: t("account.email_nudge.buttons.undo"),
+				onClick: undo,
+			},
 			duration: 10000,
 		});
 	}
@@ -115,7 +112,13 @@
 				}}
 			</template>
 			<template v-else-if="planCount !== null">
-				{{ t("account.email_nudge.none.body", { count: planCount }, planCount) }}
+				{{
+					t(
+						"account.email_nudge.none.body",
+						{ count: planCount },
+						planCount
+					)
+				}}
 			</template>
 			<template v-else>
 				{{ t("account.email_nudge.none.body_plain") }}
@@ -127,7 +130,10 @@
 					<PButton :class="buttonClass" @click="openDialog('code')">
 						{{ t("account.email_nudge.buttons.enter_code") }}
 					</PButton>
-					<PButton type="secondary" :class="buttonClass" @click="onResend">
+					<PButton
+						type="secondary"
+						:class="buttonClass"
+						@click="onResend">
 						{{ t("account.email_nudge.buttons.resend") }}
 					</PButton>
 					<PButton type="ghost" :class="buttonClass" @click="later">

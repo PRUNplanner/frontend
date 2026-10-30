@@ -174,18 +174,8 @@ describe("ROIOverviewTable", () => {
 				.map((td) => td.find("span").classes("text-positive"));
 
 		// FP makes exactly 0, which is not positive
-		expect(positive("dailyProfit")).toEqual([
-			true,
-			false,
-			false,
-			true,
-		]);
-		expect(positive("planProfitArea")).toEqual([
-			true,
-			false,
-			false,
-			true,
-		]);
+		expect(positive("dailyProfit")).toEqual([true, false, false, true]);
+		expect(positive("planProfitArea")).toEqual([true, false, false, true]);
 		expect(positive("planROI")).toEqual([true, false, false, true]);
 	});
 

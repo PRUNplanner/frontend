@@ -54,7 +54,14 @@
 					(e) => e.planet === planet
 				);
 				return p
-					? [{ key: `${r.ticker}#${type}`, ticker: r.ticker, type, ...p }]
+					? [
+							{
+								key: `${r.ticker}#${type}`,
+								ticker: r.ticker,
+								type,
+								...p,
+							},
+						]
 					: [];
 			})
 		)

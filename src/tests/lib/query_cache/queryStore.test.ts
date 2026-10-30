@@ -515,9 +515,7 @@ describe("checkEntryStatusAndRefresh: failed refreshes", () => {
 	);
 
 	it("retries a 429 once its Retry-After passed, not before", async () => {
-		await failRefresh(
-			Object.assign(apiError(429), { retryAfter: 60 })
-		);
+		await failRefresh(Object.assign(apiError(429), { retryAfter: 60 }));
 
 		vi.setSystemTime(3000 + 59_000);
 		store.checkEntryStatusAndRefresh();

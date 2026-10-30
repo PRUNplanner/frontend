@@ -48,11 +48,15 @@ describe("PStackedBar", () => {
 		const wrapper = await mountBar(75);
 		const hatch = wrapper.find("[data-key=hatch]");
 		expect(hatch.attributes("style")).toContain("left: 75%");
-		expect(hatch.attributes("style")).toContain("repeating-linear-gradient");
+		expect(hatch.attributes("style")).toContain(
+			"repeating-linear-gradient"
+		);
 	});
 
 	it("has no hatch when covered", async () => {
-		expect((await mountBar()).find("[data-key=hatch]").exists()).toBe(false);
+		expect((await mountBar()).find("[data-key=hatch]").exists()).toBe(
+			false
+		);
 		expect((await mountBar(100)).find("[data-key=hatch]").exists()).toBe(
 			false
 		);

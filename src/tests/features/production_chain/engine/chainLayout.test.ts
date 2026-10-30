@@ -31,7 +31,8 @@ describe("layoutChain", () => {
 		const layout = layoutChain(r);
 
 		for (const t of r.order)
-			if (r.rows[t].source !== "make") expect(layout.nodes[t].stage).toBe(0);
+			if (r.rows[t].source !== "make")
+				expect(layout.nodes[t].stage).toBe(0);
 		for (const l of r.links)
 			expect(layout.nodes[l.consumer].stage).toBeGreaterThan(
 				layout.nodes[l.input].stage
@@ -48,7 +49,9 @@ describe("layoutChain", () => {
 			const key = `${n.x}|${n.y}`;
 			expect(seen.has(key)).toBe(false);
 			seen.add(key);
-			expect(n.x).toBe(LAYOUT.pad + n.stage * (LAYOUT.nodeWidth + LAYOUT.gapX));
+			expect(n.x).toBe(
+				LAYOUT.pad + n.stage * (LAYOUT.nodeWidth + LAYOUT.gapX)
+			);
 			expect(n.x + LAYOUT.nodeWidth).toBeLessThanOrEqual(layout.width);
 			expect(n.y + LAYOUT.nodeHeight).toBeLessThanOrEqual(layout.height);
 		}
@@ -66,7 +69,10 @@ describe("layoutChain", () => {
 		const layout = layoutChain(r);
 		const { nodeWidth: W, nodeHeight: H } = LAYOUT;
 		// a label's point: its baseline is 4 above, its box 16 high
-		const spots = layout.edges.map((e) => ({ x: e.labelX, y: e.labelY + 4 }));
+		const spots = layout.edges.map((e) => ({
+			x: e.labelX,
+			y: e.labelY + 4,
+		}));
 		expect(spots.length).toBeGreaterThan(5);
 		for (const s of spots)
 			for (const n of Object.values(layout.nodes))
@@ -96,7 +102,10 @@ describe("layoutChain", () => {
 		const plain = layoutChain(solveChain(chainInput([["RAT", 100]]), ctx));
 		expect(plain.nodes.GRN.stage).toBeGreaterThan(0);
 		const full = layoutChain(
-			solveChain(chainInput([["RAT", 100]], { have: { GRN: "all" } }), ctx)
+			solveChain(
+				chainInput([["RAT", 100]], { have: { GRN: "all" } }),
+				ctx
+			)
 		);
 		expect(full.nodes.GRN.stage).toBe(0);
 		const part = layoutChain(
@@ -112,7 +121,9 @@ describe("layoutChain", () => {
 			{ AL: 100, FE: "all" },
 		];
 		for (const have of cases) {
-			const layout = layoutChain(solveChain(chainInput([["HCB", 1]], { have }), ctx));
+			const layout = layoutChain(
+				solveChain(chainInput([["HCB", 1]], { have }), ctx)
+			);
 			// a little wider than the layout's estimate, as the browser draws them
 			const boxes = layout.edges.map((e) => {
 				const w = formatQty(e.perDay).length * 7.5 + 4;
@@ -125,9 +136,13 @@ describe("layoutChain", () => {
 				h: LAYOUT.nodeHeight,
 			}));
 			const hit = (a: IBox, b: IBox) =>
-				a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+				a.x < b.x + b.w &&
+				b.x < a.x + a.w &&
+				a.y < b.y + b.h &&
+				b.y < a.y + a.h;
 			for (const [i, a] of boxes.entries()) {
-				for (const b of boxes.slice(i + 1)) expect(hit(a, b)).toBe(false);
+				for (const b of boxes.slice(i + 1))
+					expect(hit(a, b)).toBe(false);
 				for (const n of nodes) expect(hit(a, n)).toBe(false);
 			}
 		}

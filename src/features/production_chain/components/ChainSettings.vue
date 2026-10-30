@@ -67,7 +67,10 @@
 		},
 	]);
 	const byproductOptions = computed(() => [
-		{ value: "cover" as const, label: t("production_chains.settings.cover") },
+		{
+			value: "cover" as const,
+			label: t("production_chains.settings.cover"),
+		},
 		{ value: "sell" as const, label: t("production_chains.settings.sell") },
 	]);
 
@@ -109,7 +112,7 @@
 			<PSegmented
 				v-model:value="rawSource"
 				:options="rawOptions"
-								:label="t('production_chains.settings.raw')" />
+				:label="t('production_chains.settings.raw')" />
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="text-xs uppercase tracking-wide text-muted">
@@ -118,7 +121,7 @@
 			<PSegmented
 				v-model:value="byproducts"
 				:options="byproductOptions"
-								:label="t('production_chains.settings.byproducts')" />
+				:label="t('production_chains.settings.byproducts')" />
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
 			<span class="text-xs uppercase tracking-wide text-muted">
@@ -132,11 +135,17 @@
 				:aria-label="t('production_chains.have.own_production')"
 				data-testid="chain-own-production"
 				@update:value="(v) => emit('own', v ? String(v) : undefined)" />
-			<span v-if="ownLoading" class="flex items-center gap-1 text-xs text-muted" role="status">
+			<span
+				v-if="ownLoading"
+				class="flex items-center gap-1 text-xs text-muted"
+				role="status">
 				<PSpin size="xs" color="muted" />
 				{{ $t("production_chains.have.loading", { name: ownName }) }}
 			</span>
-			<span v-else-if="ownError" class="text-xs text-negative" role="alert">
+			<span
+				v-else-if="ownError"
+				class="text-xs text-negative"
+				role="alert">
 				{{ $t("production_chains.have.error", { name: ownError }) }}
 			</span>
 		</div>

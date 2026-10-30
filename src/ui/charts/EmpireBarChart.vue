@@ -100,7 +100,8 @@
 						const n = value as number;
 						if (Math.abs(n) >= 1000000)
 							return (n / 1000000).toFixed(1) + "M";
-						if (Math.abs(n) >= 1000) return (n / 1000).toFixed(0) + "k";
+						if (Math.abs(n) >= 1000)
+							return (n / 1000).toFixed(0) + "k";
 						return n;
 					},
 				},

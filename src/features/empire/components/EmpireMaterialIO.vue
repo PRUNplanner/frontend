@@ -60,8 +60,16 @@
 					return [
 						r.ticker,
 						{
-							output: summarizeSide(r.outputPlanets, "output", scale),
-							input: summarizeSide(r.inputPlanets, "input", scale),
+							output: summarizeSide(
+								r.outputPlanets,
+								"output",
+								scale
+							),
+							input: summarizeSide(
+								r.inputPlanets,
+								"input",
+								scale
+							),
 						},
 					];
 				})
@@ -162,8 +170,7 @@
 </script>
 
 <template>
-	<div
-		class="flex-1 min-h-0 max-xl:flex-none max-xl:h-[calc(100dvh-8rem)]">
+	<div class="flex-1 min-h-0 max-xl:flex-none max-xl:h-[calc(100dvh-8rem)]">
 		<PDataTable
 			:columns="columns"
 			:data="empireMaterialIO"
@@ -230,4 +237,3 @@
 		</PDataTable>
 	</div>
 </template>
-

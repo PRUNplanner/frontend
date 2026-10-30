@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		onBeforeUnmount,
-		onMounted,
-		ref,
-		useSlots,
-	} from "vue";
+	import { computed, onBeforeUnmount, onMounted, ref, useSlots } from "vue";
 
 	// a bar from a shared zero line: negative left, positive right. maxAbs
 	// is the right half's extent, negAbs the left one's (default maxAbs), so
@@ -61,8 +55,7 @@
 
 	function side(negative: boolean, label: string) {
 		const half = negative ? left.value : maxAbs;
-		const pct =
-			half > 0 ? Math.min(Math.abs(value) / half, 1) * 100 : 0;
+		const pct = half > 0 ? Math.min(Math.abs(value) / half, 1) * 100 : 0;
 		// inside only when the text fits the bar's width
 		const halfPx = negative ? widths.value.left : widths.value.right;
 		const inside = !halfPx

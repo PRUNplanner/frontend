@@ -222,9 +222,12 @@
 							<strong class="text-ink">{{ item.amount }}</strong>
 							{{ item.ticker }}
 							<template
-								v-if="index < storageAmountsForDisplay.length - 1">
+								v-if="
+									index < storageAmountsForDisplay.length - 1
+								">
 								{{
-									index === storageAmountsForDisplay.length - 2
+									index ===
+									storageAmountsForDisplay.length - 2
 										? " and "
 										: ", "
 								}}
@@ -257,12 +260,16 @@
 							<th />
 							<th class="numeric">
 								{{
-									t("plan.tools.visitation_frequency.storage.table.weight")
+									t(
+										"plan.tools.visitation_frequency.storage.table.weight"
+									)
 								}}
 							</th>
 							<th class="numeric">
 								{{
-									t("plan.tools.visitation_frequency.storage.table.volume")
+									t(
+										"plan.tools.visitation_frequency.storage.table.volume"
+									)
 								}}
 							</th>
 						</tr>
@@ -270,9 +277,21 @@
 					<tbody>
 						<tr
 							v-for="row in [
-								['import', dailyData.dailyWeightImport, dailyData.dailyVolumeImport],
-								['export', dailyData.dailyWeightExport, dailyData.dailyVolumeExport],
-								['larger_leg', dailyData.dailyWeight, dailyData.dailyVolume],
+								[
+									'import',
+									dailyData.dailyWeightImport,
+									dailyData.dailyVolumeImport,
+								],
+								[
+									'export',
+									dailyData.dailyWeightExport,
+									dailyData.dailyVolumeExport,
+								],
+								[
+									'larger_leg',
+									dailyData.dailyWeight,
+									dailyData.dailyVolume,
+								],
 							] as const"
 							:key="row[0]">
 							<td class="text-muted-strong">
@@ -280,17 +299,23 @@
 									<template #trigger>
 										<span class="hover:cursor-help">
 											{{
-												t("plan.tools.visitation_frequency.storage.table.larger_leg")
+												t(
+													"plan.tools.visitation_frequency.storage.table.larger_leg"
+												)
 											}}
 										</span>
 									</template>
 									{{
-										t("plan.tools.visitation_frequency.storage.table.larger_leg_tooltip")
+										t(
+											"plan.tools.visitation_frequency.storage.table.larger_leg_tooltip"
+										)
 									}}
 								</PTooltip>
 								<template v-else>
 									{{
-										t(`plan.tools.visitation_frequency.storage.table.${row[0]}`)
+										t(
+											`plan.tools.visitation_frequency.storage.table.${row[0]}`
+										)
 									}}
 								</template>
 							</td>
@@ -300,13 +325,19 @@
 						<tr>
 							<td class="font-medium text-ink-strong">
 								{{
-									t("plan.tools.visitation_frequency.storage.table.storage_filled")
+									t(
+										"plan.tools.visitation_frequency.storage.table.storage_filled"
+									)
 								}}
 							</td>
-							<td colspan="2" class="numeric font-medium text-ink-strong">
+							<td
+								colspan="2"
+								class="numeric font-medium text-ink-strong">
 								{{ formatNumber(dailyData.storageFilled) }}
 								{{
-									t("plan.tools.visitation_frequency.storage.table.filled_unit")
+									t(
+										"plan.tools.visitation_frequency.storage.table.filled_unit"
+									)
 								}}
 							</td>
 						</tr>
@@ -316,13 +347,17 @@
 				<label class="flex flex-col gap-1.5 pt-1">
 					<span class="text-xs text-muted">
 						{{
-							t("plan.tools.visitation_frequency.storage.exclusion_info")
+							t(
+								"plan.tools.visitation_frequency.storage.exclusion_info"
+							)
 						}}
 					</span>
 					<PSelectMultiple
 						v-model:value="refMaterialExclusions"
 						:aria-label="
-							t('plan.tools.visitation_frequency.storage.exclusion_label')
+							t(
+								'plan.tools.visitation_frequency.storage.exclusion_label'
+							)
 						"
 						:disabled="disabled"
 						:options="exclusionOptions"
@@ -352,35 +387,49 @@
 							<th colspan="2" />
 							<th colspan="2" class="text-center!">
 								{{
-									t("plan.tools.visitation_frequency.shipping.table.export_frequency")
+									t(
+										"plan.tools.visitation_frequency.shipping.table.export_frequency"
+									)
 								}}
 							</th>
 							<th colspan="2" class="text-center!">
 								{{
-									t("plan.tools.visitation_frequency.shipping.table.import_frequency")
+									t(
+										"plan.tools.visitation_frequency.shipping.table.import_frequency"
+									)
 								}}
 							</th>
 						</tr>
 						<tr>
 							<th class="numeric">
 								{{
-									t("plan.tools.visitation_frequency.shipping.table.ship_weight")
+									t(
+										"plan.tools.visitation_frequency.shipping.table.ship_weight"
+									)
 								}}
 							</th>
 							<th class="numeric">
 								{{
-									t("plan.tools.visitation_frequency.shipping.table.ship_volume")
+									t(
+										"plan.tools.visitation_frequency.shipping.table.ship_volume"
+									)
 								}}
 							</th>
-							<template v-for="side in ['export', 'import']" :key="side">
+							<template
+								v-for="side in ['export', 'import']"
+								:key="side">
 								<th class="numeric">
 									{{
-										t("plan.tools.visitation_frequency.shipping.table.visitation_days")
+										t(
+											"plan.tools.visitation_frequency.shipping.table.visitation_days"
+										)
 									}}
 								</th>
 								<th class="text-center!">
 									{{
-										t("plan.tools.visitation_frequency.shipping.table.limit")
+										t(
+											"plan.tools.visitation_frequency.shipping.table.limit"
+										)
 									}}
 								</th>
 							</template>

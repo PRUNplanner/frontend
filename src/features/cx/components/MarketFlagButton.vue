@@ -50,9 +50,7 @@
 			trackEvent("plan:market_flag_open", { where, level: check.level });
 	});
 
-	const flag = computed(() =>
-		t(`cx.market_flags.flags.${check.flags[0]}`)
-	);
+	const flag = computed(() => t(`cx.market_flags.flags.${check.flags[0]}`));
 	const title = computed(() =>
 		t("cx.market_flags.title", { ticker: check.ticker, flag: flag.value })
 	);
@@ -124,7 +122,8 @@
 					<dt class="text-muted-strong">
 						{{ t("cx.market_flags.popover.traded", { exchange }) }}
 					</dt>
-					<dd class="font-bold tabular-nums text-right whitespace-nowrap">
+					<dd
+						class="font-bold tabular-nums text-right whitespace-nowrap">
 						{{
 							t("cx.market_flags.popover.traded_value", {
 								total: formatNumber(check.traded30d, 0),

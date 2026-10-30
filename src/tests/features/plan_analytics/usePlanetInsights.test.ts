@@ -32,8 +32,18 @@ const v2 = {
 				percentage: 25,
 				median_amount: 1,
 				recipes: [
-					{ recipe_id: "PP1#b", plans: 3, percentage: 40, median_amount: 0 },
-					{ recipe_id: "PP1#a", plans: 4, percentage: 60, median_amount: 2 },
+					{
+						recipe_id: "PP1#b",
+						plans: 3,
+						percentage: 40,
+						median_amount: 0,
+					},
+					{
+						recipe_id: "PP1#a",
+						plans: 4,
+						percentage: 60,
+						median_amount: 2,
+					},
 				],
 				mixes: [],
 			},
@@ -44,7 +54,12 @@ const v2 = {
 				percentage: 100,
 				median_amount: 3,
 				recipes: [
-					{ recipe_id: "FRM#a", plans: 24, percentage: 100, median_amount: 2 },
+					{
+						recipe_id: "FRM#a",
+						plans: 24,
+						percentage: 100,
+						median_amount: 2,
+					},
 				],
 				mixes: [
 					{

@@ -35,7 +35,9 @@ describe("productionChain.util", () => {
 		const bought = result.order.filter(
 			(t) => result.rows[t].source === "buy" && result.rows[t].perDay > 0
 		);
-		expect(list.groups[0].items.map((i) => i.ticker).sort()).toEqual(bought.sort());
+		expect(list.groups[0].items.map((i) => i.ticker).sort()).toEqual(
+			bought.sort()
+		);
 		for (const i of list.groups[0].items) {
 			const row = result.rows[i.ticker];
 			const m = ctx.materials.get(i.ticker)!;
@@ -53,11 +55,18 @@ describe("productionChain.util", () => {
 	});
 
 	it("writes the steps as CSV, targets first", () => {
-		const csv = chainCsv(result, ["A", "B", "C", "D", "E", "F", "G", "H"], (s) => s, "nothing");
+		const csv = chainCsv(
+			result,
+			["A", "B", "C", "D", "E", "F", "G", "H"],
+			(s) => s,
+			"nothing"
+		);
 		const lines = csv.split("\n");
 		expect(lines[0]).toBe("A,B,C,D,E,F,G,H");
 		expect(lines.length).toBe(result.order.length + 1);
-		expect(lines[1].startsWith(result.order[result.order.length - 1])).toBe(true);
+		expect(lines[1].startsWith(result.order[result.order.length - 1])).toBe(
+			true
+		);
 		expect(csv).toContain("buy");
 	});
 

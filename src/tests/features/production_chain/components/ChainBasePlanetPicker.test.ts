@@ -56,10 +56,16 @@ describe("ChainBasePlanetPicker", () => {
 		const { rows } = await mountPicker(input, "A", [FARM_PLANET]);
 		expect(rows().length).toBeGreaterThan(0);
 		for (const row of rows())
-			expect(row.find("td [data-testid='planet-plots']").exists()).toBe(true);
-		const mine = rows().find((r) => r.find("[data-testid='chain-your-plan']").exists());
+			expect(row.find("td [data-testid='planet-plots']").exists()).toBe(
+				true
+			);
+		const mine = rows().find((r) =>
+			r.find("[data-testid='chain-your-plan']").exists()
+		);
 		// Saladin, 332 of 395 plots free in the recorded index
-		expect(mine!.find("[data-testid='planet-plots']").text()).toBe("planet_search.plots.free");
+		expect(mine!.find("[data-testid='planet-plots']").text()).toBe(
+			"planet_search.plots.free"
+		);
 	});
 
 	it("ranks a farm base by buildings, then area, on fertile planets (AC 7)", async () => {
@@ -192,9 +198,7 @@ describe("ChainBasePlanetPicker sorting and filters", () => {
 		wrapper.findComponent(PInputNumber).vm.$emit("update:value", 0);
 		await wrapper.vm.$nextTick();
 		expect(rows().length).toBe(0);
-		expect(body.text()).toContain(
-			"production_chains.planet_picker.none"
-		);
+		expect(body.text()).toContain("production_chains.planet_picker.none");
 	});
 
 	it("marks the planet in use and falls back to the first base", async () => {

@@ -246,12 +246,15 @@ describe("planet search engine", () => {
 		});
 
 		it("surface filter", () => {
-			const planets = [
-				planet("rock"),
-				planet("gas", { surface: false }),
-			];
+			const planets = [planet("rock"), planet("gas", { surface: false })];
 			expect(
-				ids(filterPlanets(planets, filter({ surface: ["gaseous"] }), ctx))
+				ids(
+					filterPlanets(
+						planets,
+						filter({ surface: ["gaseous"] }),
+						ctx
+					)
+				)
 			).toEqual(["gas"]);
 			expect(
 				filterPlanets(planets, filter({ surface: [] }), ctx)
@@ -291,7 +294,10 @@ describe("planet search engine", () => {
 		it("infrastructure is all-of", () => {
 			const planets = [
 				planet("lm", { has_localmarket: true }),
-				planet("lm+war", { has_localmarket: true, has_warehouse: true }),
+				planet("lm+war", {
+					has_localmarket: true,
+					has_warehouse: true,
+				}),
 			];
 			const f = filter({ infrastructure: ["LM", "WAR"] });
 			expect(ids(filterPlanets(planets, f, ctx))).toEqual(["lm+war"]);
@@ -324,7 +330,13 @@ describe("planet search engine", () => {
 				ids(filterPlanets(planets, filter({ text: "antares ii" }), ctx))
 			).toEqual(["ZV-759b", "ZV-759e"]);
 			expect(
-				ids(filterPlanets(planets, filter({ text: "antares ii e" }), ctx))
+				ids(
+					filterPlanets(
+						planets,
+						filter({ text: "antares ii e" }),
+						ctx
+					)
+				)
 			).toEqual(["ZV-759e"]);
 			expect(
 				ids(sortPlanets(planets, [{ key: "name", dir: "asc" }], ctx))
@@ -400,7 +412,10 @@ describe("planet search engine", () => {
 	describe("facet counts (AC8)", () => {
 		const realCtx = createSearchContext(
 			index,
-			{ p1: index[10].planet_natural_id, p2: index[500].planet_natural_id },
+			{
+				p1: index[10].planet_natural_id,
+				p2: index[500].planet_natural_id,
+			},
 			NOW
 		);
 		const materials = indexMaterials(index);
@@ -413,14 +428,16 @@ describe("planet search engine", () => {
 		// seeded, so a failure reproduces
 		let seed = 42;
 		const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-		const pick = <T>(list: T[], p: number) =>
-			list.filter(() => rnd() < p);
+		const pick = <T>(list: T[], p: number) => list.filter(() => rnd() < p);
 
 		function randomFilter(): PlanetSearchFilter {
-			const groups = Array.from({ length: 1 + Math.floor(rnd() * 2) }, () => ({
-				op: rnd() < 0.5 ? ("any" as const) : ("all" as const),
-				materials: pick(materials, 0.04),
-			}));
+			const groups = Array.from(
+				{ length: 1 + Math.floor(rnd() * 2) },
+				() => ({
+					op: rnd() < 0.5 ? ("any" as const) : ("all" as const),
+					materials: pick(materials, 0.04),
+				})
+			);
 			const used = groups.flatMap((g) => g.materials);
 			return {
 				text: rnd() < 0.1 ? "a" : "",
@@ -458,10 +475,15 @@ describe("planet search engine", () => {
 					expect(facets.surface[s]).toBe(
 						count({ ...f, surface: toggle(f.surface, s) })
 					);
-				expect(facets.fertile).toBe(count({ ...f, fertile: !f.fertile }));
+				expect(facets.fertile).toBe(
+					count({ ...f, fertile: !f.fertile })
+				);
 				for (const e of SEARCH_EXTRAS)
 					expect(facets.extras[e]).toBe(
-						count({ ...f, acceptedExtras: toggle(f.acceptedExtras, e) })
+						count({
+							...f,
+							acceptedExtras: toggle(f.acceptedExtras, e),
+						})
 					);
 				for (const c of SEARCH_COGC)
 					expect(facets.cogc[c]).toBe(
@@ -469,7 +491,10 @@ describe("planet search engine", () => {
 					);
 				for (const v of SEARCH_INFRASTRUCTURE)
 					expect(facets.infrastructure[v]).toBe(
-						count({ ...f, infrastructure: toggle(f.infrastructure, v) })
+						count({
+							...f,
+							infrastructure: toggle(f.infrastructure, v),
+						})
 					);
 				for (const r of refs)
 					expect(facets.references[refKey(r)]).toBe(
@@ -488,11 +513,15 @@ describe("planet search engine", () => {
 			});
 			expect(count(f)).toBe(0);
 
-			const hints = restrictionHints(index, f, realCtx, { baseline: "all" });
+			const hints = restrictionHints(index, f, realCtx, {
+				baseline: "all",
+			});
 			expect(hints.length).toBeGreaterThan(0);
 			expect(hints.length).toBeLessThanOrEqual(3);
 			for (let i = 1; i < hints.length; i++)
-				expect(hints[i - 1].count).toBeGreaterThanOrEqual(hints[i].count);
+				expect(hints[i - 1].count).toBeGreaterThanOrEqual(
+					hints[i].count
+				);
 			for (const h of hints) expect(count(h.filter)).toBe(h.count);
 		});
 
@@ -562,13 +591,20 @@ describe("planet search engine", () => {
 			});
 
 			// removing the COGC chip and "any COGC" are the same: listed once
-			const outcomes = restrictionHints(index, { ...f, maxJumps: 30 }, realCtx, {
-				baseline: "name",
-			}).map((h) => JSON.stringify(h.filter));
+			const outcomes = restrictionHints(
+				index,
+				{ ...f, maxJumps: 30 },
+				realCtx,
+				{
+					baseline: "name",
+				}
+			).map((h) => JSON.stringify(h.filter));
 			expect(new Set(outcomes).size).toBe(outcomes.length);
 			// the name chip is no relaxation of a name search
 			expect(
-				note.hints.some((h) => h.kind === "chip" && h.chip.kind === "text")
+				note.hints.some(
+					(h) => h.kind === "chip" && h.chip.kind === "text"
+				)
 			).toBe(false);
 		});
 
@@ -578,15 +614,23 @@ describe("planet search engine", () => {
 				nameSearchNote(index, filter({ text: "KI-" }), realCtx)
 			).toBeNull();
 			expect(
-				nameSearchNote(index, { ...defaultFilter(), text: "no such planet" }, realCtx)
+				nameSearchNote(
+					index,
+					{ ...defaultFilter(), text: "no such planet" },
+					realCtx
+				)
 			).toBeNull();
 		});
 
 		it("hints are empty when nothing relaxes to results", () => {
 			const f = filter({ text: "no such planet" });
-			const hints = restrictionHints(index, f, realCtx, { baseline: "all" });
+			const hints = restrictionHints(index, f, realCtx, {
+				baseline: "all",
+			});
 			expect(hints.map((h) => h.kind)).toEqual(["chip"]);
-			expect(restrictionHints([], f, realCtx, { baseline: "all" })).toEqual([]);
+			expect(
+				restrictionHints([], f, realCtx, { baseline: "all" })
+			).toEqual([]);
 		});
 	});
 
@@ -610,7 +654,10 @@ describe("planet search engine", () => {
 				...narrow,
 				acceptedExtras: [...SEARCH_EXTRAS],
 			});
-			expect(widenSection(narrow, "cogc")).toEqual({ ...narrow, cogc: [] });
+			expect(widenSection(narrow, "cogc")).toEqual({
+				...narrow,
+				cogc: [],
+			});
 			expect(widenSection(narrow, "infrastructure")).toEqual({
 				...narrow,
 				infrastructure: [],
@@ -621,7 +668,9 @@ describe("planet search engine", () => {
 				expect(isSectionWide(widenSection(narrow, s), s)).toBe(true);
 				expect(
 					filterPlanets(index, widenSection(narrow, s), ctx).length
-				).toBeGreaterThanOrEqual(filterPlanets(index, narrow, ctx).length);
+				).toBeGreaterThanOrEqual(
+					filterPlanets(index, narrow, ctx).length
+				);
 			}
 		});
 
@@ -676,7 +725,9 @@ describe("planet search engine", () => {
 			const group2 = chips.find((c) => c.key === "group:2")!.remove;
 			expect(group2.materialGroups).toHaveLength(2);
 			expect(group2.minDaily).toEqual({ FEO: 15 });
-			expect(chips.find((c) => c.key === "infra:LM")!.remove.infrastructure).toEqual(["WAR"]);
+			expect(
+				chips.find((c) => c.key === "infra:LM")!.remove.infrastructure
+			).toEqual(["WAR"]);
 			expect(activeChips(defaultFilter())).toEqual([]);
 		});
 
@@ -700,9 +751,17 @@ describe("planet search engine", () => {
 
 	describe("sorting and helpers", () => {
 		const planets = [
-			planet("B", { planet_name: "", fertility: 0.3, system_id: "s2" }, { FEO: 5 }),
+			planet(
+				"B",
+				{ planet_name: "", fertility: 0.3, system_id: "s2" },
+				{ FEO: 5 }
+			),
 			planet("A", { planet_name: "Alpha", system_id: "s1" }, { FEO: 9 }),
-			planet("C", { planet_name: "Charlie", fertility: 0.1, system_id: "s3" }),
+			planet("C", {
+				planet_name: "Charlie",
+				fertility: 0.1,
+				system_id: "s3",
+			}),
 		];
 		const sortCtx: IPlanetSearchContext = {
 			now: NOW,
@@ -714,13 +773,41 @@ describe("planet search engine", () => {
 		};
 
 		it("sorts by name, fertility, material and jumps; absent last", () => {
-			expect(ids(sortPlanets(planets, [{ key: "name", dir: "asc" }], ctx))).toEqual(["A", "B", "C"]);
-			expect(ids(sortPlanets(planets, [{ key: "name", dir: "desc" }], ctx))).toEqual(["C", "B", "A"]);
-			expect(ids(sortPlanets(planets, [{ key: "fert", dir: "desc" }], ctx))).toEqual(["B", "C", "A"]);
-			expect(ids(sortPlanets(planets, [{ key: "mat:FEO", dir: "desc" }], ctx))).toEqual(["A", "B", "C"]);
-			expect(ids(sortPlanets(planets, [{ key: "mat:FEO", dir: "asc" }], ctx))).toEqual(["B", "A", "C"]);
-			expect(ids(sortPlanets(planets, [{ key: "ref:cx:NC1", dir: "asc" }], sortCtx))).toEqual(["B", "A", "C"]);
-			expect(ids(sortPlanets(planets, [{ key: "ref:bogus", dir: "asc" }], sortCtx))).toEqual(["B", "A", "C"]);
+			expect(
+				ids(sortPlanets(planets, [{ key: "name", dir: "asc" }], ctx))
+			).toEqual(["A", "B", "C"]);
+			expect(
+				ids(sortPlanets(planets, [{ key: "name", dir: "desc" }], ctx))
+			).toEqual(["C", "B", "A"]);
+			expect(
+				ids(sortPlanets(planets, [{ key: "fert", dir: "desc" }], ctx))
+			).toEqual(["B", "C", "A"]);
+			expect(
+				ids(
+					sortPlanets(planets, [{ key: "mat:FEO", dir: "desc" }], ctx)
+				)
+			).toEqual(["A", "B", "C"]);
+			expect(
+				ids(sortPlanets(planets, [{ key: "mat:FEO", dir: "asc" }], ctx))
+			).toEqual(["B", "A", "C"]);
+			expect(
+				ids(
+					sortPlanets(
+						planets,
+						[{ key: "ref:cx:NC1", dir: "asc" }],
+						sortCtx
+					)
+				)
+			).toEqual(["B", "A", "C"]);
+			expect(
+				ids(
+					sortPlanets(
+						planets,
+						[{ key: "ref:bogus", dir: "asc" }],
+						sortCtx
+					)
+				)
+			).toEqual(["B", "A", "C"]);
 		});
 
 		it("sorts by free plots, full in its place, unknown last", () => {
@@ -734,19 +821,30 @@ describe("planet search engine", () => {
 				planet("Many", plots(400, 68)),
 				planet("Few", plots(20, 15)),
 			];
-			expect(ids(sortPlanets(byPlots, [{ key: "plots", dir: "desc" }], ctx))).toEqual(["Many", "Few", "Full", "Unknown"]);
-			expect(ids(sortPlanets(byPlots, [{ key: "plots", dir: "asc" }], ctx))).toEqual(["Full", "Few", "Many", "Unknown"]);
+			expect(
+				ids(sortPlanets(byPlots, [{ key: "plots", dir: "desc" }], ctx))
+			).toEqual(["Many", "Few", "Full", "Unknown"]);
+			expect(
+				ids(sortPlanets(byPlots, [{ key: "plots", dir: "asc" }], ctx))
+			).toEqual(["Full", "Few", "Many", "Unknown"]);
 		});
 
 		it("default sort", () => {
-			expect(defaultSort(defaultFilter())).toEqual({ key: "name", dir: "asc" });
+			expect(defaultSort(defaultFilter())).toEqual({
+				key: "name",
+				dir: "asc",
+			});
 			expect(
-				defaultSort(filter({ references: [{ kind: "cx", code: "IC1" }] }))
+				defaultSort(
+					filter({ references: [{ kind: "cx", code: "IC1" }] })
+				)
 			).toEqual({ key: "ref:cx:IC1", dir: "asc" });
 			expect(
 				defaultSort(
 					filter({
-						materialGroups: [{ op: "any", materials: ["MAG", "FEO"] }],
+						materialGroups: [
+							{ op: "any", materials: ["MAG", "FEO"] },
+						],
 						references: [{ kind: "cx", code: "IC1" }],
 					})
 				)
@@ -754,7 +852,10 @@ describe("planet search engine", () => {
 		});
 
 		it("reference keys", () => {
-			expect(parseRefKey("plan:abc")).toEqual({ kind: "plan", planUuid: "abc" });
+			expect(parseRefKey("plan:abc")).toEqual({
+				kind: "plan",
+				planUuid: "abc",
+			});
 			expect(parseRefKey("cx:NC1")).toEqual({ kind: "cx", code: "NC1" });
 			expect(parseRefKey("cx:XX1")).toBeUndefined();
 			expect(parseRefKey("plan:")).toBeUndefined();
@@ -767,7 +868,10 @@ describe("planet search engine", () => {
 			expect(setGroups(f, []).materialGroups).toEqual([
 				{ op: "any", materials: [] },
 			]);
-			expect(indexMaterials([planet("x", {}, { O: 1, AR: 2 })])).toEqual(["AR", "O"]);
+			expect(indexMaterials([planet("x", {}, { O: 1, AR: 2 })])).toEqual([
+				"AR",
+				"O",
+			]);
 		});
 	});
 
@@ -775,7 +879,9 @@ describe("planet search engine", () => {
 		it("fertility, maxima, found and filtered materials, infrastructure", () => {
 			expect(fertilityPercent(planet("x"))).toBeNull();
 			expect(fertilityPercent(planet("x", { fertility: 0 }))).toBe(100);
-			expect(fertilityPercent(planet("x", { fertility: 0.33 }))).toBeCloseTo(110);
+			expect(
+				fertilityPercent(planet("x", { fertility: 0.33 }))
+			).toBeCloseTo(110);
 
 			const planets = [
 				planet("a", {}, { FEO: 5 }),
@@ -784,7 +890,10 @@ describe("planet search engine", () => {
 			planets[1].resources[0].max_daily_extraction = 60;
 			expect(materialMax(planets)).toEqual({ FEO: 60, O: 50 });
 			// data without maxima (0) scales against the best planet
-			const noMax = [planet("c", {}, { FEO: 7 }), planet("d", {}, { FEO: 12 })];
+			const noMax = [
+				planet("c", {}, { FEO: 7 }),
+				planet("d", {}, { FEO: 12 }),
+			];
 			for (const p of noMax) p.resources[0].max_daily_extraction = 0;
 			expect(materialMax(noMax)).toEqual({ FEO: 12 });
 			expect(foundMaterials(planets)).toEqual({ FEO: 2, O: 1 });
@@ -853,7 +962,9 @@ describe("planet search engine", () => {
 				)
 			).toEqual(["near-rich", "near-poor", "far-rich", "far-none"]);
 			// no keys keeps the order
-			expect(ids(sortPlanets(planets, [], chainCtx))).toEqual(ids(planets));
+			expect(ids(sortPlanets(planets, [], chainCtx))).toEqual(
+				ids(planets)
+			);
 		});
 
 		it("clicks: plain replaces or flips, shift adds, flips, removes", () => {
@@ -869,7 +980,9 @@ describe("planet search engine", () => {
 			expect(added).toEqual([...one, { key: "mat:FEO", dir: "desc" }]);
 			const flipped = applySortClick(added, "mat:FEO", "desc", true);
 			expect(flipped[1]).toEqual({ key: "mat:FEO", dir: "asc" });
-			expect(applySortClick(flipped, "mat:FEO", "desc", true)).toEqual(one);
+			expect(applySortClick(flipped, "mat:FEO", "desc", true)).toEqual(
+				one
+			);
 			// a plain click on a key of a longer chain sorts by it alone
 			expect(applySortClick(added, "mat:FEO", "desc", false)).toEqual([
 				{ key: "mat:FEO", dir: "desc" },

@@ -119,7 +119,9 @@ const round = (v: number) => Math.round(v * 1e6) / 1e6;
 
 describe("price regression guard", () => {
 	let ctx: IPlanContext;
-	let getExchange: (id: string) => ReturnType<
+	let getExchange: (
+		id: string
+	) => ReturnType<
 		ReturnType<typeof useExchangeData>["getExchangeTickerLoaded"]
 	>;
 

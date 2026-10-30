@@ -37,7 +37,9 @@
 			class="rounded-panel border border-line p-3 flex flex-col gap-2"
 			data-testid="check-coverage">
 			<div class="flex items-baseline justify-between gap-2">
-				<h2 class="font-bold">{{ $t("production_chains.check.aside.coverage") }}</h2>
+				<h2 class="font-bold">
+					{{ $t("production_chains.check.aside.coverage") }}
+				</h2>
 				<span class="text-xs text-muted">
 					{{
 						$t("production_chains.check.aside.coverage_count", {
@@ -52,16 +54,27 @@
 					v-for="b in result.bases"
 					:key="b.id"
 					class="flex items-center gap-2 text-sm">
-					<span class="px-1 rounded-control border border-line font-mono font-bold text-xs">
+					<span
+						class="px-1 rounded-control border border-line font-mono font-bold text-xs">
 						{{ b.id }}
 					</span>
-					<span class="flex-1 min-w-0 truncate">{{ b.plan.name }}</span>
+					<span class="flex-1 min-w-0 truncate">{{
+						b.plan.name
+					}}</span>
 					<span
 						:class="ICON[b.verdict].tone"
-						:title="t(`production_chains.check.aside.legend_${b.verdict}`)">
-						<span aria-hidden="true">{{ ICON[b.verdict].icon }}</span>
+						:title="
+							t(
+								`production_chains.check.aside.legend_${b.verdict}`
+							)
+						">
+						<span aria-hidden="true">{{
+							ICON[b.verdict].icon
+						}}</span>
 						<span class="sr-only">{{
-							t(`production_chains.check.aside.legend_${b.verdict}`)
+							t(
+								`production_chains.check.aside.legend_${b.verdict}`
+							)
 						}}</span>
 					</span>
 				</li>
@@ -89,13 +102,18 @@
 			</PButton>
 			<p class="flex flex-wrap gap-x-3 text-xs text-muted">
 				<span v-for="v in LEGEND" :key="v">
-					<span :class="ICON[v].tone" aria-hidden="true">{{ ICON[v].icon }}</span>
+					<span :class="ICON[v].tone" aria-hidden="true">{{
+						ICON[v].icon
+					}}</span>
 					{{ $t(`production_chains.check.aside.legend_${v}`) }}
 				</span>
 			</p>
 		</section>
-		<section class="rounded-panel border border-line p-3 flex flex-col gap-2">
-			<h2 class="font-bold">{{ $t("production_chains.check.aside.compared") }}</h2>
+		<section
+			class="rounded-panel border border-line p-3 flex flex-col gap-2">
+			<h2 class="font-bold">
+				{{ $t("production_chains.check.aside.compared") }}
+			</h2>
 			<ul class="list-disc pl-5 text-sm text-muted flex flex-col gap-1">
 				<li>{{ $t("production_chains.check.aside.as_planned") }}</li>
 				<li>{{ $t("production_chains.check.aside.chain_default") }}</li>

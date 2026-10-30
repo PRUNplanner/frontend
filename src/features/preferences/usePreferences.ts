@@ -216,9 +216,7 @@ export function usePreferences() {
 		get: () => userStore.preferences.locale,
 		set: (v: SupportedLocale) => {
 			userStore.setPreference("locale", v);
-			userStore
-				.setLocale(v, i18n.global)
-				.catch(reportError);
+			userStore.setLocale(v, i18n.global).catch(reportError);
 		},
 	});
 

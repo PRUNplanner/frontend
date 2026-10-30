@@ -82,7 +82,9 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			source
 				.empires()
 				.filter((e) => !linkedEmpires.has(e.uuid))
-				.forEach((e) => e.plans.forEach((p) => add(p.uuid, e.uuid, false)));
+				.forEach((e) =>
+					e.plans.forEach((p) => add(p.uuid, e.uuid, false))
+				);
 		return list;
 	});
 
@@ -101,7 +103,9 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			// own loaders may still be fetching: wait for everything the
 			// engine reads. Cached queries, a no-op once loaded.
 			const planets = [
-				...new Set(todo.map((i) => plans.get(i.uuid)!.planet_natural_id)),
+				...new Set(
+					todo.map((i) => plans.get(i.uuid)!.planet_natural_id)
+				),
 			].sort();
 			let failed = 0;
 			const reportOnce = (err: unknown) => {
@@ -133,7 +137,8 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 					plan.uuid,
 					plan.modified_at,
 					item.empireUuid,
-					empires.find((e) => e.uuid === item.empireUuid)?.modified_at,
+					empires.find((e) => e.uuid === item.empireUuid)
+						?.modified_at,
 				].join("#");
 
 				let base = cache.get(key);

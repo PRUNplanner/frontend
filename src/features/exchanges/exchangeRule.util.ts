@@ -142,10 +142,8 @@ export function switchMode(
 ): IExchangeRuleState {
 	if (mode === state.mode) return state;
 	const current = state.both ?? state.buy ?? state.sell ?? inherited;
-	if (mode === "inherit")
-		return { mode, both: null, buy: null, sell: null };
-	if (mode === "same")
-		return { mode, both: current, buy: null, sell: null };
+	if (mode === "inherit") return { mode, both: null, buy: null, sell: null };
+	if (mode === "same") return { mode, both: current, buy: null, sell: null };
 	return {
 		mode,
 		both: null,

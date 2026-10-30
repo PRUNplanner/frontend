@@ -191,7 +191,9 @@ describe("ChainBaseCard variants", () => {
 		const lux = wrapper
 			.findAllComponents(PSelect)
 			.find((c) => c.props("value") === "both")!;
-		const labels = (lux.props("options") as PSelectOption[]).map((o) => o.label);
+		const labels = (lux.props("options") as PSelectOption[]).map(
+			(o) => o.label
+		);
 		expect(labels).toEqual([
 			"Both · 100 %",
 			"Lux 2 · 92 %",
@@ -212,14 +214,20 @@ describe("ChainBaseCard variants", () => {
 		// at most 5 per type and 6 per base
 		expect(steppers[0].props("max")).toBe(5);
 		steppers[0].vm.$emit("update:value", 9);
-		const [[experts]] = component.emitted("experts") as [Record<string, number>][];
+		const [[experts]] = component.emitted("experts") as [
+			Record<string, number>,
+		][];
 		expect(experts.Food_Industries).toBe(5);
 		steppers[0].vm.$emit("update:value", null);
 		steppers[0].vm.$emit("update:value", 2);
-		expect((component.emitted("experts") as unknown[][])[1][0]).toMatchObject({
+		expect(
+			(component.emitted("experts") as unknown[][])[1][0]
+		).toMatchObject({
 			Food_Industries: 0,
 		});
-		expect((component.emitted("experts") as unknown[][])[2][0]).toMatchObject({
+		expect(
+			(component.emitted("experts") as unknown[][])[2][0]
+		).toMatchObject({
 			Food_Industries: 2,
 		});
 		// auto is on: the reset is off
@@ -229,7 +237,10 @@ describe("ChainBaseCard variants", () => {
 		expect(reset.attributes("disabled")).toBeDefined();
 
 		const edited = solveChain(
-			{ ...input, bases: [{ ...input.bases[0], experts: { Food_Industries: 2 } }] },
+			{
+				...input,
+				bases: [{ ...input.bases[0], experts: { Food_Industries: 2 } }],
+			},
 			ctx
 		);
 		const manual = await mountComponent(

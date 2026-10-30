@@ -221,7 +221,10 @@ describe("userQueries analytics", () => {
 });
 
 function apiError(status: number, responseData?: unknown): ApiError {
-	return Object.assign(new ApiError(String(status)), { status, responseData });
+	return Object.assign(new ApiError(String(status)), {
+		status,
+		responseData,
+	});
 }
 
 describe("userQueries error codes", () => {
@@ -233,7 +236,10 @@ describe("userQueries error codes", () => {
 	it.each([
 		[apiError(429), "throttled"],
 		[apiError(400, { code: "expired" }), "expired"],
-		[apiError(400, { code: ["Ensure this field has 8 characters."] }), "invalid"],
+		[
+			apiError(400, { code: ["Ensure this field has 8 characters."] }),
+			"invalid",
+		],
 		[apiError(500), "error"],
 		[new Error("Network"), "error"],
 	])("maps a failed email verification to a code", async (err, code) => {

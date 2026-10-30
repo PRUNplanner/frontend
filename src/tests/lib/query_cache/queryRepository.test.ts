@@ -71,7 +71,10 @@ describe("queryRepository", () => {
 		for (const link of batchRefresh) {
 			expect(queryRepository).toHaveProperty(link.single);
 			expect(queryRepository).toHaveProperty(link.multiple);
-			expect(queryRepository[link.single]).toHaveProperty("autoRefetch", true);
+			expect(queryRepository[link.single]).toHaveProperty(
+				"autoRefetch",
+				true
+			);
 		}
 	});
 
@@ -169,13 +172,19 @@ describe("queryRepository", () => {
 		const queryStore = useQueryStore();
 		const empires = [{ uuid: "empire-1", empire_name: "Sky" }];
 		usePlanningStore().setPlan({ ...plan, empires } as never);
+		const plans = [plan, { uuid: "plan-3" }];
 		// @ts-expect-error mock data
-		vi.mocked(callGetEmpirePlans).mockResolvedValue([plan, { uuid: "plan-3" }]);
+		vi.mocked(callGetEmpirePlans).mockResolvedValue(plans);
 
 		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
 
-		expect(usePlanningStore().plans["plan-1"]).toStrictEqual({ ...plan, empires });
-		expect(usePlanningStore().plans["plan-3"]).toStrictEqual({ uuid: "plan-3" });
+		expect(usePlanningStore().plans["plan-1"]).toStrictEqual({
+			...plan,
+			empires,
+		});
+		expect(usePlanningStore().plans["plan-3"]).toStrictEqual({
+			uuid: "plan-3",
+		});
 	});
 
 	it("ClonePlan and DeletePlan: return the API response", async () => {

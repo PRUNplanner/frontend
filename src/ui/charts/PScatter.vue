@@ -110,7 +110,12 @@
 		h: Math.max(height.value - M.top - M.bottom, 0),
 	}));
 
-	function scale(ticks: number[], from: number, length: number, flip: boolean) {
+	function scale(
+		ticks: number[],
+		from: number,
+		length: number,
+		flip: boolean
+	) {
 		const lo = ticks[0];
 		const span = ticks.at(-1)! - lo || 1;
 		return (v: number) =>

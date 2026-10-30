@@ -107,9 +107,7 @@
 		"AI1",
 		"IC1",
 	]);
-	const multipleEmpty: Ref<(string | number | null | undefined)[]> = ref(
-		[]
-	);
+	const multipleEmpty: Ref<(string | number | null | undefined)[]> = ref([]);
 
 	const dropdownOptions: PDropdownOption[] = [
 		{ key: "save", label: "Save", icon: SaveSharp },
@@ -171,7 +169,10 @@
 							disabled
 						</PButton>
 						<PButton :size="size" loading>loading</PButton>
-						<PButton :size="size" type="secondary" aria-label="Save">
+						<PButton
+							:size="size"
+							type="secondary"
+							aria-label="Save">
 							<template #icon><SaveSharp /></template>
 						</PButton>
 					</div>
@@ -276,7 +277,10 @@
 					<PCheckbox v-model:checked="unchecked" :size="size">
 						Unchecked
 					</PCheckbox>
-					<PCheckbox v-model:checked="unchecked" :size="size" indeterminate>
+					<PCheckbox
+						v-model:checked="unchecked"
+						:size="size"
+						indeterminate>
 						Some
 					</PCheckbox>
 				</div>
@@ -342,7 +346,9 @@
 						aria-label="Search"
 						placeholder="Search"
 						class="w-48">
-						<template #prefix><SearchSharp class="w-4 h-4" /></template>
+						<template #prefix
+							><SearchSharp class="w-4 h-4"
+						/></template>
 					</PInput>
 				</div>
 				<div class="flex flex-wrap items-start gap-3">
@@ -391,7 +397,9 @@
 					<PFormItem label="Exchange">
 						<PSelect v-model:value="single" :options="options" />
 					</PFormItem>
-					<PFormItem label="Ticker" error="No material with this ticker">
+					<PFormItem
+						label="Ticker"
+						error="No material with this ticker">
 						<PInput v-model:value="text" />
 					</PFormItem>
 					<PFormItem label="Active">
@@ -410,7 +418,9 @@
 							<PButton size="sm" type="secondary">Reload</PButton>
 						</template>
 					</PNotice>
-					<PNotice type="error">Login failed, check your password.</PNotice>
+					<PNotice type="error"
+						>Login failed, check your password.</PNotice
+					>
 				</div>
 			</section>
 
@@ -450,7 +460,9 @@
 					</PTooltip>
 					<PTooltip>
 						<template #trigger>
-							<PButton type="secondary">Tooltip on a button</PButton>
+							<PButton type="secondary"
+								>Tooltip on a button</PButton
+							>
 						</template>
 						The button keeps its own name
 					</PTooltip>
@@ -519,7 +531,9 @@
 					</div>
 					<template #action>
 						<div class="flex justify-end gap-3">
-							<PButton type="secondary" @click="showModal = false">
+							<PButton
+								type="secondary"
+								@click="showModal = false">
 								Cancel
 							</PButton>
 							<PButton @click="showModal = false">Save</PButton>
@@ -541,7 +555,9 @@
 					placement="bottom"
 					:closable="false"
 					aria-label="Bottom sheet">
-					<p>A sheet from the bottom, as the phone navigation uses.</p>
+					<p>
+						A sheet from the bottom, as the phone navigation uses.
+					</p>
 				</PDrawer>
 			</section>
 
@@ -552,7 +568,9 @@
 					<PSpin />
 					<PSpin size="lg" />
 					<PSpin size="xl" />
-					<div class="w-60"><PProgressBar :step="3" :total="8" /></div>
+					<div class="w-60">
+						<PProgressBar :step="3" :total="8" />
+					</div>
 					<PValue :value="1234.5" />
 					<PValue :value="-42" arrow />
 					<PValue :value="0" />

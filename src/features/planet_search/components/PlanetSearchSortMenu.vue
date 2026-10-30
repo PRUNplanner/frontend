@@ -64,7 +64,8 @@
 						)
 						.sort()
 				: filtered;
-		const shown = (c: PlanetSearchColumn) => !props.hiddenColumns.includes(c);
+		const shown = (c: PlanetSearchColumn) =>
+			!props.hiddenColumns.includes(c);
 		return [
 			"name",
 			...(shown("fert") ? ["fert"] : []),
@@ -103,7 +104,6 @@
 			props.sorts.filter((_, i) => i !== index)
 		);
 	}
-
 </script>
 
 <template>
@@ -145,7 +145,8 @@
 						aria-hidden="true">
 						{{ i + 1 }}
 					</span>
-					<span class="flex-1 min-w-0 truncate font-medium text-white">
+					<span
+						class="flex-1 min-w-0 truncate font-medium text-white">
 						{{ label(s.key) }}
 					</span>
 					<PButtonGroup
@@ -170,7 +171,9 @@
 						size="sm"
 						type="secondary"
 						:aria-label="
-							t('planet_search.sort.remove', { column: label(s.key) })
+							t('planet_search.sort.remove', {
+								column: label(s.key),
+							})
 						"
 						@click="remove(i)">
 						<template #icon><CloseSharp /></template>

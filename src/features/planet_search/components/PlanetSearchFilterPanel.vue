@@ -107,7 +107,10 @@
 				value: m,
 			}));
 	}
-	function onAdd(groupIndex: number, ticker: string | number | null | undefined) {
+	function onAdd(
+		groupIndex: number,
+		ticker: string | number | null | undefined
+	) {
 		if (typeof ticker === "string")
 			filter.value = addMaterial(filter.value, groupIndex, ticker);
 		addValue.value = null;
@@ -139,7 +142,9 @@
 				!q ||
 				p.plan_name.toLowerCase().includes(q) ||
 				p.planet_natural_id.toLowerCase().includes(q) ||
-				(props.planetNames[p.planet_natural_id] ?? "").toLowerCase().includes(q)
+				(props.planetNames[p.planet_natural_id] ?? "")
+					.toLowerCase()
+					.includes(q)
 		);
 	});
 	const pickedPlans = computed(() =>
@@ -173,8 +178,7 @@
 				section: title,
 				n: props.facets.any[section],
 			}),
-			onClick: () =>
-				(filter.value = widenSection(filter.value, section)),
+			onClick: () => (filter.value = widenSection(filter.value, section)),
 		};
 	}
 </script>
@@ -195,7 +199,10 @@
 						v-for="op in ['all', 'any'] as const"
 						:key="op"
 						type="button"
-						:class="[segment, filter.groupsOp === op ? 'bg-blue-800' : '']"
+						:class="[
+							segment,
+							filter.groupsOp === op ? 'bg-blue-800' : '',
+						]"
 						:aria-pressed="filter.groupsOp === op"
 						@click="set({ groupsOp: op })">
 						{{
@@ -225,7 +232,11 @@
 					class="border border-white/15 rounded p-3 flex flex-col gap-2">
 					<div class="flex flex-row items-center gap-2">
 						<span class="text-muted">
-							{{ t("planet_search.materials.group", { n: gi + 1 }) }}
+							{{
+								t("planet_search.materials.group", {
+									n: gi + 1,
+								})
+							}}
 						</span>
 						<div
 							role="group"
@@ -239,7 +250,10 @@
 								v-for="op in ['any', 'all'] as const"
 								:key="op"
 								type="button"
-								:class="[segment, group.op === op ? 'bg-blue-800' : '']"
+								:class="[
+									segment,
+									group.op === op ? 'bg-blue-800' : '',
+								]"
 								:aria-pressed="group.op === op"
 								@click="updateGroup(gi, (g) => ({ ...g, op }))">
 								{{
@@ -255,9 +269,12 @@
 							type="button"
 							class="touch-target ml-auto px-1 text-muted hover:text-white cursor-pointer min-h-11 lg:min-h-6"
 							:aria-label="
-								t('planet_search.materials.remove_group_label', {
-									n: gi + 1,
-								})
+								t(
+									'planet_search.materials.remove_group_label',
+									{
+										n: gi + 1,
+									}
+								)
 							"
 							@click="removeGroup(gi)">
 							{{ t("planet_search.materials.remove_group") }}
@@ -306,9 +323,12 @@
 								type="button"
 								class="touch-target ml-auto min-w-11 min-h-11 lg:min-w-7 lg:min-h-7 border border-white/20 rounded hover:bg-white/10 cursor-pointer"
 								:aria-label="
-									t('planet_search.materials.remove_material', {
-										material: m,
-									})
+									t(
+										'planet_search.materials.remove_material',
+										{
+											material: m,
+										}
+									)
 								"
 								@click="
 									updateGroup(gi, (g) => ({
@@ -360,8 +380,17 @@
 				</h3>
 				<button
 					type="button"
-					v-bind="anyButton('conditions', t('planet_search.conditions.title'))">
-					{{ t("planet_search.filters.any", { n: facets.any.conditions }) }}
+					v-bind="
+						anyButton(
+							'conditions',
+							t('planet_search.conditions.title')
+						)
+					">
+					{{
+						t("planet_search.filters.any", {
+							n: facets.any.conditions,
+						})
+					}}
 				</button>
 			</div>
 			<p class="text-muted">
@@ -372,7 +401,10 @@
 					v-for="s in ['rocky', 'gaseous'] as const"
 					:key="s"
 					type="button"
-					:class="[pill, filter.surface.includes(s) ? pillOn : pillOff]"
+					:class="[
+						pill,
+						filter.surface.includes(s) ? pillOn : pillOff,
+					]"
 					:aria-pressed="filter.surface.includes(s)"
 					:disabled="
 						filter.surface.length === 1 && filter.surface[0] === s
@@ -401,8 +433,15 @@
 				</p>
 				<button
 					type="button"
-					v-bind="anyButton('extras', t('planet_search.conditions.extras_title'))">
-					{{ t("planet_search.filters.any", { n: facets.any.extras }) }}
+					v-bind="
+						anyButton(
+							'extras',
+							t('planet_search.conditions.extras_title')
+						)
+					">
+					{{
+						t("planet_search.filters.any", { n: facets.any.extras })
+					}}
 				</button>
 			</div>
 			<div class="grid grid-cols-2 gap-2">
@@ -417,7 +456,9 @@
 					]"
 					:aria-pressed="filter.acceptedExtras.includes(e)"
 					@click="
-						set({ acceptedExtras: toggle(filter.acceptedExtras, e) })
+						set({
+							acceptedExtras: toggle(filter.acceptedExtras, e),
+						})
 					">
 					<span class="flex items-center gap-2 min-w-0">
 						<span class="font-mono font-bold">{{ e }}</span>
@@ -470,8 +511,17 @@
 				</h3>
 				<button
 					type="button"
-					v-bind="anyButton('infrastructure', t('planet_search.infrastructure.title'))">
-					{{ t("planet_search.filters.any", { n: facets.any.infrastructure }) }}
+					v-bind="
+						anyButton(
+							'infrastructure',
+							t('planet_search.infrastructure.title')
+						)
+					">
+					{{
+						t("planet_search.filters.any", {
+							n: facets.any.infrastructure,
+						})
+					}}
 				</button>
 			</div>
 			<div class="flex flex-row flex-wrap gap-2">
@@ -486,7 +536,9 @@
 					:title="t(`planet_search.infrastructure.${v}`)"
 					:aria-pressed="filter.infrastructure.includes(v)"
 					@click="
-						set({ infrastructure: toggle(filter.infrastructure, v) })
+						set({
+							infrastructure: toggle(filter.infrastructure, v),
+						})
 					">
 					{{ v }}
 					<span
@@ -513,7 +565,9 @@
 						:value="empireUuid"
 						:options="empireOptions"
 						:aria-label="t('planet_search.distance.empire')"
-						@update:value="(v) => emit('update:empire', String(v))" />
+						@update:value="
+							(v) => emit('update:empire', String(v))
+						" />
 
 					<div
 						v-if="pickedPlans.length"
@@ -532,7 +586,10 @@
 									})
 								"
 								@click="
-									toggleRef({ kind: 'plan', planUuid: p.uuid })
+									toggleRef({
+										kind: 'plan',
+										planUuid: p.uuid,
+									})
 								">
 								×
 							</button>
@@ -563,7 +620,10 @@
 							<PCheckbox
 								:checked="pickedKeys.has(`plan:${p.uuid}`)"
 								@update:checked="
-									toggleRef({ kind: 'plan', planUuid: p.uuid })
+									toggleRef({
+										kind: 'plan',
+										planUuid: p.uuid,
+									})
 								">
 								{{
 									t("planet_search.distance.plan_option", {
@@ -611,7 +671,9 @@
 					:aria-pressed="pickedKeys.has(`cx:${code}`)"
 					@click="toggleRef({ kind: 'cx', code })">
 					{{ code }}
-					<span v-if="!pickedKeys.has(`cx:${code}`)" class="text-muted">
+					<span
+						v-if="!pickedKeys.has(`cx:${code}`)"
+						class="text-muted">
 						{{ facets.references[`cx:${code}`] }}
 					</span>
 				</button>

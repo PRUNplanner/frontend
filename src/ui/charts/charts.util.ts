@@ -180,10 +180,7 @@ export function compactNumber(value: number): string {
  * @param {number} slot px per label
  * @returns {"sm" | "xs" | "tilt"} the label style
  */
-export function labelFit(
-	labels: string[],
-	slot: number
-): "sm" | "xs" | "tilt" {
+export function labelFit(labels: string[], slot: number): "sm" | "xs" | "tilt" {
 	const longest = Math.max(
 		0,
 		...labels.flatMap((l) => l.split(/\s+/)).map((w) => w.length)
@@ -324,13 +321,15 @@ export function sparklineLayout(
 
 	const min = domain?.[0] ?? Math.min(...values);
 	const span = (domain?.[1] ?? Math.max(...values)) - min;
-	const step = points.length > 1 ? (width - 2 * pad) / (points.length - 1) : 0;
+	const step =
+		points.length > 1 ? (width - 2 * pad) / (points.length - 1) : 0;
 	const at = (v: number, i: number) => ({
 		x: Math.round((pad + i * step) * 10) / 10,
 		y:
 			Math.round(
-				(span ? pad + (1 - (v - min) / span) * (height - 2 * pad) : height / 2) *
-					10
+				(span
+					? pad + (1 - (v - min) / span) * (height - 2 * pad)
+					: height / 2) * 10
 			) / 10,
 	});
 

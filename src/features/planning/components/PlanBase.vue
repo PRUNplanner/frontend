@@ -111,7 +111,10 @@
 			.filter(([, n]) => n > 0)
 			.map(([inf, n]) => `${n} ${inf}`);
 		return {
-			empire: [props.activeEmpire?.empire_name, cxName ?? props.priceSource]
+			empire: [
+				props.activeEmpire?.empire_name,
+				cxName ?? props.priceSource,
+			]
 				.filter(Boolean)
 				.join(" · "),
 			planet: t(
@@ -129,7 +132,9 @@
 				.join(" · "),
 			housing: [
 				...housing,
-				...(props.autoOptimizeHabs ? [t("plan.base.housing.auto")] : []),
+				...(props.autoOptimizeHabs
+					? [t("plan.base.housing.auto")]
+					: []),
 			].join(" · "),
 			experts: t("plan.base.experts.summary", { n: expertTotal.value }),
 		};
@@ -176,10 +181,12 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.empire.label") }}
 				</span>
-				<span class="text-xs text-muted truncate group-open:hidden" :title="summary.empire">
+				<span
+					class="text-xs text-muted truncate group-open:hidden"
+					:title="summary.empire">
 					{{ summary.empire }}
 				</span>
-</summary>
+			</summary>
 			<div :class="body">
 				<PlanConfiguration
 					:disabled="disabled"
@@ -201,10 +208,12 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.planet.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.planet">
+				<span
+					class="text-xs text-muted truncate tabular-nums group-open:hidden"
+					:title="summary.planet">
 					{{ summary.planet }}
 				</span>
-</summary>
+			</summary>
 			<div :class="body" class="flex flex-col gap-3">
 				<PlanBonuses
 					:disabled="disabled"
@@ -212,12 +221,16 @@
 					:cogc="result.cogc"
 					:planet-natural-id="planet.planet_natural_id"
 					@update:corphq="(v: boolean) => emit('update:corphq', v)"
-					@update:cogc="(v: PlanCOGCProgram) => emit('update:cogc', v)" />
+					@update:cogc="
+						(v: PlanCOGCProgram) => emit('update:cogc', v)
+					" />
 				<PlanArea
 					:disabled="disabled"
 					:area-data="result.area"
 					:planet-natural-id="planet.planet_natural_id"
-					@update:permits="(v: number) => emit('update:permits', v)" />
+					@update:permits="
+						(v: number) => emit('update:permits', v)
+					" />
 				<div
 					v-if="planet.resources.length"
 					class="flex flex-wrap items-center gap-1 text-xs text-muted-strong">
@@ -234,7 +247,9 @@
 								:disabled="disabled"
 								:aria-label="
 									t('plan.base.planet.add_extractor', {
-										building: extractor(resource.resource_type),
+										building: extractor(
+											resource.resource_type
+										),
 										ticker: resource.material_ticker,
 									})
 								"
@@ -250,7 +265,9 @@
 									:ticker="resource.material_ticker"
 									:amount="
 										parseFloat(
-											formatNumber(resource.daily_extraction)
+											formatNumber(
+												resource.daily_extraction
+											)
 										)
 									"
 									disable-drawer
@@ -286,10 +303,12 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.workforce.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.workforce">
+				<span
+					class="text-xs text-muted truncate tabular-nums group-open:hidden"
+					:title="summary.workforce">
 					{{ summary.workforce }}
 				</span>
-</summary>
+			</summary>
 			<div :class="body">
 				<PlanWorkforce
 					:disabled="disabled"
@@ -308,10 +327,12 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.housing.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.housing">
+				<span
+					class="text-xs text-muted truncate tabular-nums group-open:hidden"
+					:title="summary.housing">
 					{{ summary.housing }}
 				</span>
-</summary>
+			</summary>
 			<div :class="body">
 				<PlanInfrastructure
 					:disabled="disabled"
@@ -326,7 +347,9 @@
 						(v: boolean, g: HabSolverGoal) =>
 							emit('update:auto-optimize-habs', v, g)
 					"
-					@optimize-habs="(g: HabSolverGoal) => emit('optimize-habs', g)" />
+					@optimize-habs="
+						(g: HabSolverGoal) => emit('optimize-habs', g)
+					" />
 			</div>
 		</details>
 
@@ -336,10 +359,12 @@
 				<span class="flex-1 font-medium text-ink-strong text-nowrap">
 					{{ t("plan.base.experts.label") }}
 				</span>
-				<span class="text-xs text-muted truncate tabular-nums group-open:hidden" :title="summary.experts">
+				<span
+					class="text-xs text-muted truncate tabular-nums group-open:hidden"
+					:title="summary.experts">
 					{{ summary.experts }}
 				</span>
-</summary>
+			</summary>
 			<div :class="body">
 				<PlanExperts
 					:disabled="disabled"
@@ -347,7 +372,8 @@
 					:buildings="productionBuildings"
 					:planet-natural-id="planet.planet_natural_id"
 					@update:expert="
-						(e: ExpertType, v: number) => emit('update:expert', e, v)
+						(e: ExpertType, v: number) =>
+							emit('update:expert', e, v)
 					" />
 			</div>
 		</details>

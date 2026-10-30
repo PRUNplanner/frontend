@@ -30,7 +30,9 @@ describe("PInput", () => {
 
 		expect(error.find("input").attributes("aria-invalid")).toBe("true");
 		expect(error.find(".inset-ring-negative").exists()).toBe(true);
-		expect(warning.find("input").attributes("aria-invalid")).toBeUndefined();
+		expect(
+			warning.find("input").attributes("aria-invalid")
+		).toBeUndefined();
 		expect(warning.find(".inset-ring-warning").exists()).toBe(true);
 	});
 
@@ -42,7 +44,9 @@ describe("PInput", () => {
 		});
 		const box = wrapper.find(".rounded-control");
 
-		expect(box.element.firstElementChild!.querySelector(".icon")).not.toBeNull();
+		expect(
+			box.element.firstElementChild!.querySelector(".icon")
+		).not.toBeNull();
 		expect(box.find("input").exists()).toBe(true);
 	});
 

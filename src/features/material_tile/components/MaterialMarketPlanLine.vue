@@ -53,7 +53,9 @@
 		<div>
 			<div class="text-xs text-muted">{{ side }}</div>
 			<div class="font-bold text-ink-strong">
-				{{ $t("material_tile.card.plan.per_day", { amount: amount(1) }) }}
+				{{
+					$t("material_tile.card.plan.per_day", { amount: amount(1) })
+				}}
 			</div>
 			<div class="text-xs text-muted">
 				{{

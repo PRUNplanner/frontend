@@ -52,7 +52,9 @@ describe("PlanetSearchHeader", () => {
 		const header = component as VueWrapper;
 
 		await button(header, "planet_search.header.save").trigger("click");
-		const input = header.find('input[aria-label="planet_search.header.save_name"]');
+		const input = header.find(
+			'input[aria-label="planet_search.header.save_name"]'
+		);
 		expect((input.element as HTMLInputElement).value).toBe(
 			"LM · planet_search.chips.fertile"
 		);
@@ -221,11 +223,15 @@ describe("PlanetSearchResultsBar", () => {
 		});
 		const bar = component as VueWrapper;
 
-		const removes = bar.findAll('button[aria-label="planet_search.chips.remove"]');
+		const removes = bar.findAll(
+			'button[aria-label="planet_search.chips.remove"]'
+		);
 		expect(removes).toHaveLength(2);
 		await removes[0].trigger("click");
 		expect(bar.emitted("update:filter")![0]).toEqual([chips[0].remove]);
-		expect((chips[0].remove as PlanetSearchFilter).infrastructure).toEqual([]);
+		expect((chips[0].remove as PlanetSearchFilter).infrastructure).toEqual(
+			[]
+		);
 
 		await button(bar, "hint").trigger("click");
 		expect(bar.emitted("update:filter")![1]).toEqual([hint.filter]);
@@ -238,7 +244,12 @@ describe("PlanetSearchResultsBar", () => {
 describe("PlanetSearchColumnsMenu", () => {
 	it("toggles columns and found materials", async () => {
 		const results = [
-			{ resources: [{ material_ticker: "AR" }, { material_ticker: "FEO" }] },
+			{
+				resources: [
+					{ material_ticker: "AR" },
+					{ material_ticker: "FEO" },
+				],
+			},
 			{ resources: [{ material_ticker: "O" }] },
 		] as PlanetSearchIndexEntry[];
 		const { component } = await mountComponent(PlanetSearchColumnsMenu, {
@@ -257,7 +268,11 @@ describe("PlanetSearchColumnsMenu", () => {
 		await flushPromises();
 
 		// 8 columns (no "other" in the matrix) and the 2 unfiltered materials
-		const boxes = [...document.body.querySelectorAll<HTMLInputElement>(".pcheckbox input")];
+		const boxes = [
+			...document.body.querySelectorAll<HTMLInputElement>(
+				".pcheckbox input"
+			),
+		];
 		expect(boxes).toHaveLength(10);
 
 		boxes[0].click();
@@ -269,10 +284,14 @@ describe("PlanetSearchColumnsMenu", () => {
 		});
 
 		bodyButton("planet_search.columns.none").click();
-		expect(menu.emitted("update:hiddenMaterials")![0]).toEqual([["AR", "O"]]);
+		expect(menu.emitted("update:hiddenMaterials")![0]).toEqual([
+			["AR", "O"],
+		]);
 
 		// reset is the default: opt-in plots hidden again
 		bodyButton("planet_search.columns.reset").click();
-		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([["plots"]]);
+		expect(menu.emitted("update:hiddenColumns")!.at(-1)).toEqual([
+			["plots"],
+		]);
 	});
 });

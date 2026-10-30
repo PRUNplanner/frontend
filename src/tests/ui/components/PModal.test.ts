@@ -150,7 +150,9 @@ describe("PModal", () => {
 			global: { plugins: [i18n] },
 		});
 		await flushPromises();
-		const [px, css] = [...document.querySelectorAll<HTMLElement>("[role=dialog]")];
+		const [px, css] = [
+			...document.querySelectorAll<HTMLElement>("[role=dialog]"),
+		];
 
 		expect(px.style.width).toBe("446px");
 		expect(css.style.width).toBe("40rem");

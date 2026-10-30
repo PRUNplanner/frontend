@@ -1,11 +1,5 @@
 export type APIEndpointParam =
-	| "empire"
-	| "plan"
-	| "cx"
-	| "planet"
-	| "ticker"
-	| "exchange"
-	| "days";
+	"empire" | "plan" | "cx" | "planet" | "ticker" | "exchange" | "days";
 export type APIEndpointFormat = "csv" | "json";
 export type APIEndpointGroup = "new" | "planning" | "public";
 export type APISnippetKind = "url" | "sheets" | "curl" | "python";

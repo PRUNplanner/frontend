@@ -28,11 +28,7 @@ class FakeEventSource {
 vi.stubGlobal("EventSource", FakeEventSource);
 // performance stays real, the bench measures with it
 vi.useFakeTimers({
-	toFake: [
-		"setTimeout",
-		"clearTimeout",
-		"Date",
-	],
+	toFake: ["setTimeout", "clearTimeout", "Date"],
 });
 
 setActivePinia(createPinia());
@@ -48,7 +44,10 @@ watch(sse.cxPointTableData, () => tableRuns++);
 const messages = Array.from({ length: 1500 }, (_, i) => {
 	const { t, m } = stream[i % stream.length];
 	// one replay of the burst per second
-	return { t: t + Math.floor(i / stream.length) * 1000, data: JSON.stringify(m) };
+	return {
+		t: t + Math.floor(i / stream.length) * 1000,
+		data: JSON.stringify(m),
+	};
 });
 
 async function replay(): Promise<void> {

@@ -29,7 +29,9 @@ const summary = fixture as MarketSummary;
 type Wrapper = Awaited<ReturnType<typeof mountComponent>>["wrapper"];
 
 const tableKeys = (w: Wrapper) =>
-	w.findAll("tbody tr[data-row-key]").map((r) => r.attributes("data-row-key"));
+	w
+		.findAll("tbody tr[data-row-key]")
+		.map((r) => r.attributes("data-row-key"));
 const showAll = (w: Wrapper) => w.find("button[aria-expanded]");
 
 describe("market report ranked lists", () => {
@@ -119,7 +121,9 @@ describe("market report ranked lists", () => {
 		// a switch resets the sort
 		await setProps({ direction: "falling" });
 		expect(
-			wrapper.find('th[data-col-key="turnover_7d"]').attributes("aria-sort")
+			wrapper
+				.find('th[data-col-key="turnover_7d"]')
+				.attributes("aria-sort")
 		).toBe("none");
 
 		// the phone's select gives the same order
@@ -243,7 +247,9 @@ describe("price gaps", () => {
 		expect(wrapper.find("tbody").text()).toContain(
 			formatMaterialName(m.name, m.ticker)
 		);
-		expect(wrapper.find(`tbody .${materialCategoryClass(m.category)}`).exists()).toBe(true);
+		expect(
+			wrapper.find(`tbody .${materialCategoryClass(m.category)}`).exists()
+		).toBe(true);
 
 		await showAll(wrapper).trigger("click");
 		expect(tableKeys(wrapper)).toHaveLength(12);

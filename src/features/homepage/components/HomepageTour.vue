@@ -170,7 +170,9 @@
 					@click="pick(i)">
 					<span
 						class="font-mono text-[13px] font-bold"
-						:class="i === index ? 'text-prunplanner' : 'text-white/62'">
+						:class="
+							i === index ? 'text-prunplanner' : 'text-white/62'
+						">
 						{{ num(i) }}
 					</span>
 					<span
@@ -203,12 +205,16 @@
 						height="14"
 						viewBox="0 0 24 24"
 						fill="currentColor">
-						<path
-							v-if="playing"
-							d="M5 4h5v16H5zM14 4h5v16h-5z" />
+						<path v-if="playing" d="M5 4h5v16H5zM14 4h5v16h-5z" />
 						<path v-else d="M7 4l13 8-13 8z" />
 					</svg>
-					{{ $t(playing ? "homepage.tour.pause" : "homepage.tour.play") }}
+					{{
+						$t(
+							playing
+								? "homepage.tour.pause"
+								: "homepage.tour.play"
+						)
+					}}
 				</button>
 			</div>
 		</figcaption>
@@ -240,13 +246,17 @@
 					@click="pick(i)">
 					<span
 						class="pt-0.75 font-mono text-[13px] font-bold"
-						:class="i === index ? 'text-prunplanner' : 'text-white/62'">
+						:class="
+							i === index ? 'text-prunplanner' : 'text-white/62'
+						">
 						{{ num(i) }}
 					</span>
 					<span class="flex flex-col gap-0.5">
 						<span
 							class="text-[17px] font-bold"
-							:class="i === index ? 'text-white' : 'text-white/78'">
+							:class="
+								i === index ? 'text-white' : 'text-white/78'
+							">
 							{{ $t(stepText(step.key, "title")) }}
 						</span>
 						<span
@@ -293,12 +303,16 @@
 						height="14"
 						viewBox="0 0 24 24"
 						fill="currentColor">
-						<path
-							v-if="playing"
-							d="M5 4h5v16H5zM14 4h5v16h-5z" />
+						<path v-if="playing" d="M5 4h5v16H5zM14 4h5v16h-5z" />
 						<path v-else d="M7 4l13 8-13 8z" />
 					</svg>
-					{{ $t(playing ? "homepage.tour.pause" : "homepage.tour.play") }}
+					{{
+						$t(
+							playing
+								? "homepage.tour.pause"
+								: "homepage.tour.play"
+						)
+					}}
 				</button>
 			</div>
 		</div>

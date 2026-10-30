@@ -177,9 +177,7 @@ describe("materialButterfly", () => {
 	it("shows units per day for the same materials", () => {
 		const price = materialButterfly(data, "price");
 		const amount = materialButterfly(data, "amount");
-		expect(amount.map((r) => r.ticker)).toEqual(
-			price.map((r) => r.ticker)
-		);
+		expect(amount.map((r) => r.ticker)).toEqual(price.map((r) => r.ticker));
 		expect(amount[1].value).toBe(-10);
 	});
 

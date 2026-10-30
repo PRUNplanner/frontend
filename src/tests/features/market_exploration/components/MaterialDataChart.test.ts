@@ -79,7 +79,9 @@ describe("MaterialDataChart", () => {
 		expect(lines[0].values.slice(-4)).toEqual([240, null, 236, null]);
 		expect(lines[2].values.every((v) => v === null)).toBe(true);
 		// no volume panel: the volume is a view of its own
-		expect(wrapper.findComponent(PLineChart).props("volume")).toBeUndefined();
+		expect(
+			wrapper.findComponent(PLineChart).props("volume")
+		).toBeUndefined();
 		expect(wrapper.findComponent(PLineChart).props("label")).toBe(
 			"material_tile.chart.label"
 		);

@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 // Unit
-import {
-	hasHistory,
-	profitHistory,
-} from "@/features/base_roi/baseROIHistory";
+import { hasHistory, profitHistory } from "@/features/base_roi/baseROIHistory";
 
 // Types & Interfaces
 import type { IPriceSource } from "@/features/cx/priceBook";
@@ -77,8 +74,12 @@ describe("baseROIHistory (criterion 22)", () => {
 	});
 
 	it("pads a short window with the oldest known price's fallback", () => {
-		const history = profitHistory([material("IND", 1, 7000)], 0, series, 6)
-			.profit;
+		const history = profitHistory(
+			[material("IND", 1, 7000)],
+			0,
+			series,
+			6
+		).profit;
 		expect(history).toEqual([7000, 7000, 6800, 6800, 7100, 7200]);
 	});
 });

@@ -143,7 +143,9 @@ export function useEmpireForm(data: () => PlanEmpireElement) {
 			failure = getSaveError(err);
 			if (failure === "deleted") remoteNotice.value = "deleted";
 			if (!failure)
-				toast(i18n.global.t("common.ui.save_failed"), { type: "error" });
+				toast(i18n.global.t("common.ui.save_failed"), {
+					type: "error",
+				});
 			reportError(err);
 		} finally {
 			isLoading.value = false;

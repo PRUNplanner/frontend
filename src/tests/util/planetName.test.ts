@@ -42,9 +42,7 @@ describe("planetDisplayName", () => {
 	});
 
 	it("handles multi-letter suffixes", () => {
-		expect(planetDisplayName("ZV-759aa", "ZV-759aa")).toBe(
-			"Antares II aa"
-		);
+		expect(planetDisplayName("ZV-759aa", "ZV-759aa")).toBe("Antares II aa");
 	});
 
 	it("keeps a malformed id", () => {
@@ -55,7 +53,9 @@ describe("planetDisplayName", () => {
 
 describe("planetLabel", () => {
 	it("adds the id to a name", () => {
-		expect(planetLabel("ZV-759e", "ZV-759e")).toBe("Antares II e (ZV-759e)");
+		expect(planetLabel("ZV-759e", "ZV-759e")).toBe(
+			"Antares II e (ZV-759e)"
+		);
 		expect(planetLabel("ZV-759b", "Vulcan")).toBe("Vulcan (ZV-759b)");
 	});
 

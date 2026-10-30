@@ -152,6 +152,8 @@ describe("PlanConstructionCart (golden)", () => {
 
 		await expect(
 			golden({ planet, warehouse, override })
-		).toMatchFileSnapshot("./__snapshots__/PlanConstructionCart.golden.json");
+		).toMatchFileSnapshot(
+			"./__snapshots__/PlanConstructionCart.golden.json"
+		);
 	});
 });

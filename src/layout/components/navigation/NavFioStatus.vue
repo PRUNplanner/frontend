@@ -111,7 +111,9 @@
 		<dl
 			v-if="userStore.fioStatus === 'ok'"
 			class="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 mt-1.5 text-xs">
-			<dt class="text-muted">{{ t("common.navigation.fio.fio_updated") }}</dt>
+			<dt class="text-muted">
+				{{ t("common.navigation.fio.fio_updated") }}
+			</dt>
 			<dd class="text-right">
 				{{ relativeFromDate(storageAge || undefined) }}
 			</dd>

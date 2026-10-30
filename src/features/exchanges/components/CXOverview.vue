@@ -288,7 +288,10 @@
 				</div>
 			</div>
 
-			<div v-if="calculating" class="flex flex-col gap-2 py-6" role="status">
+			<div
+				v-if="calculating"
+				class="flex flex-col gap-2 py-6"
+				role="status">
 				<span class="text-muted">
 					{{ $t("exchanges.overview.calculating") }}
 				</span>
@@ -335,23 +338,34 @@
 								:value="$t('exchanges.overview.varies')" />
 							<CXSourceTag
 								v-else-if="sideOf(row, type)"
-								:source="sideOf(row, type)!.planets[0].source" />
+								:source="
+									sideOf(row, type)!.planets[0].source
+								" />
 						</div>
 					</template>
 					<template #cell-planets="{ row }">
 						<!-- breaks between planets, never inside an ID -->
 						<template
-							v-for="(p, i) in row.planets.slice(0, USED_ON_SHOWN)"
+							v-for="(p, i) in row.planets.slice(
+								0,
+								USED_ON_SHOWN
+							)"
 							:key="p">
 							<template v-if="i">, </template>
-							<span class="whitespace-nowrap">{{ planetName(p, p) }}</span>
+							<span class="whitespace-nowrap">{{
+								planetName(p, p)
+							}}</span>
 						</template>
 						<PTooltip v-if="row.planets.length > USED_ON_SHOWN">
 							<template #trigger>
-								<span tabindex="0" class="ml-1 inline-block min-w-6 min-h-6 text-center text-muted whitespace-nowrap">
+								<span
+									tabindex="0"
+									class="ml-1 inline-block min-w-6 min-h-6 text-center text-muted whitespace-nowrap">
 									{{
 										$t("exchanges.overview.used_on_more", {
-											n: row.planets.length - USED_ON_SHOWN,
+											n:
+												row.planets.length -
+												USED_ON_SHOWN,
 										})
 									}}
 								</span>
@@ -371,7 +385,10 @@
 											side: $t(
 												`exchanges.overview.side.${l.type}`
 											),
-											planet: planetName(l.planet, l.planet),
+											planet: planetName(
+												l.planet,
+												l.planet
+											),
 										})
 									}}
 								</div>

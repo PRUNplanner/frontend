@@ -29,18 +29,13 @@ export interface IBatchRefresh {
  * Checks a batch link against the names' params and data, so a wrong name
  * or field is a type error, and erases it to `IBatchRefresh` for the store.
  */
-function defineBatch<
-	S extends QueryName,
-	M extends QueryName,
->(link: {
+function defineBatch<S extends QueryName, M extends QueryName>(link: {
 	single: S;
 	multiple: M;
 	idOf: (params: QueryParams<S>) => string;
 	idsOf: (params: QueryParams<M>) => string[];
 	request: (ids: string[]) => QueryParams<M>;
-	rowId: (
-		row: QueryData<M> extends (infer R)[] ? R : never
-	) => string;
+	rowId: (row: QueryData<M> extends (infer R)[] ? R : never) => string;
 	missing: (id: string) => string;
 }): IBatchRefresh {
 	return link as unknown as IBatchRefresh;

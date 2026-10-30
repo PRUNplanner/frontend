@@ -5,7 +5,10 @@ import { mountComponent } from "@/tests/mountComponent";
 
 describe("ChainRecipeText", () => {
 	it("reads inputs → outputs, the chain's material in bold", async () => {
-		const m = (t: string, a: number) => ({ material_ticker: t, material_amount: a });
+		const m = (t: string, a: number) => ({
+			material_ticker: t,
+			material_amount: a,
+		});
 		const { wrapper } = await mountComponent(ChainRecipeText, {
 			ticker: "C",
 			recipe: {
@@ -18,7 +21,9 @@ describe("ChainRecipeText", () => {
 			},
 		});
 		expect(wrapper.text().replace(/\s+/g, " ")).toBe("1 A+2 B→3 C+1 D");
-		expect(wrapper.find(".font-bold").text().replace(/\s+/g, " ")).toBe("3 C");
+		expect(wrapper.find(".font-bold").text().replace(/\s+/g, " ")).toBe(
+			"3 C"
+		);
 	});
 
 	it("says nothing goes in", async () => {

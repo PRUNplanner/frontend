@@ -106,8 +106,10 @@ vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
 // the game data gate has its own tests: it lets the body through
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () => ({
 	default: {
-		setup: (_: unknown, { slots }: { slots: { default?: () => unknown } }) =>
-			() => slots.default?.(),
+		setup:
+			(_: unknown, { slots }: { slots: { default?: () => unknown } }) =>
+			() =>
+				slots.default?.(),
 	},
 }));
 
@@ -776,7 +778,10 @@ describe("PlanetSearchPage actions", () => {
 			bar(wrapper).vm.$emit("update:hiddenMaterials", ["H2O"]);
 			await flushPromises();
 
-			expect(bar(wrapper).props("hiddenColumns")).toEqual(["cogc", "plots"]);
+			expect(bar(wrapper).props("hiddenColumns")).toEqual([
+				"cogc",
+				"plots",
+			]);
 			expect(bar(wrapper).props("hiddenMaterials")).toEqual(["H2O"]);
 			expect(stored()).toMatchObject({
 				hiddenColumns: ["cogc"],
@@ -787,7 +792,10 @@ describe("PlanetSearchPage actions", () => {
 			// turned on in the columns menu, it stays on
 			bar(wrapper).vm.$emit("update:hiddenColumns", ["cogc"]);
 			await flushPromises();
-			expect(stored()).toMatchObject({ hiddenColumns: ["cogc"], shownColumns: ["plots"] });
+			expect(stored()).toMatchObject({
+				hiddenColumns: ["cogc"],
+				shownColumns: ["plots"],
+			});
 		});
 	});
 

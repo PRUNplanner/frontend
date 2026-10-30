@@ -8,7 +8,13 @@ const GROUPED = [
 	{
 		label: "Popular",
 		value: "POPULAR",
-		children: [{ label: "CHP (Chemical plant)", value: "POPULAR#CHP", badge: "58 %" }],
+		children: [
+			{
+				label: "CHP (Chemical plant)",
+				value: "POPULAR#CHP",
+				badge: "58 %",
+			},
+		],
 	},
 	{
 		label: "All",
@@ -80,7 +86,10 @@ describe("PSelect", () => {
 		const entries = body()
 			.findAll(".pselect-list .pl-3.grow")
 			.map((e) => e.text());
-		expect(entries).toEqual(["CHP (Chemical plant)", "CHP (Chemical plant)"]);
+		expect(entries).toEqual([
+			"CHP (Chemical plant)",
+			"CHP (Chemical plant)",
+		]);
 
 		await wrapper.find("input").setValue("58");
 		await flushPromises();
@@ -134,7 +143,9 @@ describe("PSelect", () => {
 			{
 				label: "Popular",
 				value: "POPULAR",
-				children: [{ label: "CLF (Textile Manufacturing)", value: "P#CLF" }],
+				children: [
+					{ label: "CLF (Textile Manufacturing)", value: "P#CLF" },
+				],
 			},
 			{
 				label: "All",
@@ -200,7 +211,9 @@ describe("PSelect", () => {
 		const options = listbox.findAll("[role=option]");
 
 		expect(combobox.attributes("aria-expanded")).toBe("true");
-		expect(combobox.attributes("aria-controls")).toBe(listbox.attributes("id"));
+		expect(combobox.attributes("aria-controls")).toBe(
+			listbox.attributes("id")
+		);
 		expect(options.map((o) => o.text().replace(/\s+/g, " "))).toEqual([
 			"CHP (Chemical plant)58 %",
 			"AML (Alloy smelter)",
@@ -242,7 +255,14 @@ describe("PSelect", () => {
 			{ label: "B", value: "x" },
 			{ label: "C", value: undefined },
 			{ label: "D", value: undefined },
-			{ label: "Group", value: "g", children: [{ label: "E", value: "x" }, { label: "F", value: "x" }] },
+			{
+				label: "Group",
+				value: "g",
+				children: [
+					{ label: "E", value: "x" },
+					{ label: "F", value: "x" },
+				],
+			},
 		];
 		const { wrapper, setProps } = await mountSelect(options);
 
@@ -255,8 +275,14 @@ describe("PSelect", () => {
 
 		// an update of the open list patches by key
 		await setProps({ options: [...options].reverse() });
-		expect(body().findAll(".pselect-list .grow").map((o) => o.text())).toEqual(["E", "F", "D", "C", "B", "A"]);
-		expect(warn.mock.calls.flat().join(" ")).not.toContain("Duplicate keys");
+		expect(
+			body()
+				.findAll(".pselect-list .grow")
+				.map((o) => o.text())
+		).toEqual(["E", "F", "D", "C", "B", "A"]);
+		expect(warn.mock.calls.flat().join(" ")).not.toContain(
+			"Duplicate keys"
+		);
 		warn.mockRestore();
 	});
 });

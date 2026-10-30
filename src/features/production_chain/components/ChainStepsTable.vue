@@ -138,12 +138,17 @@
 					kind: "row",
 					row,
 					depth,
-					caret: inputs.length ? (isCollapsed ? "closed" : "open") : null,
+					caret: inputs.length
+						? isCollapsed
+							? "closed"
+							: "open"
+						: null,
 				});
 			for (const i of inputs) walk(i, depth + 1, hidden || isCollapsed);
 		};
 		// order keeps the targets in the order they were added
-		for (const t of result.order) if (result.rows[t].target) walk(t, 0, false);
+		for (const t of result.order)
+			if (result.rows[t].target) walk(t, 0, false);
 		return entries;
 	}
 
@@ -272,7 +277,9 @@
 	function usesText(row: IChainRow): string {
 		const uses =
 			row.haveAvailable === null
-				? t("production_chains.have.uses_all", { n: formatQty(row.have) })
+				? t("production_chains.have.uses_all", {
+						n: formatQty(row.have),
+					})
 				: t("production_chains.have.uses", {
 						n: formatQty(row.have),
 						of: formatQty(row.haveAvailable),
@@ -348,7 +355,9 @@
 	const picker = ref<{ ticker: string; anchor: HTMLElement } | null>(null);
 	const showPicker = ref(false);
 	const pickerOptions = computed(() =>
-		picker.value && showPicker.value ? recipeOptions(picker.value.ticker) : []
+		picker.value && showPicker.value
+			? recipeOptions(picker.value.ticker)
+			: []
 	);
 
 	function openPicker(ticker: string, e: MouseEvent): void {
@@ -367,10 +376,16 @@
 			<span>
 				{{
 					filter === "cheaper"
-						? $t("production_chains.filter.cheaper", filtered.length)
+						? $t(
+								"production_chains.filter.cheaper",
+								filtered.length
+							)
 						: $t(
 								"production_chains.filter.thin",
-								{ n: filtered.length, pct: `${MARKET_SHARE_AMBER} %` },
+								{
+									n: filtered.length,
+									pct: `${MARKET_SHARE_AMBER} %`,
+								},
 								filtered.length
 							)
 				}}
@@ -385,9 +400,14 @@
 							filtered.map((r) => r.ticker)
 						)
 					">
-					{{ $t("production_chains.filter.buy_all", filtered.length) }}
+					{{
+						$t("production_chains.filter.buy_all", filtered.length)
+					}}
 				</PButton>
-				<PButton size="sm" type="secondary" @click="emit('clearFilter')">
+				<PButton
+					size="sm"
+					type="secondary"
+					@click="emit('clearFilter')">
 					{{ $t("production_chains.filter.show_all") }}
 				</PButton>
 			</span>
@@ -396,20 +416,30 @@
 			<thead>
 				<tr>
 					<th>{{ $t("production_chains.table.material") }}</th>
-					<th class="numeric">{{ $t("production_chains.table.per_day") }}</th>
+					<th class="numeric">
+						{{ $t("production_chains.table.per_day") }}
+					</th>
 					<th>{{ $t("production_chains.table.base") }}</th>
 					<th>{{ $t("production_chains.table.source") }}</th>
 					<th>{{ $t("production_chains.table.recipe") }}</th>
 					<th>{{ $t("production_chains.table.buildings") }}</th>
-					<th class="numeric">{{ $t("production_chains.table.unit_cost") }}</th>
-					<th class="numeric">{{ $t("production_chains.table.cx_price") }}</th>
+					<th class="numeric">
+						{{ $t("production_chains.table.unit_cost") }}
+					</th>
+					<th class="numeric">
+						{{ $t("production_chains.table.cx_price") }}
+					</th>
 					<th>{{ $t("production_chains.table.make_or_buy") }}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<template
 					v-for="entry in entries"
-					:key="entry.kind === 'row' ? entry.row.ticker : `g-${entry.key}`">
+					:key="
+						entry.kind === 'row'
+							? entry.row.ticker
+							: `g-${entry.key}`
+					">
 					<tr v-if="entry.kind === 'group'">
 						<td
 							:colspan="COLUMNS"
@@ -424,7 +454,9 @@
 									<span
 										v-if="entry.depth"
 										class="self-stretch border-l border-line"
-										:style="{ marginLeft: `${(entry.depth - 1) * 16 + 8}px` }" />
+										:style="{
+											marginLeft: `${(entry.depth - 1) * 16 + 8}px`,
+										}" />
 									<button
 										v-if="entry.caret"
 										type="button"
@@ -432,19 +464,42 @@
 										:aria-expanded="entry.caret === 'open'"
 										:aria-label="
 											entry.caret === 'open'
-												? t('production_chains.table.collapse', { ticker: entry.row.ticker })
-												: t('production_chains.table.expand', { ticker: entry.row.ticker })
+												? t(
+														'production_chains.table.collapse',
+														{
+															ticker: entry.row
+																.ticker,
+														}
+													)
+												: t(
+														'production_chains.table.expand',
+														{
+															ticker: entry.row
+																.ticker,
+														}
+													)
 										"
-										@click="toggleCollapsed(entry.row.ticker)">
+										@click="
+											toggleCollapsed(entry.row.ticker)
+										">
 										{{ entry.caret === "open" ? "▾" : "▸" }}
 									</button>
 									<span v-else class="w-5" />
-									<MaterialTile :key="entry.row.ticker" :ticker="entry.row.ticker" />
+									<MaterialTile
+										:key="entry.row.ticker"
+										:ticker="entry.row.ticker" />
 									<button
 										type="button"
 										class="text-left cursor-pointer hover:underline"
-										:aria-expanded="open.has(entry.row.ticker)"
-										:title="t('production_chains.table.details', { ticker: entry.row.ticker })"
+										:aria-expanded="
+											open.has(entry.row.ticker)
+										"
+										:title="
+											t(
+												'production_chains.table.details',
+												{ ticker: entry.row.ticker }
+											)
+										"
 										@click="toggleOpen(entry.row.ticker)">
 										<!-- long names wrap, so the table fits beside the aside -->
 										<span class="block">
@@ -452,17 +507,28 @@
 											<span
 												v-if="entry.row.target"
 												class="ml-1 px-1 rounded-control border border-prunplanner text-prunplanner text-xs uppercase">
-												{{ $t("production_chains.table.target") }}
+												{{
+													$t(
+														"production_chains.table.target"
+													)
+												}}
 											</span>
 										</span>
 										<span class="block text-xs text-muted">
 											{{
 												entry.row.users.length
-													? $t("production_chains.table.for", {
-															list: entry.row.users.join(", "),
-														})
+													? $t(
+															"production_chains.table.for",
+															{
+																list: entry.row.users.join(
+																	", "
+																),
+															}
+														)
 													: entry.row.target
-														? $t("production_chains.table.sold")
+														? $t(
+																"production_chains.table.sold"
+															)
 														: ""
 											}}
 										</span>
@@ -472,29 +538,56 @@
 							<!-- the lines under the amount may wrap, so the table can fit -->
 							<td class="numeric tabular-nums">
 								<span class="whitespace-nowrap">{{
-									formatQty(entry.row.source === "have" ? entry.row.have : entry.row.perDay)
+									formatQty(
+										entry.row.source === "have"
+											? entry.row.have
+											: entry.row.perDay
+									)
 								}}</span>
-								<span v-if="entry.row.source === 'have'" class="block text-xs text-have">
-									{{ $t("production_chains.have.from_plans") }}
+								<span
+									v-if="entry.row.source === 'have'"
+									class="block text-xs text-have">
+									{{
+										$t("production_chains.have.from_plans")
+									}}
 								</span>
 								<span
 									v-else-if="entry.row.have > EPS"
 									class="block text-xs text-have whitespace-nowrap"
-									:title="t('production_chains.have.plus_from_plans', { n: formatQty(entry.row.have) })">
-									{{ $t("production_chains.have.plus_own", { n: formatQty(entry.row.have) }) }}
-								</span>
-								<span v-if="entry.row.target" class="block text-xs text-muted">
+									:title="
+										t(
+											'production_chains.have.plus_from_plans',
+											{ n: formatQty(entry.row.have) }
+										)
+									">
 									{{
-										$t("production_chains.table.sells", {
-											value: money(entry.row.targetPerDay * entry.row.sellPrice),
+										$t("production_chains.have.plus_own", {
+											n: formatQty(entry.row.have),
 										})
 									}}
 								</span>
-								<span v-if="entry.row.covered > EPS" class="block text-xs text-positive">
+								<span
+									v-if="entry.row.target"
+									class="block text-xs text-muted">
 									{{
-										$t("production_chains.table.from_byproducts", {
-											n: formatQty(entry.row.covered),
+										$t("production_chains.table.sells", {
+											value: money(
+												entry.row.targetPerDay *
+													entry.row.sellPrice
+											),
 										})
+									}}
+								</span>
+								<span
+									v-if="entry.row.covered > EPS"
+									class="block text-xs text-positive">
+									{{
+										$t(
+											"production_chains.table.from_byproducts",
+											{
+												n: formatQty(entry.row.covered),
+											}
+										)
 									}}
 								</span>
 							</td>
@@ -505,24 +598,53 @@
 									:options="baseOptions"
 									size="sm"
 									class="w-12"
-									:aria-label="t('production_chains.table.base_of', { ticker: entry.row.ticker })"
+									:aria-label="
+										t('production_chains.table.base_of', {
+											ticker: entry.row.ticker,
+										})
+									"
 									:data-testid="`chain-base-${entry.row.ticker}`"
-									@update:value="(v) => v && v !== entry.row.base && emit('base', entry.row.ticker, String(v))" />
+									@update:value="
+										(v) =>
+											v &&
+											v !== entry.row.base &&
+											emit(
+												'base',
+												entry.row.ticker,
+												String(v)
+											)
+									" />
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td>
 								<span
 									class="inline-block"
-									:title="entry.row.target ? t('production_chains.have.target_reason') : undefined">
+									:title="
+										entry.row.target
+											? t(
+													'production_chains.have.target_reason'
+												)
+											: undefined
+									">
 									<PSegmented
 										:value="sourceValue(entry.row)"
 										:options="sourceOptions(entry.row)"
 										size="sm"
-										:label="t('production_chains.table.source_of', { ticker: entry.row.ticker })"
-										@update:value="(v) => onSource(entry.row, v)" />
+										:label="
+											t(
+												'production_chains.table.source_of',
+												{ ticker: entry.row.ticker }
+											)
+										"
+										@update:value="
+											(v) => onSource(entry.row, v)
+										" />
 								</span>
 								<label
-									v-if="entry.row.have > EPS && entry.row.source !== 'have'"
+									v-if="
+										entry.row.have > EPS &&
+										entry.row.source !== 'have'
+									"
 									class="flex items-center gap-2 pt-1 text-xs text-muted">
 									{{ $t("production_chains.have.rest") }}
 									<PSelect
@@ -530,130 +652,302 @@
 										:options="restOptions(entry.row)"
 										size="sm"
 										class="w-32"
-										:aria-label="t('production_chains.have.rest_of', { ticker: entry.row.ticker })"
+										:aria-label="
+											t(
+												'production_chains.have.rest_of',
+												{ ticker: entry.row.ticker }
+											)
+										"
 										:data-testid="`chain-rest-${entry.row.ticker}`"
-										@update:value="(v) => v && v !== entry.row.source && emit('source', entry.row.ticker, v as ChainSource)" />
+										@update:value="
+											(v) =>
+												v &&
+												v !== entry.row.source &&
+												emit(
+													'source',
+													entry.row.ticker,
+													v as ChainSource
+												)
+										" />
 								</label>
 							</td>
 							<td>
-								<div v-if="entry.row.have > EPS" class="pb-1" :data-testid="`chain-have-${entry.row.ticker}`">
-									<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-										<span class="px-1 rounded-control border border-have text-have text-xs font-bold uppercase">
-											{{ $t("production_chains.have.badge") }}
+								<div
+									v-if="entry.row.have > EPS"
+									class="pb-1"
+									:data-testid="`chain-have-${entry.row.ticker}`">
+									<div
+										class="flex flex-wrap items-center gap-x-2 gap-y-1">
+										<span
+											class="px-1 rounded-control border border-have text-have text-xs font-bold uppercase">
+											{{
+												$t(
+													"production_chains.have.badge"
+												)
+											}}
 										</span>
 										<!-- the amount and its unit stay together; applies on blur or Enter, not while typing -->
-										<span class="inline-flex items-center gap-2 whitespace-nowrap" @focusout="applyHave(entry.row)" @keydown.enter="applyHave(entry.row)">
+										<span
+											class="inline-flex items-center gap-2 whitespace-nowrap"
+											@focusout="applyHave(entry.row)"
+											@keydown.enter="
+												applyHave(entry.row)
+											">
 											<PInputNumber
 												:value="draftOf(entry.row)"
 												decimals
 												:min="0"
 												size="sm"
 												class="w-20"
-												:placeholder="t('production_chains.have.all')"
-												:aria-label="t('production_chains.have.amount', { ticker: entry.row.ticker })"
-												@update:value="(v) => (drafts = { ...drafts, [entry.row.ticker]: v ?? null })" />
-											<span class="text-muted text-xs">{{ $t("production_chains.have.per_day") }}</span>
+												:placeholder="
+													t(
+														'production_chains.have.all'
+													)
+												"
+												:aria-label="
+													t(
+														'production_chains.have.amount',
+														{
+															ticker: entry.row
+																.ticker,
+														}
+													)
+												"
+												@update:value="
+													(v) =>
+														(drafts = {
+															...drafts,
+															[entry.row.ticker]:
+																v ?? null,
+														})
+												" />
+											<span class="text-muted text-xs">{{
+												$t(
+													"production_chains.have.per_day"
+												)
+											}}</span>
 										</span>
 									</div>
-									<span class="block text-xs text-muted pt-1">{{ usesText(entry.row) }}</span>
+									<span
+										class="block text-xs text-muted pt-1"
+										>{{ usesText(entry.row) }}</span
+									>
 									<button
 										v-if="empireBack(entry.row) !== null"
 										type="button"
 										class="text-xs text-link hover:underline cursor-pointer"
-										@click="emit('have', entry.row.ticker, undefined)">
+										@click="
+											emit(
+												'have',
+												entry.row.ticker,
+												undefined
+											)
+										">
 										{{
-											$t("production_chains.have.use_empire", {
-												empire: own.name,
-												n: formatQty(empireBack(entry.row)!),
-											})
+											$t(
+												"production_chains.have.use_empire",
+												{
+													empire: own.name,
+													n: formatQty(
+														empireBack(entry.row)!
+													),
+												}
+											)
 										}}
 									</button>
 								</div>
-								<template v-if="entry.row.source === 'make' && entry.row.recipe">
+								<template
+									v-if="
+										entry.row.source === 'make' &&
+										entry.row.recipe
+									">
 									<button
 										v-if="entry.row.recipeCount > 1"
 										type="button"
 										class="text-left whitespace-nowrap px-2 py-1 rounded-control border border-line hover:bg-hover cursor-pointer"
-										:aria-label="t('production_chains.table.choose_recipe', { ticker: entry.row.ticker })"
+										:aria-label="
+											t(
+												'production_chains.table.choose_recipe',
+												{ ticker: entry.row.ticker }
+											)
+										"
 										aria-haspopup="dialog"
-										@click="(e) => openPicker(entry.row.ticker, e)">
-										<ChainRecipeText class="flex-wrap" :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
-										<span class="block text-xs text-muted whitespace-normal">
-											{{ entry.row.recipe.building_ticker }} ·
-											{{ hours(entry.row.recipe.time_ms) }} ·
+										@click="
+											(e) =>
+												openPicker(entry.row.ticker, e)
+										">
+										<ChainRecipeText
+											class="flex-wrap"
+											:recipe="entry.row.recipe"
+											:ticker="entry.row.ticker" />
+										<span
+											class="block text-xs text-muted whitespace-normal">
+											{{
+												entry.row.recipe.building_ticker
+											}}
+											·
+											{{
+												hours(entry.row.recipe.time_ms)
+											}}
+											·
 											<span class="text-link">
-												{{ $t("production_chains.table.recipes", { n: entry.row.recipeCount }) }} ▾
+												{{
+													$t(
+														"production_chains.table.recipes",
+														{
+															n: entry.row
+																.recipeCount,
+														}
+													)
+												}}
+												▾
 											</span>
 										</span>
 									</button>
-									<div v-else class="px-2 py-1 whitespace-nowrap">
-										<ChainRecipeText class="flex-wrap" :recipe="entry.row.recipe" :ticker="entry.row.ticker" />
-										<span class="block text-xs text-muted whitespace-normal">
-											{{ entry.row.recipe.building_ticker }} ·
-											{{ hours(entry.row.recipe.time_ms) }}
+									<div
+										v-else
+										class="px-2 py-1 whitespace-nowrap">
+										<ChainRecipeText
+											class="flex-wrap"
+											:recipe="entry.row.recipe"
+											:ticker="entry.row.ticker" />
+										<span
+											class="block text-xs text-muted whitespace-normal">
+											{{
+												entry.row.recipe.building_ticker
+											}}
+											·
+											{{
+												hours(entry.row.recipe.time_ms)
+											}}
 										</span>
 									</div>
 								</template>
-								<template v-else-if="entry.row.source === 'extract'">
-									<span v-if="entry.row.pending" class="text-muted">
-										{{ $t("production_chains.table.pending") }}
+								<template
+									v-else-if="entry.row.source === 'extract'">
+									<span
+										v-if="entry.row.pending"
+										class="text-muted">
+										{{
+											$t(
+												"production_chains.table.pending"
+											)
+										}}
 									</span>
 									<button
 										v-else-if="entry.row.site"
 										type="button"
 										class="text-left whitespace-nowrap px-2 py-1 rounded-control border border-line hover:bg-hover cursor-pointer"
-										:aria-label="t('production_chains.table.choose_planet', { ticker: entry.row.ticker })"
+										:aria-label="
+											t(
+												'production_chains.table.choose_planet',
+												{ ticker: entry.row.ticker }
+											)
+										"
 										aria-haspopup="dialog"
-										@click="emit('planet', entry.row.ticker)">
+										@click="
+											emit('planet', entry.row.ticker)
+										">
 										<span class="block">
 											{{
 												entry.row.typicalSite
-													? $t("production_chains.table.typical_planet")
+													? $t(
+															"production_chains.table.typical_planet"
+														)
 													: entry.row.site.planetName
 											}}
 										</span>
 										<span class="block text-xs text-muted">
-											{{ entry.row.site.buildingTicker }} ·
+											{{ entry.row.site.buildingTicker }}
+											·
 											{{
-												$t("production_chains.table.per_extractor", {
-													rate: formatNumber(entry.row.site.dailyExtraction, 1),
-													ticker: entry.row.ticker,
-												})
+												$t(
+													"production_chains.table.per_extractor",
+													{
+														rate: formatNumber(
+															entry.row.site
+																.dailyExtraction,
+															1
+														),
+														ticker: entry.row
+															.ticker,
+													}
+												)
 											}}
 											·
 											<span class="text-link">
 												{{
-													$t("production_chains.table.planets", {
-														n: extraction?.get(entry.row.ticker)?.sites.length ?? 0,
-													})
+													$t(
+														"production_chains.table.planets",
+														{
+															n:
+																extraction?.get(
+																	entry.row
+																		.ticker
+																)?.sites
+																	.length ??
+																0,
+														}
+													)
 												}}
 												▾
 											</span>
 										</span>
 									</button>
 								</template>
-								<span v-else-if="entry.row.source === 'buy'" class="text-muted">
-									{{ $t("production_chains.table.bought_on", { cx: entry.row.exchange }) }}
+								<span
+									v-else-if="entry.row.source === 'buy'"
+									class="text-muted">
+									{{
+										$t(
+											"production_chains.table.bought_on",
+											{ cx: entry.row.exchange }
+										)
+									}}
 								</span>
 							</td>
 							<td class="whitespace-nowrap">
-								<template v-if="entry.row.buildingTicker && typeOf(entry.row)">
-									<span class="font-mono">{{ entry.row.buildingTicker }}</span>
-									<span class="pl-2 tabular-nums">{{ formatNumber(entry.row.buildings, 2) }}</span>
-									<span class="block text-xs text-muted whitespace-normal">
+								<template
+									v-if="
+										entry.row.buildingTicker &&
+										typeOf(entry.row)
+									">
+									<span class="font-mono">{{
+										entry.row.buildingTicker
+									}}</span>
+									<span class="pl-2 tabular-nums">{{
+										formatNumber(entry.row.buildings, 2)
+									}}</span>
+									<span
+										class="block text-xs text-muted whitespace-normal">
 										{{
-											$t("production_chains.table.of_built", {
-												n: typeOf(entry.row)!.built,
-												building: entry.row.buildingTicker,
-												pct: formatShare(typeOf(entry.row)!.exact / typeOf(entry.row)!.built),
-											})
+											$t(
+												"production_chains.table.of_built",
+												{
+													n: typeOf(entry.row)!.built,
+													building:
+														entry.row
+															.buildingTicker,
+													pct: formatShare(
+														typeOf(entry.row)!
+															.exact /
+															typeOf(entry.row)!
+																.built
+													),
+												}
+											)
 										}}
 									</span>
 								</template>
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td class="numeric tabular-nums whitespace-nowrap">
-								<template v-if="entry.row.source !== 'buy' && entry.row.source !== 'have' && !entry.row.pending">
+								<template
+									v-if="
+										entry.row.source !== 'buy' &&
+										entry.row.source !== 'have' &&
+										!entry.row.pending
+									">
 									{{ money(entry.row.unitCost) }}
 								</template>
 								<span v-else class="text-muted">–</span>
@@ -670,16 +964,28 @@
 										v-if="entry.row.noFarming"
 										class="px-2 rounded-control border text-xs whitespace-nowrap text-negative border-negative"
 										:data-testid="`chain-no-farming-${entry.row.ticker}`">
-										{{ $t("production_chains.table.no_farming") }}
+										{{
+											$t(
+												"production_chains.table.no_farming"
+											)
+										}}
 									</span>
 									<span
 										v-if="entry.row.notOnPlanet"
 										class="px-2 rounded-control border text-xs whitespace-nowrap text-warning border-warning"
 										:data-testid="`chain-not-on-planet-${entry.row.ticker}`">
-										{{ $t("production_chains.table.not_on_planet") }}
+										{{
+											$t(
+												"production_chains.table.not_on_planet"
+											)
+										}}
 									</span>
 									<span
-										v-if="entry.row.source !== 'buy' && entry.row.source !== 'have' && !entry.row.pending"
+										v-if="
+											entry.row.source !== 'buy' &&
+											entry.row.source !== 'have' &&
+											!entry.row.pending
+										"
 										class="px-2 rounded-control border text-xs whitespace-nowrap"
 										:class="verdict(entry.row).cls">
 										{{ verdict(entry.row).text }}
@@ -687,7 +993,9 @@
 									<span
 										v-if="entry.row.market"
 										class="px-2 rounded-control border text-xs whitespace-nowrap"
-										:class="shareChip(entry.row.market).cls">
+										:class="
+											shareChip(entry.row.market).cls
+										">
 										{{ shareChip(entry.row.market).text }}
 									</span>
 								</div>
@@ -695,7 +1003,10 @@
 						</tr>
 						<tr v-if="open.has(entry.row.ticker)">
 							<td :colspan="COLUMNS" class="p-0">
-								<ChainStepDetail :row="entry.row" :result="result" :own="own" />
+								<ChainStepDetail
+									:row="entry.row"
+									:result="result"
+									:own="own" />
 							</td>
 						</tr>
 					</template>
@@ -712,8 +1023,12 @@
 							class="text-xs uppercase tracking-wide text-muted bg-surface-sunken">
 							{{
 								byproductMode === "cover"
-									? $t("production_chains.table.byproducts_cover")
-									: $t("production_chains.table.byproducts_sell")
+									? $t(
+											"production_chains.table.byproducts_cover"
+										)
+									: $t(
+											"production_chains.table.byproducts_sell"
+										)
 							}}
 						</td>
 					</tr>
@@ -724,17 +1039,36 @@
 						<td>
 							<div class="flex items-center gap-2">
 								<span class="w-5" />
-								<MaterialTile :key="b.ticker" :ticker="b.ticker" />
+								<MaterialTile
+									:key="b.ticker"
+									:ticker="b.ticker" />
 								<span>{{ name(b.ticker) }}</span>
 							</div>
 						</td>
-						<td class="numeric tabular-nums">{{ formatQty(b.produced) }}</td>
+						<td class="numeric tabular-nums">
+							{{ formatQty(b.produced) }}
+						</td>
 						<td colspan="5" class="text-muted">
-							{{ $t("production_chains.table.byproduct_from", { list: b.from.join(", ") }) }}
+							{{
+								$t("production_chains.table.byproduct_from", {
+									list: b.from.join(", "),
+								})
+							}}
 							<template v-if="b.used > 1e-9">
-								· {{ $t("production_chains.table.byproduct_used", { n: formatQty(b.used) }) }}
+								·
+								{{
+									$t(
+										"production_chains.table.byproduct_used",
+										{ n: formatQty(b.used) }
+									)
+								}}
 							</template>
-							· {{ $t("production_chains.table.byproduct_sold", { n: formatQty(b.sold) }) }}
+							·
+							{{
+								$t("production_chains.table.byproduct_sold", {
+									n: formatQty(b.sold),
+								})
+							}}
 						</td>
 						<td class="numeric tabular-nums">
 							{{ b.sellPrice ? money(b.sellPrice) : "–" }}

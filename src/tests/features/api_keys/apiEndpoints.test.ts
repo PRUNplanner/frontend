@@ -67,9 +67,9 @@ describe("apiEndpoints", () => {
 	it("builds no path while a value is missing", () => {
 		expect(resolvePath("planning/plan/{plan}/", {})).toBeNull();
 		expect(resolvePath("planning/plan/{plan}/", { plan: "  " })).toBeNull();
-		expect(resolvePath("data/planet/{planet}/", { planet: " OT-580b " })).toBe(
-			"data/planet/OT-580b/"
-		);
+		expect(
+			resolvePath("data/planet/{planet}/", { planet: " OT-580b " })
+		).toBe("data/planet/OT-580b/");
 	});
 
 	it("encodes typed values", () => {

@@ -74,15 +74,15 @@ export function checkLanding(
 		"not exactly one description"
 	);
 	expect(
-		doc.querySelector('meta[name="description"]')?.getAttribute("content") ===
-			homepage.seo.description,
+		doc
+			.querySelector('meta[name="description"]')
+			?.getAttribute("content") === homepage.seo.description,
 		"description differs from homepage.seo.description"
 	);
 	expect(
 		count('link[rel="canonical"]') === 1 &&
-			doc
-				.querySelector('link[rel="canonical"]')
-				?.getAttribute("href") === `${SITE_URL}/`,
+			doc.querySelector('link[rel="canonical"]')?.getAttribute("href") ===
+				`${SITE_URL}/`,
 		"not exactly one canonical to /"
 	);
 	for (const selector of OG) expect(count(selector) === 1, `no ${selector}`);

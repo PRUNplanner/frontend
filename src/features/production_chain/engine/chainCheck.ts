@@ -92,7 +92,9 @@ const LUX2 = 1 + 2 / 13;
  * @param {PlanetSearchIndexEntry} planet Planet
  * @returns {ICheckPlots | null} Free and total plots, ghost sites
  */
-export function planetPlots(planet: PlanetSearchIndexEntry): ICheckPlots | null {
+export function planetPlots(
+	planet: PlanetSearchIndexEntry
+): ICheckPlots | null {
 	if (planet.plots_total == null) return null;
 	return {
 		total: planet.plots_total,
@@ -232,7 +234,10 @@ export function checkEmpire(
 	// unit cost per material made in the empire; a loop falls back to the price
 	const unitCosts = new Map<string, number>();
 	const stepCost = (s: ICheckStep) =>
-		Object.entries(s.inputs).reduce((sum, [t, q]) => sum + q * unitIn(t), 0) +
+		Object.entries(s.inputs).reduce(
+			(sum, [t, q]) => sum + q * unitIn(t),
+			0
+		) +
 		s.daily * s.buildings;
 	const unitCost = (t: string): number => {
 		const known = unitCosts.get(t);
@@ -258,11 +263,14 @@ export function checkEmpire(
 		);
 		// a step that runs makes some of its main output
 		s.unitCost =
-			((s.inputCost + s.daily * s.buildings) * shareOf(ctx, s, s.ticker)) /
+			((s.inputCost + s.daily * s.buildings) *
+				shareOf(ctx, s, s.ticker)) /
 			s.perDay;
 		s.margin =
-			Object.entries(s.outputs).reduce((sum, [t, q]) => sum + q * sell(t), 0) -
-			s.inputCost;
+			Object.entries(s.outputs).reduce(
+				(sum, [t, q]) => sum + q * sell(t),
+				0
+			) - s.inputCost;
 	}
 
 	const sold: ICheckSold[] = Object.entries(net)
@@ -313,14 +321,18 @@ export function checkEmpire(
 		const id = recipes.length ? defaultRecipe(ctx, t, 1) : null;
 		const recipe = recipes.find((r) => r.recipe_id === id);
 		if (steps.some((s) => s.extraction))
-			return unitCost(t) <= buy(t) ? { kind: "extract" } : { kind: "buy_cheaper" };
+			return unitCost(t) <= buy(t)
+				? { kind: "extract" }
+				: { kind: "buy_cheaper" };
 		if (steps.length)
 			return !recipe || steps.some((s) => s.recipe.recipe_id === id)
 				? { kind: "same" }
 				: { kind: "recipe", recipe };
 		if (!recipe) return { kind: "raw" };
 		const cost = recipeCost(ctx, recipe, t, 1, buy).unit;
-		return cost < buy(t) ? { kind: "make", recipe, cost } : { kind: "bought" };
+		return cost < buy(t)
+			? { kind: "make", recipe, cost }
+			: { kind: "bought" };
 	}
 
 	const targets = new Set(input.targets);
@@ -373,8 +385,7 @@ export function checkEmpire(
 		}
 		const bestExperts = bestExpertSplit(weights);
 		const experts = noExperts();
-		for (const n of expertNames)
-			experts[n] = plan.result.experts[n].amount;
+		for (const n of expertNames) experts[n] = plan.result.experts[n].amount;
 
 		if (checked && planet) {
 			// plan fixes
@@ -388,13 +399,20 @@ export function checkEmpire(
 						.reduce((p, e) => p * e.value, 1);
 					return sum + positive(s) * (1 / v - 1);
 				}, 0);
-				if (hit.length)
-					{
+				if (hit.length) {
 					const v = hit[0].elements
 						.filter((e) => e.efficiencyType === "COGC")
 						.reduce((p, e) => p * e.value, 1);
 					own.push(
-						fix("lost", plan, plan.cogc, running, hit, delta, 1 / v - 1)
+						fix(
+							"lost",
+							plan,
+							plan.cogc,
+							running,
+							hit,
+							delta,
+							1 / v - 1
+						)
 					);
 				}
 			}
@@ -404,7 +422,8 @@ export function checkEmpire(
 				);
 				const delta = hit.reduce(
 					(sum, s) =>
-						sum + positive(s) * (programFactor(running, s.building) - 1),
+						sum +
+						positive(s) * (programFactor(running, s.building) - 1),
 					0
 				);
 				if (hit.length)
@@ -425,7 +444,11 @@ export function checkEmpire(
 				if (!s.inChain) continue;
 				own.push(...recipeFindings(s));
 				const price = buy(s.ticker);
-				if (!targets.has(s.ticker) && price > 0 && s.unitCost > price + EPS)
+				if (
+					!targets.has(s.ticker) &&
+					price > 0 &&
+					s.unitCost > price + EPS
+				)
 					own.push({
 						id: `buy:${s.key}`,
 						kind: "buy",
@@ -446,7 +469,9 @@ export function checkEmpire(
 				const lux = luxFinding(plan, steps);
 				if (lux) own.push(lux);
 				const gain = steps.reduce((sum, s) => {
-					const type = expertTypeOf(ctx.buildings.get(s.building)?.expertise);
+					const type = expertTypeOf(
+						ctx.buildings.get(s.building)?.expertise
+					);
 					if (!type) return sum;
 					const ratio =
 						(1 + calculateExpertBonus(bestExperts[type])) /
@@ -483,7 +508,10 @@ export function checkEmpire(
 		let gain = 0;
 		for (const f of shown) {
 			if (f.step && f.kind !== "fix")
-				best.set(f.step.key, Math.max(best.get(f.step.key) ?? 0, f.delta));
+				best.set(
+					f.step.key,
+					Math.max(best.get(f.step.key) ?? 0, f.delta)
+				);
 			else gain += f.delta;
 		}
 		for (const v of best.values()) gain += v;
@@ -560,7 +588,9 @@ export function checkEmpire(
 				(sum, i) => sum + i.material_amount * unitIn(i.material_ticker),
 				0
 			);
-			return (inputs + (s.daily * r.time_ms) / DAY_MS / s.efficiency) / out;
+			return (
+				(inputs + (s.daily * r.time_ms) / DAY_MS / s.efficiency) / out
+			);
 		};
 		const now = s.recipe.outputs.length === 1 ? unit(s.recipe) : s.unitCost;
 		let best: { recipe: ICheckStep["recipe"]; cost: number } | null = null;
@@ -572,7 +602,10 @@ export function checkEmpire(
 			)
 				continue;
 			const cost = unit(r);
-			if (cost < now * (1 - RECIPE_MIN_SAVING) && (!best || cost < best.cost))
+			if (
+				cost < now * (1 - RECIPE_MIN_SAVING) &&
+				(!best || cost < best.cost)
+			)
 				best = { recipe: r, cost };
 		}
 		if (!best) return [];
@@ -590,7 +623,8 @@ export function checkEmpire(
 				step: s,
 				delta,
 				construction,
-				payback: construction > 0 && delta > 0 ? construction / delta : null,
+				payback:
+					construction > 0 && delta > 0 ? construction / delta : null,
 				recipe: best.recipe,
 				now,
 				alt: best.cost,
@@ -629,7 +663,8 @@ export function checkEmpire(
 				return {
 					area: fp.area,
 					construction:
-						fp.construction + buildingConstruction(ctx, CORE_MODULE),
+						fp.construction +
+						buildingConstruction(ctx, CORE_MODULE),
 				};
 			})());
 
@@ -641,12 +676,16 @@ export function checkEmpire(
 		) => {
 			const gain = (ratio - 1) * Math.max(s.margin, 0);
 			const area = ownBase ? n * building.area_cost : newBase().area;
-			const free = ownBase ? MAX_AREA - ownBase.result.area.areaUsed : null;
+			const free = ownBase
+				? MAX_AREA - ownBase.result.area.areaUsed
+				: null;
 			const construction = ownBase ? moved : newBase().construction;
 			const plots = ownBase ? null : planetPlots(p);
 			const noPlot = plots !== null && plots.free <= 0;
 			const payback = gain > EPS ? construction / gain : null;
-			const site = s.extraction ? siteOf(s.ticker, p.planet_natural_id) : null;
+			const site = s.extraction
+				? siteOf(s.ticker, p.planet_natural_id)
+				: null;
 			const running = runningOf(p);
 			options.push({
 				planet: p,
@@ -720,7 +759,8 @@ export function checkEmpire(
 	): ICheckLuxFinding | null {
 		const workforce = plan.result.workforce;
 		const used = TIERS.filter((t) => workforce[t].required > 0);
-		if (used.every((t) => workforce[t].lux1 && workforce[t].lux2)) return null;
+		if (used.every((t) => workforce[t].lux1 && workforce[t].lux2))
+			return null;
 		const full = Object.fromEntries(
 			TIERS.map((t) => {
 				const w = workforce[t];
@@ -731,7 +771,9 @@ export function checkEmpire(
 						lux1: true,
 						lux2: true,
 						efficiency:
-							w.efficiency * (w.lux1 ? 1 : LUX1) * (w.lux2 ? 1 : LUX2),
+							w.efficiency *
+							(w.lux1 ? 1 : LUX1) *
+							(w.lux2 ? 1 : LUX2),
 					},
 				];
 			})
@@ -742,8 +784,12 @@ export function checkEmpire(
 		for (const s of steps) {
 			// a step runs, so its workforce factor is above 0
 			const building = ctx.buildings.get(s.building)!;
-			const now = calculateBuildingWorkforceEfficiency(building, workforce);
-			const ratio = calculateBuildingWorkforceEfficiency(building, full) / now;
+			const now = calculateBuildingWorkforceEfficiency(
+				building,
+				workforce
+			);
+			const ratio =
+				calculateBuildingWorkforceEfficiency(building, full) / now;
 			gain += Math.max(s.margin, 0) * (ratio - 1);
 			weight += s.buildings;
 			weighted += s.buildings * (ratio - 1);
@@ -753,7 +799,12 @@ export function checkEmpire(
 				sum +
 				workforce[t].required *
 					(workerUpkeep(ctx, t, true, true) -
-						workerUpkeep(ctx, t, workforce[t].lux1, workforce[t].lux2)),
+						workerUpkeep(
+							ctx,
+							t,
+							workforce[t].lux1,
+							workforce[t].lux2
+						)),
 			0
 		);
 		const delta = gain - cost;
@@ -776,7 +827,8 @@ export function checkEmpire(
 
 	findings.sort(
 		(a, b) =>
-			Number(b.kind === "fix") - Number(a.kind === "fix") || b.delta - a.delta
+			Number(b.kind === "fix") - Number(a.kind === "fix") ||
+			b.delta - a.delta
 	);
 
 	const counts: Record<CheckKind, number> = {
@@ -881,7 +933,8 @@ export function tryInPlanner(
 	};
 	for (const row of chain.rows) {
 		if (!row.steps.length) {
-			if (row.chainDefault.kind !== "raw") input.source[row.ticker] = "buy";
+			if (row.chainDefault.kind !== "raw")
+				input.source[row.ticker] = "buy";
 			continue;
 		}
 		const main = [...row.steps].sort(

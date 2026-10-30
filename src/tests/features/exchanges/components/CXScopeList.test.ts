@@ -45,7 +45,10 @@ const cxData: CXData = {
 		{ type: "SELL", ticker: "RAT", value: 80 },
 	],
 	ticker_planets: [
-		{ planet: "A", preferences: [{ type: "BOTH", ticker: "DW", value: 0 }] },
+		{
+			planet: "A",
+			preferences: [{ type: "BOTH", ticker: "DW", value: 0 }],
+		},
 	],
 };
 
@@ -116,7 +119,9 @@ describe("CXScopeList", () => {
 		const many = "BCDEFGHIJK".split("");
 		const big = {
 			...cx,
-			empires: [{ uuid: "E1", empire_name: "Sky", plans: many.map(plan) }],
+			empires: [
+				{ uuid: "E1", empire_name: "Sky", plans: many.map(plan) },
+			],
 		} as unknown as CX;
 		const small = await mountList();
 		expect(small.find("input").exists()).toBe(false);

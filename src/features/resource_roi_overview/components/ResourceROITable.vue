@@ -113,7 +113,9 @@
 		return (row1: IResourceROIResult, row2: IResourceROIResult): number => {
 			const d1 = jumpsTo(row1, code);
 			const d2 = jumpsTo(row2, code);
-			return (d1 === -1 ? Infinity : d1) - (d2 === -1 ? Infinity : d2) || 0;
+			return (
+				(d1 === -1 ? Infinity : d1) - (d2 === -1 ? Infinity : d2) || 0
+			);
 		};
 	}
 

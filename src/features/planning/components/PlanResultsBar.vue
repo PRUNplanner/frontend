@@ -88,7 +88,9 @@
 	const expertLine = computed(() =>
 		Object.values(experts)
 			.filter((e) => e.amount > 0)
-			.map((e) => `${t(`plan.results.expert_short.${e.name}`)} ${e.amount}`)
+			.map(
+				(e) => `${t(`plan.results.expert_short.${e.name}`)} ${e.amount}`
+			)
 			.join(" · ")
 	);
 
@@ -109,19 +111,23 @@
 </script>
 
 <template>
-	<section
-		:aria-label="t('plan.results.label')"
-		class="tabular-nums">
+	<section :aria-label="t('plan.results.label')" class="tabular-nums">
 		<div
 			class="grid grid-cols-3 gap-x-3 @min-[48rem]:gap-x-0 @min-[48rem]:grid-cols-4 @min-[72rem]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.7fr)_minmax(0,0.9fr)_minmax(0,0.9fr)] @min-[48rem]:divide-x divide-line">
-			<button type="button" :class="[tile, '@min-[48rem]:pl-6 @min-[48rem]:pr-3']" data-tile="profit" @click="emit('open', 'profit')">
+			<button
+				type="button"
+				:class="[tile, '@min-[48rem]:pl-6 @min-[48rem]:pr-3']"
+				data-tile="profit"
+				@click="emit('open', 'profit')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.profit") }}</span>
 					<!-- a phone's third of the bar fits the profit without its
 						cents -->
 					<span
 						class="text-xl @max-[30rem]:text-lg font-medium leading-tight text-nowrap">
-						<PValue class="@max-[30rem]:hidden" :value="overview.profit" />
+						<PValue
+							class="@max-[30rem]:hidden"
+							:value="overview.profit" />
 						<PValue
 							class="@min-[30rem]:hidden"
 							:value="overview.profit"
@@ -135,15 +141,23 @@
 						t("plan.results.revenue_cost", {
 							revenue: formatNumber(revenue),
 							cost: formatNumber(cost),
-							degradation: formatNumber(overview.dailyDegradationCost),
+							degradation: formatNumber(
+								overview.dailyDegradationCost
+							),
 						})
 					}}
 				</div>
 			</button>
-			<button type="button" :class="[tile, '@min-[48rem]:px-3']" data-tile="payback" @click="emit('open', 'payback')">
+			<button
+				type="button"
+				:class="[tile, '@min-[48rem]:px-3']"
+				data-tile="payback"
+				@click="emit('open', 'payback')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.payback") }}</span>
-					<span :class="value">{{ formatPayback(overview.roi) }}</span>
+					<span :class="value">{{
+						formatPayback(overview.roi)
+					}}</span>
 				</div>
 				<!-- what the payback earns back, set like the profit per area -->
 				<div
@@ -157,9 +171,15 @@
 			</button>
 			<!-- workforce: the lowest efficiency, workers needed of the beds per
 				tier and the experts; below 72rem of page width it gives way -->
-			<button type="button" :class="[tile, 'px-3 @max-[72rem]:hidden']" data-tile="workforce" @click="emit('open', 'workforce')">
+			<button
+				type="button"
+				:class="[tile, 'px-3 @max-[72rem]:hidden']"
+				data-tile="workforce"
+				@click="emit('open', 'workforce')">
 				<div :class="head">
-					<span :class="label">{{ t("plan.results.workforce") }}</span>
+					<span :class="label">{{
+						t("plan.results.workforce")
+					}}</span>
 					<span
 						:class="[value, shortTier ? 'text-negative!' : '']"
 						:data-short="!!shortTier"
@@ -193,7 +213,12 @@
 			</button>
 			<!-- area and what it earns: used of total over its meter, the
 				profit per used area (and the empire's) below -->
-			<button type="button" :class="[tile, '@min-[48rem]:px-3']" data-tile="area" data-area @click="emit('open', 'area')">
+			<button
+				type="button"
+				:class="[tile, '@min-[48rem]:px-3']"
+				data-tile="area"
+				data-area
+				@click="emit('open', 'area')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
@@ -225,13 +250,25 @@
 						·
 						{{
 							t("plan.results.empire_average", {
-								value: formatNumber(empireProfitPerArea, 2, false, true),
+								value: formatNumber(
+									empireProfitPerArea,
+									2,
+									false,
+									true
+								),
 							})
 						}}
 					</span>
 				</div>
 			</button>
-			<button type="button" :class="[tile, '@min-[48rem]:pl-3 @min-[48rem]:pr-6 @max-[48rem]:hidden']" data-tile="storage" @click="emit('open', 'storage')">
+			<button
+				type="button"
+				:class="[
+					tile,
+					'@min-[48rem]:pl-3 @min-[48rem]:pr-6 @max-[48rem]:hidden',
+				]"
+				data-tile="storage"
+				@click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
 					<span :class="value">
@@ -258,6 +295,9 @@
 				</div>
 			</button>
 		</div>
-		<SharedPlanDeltas v-if="compare" class="pb-2 @min-[48rem]:px-6" :compare="compare" />
+		<SharedPlanDeltas
+			v-if="compare"
+			class="pb-2 @min-[48rem]:px-6"
+			:compare="compare" />
 	</section>
 </template>

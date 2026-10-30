@@ -255,7 +255,15 @@ describe("price gaps", () => {
 		sum_traded_7d: number,
 		ask: number,
 		bid: number
-	) => ({ ticker, exchange_code, vwap_7d, sum_traded_7d, ask, bid }) as Exchange;
+	) =>
+		({
+			ticker,
+			exchange_code,
+			vwap_7d,
+			sum_traded_7d,
+			ask,
+			bid,
+		}) as Exchange;
 	const books = [
 		bk("MUS", "AI1", 450, 1000, 500, 400),
 		bk("MUS", "CI1", 470, 1000, 520, 380),
@@ -325,9 +333,9 @@ describe("price gaps", () => {
 	});
 
 	it("a material missing from the summary is left out", () => {
-		expect(exchangeGaps(books, { ...summary, materials: [] }, "vwap")).toEqual(
-			[]
-		);
+		expect(
+			exchangeGaps(books, { ...summary, materials: [] }, "vwap")
+		).toEqual([]);
 	});
 });
 

@@ -118,7 +118,10 @@
 	<aside
 		class="h-screen sticky top-0 shrink-0 flex-col border-r border-line bg-gray-dark overflow-y-auto"
 		:class="isFull ? 'w-62' : 'w-16'"
-		style="scrollbar-width: thin; scrollbar-color: var(--color-line-strong) transparent">
+		style="
+			scrollbar-width: thin;
+			scrollbar-color: var(--color-line-strong) transparent;
+		">
 		<SidebarRail v-if="!isFull" @expand="toggleNavigationSize" />
 		<div v-else class="flex flex-col h-full">
 			<!-- Logo -->
@@ -197,7 +200,9 @@
 							class="flex items-center justify-center size-6 shrink-0 rounded-md bg-prunplanner text-black text-xs font-bold">
 							{{ initials(currentEmpire.empire_name) }}
 						</span>
-						<span class="truncate text-[15px]" :title="currentEmpire.empire_name">
+						<span
+							class="truncate text-[15px]"
+							:title="currentEmpire.empire_name">
 							{{ currentEmpire.empire_name }}
 						</span>
 					</RouterLink>

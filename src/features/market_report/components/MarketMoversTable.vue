@@ -67,7 +67,11 @@
 			align: "right",
 			sorter: true,
 		},
-		{ key: "spark", title: t("market_report.movers.col.spark"), width: 124 },
+		{
+			key: "spark",
+			title: t("market_report.movers.col.spark"),
+			width: 124,
+		},
 		{
 			key: "change_pct",
 			title: t("market_report.movers.col.change"),
@@ -127,8 +131,12 @@
 			:min-width="640">
 			<template #cell-label="{ row }">
 				<div class="flex items-center gap-3 min-w-0">
-					<MarketTickerChip :ticker="row.ticker" :category="row.category" />
-					<span class="truncate text-ink-strong">{{ row.label }}</span>
+					<MarketTickerChip
+						:ticker="row.ticker"
+						:category="row.category" />
+					<span class="truncate text-ink-strong">{{
+						row.label
+					}}</span>
 				</div>
 			</template>
 			<template #cell-vwap_7d="{ row }">{{ price(row) }}</template>
@@ -146,7 +154,9 @@
 					" />
 			</template>
 			<template #cell-change_pct="{ row }">
-				<b class="whitespace-nowrap" :class="changeClass(row.change_pct)">
+				<b
+					class="whitespace-nowrap"
+					:class="changeClass(row.change_pct)">
 					{{ formatChange(row.change_pct) }}
 				</b>
 			</template>
@@ -163,9 +173,13 @@
 					v-for="m in list.visible.value"
 					:key="m.ticker"
 					class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 h-12">
-					<MarketTickerChip :ticker="m.ticker" :category="m.category" />
+					<MarketTickerChip
+						:ticker="m.ticker"
+						:category="m.category" />
 					<div class="min-w-0 leading-tight">
-						<div class="truncate text-ink-strong">{{ m.label }}</div>
+						<div class="truncate text-ink-strong">
+							{{ m.label }}
+						</div>
 						<div class="text-xs text-muted truncate tabular-nums">
 							{{
 								t("market_report.movers.row", {

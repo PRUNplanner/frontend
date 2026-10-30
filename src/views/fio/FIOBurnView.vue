@@ -185,7 +185,9 @@
 						</router-link>
 					</section>
 					<div v-else-if="!userStore.hasFIO" class="px-6 py-4">
-						<PNotice class="max-w-190" data-testid="fio-burn-no-fio">
+						<PNotice
+							class="max-w-190"
+							data-testid="fio-burn-no-fio">
 							<b class="block font-medium text-ink-strong">
 								{{ $t("fio.burn.states.no_fio_title") }}
 							</b>

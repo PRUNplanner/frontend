@@ -59,10 +59,14 @@ describe("PSegmented", () => {
 		expect(sm.find("button").classes()).toContain("h-6");
 
 		const block = mount(PSegmented, { props: { ...props, block: true } });
-		expect(block.classes()).toEqual(expect.arrayContaining(["flex", "w-full"]));
+		expect(block.classes()).toEqual(
+			expect.arrayContaining(["flex", "w-full"])
+		);
 		expect(block.find("button").classes()).toContain("flex-1");
 
-		const phone = mount(PSegmented, { props: { ...props, block: "phone" } });
+		const phone = mount(PSegmented, {
+			props: { ...props, block: "phone" },
+		});
 		expect(phone.classes()).toEqual(
 			expect.arrayContaining(["w-full", "sm:inline-flex", "sm:w-auto"])
 		);

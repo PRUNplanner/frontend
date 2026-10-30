@@ -164,8 +164,10 @@ export function volatilityScenarios(
 	materials: IBaseROIMaterial[],
 	dailyProfit: number
 ): IBaseROIScenario[] {
-	const options: { material: IBaseROIMaterial; alt: IBaseROIScenarioPrice[] }[] =
-		[];
+	const options: {
+		material: IBaseROIMaterial;
+		alt: IBaseROIScenarioPrice[];
+	}[] = [];
 
 	for (const m of materials) {
 		const { key, exchange } = m.source;
@@ -186,8 +188,9 @@ export function volatilityScenarios(
 
 	const profitWith = (prices: IBaseROIScenarioPrice[]): number =>
 		prices.reduce((p, s) => {
-			const m = options.find((o) => o.material.ticker === s.ticker)!
-				.material;
+			const m = options.find(
+				(o) => o.material.ticker === s.ticker
+			)!.material;
 			return p + m.amount * (s.price - m.price);
 		}, dailyProfit);
 
@@ -206,8 +209,7 @@ export function volatilityScenarios(
 		const pick = (taker: boolean) =>
 			options.flatMap((o) => {
 				// taker buys at ask and sells at bid
-				const want =
-					o.material.amount < 0 === taker ? "ask" : "bid";
+				const want = o.material.amount < 0 === taker ? "ask" : "bid";
 				return o.alt.filter((a) => a.side === want);
 			});
 		sets = [pick(true), pick(false)].filter((s) => s.length > 0);
@@ -245,7 +247,9 @@ export function calculateMetrics(
 		row.revenue
 	);
 	const ship =
-		SHIPS[settings.logistics === "ship" ? settings.ship : SHIP_COST_FALLBACK];
+		SHIPS[
+			settings.logistics === "ship" ? settings.ship : SHIP_COST_FALLBACK
+		];
 	const ships =
 		settings.roundTripHours > 0
 			? shipsNeeded(weight, volume, ship, settings.roundTripHours)

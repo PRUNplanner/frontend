@@ -266,11 +266,15 @@ describe("UI kit accessibility", () => {
 			.trigger("keydown", { key: "ArrowDown" });
 		wrapper
 			.find(".ptooltip button")
-			.element.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+			.element.dispatchEvent(
+				new FocusEvent("focusin", { bubbles: true })
+			);
 		await flushPromises();
 		expect(document.body.querySelector("[role=listbox]")).not.toBeNull();
 		expect(
-			document.body.querySelector<HTMLElement>("[role=tooltip]:not([style*='display: none'])")
+			document.body.querySelector<HTMLElement>(
+				"[role=tooltip]:not([style*='display: none'])"
+			)
 		).not.toBeNull();
 
 		// landmarks come from the app layout; layers teleport outside them

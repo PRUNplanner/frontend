@@ -39,7 +39,10 @@ describe("useVersionCheck", () => {
 		for (const target of [document, window]) {
 			const add = target.addEventListener.bind(target);
 			vi.spyOn(target, "addEventListener").mockImplementation(
-				(type: string, listener: EventListenerOrEventListenerObject) => {
+				(
+					type: string,
+					listener: EventListenerOrEventListenerObject
+				) => {
 					listeners.push([target, type, listener as EventListener]);
 					add(type, listener);
 				}

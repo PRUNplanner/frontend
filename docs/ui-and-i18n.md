@@ -402,8 +402,8 @@ Example: the plan editor header (`views/PlanView.vue`, `PlanMoreMenu`,
   converted.
 - **Page titles.** Set them with `useHead` from `@unhead/vue`:
   `` useHead({ title: `${t("…")} | PRUNplanner` }) ``.
-- **Lint rules.** `vue/no-unused-properties` warns, and
-  `vue/max-attributes-per-line` allows 5 attributes on a single line.
+- **Lint rules.** `vue/no-unused-properties` warns. Prettier decides where
+  attributes wrap.
 
 ## i18n (`src/lib/i18n/index.ts`)
 

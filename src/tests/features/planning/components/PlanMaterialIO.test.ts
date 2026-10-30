@@ -51,11 +51,23 @@ describe("PlanMaterialIO", () => {
 	it("filters exports and imports by the delta's sign", async () => {
 		const rows: IMaterialIO[] = [
 			...ROWS,
-			{ ...ROWS[0], ticker: "DW", input: 0, output: 5, delta: 5, price: 80 },
+			{
+				...ROWS[0],
+				ticker: "DW",
+				input: 0,
+				output: 5,
+				delta: 5,
+				price: 80,
+			},
 		];
 		const tickers = async (filter?: string) =>
-			(await mountTable({ materialIOData: rows, ...(filter ? { filter } : {}) }))
-				.wrapper.findAllComponents({ name: "MaterialTile" })
+			(
+				await mountTable({
+					materialIOData: rows,
+					...(filter ? { filter } : {}),
+				})
+			).wrapper
+				.findAllComponents({ name: "MaterialTile" })
 				.map((c) => c.props("ticker"))
 				.sort();
 
@@ -87,7 +99,10 @@ describe("PlanMaterialIO", () => {
 		const numeric = (cell: "th" | "td") =>
 			wrapper
 				.findAll(`${cell}[data-col-key]`)
-				.map((c) => [c.attributes("data-col-key"), c.classes("numeric")]);
+				.map((c) => [
+					c.attributes("data-col-key"),
+					c.classes("numeric"),
+				]);
 		const expected = [["ticker", false], ...NUMERIC.map((k) => [k, true])];
 
 		expect(numeric("th")).toEqual(expected);
@@ -97,9 +112,9 @@ describe("PlanMaterialIO", () => {
 	it("labels the ticker column", async () => {
 		const { wrapper } = await mountTable();
 
-		expect(
-			wrapper.find('th[data-col-key="ticker"] button').text()
-		).toBe("terms.material_ticker");
+		expect(wrapper.find('th[data-col-key="ticker"] button').text()).toBe(
+			"terms.material_ticker"
+		);
 	});
 
 	it("titles the price column, its cell holds only the number", async () => {
@@ -146,7 +161,11 @@ describe("PlanMaterialIO market flags", () => {
 		new Map(
 			marketCheck(
 				ROWS,
-				createPriceBook(() => cx, undefined, () => exchange),
+				createPriceBook(
+					() => cx,
+					undefined,
+					() => exchange
+				),
 				() => exchange
 			).map((c) => [c.ticker, c])
 		);
@@ -219,7 +238,9 @@ describe("PlanMaterialIO market flags", () => {
 		const { wrapper } = await mountFlagged();
 		await openFlag(wrapper);
 
-		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		document.body.dispatchEvent(
+			new MouseEvent("mousedown", { bubbles: true })
+		);
 		await flushPromises();
 
 		expect(panel()).toBeNull();
@@ -266,11 +287,23 @@ describe("PlanMaterialIO market flags", () => {
 			{ messages: { plan: planMessages } }
 		);
 		const cell = (row: number, key: string) =>
-			wrapper.findAll("tbody tr").at(row)!.find(`td[data-col-key="${key}"]`);
+			wrapper
+				.findAll("tbody tr")
+				.at(row)!
+				.find(`td[data-col-key="${key}"]`);
 
 		expect(
-			wrapper.findAll("th[data-col-key]").map((th) => th.attributes("data-col-key"))
-		).toEqual(["ticker", "input", "output", "delta", "share7d", "share30d"]);
+			wrapper
+				.findAll("th[data-col-key]")
+				.map((th) => th.attributes("data-col-key"))
+		).toEqual([
+			"ticker",
+			"input",
+			"output",
+			"delta",
+			"share7d",
+			"share30d",
+		]);
 		expect(cell(0, "share7d").text()).toBe("100 %");
 		expect(cell(0, "share7d").find("span").classes()).toEqual([
 			"text-negative",

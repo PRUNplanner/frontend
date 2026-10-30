@@ -1,10 +1,6 @@
 import { ref, type Ref } from "vue";
 
-import type {
-	PToastEntry,
-	PToastHandle,
-	PToastOptions,
-} from "@/ui/ui.types";
+import type { PToastEntry, PToastHandle, PToastOptions } from "@/ui/ui.types";
 
 // the open toasts, rendered by the one PToastHost in AppProvider
 export const toasts: Ref<PToastEntry[]> = ref([]);

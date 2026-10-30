@@ -66,7 +66,10 @@
 						:aria-labelledby="title ? titleId : undefined"
 						tabindex="-1"
 						:style="{
-							width: typeof width === 'number' ? `${width}px` : width,
+							width:
+								typeof width === 'number'
+									? `${width}px`
+									: width,
 						}"
 						class="relative m-auto max-w-[calc(100vw-32px)] flex flex-col bg-surface rounded-panel text-ink text-sm leading-[1.6] [word-break:break-word] outline-none shadow-panel">
 						<div

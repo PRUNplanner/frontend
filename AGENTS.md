@@ -140,7 +140,8 @@ time.
   comment headers (`// Composables`, `// Components`, `// Types & Interfaces`,
   `// UI`). Load heavy children with `defineAsyncComponent`.
 - **Formatting.** Prettier: tabs, double quotes, semicolons, es5 trailing
-  commas, 80 columns. Unused variables must be prefixed `_`.
+  commas, 80 columns. `pnpm lint` checks it, `pnpm lint:fix` fixes it. Unused
+  variables must be prefixed `_`.
 - **Doc comments.** Existing code uses JSDoc blocks with `@author`. Match the
   surrounding density, and don't write essays.
 

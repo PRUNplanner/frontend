@@ -15,7 +15,8 @@ const same = <T>(a: T[], b: T[]) => {
 };
 
 const planetRules = (cx: CXData, planet: string) => ({
-	exchanges: cx.cx_planets.find((p) => p.planet === planet)?.preferences ?? [],
+	exchanges:
+		cx.cx_planets.find((p) => p.planet === planet)?.preferences ?? [],
 	tickers:
 		cx.ticker_planets.find((p) => p.planet === planet)?.preferences ?? [],
 });

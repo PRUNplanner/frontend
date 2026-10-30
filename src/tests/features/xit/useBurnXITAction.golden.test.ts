@@ -133,8 +133,7 @@ describe("useBurnXITAction (golden)", () => {
 		usePlanningStore().cxs[cx_definition.uuid] =
 			cx_definition as unknown as CX;
 		const result: Record<string, unknown> = {};
-		for (const [name, input] of cases)
-			result[name] = await snapshot(input);
+		for (const [name, input] of cases) result[name] = await snapshot(input);
 
 		await expect(golden(result)).toMatchFileSnapshot(
 			"./__snapshots__/useBurnXITAction.golden.json"

@@ -110,7 +110,8 @@
 						? 'bg-blue-800 border-blue-800 text-white'
 						: 'border-white/20 text-white/80',
 					{
-						'bg-unsaved-stripes': cells[i] === '+' || cells[i] === '-',
+						'bg-unsaved-stripes':
+							cells[i] === '+' || cells[i] === '-',
 						'line-through': cells[i] === '-',
 					},
 				]"

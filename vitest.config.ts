@@ -53,7 +53,11 @@ export default defineConfig({
 			enabled: false,
 			provider: "v8",
 			// lcov paths relative to src/, which is how Codacy maps them
-			reporter: [["lcov", { projectRoot: "./src" }], ["html"], "text-summary"],
+			reporter: [
+				["lcov", { projectRoot: "./src" }],
+				["html"],
+				"text-summary",
+			],
 			// every file counts, also those without a test (they show as 0%)
 			include: ["src/**"],
 			// only tests, types, the entry point and static data

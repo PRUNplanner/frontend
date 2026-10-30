@@ -104,7 +104,9 @@ export function isSectionWide(
 				SEARCH_SURFACES.every((s) => filter.surface.includes(s))
 			);
 		case "extras":
-			return SEARCH_EXTRAS.every((e) => filter.acceptedExtras.includes(e));
+			return SEARCH_EXTRAS.every((e) =>
+				filter.acceptedExtras.includes(e)
+			);
 		case "cogc":
 			return !filter.cogc.length;
 		case "infrastructure":
@@ -702,7 +704,10 @@ export function defaultSort(filter: PlanetSearchFilter): IPlanetSearchSort {
 }
 
 export function parseRefKey(key: string): PlanetSearchReference | undefined {
-	const [kind, value] = [key.slice(0, key.indexOf(":")), key.slice(key.indexOf(":") + 1)];
+	const [kind, value] = [
+		key.slice(0, key.indexOf(":")),
+		key.slice(key.indexOf(":") + 1),
+	];
 	if (kind === "plan" && value) return { kind: "plan", planUuid: value };
 	if (kind === "cx" && SEARCH_CX.includes(value as PlanetSearchCX))
 		return { kind: "cx", code: value as PlanetSearchCX };
@@ -794,7 +799,8 @@ export function applySortClick(
 	firstDir: IPlanetSearchSort["dir"],
 	additive: boolean
 ): IPlanetSearchSort[] {
-	const flip = (d: IPlanetSearchSort["dir"]) => (d === "asc" ? "desc" : "asc");
+	const flip = (d: IPlanetSearchSort["dir"]) =>
+		d === "asc" ? "desc" : "asc";
 	const existing = sorts.find((s) => s.key === key);
 
 	if (!additive)
@@ -807,7 +813,9 @@ export function applySortClick(
 			? [...sorts, { key, dir: firstDir }]
 			: sorts;
 	if (existing.dir === firstDir)
-		return sorts.map((s) => (s.key === key ? { key, dir: flip(s.dir) } : s));
+		return sorts.map((s) =>
+			s.key === key ? { key, dir: flip(s.dir) } : s
+		);
 	return sorts.filter((s) => s.key !== key);
 }
 
@@ -816,8 +824,12 @@ export function applySortClick(
  */
 
 /** Fertility as shown in game, null when the planet isn't fertile */
-export function fertilityPercent(planet: PlanetSearchIndexEntry): number | null {
-	return planet.fertility > -1 ? (1 + planet.fertility * (10 / 33)) * 100 : null;
+export function fertilityPercent(
+	planet: PlanetSearchIndexEntry
+): number | null {
+	return planet.fertility > -1
+		? (1 + planet.fertility * (10 / 33)) * 100
+		: null;
 }
 
 /** Highest max_daily_extraction per ticker; the best daily_extraction if that is higher or missing (0) */

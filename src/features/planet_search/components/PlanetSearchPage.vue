@@ -63,8 +63,7 @@
 	import PlanetSearchFilterPanel from "@/features/planet_search/components/PlanetSearchFilterPanel.vue";
 	import PlanetSearchResultsBar from "@/features/planet_search/components/PlanetSearchResultsBar.vue";
 	const PlanetSearchList = defineAsyncComponent(
-		() =>
-			import("@/features/planet_search/components/PlanetSearchList.vue")
+		() => import("@/features/planet_search/components/PlanetSearchList.vue")
 	);
 	const PlanetSearchMatrix = defineAsyncComponent(
 		() =>
@@ -76,9 +75,7 @@
 	);
 	const PlanetSearchCompare = defineAsyncComponent(
 		() =>
-			import(
-				"@/features/planet_search/components/PlanetSearchCompare.vue"
-			)
+			import("@/features/planet_search/components/PlanetSearchCompare.vue")
 	);
 
 	// Types & Interfaces
@@ -186,7 +183,8 @@
 	const now = Date.now();
 
 	const empirePlans = computed(
-		() => empires.value.find((e) => e.uuid === empireUuid.value)?.plans ?? []
+		() =>
+			empires.value.find((e) => e.uuid === empireUuid.value)?.plans ?? []
 	);
 	const planPlanets: ComputedRef<Record<string, string>> = computed(() =>
 		Object.fromEntries(
@@ -359,7 +357,9 @@
 				filter: h.filter,
 			})),
 			showAll: {
-				label: t("planet_search.name_note.show_all", { n: note.matches }),
+				label: t("planet_search.name_note.show_all", {
+					n: note.matches,
+				}),
 				filter: note.showAll,
 			},
 		};
@@ -453,7 +453,9 @@
 		if (!next.length) return;
 		trackEvent("planet_search:action", {
 			action: "sort",
-			sort: next[0].key.startsWith("ref:plan:") ? "ref:plan" : next[0].key,
+			sort: next[0].key.startsWith("ref:plan:")
+				? "ref:plan"
+				: next[0].key,
 			sort_count: next.length,
 		});
 	}
@@ -467,7 +469,8 @@
 				? window.matchMedia(query)
 				: null;
 		const matches: Ref<boolean> = ref(media?.matches ?? true);
-		const onChange = (e: MediaQueryListEvent) => (matches.value = e.matches);
+		const onChange = (e: MediaQueryListEvent) =>
+			(matches.value = e.matches);
 		media?.addEventListener("change", onChange);
 		onBeforeUnmount(() => media?.removeEventListener("change", onChange));
 		return matches;
@@ -560,9 +563,7 @@
 					<aside
 						v-if="isDesktop"
 						class="shrink-0 border-r border-white/10 flex flex-col min-h-0"
-						:class="
-							filtersCollapsed ? 'w-[52px]' : 'w-[400px]'
-						">
+						:class="filtersCollapsed ? 'w-[52px]' : 'w-[400px]'">
 						<div
 							class="flex items-center gap-2 px-3 py-2"
 							:class="
@@ -593,10 +594,7 @@
 										: t('planet_search.filters.collapse')
 								"
 								:aria-expanded="!filtersCollapsed"
-								@click="
-									filtersCollapsed =
-										!filtersCollapsed
-								">
+								@click="filtersCollapsed = !filtersCollapsed">
 								<KeyboardDoubleArrowRightSharp
 									v-if="filtersCollapsed"
 									class="w-5 h-5" />

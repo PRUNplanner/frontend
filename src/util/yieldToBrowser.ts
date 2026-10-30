@@ -5,9 +5,8 @@
  * @returns {Promise<void>} Resolves on the next turn
  */
 export function yieldToBrowser(): Promise<void> {
-	const s = (
-		globalThis as { scheduler?: { yield?: () => Promise<void> } }
-	).scheduler;
+	const s = (globalThis as { scheduler?: { yield?: () => Promise<void> } })
+		.scheduler;
 	if (s?.yield) return s.yield();
 	return new Promise((resolve) => setTimeout(resolve, 0));
 }

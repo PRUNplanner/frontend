@@ -89,9 +89,7 @@ const rows = (wrapper: VueWrapper) =>
 		checked: c.props("checked") as boolean,
 	}));
 const checkbox = (wrapper: VueWrapper, ticker: string) =>
-	wrapper
-		.findAllComponents(PCheckbox)
-		.find((c) => tickerOf(c) === ticker)!;
+	wrapper.findAllComponents(PCheckbox).find((c) => tickerOf(c) === ticker)!;
 const applyButton = (wrapper: VueWrapper) =>
 	wrapper.findAllComponents(PButton)[1];
 
@@ -132,7 +130,9 @@ describe("PlanStarterSetup", () => {
 						{
 							ticker: "FP",
 							amount: 3,
-							recipes: [{ recipeid: "FP#10xH2O=>7xDW", amount: 2 }],
+							recipes: [
+								{ recipeid: "FP#10xH2O=>7xDW", amount: 2 },
+							],
 						},
 						{ ticker: "HYF", amount: 4, recipes: [] },
 						{ ticker: "INC", amount: 1, recipes: [] },

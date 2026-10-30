@@ -337,7 +337,11 @@
 			x + 12 + TOOLTIP_W <= layout.value.x + layout.value.w
 				? x + 12
 				: Math.max(x - 12 - TOOLTIP_W, 0);
-		return { left: `${left}px`, top: `${layout.value.y}px`, width: `${TOOLTIP_W}px` };
+		return {
+			left: `${left}px`,
+			top: `${layout.value.y}px`,
+			width: `${TOOLTIP_W}px`,
+		};
 	});
 
 	onBeforeUnmount(() => {
@@ -515,10 +519,7 @@
 			:class="tooltipConfig.tooltip"
 			:style="tooltipStyle">
 			<div class="text-muted pb-1">{{ tooltipDate }}</div>
-			<div
-				v-for="r in rows"
-				:key="r.key"
-				class="flex items-center gap-2">
+			<div v-for="r in rows" :key="r.key" class="flex items-center gap-2">
 				<span
 					class="inline-block w-2.5 h-0.5"
 					:style="{ background: r.color }" />

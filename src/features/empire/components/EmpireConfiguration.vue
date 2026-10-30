@@ -19,10 +19,7 @@
 
 	// UI
 	import { PButton, PNotice } from "@/ui";
-	import {
-		SaveSharp,
-		ChangeCircleOutlined,
-	} from "@vicons/material";
+	import { SaveSharp, ChangeCircleOutlined } from "@vicons/material";
 
 	const props = defineProps({
 		data: {

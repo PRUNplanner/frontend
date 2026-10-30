@@ -18,26 +18,28 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers. __esModule lets
 // defineAsyncComponent pick the default export of a mocked module
-const { stub, passThrough, calculatePlan, createContext, burn } = vi.hoisted(() => ({
-	stub: (name: string) => ({
-		__esModule: true,
-		default: { name, render: () => null },
-	}),
-	passThrough: (name: string) => ({
-		__esModule: true,
-		default: {
-			name,
-			setup:
-				(_: unknown, { slots }: { slots: Slots }) =>
-				() =>
-					slots.default?.({ empirePlanetList: [] }),
-		},
-	}),
-	calculatePlan: vi.fn(() => ({ result: {} })),
-	createContext: vi.fn(async () => ({})),
-	// the results the view hands to the burn tables
-	burn: { data: undefined as undefined | { value: object } },
-}));
+const { stub, passThrough, calculatePlan, createContext, burn } = vi.hoisted(
+	() => ({
+		stub: (name: string) => ({
+			__esModule: true,
+			default: { name, render: () => null },
+		}),
+		passThrough: (name: string) => ({
+			__esModule: true,
+			default: {
+				name,
+				setup:
+					(_: unknown, { slots }: { slots: Slots }) =>
+					() =>
+						slots.default?.({ empirePlanetList: [] }),
+			},
+		}),
+		calculatePlan: vi.fn(() => ({ result: {} })),
+		createContext: vi.fn(async () => ({})),
+		// the results the view hands to the burn tables
+		burn: { data: undefined as undefined | { value: object } },
+	})
+);
 
 // the loaders fetch data, here they only hand through their slot
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
@@ -89,10 +91,14 @@ async function mountView(
 	if (withFIO)
 		// @ts-expect-error partial profile
 		useUserStore().profile = { fio_apikey: "key", prun_username: "user" };
-	const { wrapper } = await mountComponent(FIOBurnView, {}, {
-		pinia,
-		messages: { fio, empire },
-	});
+	const { wrapper } = await mountComponent(
+		FIOBurnView,
+		{},
+		{
+			pinia,
+			messages: { fio, empire },
+		}
+	);
 	const loader = wrapper.findComponent(WrapperPlanningDataLoader);
 	loader.vm.$emit("data:empire:list", empireList);
 	loader.vm.$emit("data:empire:plans", [

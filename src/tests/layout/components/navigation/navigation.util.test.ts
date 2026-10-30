@@ -87,11 +87,19 @@ describe("navigation.util", () => {
 	});
 
 	it("calculates a plan with its breadcrumb's empire, else its first", () => {
-		const list = [empire("a", ["p1"]), empire("b", ["p1", "p2"]), empire("c", ["p2"])];
+		const list = [
+			empire("a", ["p1"]),
+			empire("b", ["p1", "p2"]),
+			empire("c", ["p2"]),
+		];
 		// the navigation shows c; its plans list c and b (another order)
-		expect(planEmpireUuid("p2", [{ uuid: "c" }, { uuid: "b" }], list, "c")).toBe("c");
+		expect(
+			planEmpireUuid("p2", [{ uuid: "c" }, { uuid: "b" }], list, "c")
+		).toBe("c");
 		// the navigation's a doesn't hold p2: the breadcrumb's b, not the plan's first
-		expect(planEmpireUuid("p2", [{ uuid: "c" }, { uuid: "b" }], list, "a")).toBe("b");
+		expect(
+			planEmpireUuid("p2", [{ uuid: "c" }, { uuid: "b" }], list, "a")
+		).toBe("b");
 		// the plan lists no empire the user has: its first
 		expect(planEmpireUuid("p9", [{ uuid: "x" }], list, "a")).toBe("x");
 		expect(planEmpireUuid("p9", [], list, "a")).toBeUndefined();

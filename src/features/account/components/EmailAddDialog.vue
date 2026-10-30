@@ -1,5 +1,12 @@
 <script setup lang="ts">
-	import { computed, nextTick, ref, type Ref, useTemplateRef, watch } from "vue";
+	import {
+		computed,
+		nextTick,
+		ref,
+		type Ref,
+		useTemplateRef,
+		watch,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -50,7 +57,9 @@
 	const codeInput = useTemplateRef<{ focus: () => void }>("codeInput");
 
 	const masked = computed(() => maskEmail(userStore.profile?.email ?? ""));
-	const emailValid = computed(() => isEmailAddress(email.value?.trim() ?? ""));
+	const emailValid = computed(() =>
+		isEmailAddress(email.value?.trim() ?? "")
+	);
 	const codeValid = computed(() => (code.value ?? "").length === 8);
 
 	watch(
@@ -68,7 +77,10 @@
 
 	// codes are upper case, 8 characters
 	watch(code, (value) => {
-		const clean = (value ?? "").replace(/\s/g, "").toUpperCase().slice(0, 8);
+		const clean = (value ?? "")
+			.replace(/\s/g, "")
+			.toUpperCase()
+			.slice(0, 8);
 		if (clean !== value && value !== null) code.value = clean;
 		codeError.value = null;
 	});
@@ -134,7 +146,9 @@
 		if (!ok) {
 			codeError.value = t(
 				`account.email_dialog.errors.${
-					["invalid", "expired", "no_code", "throttled"].includes(result)
+					["invalid", "expired", "no_code", "throttled"].includes(
+						result
+					)
 						? result
 						: "unknown"
 				}`
@@ -144,7 +158,11 @@
 
 		step.value = "done";
 		if (source === "banner")
-			toast(t("account.email_dialog.confirmed_toast", { email: masked.value }));
+			toast(
+				t("account.email_dialog.confirmed_toast", {
+					email: masked.value,
+				})
+			);
 	}
 
 	async function sendNewCode(): Promise<void> {
@@ -169,7 +187,9 @@
 						type="email"
 						autocomplete="email"
 						class="w-full"
-						:placeholder="t('account.email_dialog.email_placeholder')"
+						:placeholder="
+							t('account.email_dialog.email_placeholder')
+						"
 						@keydown.enter.prevent="saveEmail" />
 				</PFormItem>
 			</PForm>
@@ -194,7 +214,9 @@
 						v-model:value="code"
 						autocomplete="one-time-code"
 						class="w-full font-mono tracking-widest"
-						:placeholder="t('account.email_dialog.code_placeholder')"
+						:placeholder="
+							t('account.email_dialog.code_placeholder')
+						"
 						@keydown.enter.prevent="confirmCode" />
 				</PFormItem>
 			</PForm>

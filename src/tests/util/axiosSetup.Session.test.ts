@@ -148,9 +148,9 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 		const error = await axios.get("/private").catch((e) => e);
 
 		expect(error.response.status).toBe(401);
-		expect(mock.history.get.filter((r) => r.url === "/private")).toHaveLength(
-			2
-		);
+		expect(
+			mock.history.get.filter((r) => r.url === "/private")
+		).toHaveLength(2);
 		expect(router.push).not.toHaveBeenCalled();
 	});
 
@@ -163,9 +163,9 @@ describe("axiosSetup: a session that can't be refreshed", () => {
 		expect(error.response.status).toBe(401);
 		expect(userStore.isLoggedIn).toBe(false);
 		expect(router.push).toHaveBeenCalledWith("/");
-		expect(mock.history.get.filter((r) => r.url === "/private")).toHaveLength(
-			1
-		);
+		expect(
+			mock.history.get.filter((r) => r.url === "/private")
+		).toHaveLength(1);
 	});
 });
 
@@ -191,27 +191,37 @@ describe("axiosSetup: a refresh without an answer", () => {
 	});
 
 	it.each([
-		["a network error", () => mock.onPost("/user/refresh/").networkErrorOnce()],
+		[
+			"a network error",
+			() => mock.onPost("/user/refresh/").networkErrorOnce(),
+		],
 		["a timeout", () => mock.onPost("/user/refresh/").timeoutOnce()],
 		["a server error", () => mock.onPost("/user/refresh/").replyOnce(502)],
-	])("keeps the session after %s and refreshes on the next 401", async (_, fail) => {
-		fail();
-		const logout = vi.spyOn(userStore, "logout");
+	])(
+		"keeps the session after %s and refreshes on the next 401",
+		async (_, fail) => {
+			fail();
+			const logout = vi.spyOn(userStore, "logout");
 
-		const error = await axios.get("/data").catch((e) => e);
+			const error = await axios.get("/data").catch((e) => e);
 
-		// the original request fails with its own 401, not replayed
-		expect(error.response.status).toBe(401);
-		expect(mock.history.get.filter((r) => r.url === "/data")).toHaveLength(1);
-		expect(logout).not.toHaveBeenCalled();
-		expect(router.push).not.toHaveBeenCalled();
-		expect(userStore.isLoggedIn).toBe(true);
-		expect(userStore.refreshToken).toBe(token("refresh"));
+			// the original request fails with its own 401, not replayed
+			expect(error.response.status).toBe(401);
+			expect(
+				mock.history.get.filter((r) => r.url === "/data")
+			).toHaveLength(1);
+			expect(logout).not.toHaveBeenCalled();
+			expect(router.push).not.toHaveBeenCalled();
+			expect(userStore.isLoggedIn).toBe(true);
+			expect(userStore.refreshToken).toBe(token("refresh"));
 
-		mock.onPost("/user/refresh/").replyOnce(200, { access: token("access-new") });
-		expect((await axios.get("/data")).data).toBe("payload");
-		expect(refreshes()).toHaveLength(2);
-	});
+			mock.onPost("/user/refresh/").replyOnce(200, {
+				access: token("access-new"),
+			});
+			expect((await axios.get("/data")).data).toBe("payload");
+			expect(refreshes()).toHaveLength(2);
+		}
+	);
 
 	it("ends the session when the refresh is refused", async () => {
 		mock.onPost("/user/refresh/").replyOnce(401);
@@ -285,8 +295,7 @@ describe("axiosSetup: parallel 401s", () => {
 	});
 
 	it("refresh again on a 401 after the last refresh settled", async () => {
-		mock
-			.onPost("/user/refresh/")
+		mock.onPost("/user/refresh/")
 			.replyOnce(200, { access: token("access-new-1") })
 			.onPost("/user/refresh/")
 			.replyOnce(200, { access: token("access-new-2") });
@@ -317,27 +326,32 @@ describe("axiosSetup: a 401 on a replay", () => {
 		userStore.setToken(token("access-old"), token("refresh"));
 		// the backend rejects even a freshly refreshed token on this path
 		mock.onGet("/always").reply(401);
-		mock.onPost("/user/refresh/").reply(200, { access: token("access-new") });
+		mock.onPost("/user/refresh/").reply(200, {
+			access: token("access-new"),
+		});
 	});
 
 	it.each([
 		["needs a login", { requiresAuth: true }],
 		["is public", {}],
-	])("refreshes and replays once, then rejects, on a page that %s", async (_, meta) => {
-		route.value = { meta };
+	])(
+		"refreshes and replays once, then rejects, on a page that %s",
+		async (_, meta) => {
+			route.value = { meta };
 
-		const error = await axios.get("/always").catch((e) => e);
+			const error = await axios.get("/always").catch((e) => e);
 
-		expect(error.response.status).toBe(401);
-		expect(refreshes()).toHaveLength(1);
-		expect(asked()).toHaveLength(2);
-		expect(asked()[1].headers?.Authorization).toBe(
-			`Bearer ${token("access-new")}`
-		);
-		// the refresh worked: the session stays
-		expect(userStore.isLoggedIn).toBe(true);
-		expect(router.push).not.toHaveBeenCalled();
-	});
+			expect(error.response.status).toBe(401);
+			expect(refreshes()).toHaveLength(1);
+			expect(asked()).toHaveLength(2);
+			expect(asked()[1].headers?.Authorization).toBe(
+				`Bearer ${token("access-new")}`
+			);
+			// the refresh worked: the session stays
+			expect(userStore.isLoggedIn).toBe(true);
+			expect(router.push).not.toHaveBeenCalled();
+		}
+	);
 
 	it("parallel ones share one refresh and are each replayed once", async () => {
 		route.value = { meta: { requiresAuth: true } };

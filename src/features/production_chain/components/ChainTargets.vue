@@ -72,7 +72,11 @@
 				<PButton
 					type="secondary"
 					size="sm"
-					:aria-label="t('production_chains.targets.less', { ticker: target.ticker })"
+					:aria-label="
+						t('production_chains.targets.less', {
+							ticker: target.ticker,
+						})
+					"
 					@click="step(index, -1)">
 					−
 				</PButton>
@@ -82,12 +86,20 @@
 					:min="0"
 					size="sm"
 					class="w-20"
-					:aria-label="t('production_chains.targets.amount', { ticker: target.ticker })"
+					:aria-label="
+						t('production_chains.targets.amount', {
+							ticker: target.ticker,
+						})
+					"
 					@update:value="(v) => set(index, v)" />
 				<PButton
 					type="secondary"
 					size="sm"
-					:aria-label="t('production_chains.targets.more', { ticker: target.ticker })"
+					:aria-label="
+						t('production_chains.targets.more', {
+							ticker: target.ticker,
+						})
+					"
 					@click="step(index, 1)">
 					+
 				</PButton>
@@ -97,7 +109,11 @@
 				<PButton
 					type="ghost"
 					size="sm"
-					:aria-label="t('production_chains.targets.remove', { ticker: target.ticker })"
+					:aria-label="
+						t('production_chains.targets.remove', {
+							ticker: target.ticker,
+						})
+					"
 					@click="remove(index)">
 					×
 				</PButton>

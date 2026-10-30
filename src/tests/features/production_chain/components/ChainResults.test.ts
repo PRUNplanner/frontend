@@ -21,7 +21,13 @@ const totals = (over: Partial<IChainTotals> = {}): IChainTotals => ({
 	exact: 2.5,
 	area: 100,
 	habArea: 20,
-	workforce: { pioneer: 100, settler: 0, technician: 0, engineer: 0, scientist: 0 },
+	workforce: {
+		pioneer: 100,
+		settler: 0,
+		technician: 0,
+		engineer: 0,
+		scientist: 0,
+	},
 	expertise: {},
 	construction: 6500,
 	constructionMaterials: [],
@@ -67,13 +73,22 @@ describe("ChainResults", () => {
 		const profit = await text(loss, "profit");
 		expect(profit.find(".text-negative").exists()).toBe(true);
 		expect(profit.text()).toContain("0.0 % of output value");
-		expect((await text(loss, "construction")).text()).toContain("no payback");
-		expect((await text(loss, "output")).text()).toContain("incl. 300 ȼ byproducts");
+		expect((await text(loss, "construction")).text()).toContain(
+			"no payback"
+		);
+		expect((await text(loss, "output")).text()).toContain(
+			"incl. 300 ȼ byproducts"
+		);
 		expect((await text(loss, "bought")).text()).toContain("2 materials");
 	});
 
 	it("shows own production and the saving against the chain without it (AC 6)", async () => {
-		const had = totals({ own: 300, ownCount: 2, built: 2, construction: 4000 });
+		const had = totals({
+			own: 300,
+			ownCount: 2,
+			built: 2,
+			construction: 4000,
+		});
 		const without = totals({ built: 5, construction: 9000 });
 		const inputs = await text(had, "bought", without);
 		expect(inputs.text()).toContain("Inputs / day");

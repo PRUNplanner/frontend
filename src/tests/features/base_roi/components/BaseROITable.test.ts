@@ -13,7 +13,12 @@ import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
 
 vi.mock("@/features/base_roi/components/BaseROIRowDetail.vue", () => ({
 	__esModule: true,
-	default: { name: "BaseROIRowDetail", props: ["row"], emits: ["close"], render: () => null },
+	default: {
+		name: "BaseROIRowDetail",
+		props: ["row"],
+		emits: ["close"],
+		render: () => null,
+	},
 }));
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: { name: "MaterialTile", props: ["ticker"], render: () => null },
@@ -24,7 +29,12 @@ beforeAll(async () => {
 	rows = await baseROIRows();
 });
 
-const HIDDEN = { maxJumps: 5177, logistics: 293, marketCapacity: 181, negative: 287 };
+const HIDDEN = {
+	maxJumps: 5177,
+	logistics: 293,
+	marketCapacity: 181,
+	negative: 287,
+};
 
 async function mountTable(props: Record<string, unknown> = {}) {
 	const { wrapper } = await mountComponent(BaseROITable, {
@@ -47,10 +57,17 @@ async function mountTable(props: Record<string, unknown> = {}) {
 describe("BaseROITable", () => {
 	it("shows every row and the hidden count per limit (criterion 10)", async () => {
 		const wrapper = await mountTable();
-		expect(wrapper.findAll("tbody tr[data-row-key]")).toHaveLength(rows.length);
+		expect(wrapper.findAll("tbody tr[data-row-key]")).toHaveLength(
+			rows.length
+		);
 		const text = wrapper.text();
 		expect(text).toContain("base_roi.table.hidden");
-		for (const key of ["hidden_jumps", "hidden_logistics", "hidden_market", "hidden_negative"])
+		for (const key of [
+			"hidden_jumps",
+			"hidden_logistics",
+			"hidden_market",
+			"hidden_negative",
+		])
 			expect(text).toContain(`base_roi.table.${key}`);
 	});
 
@@ -97,7 +114,9 @@ describe("BaseROITable", () => {
 			step: "calculating",
 			progress: { current: 10, total: 40 },
 		});
-		expect(wrapper.findAll("tbody tr[data-row-key]").length).toBeGreaterThan(0);
+		expect(
+			wrapper.findAll("tbody tr[data-row-key]").length
+		).toBeGreaterThan(0);
 		const skeleton = wrapper.findComponent(BaseROITableSkeleton);
 		expect(skeleton.exists()).toBe(true);
 		expect(skeleton.find("thead").exists()).toBe(false);
@@ -114,7 +133,9 @@ describe("BaseROITable", () => {
 
 		const failed = await mountTable({ historyFailed: true });
 		expect(failed.findAllComponents(PSparkline)).toHaveLength(0);
-		expect(failed.find('[title="base_roi.table.history_failed"]').exists()).toBe(true);
+		expect(
+			failed.find('[title="base_roi.table.history_failed"]').exists()
+		).toBe(true);
 	});
 
 	it("a failed request shows an error line, no progress", async () => {
@@ -145,12 +166,20 @@ describe("BaseROITable", () => {
 		const never = {
 			...rows[0],
 			key: "never",
-			metrics: { ...rows[0].metrics, breakEven: Infinity, dailyProfit: -1 },
+			metrics: {
+				...rows[0].metrics,
+				breakEven: Infinity,
+				dailyProfit: -1,
+			},
 		};
 		const wrapper = await mountTable({ rows: [...rows, never] });
 		const keys = () =>
-			wrapper.findAll("tbody tr[data-row-key]").map((tr) => tr.attributes("data-row-key"));
-		for (const button of wrapper.findAll("thead button.p-data-table-title")) {
+			wrapper
+				.findAll("tbody tr[data-row-key]")
+				.map((tr) => tr.attributes("data-row-key"));
+		for (const button of wrapper.findAll(
+			"thead button.p-data-table-title"
+		)) {
 			await button.trigger("click");
 			const asc = keys();
 			await button.trigger("click");
@@ -172,10 +201,16 @@ describe("BaseROITable", () => {
 			["planets", "base_roi.status.planets"],
 			["calculating", "base_roi.status.calculating"],
 		]) {
-			const wrapper = await mountTable({ step, progress: { current: 3, total: 9 } });
+			const wrapper = await mountTable({
+				step,
+				progress: { current: 3, total: 9 },
+			});
 			expect(wrapper.text()).toContain(key);
 		}
-		const pending = await mountTable({ step: "done", planetRowsPending: true });
+		const pending = await mountTable({
+			step: "done",
+			planetRowsPending: true,
+		});
 		expect(pending.text()).toContain("base_roi.status.planet_rows");
 	});
 
@@ -195,7 +230,9 @@ describe("BaseROITable", () => {
 		expect(detail.exists()).toBe(true);
 		detail.vm.$emit("close");
 		await flushPromises();
-		expect(wrapper.findComponent({ name: "BaseROIRowDetail" }).exists()).toBe(false);
+		expect(
+			wrapper.findComponent({ name: "BaseROIRowDetail" }).exists()
+		).toBe(false);
 	});
 
 	it("hiding a column in the menu writes the settings", async () => {
@@ -227,13 +264,21 @@ describe("BaseROITable", () => {
 			metrics: {
 				...rows[0].metrics,
 				scenarios: [
-					{ prices: [{ ticker: "IND", side: "bid", price: 4060 }], dailyProfit: -500 },
-					{ prices: [{ ticker: "CU", side: "ask", price: 1400 }], dailyProfit: 900 },
+					{
+						prices: [{ ticker: "IND", side: "bid", price: 4060 }],
+						dailyProfit: -500,
+					},
+					{
+						prices: [{ ticker: "CU", side: "ask", price: 1400 }],
+						dailyProfit: 900,
+					},
 				],
 			},
 		};
 		const wrapper = await mountTable({ rows: [row] });
-		const warn = wrapper.find('button[aria-label="base_roi.table.volatility"]');
+		const warn = wrapper.find(
+			'button[aria-label="base_roi.table.volatility"]'
+		);
 		expect(warn.text()).toBe("2");
 		await warn.trigger("click");
 		await flushPromises();
@@ -256,8 +301,13 @@ describe("BaseROITable", () => {
 			outputs: [],
 			workforce: [],
 		};
-		const wrapper = await mountTable({ rows: [planet, bare, rows[1]], series: { AI1: {} } });
-		expect(wrapper.text()).toContain(`@ ${planet.planetNaturalId} (base_roi.table.no_route)`);
+		const wrapper = await mountTable({
+			rows: [planet, bare, rows[1]],
+			series: { AI1: {} },
+		});
+		expect(wrapper.text()).toContain(
+			`@ ${planet.planetNaturalId} (base_roi.table.no_route)`
+		);
 		expect(wrapper.find('tr[data-row-key="bare"]').text()).toContain("—");
 		const sortExpertise = wrapper
 			.findAll("thead button.p-data-table-title")

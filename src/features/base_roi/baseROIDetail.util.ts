@@ -31,7 +31,9 @@ export function recipeLabel(row: IBaseROIRow): string {
 	// every row is one building with one recipe
 	const recipe = row.result.production.buildings[0].activeRecipes[0].recipe;
 	const side = (m: { material_ticker: string; material_amount: number }[]) =>
-		m.map((x) => `${num(x.material_amount, 1)}x ${x.material_ticker}`).join(" + ");
+		m
+			.map((x) => `${num(x.material_amount, 1)}x ${x.material_ticker}`)
+			.join(" + ");
 	return recipe.inputs.length
 		? `${side(recipe.inputs)} → ${side(recipe.outputs)}`
 		: side(recipe.outputs);
@@ -167,15 +169,20 @@ export function detailSections(
 			label: k("storage_added"),
 			value: `${row.storageAdded.STO} / ${row.storageAdded.STA}`,
 		},
-		{ label: k("ship_check"), value: check, formula: checkFormula, total: true },
+		{
+			label: k("ship_check"),
+			value: check,
+			formula: checkFormula,
+			total: true,
+		},
 	];
 
 	// 3 production efficiency
 	const efficiencyLines: IBaseROIDetailLine[] =
 		production.efficiencyElements.map((e) => ({
-		label: t(`game.efficiency_type.${e.efficiencyType}`),
-		value: num(e.value, 4),
-	}));
+			label: t(`game.efficiency_type.${e.efficiencyType}`),
+			value: num(e.value, 4),
+		}));
 	efficiencyLines.push({
 		label: k("efficiency_total"),
 		value: num(efficiency, 4),
@@ -232,8 +239,7 @@ export function detailSections(
 		return {
 			label: ticker,
 			ticker,
-			value:
-				price === undefined ? "—" : money(sign * amount * price),
+			value: price === undefined ? "—" : money(sign * amount * price),
 			formula:
 				price === undefined
 					? undefined

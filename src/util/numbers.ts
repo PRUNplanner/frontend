@@ -66,7 +66,9 @@ const significant = new Intl.NumberFormat("en-US", {
  */
 export function formatSmallNumber(value: number): string {
 	if (!Number.isFinite(value)) return "—";
-	return Math.abs(value) < 1 ? significant.format(value) : formatNumber(value);
+	return Math.abs(value) < 1
+		? significant.format(value)
+		: formatNumber(value);
 }
 
 /**

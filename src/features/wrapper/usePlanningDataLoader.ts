@@ -46,10 +46,7 @@ export function usePlanningDataLoader(
 
 	const { t } = useI18n();
 
-	if (
-		props.sharedPlanUuid &&
-		(props.planUuid || props.planetNaturalId)
-	) {
+	if (props.sharedPlanUuid && (props.planUuid || props.planetNaturalId)) {
 		throw new Error(
 			"PlanningDataLoader: Loading shared plan must not load any other plan data."
 		);
@@ -324,7 +321,9 @@ export function usePlanningDataLoader(
 		(ok) => {
 			if (ok) {
 				if (!done.value)
-					performance.measure("loader:planning", { start: loadStart });
+					performance.measure("loader:planning", {
+						start: loadStart,
+					});
 				emits("complete");
 				done.value = true;
 			}

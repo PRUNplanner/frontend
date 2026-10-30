@@ -97,9 +97,21 @@ describe("reportClientError", () => {
 	it("tells query loops apart by their query", async () => {
 		const { reportClientError } = await load();
 
-		reportClientError({ kind: "query_loop", query: "GetFIOStorage", fetches: 6 });
-		reportClientError({ kind: "query_loop", query: "GetFIOStorage", fetches: 6 });
-		reportClientError({ kind: "query_loop", query: "GetAllCX", fetches: 6 });
+		reportClientError({
+			kind: "query_loop",
+			query: "GetFIOStorage",
+			fetches: 6,
+		});
+		reportClientError({
+			kind: "query_loop",
+			query: "GetFIOStorage",
+			fetches: 6,
+		});
+		reportClientError({
+			kind: "query_loop",
+			query: "GetAllCX",
+			fetches: 6,
+		});
 
 		expect(sentBodies()).toMatchObject([
 			{ kind: "query_loop", query: "GetFIOStorage", fetches: 6 },

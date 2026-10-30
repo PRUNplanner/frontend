@@ -26,9 +26,7 @@ for (let i = 0; i < 200; i++)
 	userStore.setPlanPreference(`plan-${i}`, { includeCM: i % 2 === 0 });
 
 // before: main has no app-wide sync
-(
-	preferences as { startPreferenceSync?: () => void }
-).startPreferenceSync?.();
+(preferences as { startPreferenceSync?: () => void }).startPreferenceSync?.();
 const scopes = Array.from({ length: 40 }, () => effectScope());
 scopes.forEach((s) => s.run(() => preferences.usePreferences()));
 

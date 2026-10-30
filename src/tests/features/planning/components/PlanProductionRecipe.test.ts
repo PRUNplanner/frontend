@@ -117,11 +117,15 @@ describe("PlanProductionRecipe", () => {
 			recipeButton(wrapper)
 				.find(`[data-recipe-${group}]`)
 				.findAllComponents(MaterialTile)
-				.map((t: { props: (key: "ticker") => string }) => t.props("ticker"));
+				.map((t: { props: (key: "ticker") => string }) =>
+					t.props("ticker")
+				);
 		expect(tickers("inputs")).toEqual(["FEO", "C"]);
 		expect(tickers("outputs")).toEqual(["FE"]);
 		expect(recipeButton(wrapper).find("svg").exists()).toBe(true);
-		expect(recipeButton(wrapper).text()).toContain("plan.production.recipe");
+		expect(recipeButton(wrapper).text()).toContain(
+			"plan.production.recipe"
+		);
 		expect(wrapper.text()).toContain("1d 0h 0m");
 	});
 
@@ -154,9 +158,9 @@ describe("PlanProductionRecipe", () => {
 			recipeData: recipe({ recipe: { ...FE, inputs: [] } }),
 		});
 
-		expect(recipeButton(wrapper).find("[data-recipe-inputs]").exists()).toBe(
-			false
-		);
+		expect(
+			recipeButton(wrapper).find("[data-recipe-inputs]").exists()
+		).toBe(false);
 		// only the opener's chevron, no arrow
 		expect(recipeButton(wrapper).findAll("svg")).toHaveLength(1);
 	});

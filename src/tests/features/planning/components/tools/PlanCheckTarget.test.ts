@@ -1,11 +1,4 @@
-import {
-	describe,
-	it,
-	expect,
-	vi,
-	beforeAll,
-	beforeEach,
-} from "vitest";
+import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
@@ -278,7 +271,9 @@ describe("PlanCheckTarget", () => {
 		{
 			stale: "range",
 			settle: (p: Pending) =>
-				p.resolve([{ date_epoch: DAY, traded: 1, low_p: 1, high_p: 2 }]),
+				p.resolve([
+					{ date_epoch: DAY, traded: 1, low_p: 1, high_p: 2 },
+				]),
 		},
 		{
 			stale: "range error",

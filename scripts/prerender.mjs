@@ -9,10 +9,13 @@ const DIST = "dist";
 const BUNDLE = ".prerender/assets";
 
 // modules that read browser globals at import time (storage, navigator)
-const dom = new JSDOM("<!doctype html><html><head></head><body></body></html>", {
-	url: "https://prunplanner.org/",
-	pretendToBeVisual: true,
-});
+const dom = new JSDOM(
+	"<!doctype html><html><head></head><body></body></html>",
+	{
+		url: "https://prunplanner.org/",
+		pretendToBeVisual: true,
+	}
+);
 for (const key of [
 	"window",
 	"document",
@@ -60,7 +63,11 @@ const errors = checkLanding(
 	sitemap
 );
 if (errors.length) {
-	console.error(`prerender: dist/index.html fails:\n- ${errors.join("\n- ")}`);
+	console.error(
+		`prerender: dist/index.html fails:\n- ${errors.join("\n- ")}`
+	);
 	process.exit(1);
 }
-console.log(`prerender: / (${Math.round(index.length / 1024)} kB), sitemap.xml`);
+console.log(
+	`prerender: / (${Math.round(index.length / 1024)} kB), sitemap.xml`
+);

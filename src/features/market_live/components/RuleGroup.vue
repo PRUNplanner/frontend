@@ -130,9 +130,7 @@
 		</div>
 
 		<div class="space-y-1">
-			<div
-				v-for="(item, index) in group.conditions"
-				:key="keyOf(item)">
+			<div v-for="(item, index) in group.conditions" :key="keyOf(item)">
 				<RuleGroup
 					v-if="isRuleGroup(item)"
 					:group="item"

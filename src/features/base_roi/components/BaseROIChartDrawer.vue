@@ -39,8 +39,7 @@
 		autoFocus: () => false,
 		close: () => (show.value = false),
 	});
-	const { height, dragStart, dragMove, dragEnd, resizeKey } =
-		useDockHeight();
+	const { height, dragStart, dragMove, dragEnd, resizeKey } = useDockHeight();
 
 	const KINDS: BaseROIRowKind[] = ["resource", "farming", "recipe"];
 	const colorOf = (kind: BaseROIRowKind) =>
@@ -52,7 +51,8 @@
 
 	const drawn = computed(() =>
 		rows.filter(
-			(r) => Number.isFinite(r.metrics.breakEven) && r.metrics.breakEven > 0
+			(r) =>
+				Number.isFinite(r.metrics.breakEven) && r.metrics.breakEven > 0
 		)
 	);
 	const never = computed(() => rows.length - drawn.value.length);
@@ -103,15 +103,25 @@
 		<div
 			class="px-6 pb-2 flex flex-row flex-wrap items-center gap-x-4 gap-y-2">
 			<div class="flex flex-row flex-wrap items-baseline gap-x-3 min-w-0">
-				<h2 class="text-base font-bold">{{ t("base_roi.chart.title") }}</h2>
-				<span class="text-xs text-muted">{{ t("base_roi.chart.caption") }}</span>
+				<h2 class="text-base font-bold">
+					{{ t("base_roi.chart.title") }}
+				</h2>
+				<span class="text-xs text-muted">{{
+					t("base_roi.chart.caption")
+				}}</span>
 			</div>
-			<div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 ml-auto">
+			<div
+				class="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 ml-auto">
 				<ul
 					class="flex flex-row flex-wrap gap-x-3 gap-y-1 text-xs text-muted"
 					:aria-label="t('base_roi.chart.legend')">
-					<li v-for="k in legend" :key="k" class="flex items-center gap-1.5">
-						<span class="size-2.5 rounded-full" :style="{ background: colorOf(k) }" />
+					<li
+						v-for="k in legend"
+						:key="k"
+						class="flex items-center gap-1.5">
+						<span
+							class="size-2.5 rounded-full"
+							:style="{ background: colorOf(k) }" />
 						{{ t(`base_roi.table.${k}`) }}
 					</li>
 				</ul>
@@ -128,21 +138,42 @@
 					:y-title="t('base_roi.chart.y')"
 					:label="t('base_roi.chart.label')">
 					<template #tooltip="{ point }">
-						<dl class="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 min-w-48">
-							<dt class="font-bold col-span-2">{{ point.label }}</dt>
-							<dt class="text-muted">{{ t("base_roi.chart.tooltip_break_even") }}</dt>
-							<dd class="font-mono text-right">{{ formatNumber(point.y, 1) }}</dd>
-							<dt class="text-muted">{{ t("base_roi.chart.tooltip_capacity") }}</dt>
-							<dd class="font-mono text-right">{{ formatNumber(point.x, 2) }}</dd>
-							<dt class="text-muted">{{ t("base_roi.chart.tooltip_profit") }}</dt>
+						<dl
+							class="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 min-w-48">
+							<dt class="font-bold col-span-2">
+								{{ point.label }}
+							</dt>
+							<dt class="text-muted">
+								{{ t("base_roi.chart.tooltip_break_even") }}
+							</dt>
 							<dd class="font-mono text-right">
-								{{ formatNumber(byKey.get(point.key)?.metrics.dailyProfit ?? 0, 0) }}
+								{{ formatNumber(point.y, 1) }}
+							</dd>
+							<dt class="text-muted">
+								{{ t("base_roi.chart.tooltip_capacity") }}
+							</dt>
+							<dd class="font-mono text-right">
+								{{ formatNumber(point.x, 2) }}
+							</dd>
+							<dt class="text-muted">
+								{{ t("base_roi.chart.tooltip_profit") }}
+							</dt>
+							<dd class="font-mono text-right">
+								{{
+									formatNumber(
+										byKey.get(point.key)?.metrics
+											.dailyProfit ?? 0,
+										0
+									)
+								}}
 							</dd>
 						</dl>
 					</template>
 				</PScatter>
 			</div>
-			<p v-else class="flex-1 py-3 text-center text-muted">{{ t("base_roi.chart.empty") }}</p>
+			<p v-else class="flex-1 py-3 text-center text-muted">
+				{{ t("base_roi.chart.empty") }}
+			</p>
 			<p v-if="never" class="text-xs text-muted">
 				{{ t("base_roi.chart.never", { n: never }, never) }}
 			</p>

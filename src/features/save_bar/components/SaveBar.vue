@@ -37,9 +37,7 @@
 		:aria-label="$t('management.save_bar.label')"
 		data-save-bar
 		class="sticky bottom-6 max-md:bottom-[calc(5rem+env(safe-area-inset-bottom))] z-10 mx-6 flex flex-wrap items-center gap-x-4 gap-y-2 min-h-16 py-3 pl-5 pr-4 bg-gray-dark border rounded-md shadow-[0_-8px_32px_rgba(0,0,0,0.7)]"
-		:class="
-			state === 'error' ? 'border-negative' : 'border-positive/45'
-		">
+		:class="state === 'error' ? 'border-negative' : 'border-positive/45'">
 		<span
 			v-if="state === 'error'"
 			class="size-2 rounded-full bg-negative" />

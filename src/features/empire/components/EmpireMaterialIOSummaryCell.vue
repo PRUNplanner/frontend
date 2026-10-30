@@ -37,7 +37,9 @@
 			v-if="side.top"
 			class="h-1.5 rounded-[2px] overflow-hidden bg-white/7"
 			aria-hidden="true">
-			<div class="flex h-full gap-px" :style="{ width: `${side.fillPct}%` }">
+			<div
+				class="flex h-full gap-px"
+				:style="{ width: `${side.fillPct}%` }">
 				<div
 					v-for="(e, i) in side.entries"
 					:key="e.planUuid"

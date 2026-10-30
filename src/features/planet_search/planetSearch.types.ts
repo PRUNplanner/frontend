@@ -57,10 +57,7 @@ export interface IPlanetSearchContext {
 
 /** Panel sections that have a widest state (the "Any" buttons) */
 export type IPlanetSearchSection =
-	| "conditions"
-	| "extras"
-	| "cogc"
-	| "infrastructure";
+	"conditions" | "extras" | "cogc" | "infrastructure";
 
 /** Toggled-option result counts, keyed like the panel's options */
 export interface IPlanetSearchFacets {

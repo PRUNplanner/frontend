@@ -44,15 +44,14 @@
 		recipeOptions,
 		bases,
 		own = NO_OWN,
-	} =
-		defineProps<{
-			result: IChainResult;
-			byproductMode: ChainByproductMode;
-			extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
-			recipeOptions: (ticker: string) => IChainRecipeEffect[];
-			bases: IChainBase[];
-			own?: IChainOwn;
-		}>();
+	} = defineProps<{
+		result: IChainResult;
+		byproductMode: ChainByproductMode;
+		extraction: ReadonlyMap<string, IChainExtractionOptions> | undefined;
+		recipeOptions: (ticker: string) => IChainRecipeEffect[];
+		bases: IChainBase[];
+		own?: IChainOwn;
+	}>();
 
 	const emit = defineEmits<{
 		(e: "source", ticker: string, source: ChainSource): void;
@@ -79,7 +78,8 @@
 	);
 
 	const made = computed(
-		() => result.order.filter((t) => result.rows[t].source === "make").length
+		() =>
+			result.order.filter((t) => result.rows[t].source === "make").length
 	);
 	const cheaper = computed(() => result.warnings.cheaper.length);
 	const thin = computed(() => result.warnings.thin.length);
@@ -93,7 +93,10 @@
 
 	const orderOptions = computed(() => [
 		{ value: "chain" as const, label: t("production_chains.panel.chain") },
-		{ value: "source" as const, label: t("production_chains.panel.by_source") },
+		{
+			value: "source" as const,
+			label: t("production_chains.panel.by_source"),
+		},
 	]);
 	const lineOptions = computed(() => [
 		{ value: "t" as const, label: t("production_chains.panel.lines_t") },
@@ -148,7 +151,9 @@
 		<div
 			class="flex flex-wrap items-center justify-between gap-3 px-3 border-b border-line">
 			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-				<nav :aria-label="t('production_chains.panel.views')" class="flex gap-x-1">
+				<nav
+					:aria-label="t('production_chains.panel.views')"
+					class="flex gap-x-1">
 					<button
 						v-for="v in ['steps', 'graph', 'bases'] as const"
 						:key="v"
@@ -176,7 +181,11 @@
 					v-if="result.totals.ownCount"
 					class="px-2 rounded-control border border-have text-have text-xs"
 					data-testid="chain-chip-have">
-					{{ $t("production_chains.have.chip", { n: result.totals.ownCount }) }}
+					{{
+						$t("production_chains.have.chip", {
+							n: result.totals.ownCount,
+						})
+					}}
 				</span>
 				<PButton
 					v-if="cheaper"
@@ -202,7 +211,12 @@
 					type="warning"
 					data-testid="chain-chip-bases"
 					@click="setView('bases')">
-					{{ $t("production_chains.panel.base_warnings", baseWarnings) }}
+					{{
+						$t(
+							"production_chains.panel.base_warnings",
+							baseWarnings
+						)
+					}}
 				</PButton>
 				<span
 					v-if="!cheaper && !thin && !baseWarnings"
@@ -231,13 +245,18 @@
 					</PButton>
 				</template>
 				<template v-else-if="view === 'graph'">
-					<span class="text-xs text-muted">{{ $t("production_chains.panel.lines") }}</span>
+					<span class="text-xs text-muted">{{
+						$t("production_chains.panel.lines")
+					}}</span>
 					<PSegmented
 						v-model:value="lines"
 						:options="lineOptions"
 						size="sm"
 						:label="t('production_chains.panel.line_width')" />
-					<div role="group" :aria-label="t('production_chains.panel.zoom')" class="flex gap-1">
+					<div
+						role="group"
+						:aria-label="t('production_chains.panel.zoom')"
+						class="flex gap-1">
 						<PButton
 							size="sm"
 							type="secondary"
@@ -245,7 +264,10 @@
 							@click="graph?.zoomBy(-1)">
 							−
 						</PButton>
-						<PButton size="sm" type="secondary" @click="graph?.fit()">
+						<PButton
+							size="sm"
+							type="secondary"
+							@click="graph?.fit()">
 							{{ $t("production_chains.panel.fit") }}
 						</PButton>
 						<PButton

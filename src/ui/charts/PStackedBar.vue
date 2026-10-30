@@ -22,9 +22,7 @@
 	}>();
 
 	const shown = computed(() => segments.filter((s) => s.value > 0));
-	const hatched = computed(
-		() => hatchFrom !== undefined && hatchFrom < 100
-	);
+	const hatched = computed(() => hatchFrom !== undefined && hatchFrom < 100);
 
 	const HATCH =
 		"repeating-linear-gradient(135deg, var(--color-negative) 0 6px, color-mix(in srgb, var(--color-negative) 35%, transparent) 6px 10px)";

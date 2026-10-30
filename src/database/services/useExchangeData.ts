@@ -148,12 +148,9 @@ export function useExchangeData() {
 			overview.vwap_daily["UNIVERSE"] = universeTicker.vwap_daily;
 			overview.vwap_7d["UNIVERSE"] = universeTicker.vwap_7d;
 			overview.vwap_30d["UNIVERSE"] = universeTicker.vwap_30d;
-			overview.sum_traded_7d["UNIVERSE"] =
-				universeTicker.sum_traded_7d;
-			overview.sum_traded_30d["UNIVERSE"] =
-				universeTicker.sum_traded_30d;
-			overview.calendar_date["UNIVERSE"] =
-				universeTicker.calendar_date;
+			overview.sum_traded_7d["UNIVERSE"] = universeTicker.sum_traded_7d;
+			overview.sum_traded_30d["UNIVERSE"] = universeTicker.sum_traded_30d;
+			overview.calendar_date["UNIVERSE"] = universeTicker.calendar_date;
 			overview.exchange_status["UNIVERSE"] =
 				universeTicker.exchange_status;
 			overview.vwap_analysis["UNIVERSE"] = calculateVWAPAnalysis(
@@ -216,8 +213,7 @@ export function useExchangeData() {
 			 * - High % (> 5.0%): High Fragmentation. Significant price gaps exist between exchanges
 			 */
 			const vwapList = specificTypes.map((t) => overview.vwap_7d[t]);
-			const mean =
-				vwapList.reduce((a, b) => a + b, 0) / vwapList.length;
+			const mean = vwapList.reduce((a, b) => a + b, 0) / vwapList.length;
 			const stdDev = Math.sqrt(
 				vwapList
 					.map((v) => Math.pow(v - mean, 2))

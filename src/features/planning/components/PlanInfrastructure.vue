@@ -105,9 +105,7 @@
 						{{ t("plan.base.housing.auto") }}
 					</label>
 				</template>
-				{{
-					t("plan.components.infrastructure.auto_optimize_tooltip")
-				}}
+				{{ t("plan.components.infrastructure.auto_optimize_tooltip") }}
 			</PTooltip>
 			<template v-if="!localAutoOptimizeHabs && !disabled">
 				<PButton
@@ -129,7 +127,9 @@
 				v-for="inf in infrastructureOrder"
 				:key="inf"
 				class="flex items-center justify-between gap-2">
-				<span class="font-mono text-ink-strong" data-ticker>{{ inf }}</span>
+				<span class="font-mono text-ink-strong" data-ticker>{{
+					inf
+				}}</span>
 				<PInputNumber
 					:aria-label="
 						t('plan.components.infrastructure.amount_label', {

@@ -259,7 +259,9 @@ export function useExchangeSSE() {
 		};
 
 		eventSource.onerror = () => {
-			connectionError.value = i18n.global.t("market_live.connection_lost");
+			connectionError.value = i18n.global.t(
+				"market_live.connection_lost"
+			);
 			isConnected.value = false;
 		};
 

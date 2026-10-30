@@ -54,12 +54,16 @@ describe("RepairMaterialList", () => {
 		const { wrapper } = await mountList({ limit: 6 });
 		const toggle = wrapper.find("button[aria-expanded]");
 
-		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(6);
+		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(
+			6
+		);
 		expect(toggle.text()).toBe("Show all 8 materials");
 		expect(toggle.attributes("aria-expanded")).toBe("false");
 
 		await toggle.trigger("click");
-		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(8);
+		expect(wrapper.findAll("[data-testid=repair-material]")).toHaveLength(
+			8
+		);
 		expect(toggle.attributes("aria-expanded")).toBe("true");
 		// the XIT always covers all of them
 		expect(
@@ -68,7 +72,10 @@ describe("RepairMaterialList", () => {
 	});
 
 	it("needs no toggle when everything fits", async () => {
-		const { wrapper } = await mountList({ list: materialList(4), limit: 6 });
+		const { wrapper } = await mountList({
+			list: materialList(4),
+			limit: 6,
+		});
 
 		expect(wrapper.find("button[aria-expanded]").exists()).toBe(false);
 	});

@@ -78,16 +78,8 @@ describe("planning queries tell the other tabs", () => {
 		],
 		["CreateEmpire", { data: {} }, [[EMPIRES], ["empire-new"]]],
 		["DeleteEmpire", { empireUuid: "empire-a" }, [[EMPIRES], ["empire-a"]]],
-		[
-			"PatchEmpirePlanJunctions",
-			{ junctions: [] },
-			[[EMPIRES, PLANS], []],
-		],
-		[
-			"PatchEmpireCXJunctions",
-			{ junctions: [] },
-			[[EMPIRES, CXS], []],
-		],
+		["PatchEmpirePlanJunctions", { junctions: [] }, [[EMPIRES, PLANS], []]],
+		["PatchEmpireCXJunctions", { junctions: [] }, [[EMPIRES, CXS], []]],
 		["CreateCX", { cxName: "n" }, [[CXS], ["cx-new"]]],
 		["DeleteCX", { cxUuid: "cx-a" }, [[CXS], ["cx-a"]]],
 		[
@@ -213,7 +205,8 @@ describe("batchChanges", () => {
 		watch(
 			() => !store.peekQueryState(["planningdata", "empire", "list"]),
 			(missing) => {
-				if (missing) store.execute("GetAllEmpires", undefined).catch(() => {});
+				if (missing)
+					store.execute("GetAllEmpires", undefined).catch(() => {});
 			},
 			{ immediate: true, flush: "sync" }
 		);
@@ -221,7 +214,9 @@ describe("batchChanges", () => {
 
 	it("8 saves in a batch: the empire list is fetched once, no loop", async () => {
 		mountEmpireReader();
-		await vi.waitFor(() => expect(callGetEmpireList).toHaveBeenCalledOnce());
+		await vi.waitFor(() =>
+			expect(callGetEmpireList).toHaveBeenCalledOnce()
+		);
 		vi.mocked(callGetEmpireList).mockClear();
 
 		await batchChanges(async () => {
@@ -237,7 +232,9 @@ describe("batchChanges", () => {
 
 	it("8 saves without a batch trip the guard", async () => {
 		mountEmpireReader();
-		await vi.waitFor(() => expect(callGetEmpireList).toHaveBeenCalledOnce());
+		await vi.waitFor(() =>
+			expect(callGetEmpireList).toHaveBeenCalledOnce()
+		);
 
 		for (let i = 0; i < 8; i++)
 			// @ts-expect-error mock data

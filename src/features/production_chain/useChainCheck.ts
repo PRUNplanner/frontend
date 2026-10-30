@@ -69,7 +69,9 @@ const first = (v: IQueryValue): string | undefined =>
 
 const number = (v: IQueryValue, fallback: number): number => {
 	const n = Number(first(v));
-	return first(v) !== undefined && Number.isFinite(n) && n >= 0 ? n : fallback;
+	return first(v) !== undefined && Number.isFinite(n) && n >= 0
+		? n
+		: fallback;
 };
 
 /**
@@ -161,8 +163,8 @@ export function useChainCheck() {
 			state.value = {
 				...state.value,
 				empire:
-					list.find((e) => e.uuid === defaultEmpireUuid.value)?.uuid ??
-					list[0].uuid,
+					list.find((e) => e.uuid === defaultEmpireUuid.value)
+						?.uuid ?? list[0].uuid,
 			};
 	}
 
@@ -253,11 +255,9 @@ export function useChainCheck() {
 			: null
 	);
 
-	watch(
-		state,
-		(value) => router.replace({ query: encodeCheck(value) }),
-		{ deep: true }
-	);
+	watch(state, (value) => router.replace({ query: encodeCheck(value) }), {
+		deep: true,
+	});
 
 	// tool:use for a changed check with chains, not for the one the page opened with
 	const trackUse = debounce(() => {

@@ -294,9 +294,9 @@ describe("whatIf on the real engine", () => {
 			priced(askBid)
 		);
 		expect([...kept.zero]).toEqual([]);
-			expect(
-				Math.abs(calculation.result.profit - full.result.profit)
-			).toBeLessThan(0.01);
+		expect(
+			Math.abs(calculation.result.profit - full.result.profit)
+		).toBeLessThan(0.01);
 		expect(kept.fallback.size).toBe(0);
 	});
 });

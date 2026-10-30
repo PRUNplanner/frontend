@@ -123,7 +123,9 @@ describe("HomepageHeader", () => {
 
 		// opening is the header's buttons' job, the drawer only closes
 		wrapper.findComponent(PDrawer).vm.$emit("update:show", true);
-		expect(panel.showLogin.value || panel.showRegistration.value).toBe(false);
+		expect(panel.showLogin.value || panel.showRegistration.value).toBe(
+			false
+		);
 	});
 
 	it("closes the panel when the header leaves", async () => {
@@ -202,9 +204,13 @@ describe("HomepageHeader", () => {
 	describe("menu below lg", () => {
 		it("lists the tools, the sections, GitHub and Log in", async () => {
 			route.name = "search";
-			const { wrapper } = await mountComponent(HomepageHeader, {}, {
-				attach: true,
-			});
+			const { wrapper } = await mountComponent(
+				HomepageHeader,
+				{},
+				{
+					attach: true,
+				}
+			);
 			const button = wrapper.find("[data-menu]");
 			expect(button.attributes("aria-expanded")).toBe("false");
 			const focus = vi.spyOn(HTMLElement.prototype, "focus");
@@ -237,13 +243,19 @@ describe("HomepageHeader", () => {
 		});
 
 		it("closes on Escape and outside clicks, back on its button", async () => {
-			const { wrapper } = await mountComponent(HomepageHeader, {}, {
-				attach: true,
-			});
+			const { wrapper } = await mountComponent(
+				HomepageHeader,
+				{},
+				{
+					attach: true,
+				}
+			);
 			const button = wrapper.find("[data-menu]");
 
 			await button.trigger("click");
-			document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+			document.dispatchEvent(
+				new KeyboardEvent("keydown", { key: "Escape" })
+			);
 			await nextTick();
 			expect(wrapper.find("#homepage-menu").exists()).toBe(false);
 			expect(document.activeElement).toBe(button.element);
@@ -269,13 +281,19 @@ describe("HomepageHeader", () => {
 	});
 
 	it("names the planet above the forms when a plan is started", async () => {
-		const { wrapper } = await mountComponent(HomepageHeader, {}, {
-			messages: {
-				homepage: {
-					auth_panel: { plan_context: "Plan {planet} ({id}), {name}" },
+		const { wrapper } = await mountComponent(
+			HomepageHeader,
+			{},
+			{
+				messages: {
+					homepage: {
+						auth_panel: {
+							plan_context: "Plan {planet} ({id}), {name}",
+						},
+					},
 				},
-			},
-		});
+			}
+		);
 		panel.open("login", "planet_search_plan", {
 			next: "/plan/CH-771a",
 			context: { planet: "Pyrgos", id: "CH-771a" },
@@ -283,7 +301,9 @@ describe("HomepageHeader", () => {
 		await forms(wrapper);
 		const notice = () =>
 			document.querySelector("[role=dialog] [role=status]");
-		expect(notice()?.textContent).toContain("Plan Pyrgos (CH-771a), Pyrgos");
+		expect(notice()?.textContent).toContain(
+			"Plan Pyrgos (CH-771a), Pyrgos"
+		);
 
 		// also after the switch to Create account
 		panel.switchTo("registration");

@@ -213,8 +213,7 @@
 					</span>
 				</template>
 				<template #cell-flow_inputs="{ row }">
-					<div
-						class="flex flex-row flex-wrap gap-1.5 text-nowrap">
+					<div class="flex flex-row flex-wrap gap-1.5 text-nowrap">
 						<div
 							v-for="stat in row.inputStats"
 							:key="`${row.recipe.recipe_id}#${stat.ticker}`"
@@ -239,13 +238,7 @@
 										: 'text-warning'
 								"
 								class="text-xs mt-1 font-mono">
-								{{
-									formatNumber(
-										stat.currentDelta,
-										2,
-										true
-									)
-								}}x
+								{{ formatNumber(stat.currentDelta, 2, true) }}x
 							</div>
 							<div
 								v-else
@@ -270,12 +263,8 @@
 				</template>
 				<template #cell-Analysis="{ row }">
 					<div class="flex flex-col text-end">
-						<span
-							v-if="row.sustainedRuns > 0"
-							class="text-lg">
-							{{
-								formatNumber(row.sustainedRuns, 2, true)
-							}}
+						<span v-if="row.sustainedRuns > 0" class="text-lg">
+							{{ formatNumber(row.sustainedRuns, 2, true) }}
 						</span>
 						<span
 							v-if="row.isFullMatch"
@@ -288,14 +277,11 @@
 						</span>
 						<span
 							v-else-if="
-								!row.isFullMatch &&
-								row.sustainedRuns > 0
+								!row.isFullMatch && row.sustainedRuns > 0
 							"
 							class="text-xs text-warning">
 							{{
-								$t(
-									"empire.opportunities.table.delta_required"
-								)
+								$t("empire.opportunities.table.delta_required")
 							}}
 						</span>
 						<span v-else class="text-xs text-negative">
@@ -309,14 +295,11 @@
 				</template>
 				<template #cell-inputSellCost="{ row }">
 					<div
-						v-if="
-							row.isFullMatch && row.sustainedRuns > 0
-						"
+						v-if="row.isFullMatch && row.sustainedRuns > 0"
 						class="text-nowrap">
 						<span
 							:class="
-								row.inputSellCost >=
-								row.outputSellCost
+								row.inputSellCost >= row.outputSellCost
 									? 'text-positive'
 									: 'text-negative'
 							">
@@ -328,14 +311,11 @@
 				</template>
 				<template #cell-outputSellCost="{ row }">
 					<div
-						v-if="
-							row.isFullMatch && row.sustainedRuns > 0
-						"
+						v-if="row.isFullMatch && row.sustainedRuns > 0"
 						class="text-nowrap">
 						<span
 							:class="
-								row.inputSellCost >=
-								row.outputSellCost
+								row.inputSellCost >= row.outputSellCost
 									? 'text-negative'
 									: 'text-positive'
 							">

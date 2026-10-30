@@ -6,7 +6,10 @@ import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
 import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 import PValue from "@/ui/components/PValue.vue";
 import { mountComponent } from "@/tests/mountComponent";
-import { experts, wf } from "@/tests/features/planning/usePlanCalculation.fixtures";
+import {
+	experts,
+	wf,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
 import { formatPayback } from "@/util/numbers";
 import plan from "@/locales/en_US/plan.json";
 
@@ -306,9 +309,9 @@ describe("PlanResultsBar", () => {
 	it("shows the empire average only when given", async () => {
 		const { wrapper } = await mountBar({ empireProfitPerArea: 3.2 });
 
-		expect(tile(wrapper, "area").find("[data-profit-area]").text()).toContain(
-			"Empire +3.20"
-		);
+		expect(
+			tile(wrapper, "area").find("[data-profit-area]").text()
+		).toContain("Empire +3.20");
 	});
 
 	it("shows the storage days and the weight in and out, volume on hover", async () => {
@@ -320,9 +323,7 @@ describe("PlanResultsBar", () => {
 		expect(storage.text()).toContain("days to full");
 		const note = storage.find("[title]");
 		expect(note.text()).toBe("1.0 t in · 4.6 t out / day");
-		expect(note.attributes("title")).toBe(
-			"1.0 m³ in · 7.0 m³ out / day"
-		);
+		expect(note.attributes("title")).toBe("1.0 m³ in · 7.0 m³ out / day");
 	});
 
 	it("shows the shared plan's deltas only with a comparison", async () => {
@@ -335,8 +336,8 @@ describe("PlanResultsBar", () => {
 		};
 		await setProps({ compare });
 
-		expect(wrapper.findComponent(SharedPlanDeltas).props("compare")).toEqual(
-			compare
-		);
+		expect(
+			wrapper.findComponent(SharedPlanDeltas).props("compare")
+		).toEqual(compare);
 	});
 });

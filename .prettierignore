@@ -3,7 +3,6 @@ node_modules
 coverage
 .gitignore
 .github
-.eslintignore
 .prettierignore
 .vscode
 LICENSE
@@ -12,3 +11,5 @@ pnpm-lock.yaml
 
 # dont prettify certain jsons
 fio_systemstars.json
+src/tests/test_data
+**/__snapshots__

@@ -193,9 +193,15 @@ describe("crossTab", () => {
 			await vi.waitFor(() =>
 				expect(remoteChange.value?.seq).toBe(before + 1)
 			);
-			expect(remoteChange.value?.uuids).toStrictEqual(["plan-a", "plan-b"]);
+			expect(remoteChange.value?.uuids).toStrictEqual([
+				"plan-a",
+				"plan-b",
+			]);
 
-			otherTab.postMessage({ userId: "7", keys: [["planningdata", "cx"]] });
+			otherTab.postMessage({
+				userId: "7",
+				keys: [["planningdata", "cx"]],
+			});
 			await vi.waitFor(() =>
 				expect(remoteChange.value?.seq).toBe(before + 2)
 			);
@@ -344,7 +350,10 @@ describe("crossTab", () => {
 			const old = cloneDeep(preferenceDefaults);
 			const event = storageEvent(
 				{ refreshToken: jwt(7), preferences: old },
-				{ refreshToken: jwt(7), preferences: { ...old, burnDaysRed: 2 } }
+				{
+					refreshToken: jwt(7),
+					preferences: { ...old, burnDaysRed: 2 },
+				}
 			);
 			// this tab persisted its change before handling the event
 			localStorage.setItem(

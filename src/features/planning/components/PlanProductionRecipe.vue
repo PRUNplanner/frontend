@@ -172,7 +172,11 @@
 			@update:value="
 				(value) => {
 					if (value !== null && value !== undefined)
-						emit('update:building:recipe:amount', recipeIndex, value);
+						emit(
+							'update:building:recipe:amount',
+							recipeIndex,
+							value
+						);
 				}
 			" />
 		<!-- the whole recipe opens the picker. It spans three columns of the
@@ -208,7 +212,9 @@
 						v-for="material in localRecipeData.recipe.inputs"
 						:key="`IN#${material.material_ticker}`"
 						:ticker="material.material_ticker"
-						:amount="material.material_amount * localRecipeData.amount"
+						:amount="
+							material.material_amount * localRecipeData.amount
+						"
 						disable-drawer
 						:enable-popover="false" />
 				</span>
@@ -230,7 +236,9 @@
 						v-for="material in localRecipeData.recipe.outputs"
 						:key="`OUT#${material.material_ticker}`"
 						:ticker="material.material_ticker"
-						:amount="material.material_amount * localRecipeData.amount"
+						:amount="
+							material.material_amount * localRecipeData.amount
+						"
 						disable-drawer
 						:enable-popover="false" />
 				</span>
@@ -241,7 +249,9 @@
 				<span
 					v-if="!disabled"
 					class="ml-auto shrink-0 flex items-center gap-0.5 h-6 pl-2 pr-1 @max-[56rem]/prod:px-0.5 rounded-control border border-line text-xs text-muted-strong group-hover:border-line-strong group-hover:text-ink-strong"
-					:class="pickerOpen ? 'border-line-strong text-ink-strong' : ''">
+					:class="
+						pickerOpen ? 'border-line-strong text-ink-strong' : ''
+					">
 					<!-- a production column under 56rem keeps only the chevron: the
 						aligned tile columns need the room -->
 					<span class="@max-[56rem]/prod:hidden">
@@ -269,7 +279,9 @@
 			:title="t('plan.production.recipe_daily')"
 			data-recipe-daily>
 			<!-- an order that never runs (0 % of the time) earns nothing itself -->
-			<PValue v-if="localRecipeData.dailyShare > 0" :value="dailyProfit" />
+			<PValue
+				v-if="localRecipeData.dailyShare > 0"
+				:value="dailyProfit" />
 			<span v-else class="text-muted">—</span>
 		</span>
 		<PButton
@@ -277,9 +289,7 @@
 			type="ghost"
 			class="justify-self-end pointer-coarse:h-11 border border-link/40 pointer-coarse:border-transparent text-link! disabled:text-link/40!"
 			:disabled="!cogmEnabled"
-			:aria-label="
-				t('plan.production.cogm_label', { recipe: outputs })
-			"
+			:aria-label="t('plan.production.cogm_label', { recipe: outputs })"
 			@click="openCOGM">
 			<template #icon><AnalyticsOutlined /></template>
 			{{ t("plan.components.production_recipe.buttons.cogm") }}
@@ -288,7 +298,9 @@
 			v-if="!disabled"
 			type="button"
 			class="touch-target flex items-center justify-center size-6 pointer-coarse:size-11 rounded-control text-muted hover:text-negative hover:bg-negative/10 cursor-pointer"
-			:aria-label="t('plan.production.delete_recipe', { recipe: outputs })"
+			:aria-label="
+				t('plan.production.delete_recipe', { recipe: outputs })
+			"
 			@click="emit('delete:building:recipe', recipeIndex)">
 			<PIcon :size="16"><DeleteOutlineSharp /></PIcon>
 		</button>

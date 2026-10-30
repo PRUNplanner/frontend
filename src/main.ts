@@ -17,7 +17,11 @@ import router from "@/router";
 
 // app + uses
 import { trackVueError, reportError } from "@/lib/analytics/useAnalytics";
-import { isPrerendered, mountApp, prepareMount } from "@/lib/seo/prerenderMount";
+import {
+	isPrerendered,
+	mountApp,
+	prepareMount,
+} from "@/lib/seo/prerenderMount";
 import { registerChunkReload } from "@/lib/chunkReload";
 import { registerCrossTab } from "@/lib/crossTab";
 import { startPreferenceSync } from "@/features/preferences/usePreferences";

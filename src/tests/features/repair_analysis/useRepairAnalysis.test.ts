@@ -147,7 +147,12 @@ describe("useRepairAnalysis", () => {
 		// no repair cost: output only falls, day 0 copies day 1's profit and
 		// findOptimalRepairDay picks day 0
 		const { buildings } = await setup([
-			{ ...FRM, amount: 1, dailyRevenue: 1000, constructionMaterials: [] },
+			{
+				...FRM,
+				amount: 1,
+				dailyRevenue: 1000,
+				constructionMaterials: [],
+			},
 		]);
 
 		expect(findOptimalRepairDay(buildings.value[0].curve).day).toBe(0);
@@ -215,10 +220,12 @@ describe("useRepairAnalysis", () => {
 
 		// day 90 halves the construction materials, times 2 buildings
 		const list = materialsFor(frm, 90);
-		expect(list.materials.map((m) => [m.ticker, m.amount, m.cost])).toEqual([
-			["BBH", 4, 400],
-			["BSE", 4, 200],
-		]);
+		expect(list.materials.map((m) => [m.ticker, m.amount, m.cost])).toEqual(
+			[
+				["BBH", 4, 400],
+				["BSE", 4, 200],
+			]
+		);
 		expect(list.cost).toBe(600);
 		expect(list.weight).toBeGreaterThan(0);
 		expect(list.volume).toBeGreaterThan(0);
@@ -238,7 +245,10 @@ describe("useRepairAnalysis", () => {
 
 		// the same intervals come from the memo
 		all();
-		materialsFor(buildings.value.find((b) => b.ticker === "FRM")!, 90);
+		materialsFor(
+			buildings.value.find((b) => b.ticker === "FRM")!,
+			90
+		);
 		expect(spies.materialsAt).toHaveBeenCalledTimes(2);
 
 		intervals.FRM = 30;
@@ -265,7 +275,10 @@ describe("useRepairAnalysis", () => {
 
 		// FRM every 180 d: BSE 16 + 8 = 24 now leads, BBH 8
 		expect(
-			materialsForAll(() => 180).materials.map((m) => [m.ticker, m.amount])
+			materialsForAll(() => 180).materials.map((m) => [
+				m.ticker,
+				m.amount,
+			])
 		).toEqual([
 			["BSE", 24],
 			["MCG", 100],

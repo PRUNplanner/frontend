@@ -51,7 +51,8 @@ export function useChainPlans() {
 		const gameData = await loadGameData();
 		const sorted = [...list].sort(
 			(a, b) =>
-				a.plan_name.localeCompare(b.plan_name) || a.uuid.localeCompare(b.uuid)
+				a.plan_name.localeCompare(b.plan_name) ||
+				a.uuid.localeCompare(b.uuid)
 		);
 		const out: ICheckPlan[] = [];
 		for (const [i, plan] of sorted.entries()) {

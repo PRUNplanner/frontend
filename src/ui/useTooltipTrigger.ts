@@ -56,7 +56,8 @@ export function useTooltipTrigger(
 
 	// a control inside the trigger, not the trigger itself
 	function onControl(target: EventTarget | null): boolean {
-		const el = target instanceof Element ? target.closest(INTERACTIVE) : null;
+		const el =
+			target instanceof Element ? target.closest(INTERACTIVE) : null;
 		return !!el && el !== trigger.value && !!trigger.value?.contains(el);
 	}
 
@@ -104,7 +105,8 @@ export function useTooltipTrigger(
 			if (!recentTouch()) show();
 		},
 		focusout: (e: FocusEvent) => {
-			if (!trigger.value?.contains(e.relatedTarget as Node | null)) hide();
+			if (!trigger.value?.contains(e.relatedTarget as Node | null))
+				hide();
 		},
 		click: (e: MouseEvent) => {
 			if (!recentTouch() || onControl(e.target)) return;

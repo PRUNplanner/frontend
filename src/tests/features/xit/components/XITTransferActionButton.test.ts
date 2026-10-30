@@ -119,7 +119,9 @@ describe("XITTransferActionButton", () => {
 	});
 
 	it("sends which button it is with its events", async () => {
-		const { wrapper } = await mountButton({ source: "supply_cart_initial" });
+		const { wrapper } = await mountButton({
+			source: "supply_cart_initial",
+		});
 		await open(wrapper);
 		expect(trackEvent).toHaveBeenCalledWith("xit:transfer_open", {
 			source: "supply_cart_initial",

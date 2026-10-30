@@ -90,11 +90,9 @@
 		}))
 	);
 
-	const chartDataMaterialProfit: ComputedRef<IChartBarItem[]> =
-		computed(() => {
-			const data = props.empireMaterialIO.filter(
-				(f) => f.deltaPrice > 0
-			);
+	const chartDataMaterialProfit: ComputedRef<IChartBarItem[]> = computed(
+		() => {
+			const data = props.empireMaterialIO.filter((f) => f.deltaPrice > 0);
 
 			return data.map((e) => {
 				return {
@@ -103,25 +101,23 @@
 					color: getMaterialColor(e.ticker),
 				};
 			});
+		}
+	);
+
+	const chartDataMaterialCost: ComputedRef<IChartBarItem[]> = computed(() => {
+		const data = props.empireMaterialIO.filter((f) => f.deltaPrice < 0);
+
+		return data.map((e) => {
+			return {
+				name: e.ticker,
+				value: (Math.round(e.deltaPrice * 100) / 100) * -1,
+				color: getMaterialColor(e.ticker),
+			};
 		});
+	});
 
-	const chartDataMaterialCost: ComputedRef<IChartBarItem[]> =
-		computed(() => {
-			const data = props.empireMaterialIO.filter(
-				(f) => f.deltaPrice < 0
-			);
-
-			return data.map((e) => {
-				return {
-					name: e.ticker,
-					value: (Math.round(e.deltaPrice * 100) / 100) * -1,
-					color: getMaterialColor(e.ticker),
-				};
-			});
-		});
-
-	const chartDataNetProduction: ComputedRef<IChartBarItem[]> =
-		computed(() => {
+	const chartDataNetProduction: ComputedRef<IChartBarItem[]> = computed(
+		() => {
 			const data = props.empireMaterialIO.filter((f) => f.delta > 0);
 
 			return data.map((e) => {
@@ -131,10 +127,11 @@
 					color: getMaterialColor(e.ticker),
 				};
 			});
-		});
+		}
+	);
 
-	const chartDataNetConsumption: ComputedRef<IChartBarItem[]> =
-		computed(() => {
+	const chartDataNetConsumption: ComputedRef<IChartBarItem[]> = computed(
+		() => {
 			const data = props.empireMaterialIO.filter((f) => f.delta < 0);
 
 			return data.map((e) => {
@@ -144,10 +141,11 @@
 					color: getMaterialColor(e.ticker),
 				};
 			});
-		});
+		}
+	);
 
-	const chartDataExclusiveProduction: ComputedRef<IChartBarItem[]> =
-		computed(() => {
+	const chartDataExclusiveProduction: ComputedRef<IChartBarItem[]> = computed(
+		() => {
 			const data = props.empireMaterialIO.filter(
 				(f) => f.output > 0 && f.input === 0
 			);
@@ -159,7 +157,8 @@
 					color: getMaterialColor(e.ticker),
 				};
 			});
-		});
+		}
+	);
 
 	const chartDataExclusiveConsumption: ComputedRef<IChartBarItem[]> =
 		computed(() => {
@@ -182,7 +181,9 @@
 		<EmpireRevenueSplit :plans="planListData" />
 		<EmpireMaterialButterfly
 			:material-i-o="empireMaterialIO"
-			@open:material="(ticker: string) => emit('open:material', ticker)" />
+			@open:material="
+				(ticker: string) => emit('open:material', ticker)
+			" />
 		<details
 			:open="moreChartsOpen"
 			class="@container border rounded-[3px] border-white/15"
@@ -202,7 +203,9 @@
 				<!-- columns follow the panel, not the viewport: beside the empire
 					table it is only ~400px wide at 1440 -->
 				<div class="grid grid-cols-1 @3xl:grid-cols-2 gap-3">
-					<div v-if="chartDataPlanProfit.length" class="@3xl:col-span-2 min-w-0">
+					<div
+						v-if="chartDataPlanProfit.length"
+						class="@3xl:col-span-2 min-w-0">
 						<h2 class="text-lg font-bold pb-3">
 							{{ $t("empire.analysis.plan_profit") }}
 						</h2>
@@ -242,7 +245,8 @@
 						<h2 class="text-lg font-bold pb-3">
 							{{ $t("empire.analysis.exclusive_consumption") }}
 						</h2>
-						<EmpireBarChart :items="chartDataExclusiveConsumption" />
+						<EmpireBarChart
+							:items="chartDataExclusiveConsumption" />
 					</div>
 				</div>
 			</div>

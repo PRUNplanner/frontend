@@ -126,7 +126,8 @@
 				if (Array.isArray(messages) && typeof messages[0] === "string")
 					fioErrors.value[field] = messages[0];
 			}
-			const reason = fioErrors.value.fio_apikey ?? fioErrors.value.prun_username;
+			const reason =
+				fioErrors.value.fio_apikey ?? fioErrors.value.prun_username;
 			if (reason) trackEvent("account:fio_link_failed", { reason });
 			else if (!isThrottled.value)
 				toast(t("common.ui.save_failed"), { type: "error" });
@@ -183,11 +184,11 @@
 	</div>
 	<PButton
 		class="self-start"
-			:loading="isUpdating"
-			:disabled="isUpdating"
-			:type="wasSaved ? 'secondary' : 'primary'"
-			@click="patchProfile">
-			{{ $t("profile.buttons.save") }}
+		:loading="isUpdating"
+		:disabled="isUpdating"
+		:type="wasSaved ? 'secondary' : 'primary'"
+		@click="patchProfile">
+		{{ $t("profile.buttons.save") }}
 	</PButton>
 	<details class="group" :open="userStore.fioStatus === 'none'">
 		<summary class="cursor-pointer text-link hover:underline w-fit">

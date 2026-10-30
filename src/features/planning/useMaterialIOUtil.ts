@@ -103,9 +103,10 @@ export function useMaterialIOUtil() {
 		 */
 
 		Object.entries(combinedMap).map(([ticker, pre]) => {
-			const flatPlanets = [...pre.inputPlanets, ...pre.outputPlanets].filter(
-				(p) => p.delta
-			);
+			const flatPlanets = [
+				...pre.inputPlanets,
+				...pre.outputPlanets,
+			].filter((p) => p.delta);
 
 			const flatValues: number[] = flatPlanets.map((pv) =>
 				Math.abs(pv.delta)

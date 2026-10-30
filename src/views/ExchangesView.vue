@@ -243,7 +243,9 @@
 			unsaved.value &&
 			!(await confirm({
 				title: t("exchanges.switch.confirm_title"),
-				content: t("exchanges.switch.confirm", { preference: name.value }),
+				content: t("exchanges.switch.confirm", {
+					preference: name.value,
+				}),
 				positiveText: t("exchanges.switch.discard"),
 				negativeText: t("exchanges.switch.keep"),
 			}))

@@ -135,7 +135,11 @@ export function useBuildingData() {
 		if (popularOptions.length === 0) return options;
 
 		return [
-			{ label: popular.label, value: "POPULAR", children: popularOptions },
+			{
+				label: popular.label,
+				value: "POPULAR",
+				children: popularOptions,
+			},
 			{
 				label: t("plan.components.production.form.all_buildings"),
 				value: "ALL",

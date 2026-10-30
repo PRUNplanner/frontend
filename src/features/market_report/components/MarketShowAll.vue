@@ -21,20 +21,20 @@
 		showAll,
 		pagesLabel,
 	} = defineProps<{
-			/** rows in the whole list */
-			total: number;
-			/** rows while collapsed */
-			top: number;
-			/** first row shown, 0-based, and rows shown */
-			offset: number;
-			shown: number;
-			pageCount: number;
-			expanded: boolean;
-			/** "Show all 75 rising" */
-			showAll: string;
-			/** the pager's accessible name */
-			pagesLabel: string;
-		}>();
+		/** rows in the whole list */
+		total: number;
+		/** rows while collapsed */
+		top: number;
+		/** first row shown, 0-based, and rows shown */
+		offset: number;
+		shown: number;
+		pageCount: number;
+		expanded: boolean;
+		/** "Show all 75 rising" */
+		showAll: string;
+		/** the pager's accessible name */
+		pagesLabel: string;
+	}>();
 	const page = defineModel<number>("page", { required: true });
 	defineEmits<{ (e: "toggle"): void }>();
 
@@ -85,6 +85,10 @@
 		class="w-full sm:w-auto sm:self-center pointer-coarse:h-11"
 		:aria-expanded="expanded"
 		@click="$emit('toggle')">
-		{{ expanded ? t("market_report.list.show_top", { count: top }) : showAll }}
+		{{
+			expanded
+				? t("market_report.list.show_top", { count: top })
+				: showAll
+		}}
 	</PButton>
 </template>

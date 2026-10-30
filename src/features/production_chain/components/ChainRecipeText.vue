@@ -10,8 +10,11 @@
 </script>
 
 <template>
-	<span class="inline-flex items-center gap-x-1 tabular-nums whitespace-nowrap">
-		<template v-for="(m, i) in recipe.inputs" :key="`i-${m.material_ticker}`">
+	<span
+		class="inline-flex items-center gap-x-1 tabular-nums whitespace-nowrap">
+		<template
+			v-for="(m, i) in recipe.inputs"
+			:key="`i-${m.material_ticker}`">
 			<span v-if="i > 0" class="text-muted">+</span>
 			<span>{{ m.material_amount }}&#8239;{{ m.material_ticker }}</span>
 		</template>

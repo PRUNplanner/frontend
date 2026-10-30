@@ -5,11 +5,7 @@ export type SizeKey = "sm" | "md";
 export type FieldStatus = "error" | "warning";
 export type NoticeType = "info" | "warning" | "error";
 export type ColorKey =
-	| "primary"
-	| "success"
-	| "error"
-	| "warning"
-	| "secondary";
+	"primary" | "success" | "error" | "warning" | "secondary";
 // buttons also come quiet, without a fill
 export type ButtonColorKey = ColorKey | "ghost";
 

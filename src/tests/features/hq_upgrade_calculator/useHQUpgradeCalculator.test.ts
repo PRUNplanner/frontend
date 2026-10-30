@@ -61,12 +61,7 @@ describe("useHQUpgradeCalculator", async () => {
 
 	it("totalCost", async () => {
 		const { totalCost, materialData, calculateMaterialData } =
-			useHQUpgradeCalculator(
-				refStart,
-				refTo,
-				refOverride,
-				refCXUuid
-			);
+			useHQUpgradeCalculator(refStart, refTo, refOverride, refCXUuid);
 
 		expect(totalCost.value).toBe(0);
 
@@ -85,12 +80,8 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume, calculateMaterialData } = useHQUpgradeCalculator(
-			refStart,
-			refTo,
-			refOverride,
-			refCXUuid
-		);
+		const { totalWeightVolume, calculateMaterialData } =
+			useHQUpgradeCalculator(refStart, refTo, refOverride, refCXUuid);
 
 		await calculateMaterialData();
 

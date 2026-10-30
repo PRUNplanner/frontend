@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, onTestFinished, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	onTestFinished,
+	vi,
+} from "vitest";
 import { z } from "zod";
 import { apiService } from "@/lib/apiService";
 import { ApiError, ApiValidationError, isApiError } from "@/lib/apiError";
@@ -17,7 +25,8 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({
 }));
 vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const UUID =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);
@@ -81,9 +90,13 @@ describe("ApiService", () => {
 		});
 
 		it("keeps a 429's status and Retry-After seconds", async () => {
-			mock.onGet("/test").reply(429, { detail: "throttled" }, {
-				"retry-after": "42",
-			});
+			mock.onGet("/test").reply(
+				429,
+				{ detail: "throttled" },
+				{
+					"retry-after": "42",
+				}
+			);
 
 			await expect(
 				apiService.get("/test", z.object({}))
@@ -145,8 +158,12 @@ describe("ApiService", () => {
 			mock.onGet(`${config.API_BASE_URL}/ids`).reply(echoHeaders);
 			mock.onGet("https://other.example/ids").reply(echoHeaders);
 
-			const api = await apiService.client.get(`${config.API_BASE_URL}/ids`);
-			const other = await apiService.client.get("https://other.example/ids");
+			const api = await apiService.client.get(
+				`${config.API_BASE_URL}/ids`
+			);
+			const other = await apiService.client.get(
+				"https://other.example/ids"
+			);
 
 			expect(api.data["X-Request-ID"]).toMatch(UUID);
 			expect(other.data).not.toHaveProperty("X-Request-ID");
@@ -412,7 +429,10 @@ describe("ApiService", () => {
 			).rejects.toThrowError();
 
 			expect(tracked().error.name).toBe("ApiNetworkError");
-			expect(reported()).toMatchObject({ kind: "network", method: "POST" });
+			expect(reported()).toMatchObject({
+				kind: "network",
+				method: "POST",
+			});
 		});
 
 		it("network error: a repeated GET one", async () => {

@@ -46,7 +46,8 @@ function mountPopover(
 							...props,
 						},
 						{
-							trigger: () => h("button", { id: "trigger" }, "Open"),
+							trigger: () =>
+								h("button", { id: "trigger" }, "Open"),
 							default: content,
 						}
 					),
@@ -72,7 +73,6 @@ function mountPopover(
 }
 
 describe("PPopover", () => {
-
 	it("toggles on its trigger and sets aria-expanded", async () => {
 		const { wrapper, show } = mountPopover();
 		const trigger = wrapper.find("#trigger");
@@ -264,7 +264,9 @@ describe("PPopover", () => {
 		down(anchor);
 		expect(onClickoutside).not.toHaveBeenCalled();
 		// the trigger slot is not the reference, so it isn't marked
-		expect(body().find("#trigger").attributes("aria-expanded")).toBeUndefined();
+		expect(
+			body().find("#trigger").attributes("aria-expanded")
+		).toBeUndefined();
 		anchor.remove();
 	});
 

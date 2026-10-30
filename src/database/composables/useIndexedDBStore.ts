@@ -17,7 +17,6 @@ let dbPromise: Promise<IDBPDatabase> | null = null;
 // works from the data it has in memory and never reopens the old version
 let outdated: boolean = false;
 
-
 export async function requestPersistence() {
 	if (navigator && navigator.storage && navigator.storage.persist) {
 		await navigator.storage.persist();

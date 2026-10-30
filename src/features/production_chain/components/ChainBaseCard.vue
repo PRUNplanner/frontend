@@ -273,9 +273,7 @@
 						$t("production_chains.bases.planet_loading")
 					}}</span>
 				</template>
-				<span
-v-else
-class="text-link"
+				<span v-else class="text-link"
 					>{{ $t("production_chains.bases.pick_planet") }} ▾</span
 				>
 			</button>
@@ -312,7 +310,9 @@ class="text-link"
 					:options="luxOptions"
 					size="sm"
 					class="w-44"
-					:aria-label="t('production_chains.bases.lux_of', { id: base.id })"
+					:aria-label="
+						t('production_chains.bases.lux_of', { id: base.id })
+					"
 					@update:value="(v) => v && emit('lux', v as ChainLux)" />
 			</label>
 			<div class="flex items-center gap-2 min-w-0">
@@ -354,7 +354,9 @@ class="text-link"
 										type: expertName(type),
 									})
 								"
-								@update:value="(v) => setExpert(type, v ?? 0)" />
+								@update:value="
+									(v) => setExpert(type, v ?? 0)
+								" />
 						</label>
 						<p class="text-xs text-muted">
 							{{ $t("production_chains.bases.experts_limits") }}
@@ -375,10 +377,8 @@ class="text-link"
 		<p v-if="fitLine" class="text-sm text-positive">
 			{{ fitLine }}
 			<template v-if="planned">
-{{
-				$t("production_chains.bases.planned")
-			}}
-</template>
+				{{ $t("production_chains.bases.planned") }}
+			</template>
 		</p>
 		<ul
 			v-if="

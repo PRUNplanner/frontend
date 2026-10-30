@@ -46,7 +46,9 @@ async function mountTable(
 	return { wrapper, component, result };
 }
 
-const rowTickers = (wrapper: Awaited<ReturnType<typeof mountTable>>["wrapper"]) =>
+const rowTickers = (
+	wrapper: Awaited<ReturnType<typeof mountTable>>["wrapper"]
+) =>
 	wrapper
 		.findAll("tr[data-testid^='chain-row-']")
 		.map((r) => r.attributes("data-testid")!.slice("chain-row-".length));
@@ -79,37 +81,61 @@ describe("ChainStepsTable", () => {
 			.trigger("click");
 		expect(rowTickers(wrapper).length).toBe(before);
 
-		const name = wrapper.find("tr[data-testid='chain-row-RAT'] button[aria-expanded]:not([aria-label])");
+		const name = wrapper.find(
+			"tr[data-testid='chain-row-RAT'] button[aria-expanded]:not([aria-label])"
+		);
 		await name.trigger("click");
 		expect(name.attributes("aria-expanded")).toBe("true");
-		expect(wrapper.find("[data-testid='chain-step-detail']").exists()).toBe(true);
+		expect(wrapper.find("[data-testid='chain-step-detail']").exists()).toBe(
+			true
+		);
 	});
 
 	it("groups by source", async () => {
-		const { wrapper, result } = await mountTable(chainInput([["RAT", 100]]), {
-			order: "source",
-		});
+		const { wrapper, result } = await mountTable(
+			chainInput([["RAT", 100]]),
+			{
+				order: "source",
+			}
+		);
 		const tickers = rowTickers(wrapper);
 		const sources = tickers.map((t) => result.rows[t].source);
-		expect(sources).toEqual([...sources].sort((a, b) =>
-			["make", "extract", "buy"].indexOf(a) - ["make", "extract", "buy"].indexOf(b)
-		));
+		expect(sources).toEqual(
+			[...sources].sort(
+				(a, b) =>
+					["make", "extract", "buy"].indexOf(a) -
+					["make", "extract", "buy"].indexOf(b)
+			)
+		);
 	});
 
 	it("filters the cheaper rows and buys exactly those (AC 11)", async () => {
-		const { wrapper, component, result } = await mountTable(chainInput([["GWS", 1]]), {
-			filter: "cheaper",
-		});
+		const { wrapper, component, result } = await mountTable(
+			chainInput([["GWS", 1]]),
+			{
+				filter: "cheaper",
+			}
+		);
 		expect(result.warnings.cheaper.length).toBeGreaterThan(0);
-		expect(rowTickers(wrapper).sort()).toEqual([...result.warnings.cheaper].sort());
-		expect(wrapper.find("[data-testid='chain-filter-banner']").exists()).toBe(true);
+		expect(rowTickers(wrapper).sort()).toEqual(
+			[...result.warnings.cheaper].sort()
+		);
+		expect(
+			wrapper.find("[data-testid='chain-filter-banner']").exists()
+		).toBe(true);
 		const buyAll = wrapper
 			.findAll("[data-testid='chain-filter-banner'] button")
-			.find((b) => b.text().startsWith("production_chains.filter.buy_all"))!;
+			.find((b) =>
+				b.text().startsWith("production_chains.filter.buy_all")
+			)!;
 		await buyAll.trigger("click");
-		expect(component.emitted("buyAll")![0][0]).toEqual(result.warnings.cheaper);
+		expect(component.emitted("buyAll")![0][0]).toEqual(
+			result.warnings.cheaper
+		);
 		// no byproducts group while filtered
-		expect(wrapper.find("[data-testid^='chain-byproduct-']").exists()).toBe(false);
+		expect(wrapper.find("[data-testid^='chain-byproduct-']").exists()).toBe(
+			false
+		);
 	});
 
 	it("shows byproducts with produced, used and sold (AC 8)", async () => {
@@ -126,7 +152,9 @@ describe("ChainStepsTable", () => {
 	});
 
 	it("emits a source change", async () => {
-		const { wrapper, component } = await mountTable(chainInput([["DW", 100]]));
+		const { wrapper, component } = await mountTable(
+			chainInput([["DW", 100]])
+		);
 		const extract = wrapper
 			.findAll("tr[data-testid='chain-row-H2O'] [role=group] button")
 			.find((b) => b.text() === "production_chains.table.extract")!;
@@ -140,7 +168,9 @@ describe("ChainStepsTable", () => {
 	});
 
 	it("opens the recipe picker and picks a recipe (AC 10)", async () => {
-		const { wrapper, component } = await mountTable(chainInput([["RAT", 100]]));
+		const { wrapper, component } = await mountTable(
+			chainInput([["RAT", 100]])
+		);
 		await wrapper
 			.find("button[aria-label='production_chains.table.choose_recipe']")
 			.trigger("click");
@@ -150,13 +180,22 @@ describe("ChainStepsTable", () => {
 		expect(options.length).toBe(ctx.recipesByOutput.get("RAT")!.length);
 		expect(options[0].attributes("aria-current")).toBe("true");
 		await options[1].trigger("click");
-		const [ticker, id] = component.emitted("recipe")![0] as [string, string];
+		const [ticker, id] = component.emitted("recipe")![0] as [
+			string,
+			string,
+		];
 		expect(ticker).toBe("RAT");
-		expect(ctx.recipesByOutput.get("RAT")!.some((r) => r.recipe_id === id)).toBe(true);
+		expect(
+			ctx.recipesByOutput.get("RAT")!.some((r) => r.recipe_id === id)
+		).toBe(true);
 	});
 
 	it("moves the keyboard into the recipe picker and back (AC 19)", async () => {
-		const { wrapper } = await mountTable(chainInput([["RAT", 100]]), {}, true);
+		const { wrapper } = await mountTable(
+			chainInput([["RAT", 100]]),
+			{},
+			true
+		);
 		const trigger = wrapper.find(
 			"button[aria-label='production_chains.table.choose_recipe']"
 		);
@@ -189,12 +228,19 @@ describe("ChainStepsTable supply cells", () => {
 		const { wrapper, component } = await mountTable(
 			chainInput([["DW", 100]], { rawSource: "extract" })
 		);
-		const planet = wrapper.find("button[aria-label='production_chains.table.choose_planet']");
-		expect(planet.text()).toContain("production_chains.table.typical_planet");
+		const planet = wrapper.find(
+			"button[aria-label='production_chains.table.choose_planet']"
+		);
+		expect(planet.text()).toContain(
+			"production_chains.table.typical_planet"
+		);
 		await planet.trigger("click");
 		expect(component.emitted("planet")![0]).toEqual(["H2O"]);
 
-		const result = solveChain(chainInput([["DW", 100]], { rawSource: "extract" }), testContext(false));
+		const result = solveChain(
+			chainInput([["DW", 100]], { rawSource: "extract" }),
+			testContext(false)
+		);
 		const pending = await mountComponent(ChainStepsTable, {
 			result,
 			order: "source",
@@ -204,8 +250,12 @@ describe("ChainStepsTable supply cells", () => {
 			recipeOptions: () => [],
 			bases: [{ id: "A", name: "", planetId: null, cogc: "auto" }],
 		});
-		expect(pending.wrapper.text()).toContain("production_chains.table.pending");
-		expect(pending.wrapper.text()).toContain("production_chains.table.group_extract");
+		expect(pending.wrapper.text()).toContain(
+			"production_chains.table.pending"
+		);
+		expect(pending.wrapper.text()).toContain(
+			"production_chains.table.group_extract"
+		);
 	});
 
 	it("names a picked planet and the thin filter", async () => {
@@ -218,9 +268,9 @@ describe("ChainStepsTable supply cells", () => {
 			}),
 			{ filter: "thin" }
 		);
-		expect(wrapper.find("[data-testid='chain-filter-banner']").text()).toContain(
-			"production_chains.filter.thin"
-		);
+		expect(
+			wrapper.find("[data-testid='chain-filter-banner']").text()
+		).toContain("production_chains.filter.thin");
 		const all = await mountTable(
 			chainInput([["DW", 100]], {
 				source: { H2O: "extract" },
@@ -285,14 +335,22 @@ describe("ChainStepsTable with own production", () => {
 			.find((b) => b.text() === label)!;
 
 	it("offers Have, never on a target (AC 4)", async () => {
-		const { wrapper, component } = await mountTable(chainInput([["RAT", 100]]));
+		const { wrapper, component } = await mountTable(
+			chainInput([["RAT", 100]])
+		);
 		expect(
-			segment(wrapper, "RAT", "production_chains.have.option").attributes("disabled")
+			segment(wrapper, "RAT", "production_chains.have.option").attributes(
+				"disabled"
+			)
 		).toBeDefined();
 		expect(
-			cell(wrapper, "RAT").find("[title='production_chains.have.target_reason']").exists()
+			cell(wrapper, "RAT")
+				.find("[title='production_chains.have.target_reason']")
+				.exists()
 		).toBe(true);
-		await segment(wrapper, "GRN", "production_chains.have.option").trigger("click");
+		await segment(wrapper, "GRN", "production_chains.have.option").trigger(
+			"click"
+		);
 		expect(component.emitted("have")![0]).toEqual(["GRN", "all"]);
 	});
 
@@ -304,7 +362,10 @@ describe("ChainStepsTable with own production", () => {
 				name: "Main",
 				surplus: new Map([["GRN", 12]]),
 				suppliers: {
-					GRN: [supplier("Alpha", 4, 4), supplier("Zeta", used - 4, 8)],
+					GRN: [
+						supplier("Alpha", 4, 4),
+						supplier("Zeta", used - 4, 8),
+					],
 				},
 				overrides: {},
 			},
@@ -319,7 +380,9 @@ describe("ChainStepsTable with own production", () => {
 				"aria-pressed"
 			)
 		).toBe("true");
-		await segment(wrapper, "GRN", "production_chains.table.make").trigger("click");
+		await segment(wrapper, "GRN", "production_chains.table.make").trigger(
+			"click"
+		);
 		expect(component.emitted("source")![0]).toEqual(["GRN", "make"]);
 		expect(component.emitted("have")![0]).toEqual(["GRN", "off"]);
 	});
@@ -400,9 +463,16 @@ describe("ChainStepsTable with own production", () => {
 		expect(back(less.wrapper)).toBe(true);
 		// switched off, Have goes back to the surplus rather than all
 		const off = await mountTable(chainInput([["RAT", 100]]), {
-			own: { ...own(2), overrides: { GRN: { value: "off", origin: "typed" } } },
+			own: {
+				...own(2),
+				overrides: { GRN: { value: "off", origin: "typed" } },
+			},
 		});
-		await segment(off.wrapper, "GRN", "production_chains.have.option").trigger("click");
+		await segment(
+			off.wrapper,
+			"GRN",
+			"production_chains.have.option"
+		).trigger("click");
 		expect(off.component.emitted("have")![0]).toEqual(["GRN", undefined]);
 	});
 
@@ -418,7 +488,9 @@ describe("ChainStepsTable with own production", () => {
 		expect(group).toBeGreaterThan(-1);
 		for (const t of ["GRN", "LST"])
 			expect(
-				rows.findIndex((r) => r.find(`[data-testid='chain-have-${t}']`).exists())
+				rows.findIndex((r) =>
+					r.find(`[data-testid='chain-have-${t}']`).exists()
+				)
 			).toBeGreaterThan(group);
 	});
 });

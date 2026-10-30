@@ -19,7 +19,11 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
 import { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
-import { flushPlanEdits, trackEvent, reportError } from "@/lib/analytics/useAnalytics";
+import {
+	flushPlanEdits,
+	trackEvent,
+	reportError,
+} from "@/lib/analytics/useAnalytics";
 import { useQuery } from "@/lib/query_cache/useQuery";
 import { remoteChange } from "@/lib/crossTab";
 import { useUnsavedGuard } from "@/lib/useUnsavedGuard";

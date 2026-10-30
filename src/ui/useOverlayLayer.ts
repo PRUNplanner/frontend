@@ -135,7 +135,10 @@ export function useOverlayLayer(
 	// and before a modal opened by its pick makes the page inert
 	watch(show, (value) => {
 		if (value || modal) return;
-		if (panel.value?.contains(document.activeElement) && opener?.isConnected)
+		if (
+			panel.value?.contains(document.activeElement) &&
+			opener?.isConnected
+		)
 			opener.focus();
 	});
 
