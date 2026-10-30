@@ -19,8 +19,8 @@
 		"test:coverage:unit": "vitest run --silent --coverage --reporter=dot --reporter=blob --outputFile.blob=.vitest/blob/unit$BLOB_SUFFIX.json",
 		"test:coverage:components": "vitest run --silent --coverage --config vitest.components.config.ts --reporter=dot --reporter=blob --outputFile.blob=.vitest/blob/components$BLOB_SUFFIX.json",
 		"test:coverage:report": "vitest --merge-reports --silent --coverage",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
+		"lint": "eslint . && prettier --check .",
+		"lint:fix": "eslint . --fix && prettier --write .",
 		"knip": "knip",
 		"refresh:systems": "node scripts/refresh-systems.mjs"
 	},
@@ -73,6 +73,7 @@
 		"globals": "^17.13.0",
 		"jsdom": "^30.1.3",
 		"knip": "^5.88.1",
+		"prettier": "3.9.10",
 		"rollup-plugin-visualizer": "^7.1.1",
 		"typescript": "~6.0.3",
 		"typescript-eslint": "^8.72.0",

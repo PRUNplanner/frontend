@@ -251,10 +251,10 @@ describe("PlanSupplyCart", () => {
 			);
 		}
 
-		const xit = (wrapper: VueWrapper, idx: number) =>
-			wrapper.findAllComponents(XITTransferActionButton)[idx].props(
-				"elements"
-			);
+		const xit = (wrapper: VueWrapper, idx: number) => {
+			const buttons = wrapper.findAllComponents(XITTransferActionButton);
+			return buttons[idx].props("elements");
+		};
 
 		it("ships the gross input, including self-produced materials", async () => {
 			const { wrapper } = await mountInitial();

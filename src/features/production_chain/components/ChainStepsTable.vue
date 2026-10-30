@@ -613,7 +613,8 @@
 											}}
 										</span>
 										<span class="block text-xs text-muted">
-											{{ entry.row.site.buildingTicker }} ·
+											{{ entry.row.site.buildingTicker }}
+											·
 											{{
 												$t("production_chains.table.per_extractor", {
 													rate: formatNumber(entry.row.site.dailyExtraction, 1),

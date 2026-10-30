@@ -222,8 +222,10 @@ describe("EmpireMaterialIOFiltered", () => {
 		const { wrapper } = await mountFiltered();
 		const open = () =>
 			wrapper.findAllComponents(EmpireMaterialIODetail).length;
-		const toggle = (i: number) =>
-			wrapper.findAll("button[aria-expanded]:not([data-market-flag])")[i].trigger("click");
+		const toggle = (i: number) => {
+			const rows = wrapper.findAll("button[aria-expanded]:not([data-market-flag])");
+			return rows[i].trigger("click");
+		};
 
 		// rows opened by hand
 		await toggle(0);

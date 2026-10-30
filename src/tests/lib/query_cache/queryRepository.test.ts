@@ -169,8 +169,9 @@ describe("queryRepository", () => {
 		const queryStore = useQueryStore();
 		const empires = [{ uuid: "empire-1", empire_name: "Sky" }];
 		usePlanningStore().setPlan({ ...plan, empires } as never);
+		const plans = [plan, { uuid: "plan-3" }];
 		// @ts-expect-error mock data
-		vi.mocked(callGetEmpirePlans).mockResolvedValue([plan, { uuid: "plan-3" }]);
+		vi.mocked(callGetEmpirePlans).mockResolvedValue(plans);
 
 		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
 

@@ -205,6 +205,9 @@
 		return sorted.value.slice(start, start + pageSize);
 	});
 
+	const cellValue = (row: T, key: string): unknown =>
+		(row as Record<string, unknown>)[key];
+
 	const keyOf = (row: T, index: number): string | number =>
 		rowKey ? rowKey(row) : index;
 
@@ -528,7 +531,7 @@
 									]"
 									:style="col.key === stickyKey ? { left: stickyLeft } : undefined">
 									<slot :name="`cell-${col.key}`" :row="item.row" :index="item.index">
-										{{ (item.row as Record<string, unknown>)[col.key] }}
+										{{ cellValue(item.row, col.key) }}
 									</slot>
 								</td>
 							</tr>

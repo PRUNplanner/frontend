@@ -146,8 +146,9 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		});
 		const pinia = createPinia();
 		const store = usePlanningStore(pinia);
+		const empires = [empire("outside", "OUTSIDEREGION"), empire("none", "NONE")];
 		// @ts-expect-error mock data
-		store.setEmpires([empire("outside", "OUTSIDEREGION"), empire("none", "NONE")]);
+		store.setEmpires(empires);
 		toast.mockReset();
 		const { button } = await mountDetail(row, vi.fn(), pinia);
 		await button("base_roi.detail.open_plan").trigger("click");
