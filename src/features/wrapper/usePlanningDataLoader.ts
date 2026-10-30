@@ -1,4 +1,4 @@
-import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
+import { computed, ref, type Ref, watch, watchEffect } from "vue";
 
 import { useI18n } from "vue-i18n";
 
@@ -11,7 +11,7 @@ import { usePlan } from "@/features/planning_data/usePlan";
 import { useCXData } from "@/features/cx/useCXData";
 
 // Util
-import { inertClone } from "@/util/data";
+import { step } from "@/features/wrapper/dataLoader.util";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
 import { remoteChange } from "@/lib/crossTab";
 import { trackUser } from "@/lib/analytics/useAnalytics";
@@ -21,7 +21,7 @@ import { toWorkingCopy } from "@/features/sharing/sharedPlan.util";
 import type {
 	PlanningDataLoaderEmits,
 	PlanningDataLoaderProps,
-	PlanningStepConfigsType,
+	PlanningSteps,
 } from "@/features/wrapper/planningDataLoader.types";
 import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type {
@@ -81,60 +81,43 @@ export function usePlanningDataLoader(
 
 			// per step reset
 			if (newEmpire !== oldEmpire) {
-				const stepEmpirePlans = steps.find(
-					(s) => s.cfg.key === "empirePlans"
-				);
-				if (stepEmpirePlans) {
-					stepEmpirePlans.triggered = false;
-					stepEmpirePlans.data = null;
-					done.value = false;
-				}
+				steps.empirePlans.triggered = false;
+				steps.empirePlans.data = null;
 
 				// an empire the loaded list doesn't know (just created):
 				// reload the list, its plans wait for it
-				const stepEmpireList = steps.find(
-					(s) => s.cfg.key === "empireList"
-				);
+				const empireList = steps.empireList;
 				if (
 					newEmpire &&
-					stepEmpireList?.data &&
-					!knowsEmpire(stepEmpireList.data, newEmpire as string)
+					empireList.data &&
+					!knowsEmpire(empireList.data, newEmpire)
 				) {
-					stepEmpireList.triggered = false;
-					stepEmpireList.data = null;
+					empireList.triggered = false;
+					empireList.data = null;
 				}
 			}
 
 			if (newPlan !== oldPlan) {
-				const stepPlan = steps.find((s) => s.cfg.key === "plan");
-				if (stepPlan) {
-					stepPlan.triggered = false;
-					stepPlan.data = null;
-					done.value = false;
-				}
+				steps.plan.triggered = false;
+				steps.plan.data = null;
 			}
 
 			// another share: its plan, and the planet it brings, load again
-			const stepShared = steps.find((s) => s.cfg.key === "sharedPlan");
-			if (newShared && newShared !== oldShared && stepShared) {
-				stepShared.triggered = false;
-				stepShared.data = null;
+			if (newShared && newShared !== oldShared) {
+				steps.sharedPlan.triggered = false;
+				steps.sharedPlan.data = null;
 			}
 
 			// another planet (or share): don't keep the old planet's data
 			if (newPlanet !== oldPlanet || newShared !== oldShared) {
-				const stepPlanet = steps.find((s) => s.cfg.key === "planet");
-				if (stepPlanet) {
-					stepPlanet.triggered = false;
-					stepPlanet.data = null;
-				}
+				steps.planet.triggered = false;
+				steps.planet.data = null;
 			}
 		}
 	);
 
-	const stepConfigs: PlanningStepConfigsType = [
-		{
-			key: "sharedPlan",
+	const steps: PlanningSteps = {
+		sharedPlan: step({
 			name: t("wrapper.planning_data.shared_plan"),
 			enabled: () => !!props.sharedPlanUuid,
 			load: () =>
@@ -142,9 +125,8 @@ export function usePlanningDataLoader(
 					sharedPlanUuid: props.sharedPlanUuid!,
 				}),
 			onSuccess: (data: PlanShare) => emits("data:shared:plan", data),
-		},
-		{
-			key: "empireList",
+		}),
+		empireList: step({
 			name: t("wrapper.planning_data.empires"),
 			enabled: () => !!props.empireList,
 			load: () => queryStore.execute("GetAllEmpires", undefined),
@@ -161,9 +143,8 @@ export function usePlanningDataLoader(
 				emits("data:empire:list", data);
 				trackUser({ empire_count: data.length });
 			},
-		},
-		{
-			key: "plan",
+		}),
+		plan: step({
 			name: t("wrapper.planning_data.plan"),
 			enabled: () => !!props.planUuid,
 			load: () =>
@@ -171,9 +152,8 @@ export function usePlanningDataLoader(
 					planUuid: props.planUuid!,
 				}),
 			onSuccess: (data: Plan) => emits("data:plan", data),
-		},
-		{
-			key: "planList",
+		}),
+		planList: step({
 			name: t("wrapper.planning_data.plans_all"),
 			enabled: () => !!props.planList,
 			load: () => queryStore.execute("GetAllPlans", undefined),
@@ -187,34 +167,29 @@ export function usePlanningDataLoader(
 				emits("data:plan:list", data);
 				emits("data:plan:list:planets", planetList);
 			},
-		},
-		{
-			key: "planet",
+		}),
+		planet: step({
 			get name() {
 				return t("wrapper.planning_data.planet_data", {
 					name: props.planetNaturalId ?? "",
 				});
 			},
-			// If sharedPlanId, wait for sharedPlan; else if planetId, no depends; else never
-			dependsOn: props.sharedPlanUuid ? "sharedPlan" : undefined,
+			// a shared plan's planet waits for the shared plan
+			ready: () => !props.sharedPlanUuid || steps.sharedPlan.data != null,
 			enabled: () => !!(props.sharedPlanUuid || props.planetNaturalId),
 			load: () => {
 				// from the step, not the query cache: a logout while the
 				// shared plan loads (expired session) empties the cache
 				const id = props.sharedPlanUuid
-					? (
-							steps.find((s) => s.cfg.key === "sharedPlan")!
-								.data as PlanShare
-						).plan_details.planet_natural_id
+					? steps.sharedPlan.data!.plan_details.planet_natural_id
 					: props.planetNaturalId!;
 				return queryStore.execute("GetPlanet", {
 					planetNaturalId: id,
 				});
 			},
 			onSuccess: (data: Planet) => emits("data:planet", data),
-		},
-		{
-			key: "cx",
+		}),
+		cx: step({
 			name: t("wrapper.planning_data.cx"),
 			enabled: () => !!props.loadCX,
 			load: () => queryStore.execute("GetAllCX", undefined),
@@ -227,25 +202,22 @@ export function usePlanningDataLoader(
 					emits("update:cxUuid", d[0].uuid);
 				}
 			},
-		},
-		{
-			key: "sharedList",
+		}),
+		sharedList: step({
 			name: t("wrapper.planning_data.shared_list"),
 			enabled: () => !!props.loadShared,
 			load: () => queryStore.execute("GetAllShared", undefined),
 			refreshKey: () => ["planningdata", "shared", "list"],
 			onSuccess: (data: Shared[]) => emits("data:shared", data),
-		},
-		{
-			key: "empirePlans",
+		}),
+		empirePlans: step({
 			name: t("wrapper.planning_data.empire_plans"),
 			// with the empire list, only load plans of an empire in it: a
 			// deleted empire's uuid (e.g. the stored default) would fail
 			enabled: () => {
 				if (!props.empireUuid) return false;
 				if (!props.empireList) return true;
-				const list = steps.find((s) => s.cfg.key === "empireList")
-					?.data as PlanEmpireElement[] | null;
+				const list = steps.empireList.data;
 				return !!list && knowsEmpire(list, props.empireUuid);
 			},
 			load: () =>
@@ -266,46 +238,29 @@ export function usePlanningDataLoader(
 				}
 				emits("data:empire:plans", data);
 			},
-		},
-	];
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const steps = reactive<StepState<any>[]>(
-		stepConfigs.map((cfg) => ({
-			cfg,
-			data: null,
-			loading: false,
-			error: null,
-			triggered: false,
-		}))
-	);
+		}),
+	};
+	const all: StepState<unknown>[] = Object.values(steps);
 
 	// Orchestrator
 	watchEffect(() => {
-		steps.forEach((s) => {
-			if (!s.triggered && s.cfg.enabled()) {
-				const dep = s.cfg.dependsOn
-					? steps.find((p) => p.cfg.key === s.cfg.dependsOn)
-					: null;
-				if (!dep || dep.data != null) {
-					s.triggered = true;
-					s.loading = true;
-					s.error = null;
-					s.cfg
-						.load()
-						.then((d) => {
-							const shallowData = inertClone(d);
-							s.data = shallowData;
-							s.cfg.onSuccess(shallowData);
-						})
-						.catch((e) => {
-							s.error =
-								e instanceof Error ? e : new Error(String(e));
-						})
-						.finally(() => {
-							s.loading = false;
-						});
-				}
+		all.forEach((s) => {
+			if (!s.triggered && s.cfg.enabled() && (s.cfg.ready?.() ?? true)) {
+				s.triggered = true;
+				s.loading = true;
+				s.error = null;
+				s.cfg
+					.load()
+					.then((d) => {
+						s.data = d;
+						s.cfg.onSuccess(d);
+					})
+					.catch((e) => {
+						s.error = e instanceof Error ? e : new Error(String(e));
+					})
+					.finally(() => {
+						s.loading = false;
+					});
 			}
 		});
 	});
@@ -316,7 +271,7 @@ export function usePlanningDataLoader(
 	 */
 	watch(remoteChange, (change) => {
 		if (!change) return;
-		steps.forEach((s) => {
+		all.forEach((s) => {
 			const key = s.cfg.refreshKey?.();
 			if (
 				key === undefined ||
@@ -329,9 +284,8 @@ export function usePlanningDataLoader(
 			s.cfg
 				.load()
 				.then((d) => {
-					const shallowData = inertClone(d);
-					s.data = shallowData;
-					s.cfg.onSuccess(shallowData, true);
+					s.data = d;
+					s.cfg.onSuccess(d, true);
 					emits("refreshed");
 				})
 				// the old data stays, the next change or visit retries
@@ -340,7 +294,7 @@ export function usePlanningDataLoader(
 	});
 
 	const loadingSteps = computed(() =>
-		steps
+		all
 			.filter((s) => s.cfg.enabled())
 			.map((s) => ({
 				name: s.cfg.name,
@@ -355,12 +309,12 @@ export function usePlanningDataLoader(
 
 	// a share link that was revoked, deleted or mistyped
 	const sharedPlanMissing = computed(() => {
-		const error = steps.find((s) => s.cfg.key === "sharedPlan")?.error;
+		const error = steps.sharedPlan.error;
 		return isApiError(error) && error.status === 404;
 	});
 
 	const allLoaded = computed(() =>
-		steps
+		all
 			.filter((s) => s.cfg.enabled())
 			.every((s) => !s.loading && s.error == null && s.data != null)
 	);
@@ -380,31 +334,21 @@ export function usePlanningDataLoader(
 
 	const results = computed(() => {
 		const data = {
-			sharedPlan: steps.find((s) => s.cfg.key === "sharedPlan")
-				?.data as PlanShare,
-			empireList: steps.find((s) => s.cfg.key === "empireList")
-				?.data as PlanEmpireElement[],
-			planetData: steps.find((s) => s.cfg.key === "planet")
-				?.data as Planet,
-			planData: steps.find((s) => s.cfg.key === "plan")?.data as Plan,
-			planList: steps.find((s) => s.cfg.key === "planList")
-				?.data as Plan[],
-			sharedData: steps.find((s) => s.cfg.key === "sharedList")
-				?.data as Shared[],
-			empirePlansData: steps.find((s) => s.cfg.key === "empirePlans")
-				?.data as Plan[],
-			empirePlanetList: computed(() => {
+			sharedPlan: steps.sharedPlan.data,
+			empireList: steps.empireList.data,
+			planetData: steps.planet.data,
+			planData: steps.plan.data,
+			planList: steps.planList.data,
+			sharedData: steps.sharedList.data,
+			empirePlansData: steps.empirePlans.data,
+			empirePlanetList: computed((): string[] => {
 				/*
 					empire planet list can either come from loading empire plans
 					directly or by just loading a list of empire which would
 					potentially require to fetch all planets
 				*/
-				const empirePlans = steps.find(
-					(s) => s.cfg.key === "empirePlans"
-				)?.data as undefined | Plan[];
-
-				const empireList = steps.find((s) => s.cfg.key === "empireList")
-					?.data as undefined | PlanEmpireElement[];
+				const empirePlans = steps.empirePlans.data;
+				const empireList = steps.empireList.data;
 
 				if (empirePlans) {
 					return [
@@ -423,7 +367,7 @@ export function usePlanningDataLoader(
 					];
 				}
 
-				return [] as string[];
+				return [];
 			}),
 		};
 
@@ -436,7 +380,7 @@ export function usePlanningDataLoader(
 			3) only planet natural id provided, new plan definition created
 		*/
 		const planDefinition = props.sharedPlanUuid
-			? toWorkingCopy(data.sharedPlan.plan_details)
+			? data.sharedPlan && toWorkingCopy(data.sharedPlan.plan_details)
 			: props.planUuid
 				? data.planData
 				: data.planetData

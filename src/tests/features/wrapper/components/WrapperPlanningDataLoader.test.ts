@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, isProxy } from "vue";
 
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
@@ -176,6 +176,18 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		expect(planRequests()).toEqual([`planning/empire/${E1}/plans/`]);
 		expect(component.emitted("data:empire:plans")).toEqual([[[]]]);
 		expect(loading(wrapper.text())).toBe(false);
+	});
+
+	it("hands out the cached list itself, not a copy or a proxy", async () => {
+		mock.onGet(/planning\/empire\/$/).reply(200, [empire(E1)]);
+
+		const { component } = await mountComponent(WrapperPlanningDataLoader, {
+			empireList: true,
+		});
+		const [[list]] = component.emitted("data:empire:list")!;
+
+		expect(list).toBe(await useQuery("GetAllEmpires").execute());
+		expect(isProxy(list)).toBe(false);
 	});
 
 	it("finishes loading without empires", async () => {

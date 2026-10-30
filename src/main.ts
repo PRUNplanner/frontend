@@ -46,18 +46,6 @@ app.use(pinia);
 // one watcher syncs preference changes to the backend
 startPreferenceSync();
 
-// locale
-const userStore = useUserStore();
-
-try {
-	await userStore.initLocale(i18n.global);
-} catch (error) {
-	console.error(
-		"Failed to initialize locale, falling back to default",
-		error
-	);
-}
-
 app.use(i18n);
 
 // unhead
@@ -65,8 +53,17 @@ const head = createHead();
 
 app.use(head);
 
-// mount, over the prerendered landing page without a flash. Not awaited:
-// lazy chunks import from this module, which has to finish evaluating first
-prepareMount(router, i18n.global.locale.value)
+// locale, then mount over the prerendered landing page without a flash.
+// Not awaited: lazy chunks import from this module, which has to finish
+// evaluating first
+useUserStore()
+	.initLocale(i18n.global)
+	.catch((error) =>
+		console.error(
+			"Failed to initialize locale, falling back to default",
+			error
+		)
+	)
+	.then(() => prepareMount(router, i18n.global.locale.value))
 	.catch(console.error)
 	.then(() => mountApp(app));

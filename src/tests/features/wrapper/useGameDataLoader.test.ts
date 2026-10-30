@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { effectScope, type EffectScope } from "vue";
+import { effectScope, isProxy, type EffectScope } from "vue";
 import { flushPromises } from "@vue/test-utils";
 
 import { useGameDataLoader } from "@/features/wrapper/useGameDataLoader";
@@ -62,6 +62,18 @@ describe("useGameDataLoader", () => {
 		expect(done.value).toBe(true);
 		expect(results.value.recipeData).toStrictEqual(["GetRecipes"]);
 		expect(results.value.buildingData).toBeNull();
+	});
+
+	it("hands out the cached data itself, not a copy or a proxy", async () => {
+		const materials = [{ ticker: "DW" }];
+		execute.mockResolvedValue(materials);
+		const { emits, results } = load({ loadMaterials: true });
+		await flushPromises();
+
+		expect(emitted(emits, "data:materials")).toStrictEqual([materials]);
+		expect(emitted(emits, "data:materials")[0]).toBe(materials);
+		expect(results.value.materialData).toBe(materials);
+		expect(isProxy(results.value.materialData)).toBe(false);
 	});
 
 	it("asks for the requested planets", async () => {

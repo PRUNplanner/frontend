@@ -1,5 +1,8 @@
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
+import { queryRepository } from "@/lib/query_cache/queryRepository";
 import { describe, it, expect } from "vitest";
+
+import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 
 describe("toCacheKey", () => {
 	it("serializes primitive values", () => {
@@ -70,6 +73,7 @@ describe("isSubset", () => {
 	it("handles mixed types", () => {
 		expect(isSubset({ a: 1 }, [1])).toBe(false);
 		expect(isSubset([1], { a: 1 })).toBe(false);
+		expect(isSubset(["a"], { 0: "a" })).toBe(false);
 	});
 
 	it("handles null values", () => {
@@ -81,5 +85,67 @@ describe("isSubset", () => {
 		const sub = { a: { b: 1 } };
 		const full = { a: { b: 2 } }; // same key structure, different value
 		expect(isSubset(sub, full)).toBe(false);
+	});
+});
+
+describe("every query's cache key", () => {
+	// every param a key builder reads
+	const params = {
+		days: 7,
+		empireUuid: "empire",
+		exchange: "AI1",
+		exchangeTicker: "NC1",
+		materialTicker: "DW",
+		metric: "vwap",
+		planUuid: "plan",
+		planetNaturalId: "OT-580b",
+		planetNaturalIds: ["OT-580b", "KW-688c"],
+		searchData: { materials: ["FEO"], must_be_fertile: true },
+		searchId: "search",
+		sharedPlanUuid: "shared",
+		tickers: ["DW", "RAT"],
+	};
+
+	it("keeps its string", () => {
+		const keys = Object.fromEntries(
+			Object.entries(queryRepository)
+				.filter(([, def]) => "key" in def)
+				.map(([name, def]) => [
+					name,
+					toCacheKey(
+						(def as { key: (p: unknown) => JSONValue }).key(params)
+					),
+				])
+		);
+
+		expect(keys).toMatchInlineSnapshot(`
+			{
+			  "GetAPIKeys": "["user","api","keys"]",
+			  "GetAllCX": "["planningdata","cx"]",
+			  "GetAllEmpires": "["planningdata","empire","list"]",
+			  "GetAllPlans": "["planningdata","plan","list"]",
+			  "GetAllShared": "["planningdata","shared","list"]",
+			  "GetAnalyticsPlanetInsights": "["analytics","planet_insights","OT-580b"]",
+			  "GetBuildings": "["gamedata","buildings"]",
+			  "GetCXSparklines": "["gamedata","cxsparklines","AI1",7,"vwap",["DW","RAT"]]",
+			  "GetEmpirePlans": "["planningdata","empire","plans","empire"]",
+			  "GetExchanges": "["gamedata","exchanges"]",
+			  "GetExplorationData": "["gamedata","marketexploration","NC1","DW"]",
+			  "GetFIOStorage": "["gamedata","fio","storage"]",
+			  "GetMarketExchanges": "["gamedata","market","exchanges"]",
+			  "GetMarketSummary": "["gamedata","market","summary"]",
+			  "GetMaterials": "["gamedata","materials"]",
+			  "GetMultiplePlanets": "["gamedata","planet","multiple",["OT-580b","KW-688c"]]",
+			  "GetPlan": "["planningdata","plan","plan"]",
+			  "GetPlanet": "["gamedata","planet","OT-580b"]",
+			  "GetPlanetLastPOPR": "["gamedata","planet","popr","last","OT-580b"]",
+			  "GetPlanetSearchIndex": "["gamedata","planet","search-index"]",
+			  "GetPlanetSearchSingle": "["gamedata","planet","search","search"]",
+			  "GetPreferences": "["user","profile"]",
+			  "GetRecipes": "["gamedata","recipes"]",
+			  "GetSharedPlan": "["planningdata","shared","shared"]",
+			  "PostPlanetSearch": "["gamedata","planet","search",{"materials":["FEO"],"must_be_fertile":true}]",
+			}
+		`);
 	});
 });

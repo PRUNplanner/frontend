@@ -17,14 +17,22 @@ load without them.
 | `components/WrapperGameDataLoader.vue` + `useGameDataLoader.ts` | Props `load-materials`, `load-exchanges`, `load-buildings`, `load-recipes`, `load-planet="<id>"`, `load-planet-multiple="[ids]"` and `minimal`. Runs the `Get*` game-data queries, which fill IndexedDB |
 | `components/WrapperPlanningDataLoader.vue` + `usePlanningDataLoader.ts` | Props `empire-list`, `empire-uuid`, `plan-list`, `planet-natural-id`, `plan-uuid`, `shared-plan-uuid`, `load-c-x`, `cx-uuid` and `load-shared`. Runs the planning queries, which fill `planningStore` |
 | `components/WrapperGenericError.vue` | Shared error panel |
-| `gameDataLoader.types.ts`, `planningDataLoader.types.ts`, `dataLoader.types.ts` | Props, emits, and the `StepConfig` / `StepState` types |
+| `gameDataLoader.types.ts`, `planningDataLoader.types.ts`, `dataLoader.types.ts` | Props, emits, the `StepConfig` / `StepState` types and each loader's steps by name (`GameDataSteps`, `PlanningSteps`) |
+| `dataLoader.util.ts` | `step(cfg)`: a step's shallow state |
 | `useDelay.ts` | `useDelay(ms)`: true after the delay, so fast loads skip the loading screen (both loaders wait 400 ms; also used by `RenderingProgress` and `PlanToolFallback`) |
 
 ## Behaviour
 
-- **Steps.** Each step config has a `key`, a translated `name`,
-  `enabled()`, `load()` and `onSuccess()`, optionally `dependsOn` (waits
-  for another step's key) and `refreshKey`. Only enabled steps run.
+- **Steps.** A loader's steps are an object keyed by name
+  (`steps.plan.data` is typed). Each config has a translated `name`,
+  `enabled()`, `load()` and `onSuccess()`, optionally `ready()` (false
+  waits, e.g. a shared plan's planet for the shared plan) and
+  `refreshKey`. Only enabled steps run.
+- **Data.** A step's state is `shallowReactive`: its `data`, emitted and
+  passed to the slot, is the query cache's own object, neither a copy nor
+  a proxy. It is read-only (§3 of [data-layer.md](../data-layer.md)); copy
+  it before editing, as the plan view (`inertClone`) and the manage forms
+  do. A disabled step's slot prop is `null`.
 - **Events.** On success a step emits `data:*` (e.g. `data:materials`,
   `data:empire:plans`), and the loader emits `complete` at the end.
   `WrapperPlanningDataLoader` also emits `update:empireUuid` and

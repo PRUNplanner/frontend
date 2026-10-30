@@ -120,7 +120,7 @@
 					:disabled="disabled"
 					:shared="shared"
 					:plan-data="planDefinition"
-					:empire-list="empireList"
+					:empire-list="empireList ?? undefined"
 					:shared-plan-uuid="sharedPlanUuid" />
 			</AsyncWrapperGameData>
 		</template>

@@ -7,7 +7,6 @@
 		onScopeDispose,
 		ref,
 		shallowRef,
-		toRaw,
 		watch,
 		type ComputedRef,
 		type Ref,
@@ -235,8 +234,7 @@
 					? useQuery("GetAllEmpires").execute()
 					: Promise.resolve([]),
 			]);
-			// a cache hit returns the query store's reactive copy
-			index.value = toRaw(data);
+			index.value = data;
 			// a login during the load has loaded them already (watch below)
 			if (!empires.value.length) empires.value = empireList;
 			resolveEmpire();

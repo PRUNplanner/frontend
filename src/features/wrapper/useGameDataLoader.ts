@@ -1,4 +1,4 @@
-import { computed, reactive, ref, type Ref, watch, watchEffect } from "vue";
+import { computed, ref, type Ref, watch, watchEffect } from "vue";
 
 import { useI18n } from "vue-i18n";
 
@@ -6,13 +6,13 @@ import { useI18n } from "vue-i18n";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Util
-import { inertClone } from "@/util/data";
+import { step } from "@/features/wrapper/dataLoader.util";
 
 // Types & Interfaces
 import type {
 	GameDataLoaderEmits,
 	GameDataLoaderProps,
-	GameDataStepConfigsType,
+	GameDataSteps,
 } from "@/features/wrapper/gameDataLoader.types";
 import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type {
@@ -34,45 +34,40 @@ export function useGameDataLoader(
 	// mount to all data loaded, a performance measure for the lab runs
 	const loadStart = performance.now();
 
-	const stepConfigs: GameDataStepConfigsType = [
-		{
-			key: "material",
+	const steps: GameDataSteps = {
+		material: step({
 			name: t("wrapper.gamedata.material_data"),
 			enabled: () => !!props.loadMaterials,
 			load: () => {
 				return queryStore.execute("GetMaterials", undefined);
 			},
 			onSuccess: (d: Material[]) => emits("data:materials", d),
-		},
-		{
-			key: "exchange",
+		}),
+		exchange: step({
 			name: t("wrapper.gamedata.exchange_data"),
 			enabled: () => !!props.loadExchanges,
 			load: () => {
 				return queryStore.execute("GetExchanges", undefined);
 			},
 			onSuccess: (d: Exchange[]) => emits("data:exchanges", d),
-		},
-		{
-			key: "building",
+		}),
+		building: step({
 			name: t("wrapper.gamedata.building_data"),
 			enabled: () => !!props.loadBuildings,
 			load: () => {
 				return queryStore.execute("GetBuildings", undefined);
 			},
 			onSuccess: (d: Building[]) => emits("data:buildings", d),
-		},
-		{
-			key: "recipe",
+		}),
+		recipe: step({
 			name: t("wrapper.gamedata.recipe_data"),
 			enabled: () => !!props.loadRecipes,
 			load: () => {
 				return queryStore.execute("GetRecipes", undefined);
 			},
 			onSuccess: (d: Recipe[]) => emits("data:recipes", d),
-		},
-		{
-			key: "planet",
+		}),
+		planet: step({
 			get name() {
 				return t("wrapper.gamedata.planet_data", {
 					name: props.loadPlanet ?? "",
@@ -85,9 +80,8 @@ export function useGameDataLoader(
 				});
 			},
 			onSuccess: (d: Planet) => emits("data:planet", d),
-		},
-		{
-			key: "planetMultiple",
+		}),
+		planetMultiple: step({
 			get name() {
 				return t("wrapper.gamedata.planet_multiple_data", {
 					names: props.loadPlanetMultiple?.join(", ") ?? "",
@@ -100,53 +94,36 @@ export function useGameDataLoader(
 				});
 			},
 			onSuccess: (d: Planet[]) => emits("data:planet:multiple", d),
-		},
-	];
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const steps = reactive<StepState<any>[]>(
-		stepConfigs.map((cfg) => ({
-			cfg,
-			data: null,
-			loading: false,
-			error: null,
-			triggered: false,
-		}))
-	);
+		}),
+	};
+	const all: StepState<unknown>[] = Object.values(steps);
 
 	// Orchestrator
 	watchEffect(() => {
-		steps.forEach((s) => {
+		all.forEach((s) => {
 			if (!s.triggered && s.cfg.enabled()) {
-				const dep = s.cfg.dependsOn
-					? steps.find((p) => p.cfg.key === s.cfg.dependsOn)
-					: null;
-				if (!dep || dep.data != null) {
-					s.triggered = true;
-					s.loading = true;
-					s.error = null;
-					s.cfg
-						.load()
-						.then((d) => {
-							const shallowData = inertClone(d);
-							s.data = shallowData;
-							s.cfg.onSuccess(shallowData);
-						})
-						.catch((e) => {
-							console.error(e);
-							s.error =
-								e instanceof Error ? e : new Error(String(e));
-						})
-						.finally(() => {
-							s.loading = false;
-						});
-				}
+				s.triggered = true;
+				s.loading = true;
+				s.error = null;
+				s.cfg
+					.load()
+					.then((d) => {
+						s.data = d;
+						s.cfg.onSuccess(d);
+					})
+					.catch((e) => {
+						console.error(e);
+						s.error = e instanceof Error ? e : new Error(String(e));
+					})
+					.finally(() => {
+						s.loading = false;
+					});
 			}
 		});
 	});
 
 	const loadingSteps = computed(() =>
-		steps
+		all
 			.filter((s) => s.cfg.enabled())
 			.map((s) => ({
 				name: s.cfg.name,
@@ -161,7 +138,7 @@ export function useGameDataLoader(
 
 	// failed steps run again through the orchestrator
 	function retry(): void {
-		steps
+		all
 			.filter((s) => s.error != null)
 			.forEach((s) => {
 				s.error = null;
@@ -170,7 +147,7 @@ export function useGameDataLoader(
 	}
 
 	const allLoaded = computed(() =>
-		steps
+		all
 			.filter((s) => s.cfg.enabled())
 			.every((s) => !s.loading && s.error == null && s.data != null)
 	);
@@ -188,25 +165,14 @@ export function useGameDataLoader(
 		{ immediate: true }
 	);
 
-	const results = computed(() => {
-		const data = {
-			materialData: steps.find((s) => s.cfg.key === "material")
-				?.data as Material[],
-			exchangeData: steps.find((s) => s.cfg.key === "exchange")
-				?.data as Exchange[],
-			buildingData: steps.find((s) => s.cfg.key === "building")
-				?.data as Building[],
-			recipeData: steps.find((s) => s.cfg.key === "recipe")
-				?.data as Recipe[],
-			planetData: steps.find((s) => s.cfg.key === "planet")
-				?.data as Planet,
-			planetMultipleData: steps.find(
-				(s) => s.cfg.key === "planetMultiple"
-			)?.data as Planet[],
-		};
-
-		return data;
-	});
+	const results = computed(() => ({
+		materialData: steps.material.data,
+		exchangeData: steps.exchange.data,
+		buildingData: steps.building.data,
+		recipeData: steps.recipe.data,
+		planetData: steps.planet.data,
+		planetMultipleData: steps.planetMultiple.data,
+	}));
 
 	return {
 		done,
