@@ -138,7 +138,11 @@
 			recipeIndex: number,
 			recipeid: string
 		): void;
-		(e: "pick:building:recipe", buildingIndex: number, recipeid: string): void;
+		(
+			e: "pick:building:recipe",
+			buildingIndex: number,
+			recipeid: string
+		): void;
 		(e: "toggle:fold"): void;
 		(e: "open:picker", recipeIndex: number | null): void;
 		(e: "close:picker"): void;
@@ -153,19 +157,24 @@
 	const { typicalRecipes } = usePlanetInsights(() => props.planetId);
 
 	// the planet's typical recipes for an empty building, only ones it can run
-	const typicalMix: ComputedRef<ITypicalRecipes | undefined> = computed(() => {
-		if (props.disabled || localBuildingData.value.activeRecipes.length > 0)
-			return undefined;
-		const typical = typicalRecipes(localBuildingData.value.name);
-		if (!typical) return undefined;
-		const optionIds = new Set(
-			localBuildingData.value.recipeOptions.map((o) => o.recipe_id)
-		);
-		const recipes = typical.recipes.filter((r) =>
-			optionIds.has(r.recipeid)
-		);
-		return recipes.length > 0 ? { ...typical, recipes } : undefined;
-	});
+	const typicalMix: ComputedRef<ITypicalRecipes | undefined> = computed(
+		() => {
+			if (
+				props.disabled ||
+				localBuildingData.value.activeRecipes.length > 0
+			)
+				return undefined;
+			const typical = typicalRecipes(localBuildingData.value.name);
+			if (!typical) return undefined;
+			const optionIds = new Set(
+				localBuildingData.value.recipeOptions.map((o) => o.recipe_id)
+			);
+			const recipes = typical.recipes.filter((r) =>
+				optionIds.has(r.recipeid)
+			);
+			return recipes.length > 0 ? { ...typical, recipes } : undefined;
+		}
+	);
 
 	const typicalMixOutputs: ComputedRef<string[]> = computed(() =>
 		(typicalMix.value?.recipes ?? []).flatMap(
@@ -190,8 +199,9 @@
 
 	// a recipe's ȼ per building and day, as the picker shows it
 	const optionDaily = (recipeId: string): number =>
-		localBuildingData.value.recipeOptions.find((o) => o.recipe_id === recipeId)
-			?.dailyRevenue ?? 0;
+		localBuildingData.value.recipeOptions.find(
+			(o) => o.recipe_id === recipeId
+		)?.dailyRevenue ?? 0;
 
 	// "✓ Agriculture · 3 experts": the expertise green with a tick when the
 	// planet's COGC lifts it, red with a cross when not, then what else
@@ -217,7 +227,11 @@
 				continue;
 			parts.push(
 				e.efficiencyType === "EXPERT"
-					? t("plan.production.experts", { n: props.experts }, props.experts)
+					? t(
+							"plan.production.experts",
+							{ n: props.experts },
+							props.experts
+						)
 					: t(`game.efficiency_type.${e.efficiencyType}`)
 			);
 		}
@@ -258,9 +272,9 @@
 				const opener =
 					before === null
 						? rootRef.value?.querySelector("[data-add-recipe]")
-						: rootRef.value?.querySelectorAll("[data-recipe-button]")[
-								before
-							];
+						: rootRef.value?.querySelectorAll(
+								"[data-recipe-button]"
+							)[before];
 				(opener as HTMLElement | null | undefined)?.focus();
 			});
 		}
@@ -333,7 +347,9 @@
 						v-for="kind in change?.kinds"
 						:key="kind"
 						class="text-xs font-bold uppercase"
-						:class="kind === 'added' ? 'text-positive' : 'text-warning'"
+						:class="
+							kind === 'added' ? 'text-positive' : 'text-warning'
+						"
 						data-badge>
 						{{ t(`sharing.compare.${kind}`) }}
 					</span>
@@ -342,22 +358,47 @@
 					:id="subLineId"
 					class="block text-xs text-muted line-clamp-2 @min-[48rem]/prod:min-w-0 @min-[48rem]/prod:truncate"
 					:title="subLine">
-					<span v-if="zeroReason" class="text-negative" data-zero-reason>
+					<span
+						v-if="zeroReason"
+						class="text-negative"
+						data-zero-reason>
 						{{ t(zeroReason) }} ·
 					</span>
 					<span
 						v-if="localBuildingData.expertise"
 						class="whitespace-nowrap"
 						:class="cogcMatch ? 'text-positive' : 'text-negative'"
-						:title="t(cogcMatch ? 'plan.production.cogc_match' : 'plan.production.cogc_no_match')"
+						:title="
+							t(
+								cogcMatch
+									? 'plan.production.cogc_match'
+									: 'plan.production.cogc_no_match'
+							)
+						"
 						data-cogc-match>
-						<span aria-hidden="true">{{ cogcMatch ? "✓" : "✗" }}</span>
-						<span class="sr-only">{{ t(cogcMatch ? "plan.production.cogc_match" : "plan.production.cogc_no_match") }}:</span>
+						<span aria-hidden="true">{{
+							cogcMatch ? "✓" : "✗"
+						}}</span>
+						<span class="sr-only"
+							>{{
+								t(
+									cogcMatch
+										? "plan.production.cogc_match"
+										: "plan.production.cogc_no_match"
+								)
+							}}:</span
+						>
 						{{ t(`game.expertise.${localBuildingData.expertise}`) }}
 					</span>
 					<!-- break between the parts, never inside one -->
 					<template v-for="part in subParts" :key="part">
-						<template v-if="localBuildingData.expertise || part !== subParts[0]"> · </template>
+						<template
+							v-if="
+								localBuildingData.expertise ||
+								part !== subParts[0]
+							">
+							·
+						</template>
 						<span class="whitespace-nowrap">{{ part }}</span>
 					</template>
 				</span>
@@ -377,14 +418,24 @@
 				@update:value="
 					(value) => {
 						if (value !== null && value !== undefined)
-							emit('update:building:amount', buildingIndex, value);
+							emit(
+								'update:building:amount',
+								buildingIndex,
+								value
+							);
 					}
 				" />
-			<span class="text-right text-sm whitespace-nowrap @max-[40rem]/prod:hidden">
+			<span
+				class="text-right text-sm whitespace-nowrap @max-[40rem]/prod:hidden">
 				<PTooltip>
 					<template #trigger>
 						<span class="text-ink-strong hover:cursor-help">
-							{{ formatPercent(localBuildingData.totalEfficiency * 100, 1) }}
+							{{
+								formatPercent(
+									localBuildingData.totalEfficiency * 100,
+									1
+								)
+							}}
 						</span>
 					</template>
 					<div
@@ -392,7 +443,11 @@
 						:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
 						class="flex flex-row justify-between gap-x-3 child:p-1">
 						<div>
-							{{ t(`game.efficiency_type.${element.efficiencyType}`) }}
+							{{
+								t(
+									`game.efficiency_type.${element.efficiencyType}`
+								)
+							}}
 						</div>
 						<div>{{ formatNumber(element.value * 100) }} %</div>
 					</div>
@@ -456,14 +511,22 @@
 					:striped="index % 2 === 1"
 					@update:building:recipe:amount="
 						(i: number, value: number) =>
-							emit('update:building:recipe:amount', buildingIndex, i, value)
+							emit(
+								'update:building:recipe:amount',
+								buildingIndex,
+								i,
+								value
+							)
 					"
 					@delete:building:recipe="
-						(i: number) => emit('delete:building:recipe', buildingIndex, i)
+						(i: number) =>
+							emit('delete:building:recipe', buildingIndex, i)
 					"
 					@open:picker="
 						(i: number) =>
-							picker === i ? emit('close:picker') : emit('open:picker', i)
+							picker === i
+								? emit('close:picker')
+								: emit('open:picker', i)
 					" />
 				<PlanRecipePicker
 					v-if="picker === index"
@@ -479,7 +542,9 @@
 					v-if="status?.recipe === index"
 					role="status"
 					class="flex items-center gap-2 my-1 px-3 py-1 rounded-control bg-positive/5 text-xs text-ink">
-					<PIcon :size="14" class="text-positive"><CheckSharp /></PIcon>
+					<PIcon :size="14" class="text-positive"
+						><CheckSharp
+					/></PIcon>
 					<span>{{ status.text }}</span>
 					<button
 						type="button"
@@ -488,7 +553,9 @@
 						{{ t("plan.history.undo") }}
 					</button>
 					<span class="grow" />
-					<span class="text-muted">{{ t("plan.picker.undo_key") }}</span>
+					<span class="text-muted">{{
+						t("plan.picker.undo_key")
+					}}</span>
 				</div>
 			</template>
 
@@ -500,7 +567,9 @@
 					{{
 						localBuildingData.recipeOptions.length
 							? t("plan.components.production_building.no_recipe")
-							: t("plan.components.production_building.no_recipe_available")
+							: t(
+									"plan.components.production_building.no_recipe_available"
+								)
 					}}
 				</span>
 				<template v-if="typicalMix">
@@ -511,12 +580,19 @@
 						size="sm"
 						type="secondary"
 						:aria-label="
-							t('plan.components.production_building.mix_add_label', {
-								building: localBuildingData.name,
-							})
+							t(
+								'plan.components.production_building.mix_add_label',
+								{
+									building: localBuildingData.name,
+								}
+							)
 						"
 						@click="
-							emit('add:building:recipes', buildingIndex, typicalMix.recipes)
+							emit(
+								'add:building:recipes',
+								buildingIndex,
+								typicalMix.recipes
+							)
 						">
 						<span class="flex items-center gap-1.5">
 							<MaterialTile
@@ -528,7 +604,9 @@
 							<span class="text-prunplanner">
 								{{ formatPercent(typicalMix.percentage, 0) }}
 							</span>
-							{{ t("plan.components.production_building.mix_add") }}
+							{{
+								t("plan.components.production_building.mix_add")
+							}}
 						</span>
 					</PButton>
 				</template>
@@ -546,7 +624,11 @@
 				"
 				:aria-expanded="picker === null ? 'true' : 'false'"
 				data-add-recipe
-				@click="picker === null ? emit('close:picker') : emit('open:picker', null)">
+				@click="
+					picker === null
+						? emit('close:picker')
+						: emit('open:picker', null)
+				">
 				{{ t("plan.production.add_recipe") }}
 			</button>
 			<PlanRecipePicker

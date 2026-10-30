@@ -57,9 +57,7 @@
 			).execute();
 		} catch (err) {
 			failure.value =
-				isApiError(err) && err.status === 429
-					? "throttled"
-					: "error";
+				isApiError(err) && err.status === 429 ? "throttled" : "error";
 		} finally {
 			isLoading.value = false;
 		}

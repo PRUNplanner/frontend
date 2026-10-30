@@ -32,7 +32,10 @@ import type { WorkforceType } from "@/features/api/schemas/planningData.schemas"
 
 const ctx = testContext();
 const ESSENTIALS = 0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);
-const TIERS: [WorkforceType, "pioneers" | "settlers" | "technicians" | "engineers" | "scientists"][] = [
+const TIERS: [
+	WorkforceType,
+	"pioneers" | "settlers" | "technicians" | "engineers" | "scientists",
+][] = [
 	["pioneer", "pioneers"],
 	["settler", "settlers"],
 	["technician", "technicians"],
@@ -152,7 +155,10 @@ describe("setup per base", () => {
 	it("keeps luxuries and experts in the URL; an old chain opens with the defaults (AC 3)", () => {
 		const input = chainInput([["DW", 100]], {
 			bases: [
-				base({ lux: "lux1", experts: { Food_Industries: 3, Chemistry: 1 } }),
+				base({
+					lux: "lux1",
+					experts: { Food_Industries: 3, Chemistry: 1 },
+				}),
 				base({ id: "B", experts: {} }),
 				base({ id: "C" }),
 			],
@@ -181,7 +187,9 @@ describe("setup per base", () => {
 		expect(broken.input.bases[0].lux).toBeUndefined();
 		expect(broken.input.bases[0].experts).toEqual({ Agriculture: 5 });
 		// a bare base id
-		expect(decodeChain({ t: "DW:100", bases: "A" })!.input.bases[0]).toEqual({
+		expect(
+			decodeChain({ t: "DW:100", bases: "A" })!.input.bases[0]
+		).toEqual({
 			id: "A",
 			name: "",
 			planetId: null,
@@ -192,7 +200,10 @@ describe("setup per base", () => {
 			t: "DW:100",
 			bases: "A::::both:Agriculture-5.Chemistry-4",
 		})!;
-		expect(many.input.bases[0].experts).toEqual({ Agriculture: 5, Chemistry: 1 });
+		expect(many.input.bases[0].experts).toEqual({
+			Agriculture: 5,
+			Chemistry: 1,
+		});
 	});
 
 	it("creates plans with the base's luxuries and experts that run at the chain's efficiency (AC 4)", () => {
@@ -205,8 +216,9 @@ describe("setup per base", () => {
 		expect(draft.data.plan_data.workforce.every((w) => w.lux1)).toBe(true);
 		expect(draft.data.plan_data.workforce.some((w) => w.lux2)).toBe(false);
 		expect(
-			draft.data.plan_data.experts.find((e) => e.type === "Food_Industries")
-				?.amount
+			draft.data.plan_data.experts.find(
+				(e) => e.type === "Food_Industries"
+			)?.amount
 		).toBe(5);
 
 		const plan = calculatePlan(
@@ -232,7 +244,10 @@ describe("setup per base", () => {
 		const made = plan.production.materialio.find((m) => m.ticker === "DW")!;
 		expect(made.output).toBeGreaterThanOrEqual(100 - 1e-6);
 		expect(made.output).toBeLessThan(
-			100 * (Math.ceil(b.buildingTypes[0].exact) / b.buildingTypes[0].exact) + 1e-6
+			100 *
+				(Math.ceil(b.buildingTypes[0].exact) /
+					b.buildingTypes[0].exact) +
+				1e-6
 		);
 	});
 });

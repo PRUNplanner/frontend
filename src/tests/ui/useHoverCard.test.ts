@@ -1,11 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	defineComponent,
-	h,
-	type MaybeRefOrGetter,
-	nextTick,
-	ref,
-} from "vue";
+import { defineComponent, h, type MaybeRefOrGetter, nextTick, ref } from "vue";
 
 import { mountComponent } from "@/tests/mountComponent";
 import { type IHoverCardOptions, useHoverCard } from "@/ui/useHoverCard";
@@ -34,7 +28,12 @@ describe("useHoverCard", () => {
 				setup() {
 					for (let i = 0; i < count; i++)
 						cards.push(
-							useHoverCard(ref(triggers[i]), ref(panels[i]), options, () => opened++)
+							useHoverCard(
+								ref(triggers[i]),
+								ref(panels[i]),
+								options,
+								() => opened++
+							)
 						);
 					return () => h("div");
 				},
@@ -42,7 +41,8 @@ describe("useHoverCard", () => {
 		);
 	}
 
-	const enter = (i: number, e = pointer()) => cards[i].triggerEvents.pointerenter(e);
+	const enter = (i: number, e = pointer()) =>
+		cards[i].triggerEvents.pointerenter(e);
 	const leave = (i: number) => cards[i].triggerEvents.pointerleave(pointer());
 
 	function press(key: string): KeyboardEvent {
@@ -58,8 +58,12 @@ describe("useHoverCard", () => {
 	beforeEach(async () => {
 		vi.useFakeTimers({ now: (clock += 100_000) });
 		opened = 0;
-		triggers = [0, 1].map(() => document.body.appendChild(document.createElement("div")));
-		panels = [0, 1].map(() => document.body.appendChild(document.createElement("div")));
+		triggers = [0, 1].map(() =>
+			document.body.appendChild(document.createElement("div"))
+		);
+		panels = [0, 1].map(() =>
+			document.body.appendChild(document.createElement("div"))
+		);
 		await setup();
 	});
 
@@ -293,7 +297,10 @@ describe("useHoverCard", () => {
 		const click = vi.fn();
 		triggers[0].addEventListener("click", click);
 		const key = (k: string, target: Element) => {
-			const e = new KeyboardEvent("keydown", { key: k, cancelable: true });
+			const e = new KeyboardEvent("keydown", {
+				key: k,
+				cancelable: true,
+			});
 			Object.defineProperty(e, "target", { value: target });
 			cards[0].triggerEvents.keydown(e);
 			return e;

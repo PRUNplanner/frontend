@@ -4,7 +4,10 @@
 	const { t } = useI18n();
 
 	// Util
-	import { money, signedMoney } from "@/features/production_chain/chainCheck.util";
+	import {
+		money,
+		signedMoney,
+	} from "@/features/production_chain/chainCheck.util";
 	import { formatShare } from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
 
@@ -43,8 +46,14 @@
 			},
 			{
 				key: "checked",
-				value: k("checked_value", { n: tt.checked, total: result.bases.length }),
-				sub: t("production_chains.check.results.checked_note", result.chains.length),
+				value: k("checked_value", {
+					n: tt.checked,
+					total: result.bases.length,
+				}),
+				sub: t(
+					"production_chains.check.results.checked_note",
+					result.chains.length
+				),
 			},
 			{
 				key: "optimal",
@@ -80,7 +89,10 @@
 				value: tt.counts.location ? money(t, tt.moveCost) : "—",
 				sub: tt.counts.location
 					? k("moves_note", {
-							n: formatNumber(tt.moveCost / Math.max(tt.moveGain, 1), 0),
+							n: formatNumber(
+								tt.moveCost / Math.max(tt.moveGain, 1),
+								0
+							),
 						})
 					: k("no_moves"),
 			},

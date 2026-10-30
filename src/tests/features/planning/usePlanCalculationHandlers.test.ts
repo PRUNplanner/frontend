@@ -663,7 +663,11 @@ describe("Planning: Workforce Calculations", async () => {
 		it("keeps the recipes a building in the plan runs once", async () => {
 			const fakePlan = {
 				buildings: [
-					{ name: "PP1", amount: 1, active_recipes: [{ recipeid: "a", amount: 4 }] },
+					{
+						name: "PP1",
+						amount: 1,
+						active_recipes: [{ recipeid: "a", amount: 4 }],
+					},
 				],
 				experts: [],
 			};
@@ -810,7 +814,10 @@ describe("Planning: Workforce Calculations", async () => {
 		it("adds all recipes, also ones the building runs", async () => {
 			const fakePlan = {
 				buildings: [
-					{ name: "FRM", active_recipes: [{ recipeid: "a", amount: 1 }] },
+					{
+						name: "FRM",
+						active_recipes: [{ recipeid: "a", amount: 1 }],
+					},
 				],
 			};
 

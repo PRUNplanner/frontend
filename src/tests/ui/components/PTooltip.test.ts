@@ -18,11 +18,7 @@ function mountTooltip(trigger: () => ReturnType<typeof h>, disabled = false) {
 	return mount(
 		{
 			render: () =>
-				h(
-					PTooltip,
-					{ disabled },
-					{ trigger, default: () => "Help" }
-				),
+				h(PTooltip, { disabled }, { trigger, default: () => "Help" }),
 		},
 		{ attachTo: document.body }
 	);
@@ -50,7 +46,9 @@ describe("PTooltip", () => {
 	it("opens on keyboard focus, closes on blur and is announced", async () => {
 		const wrapper = mountTooltip(() => h("button", "Save"));
 		const button = wrapper.find("button");
-		expect(wrapper.find(".ptooltip").attributes("tabindex")).toBeUndefined();
+		expect(
+			wrapper.find(".ptooltip").attributes("tabindex")
+		).toBeUndefined();
 		// closed tooltips add nothing to the page
 		expect(panel()).toBeNull();
 
@@ -77,12 +75,16 @@ describe("PTooltip", () => {
 	});
 
 	it("explains a disabled control: the trigger takes focus and taps", async () => {
-		const wrapper = mountTooltip(() => h("button", { disabled: true }, "COGM"));
+		const wrapper = mountTooltip(() =>
+			h("button", { disabled: true }, "COGM")
+		);
 		await flushPromises();
 		const trigger = wrapper.find(".ptooltip");
 
 		expect(trigger.attributes("tabindex")).toBe("0");
-		expect(trigger.classes()).toContain("[&_:disabled]:pointer-events-none");
+		expect(trigger.classes()).toContain(
+			"[&_:disabled]:pointer-events-none"
+		);
 
 		await trigger.trigger("touchstart");
 		await trigger.trigger("click");
@@ -161,7 +163,9 @@ describe("PTooltip", () => {
 		await trigger.trigger("click");
 		expect(shown()).toBe(true);
 
-		document.body.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+		document.body.dispatchEvent(
+			new Event("pointerdown", { bubbles: true })
+		);
 		await flushPromises();
 		expect(shown()).toBe(false);
 	});

@@ -43,7 +43,9 @@
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()
-				.then((data: PopulationReport | null) => (poprData.value = data))
+				.then(
+					(data: PopulationReport | null) => (poprData.value = data)
+				)
 				.finally(() => (isLoading.value = false));
 		} catch {
 			hasError.value = true;
@@ -116,7 +118,9 @@
 		<div
 			v-else-if="poprData"
 			class="grid gap-x-6 gap-y-4 items-start @[72rem]/popr:grid-cols-[minmax(24rem,36rem)_minmax(0,1fr)]">
-			<figure class="@container flex flex-col gap-2 max-w-3xl" data-popr-chart>
+			<figure
+				class="@container flex flex-col gap-2 max-w-3xl"
+				data-popr-chart>
 				<figcaption class="text-sm font-medium text-ink-strong">
 					{{ t("plan.tools.popr.chart.label") }}
 					<span class="block text-xs font-normal text-muted">

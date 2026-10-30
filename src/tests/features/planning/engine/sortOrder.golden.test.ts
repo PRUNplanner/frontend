@@ -135,6 +135,8 @@ describe("engine ticker order (golden)", () => {
 					production
 				),
 			})
-		).toMatchFileSnapshot("./__snapshots__/sortOrder.materialIO.golden.json");
+		).toMatchFileSnapshot(
+			"./__snapshots__/sortOrder.materialIO.golden.json"
+		);
 	});
 });

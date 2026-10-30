@@ -218,7 +218,12 @@ const empireResults: Record<string, IPlanCalculation> = {};
 	for (let i = 0; i < 30; i++) {
 		const plan = largePlan();
 		empireResults[`plan-${i}`] = calculatePlan(
-			{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
+			{
+				plan,
+				empire: undefined,
+				cxUuid: undefined,
+				recipeOptions: false,
+			},
 			await createContext(gameData, plan.planet_natural_id, undefined)
 		);
 	}

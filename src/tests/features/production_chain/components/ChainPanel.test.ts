@@ -60,11 +60,17 @@ describe("ChainPanel", () => {
 
 	it("shows the steps, no warnings for a clean chain", async () => {
 		const { wrapper } = await mountPanel(chainInput([["DW", 10]]));
-		expect(wrapper.findComponent(ChainStepsTable).props("order")).toBe("chain");
+		expect(wrapper.findComponent(ChainStepsTable).props("order")).toBe(
+			"chain"
+		);
 		expect(wrapper.text()).toContain("production_chains.panel.summary");
 		// order and CSV only on Steps
-		await button(wrapper, "production_chains.panel.by_source").trigger("click");
-		expect(wrapper.findComponent(ChainStepsTable).props("order")).toBe("source");
+		await button(wrapper, "production_chains.panel.by_source").trigger(
+			"click"
+		);
+		expect(wrapper.findComponent(ChainStepsTable).props("order")).toBe(
+			"source"
+		);
 	});
 
 	it("filters by a warning chip and forwards Buy all", async () => {
@@ -77,7 +83,9 @@ describe("ChainPanel", () => {
 		expect(table.props("filter")).toBe("cheaper");
 		table.vm.$emit("buyAll", result.warnings.cheaper);
 		await flushPromises();
-		expect(component.emitted("buyAll")![0]).toEqual([result.warnings.cheaper]);
+		expect(component.emitted("buyAll")![0]).toEqual([
+			result.warnings.cheaper,
+		]);
 		expect(table.props("filter")).toBeNull();
 
 		await wrapper.find("[data-testid='chain-chip-thin']").trigger("click");
@@ -88,7 +96,9 @@ describe("ChainPanel", () => {
 	});
 
 	it("forwards the table's changes", async () => {
-		const { wrapper, component } = await mountPanel(chainInput([["DW", 10]]));
+		const { wrapper, component } = await mountPanel(
+			chainInput([["DW", 10]])
+		);
 		const table = wrapper.findComponent(ChainStepsTable);
 		table.vm.$emit("source", "H2O", "extract");
 		table.vm.$emit("recipe", "DW", "x");
@@ -99,14 +109,18 @@ describe("ChainPanel", () => {
 	});
 
 	it("switches to the graph with its line width and zoom", async () => {
-		const { wrapper, component } = await mountPanel(chainInput([["DW", 10]]));
+		const { wrapper, component } = await mountPanel(
+			chainInput([["DW", 10]])
+		);
 		await button(wrapper, "production_chains.panel.graph").trigger("click");
 		await flushPromises();
 		expect(component.emitted("track")![0]).toEqual(["view_graph"]);
 		const stub = wrapper.findComponent({ name: "ChainGraph" });
 		expect(stub.props("lines")).toBe("t");
 
-		await button(wrapper, "production_chains.panel.lines_c").trigger("click");
+		await button(wrapper, "production_chains.panel.lines_c").trigger(
+			"click"
+		);
 		expect(stub.props("lines")).toBe("c");
 		await wrapper
 			.find("button[aria-label='production_chains.panel.zoom_in']")
@@ -131,11 +145,19 @@ describe("ChainPanel", () => {
 	it("downloads the steps as CSV", async () => {
 		const created = vi.fn(() => "blob:x");
 		const revoked = vi.fn();
-		vi.stubGlobal("URL", Object.assign(URL, { createObjectURL: created, revokeObjectURL: revoked }));
+		vi.stubGlobal(
+			"URL",
+			Object.assign(URL, {
+				createObjectURL: created,
+				revokeObjectURL: revoked,
+			})
+		);
 		const click = vi
 			.spyOn(HTMLAnchorElement.prototype, "click")
 			.mockImplementation(() => {});
-		const { wrapper, component } = await mountPanel(chainInput([["DW", 10]]));
+		const { wrapper, component } = await mountPanel(
+			chainInput([["DW", 10]])
+		);
 		await button(wrapper, "production_chains.panel.csv").trigger("click");
 		expect(created).toHaveBeenCalledTimes(1);
 		expect(click).toHaveBeenCalledTimes(1);
@@ -166,11 +188,15 @@ describe("ChainPanel base warnings", () => {
 		const { wrapper } = await mountPanel(splitInput([FOOD_PLANET, null]));
 		const chip = wrapper.find("[data-testid='chain-chip-bases']");
 		expect(chip.text()).toBe("production_chains.panel.base_warnings");
-		expect(wrapper.text()).not.toContain("production_chains.panel.no_warnings");
+		expect(wrapper.text()).not.toContain(
+			"production_chains.panel.no_warnings"
+		);
 		await chip.trigger("click");
 		expect(wrapper.findComponent(ChainStepsTable).exists()).toBe(false);
 		expect(
-			button(wrapper, "production_chains.panel.bases").attributes("aria-pressed")
+			button(wrapper, "production_chains.panel.bases").attributes(
+				"aria-pressed"
+			)
 		).toBe("true");
 	});
 });

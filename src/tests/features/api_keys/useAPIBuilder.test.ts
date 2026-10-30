@@ -73,9 +73,7 @@ describe("buildSnippets", () => {
 			(["csv", "json"] as const).forEach((format) => {
 				const s = buildSnippets(e, format, VALUES, "real")!;
 				expect(s.url).toContain("?api_key=real");
-				expect(s.curl).toContain(
-					'-H "Authorization: Api-Key real"'
-				);
+				expect(s.curl).toContain('-H "Authorization: Api-Key real"');
 				expect(s.curl).not.toContain("api_key=");
 				expect(s.python).toContain(
 					'headers={"Authorization": "Api-Key real"}'
@@ -100,14 +98,16 @@ describe("buildSnippets", () => {
 
 	it("builds a snippet for every endpoint, format and key state", () => {
 		API_ENDPOINTS.forEach((e) =>
-			(e.csvPath ? (["csv", "json"] as const) : (["json"] as const)).forEach(
-				(format) =>
-					[null, "real"].forEach((key) => {
-						const s = buildSnippets(e, format, VALUES, key);
-						expect(s).not.toBeNull();
-						expect(s!.url.startsWith(`${BASE}/`)).toBe(true);
-						expect(s!.sheets === null).toBe(format === "json");
-					})
+			(e.csvPath
+				? (["csv", "json"] as const)
+				: (["json"] as const)
+			).forEach((format) =>
+				[null, "real"].forEach((key) => {
+					const s = buildSnippets(e, format, VALUES, key);
+					expect(s).not.toBeNull();
+					expect(s!.url.startsWith(`${BASE}/`)).toBe(true);
+					expect(s!.sheets === null).toBe(format === "json");
+				})
 			)
 		);
 	});
@@ -122,8 +122,9 @@ describe("buildSnippets", () => {
 describe("useAPIBuilder", () => {
 	it("defaults to CSV and goes back to it on an endpoint change", async () => {
 		let key: string | null = null;
-		const { endpointId, format, formats, values, snippets } =
-			useAPIBuilder(() => key);
+		const { endpointId, format, formats, values, snippets } = useAPIBuilder(
+			() => key
+		);
 
 		expect(endpointId.value).toBe("empire_material_io");
 		expect(format.value).toBe("csv");

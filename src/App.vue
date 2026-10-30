@@ -41,7 +41,11 @@
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
 	import { userActivity } from "@/features/user_activity/userActivityStore";
-	import { identifyUser, trackEvent, reportError } from "@/lib/analytics/useAnalytics";
+	import {
+		identifyUser,
+		trackEvent,
+		reportError,
+	} from "@/lib/analytics/useAnalytics";
 	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 	import { getPostHogKey } from "@/lib/analytics/usePostHog";
 	import { dbBlocked } from "@/database/dbBlocked";

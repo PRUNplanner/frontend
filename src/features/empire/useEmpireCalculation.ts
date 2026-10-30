@@ -77,10 +77,7 @@ export function useEmpireCalculation(
 	 * screen, show the results when done
 	 * @returns {Promise<void>}
 	 */
-	async function calculate(
-		clearCache = false,
-		quiet = false
-	): Promise<void> {
+	async function calculate(clearCache = false, quiet = false): Promise<void> {
 		// a run calculates the empire, cx and plans it started with
 		const runPlans = plans.value;
 		const runEmpireUuid = empireUuid.value;
@@ -163,8 +160,7 @@ export function useEmpireCalculation(
 	// another tab changed the empire or its plans; the list and the plans
 	// steps refresh one after the other, calculate once
 	const recalculateRefreshed = debounce(() => calculate(true, true), 200);
-	if (getCurrentScope())
-		onScopeDispose(() => recalculateRefreshed.cancel());
+	if (getCurrentScope()) onScopeDispose(() => recalculateRefreshed.cancel());
 
 	return {
 		results,

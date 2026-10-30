@@ -71,7 +71,10 @@ describe("queryRepository", () => {
 		for (const link of batchRefresh) {
 			expect(queryRepository).toHaveProperty(link.single);
 			expect(queryRepository).toHaveProperty(link.multiple);
-			expect(queryRepository[link.single]).toHaveProperty("autoRefetch", true);
+			expect(queryRepository[link.single]).toHaveProperty(
+				"autoRefetch",
+				true
+			);
 		}
 	});
 
@@ -175,8 +178,13 @@ describe("queryRepository", () => {
 
 		await queryStore.execute("GetEmpirePlans", { empireUuid: "empire-1" });
 
-		expect(usePlanningStore().plans["plan-1"]).toStrictEqual({ ...plan, empires });
-		expect(usePlanningStore().plans["plan-3"]).toStrictEqual({ uuid: "plan-3" });
+		expect(usePlanningStore().plans["plan-1"]).toStrictEqual({
+			...plan,
+			empires,
+		});
+		expect(usePlanningStore().plans["plan-3"]).toStrictEqual({
+			uuid: "plan-3",
+		});
 	});
 
 	it("ClonePlan and DeletePlan: return the API response", async () => {

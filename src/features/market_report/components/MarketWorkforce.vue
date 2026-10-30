@@ -170,7 +170,10 @@
 								{{ formatChange(c.change) }}
 							</b>
 							<span class="text-muted">
-								{{ " " + t("market_report.workforce.in_90_days") }}
+								{{
+									" " +
+									t("market_report.workforce.in_90_days")
+								}}
 							</span>
 						</span>
 					</span>
@@ -189,73 +192,73 @@
 						" />
 				</button>
 			</div>
-		<div
-			class="h-112 lg:h-full flex flex-col gap-3 p-4 pb-2 rounded-panel border border-line min-w-0">
 			<div
-				class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-				<div>
-					<div class="text-3xl font-bold tabular-nums">
-						{{
-							headline.cost == null
-								? "–"
-								: formatMoney(headline.cost)
-						}}
-					</div>
-					<div class="text-xs text-muted">
-						{{ t("market_report.workforce.cost") }} ·
-						<span :class="changeClass(headline.change)">
-							{{ formatChange(headline.change) }}
-						</span>
-						<template v-if="headline.since">
-							<!-- the space would be dropped between the tags -->
+				class="h-112 lg:h-full flex flex-col gap-3 p-4 pb-2 rounded-panel border border-line min-w-0">
+				<div
+					class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+					<div>
+						<div class="text-3xl font-bold tabular-nums">
 							{{
-								" " +
-								t("market_report.workforce.since", {
-									date: formatDate(headline.since),
-								})
+								headline.cost == null
+									? "–"
+									: formatMoney(headline.cost)
 							}}
-						</template>
-					</div>
-				</div>
-				<div class="flex flex-col gap-1 text-sm sm:items-end">
-					<div v-if="headline.cheapest">
-						{{
-							t("market_report.workforce.cheapest", {
-								exchange: headline.cheapest.ex,
-								cost: formatMoney(headline.cheapest.cost!),
-							})
-						}}
-					</div>
-					<div v-if="drivers.length" class="text-muted">
-						{{ t("market_report.workforce.drivers") }}:
-						<template v-for="(d, i) in drivers" :key="d.ticker">
-							<span v-if="i">, </span>
-							<span :class="changeClass(d.pct)">
+						</div>
+						<div class="text-xs text-muted">
+							{{ t("market_report.workforce.cost") }} ·
+							<span :class="changeClass(headline.change)">
+								{{ formatChange(headline.change) }}
+							</span>
+							<template v-if="headline.since">
+								<!-- the space would be dropped between the tags -->
 								{{
-									t("market_report.workforce.driver", {
-										ticker: d.ticker,
-										delta:
-											(d.delta >= 0 ? "+" : "−") +
-											formatMoney(Math.abs(d.delta)),
-										change: formatChange(d.pct),
+									" " +
+									t("market_report.workforce.since", {
+										date: formatDate(headline.since),
 									})
 								}}
-							</span>
-						</template>
+							</template>
+						</div>
+					</div>
+					<div class="flex flex-col gap-1 text-sm sm:items-end">
+						<div v-if="headline.cheapest">
+							{{
+								t("market_report.workforce.cheapest", {
+									exchange: headline.cheapest.ex,
+									cost: formatMoney(headline.cheapest.cost!),
+								})
+							}}
+						</div>
+						<div v-if="drivers.length" class="text-muted">
+							{{ t("market_report.workforce.drivers") }}:
+							<template v-for="(d, i) in drivers" :key="d.ticker">
+								<span v-if="i">, </span>
+								<span :class="changeClass(d.pct)">
+									{{
+										t("market_report.workforce.driver", {
+											ticker: d.ticker,
+											delta:
+												(d.delta >= 0 ? "+" : "−") +
+												formatMoney(Math.abs(d.delta)),
+											change: formatChange(d.pct),
+										})
+									}}
+								</span>
+							</template>
+						</div>
 					</div>
 				</div>
+				<div class="flex-1 min-h-0">
+					<PLineChart
+						:days="days"
+						:series="series"
+						:label="
+							t('market_report.workforce.chart_label', {
+								tier: t(`game.workforce_type.${tier}`),
+							})
+						" />
+				</div>
 			</div>
-			<div class="flex-1 min-h-0">
-				<PLineChart
-					:days="days"
-					:series="series"
-					:label="
-						t('market_report.workforce.chart_label', {
-							tier: t(`game.workforce_type.${tier}`),
-						})
-					" />
-			</div>
-		</div>
 		</div>
 	</MarketBlock>
 </template>

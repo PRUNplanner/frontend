@@ -475,7 +475,12 @@ describe("sparklineLayout edges", () => {
 	});
 
 	it("marks values between gaps as lone points", () => {
-		const { lines, dots } = sparklineLayout([1, null, 2, 3, null, 4], 50, 20, 0);
+		const { lines, dots } = sparklineLayout(
+			[1, null, 2, 3, null, 4],
+			50,
+			20,
+			0
+		);
 
 		expect(lines).toHaveLength(3);
 		expect(dots).toEqual([

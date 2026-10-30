@@ -13,17 +13,19 @@ async function mountEditor(
 	fieldType: "string" | "number" | "array" = "number",
 	operator = "eq"
 ) {
-	const { wrapper, component, setProps } = await mountComponent(TargetEditor, {
-		modelValue,
-		fieldType,
-		operator,
-	});
+	const { wrapper, component, setProps } = await mountComponent(
+		TargetEditor,
+		{
+			modelValue,
+			fieldType,
+			operator,
+		}
+	);
 
 	/** last emitted target */
 	const lastTarget = () =>
 		component.emitted("update:modelValue")?.at(-1)?.[0] as
-			| ComparisonTarget
-			| undefined;
+			ComparisonTarget | undefined;
 
 	return { wrapper, component, setProps, lastTarget };
 }

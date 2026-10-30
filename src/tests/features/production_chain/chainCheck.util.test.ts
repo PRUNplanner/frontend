@@ -54,7 +54,9 @@ describe("finding texts", () => {
 			extra: 1,
 		};
 		expect(text(recipe).detail).toContain("finding.recipe_extra");
-		expect(text({ ...recipe, extra: 0 }).detail).not.toContain("recipe_extra");
+		expect(text({ ...recipe, extra: 0 }).detail).not.toContain(
+			"recipe_extra"
+		);
 
 		const buy = {
 			...move,
@@ -86,12 +88,12 @@ describe("finding texts", () => {
 		expect(text({ ...move, option: fresh, picked: true }).detail).toMatch(
 			/^finding\.move_picked/
 		);
-		expect(
-			text({ ...move, better: [fresh] }).detail
-		).toContain("move_better_one");
-		expect(
-			text({ ...move, better: [fresh, own] }).detail
-		).toContain('move_better_many{"n":2}');
+		expect(text({ ...move, better: [fresh] }).detail).toContain(
+			"move_better_one"
+		);
+		expect(text({ ...move, better: [fresh, own] }).detail).toContain(
+			'move_better_many{"n":2}'
+		);
 		// a farm: fertility here and there
 		expect(text(move).detail).toContain("why_fertility");
 	});
@@ -103,8 +105,12 @@ describe("finding texts", () => {
 				f.kind === "location" && f.step.extraction
 		)!;
 		expect(
-			findingText(t, rig, rigs.bases.find((b) => b.id === rig.base)!, nameOf)
-				.detail
+			findingText(
+				t,
+				rig,
+				rigs.bases.find((b) => b.id === rig.base)!,
+				nameOf
+			).detail
 		).toContain("why_rate");
 		expect(planetSearchQuery(rig)).toEqual({ m: `any:${rig.step.ticker}` });
 	});
@@ -112,9 +118,9 @@ describe("finding texts", () => {
 	it("links Planet Search by resource, fertility or program", () => {
 		expect(planetSearchQuery(move)).toEqual({ fert: "1" });
 		const fp = { ...move, step: { ...move.step, building: "FP" } };
-		expect(planetSearchQuery({ ...fp, expertise: "FOOD_INDUSTRIES" })).toEqual(
-			{ cogc: "ADVERTISING_FOOD_INDUSTRIES" }
-		);
+		expect(
+			planetSearchQuery({ ...fp, expertise: "FOOD_INDUSTRIES" })
+		).toEqual({ cogc: "ADVERTISING_FOOD_INDUSTRIES" });
 		expect(planetSearchQuery({ ...fp, expertise: null })).toEqual({});
 	});
 });
@@ -152,10 +158,13 @@ describe("option chips", () => {
 
 	it("formats names and money", () => {
 		expect(programName(t, "---")).toMatch(/^finding\.no_program/);
-		expect(programName(t, "AGRICULTURE")).toContain("ADVERTISING_AGRICULTURE");
+		expect(programName(t, "AGRICULTURE")).toContain(
+			"ADVERTISING_AGRICULTURE"
+		);
 		expect(planetShort(null, "XX-000a")).toBe("XX-000a");
 		expect(planetShort(move.option.planet)).toBe(
-			move.option.planet.planet_name || move.option.planet.planet_natural_id
+			move.option.planet.planet_name ||
+				move.option.planet.planet_natural_id
 		);
 		expect(signedMoney(t, 5)).toMatch(/^\+/);
 		expect(signedMoney(t, -5)).not.toMatch(/^\+/);

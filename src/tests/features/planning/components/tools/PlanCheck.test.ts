@@ -154,8 +154,12 @@ describe("PlanCheck", () => {
 			expect(wrapper.find("[data-exchange-caption]").text()).toBe(
 				"cx.market_flags.exchange.all"
 			);
-			expect(wrapper.text()).toContain("cx.market_flags.exchange.from_plan");
-			expect(wrapper.text()).not.toContain("cx.market_flags.exchange.no_cx");
+			expect(wrapper.text()).toContain(
+				"cx.market_flags.exchange.from_plan"
+			);
+			expect(wrapper.text()).not.toContain(
+				"cx.market_flags.exchange.no_cx"
+			);
 			const real = wrapper.find("[data-real-prices]");
 			expect(real.find("[data-kept-universe]").exists()).toBe(true);
 			expect(real.text()).not.toContain("real.kept_fallback");
@@ -198,7 +202,9 @@ describe("PlanCheck", () => {
 			const ruleLinks = () =>
 				wrapper
 					.findAllComponents(RouterLinkStub)
-					.filter((l) => l.attributes("data-rule-link") !== undefined);
+					.filter(
+						(l) => l.attributes("data-rule-link") !== undefined
+					);
 			const links = ruleLinks().map((l) => l.props("to"));
 			expect(new Set(links)).toEqual(
 				new Set([

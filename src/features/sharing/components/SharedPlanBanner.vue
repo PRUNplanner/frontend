@@ -79,7 +79,9 @@
 				{{ $t("sharing.banner.save") }}
 			</PButton>
 			<template v-else>
-				<PButton type="primary" @click="open('registration', 'shared_plan')">
+				<PButton
+					type="primary"
+					@click="open('registration', 'shared_plan')">
 					{{ $t("sharing.banner.signup") }}
 				</PButton>
 				<PButton type="secondary" @click="open('login', 'shared_plan')">

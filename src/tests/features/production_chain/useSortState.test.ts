@@ -4,10 +4,15 @@ import { useSortState } from "@/features/production_chain/useSortState";
 
 describe("useSortState", () => {
 	it("starts on the initial key in its first direction", () => {
-		const { sortKey, sortDir } = useSortState<"a" | "b">("a", (k) => k === "a");
+		const { sortKey, sortDir } = useSortState<"a" | "b">(
+			"a",
+			(k) => k === "a"
+		);
 		expect(sortKey.value).toBe("a");
 		expect(sortDir.value).toBe(-1);
-		expect(useSortState<"a" | "b">("b", (k) => k === "a").sortDir.value).toBe(1);
+		expect(
+			useSortState<"a" | "b">("b", (k) => k === "a").sortDir.value
+		).toBe(1);
 	});
 
 	it("flips the sorted column, starts another in its first direction", () => {

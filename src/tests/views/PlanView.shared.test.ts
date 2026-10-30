@@ -358,7 +358,8 @@ describe("PlanView shared plans, toasts and habs", () => {
 		const building = production().buildings[swap.index];
 		const count = building.activeRecipes.length;
 		const free = building.recipeOptions.find(
-			(o) => !building.activeRecipes.some((r) => r.recipeId === o.recipe_id)
+			(o) =>
+				!building.activeRecipes.some((r) => r.recipeId === o.recipe_id)
 		)!.recipe_id;
 
 		await emitFrom(
@@ -533,12 +534,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 			is_active: true,
 		});
 		expect(calls()).toEqual([
-			[
-				"cost",
-				expect.anything(),
-				expect.anything(),
-				expect.any(Number),
-			],
+			["cost", expect.anything(), expect.anything(), expect.any(Number)],
 		]);
 		expect(
 			wrapper.findComponent(PlanInfrastructure).props("autoOptimizeHabs")

@@ -19,11 +19,15 @@ async function openAt(innerWidth: number, placement = "left") {
 		top: 100,
 		bottom: 120,
 	} as DOMRect);
-	const { wrapper } = await mountComponent(PHoverCard, {
-		label: "RAT market",
-		placement,
-		width: 626,
-	}, { attach: true });
+	const { wrapper } = await mountComponent(
+		PHoverCard,
+		{
+			label: "RAT market",
+			placement,
+			width: 626,
+		},
+		{ attach: true }
+	);
 	await wrapper.find("[role=button]").trigger("focusin");
 	await nextTick();
 	await flushPromises();

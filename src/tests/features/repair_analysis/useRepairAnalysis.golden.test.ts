@@ -124,6 +124,8 @@ describe("useRepairAnalysis (golden)", () => {
 
 		await expect(
 			golden(await snapshot(cx_definition.uuid))
-		).toMatchFileSnapshot("./__snapshots__/useRepairAnalysis.cx.golden.json");
+		).toMatchFileSnapshot(
+			"./__snapshots__/useRepairAnalysis.cx.golden.json"
+		);
 	});
 });

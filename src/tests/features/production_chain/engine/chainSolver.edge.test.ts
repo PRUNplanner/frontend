@@ -31,8 +31,14 @@ const recipe = (
 	recipe_name: "",
 	building_ticker: building,
 	time_ms: hours * 3_600_000,
-	inputs: inputs.map(([t, a]) => ({ material_ticker: t, material_amount: a })),
-	outputs: outputs.map(([t, a]) => ({ material_ticker: t, material_amount: a })),
+	inputs: inputs.map(([t, a]) => ({
+		material_ticker: t,
+		material_amount: a,
+	})),
+	outputs: outputs.map(([t, a]) => ({
+		material_ticker: t,
+		material_amount: a,
+	})),
 });
 
 const BLD = {
@@ -58,7 +64,14 @@ function edgeContext(): IChainContext {
 	const recipes = [
 		recipe("BLD", [["B", 1]], [["A", 1]]),
 		recipe("BLD", [["A", 1]], [["B", 1]]),
-		recipe("BLD", [], [["C", 1], ["D", 1]]),
+		recipe(
+			"BLD",
+			[],
+			[
+				["C", 1],
+				["D", 1],
+			]
+		),
 		recipe("ZZZ", [], [["E", 1]]),
 	];
 	const byOutput = new Map<string, Recipe[]>();

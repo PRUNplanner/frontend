@@ -56,9 +56,8 @@ async function load(
 	};
 
 	const wrapper = await import("@/lib/analytics/usePostHog");
-	const { useAnalyticsConsent } = await import(
-		"@/lib/analytics/useAnalyticsConsent"
-	);
+	const { useAnalyticsConsent } =
+		await import("@/lib/analytics/useAnalyticsConsent");
 	return { ...wrapper, ...useAnalyticsConsent() };
 }
 
@@ -587,7 +586,8 @@ describe("usePostHog", () => {
 							$current_url:
 								"https://prunplanner.org/password-reset/abc123?x=1",
 							$pathname: "/verify-email/def456",
-							$referrer: "https://prunplanner.org/verify-email/def456#top",
+							$referrer:
+								"https://prunplanner.org/verify-email/def456#top",
 							$session_entry_url:
 								"https://prunplanner.org/password-reset/abc123",
 							$exception_list: [
@@ -631,7 +631,9 @@ describe("usePostHog", () => {
 					$snapshot_data: [
 						{
 							type: 4,
-							data: { href: "https://prunplanner.org/verify-email/def456" },
+							data: {
+								href: "https://prunplanner.org/verify-email/def456",
+							},
 						},
 					],
 				})
@@ -668,7 +670,8 @@ describe("usePostHog", () => {
 				event("plan:view", {})
 			);
 			expect(
-				maskUrlCodes(event("plan:view", { count: 2, ok: null }))?.properties
+				maskUrlCodes(event("plan:view", { count: 2, ok: null }))
+					?.properties
 			).toEqual({ count: 2, ok: null });
 		});
 	});
@@ -697,7 +700,10 @@ describe("usePostHog", () => {
 		it("keeps other exceptions, mixed ones included", async () => {
 			const { dropChunkLoadErrors } = await load();
 			const other = exception("Cannot read properties of undefined");
-			const mixed = exception(CHUNK, "Cannot read properties of undefined");
+			const mixed = exception(
+				CHUNK,
+				"Cannot read properties of undefined"
+			);
 
 			expect(dropChunkLoadErrors(other)).toBe(other);
 			expect(dropChunkLoadErrors(mixed)).toBe(mixed);

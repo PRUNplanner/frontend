@@ -64,10 +64,7 @@
 </script>
 
 <template>
-	<PModal
-		v-model:show="show"
-		:width="700"
-		:title="$t('sharing.title')">
+	<PModal v-model:show="show" :width="700" :title="$t('sharing.title')">
 		<template v-if="!isShared">
 			<div>
 				{{ $t("sharing.info") }}

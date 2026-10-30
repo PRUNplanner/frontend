@@ -104,7 +104,8 @@
 	);
 	const planetCount = (planet: string) =>
 		rulesOf(
-			cxData.cx_planets.find((p) => p.planet === planet)?.preferences ?? [],
+			cxData.cx_planets.find((p) => p.planet === planet)?.preferences ??
+				[],
 			cxData.ticker_planets.find((p) => p.planet === planet)
 				?.preferences ?? []
 		);
@@ -135,11 +136,13 @@
 		return q
 			? planets.filter(
 					(p) =>
-						p.toLowerCase().includes(q) || name(p).toLowerCase().includes(q)
+						p.toLowerCase().includes(q) ||
+						name(p).toLowerCase().includes(q)
 				)
 			: planets;
 	};
-	const countTitle = (n: number) => t("exchanges.scopes.rules_count", { n }, n);
+	const countTitle = (n: number) =>
+		t("exchanges.scopes.rules_count", { n }, n);
 
 	// "Rules for" below 1024 px
 	const selectValue = computed({
@@ -153,7 +156,10 @@
 						{
 							label,
 							value: label,
-							children: list.map((p) => ({ label: name(p), value: p })),
+							children: list.map((p) => ({
+								label: name(p),
+								value: p,
+							})),
 						},
 					]
 				: [];
@@ -253,7 +259,9 @@
 				</h3>
 				<template v-for="group in linked" :key="group.name">
 					<h4
-						v-if="cx.empires.length > 1 && shown(group.planets).length"
+						v-if="
+							cx.empires.length > 1 && shown(group.planets).length
+						"
 						class="px-3 pt-1 text-xs text-muted">
 						{{ group.name }}
 					</h4>
@@ -308,7 +316,9 @@
 						type="ghost"
 						size="sm"
 						:aria-label="
-							$t('exchanges.scopes.delete', { planet: name(planet) })
+							$t('exchanges.scopes.delete', {
+								planet: name(planet),
+							})
 						"
 						@click="emit('delete', planet)">
 						<template #icon><ClearSharp /></template>

@@ -106,7 +106,10 @@ describe("VerifyEmailComponent", () => {
 	});
 
 	it("shows the error for a rejected code and clears the input", async () => {
-		mock.onPost(VERIFY_URL).reply(400, { detail: "Invalid code.", code: "invalid" });
+		mock.onPost(VERIFY_URL).reply(400, {
+			detail: "Invalid code.",
+			code: "invalid",
+		});
 		const { wrapper } = await mountComponent(VerifyEmailComponent, {
 			verifyCode: "wrong-code",
 		});
@@ -124,7 +127,10 @@ describe("VerifyEmailComponent", () => {
 	});
 
 	it("replaces an earlier error with the success of a retry", async () => {
-		mock.onPost(VERIFY_URL).replyOnce(400, { detail: "Invalid code.", code: "invalid" });
+		mock.onPost(VERIFY_URL).replyOnce(400, {
+			detail: "Invalid code.",
+			code: "invalid",
+		});
 		mock.onPost(VERIFY_URL).replyOnce(200, { detail: "Email verified." });
 		const { wrapper } = await mountComponent(VerifyEmailComponent, {
 			verifyCode: "wrong-code",
@@ -163,9 +169,10 @@ describe("VerifyEmailComponent", () => {
 	});
 
 	it("takes an already confirmed account as success, with a way back", async () => {
-		mock
-			.onPost(VERIFY_URL)
-			.reply(400, { detail: "Already verified.", code: "already_verified" });
+		mock.onPost(VERIFY_URL).reply(400, {
+			detail: "Already verified.",
+			code: "already_verified",
+		});
 		const { wrapper } = await mountComponent(VerifyEmailComponent, {
 			verifyCode: "ABCD1234",
 		});
@@ -175,7 +182,9 @@ describe("VerifyEmailComponent", () => {
 		expect(wrapper.text()).toContain(
 			"account.components.verify_email.result.already_verified"
 		);
-		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe("/empire");
+		expect(wrapper.findComponent(RouterLinkStub).props("to")).toBe(
+			"/empire"
+		);
 		expect(trackEvent).toHaveBeenCalledWith("account:email_verify", {
 			is_success: true,
 			source: "link",

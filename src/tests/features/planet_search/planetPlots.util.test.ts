@@ -39,7 +39,10 @@ describe("planetPlots", () => {
 			blocked: true,
 		});
 		// more sites than plots: still full, never negative
-		expect(planetPlots(fields(10, 12))).toMatchObject({ free: 0, full: true });
+		expect(planetPlots(fields(10, 12))).toMatchObject({
+			free: 0,
+			full: true,
+		});
 	});
 
 	it("full with ghost sites can still take bases", () => {

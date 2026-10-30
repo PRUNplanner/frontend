@@ -243,7 +243,12 @@ describe("usePlanCalculation characterization", () => {
 		const scope = effectScope();
 		const plan = ref(emptyPlan());
 		const calc = scope.run(() =>
-			usePlanCalculation(plan, ref(undefined), ref(undefined), ref(undefined))
+			usePlanCalculation(
+				plan,
+				ref(undefined),
+				ref(undefined),
+				ref(undefined)
+			)
 		)!;
 
 		try {

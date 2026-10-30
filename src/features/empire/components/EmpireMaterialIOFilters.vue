@@ -103,14 +103,10 @@
 					v-if="showExpandAll"
 					:label="t('empire.material_io.planets')">
 					<PButtonGroup>
-						<PButton
-							:pressed="!expandAll"
-							@click="summary">
+						<PButton :pressed="!expandAll" @click="summary">
 							{{ $t("empire.material_io.summary") }}
 						</PButton>
-						<PButton
-							:pressed="expandAll"
-							@click="expandAll = true">
+						<PButton :pressed="expandAll" @click="expandAll = true">
 							{{ $t("empire.material_io.expand_all") }}
 						</PButton>
 					</PButtonGroup>

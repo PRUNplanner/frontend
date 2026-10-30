@@ -101,7 +101,9 @@
 <template>
 	<section class="rounded-panel border border-line p-3 flex flex-col gap-3">
 		<div class="flex items-center justify-between gap-3">
-			<h2 class="font-bold">{{ $t("production_chains.buy_list.title") }}</h2>
+			<h2 class="font-bold">
+				{{ $t("production_chains.buy_list.title") }}
+			</h2>
 			<label class="flex items-center gap-2 text-xs text-muted">
 				{{ $t("production_chains.buy_list.for") }}
 				<PInputNumber
@@ -121,11 +123,19 @@
 			<thead class="text-xs uppercase text-muted">
 				<tr>
 					<th class="text-left font-normal">
-						<span class="sr-only">{{ $t("production_chains.buy_list.material") }}</span>
+						<span class="sr-only">{{
+							$t("production_chains.buy_list.material")
+						}}</span>
 					</th>
-					<th class="text-right font-normal">{{ $t("production_chains.buy_list.units") }}</th>
-					<th class="text-right font-normal">{{ $t("production_chains.buy_list.weight") }}</th>
-					<th class="text-right font-normal">{{ $t("production_chains.buy_list.cost") }}</th>
+					<th class="text-right font-normal">
+						{{ $t("production_chains.buy_list.units") }}
+					</th>
+					<th class="text-right font-normal">
+						{{ $t("production_chains.buy_list.weight") }}
+					</th>
+					<th class="text-right font-normal">
+						{{ $t("production_chains.buy_list.cost") }}
+					</th>
 				</tr>
 			</thead>
 			<tbody
@@ -134,21 +144,50 @@
 				:data-testid="`chain-buy-group-${g.base}`">
 				<tr v-if="grouped">
 					<th colspan="4" class="text-left font-normal pt-2">
-						<span class="px-1 rounded-control border border-line font-mono text-xs">{{ g.base }}</span>
-						<span class="font-bold pl-1">{{ baseName(g.base) }}</span>
-						<span v-if="destination(g.base)" class="text-xs text-muted pl-1">→ {{ destination(g.base) }}</span>
+						<span
+							class="px-1 rounded-control border border-line font-mono text-xs"
+							>{{ g.base }}</span
+						>
+						<span class="font-bold pl-1">{{
+							baseName(g.base)
+						}}</span>
+						<span
+							v-if="destination(g.base)"
+							class="text-xs text-muted pl-1"
+							>→ {{ destination(g.base) }}</span
+						>
 					</th>
 				</tr>
 				<tr v-for="i in g.items" :key="i.ticker">
-					<td class="py-0.5"><MaterialTile :key="i.ticker" :ticker="i.ticker" /></td>
+					<td class="py-0.5">
+						<MaterialTile :key="i.ticker" :ticker="i.ticker" />
+					</td>
 					<td class="text-right">{{ formatNumber(i.units, 0) }}</td>
-					<td class="text-right">{{ $t("production_chains.buy_list.tons", { n: formatNumber(i.weight, 1) }) }}</td>
+					<td class="text-right">
+						{{
+							$t("production_chains.buy_list.tons", {
+								n: formatNumber(i.weight, 1),
+							})
+						}}
+					</td>
 					<td class="text-right">{{ money(i.cost) }}</td>
 				</tr>
 				<tr v-if="grouped" class="text-xs text-muted">
-					<td>{{ $t("production_chains.buy_list.base_total", { id: g.base }) }}</td>
+					<td>
+						{{
+							$t("production_chains.buy_list.base_total", {
+								id: g.base,
+							})
+						}}
+					</td>
 					<td />
-					<td class="text-right">{{ $t("production_chains.buy_list.tons", { n: formatNumber(g.weight, 1) }) }}</td>
+					<td class="text-right">
+						{{
+							$t("production_chains.buy_list.tons", {
+								n: formatNumber(g.weight, 1),
+							})
+						}}
+					</td>
 					<td class="text-right">{{ money(g.cost) }}</td>
 				</tr>
 				<tr>
@@ -156,7 +195,10 @@
 						<PButton size="sm" type="secondary" @click="copyXIT(g)">
 							{{
 								grouped
-									? $t("production_chains.buy_list.xit_base", { id: g.base })
+									? $t(
+											"production_chains.buy_list.xit_base",
+											{ id: g.base }
+										)
 									: $t("production_chains.buy_list.xit")
 							}}
 						</PButton>
@@ -165,15 +207,27 @@
 			</tbody>
 			<tbody>
 				<tr class="border-t border-line font-bold">
-					<td class="pt-1">{{ $t("production_chains.buy_list.total") }}</td>
+					<td class="pt-1">
+						{{ $t("production_chains.buy_list.total") }}
+					</td>
 					<td />
-					<td class="text-right pt-1">{{ $t("production_chains.buy_list.tons", { n: formatNumber(list.weight, 1) }) }}</td>
+					<td class="text-right pt-1">
+						{{
+							$t("production_chains.buy_list.tons", {
+								n: formatNumber(list.weight, 1),
+							})
+						}}
+					</td>
 					<td class="text-right pt-1">{{ money(list.cost) }}</td>
 				</tr>
 			</tbody>
 		</table>
 		<p v-if="list.groups.length" class="text-xs text-muted">
-			{{ $t("production_chains.buy_list.volume", { n: formatNumber(list.volume, 0) }) }}
+			{{
+				$t("production_chains.buy_list.volume", {
+					n: formatNumber(list.volume, 0),
+				})
+			}}
 		</p>
 		<p class="text-xs text-muted">
 			{{

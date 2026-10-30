@@ -82,8 +82,7 @@ interface IChangedKey {
 }
 
 // the running batchChanges: keys to invalidate (deduped) and changed objects
-let batch: { keys: Map<string, IChangedKey>; uuids: Set<string> } | null =
-	null;
+let batch: { keys: Map<string, IChangedKey>; uuids: Set<string> } | null = null;
 
 /**
  * Invalidates the keys and tells the user's other tabs, in one broadcast

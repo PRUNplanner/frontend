@@ -88,8 +88,11 @@ export function useHoverCard(
 	options: MaybeRefOrGetter<IHoverCardOptions> = {},
 	onOpen: () => void = () => {}
 ) {
-	const { openDelay = 300, swapDelay = 80, closeDelay = 300 } =
-		toValue(options);
+	const {
+		openDelay = 300,
+		swapDelay = 80,
+		closeDelay = 300,
+	} = toValue(options);
 	const mode = () => toValue(options).trigger ?? "hover";
 
 	const open = ref(false);
@@ -110,7 +113,8 @@ export function useHoverCard(
 	const self: IGroupMember = { hide, cancel, isPinned: () => pinned.value };
 
 	// another card stays until it is unpinned
-	const otherPinned = () => !!current && current !== self && current.isPinned();
+	const otherPinned = () =>
+		!!current && current !== self && current.isPinned();
 	const blockedByLayer = () => layerOver(trigger.value);
 
 	function cancel(): void {
@@ -245,7 +249,12 @@ export function useHoverCard(
 		},
 		pointerenter: (e: PointerEvent) => {
 			lastPointer = e.pointerType;
-			if (mode() !== "hover" || e.pointerType === "touch" || e.buttons || wantsSheet())
+			if (
+				mode() !== "hover" ||
+				e.pointerType === "touch" ||
+				e.buttons ||
+				wantsSheet()
+			)
 				return;
 			clearTimeout(closeTimer);
 			if (open.value || otherPinned()) return;
@@ -262,7 +271,8 @@ export function useHoverCard(
 			const byPointer = pointerFocus;
 			pointerFocus = false;
 			// no floating card where a tap opens the sheet
-			if (byPointer || blocked || mode() !== "hover" || wantsSheet()) return;
+			if (byPointer || blocked || mode() !== "hover" || wantsSheet())
+				return;
 			if (otherPinned() || blockedByLayer()) return;
 			show();
 		},

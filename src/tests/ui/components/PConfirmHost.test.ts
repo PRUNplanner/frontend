@@ -18,7 +18,10 @@ const body = () => new DOMWrapper(document.body);
 
 describe("PConfirmHost", () => {
 	it("asks in a 446 px modal with a destructive positive button", async () => {
-		mount(PConfirmHost, { global: { plugins: [i18n] }, attachTo: document.body });
+		mount(PConfirmHost, {
+			global: { plugins: [i18n] },
+			attachTo: document.body,
+		});
 		void useConfirm()({
 			title: "Delete plan?",
 			content: "It can't be restored.",

@@ -150,7 +150,9 @@ describe("CheckPage", () => {
 		expect(actions()).toContain("check_add_all");
 		// 1 s after the last change
 		vi.advanceTimersByTime(900);
-		expect(trackEvent.mock.calls.some(([e]) => e === "tool:use")).toBe(false);
+		expect(trackEvent.mock.calls.some(([e]) => e === "tool:use")).toBe(
+			false
+		);
 		vi.advanceTimersByTime(200);
 		const use = trackEvent.mock.calls.find(([e]) => e === "tool:use");
 		expect(use?.[1]).toMatchObject({
@@ -200,14 +202,18 @@ describe("CheckPage", () => {
 			.trigger("click");
 		const body = new DOMWrapper(document.body);
 		await vi.waitFor(() =>
-			expect(body.find("[data-testid='check-planet-list']").exists()).toBe(
-				true
-			)
+			expect(
+				body.find("[data-testid='check-planet-list']").exists()
+			).toBe(true)
 		);
-		await body.findAll("[data-testid='check-planets-use']")[1].trigger("click");
+		await body
+			.findAll("[data-testid='check-planets-use']")[1]
+			.trigger("click");
 		await flushPromises();
 		expect(lastQuery().loc).toMatch(/^[A-E]:[A-Z]+:[A-Z0-9]+:/);
-		expect(wrapper.text()).toContain("production_chains.check.options.picked");
+		expect(wrapper.text()).toContain(
+			"production_chains.check.options.picked"
+		);
 
 		await wrapper
 			.find("[data-testid='check-finding-reset']")
@@ -215,7 +221,9 @@ describe("CheckPage", () => {
 		await flushPromises();
 		expect(lastQuery().loc).toBeUndefined();
 
-		await wrapper.find("[data-testid='check-finding-try']").trigger("click");
+		await wrapper
+			.find("[data-testid='check-finding-try']")
+			.trigger("click");
 		expect(actions()).toContain("check_try");
 		const to = nav.push.mock.calls[0][0];
 		expect(to.name).toBe("production-chain");

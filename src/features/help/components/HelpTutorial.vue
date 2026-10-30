@@ -56,7 +56,9 @@
 								</template>
 							</i18n-t>
 							<div v-else class="font-bold text-ink-strong">
-								{{ $t(`help.getting_started.${step.key}.title`) }}
+								{{
+									$t(`help.getting_started.${step.key}.title`)
+								}}
 							</div>
 							<p class="mt-1 leading-relaxed text-muted-strong">
 								{{ $t(`help.getting_started.${step.key}.p`) }}

@@ -66,16 +66,10 @@ describe("EmpireMaterialIOFilters", () => {
 	it("marks the active display option", async () => {
 		const { wrapper, setProps } = await mountFilters();
 
-		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			true,
-			false,
-		]);
+		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([true, false]);
 
 		await setProps({ loadBalance: true });
-		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			false,
-			true,
-		]);
+		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([false, true]);
 	});
 
 	it("marks the active consumables option", async () => {
@@ -100,10 +94,7 @@ describe("EmpireMaterialIOFilters", () => {
 		expect(component.emitted("applyFilter")).toHaveLength(2);
 		expect(component.emitted("update:hideConsumables")).toBeUndefined();
 		// controlled: the prop, not the click, decides the active option
-		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([
-			true,
-			false,
-		]);
+		expect(types(wrapper, ALL, LOADBALANCE)).toEqual([true, false]);
 	});
 
 	it("emits the consumables option and re-applies the filter", async () => {
@@ -135,16 +126,10 @@ describe("EmpireMaterialIOFilters", () => {
 		});
 
 		expect(wrapper.text()).toContain("empire.material_io.planets");
-		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([
-			true,
-			false,
-		]);
+		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([true, false]);
 
 		await setProps({ expandAll: true });
-		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([
-			false,
-			true,
-		]);
+		expect(types(wrapper, SUMMARY, EXPAND_ALL)).toEqual([false, true]);
 	});
 
 	it("expands all without re-applying the filter", async () => {

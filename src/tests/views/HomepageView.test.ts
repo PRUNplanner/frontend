@@ -80,18 +80,21 @@ describe("HomepageView", () => {
 	it.each([
 		["[data-cta]", "hero"],
 		["[data-closing-cta]", "closing"],
-	])("%s opens the registration panel where the page is", async (selector, source) => {
-		const { wrapper } = await mount();
+	])(
+		"%s opens the registration panel where the page is",
+		async (selector, source) => {
+			const { wrapper } = await mount();
 
-		await wrapper.find(selector).trigger("click");
+			await wrapper.find(selector).trigger("click");
 
-		expect(panel.showRegistration.value).toBe(true);
-		expect(window.scrollTo).not.toHaveBeenCalled();
-		expect(trackEvent).toHaveBeenCalledWith("landing:auth_open", {
-			panel: "registration",
-			source,
-		});
-	});
+			expect(panel.showRegistration.value).toBe(true);
+			expect(window.scrollTo).not.toHaveBeenCalled();
+			expect(trackEvent).toHaveBeenCalledWith("landing:auth_open", {
+				panel: "registration",
+				source,
+			});
+		}
+	);
 
 	it("links the example plan twice and tracks each link", async () => {
 		const { wrapper } = await mount();
@@ -164,7 +167,9 @@ describe("HomepageView", () => {
 		faq.forEach((item) => {
 			expect(item.attributes("open")).toBeUndefined();
 			expect(item.find("summary h3").exists()).toBe(true);
-			expect(item.find("p").text()).toMatch(/^homepage\.faq\..+\.answer$/);
+			expect(item.find("p").text()).toMatch(
+				/^homepage\.faq\..+\.answer$/
+			);
 		});
 	});
 
@@ -192,9 +197,13 @@ describe("HomepageView", () => {
 			vi.spyOn(navigator, "language", "get").mockReturnValue(language);
 			const { wrapper } = await mount();
 
-			expect(wrapper.findComponent(HomepageLanguage).exists()).toBe(banner);
+			expect(wrapper.findComponent(HomepageLanguage).exists()).toBe(
+				banner
+			);
 			// the footer select is always there
-			expect(wrapper.findAllComponents(PSelect)).toHaveLength(banner ? 2 : 1);
+			expect(wrapper.findAllComponents(PSelect)).toHaveLength(
+				banner ? 2 : 1
+			);
 		}
 	);
 

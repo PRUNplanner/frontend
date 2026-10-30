@@ -181,18 +181,14 @@ describe("ManageEmpire", () => {
 			{ cx_uuid: CX1, empires: [] },
 			{ cx_uuid: CX2, empires: [{ empire_uuid: E2 }] },
 		]);
-		expect(host.data.cxList.value).toHaveLength(
-			cxList.length
-		);
+		expect(host.data.cxList.value).toHaveLength(cxList.length);
 	});
 
 	it("rejects when saving fails", async () => {
 		mock.onPost(/planning\/cx\/junctions\/$/).reply(500);
 		const { host, section } = await mountEmpire();
 
-		await expect(
-			section().save()
-		).rejects.toThrow();
+		await expect(section().save()).rejects.toThrow();
 		expect(host.data.cxList.value).toEqual([]);
 	});
 
@@ -212,9 +208,7 @@ describe("ManageEmpire", () => {
 			"Alt CX",
 			"None",
 		]);
-		expect(
-			section().changedCount.value
-		).toBe(1);
+		expect(section().changedCount.value).toBe(1);
 	});
 
 	it("follows CX changes from the parent", async () => {
@@ -291,9 +285,7 @@ describe("ManageEmpire", () => {
 			empire_permits_total: 5,
 			empire_name: "Gamma",
 		});
-		expect(host.data.empireList.value).toHaveLength(
-			empireList.length
-		);
+		expect(host.data.empireList.value).toHaveLength(empireList.length);
 	});
 
 	it("deletes an empire only after confirmation", async () => {
@@ -385,9 +377,7 @@ describe("ManageEmpire", () => {
 			expect(selects.map((s) => s.text())).toEqual(["Main CX", "None"]);
 			selects[1].vm.$emit("update:value", CX2);
 			await flushPromises();
-			expect(
-				section().changedCount.value
-			).toBe(1);
+			expect(section().changedCount.value).toBe(1);
 
 			// back to the table when the screen widens
 			onChange!({ matches: true });

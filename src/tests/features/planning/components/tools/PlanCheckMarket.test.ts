@@ -383,11 +383,16 @@ describe("PlanCheckMarket", () => {
 	});
 
 	it("names a row's next flag behind all exchanges", async () => {
-		const stale = { ...FLAGGED[2], flags: ["all_exchanges", "stale"] } as IMarketCheck;
+		const stale = {
+			...FLAGGED[2],
+			flags: ["all_exchanges", "stale"],
+		} as IMarketCheck;
 		const wrapper = await mountTool([stale], { cx: false });
 
 		expect(tableRows(wrapper)[0].check).toBe("cx.market_flags.flags.stale");
-		expect(cards(wrapper)[0].text()).toContain("cx.market_flags.flags.stale");
+		expect(cards(wrapper)[0].text()).toContain(
+			"cx.market_flags.flags.stale"
+		);
 	});
 
 	describe("at real prices", () => {

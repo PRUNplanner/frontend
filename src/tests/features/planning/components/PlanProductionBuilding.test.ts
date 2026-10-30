@@ -142,7 +142,9 @@ const layout = (wrapper: VueWrapper) =>
 	Array.from(wrapper.find("[data-recipes]").element.children).map(
 		(el) =>
 			el.getAttribute("data-stub") ??
-			(el.hasAttribute("data-add-recipe") ? "add" : el.getAttribute("role"))
+			(el.hasAttribute("data-add-recipe")
+				? "add"
+				: el.getAttribute("role"))
 	);
 
 describe("PlanProductionBuilding", () => {
@@ -213,7 +215,9 @@ describe("PlanProductionBuilding", () => {
 			}),
 		});
 		expect(match().find("[aria-hidden]").text()).toBe("✗");
-		expect(match().attributes("title")).toBe("plan.production.cogc_no_match");
+		expect(match().attributes("title")).toBe(
+			"plan.production.cogc_no_match"
+		);
 		expect(match().classes()).toContain("text-negative");
 
 		// a workforce program's COGC lifts the building, not its expertise
@@ -277,7 +281,9 @@ describe("PlanProductionBuilding", () => {
 		const input = wrapper.findComponent(PInputNumber);
 
 		await input.find("input").setValue("0");
-		await input.find('button[aria-label="common.ui.input_number.decrease"]').trigger("click");
+		await input
+			.find('button[aria-label="common.ui.input_number.decrease"]')
+			.trigger("click");
 
 		// 0 is a valid count, not an empty field
 		expect(component.emitted("update:building:amount")).toEqual([
@@ -322,7 +328,10 @@ describe("PlanProductionBuilding", () => {
 		const { wrapper } = await mountBuilding({
 			buildingData: smelter({
 				recipeOptions: [
-					{ recipe_id: "SME#FE", dailyRevenue: 400 } as IRecipeBuildingOption,
+					{
+						recipe_id: "SME#FE",
+						dailyRevenue: 400,
+					} as IRecipeBuildingOption,
 				],
 			}),
 		});
@@ -400,9 +409,9 @@ describe("PlanProductionBuilding", () => {
 		expect(wrapper.text()).toContain(
 			"plan.components.production_building.no_recipe_available"
 		);
-		expect(
-			wrapper.text().replace("no_recipe_available", "")
-		).not.toContain("plan.components.production_building.no_recipe");
+		expect(wrapper.text().replace("no_recipe_available", "")).not.toContain(
+			"plan.components.production_building.no_recipe"
+		);
 		expect(wrapper.find("[data-add-recipe]").exists()).toBe(false);
 	});
 
@@ -414,7 +423,9 @@ describe("PlanProductionBuilding", () => {
 					.findAllComponents(MaterialTile)
 					.map((t) => t.props("ticker"));
 
-			expect(nameButton(wrapper).attributes("aria-expanded")).toBe("true");
+			expect(nameButton(wrapper).attributes("aria-expanded")).toBe(
+				"true"
+			);
 			expect(wrapper.find("[data-recipes]").exists()).toBe(true);
 			expect(tiles()).toEqual([]);
 
@@ -422,7 +433,9 @@ describe("PlanProductionBuilding", () => {
 			expect(component.emitted("toggle:fold")).toEqual([[]]);
 
 			await setProps({ folded: true });
-			expect(nameButton(wrapper).attributes("aria-expanded")).toBe("false");
+			expect(nameButton(wrapper).attributes("aria-expanded")).toBe(
+				"false"
+			);
 			expect(wrapper.find("[data-recipes]").exists()).toBe(false);
 			expect(recipes(wrapper)).toHaveLength(0);
 			expect(tiles()).toEqual(["FE", "AL"]);
@@ -472,7 +485,9 @@ describe("PlanProductionBuilding", () => {
 			const { wrapper } = await mountBuilding();
 
 			expect(pickers(wrapper)).toHaveLength(0);
-			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe("false");
+			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe(
+				"false"
+			);
 		});
 
 		it("change: opens under its order and emits the replacement", async () => {
@@ -482,7 +497,12 @@ describe("PlanProductionBuilding", () => {
 				buildings: [smelter()],
 			});
 
-			expect(layout(wrapper)).toEqual(["recipe", "recipe", "picker", "add"]);
+			expect(layout(wrapper)).toEqual([
+				"recipe",
+				"recipe",
+				"picker",
+				"add",
+			]);
 			expect(pickers(wrapper)).toHaveLength(1);
 			expect(pickers(wrapper).at(0)!.props()).toMatchObject({
 				mode: "change",
@@ -505,9 +525,16 @@ describe("PlanProductionBuilding", () => {
 		});
 
 		it("add: opens under + Recipe and emits the new order", async () => {
-			const { wrapper, component } = await mountBuilding({ picker: null });
+			const { wrapper, component } = await mountBuilding({
+				picker: null,
+			});
 
-			expect(layout(wrapper)).toEqual(["recipe", "recipe", "add", "picker"]);
+			expect(layout(wrapper)).toEqual([
+				"recipe",
+				"recipe",
+				"add",
+				"picker",
+			]);
 			expect(pickers(wrapper).at(0)!.props("mode")).toBe("add");
 			expect(addRecipe(wrapper).attributes("aria-expanded")).toBe("true");
 
@@ -559,7 +586,12 @@ describe("PlanProductionBuilding", () => {
 			});
 			const status = () => wrapper.find("[role=status]");
 
-			expect(layout(wrapper)).toEqual(["recipe", "recipe", "status", "add"]);
+			expect(layout(wrapper)).toEqual([
+				"recipe",
+				"recipe",
+				"status",
+				"add",
+			]);
 			expect(status().text()).toContain("Replaced FE with AL.");
 
 			const undo = status()

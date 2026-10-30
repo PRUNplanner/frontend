@@ -13,12 +13,12 @@
 						width: `${size}px`,
 						height: `${size}px`,
 						lineHeight: `${size}px`,
-				  }
+					}
 				: {
 						width: "1em",
 						height: "1em",
 						lineHeight: "1em",
-				  }),
+					}),
 			...(color ? { color } : {}),
 		};
 	});

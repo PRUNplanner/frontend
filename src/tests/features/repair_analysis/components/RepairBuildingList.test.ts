@@ -12,7 +12,11 @@ const frm = repairBuilding();
 const ext = repairBuilding({ ticker: "EXT", name: "Extractor", amount: 1 });
 
 async function mountList(props: Record<string, unknown> = {}) {
-	const handlers = { onSelect: vi.fn(), onInterval: vi.fn(), onReset: vi.fn() };
+	const handlers = {
+		onSelect: vi.fn(),
+		onInterval: vi.fn(),
+		onReset: vi.fn(),
+	};
 	const mounted = await mountComponent(
 		RepairBuildingList,
 		{
@@ -132,7 +136,9 @@ describe("RepairBuildingList", () => {
 
 		expect(wrapper.find("table").exists()).toBe(false);
 		expect(cards).toHaveLength(2);
-		expect(cards[0].text()).toContain(`Every ${frm.best} d · best ${frm.best}`);
+		expect(cards[0].text()).toContain(
+			`Every ${frm.best} d · best ${frm.best}`
+		);
 		expect(cards[0].text()).toContain("Due in 5 d");
 
 		await cards[1].trigger("click");

@@ -27,10 +27,7 @@
 </script>
 
 <template>
-	<PModal
-		v-model:show="show"
-		:width="446"
-		:title="options?.title">
+	<PModal v-model:show="show" :width="446" :title="options?.title">
 		<div class="flex gap-3 items-start">
 			<WarningSharp class="size-6 shrink-0 text-warning" />
 			<p>{{ options?.content }}</p>

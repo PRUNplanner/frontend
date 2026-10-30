@@ -414,7 +414,9 @@ describe("PDataTable", () => {
 		const plain = mountTable({ stickyFirst: true });
 		// header and four rows, the first column only
 		expect(sticky(plain)).toHaveLength(5);
-		expect(header(plain, "name").attributes("style")).toContain("left: 0px");
+		expect(header(plain, "name").attributes("style")).toContain(
+			"left: 0px"
+		);
 
 		const expandable = mountTable(
 			{ stickyFirst: true },

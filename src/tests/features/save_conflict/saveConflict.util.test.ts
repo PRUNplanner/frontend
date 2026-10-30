@@ -18,7 +18,10 @@ const line = (area: string): IChangeLine => ({ area, key: "name", params: {} });
 
 describe("saveConflict.util", () => {
 	it.each([
-		[apiError({ status: 409, responseData: { code: "conflict" } }), "conflict"],
+		[
+			apiError({ status: 409, responseData: { code: "conflict" } }),
+			"conflict",
+		],
 		[apiError({ status: 409, responseData: { code: "other" } }), null],
 		[apiError({ status: 404 }), "deleted"],
 		[apiError({ status: 500 }), null],

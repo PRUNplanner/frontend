@@ -131,7 +131,8 @@
 	// "Start empty" hides the starter card for this view
 	const isStarterDismissed: Ref<boolean> = ref(false);
 	const isEmpty: ComputedRef<boolean> = computed(
-		() => !props.disabled && localProductionData.value.buildings.length === 0
+		() =>
+			!props.disabled && localProductionData.value.buildings.length === 0
 	);
 	const showStarter: ComputedRef<boolean> = computed(
 		() => isEmpty.value && isAvailable.value && !isStarterDismissed.value
@@ -157,7 +158,9 @@
 
 	function dismissStarter(): void {
 		isStarterDismissed.value = true;
-		trackEvent("plan:starter_dismiss", { planet_natural_id: props.planetId });
+		trackEvent("plan:starter_dismiss", {
+			planet_natural_id: props.planetId,
+		});
 	}
 
 	const buildingOptions: ComputedRef<PSelectOption[]> = computed(() =>
@@ -279,14 +282,18 @@
 		if (!root || root.offsetWidth === 0) return;
 		const widest = (selector: string): number =>
 			Math.ceil(
-				Math.max(0, ...[...root.querySelectorAll(selector)].map(lineWidth))
+				Math.max(
+					0,
+					...[...root.querySelectorAll(selector)].map(lineWidth)
+				)
 			);
 		// the recipe button's left padding sits in the inputs column
-		const pad = parseFloat(
-			getComputedStyle(
-				root.querySelector("[data-recipe-button]") ?? root
-			).paddingLeft
-		) || 0;
+		const pad =
+			parseFloat(
+				getComputedStyle(
+					root.querySelector("[data-recipe-button]") ?? root
+				).paddingLeft
+			) || 0;
 		recipeColumns.value = {
 			"--recipe-in": `${widest("[data-recipe-inputs]") + pad}px`,
 			"--recipe-out": `${widest("[data-recipe-outputs]")}px`,
@@ -351,196 +358,229 @@
 			v-if="!disabled"
 			v-model:value="localSelectedBuilding"
 			class="w-full sm:w-64 ml-auto"
-			:aria-label="t('plan.components.production.form.select_placeholder')"
+			:aria-label="
+				t('plan.components.production.form.select_placeholder')
+			"
 			searchable
-			:placeholder="t('plan.components.production.form.select_placeholder')"
+			:placeholder="
+				t('plan.components.production.form.select_placeholder')
+			"
 			:options="buildingOptions"
 			@update:value="(value) => selectBuilding(value as string)" />
 	</div>
 
 	<!-- under 40rem (a phone, a tablet next to the sidebar) each building
 		becomes a card instead of squeezing the columns -->
-	<div ref="prod" class="@container/prod" :style="recipeColumns" data-recipe-columns>
 	<div
-		class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
-		data-column-heads>
-		<span />
-		<span>{{ t("plan.production.columns.building") }}</span>
-		<span class="text-center">{{ t("plan.production.columns.count") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.efficiency") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.daily") }}</span>
-		<span class="text-right">{{ t("plan.production.columns.area") }}</span>
-		<span />
-	</div>
-	<div>
-		<PlanStarterSetup
-			v-if="showStarter"
-			:planet-id="planetId"
-			:planet-resources="planetResources"
-			@apply="
-				(setup: IStarterSetup, isSelectionChanged: boolean) =>
-					emit('apply:starter', setup, isSelectionChanged)
-			"
-			@dismiss="dismissStarter" />
+		ref="prod"
+		class="@container/prod"
+		:style="recipeColumns"
+		data-recipe-columns>
 		<div
-			v-else-if="isEmpty && isAvailable"
-			class="p-3 flex flex-wrap justify-center items-center gap-2 text-xs text-muted-strong">
-			<i18n-t keypath="plan.tools.plan_starter.empty" tag="span">
-				<template #link>
-					<PButton
-						size="sm"
-						type="ghost"
-						class="text-link-primary"
-						@click="isStarterDismissed = false">
-						{{ $t("plan.tools.plan_starter.show") }}
-					</PButton>
-				</template>
-			</i18n-t>
+			class="grid grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_1.75rem] pointer-coarse:grid-cols-[2.75rem_minmax(0,1fr)_5.5rem_4.5rem_6.5rem_4.5rem_2.75rem] gap-x-2 items-end pl-2.5 pb-1.5 border-b border-line text-xs text-muted @max-[40rem]/prod:hidden"
+			data-column-heads>
+			<span />
+			<span>{{ t("plan.production.columns.building") }}</span>
+			<span class="text-center">{{
+				t("plan.production.columns.count")
+			}}</span>
+			<span class="text-right">{{
+				t("plan.production.columns.efficiency")
+			}}</span>
+			<span class="text-right">{{
+				t("plan.production.columns.daily")
+			}}</span>
+			<span class="text-right">{{
+				t("plan.production.columns.area")
+			}}</span>
+			<span />
 		</div>
-		<!-- no planet insights, so no starter: point at the building select -->
-		<p
-			v-else-if="isEmpty"
-			class="p-6 text-center text-sm text-muted"
-			data-empty-hint>
-			{{
-				t("plan.production.empty", {
-					select: t("plan.components.production.form.select_placeholder"),
-				})
-			}}
-		</p>
-		<template
-			v-for="(building, index) in localProductionData.buildings"
-			:key="`${building.name}`">
-			<PlanProductionBuilding
-				:disabled="props.disabled"
-				:building-data="building"
-				:building-index="index"
-				:cx-uuid="cxUuid"
+		<div>
+			<PlanStarterSetup
+				v-if="showStarter"
 				:planet-id="planetId"
-				:change="changes?.buildings[building.name]"
-				:folded="refFolded.has(building.name)"
-				:experts="expertsOf(building.expertise)"
-				:picker="
-					refPicker?.building === index ? refPicker.recipe : undefined
+				:planet-resources="planetResources"
+				@apply="
+					(setup: IStarterSetup, isSelectionChanged: boolean) =>
+						emit('apply:starter', setup, isSelectionChanged)
 				"
-				:status="
-					status?.building === index
-						? { recipe: status.recipe, text: status.text }
-						: undefined
-				"
-				:material-i-o="materialIO"
-				:buildings="localProductionData.buildings"
-				@toggle:fold="toggleFold(building.name)"
-				@open:picker="(recipe: number | null) => openPicker(index, recipe)"
-				@close:picker="closePicker"
-				@undo="emit('undo')"
-				@pick:building:recipe="
-					(buildingIndex: number, recipeId: string) => {
-						closePicker();
-						emit('pick:building:recipe', buildingIndex, recipeId);
-						trackPlanEdit({
-							field: 'recipe_add',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							...mostPlanned(building.name, recipeId),
-						});
-					}
-				"
-				@update:building:amount="
-					(index: number, value: number) => {
-						emit('update:building:amount', index, value);
-						trackPlanEdit({
-							field: 'building_amount',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							amount: value,
-						});
-					}
-				"
-				@delete:building="
-					(index: number) => emit('delete:building', index)
-				"
-				@update:building:recipe:amount="
-					(
-						buildingIndex: number,
-						recipeIndex: number,
-						value: number
-					) => {
-						emit(
-							'update:building:recipe:amount',
-							buildingIndex,
-							recipeIndex,
-							value
-						);
-						trackPlanEdit({
-							field: 'recipe_amount',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							amount: value,
-						});
-					}
-				"
-				@delete:building:recipe="
-					(buildingIndex: number, recipeIndex: number) => {
-						emit(
-							'delete:building:recipe',
-							buildingIndex,
-							recipeIndex
-						);
-						trackPlanEdit({
-							field: 'recipe_delete',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-						});
-					}
-				"
-				@add:building:recipes="
-					(
-						buildingIndex: number,
-						recipes: PlanDataBuilding['active_recipes']
-					) => {
-						emit('add:building:recipes', buildingIndex, recipes);
-						trackPlanEdit({
-							field: 'recipe_mix_add',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							amount: recipes.length,
-						});
-					}
-				"
-				@update:building:recipe="
-					(
-						buildingIndex: number,
-						recipeIndex: number,
-						recipeId: string
-					) => {
-						closePicker();
-						emit(
-							'update:building:recipe',
-							buildingIndex,
-							recipeIndex,
-							recipeId
-						);
-						trackPlanEdit({
-							field: 'recipe_change',
-							planet_natural_id: props.planetId,
-							building_ticker: building.name,
-							recipe_id: recipeId,
-							...mostPlanned(building.name, recipeId),
-						});
-					}
-				"
-				/>
-		</template>
-		<div
-			v-for="name in changes?.removed"
-			:key="`REMOVED#${name}`"
-			class="px-3 py-2 border-b border-line border-l-2 border-l-negative text-muted">
-			<span class="text-sm font-medium line-through" data-removed-building>{{ name }}</span>
-			<span class="ml-2 text-xs font-bold uppercase text-negative">
-				{{ $t("sharing.compare.removed") }}
-			</span>
+				@dismiss="dismissStarter" />
+			<div
+				v-else-if="isEmpty && isAvailable"
+				class="p-3 flex flex-wrap justify-center items-center gap-2 text-xs text-muted-strong">
+				<i18n-t keypath="plan.tools.plan_starter.empty" tag="span">
+					<template #link>
+						<PButton
+							size="sm"
+							type="ghost"
+							class="text-link-primary"
+							@click="isStarterDismissed = false">
+							{{ $t("plan.tools.plan_starter.show") }}
+						</PButton>
+					</template>
+				</i18n-t>
+			</div>
+			<!-- no planet insights, so no starter: point at the building select -->
+			<p
+				v-else-if="isEmpty"
+				class="p-6 text-center text-sm text-muted"
+				data-empty-hint>
+				{{
+					t("plan.production.empty", {
+						select: t(
+							"plan.components.production.form.select_placeholder"
+						),
+					})
+				}}
+			</p>
+			<template
+				v-for="(building, index) in localProductionData.buildings"
+				:key="`${building.name}`">
+				<PlanProductionBuilding
+					:disabled="props.disabled"
+					:building-data="building"
+					:building-index="index"
+					:cx-uuid="cxUuid"
+					:planet-id="planetId"
+					:change="changes?.buildings[building.name]"
+					:folded="refFolded.has(building.name)"
+					:experts="expertsOf(building.expertise)"
+					:picker="
+						refPicker?.building === index
+							? refPicker.recipe
+							: undefined
+					"
+					:status="
+						status?.building === index
+							? { recipe: status.recipe, text: status.text }
+							: undefined
+					"
+					:material-i-o="materialIO"
+					:buildings="localProductionData.buildings"
+					@toggle:fold="toggleFold(building.name)"
+					@open:picker="
+						(recipe: number | null) => openPicker(index, recipe)
+					"
+					@close:picker="closePicker"
+					@undo="emit('undo')"
+					@pick:building:recipe="
+						(buildingIndex: number, recipeId: string) => {
+							closePicker();
+							emit(
+								'pick:building:recipe',
+								buildingIndex,
+								recipeId
+							);
+							trackPlanEdit({
+								field: 'recipe_add',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+								...mostPlanned(building.name, recipeId),
+							});
+						}
+					"
+					@update:building:amount="
+						(index: number, value: number) => {
+							emit('update:building:amount', index, value);
+							trackPlanEdit({
+								field: 'building_amount',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+								amount: value,
+							});
+						}
+					"
+					@delete:building="
+						(index: number) => emit('delete:building', index)
+					"
+					@update:building:recipe:amount="
+						(
+							buildingIndex: number,
+							recipeIndex: number,
+							value: number
+						) => {
+							emit(
+								'update:building:recipe:amount',
+								buildingIndex,
+								recipeIndex,
+								value
+							);
+							trackPlanEdit({
+								field: 'recipe_amount',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+								amount: value,
+							});
+						}
+					"
+					@delete:building:recipe="
+						(buildingIndex: number, recipeIndex: number) => {
+							emit(
+								'delete:building:recipe',
+								buildingIndex,
+								recipeIndex
+							);
+							trackPlanEdit({
+								field: 'recipe_delete',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+							});
+						}
+					"
+					@add:building:recipes="
+						(
+							buildingIndex: number,
+							recipes: PlanDataBuilding['active_recipes']
+						) => {
+							emit(
+								'add:building:recipes',
+								buildingIndex,
+								recipes
+							);
+							trackPlanEdit({
+								field: 'recipe_mix_add',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+								amount: recipes.length,
+							});
+						}
+					"
+					@update:building:recipe="
+						(
+							buildingIndex: number,
+							recipeIndex: number,
+							recipeId: string
+						) => {
+							closePicker();
+							emit(
+								'update:building:recipe',
+								buildingIndex,
+								recipeIndex,
+								recipeId
+							);
+							trackPlanEdit({
+								field: 'recipe_change',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+								recipe_id: recipeId,
+								...mostPlanned(building.name, recipeId),
+							});
+						}
+					" />
+			</template>
+			<div
+				v-for="name in changes?.removed"
+				:key="`REMOVED#${name}`"
+				class="px-3 py-2 border-b border-line border-l-2 border-l-negative text-muted">
+				<span
+					class="text-sm font-medium line-through"
+					data-removed-building
+					>{{ name }}</span
+				>
+				<span class="ml-2 text-xs font-bold uppercase text-negative">
+					{{ $t("sharing.compare.removed") }}
+				</span>
+			</div>
 		</div>
-	</div>
 	</div>
 </template>

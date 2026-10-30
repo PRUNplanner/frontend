@@ -23,7 +23,11 @@
 	} from "@/features/production_chain/engine/chainSolver.types";
 	import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 
-	const { row, result, own = NO_OWN } = defineProps<{
+	const {
+		row,
+		result,
+		own = NO_OWN,
+	} = defineProps<{
 		row: IChainRow;
 		result: IChainResult;
 		own?: IChainOwn;
@@ -102,7 +106,11 @@
 					class="flex items-center gap-2">
 					<MaterialTile :key="i.ticker" :ticker="i.ticker" />
 					<span class="tabular-nums">
-						{{ $t("production_chains.detail.per_day", { n: formatQty(i.perDay) }) }}
+						{{
+							$t("production_chains.detail.per_day", {
+								n: formatQty(i.perDay),
+							})
+						}}
 					</span>
 					<span class="text-xs text-muted">{{ i.note }}</span>
 				</li>
@@ -119,7 +127,11 @@
 					class="flex items-center gap-2">
 					<MaterialTile :key="o.ticker" :ticker="o.ticker" />
 					<span class="tabular-nums">
-						{{ $t("production_chains.detail.per_day", { n: formatQty(o.perDay) }) }}
+						{{
+							$t("production_chains.detail.per_day", {
+								n: formatQty(o.perDay),
+							})
+						}}
 					</span>
 					<span class="text-xs text-muted">{{ o.note }}</span>
 				</li>
@@ -135,25 +147,35 @@
 			<ul class="flex flex-col gap-1">
 				<li v-for="s in supplies" :key="s.key">
 					<span class="block">
-						{{ s.plan?.name ?? $t("production_chains.have.your_bases") }}
+						{{
+							s.plan?.name ??
+							$t("production_chains.have.your_bases")
+						}}
 						<span v-if="s.plan" class="text-xs text-muted">{{
 							planetDisplayName(
 								s.plan.planetId,
-								own.planets.get(s.plan.planetId)?.planet_name ?? s.plan.planetId
+								own.planets.get(s.plan.planetId)?.planet_name ??
+									s.plan.planetId
 							)
 						}}</span>
 					</span>
 					<span class="block text-xs text-muted tabular-nums">
 						{{
 							s.surplus === null
-								? $t("production_chains.detail.per_day", { n: formatQty(s.perDay) })
+								? $t("production_chains.detail.per_day", {
+										n: formatQty(s.perDay),
+									})
 								: $t("production_chains.have.detail_of", {
 										n: formatQty(s.perDay),
 										of: formatQty(s.surplus),
 									})
 						}}
 						·
-						{{ $t("production_chains.have.detail_value", { value: money(s.perDay * row.price) }) }}
+						{{
+							$t("production_chains.have.detail_value", {
+								value: money(s.perDay * row.price),
+							})
+						}}
 					</span>
 				</li>
 			</ul>
@@ -165,10 +187,14 @@
 			<dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 tabular-nums">
 				<template v-if="row.source === 'make'">
 					<dt>{{ $t("production_chains.detail.inputs") }}</dt>
-					<dd class="text-right">{{ money(row.costParts.inputs) }}</dd>
+					<dd class="text-right">
+						{{ money(row.costParts.inputs) }}
+					</dd>
 				</template>
 				<dt>{{ $t("production_chains.detail.upkeep_wear") }}</dt>
-				<dd class="text-right">{{ money(row.costParts.upkeepWear) }}</dd>
+				<dd class="text-right">
+					{{ money(row.costParts.upkeepWear) }}
+				</dd>
 				<dt class="font-bold border-t border-line pt-1">
 					{{ $t("production_chains.detail.chain_cost") }}
 				</dt>
@@ -180,7 +206,9 @@
 					{{ row.price ? money(row.price) : "—" }}
 				</dd>
 			</dl>
-			<p v-if="row.costParts.share < 0.999" class="text-xs text-muted pt-1">
+			<p
+				v-if="row.costParts.share < 0.999"
+				class="text-xs text-muted pt-1">
 				{{
 					$t("production_chains.detail.joint_share", {
 						pct: formatShare(row.costParts.share),
@@ -219,7 +247,9 @@
 							})
 						}}
 					</dt>
-					<dd class="text-right text-positive" data-testid="chain-spare">
+					<dd
+						class="text-right text-positive"
+						data-testid="chain-spare">
 						{{
 							$t("production_chains.detail.spare_up_to", {
 								n: formatQty(building.upTo),

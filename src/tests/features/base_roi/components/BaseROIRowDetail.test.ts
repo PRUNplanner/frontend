@@ -45,7 +45,11 @@ vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: { name: "MaterialTile", props: ["ticker"], render: () => null },
 }));
 vi.mock("@/ui/charts/PLineChart.vue", () => ({
-	default: { name: "PLineChart", props: ["days", "series", "label"], render: () => null },
+	default: {
+		name: "PLineChart",
+		props: ["days", "series", "label"],
+		render: () => null,
+	},
 }));
 
 let rows: IBaseROIRow[];
@@ -146,7 +150,10 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		});
 		const pinia = createPinia();
 		const store = usePlanningStore(pinia);
-		const empires = [empire("outside", "OUTSIDEREGION"), empire("none", "NONE")];
+		const empires = [
+			empire("outside", "OUTSIDEREGION"),
+			empire("none", "NONE"),
+		];
 		// @ts-expect-error mock data
 		store.setEmpires(empires);
 		toast.mockReset();
@@ -154,7 +161,10 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		await button("base_roi.detail.open_plan").trigger("click");
 		await flushPromises();
 		const create = query.calls.find((c) => c.name === "CreatePlan")!;
-		expect((create.params as { data: { empire_uuid?: string } }).data.empire_uuid).toBe("none");
+		expect(
+			(create.params as { data: { empire_uuid?: string } }).data
+				.empire_uuid
+		).toBe("none");
 		expect(toast).not.toHaveBeenCalled();
 
 		// no such empire: the plan opens anyway, with a note
@@ -174,7 +184,10 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 			...row,
 			planetNaturalId: "UV-072c",
 			planetName: "UV-072c",
-			metrics: { ...row.metrics, buildingCost: row.metrics.buildingCost + 1000 },
+			metrics: {
+				...row.metrics,
+				buildingCost: row.metrics.buildingCost + 1000,
+			},
 		};
 		const tryOnPlanet = vi.fn().mockResolvedValue(onPlanet);
 		const { wrapper, button } = await mountDetail(row, tryOnPlanet);
@@ -195,7 +208,9 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const row = rows.find((r) => r.kind === "resource")!;
 		const { wrapper } = await mountDetail(row);
 		expect(wrapper.findComponent(PSelect).exists()).toBe(false);
-		expect(query.calls.map((c) => c.name)).not.toContain("GetPlanetSearchIndex");
+		expect(query.calls.map((c) => c.name)).not.toContain(
+			"GetPlanetSearchIndex"
+		);
 	});
 
 	it("section 9: the 30-day chart from the series, or the no-history note", async () => {
@@ -205,19 +220,29 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 			...row,
 			materials: row.materials.map((m) => ({
 				...m,
-				source: { ...m.source, exchange: "AI1" as const, key: "vwap_7d" as const },
+				source: {
+					...m.source,
+					exchange: "AI1" as const,
+					key: "vwap_7d" as const,
+				},
 			})),
 		};
 		const series = {
-			AI1: Object.fromEntries(priced.materials.map((m) => [m.ticker, Array(30).fill(m.price)])),
+			AI1: Object.fromEntries(
+				priced.materials.map((m) => [m.ticker, Array(30).fill(m.price)])
+			),
 		};
-		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), { series });
+		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), {
+			series,
+		});
 		const chart = wrapper.findComponent({ name: "PLineChart" });
 		expect(chart.props("series")).toHaveLength(3);
 		expect(chart.props("days")).toHaveLength(30);
 		expect(wrapper.text()).toContain("base_roi.detail.history_note");
 
-		const none = await mountDetail(row, vi.fn(), createPinia(), { series: { AI1: {} } });
+		const none = await mountDetail(row, vi.fn(), createPinia(), {
+			series: { AI1: {} },
+		});
 		expect(none.wrapper.text()).toContain("base_roi.table.history_none");
 	});
 
@@ -238,12 +263,14 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 			planetNaturalId: "OT-580b",
 			planetName: null,
 		};
-		const { wrapper } = await mountDetail(never, vi.fn().mockResolvedValue(onPlanet));
+		const { wrapper } = await mountDetail(
+			never,
+			vi.fn().mockResolvedValue(onPlanet)
+		);
 		const select = wrapper.findComponent(PSelect);
-		expect(select.props("options").map((o: { label: string }) => o.label)).toEqual([
-			"UV-072c",
-			"Montem (OT-580b)",
-		]);
+		expect(
+			select.props("options").map((o: { label: string }) => o.label)
+		).toEqual(["UV-072c", "Montem (OT-580b)"]);
 		select.vm.$emit("update:value", "OT-580b");
 		await flushPromises();
 		expect(wrapper.text()).toContain("OT-580b");
@@ -253,10 +280,15 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 	it("a planet that fails to load says so and keeps the standard planet", async () => {
 		toast.mockReset();
 		const row = rows.find((r) => r.kind === "recipe")!;
-		const { wrapper } = await mountDetail(row, vi.fn().mockRejectedValue(new Error("down")));
+		const { wrapper } = await mountDetail(
+			row,
+			vi.fn().mockRejectedValue(new Error("down"))
+		);
 		wrapper.findComponent(PSelect).vm.$emit("update:value", "UV-072c");
 		await flushPromises();
-		expect(toast).toHaveBeenCalledWith("base_roi.detail.planet_failed", { type: "error" });
+		expect(toast).toHaveBeenCalledWith("base_roi.detail.planet_failed", {
+			type: "error",
+		});
 		expect(wrapper.text()).not.toContain("base_roi.detail.compare");
 	});
 
@@ -268,7 +300,9 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		await button("base_roi.detail.open_plan").trigger("click");
 		await flushPromises();
 		query.failCreate = false;
-		expect(toast).toHaveBeenCalledWith("base_roi.detail.plan_failed", { type: "error" });
+		expect(toast).toHaveBeenCalledWith("base_roi.detail.plan_failed", {
+			type: "error",
+		});
 		expect(push).not.toHaveBeenCalled();
 	});
 });

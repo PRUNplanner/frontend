@@ -60,8 +60,10 @@
 	const filterInputMaterial: Ref<string[]> = ref([]);
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
-	const { calculate, formatOptimal, progress } =
-		useROIOverview(definition, cx);
+	const { calculate, formatOptimal, progress } = useROIOverview(
+		definition,
+		cx
+	);
 
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
 		let filtered = result.value;
@@ -278,17 +280,13 @@
 				<PValue class="text-nowrap" :value="row.dailyProfit" />
 			</template>
 			<template #cell-planProfitArea="{ row }">
-				<PValue
-					class="text-nowrap"
-					:value="row.planProfitArea" />
+				<PValue class="text-nowrap" :value="row.planProfitArea" />
 			</template>
 			<template #cell-planROI="{ row }">
 				<span
 					class="text-nowrap"
 					:class="
-						row.planROI > 0
-							? 'text-positive'
-							: 'text-negative'
+						row.planROI > 0 ? 'text-positive' : 'text-negative'
 					">
 					{{ formatPayback(row.planROI, false) }}
 				</span>

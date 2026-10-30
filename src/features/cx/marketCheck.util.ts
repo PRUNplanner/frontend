@@ -137,8 +137,7 @@ export function marketCheck(
 			);
 		})
 		.sort(
-			(a, b) =>
-				rank(a) - rank(b) || (b.sharePct ?? 0) - (a.sharePct ?? 0)
+			(a, b) => rank(a) - rank(b) || (b.sharePct ?? 0) - (a.sharePct ?? 0)
 		);
 }
 

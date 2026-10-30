@@ -54,8 +54,7 @@
 	});
 
 	// height: dragged or stepped with the arrow keys on the grip
-	const { height, dragStart, dragMove, dragEnd, resizeKey } =
-		useDockHeight();
+	const { height, dragStart, dragMove, dragEnd, resizeKey } = useDockHeight();
 
 	/*
 	 * Data
@@ -269,7 +268,8 @@
 							<dd class="font-mono text-right">
 								{{
 									formatNumber(
-										byKey.get(point.key)?.row.dailyProfit ?? 0
+										byKey.get(point.key)?.row.dailyProfit ??
+											0
 									)
 								}}
 							</dd>

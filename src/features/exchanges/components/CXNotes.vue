@@ -59,7 +59,8 @@
 			.sort((a, b) => Math.abs(gap(b)) - Math.abs(gap(a)))
 	);
 	// not signed() + " %": formatPercent drops the unit for ∞ and NaN
-	const signedPercent = (v: number) => (v > 0 ? "+" : "") + formatPercent(v, 0);
+	const signedPercent = (v: number) =>
+		(v > 0 ? "+" : "") + formatPercent(v, 0);
 	const others = computed(() => notes.filter((n) => n.code !== "cogm_drift"));
 
 	const { t } = useI18n();
@@ -130,11 +131,17 @@
 					</PIcon>
 				</template>
 				{{
-					$t("exchanges.notes.toggle", { n: notes.length }, notes.length)
+					$t(
+						"exchanges.notes.toggle",
+						{ n: notes.length },
+						notes.length
+					)
 				}}
 				<PIcon :size="16">
 					<component
-						:is="open ? KeyboardArrowUpSharp : KeyboardArrowDownSharp" />
+						:is="
+							open ? KeyboardArrowUpSharp : KeyboardArrowDownSharp
+						" />
 				</PIcon>
 			</PButton>
 		</div>
@@ -170,7 +177,10 @@
 			</ul>
 			<div v-if="drifts.length" class="flex flex-col gap-1 text-sm">
 				<div class="flex items-center gap-2">
-					<PIcon :size="16" class="shrink-0" :class="noticeConfig.types.info.icon">
+					<PIcon
+						:size="16"
+						class="shrink-0"
+						:class="noticeConfig.types.info.icon">
 						<InfoOutlined />
 					</PIcon>
 					<span class="font-bold">
@@ -189,7 +199,9 @@
 				<PTable>
 					<thead>
 						<tr class="text-nowrap">
-							<th>{{ $t("exchanges.notes.cogm_drift.material") }}</th>
+							<th>
+								{{ $t("exchanges.notes.cogm_drift.material") }}
+							</th>
 							<th class="numeric">
 								{{ $t("exchanges.notes.cogm_drift.fixed") }}
 							</th>
@@ -197,7 +209,9 @@
 								{{ $t("exchanges.notes.cogm_drift.cogm") }}
 							</th>
 							<th class="numeric">
-								{{ $t("exchanges.notes.cogm_drift.difference") }}
+								{{
+									$t("exchanges.notes.cogm_drift.difference")
+								}}
 							</th>
 							<th class="w-full">
 								{{ $t("exchanges.notes.cogm_drift.made_on") }}
@@ -220,7 +234,9 @@
 									{{ signedPercent(gap(note) * 100) }}
 								</span>
 							</td>
-							<td class="text-muted text-xs">{{ names(note.planets) }}</td>
+							<td class="text-muted text-xs">
+								{{ names(note.planets) }}
+							</td>
 							<td>
 								<PButton
 									type="secondary"

@@ -11,19 +11,11 @@ export type PlanTool =
 
 // the foldable sections of Base
 export type BaseSection =
-	| "empire"
-	| "planet"
-	| "workforce"
-	| "housing"
-	| "experts";
+	"empire" | "planet" | "workforce" | "housing" | "experts";
 
 // the tiles of the results bar, each opens where its figure comes from
 export type ResultTile =
-	| "profit"
-	| "payback"
-	| "area"
-	| "storage"
-	| "workforce";
+	"profit" | "payback" | "area" | "storage" | "workforce";
 
 // tools wide enough to need Material I/O's room too
 const WIDE_TOOLS: PlanTool[] = [

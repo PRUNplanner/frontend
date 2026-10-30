@@ -223,7 +223,9 @@ describe("EmpireMaterialIOFiltered", () => {
 		const open = () =>
 			wrapper.findAllComponents(EmpireMaterialIODetail).length;
 		const toggle = (i: number) => {
-			const rows = wrapper.findAll("button[aria-expanded]:not([data-market-flag])");
+			const rows = wrapper.findAll(
+				"button[aria-expanded]:not([data-market-flag])"
+			);
 			return rows[i].trigger("click");
 		};
 

@@ -32,7 +32,10 @@
 			"data-palette": computed(() => userStore.preferences.colorPalette),
 		},
 		meta: [
-			{ name: "description", content: () => t("homepage.seo.description") },
+			{
+				name: "description",
+				content: () => t("homepage.seo.description"),
+			},
 			{
 				name: "robots",
 				content: () => (route.meta.indexable ? undefined : "noindex"),

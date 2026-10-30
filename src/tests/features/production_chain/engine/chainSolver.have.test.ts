@@ -17,7 +17,10 @@ describe("solveChain with own production (Have)", () => {
 	const plain = solveChain(chainInput([["RAT", 100]]), ctx);
 
 	it("turns a fully covered material into a Have row and drops its inputs (AC 1)", () => {
-		const r = solveChain(chainInput([["RAT", 100]], { have: { GRN: "all" } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { GRN: "all" } }),
+			ctx
+		);
 		const grn = r.rows.GRN;
 		expect(grn).toMatchObject({
 			source: "have",
@@ -42,7 +45,10 @@ describe("solveChain with own production (Have)", () => {
 	});
 
 	it("drops rows nothing needs any more", () => {
-		const r = solveChain(chainInput([["RAT", 100]], { have: { NUT: "all", MUS: "all" } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { NUT: "all", MUS: "all" } }),
+			ctx
+		);
 		// NS only feeds NUT and MUS
 		expect(r.order).not.toContain("NS");
 		expect(r.rows.NS).toBeUndefined();
@@ -52,7 +58,10 @@ describe("solveChain with own production (Have)", () => {
 	});
 
 	it("makes the rest of a partly covered step, with its stage and recipe (AC 3)", () => {
-		const r = solveChain(chainInput([["RAT", 100]], { have: { GRN: 4 } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { GRN: 4 } }),
+			ctx
+		);
 		const grn = r.rows.GRN;
 		expect(grn.source).toBe("make");
 		expect(grn.recipe?.recipe_id).toBe(plain.rows.GRN.recipe?.recipe_id);
@@ -67,7 +76,10 @@ describe("solveChain with own production (Have)", () => {
 
 	it("buys only what Have leaves of a bought input (AC 2)", () => {
 		const lst = plain.rows.LST.perDay;
-		const r = solveChain(chainInput([["RAT", 100]], { have: { LST: lst / 4 } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { LST: lst / 4 } }),
+			ctx
+		);
 		expect(r.rows.LST.source).toBe("buy");
 		expect(r.rows.LST.perDay).toBeCloseTo((lst * 3) / 4, 6);
 		expect(r.totals.bought).toBeCloseTo(
@@ -79,7 +91,10 @@ describe("solveChain with own production (Have)", () => {
 	});
 
 	it("never uses Have for a target (AC 4)", () => {
-		const r = solveChain(chainInput([["RAT", 100]], { have: { RAT: "all" } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { RAT: "all" } }),
+			ctx
+		);
 		expect(r.rows.RAT).toMatchObject({
 			source: "make",
 			have: 0,
@@ -90,7 +105,10 @@ describe("solveChain with own production (Have)", () => {
 
 	it("covers with byproducts before Have (AC 5)", () => {
 		// with "all" first, byproducts would cover nothing
-		const r = solveChain(chainInput([["GWS", 1]], { have: { SIO: "all", AL: 5 } }), ctx);
+		const r = solveChain(
+			chainInput([["GWS", 1]], { have: { SIO: "all", AL: 5 } }),
+			ctx
+		);
 		for (const t of ["SIO", "AL"]) {
 			const row = r.rows[t];
 			const b = r.byproducts.find((x) => x.ticker === t)!;
@@ -106,9 +124,15 @@ describe("solveChain with own production (Have)", () => {
 	});
 
 	it("counts own production at the CX price in the profit (AC 6)", () => {
-		const r = solveChain(chainInput([["RAT", 100]], { have: { GRN: "all", LST: 0.5 } }), ctx);
+		const r = solveChain(
+			chainInput([["RAT", 100]], { have: { GRN: "all", LST: 0.5 } }),
+			ctx
+		);
 		const t = r.totals;
-		const own = r.order.reduce((s, m) => s + r.rows[m].have * r.rows[m].price, 0);
+		const own = r.order.reduce(
+			(s, m) => s + r.rows[m].have * r.rows[m].price,
+			0
+		);
 		expect(t.own).toBeCloseTo(own, 6);
 		expect(t.ownCount).toBe(2);
 		expect(t.profit).toBeCloseTo(

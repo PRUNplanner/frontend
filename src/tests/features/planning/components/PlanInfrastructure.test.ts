@@ -91,7 +91,9 @@ describe("PlanInfrastructure", () => {
 	])(
 		"lists every type, habitations then storages, with %s in use",
 		async (_, infrastructureData) => {
-			const { wrapper } = await mountInfrastructure({ infrastructureData });
+			const { wrapper } = await mountInfrastructure({
+				infrastructureData,
+			});
 
 			expect(labels(wrapper)).toEqual(ORDER);
 			expect(
@@ -100,7 +102,9 @@ describe("PlanInfrastructure", () => {
 				)
 			).toEqual(
 				ORDER.map((inf) =>
-					String(infrastructureData[inf as keyof IInfrastructureRecord])
+					String(
+						infrastructureData[inf as keyof IInfrastructureRecord]
+					)
 				)
 			);
 		}

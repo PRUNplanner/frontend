@@ -22,9 +22,11 @@ import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 
 const CXS: EXCHANGES_TYPE[] = ["AI1", "CI1", "IC1", "NC1", "UNIVERSE"];
 
-
-const row = (o: IMaterialExchangeOverview, cx: EXCHANGES_TYPE, daily?: number) =>
-	marketRows(o, daily).find((r) => r.cx === cx)!;
+const row = (
+	o: IMaterialExchangeOverview,
+	cx: EXCHANGES_TYPE,
+	daily?: number
+) => marketRows(o, daily).find((r) => r.cx === cx)!;
 
 const check = (over: Partial<IMarketCheck> = {}): IMarketCheck => ({
 	ticker: "RAT",
@@ -100,20 +102,26 @@ describe("materialMarket.util", () => {
 				vwap_analysis: {
 					AI1: { significance: "STABLE", percentChange: 0.01 },
 					CI1: { significance: "SIGNIFICANT", percentChange: -0.03 },
-					IC1: { significance: "HIGHLY-SIGNIFICANT", percentChange: 0.08 },
-					NC1: { significance: "HIGHLY-SIGNIFICANT", percentChange: -0.06 },
+					IC1: {
+						significance: "HIGHLY-SIGNIFICANT",
+						percentChange: 0.08,
+					},
+					NC1: {
+						significance: "HIGHLY-SIGNIFICANT",
+						percentChange: -0.06,
+					},
 					UNIVERSE: { significance: "STABLE", percentChange: NaN },
 				},
 			});
-			expect(marketRows(o).map((r) => [r.trend.level, r.trend.glyph])).toEqual(
-				[
-					[0, "▲"],
-					[1, "▼"],
-					[2, "▲▲"],
-					[2, "▼▼"],
-					[0, "■"],
-				]
-			);
+			expect(
+				marketRows(o).map((r) => [r.trend.level, r.trend.glyph])
+			).toEqual([
+				[0, "▲"],
+				[1, "▼"],
+				[2, "▲▲"],
+				[2, "▼▼"],
+				[0, "■"],
+			]);
 		});
 
 		it("divides 30 days of volume by 30 and shares the plan against it", () => {
@@ -160,7 +168,13 @@ describe("materialMarket.util", () => {
 		it("is rare below one unit a day on all four exchanges", () => {
 			const by = (u: number) =>
 				makeOverview({
-					sum_traded_30d: { AI1: 1, CI1: 2, IC1: 5, NC1: 3, UNIVERSE: u },
+					sum_traded_30d: {
+						AI1: 1,
+						CI1: 2,
+						IC1: 5,
+						NC1: 3,
+						UNIVERSE: u,
+					},
 				});
 			expect(isRare(by(11))).toBe(true);
 			expect(isRare(by(30))).toBe(false);
@@ -243,18 +257,25 @@ describe("materialMarket.util", () => {
 				paramKeys: { flag: "cx.market_flags.flags.large_share" },
 			});
 			expect(
-				translateRef((key, named) => `${key}${JSON.stringify(named)}`, line.chip)
+				translateRef(
+					(key, named) => `${key}${JSON.stringify(named)}`,
+					line.chip
+				)
 			).toBe(
 				'material_tile.card.chip.flag_share{"share":"12.0 %","cx":"AI1","flag":"cx.market_flags.flags.large_share{}"}'
 			);
-			expect(line.detail).toEqual({ key: "material_tile.card.others.fine" });
+			expect(line.detail).toEqual({
+				key: "material_tile.card.others.fine",
+			});
 		});
 
 		it("shows a flag's own words", () => {
 			const c = check({ flags: ["no_offers"], level: "red" });
 			const line = planLine(marketRows(spread, -6), c);
 			expect(line.level).toBe("red");
-			expect(line.chip).toEqual({ key: "cx.market_flags.flags.no_offers" });
+			expect(line.chip).toEqual({
+				key: "cx.market_flags.flags.no_offers",
+			});
 		});
 
 		it("names the other exchanges by verdict", () => {
@@ -287,7 +308,10 @@ describe("materialMarket.util", () => {
 	});
 
 	describe("marketSummary", () => {
-		const summary = (health: Partial<IMaterialExchangeOverview["systemic_health"]>, over = {}) =>
+		const summary = (
+			health: Partial<IMaterialExchangeOverview["systemic_health"]>,
+			over = {}
+		) =>
 			marketSummary(
 				makeOverview({
 					systemic_health: {
@@ -319,8 +343,20 @@ describe("materialMarket.util", () => {
 				summary(
 					{},
 					{
-						supply: { AI1: 0, CI1: 0, IC1: 0, NC1: 0, UNIVERSE: supply },
-						demand: { AI1: 0, CI1: 0, IC1: 0, NC1: 0, UNIVERSE: demand },
+						supply: {
+							AI1: 0,
+							CI1: 0,
+							IC1: 0,
+							NC1: 0,
+							UNIVERSE: supply,
+						},
+						demand: {
+							AI1: 0,
+							CI1: 0,
+							IC1: 0,
+							NC1: 0,
+							UNIVERSE: demand,
+						},
 					}
 				).balanceText.key;
 			expect(book(100, 59)).toBe("material_tile.health.balance.buyers");
@@ -331,15 +367,26 @@ describe("materialMarket.util", () => {
 
 		it("bands price cohesion and names the cheapest and dearest", () => {
 			const over = {
-				vwap_7d: { AI1: 238, CI1: 244, IC1: 227, NC1: 247, UNIVERSE: 236 },
+				vwap_7d: {
+					AI1: 238,
+					CI1: 244,
+					IC1: 227,
+					NC1: 247,
+					UNIVERSE: 236,
+				},
 			};
-			const at = (c: number) => summary({ priceCohesion: c }, over).cohesionText;
+			const at = (c: number) =>
+				summary({ priceCohesion: c }, over).cohesionText;
 			expect(at(1.4)).toEqual({
 				key: "material_tile.card.summary.cohesion.together",
 				params: { pct: "1.4 %", cheapest: "IC1", dearest: "NC1" },
 			});
-			expect(at(3).key).toBe("material_tile.card.summary.cohesion.little");
-			expect(at(5.1).key).toBe("material_tile.card.summary.cohesion.apart");
+			expect(at(3).key).toBe(
+				"material_tile.card.summary.cohesion.little"
+			);
+			expect(at(5.1).key).toBe(
+				"material_tile.card.summary.cohesion.apart"
+			);
 		});
 	});
 
@@ -360,7 +407,12 @@ describe("materialMarket.util", () => {
 
 	describe("sharedDomain", () => {
 		it("spans all series and widens a flat one", () => {
-			expect(sharedDomain([[1, null, 3], [2, 5]])).toEqual([1, 5]);
+			expect(
+				sharedDomain([
+					[1, null, 3],
+					[2, 5],
+				])
+			).toEqual([1, 5]);
 			expect(sharedDomain([[null], []])).toBeUndefined();
 			const [lo, hi] = sharedDomain([[100, 100]])!;
 			expect(lo).toBeCloseTo(97);

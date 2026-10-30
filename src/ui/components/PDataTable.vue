@@ -173,7 +173,10 @@
 		sort.value =
 			key !== col.key || !order
 				? { key: col.key, order: "descend" }
-				: { key: col.key, order: order === "descend" ? "ascend" : false };
+				: {
+						key: col.key,
+						order: order === "descend" ? "ascend" : false,
+					};
 	}
 
 	const ariaSort = (col: PDataTableColumn<T>) =>
@@ -263,7 +266,9 @@
 		if (windowed.value) {
 			start = indexAt(scrollTop.value - OVERSCAN);
 			end = Math.min(
-				indexAt(scrollTop.value + (viewHeight.value || 800) + OVERSCAN) + 1,
+				indexAt(
+					scrollTop.value + (viewHeight.value || 800) + OVERSCAN
+				) + 1,
 				count
 			);
 		}
@@ -382,7 +387,9 @@
 	);
 
 	function rowClassOf(row: T, index: number): string {
-		return typeof rowClass === "function" ? rowClass(row, index) : rowClass ?? "";
+		return typeof rowClass === "function"
+			? rowClass(row, index)
+			: (rowClass ?? "");
 	}
 
 	function onRowKey(e: KeyboardEvent, row: T): void {
@@ -418,7 +425,10 @@
 					<col
 						v-for="col in leaves"
 						:key="col.key"
-						:style="{ width: px(col.width), minWidth: px(col.width) }" />
+						:style="{
+							width: px(col.width),
+							minWidth: px(col.width),
+						}" />
 				</colgroup>
 				<thead ref="head">
 					<tr v-for="(headerRow, r) in headerRows" :key="r">
@@ -426,26 +436,45 @@
 							v-if="hasExpand && r === 0"
 							:rowspan="headerRows.length"
 							class="p-data-table-expand-cell"
-							:class="stickyKey ? 'p-data-table-sticky left-0' : ''">
-							<span class="sr-only">{{ t("common.ui.table.expand_row") }}</span>
+							:class="
+								stickyKey ? 'p-data-table-sticky left-0' : ''
+							">
+							<span class="sr-only">{{
+								t("common.ui.table.expand_row")
+							}}</span>
 						</th>
 						<th
 							v-for="cell in headerRow"
 							:key="cell.col.key"
-							:colspan="cell.colspan > 1 ? cell.colspan : undefined"
-							:rowspan="cell.rowspan > 1 ? cell.rowspan : undefined"
+							:colspan="
+								cell.colspan > 1 ? cell.colspan : undefined
+							"
+							:rowspan="
+								cell.rowspan > 1 ? cell.rowspan : undefined
+							"
 							:data-col-key="cell.col.key"
-							:aria-sort="cell.col.sorter ? ariaSort(cell.col) : undefined"
+							:aria-sort="
+								cell.col.sorter ? ariaSort(cell.col) : undefined
+							"
 							:class="[
-								alignClass(cell.col.titleAlign ?? cell.col.align),
+								alignClass(
+									cell.col.titleAlign ?? cell.col.align
+								),
 								cell.col.sorter ? 'p-data-table-sortable' : '',
-								isSorting(cell.col.key) ? 'p-data-table-sorting' : '',
-								cell.col.key === stickyKey ? 'p-data-table-sticky' : '',
+								isSorting(cell.col.key)
+									? 'p-data-table-sorting'
+									: '',
+								cell.col.key === stickyKey
+									? 'p-data-table-sticky'
+									: '',
 							]"
 							:style="{
 								width: headerWidth(cell.col.width),
 								minWidth: px(cell.col.minWidth),
-								left: cell.col.key === stickyKey ? stickyLeft : undefined,
+								left:
+									cell.col.key === stickyKey
+										? stickyLeft
+										: undefined,
 							}">
 							<button
 								v-if="cell.col.sorter"
@@ -486,38 +515,61 @@
 				</thead>
 				<tbody ref="tbody">
 					<template v-if="rows.length">
-						<tr v-if="spacerTop" aria-hidden="true" class="p-data-table-spacer">
-							<td :colspan="colCount" :style="{ height: `${spacerTop}px` }" />
+						<tr
+							v-if="spacerTop"
+							aria-hidden="true"
+							class="p-data-table-spacer">
+							<td
+								:colspan="colCount"
+								:style="{ height: `${spacerTop}px` }" />
 						</tr>
 						<template v-for="item in items" :key="item.key">
 							<tr
 								:data-row-key="item.key"
 								:class="[
-									striped && item.index % 2 === 1 ? 'p-data-table-striped' : '',
+									striped && item.index % 2 === 1
+										? 'p-data-table-striped'
+										: '',
 									rowClassOf(item.row, item.index),
 									rowClick ? 'p-data-table-clickable' : '',
 								]"
 								:tabindex="rowClick ? 0 : undefined"
 								@click="rowClick?.(item.row)"
-								@keydown.enter="rowClick && onRowKey($event, item.row)"
-								@keydown.space="rowClick && onRowKey($event, item.row)">
+								@keydown.enter="
+									rowClick && onRowKey($event, item.row)
+								"
+								@keydown.space="
+									rowClick && onRowKey($event, item.row)
+								">
 								<td
 									v-if="hasExpand"
 									class="p-data-table-expand-cell"
-									:class="stickyKey ? 'p-data-table-sticky left-0' : ''">
+									:class="
+										stickyKey
+											? 'p-data-table-sticky left-0'
+											: ''
+									">
 									<button
 										type="button"
 										class="p-data-table-expand-button"
-										:aria-expanded="expandedSet.has(item.key)"
+										:aria-expanded="
+											expandedSet.has(item.key)
+										"
 										:aria-label="
 											expandLabel
 												? expandLabel(item.row)
-												: t('common.ui.table.expand_row')
+												: t(
+														'common.ui.table.expand_row'
+													)
 										"
 										@click.stop="toggleExpand(item.key)">
 										<ChevronRightSharp
 											class="size-4 transition-transform"
-											:class="expandedSet.has(item.key) ? 'rotate-90' : ''" />
+											:class="
+												expandedSet.has(item.key)
+													? 'rotate-90'
+													: ''
+											" />
 									</button>
 								</td>
 								<td
@@ -526,11 +578,22 @@
 									:data-col-key="col.key"
 									:class="[
 										alignClass(col.align),
-										isSorting(col.key) ? 'p-data-table-sorting' : '',
-										col.key === stickyKey ? 'p-data-table-sticky' : '',
+										isSorting(col.key)
+											? 'p-data-table-sorting'
+											: '',
+										col.key === stickyKey
+											? 'p-data-table-sticky'
+											: '',
 									]"
-									:style="col.key === stickyKey ? { left: stickyLeft } : undefined">
-									<slot :name="`cell-${col.key}`" :row="item.row" :index="item.index">
+									:style="
+										col.key === stickyKey
+											? { left: stickyLeft }
+											: undefined
+									">
+									<slot
+										:name="`cell-${col.key}`"
+										:row="item.row"
+										:index="item.index">
 										{{ cellValue(item.row, col.key) }}
 									</slot>
 								</td>
@@ -538,28 +601,48 @@
 							<tr
 								v-if="hasExpand && expandedSet.has(item.key)"
 								class="p-data-table-expanded"
-								:class="striped && item.index % 2 === 1 ? 'p-data-table-striped' : ''">
+								:class="
+									striped && item.index % 2 === 1
+										? 'p-data-table-striped'
+										: ''
+								">
 								<td :colspan="colCount">
 									<div
 										class="p-data-table-expand"
-										:style="{ width: boxWidth ? `${boxWidth}px` : undefined }">
+										:style="{
+											width: boxWidth
+												? `${boxWidth}px`
+												: undefined,
+										}">
 										<slot name="expand" :row="item.row" />
 									</div>
 								</td>
 							</tr>
 						</template>
-						<tr v-if="spacerBottom" aria-hidden="true" class="p-data-table-spacer">
-							<td :colspan="colCount" :style="{ height: `${spacerBottom}px` }" />
+						<tr
+							v-if="spacerBottom"
+							aria-hidden="true"
+							class="p-data-table-spacer">
+							<td
+								:colspan="colCount"
+								:style="{ height: `${spacerBottom}px` }" />
 						</tr>
 					</template>
 					<tr v-else class="p-data-table-empty-row">
 						<td :colspan="colCount">
 							<div
 								class="p-data-table-empty"
-								:style="{ width: boxWidth ? `${boxWidth}px` : undefined }">
+								:style="{
+									width: boxWidth
+										? `${boxWidth}px`
+										: undefined,
+								}">
 								<slot name="empty">
 									<div class="p-data-table-empty-default">
-										<svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+										<svg
+											viewBox="0 0 28 28"
+											fill="none"
+											aria-hidden="true">
 											<path
 												d="M26 7.5C26 11.0899 23.0899 14 19.5 14C15.9101 14 13 11.0899 13 7.5C13 3.91015 15.9101 1 19.5 1C23.0899 1 26 3.91015 26 7.5ZM16.8536 4.14645C16.6583 3.95118 16.3417 3.95118 16.1464 4.14645C15.9512 4.34171 15.9512 4.65829 16.1464 4.85355L18.7929 7.5L16.1464 10.1464C15.9512 10.3417 15.9512 10.6583 16.1464 10.8536C16.3417 11.0488 16.6583 11.0488 16.8536 10.8536L19.5 8.20711L22.1464 10.8536C22.3417 11.0488 22.6583 11.0488 22.8536 10.8536C23.0488 10.6583 23.0488 10.3417 22.8536 10.1464L20.2071 7.5L22.8536 4.85355C23.0488 4.65829 23.0488 4.34171 22.8536 4.14645C22.6583 3.95118 22.3417 3.95118 22.1464 4.14645L19.5 6.79289L16.8536 4.14645Z"
 												fill="currentColor" />
@@ -567,7 +650,9 @@
 												d="M25 22.75V12.5991C24.5572 13.0765 24.053 13.4961 23.5 13.8454V16H17.5L17.3982 16.0068C17.0322 16.0565 16.75 16.3703 16.75 16.75C16.75 18.2688 15.5188 19.5 14 19.5C12.4812 19.5 11.25 18.2688 11.25 16.75L11.2432 16.6482C11.1935 16.2822 10.8797 16 10.5 16H4.5V7.25C4.5 6.2835 5.2835 5.5 6.25 5.5H12.2696C12.4146 4.97463 12.6153 4.47237 12.865 4H6.25C4.45507 4 3 5.45507 3 7.25V22.75C3 24.5449 4.45507 26 6.25 26H21.75C23.5449 26 25 24.5449 25 22.75ZM4.5 22.75V17.5H9.81597L9.85751 17.7041C10.2905 19.5919 11.9808 21 14 21L14.215 20.9947C16.2095 20.8953 17.842 19.4209 18.184 17.5H23.5V22.75C23.5 23.7165 22.7165 24.5 21.75 24.5H6.25C5.2835 24.5 4.5 23.7165 4.5 22.75Z"
 												fill="currentColor" />
 										</svg>
-										<div>{{ t("common.ui.table.no_data") }}</div>
+										<div>
+											{{ t("common.ui.table.no_data") }}
+										</div>
 									</div>
 								</slot>
 							</div>
@@ -707,8 +792,13 @@
 		@apply border-line-strong;
 	}
 
-	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover,
-	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover > td {
+	.p-data-table
+		tbody
+		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover,
+	.p-data-table
+		tbody
+		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover
+		> td {
 		@apply bg-hover;
 	}
 
@@ -721,16 +811,25 @@
 
 	.p-data-table td.p-data-table-sticky {
 		background-color: var(--app-bg);
-		background-image: linear-gradient(color-mix(in srgb, var(--color-white) 4%, transparent), color-mix(in srgb, var(--color-white) 4%, transparent));
+		background-image: linear-gradient(
+			color-mix(in srgb, var(--color-white) 4%, transparent),
+			color-mix(in srgb, var(--color-white) 4%, transparent)
+		);
 	}
 
 	.p-data-table tr.p-data-table-striped > td.p-data-table-sticky {
 		background-image: none;
 	}
 
-	.p-data-table tbody > tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover > td.p-data-table-sticky {
+	.p-data-table
+		tbody
+		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover
+		> td.p-data-table-sticky {
 		background-color: var(--app-bg);
-		background-image: linear-gradient(color-mix(in srgb, var(--color-white) 17%, transparent), color-mix(in srgb, var(--color-white) 17%, transparent));
+		background-image: linear-gradient(
+			color-mix(in srgb, var(--color-white) 17%, transparent),
+			color-mix(in srgb, var(--color-white) 17%, transparent)
+		);
 	}
 
 	.p-data-table .p-data-table-sticky:not(.p-data-table-expand-cell) {

@@ -73,7 +73,11 @@ describe("useEmailNudge", () => {
 	});
 
 	it.each([
-		["a confirmed email", () => setup({ email: "a@b.co", is_email_verified: true }), 1],
+		[
+			"a confirmed email",
+			() => setup({ email: "a@b.co", is_email_verified: true }),
+			1,
+		],
 		["no plans", () => setup(), 0],
 		[
 			"preferences not loaded",

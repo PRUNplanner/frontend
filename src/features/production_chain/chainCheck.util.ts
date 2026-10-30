@@ -123,7 +123,10 @@ export function findingText(
 				pct: formatShare(Math.abs(f.factor)),
 			};
 			return f.fix === "lost"
-				? { title: k("fix_lost", named), detail: k("fix_lost_detail", named) }
+				? {
+						title: k("fix_lost", named),
+						detail: k("fix_lost_detail", named),
+					}
 				: {
 						title: k("fix_missed", named),
 						detail: k("fix_missed_detail", named),
@@ -191,7 +194,9 @@ export function findingText(
 						building: f.step.building,
 					}),
 					better.length === 1
-						? k("move_better_one", { planet: planetShort(better[0].planet) })
+						? k("move_better_one", {
+								planet: planetShort(better[0].planet),
+							})
 						: better.length > 1
 							? k("move_better_many", { n: better.length })
 							: "",
@@ -211,7 +216,9 @@ export function findingText(
 					}),
 				};
 			return {
-				title: k("experts", { text: expertsText(f.experts, expertName) }),
+				title: k("experts", {
+					text: expertsText(f.experts, expertName),
+				}),
 				detail: k("experts_detail", {
 					text:
 						expertsText(f.now, expertName) ||
@@ -252,7 +259,11 @@ export function optionChips(
 	if (o.own) chips.push({ label: k("your_base"), type: "secondary" });
 	else if (o.full) chips.push({ label: k("full"), type: "error" });
 	else if (o.ghostOnly)
-		chips.push({ label: k("ghost"), type: "warning", title: k("ghost_title") });
+		chips.push({
+			label: k("ghost"),
+			type: "warning",
+			title: k("ghost_title"),
+		});
 	else if (o.plots)
 		chips.push({
 			label: k("plots", {
@@ -263,9 +274,13 @@ export function optionChips(
 		});
 	else chips.push({ label: k("plots_unknown"), type: "secondary" });
 	if (!o.fits) chips.push({ label: k("no_room"), type: "warning" });
-	if (o.slow) chips.push({ label: k("slow", { n: payback }), type: "warning" });
+	if (o.slow)
+		chips.push({ label: k("slow", { n: payback }), type: "warning" });
 	if (o === f.option)
-		chips.push({ label: k(f.picked ? "picked" : "suggested"), type: "success" });
+		chips.push({
+			label: k(f.picked ? "picked" : "suggested"),
+			type: "success",
+		});
 	return chips;
 }
 

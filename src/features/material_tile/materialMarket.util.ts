@@ -175,7 +175,9 @@ function worstOf(rows: IMarketRow[]): {
 } {
 	const own = rows.filter((r) => r.cx !== "UNIVERSE" && r.verdict);
 	for (const verdict of ["too_big", "watch"] as const) {
-		const exchanges = own.filter((r) => r.verdict === verdict).map((r) => r.cx);
+		const exchanges = own
+			.filter((r) => r.verdict === verdict)
+			.map((r) => r.cx);
 		if (exchanges.length) return { verdict, exchanges };
 	}
 	return { verdict: "fine", exchanges: [] };
@@ -197,13 +199,19 @@ function crossLine(rows: IMarketRow[]): Omit<IPlanLine, "checkExchange"> {
 		chip:
 			verdict === "fine"
 				? { key: `${K}.cross.fine` }
-				: { key: `${K}.cross.${verdict}`, params: { list: exchanges.join(", ") } },
+				: {
+						key: `${K}.cross.${verdict}`,
+						params: { list: exchanges.join(", ") },
+					},
 		detail:
 			largest.share === null
 				? { key: `${K}.cross.largest_none`, params: { cx: largest.cx } }
 				: {
 						key: `${K}.cross.largest`,
-						params: { share: formatShare(largest.share), cx: largest.cx },
+						params: {
+							share: formatShare(largest.share),
+							cx: largest.cx,
+						},
 					},
 	};
 }
@@ -226,7 +234,10 @@ export function planLine(rows: IMarketRow[], check?: IMarketCheck): IPlanLine {
 	const share = { share: formatShare(check.sharePct), cx: check.exchange };
 	const chip: ITextRef =
 		!flag || flag === "all_exchanges"
-			? { key: `${K}.chip.${shareVerdict(check.sharePct)}`, params: share }
+			? {
+					key: `${K}.chip.${shareVerdict(check.sharePct)}`,
+					params: share,
+				}
 			: SHARE_FLAGS.includes(flag)
 				? {
 						key: `${K}.chip.flag_share`,

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-	import {
-		computed,
-		onBeforeUnmount,
-		type Ref,
-		ref,
-		watch,
-	} from "vue";
+	import { computed, onBeforeUnmount, type Ref, ref, watch } from "vue";
 	import { debounce } from "lodash-es";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -115,7 +109,9 @@
 				? [
 						{
 							key: "storageLocations",
-							title: t("hq_upgrade_calculator.table.storage_locations"),
+							title: t(
+								"hq_upgrade_calculator.table.storage_locations"
+							),
 							width: "25%",
 						},
 					]
@@ -258,7 +254,9 @@
 							v-for="col in columns"
 							:key="col.key"
 							#[`header-${col.key}`]>
-							<span class="whitespace-normal">{{ col.title }}</span>
+							<span class="whitespace-normal">{{
+								col.title
+							}}</span>
 						</template>
 						<template #cell-ticker="{ row }">
 							<MaterialTile

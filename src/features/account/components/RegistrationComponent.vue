@@ -227,7 +227,8 @@
 			</template>
 		</PNotice>
 		<div :class="landingField">
-			<PFormItem :label="t('account.components.registration.form.username')">
+			<PFormItem
+				:label="t('account.components.registration.form.username')">
 				<PInput
 					ref="username"
 					v-model:value="inputUsername"
@@ -242,13 +243,18 @@
 						{{ fieldErrors.username.join(" ") }}
 					</span>
 					<template v-else>
-						{{ $t("account.components.registration.form.username_info") }}
+						{{
+							$t(
+								"account.components.registration.form.username_info"
+							)
+						}}
 					</template>
 				</template>
 			</PFormItem>
 		</div>
 		<div :class="landingField">
-			<PFormItem :label="t('account.components.registration.form.password')">
+			<PFormItem
+				:label="t('account.components.registration.form.password')">
 				<PInput
 					ref="password"
 					v-model:value="inputPassword"
@@ -264,7 +270,11 @@
 						{{ fieldErrors.password.join(" ") }}
 					</span>
 					<template v-else>
-						{{ $t("account.components.registration.form.password_info") }}
+						{{
+							$t(
+								"account.components.registration.form.password_info"
+							)
+						}}
 					</template>
 				</template>
 			</PFormItem>
@@ -286,10 +296,18 @@
 						{{ fieldErrors.email.join(" ") }}
 					</span>
 					<span v-else-if="!emailValid" class="text-negative">
-						{{ $t("account.components.registration.form.email_invalid") }}
+						{{
+							$t(
+								"account.components.registration.form.email_invalid"
+							)
+						}}
 					</span>
 					<template v-else>
-						{{ $t("account.components.registration.form.email_info") }}
+						{{
+							$t(
+								"account.components.registration.form.email_info"
+							)
+						}}
 					</template>
 				</template>
 			</PFormItem>
@@ -298,7 +316,9 @@
 			class="mt-1 p-4.5 border border-white/16 rounded-xl flex flex-col gap-3.5">
 			<legend
 				class="px-2 font-mono text-[12.5px] tracking-[0.08em] uppercase text-prunplanner">
-				{{ $t("account.components.registration.form.security_question") }}
+				{{
+					$t("account.components.registration.form.security_question")
+				}}
 			</legend>
 			<i18n-t
 				keypath="account.components.registration.form.question"
@@ -319,7 +339,9 @@
 			</div>
 			<div :class="landingField">
 				<PFormItem
-					:label="t('account.components.registration.form.planet_name')">
+					:label="
+						t('account.components.registration.form.planet_name')
+					">
 					<PInput
 						ref="planet_input"
 						v-model:value="inputPlanetName"

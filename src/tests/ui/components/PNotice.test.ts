@@ -22,7 +22,10 @@ describe("PNotice", () => {
 
 	it("shows an action", () => {
 		const wrapper = mount(PNotice, {
-			slots: { default: "Saved elsewhere", action: "<button>Reload</button>" },
+			slots: {
+				default: "Saved elsewhere",
+				action: "<button>Reload</button>",
+			},
 		});
 
 		expect(wrapper.find("button").text()).toBe("Reload");

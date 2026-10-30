@@ -64,7 +64,9 @@
 			.sort();
 	});
 	const othersShown = computed(
-		() => others.value.filter((m) => !hiddenMaterials.value.includes(m)).length
+		() =>
+			others.value.filter((m) => !hiddenMaterials.value.includes(m))
+				.length
 	);
 
 	const shown = computed(() => {

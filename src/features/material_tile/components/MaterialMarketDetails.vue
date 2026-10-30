@@ -65,8 +65,9 @@
 	const rare = computed(() => isRare(overview));
 	const active = computed(
 		() =>
-			MARKET_EXCHANGES.filter((cx) => overview.exchange_status[cx] === "ACTIVE")
-				.length
+			MARKET_EXCHANGES.filter(
+				(cx) => overview.exchange_status[cx] === "ACTIVE"
+			).length
 	);
 
 	const chartMetric = ref<ExchangeMetric>("vwap");
@@ -151,7 +152,9 @@
 					<span>
 						{{
 							$t("material_tile.details.data_of", {
-								date: formatDate(overview.calendar_date.UNIVERSE),
+								date: formatDate(
+									overview.calendar_date.UNIVERSE
+								),
 							})
 						}}
 					</span>
@@ -170,7 +173,10 @@
 				data-rare>
 				{{
 					$t("material_tile.card.rare", {
-						units: formatNumber(overview.sum_traded_30d.UNIVERSE, 0),
+						units: formatNumber(
+							overview.sum_traded_30d.UNIVERSE,
+							0
+						),
 					})
 				}}
 			</div>
@@ -212,7 +218,9 @@
 					</PButton>
 				</PButtonGroup>
 			</div>
-			<MaterialDataChart :material-ticker="ticker" :metric="chartMetric" />
+			<MaterialDataChart
+				:material-ticker="ticker"
+				:metric="chartMetric" />
 		</section>
 
 		<!-- market health -->
@@ -226,11 +234,14 @@
 					:key="tile.key"
 					class="flex flex-col gap-1 p-3 rounded-panel border border-line bg-surface-sunken"
 					:data-health="tile.key">
-					<div class="text-xs font-medium uppercase tracking-wide text-muted">
+					<div
+						class="text-xs font-medium uppercase tracking-wide text-muted">
 						{{ $t(`material_tile.health.${tile.key}.label`) }}
 					</div>
 					<div>
-						<span class="font-mono text-lg font-bold" :class="tile.valueClass">
+						<span
+							class="font-mono text-lg font-bold"
+							:class="tile.valueClass">
 							{{ tile.value }}
 						</span>
 						<span class="pl-2 text-xs text-muted-strong">

@@ -1,11 +1,4 @@
-import {
-	describe,
-	it,
-	expect,
-	beforeEach,
-	onTestFinished,
-	vi,
-} from "vitest";
+import { describe, it, expect, beforeEach, onTestFinished, vi } from "vitest";
 import { createApp } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -223,9 +216,7 @@ describe("Persistence", () => {
 		const store = usePlanningStore();
 
 		expect(pick.length).toBeGreaterThan(0);
-		expect(pick.filter((key) => !(key in store.$state))).toStrictEqual(
-			[]
-		);
+		expect(pick.filter((key) => !(key in store.$state))).toStrictEqual([]);
 	});
 
 	it("drops FIO storage of a value stored before it was left out", () => {

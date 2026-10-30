@@ -107,7 +107,9 @@
 					class="w-full sm:w-64"
 					:aria-label="t('production_chains.check.empire')"
 					data-testid="check-empire"
-					@update:value="(v) => typeof v === 'string' && emit('empire', v)" />
+					@update:value="
+						(v) => typeof v === 'string' && emit('empire', v)
+					" />
 			</label>
 			<div class="flex flex-col gap-1 min-w-0 flex-1">
 				<span class="text-xs uppercase tracking-wide text-muted">{{
@@ -128,7 +130,11 @@
 						<PButton
 							type="ghost"
 							size="sm"
-							:aria-label="t('production_chains.check.remove', { ticker: x })"
+							:aria-label="
+								t('production_chains.check.remove', {
+									ticker: x,
+								})
+							"
 							@click="remove(x)">
 							×
 						</PButton>
@@ -201,7 +207,9 @@
 					:aria-label="t('production_chains.check.min')"
 					data-testid="check-min"
 					@update:value="(v) => v != null && v >= 0 && (min = v)" />
-				<span class="text-muted">{{ $t("production_chains.check.min_unit") }}</span>
+				<span class="text-muted">{{
+					$t("production_chains.check.min_unit")
+				}}</span>
 			</label>
 			<label class="flex items-center gap-2">
 				<span class="text-xs uppercase tracking-wide text-muted">
@@ -214,8 +222,12 @@
 					class="w-20"
 					:aria-label="t('production_chains.check.pay')"
 					data-testid="check-pay"
-					@update:value="(v) => v != null && v >= 0 && (payback = v)" />
-				<span class="text-muted">{{ $t("production_chains.check.pay_unit") }}</span>
+					@update:value="
+						(v) => v != null && v >= 0 && (payback = v)
+					" />
+				<span class="text-muted">{{
+					$t("production_chains.check.pay_unit")
+				}}</span>
 			</label>
 		</div>
 	</div>

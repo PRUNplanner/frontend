@@ -515,9 +515,7 @@
 		navigation, so an expanded sidebar makes Base an overlay -->
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
 		bottom bar as well -->
-	<div
-		ref="layout"
-		class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
+	<div ref="layout" class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header
 			class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 max-md:px-4 py-3">
@@ -645,7 +643,9 @@
 				:revenue="result.revenue"
 				:cost="result.cost"
 				:empire-profit-per-area="
-					refEmpireUuid ? cachedProfitPerArea(refEmpireUuid) : undefined
+					refEmpireUuid
+						? cachedProfitPerArea(refEmpireUuid)
+						: undefined
 				"
 				:compare="sharedCompare"
 				@open="openTile" />
@@ -707,7 +707,8 @@
 				:data-section-hidden="!onPhone('base') || undefined"
 				data-base-pane>
 				<!-- a phone names Base in its section tabs already -->
-				<div class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
+				<div
+					class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
 					<h2 class="flex-1 font-bold text-white">
 						{{ t("plan.base.label") }}
 					</h2>
@@ -809,32 +810,45 @@
 						<span class="@max-[64rem]:sr-only">
 							{{ t("plan.components.materialio.label") }}
 						</span>
-						<span class="hidden @max-[64rem]:inline" aria-hidden="true">
+						<span
+							class="hidden @max-[64rem]:inline"
+							aria-hidden="true">
 							{{ t("plan.layout.io_short") }}
 						</span>
 						<span
 							v-if="flagCount > 0"
 							role="img"
 							:aria-label="
-								t('plan.layout.flags', { n: flagCount }, flagCount)
+								t(
+									'plan.layout.flags',
+									{ n: flagCount },
+									flagCount
+								)
 							"
 							class="size-1.5 ml-1.5 rounded-full bg-warning" />
 					</PButton>
 				</div>
 				<!-- a phone's Tools section: the tools as a list -->
 				<nav
-					v-if="refIsPhone && refPhoneSection === 'tools' && !refShowTool"
+					v-if="
+						refIsPhone &&
+						refPhoneSection === 'tools' &&
+						!refShowTool
+					"
 					:aria-label="t('plan.actions.tools')"
 					class="rounded border border-line divide-y divide-line"
 					data-phone-tools>
 					<button
-						v-for="tool in toolTabs.filter((x) => x.key !== 'production')"
+						v-for="tool in toolTabs.filter(
+							(x) => x.key !== 'production'
+						)"
 						:key="tool.key"
 						type="button"
 						class="flex items-center gap-3 w-full min-h-14 px-3.5 text-left cursor-pointer hover:bg-hover"
 						@click="selectTab(tool.key)">
 						<span class="flex-1 min-w-0">
-							<span class="flex items-center gap-1.5 font-medium text-ink-strong">
+							<span
+								class="flex items-center gap-1.5 font-medium text-ink-strong">
 								{{ tool.label }}
 								<span
 									v-if="tool.dot"
@@ -854,31 +868,35 @@
 				<!-- kept mounted under a tool: its folds, filters and the
 					starter card's state survive -->
 				<div
-					v-show="refIsPhone ? refPhoneSection === 'production' : !refShowTool"
-					data-production>
-				<PlanProduction
-					:disabled="disabled"
-					:production-data="result.production"
-					:planet-resources="planetData.resources"
-					:cogc="result.cogc"
-					:cx-uuid="refCXUuid"
-					:planet-id="planetData.planet_natural_id"
-					:changes="sharedChanges"
-					:material-i-o="result.materialio"
-					:experts="result.experts"
-					:status="refRecipeStatus"
-					@update:building:amount="handleUpdateBuildingAmount"
-					@delete:building="deleteBuilding"
-					@create:building="handleCreateBuilding"
-					@update:building:recipe:amount="
-						handleUpdateBuildingRecipeAmount
+					v-show="
+						refIsPhone
+							? refPhoneSection === 'production'
+							: !refShowTool
 					"
-					@delete:building:recipe="deleteBuildingRecipe"
-					@add:building:recipes="handleAddBuildingRecipes"
-					@apply:starter="applyStarterSetup"
-					@update:building:recipe="changeBuildingRecipe"
-					@pick:building:recipe="addPickedRecipe"
-					@undo="undoPickedRecipe" />
+					data-production>
+					<PlanProduction
+						:disabled="disabled"
+						:production-data="result.production"
+						:planet-resources="planetData.resources"
+						:cogc="result.cogc"
+						:cx-uuid="refCXUuid"
+						:planet-id="planetData.planet_natural_id"
+						:changes="sharedChanges"
+						:material-i-o="result.materialio"
+						:experts="result.experts"
+						:status="refRecipeStatus"
+						@update:building:amount="handleUpdateBuildingAmount"
+						@delete:building="deleteBuilding"
+						@create:building="handleCreateBuilding"
+						@update:building:recipe:amount="
+							handleUpdateBuildingRecipeAmount
+						"
+						@delete:building:recipe="deleteBuildingRecipe"
+						@add:building:recipes="handleAddBuildingRecipes"
+						@apply:starter="applyStarterSetup"
+						@update:building:recipe="changeBuildingRecipe"
+						@pick:building:recipe="addPickedRecipe"
+						@undo="undoPickedRecipe" />
 				</div>
 				<div
 					v-if="refShowTool && onPhone('tools')"
@@ -997,11 +1015,15 @@
 					@open:plan-check="openPlanCheck" />
 				<dl
 					class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-3 py-2 border-t border-line text-sm tabular-nums">
-					<dt class="text-muted-strong">{{ t("plan.io.exports") }}</dt>
+					<dt class="text-muted-strong">
+						{{ t("plan.io.exports") }}
+					</dt>
 					<dd class="text-right">
 						<PValue :value="ioTotals.exports" />
 					</dd>
-					<dt class="text-muted-strong">{{ t("plan.io.imports") }}</dt>
+					<dt class="text-muted-strong">
+						{{ t("plan.io.imports") }}
+					</dt>
 					<dd class="text-right">
 						<PValue :value="ioTotals.imports" />
 					</dd>
@@ -1010,7 +1032,8 @@
 							{{ t("plan.io.degradation") }}
 						</dt>
 						<dd class="text-right">
-							<PValue :value="-overviewData.dailyDegradationCost" />
+							<PValue
+								:value="-overviewData.dailyDegradationCost" />
 						</dd>
 						<dt class="font-medium text-ink-strong">
 							{{ t("plan.io.profit") }}
@@ -1025,7 +1048,11 @@
 		<!-- a phone: save from a bar above the app's bottom bar, shown while
 			there is something to save -->
 		<div
-			v-if="refIsPhone && isOwnPlan && (modified || refIsSaving || refSaveFailed)"
+			v-if="
+				refIsPhone &&
+				isOwnPlan &&
+				(modified || refIsSaving || refSaveFailed)
+			"
 			class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-1000 px-4 py-2 border-t border-line bg-surface [&>div]:w-full [&>div]:justify-between"
 			data-phone-save>
 			<PlanSaveButton

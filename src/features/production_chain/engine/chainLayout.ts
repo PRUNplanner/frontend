@@ -82,14 +82,18 @@ export function layoutChain(result: IChainResult): IChainLayout {
 	const inputsOf = new Map<string, string[]>();
 	const usersOf = new Map<string, string[]>();
 	for (const l of result.links) {
-		inputsOf.set(l.consumer, [...(inputsOf.get(l.consumer) ?? []), l.input]);
+		inputsOf.set(l.consumer, [
+			...(inputsOf.get(l.consumer) ?? []),
+			l.input,
+		]);
 		usersOf.set(l.input, [...(usersOf.get(l.input) ?? []), l.consumer]);
 	}
 
 	// order lists inputs before consumers, so one pass sets every stage
 	const stage = new Map<string, number>();
 	for (const t of result.order) {
-		const ins = result.rows[t].source === "make" ? inputsOf.get(t) ?? [] : [];
+		const ins =
+			result.rows[t].source === "make" ? (inputsOf.get(t) ?? []) : [];
 		stage.set(t, 1 + Math.max(-1, ...ins.map((i) => stage.get(i) ?? 0)));
 	}
 
@@ -110,10 +114,14 @@ export function layoutChain(result: IChainResult): IChainLayout {
 	place();
 	for (let it = 0; it < BARYCENTER_PASSES; it++) {
 		for (let c = 1; c < stages; c++)
-			columns[c].sort((a, b) => mean(a, inputsOf.get(a)) - mean(b, inputsOf.get(b)));
+			columns[c].sort(
+				(a, b) => mean(a, inputsOf.get(a)) - mean(b, inputsOf.get(b))
+			);
 		place();
 		for (let c = stages - 2; c >= 0; c--)
-			columns[c].sort((a, b) => mean(a, usersOf.get(a)) - mean(b, usersOf.get(b)));
+			columns[c].sort(
+				(a, b) => mean(a, usersOf.get(a)) - mean(b, usersOf.get(b))
+			);
 		place();
 	}
 
@@ -141,7 +149,8 @@ export function layoutChain(result: IChainResult): IChainLayout {
 		h: H,
 	}));
 	const labels: IBox[] = [];
-	const free = (box: IBox, list: IBox[]) => !list.some((o) => overlaps(box, o));
+	const free = (box: IBox, list: IBox[]) =>
+		!list.some((o) => overlaps(box, o));
 	const edges: IChainLayoutEdge[] = result.links.map((l) => {
 		const a = nodes[l.input];
 		const b = nodes[l.consumer];
@@ -156,7 +165,11 @@ export function layoutChain(result: IChainResult): IChainLayout {
 			const u = 1 - t;
 			const x = u * u * u * x1 + 3 * u * t * mx + t * t * t * x2;
 			const y = y1 + (y2 - y1) * t * t * (3 - 2 * t) + dy;
-			return { x, y, box: { x: x - w / 2, y: y - LABEL_H, w, h: LABEL_H } };
+			return {
+				x,
+				y,
+				box: { x: x - w / 2, y: y - LABEL_H, w, h: LABEL_H },
+			};
 		};
 		const spots = [0, -LABEL_H, LABEL_H].flatMap((dy) =>
 			LABEL_TS.map((t) => at(t, dy))

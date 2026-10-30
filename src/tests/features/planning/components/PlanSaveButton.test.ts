@@ -21,8 +21,7 @@ async function mountButton(props: Record<string, unknown> = {}) {
 
 const button = (wrapper: VueWrapper) => wrapper.findComponent(PButton);
 const status = (wrapper: VueWrapper) => wrapper.find("[role=status]").text();
-const hasDot = (wrapper: VueWrapper) =>
-	wrapper.find("[data-unsaved]").exists();
+const hasDot = (wrapper: VueWrapper) => wrapper.find("[data-unsaved]").exists();
 
 describe("PlanSaveButton", () => {
 	it("reads Saved, quietly, when there is nothing to save", async () => {

@@ -25,7 +25,14 @@
 	import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 	// UI
-	import { PButton, PInput, PInputNumber, PSelect, PTag, PTooltip } from "@/ui";
+	import {
+		PButton,
+		PInput,
+		PInputNumber,
+		PSelect,
+		PTag,
+		PTooltip,
+	} from "@/ui";
 	import { AddSharp, ClearSharp } from "@vicons/material";
 
 	/*
@@ -116,7 +123,11 @@
 		},
 	});
 
-	function setSide(row: IFixedPriceRow, side: "buy" | "sell", v: number | null) {
+	function setSide(
+		row: IFixedPriceRow,
+		side: "buy" | "sell",
+		v: number | null
+	) {
 		rows.value = rows.value.map((r) =>
 			r.ticker === row.ticker ? { ...r, [side]: v } : r
 		);
@@ -160,7 +171,9 @@
 		const fixed = type === "BUY" ? row.buy : row.sell;
 		const { price, source } = marketPrice(row.ticker, type);
 		const diff =
-			fixed !== null && price > 0 ? ((fixed - price) / price) * 100 : null;
+			fixed !== null && price > 0
+				? ((fixed - price) / price) * 100
+				: null;
 		return { price, source, diff };
 	}
 
@@ -171,12 +184,20 @@
 		if (!cogm) return undefined;
 		const plans = new Set(cogm.entries.map((e) => e.planUuid)).size;
 		const lowest = cogm.entries.find((e) => e.value === cogm.value)!;
-		return { value: round2(cogm.value), plans, lowest, entries: cogm.entries };
+		return {
+			value: round2(cogm.value),
+			plans,
+			lowest,
+			entries: cogm.entries,
+		};
 	}
 
 	function useCOGM(row: IFixedPriceRow, value: number): void {
 		setSide(row, "buy", value);
-		trackEvent("exchange:use_cogm", { location, material_ticker: row.ticker });
+		trackEvent("exchange:use_cogm", {
+			location,
+			material_ticker: row.ticker,
+		});
 	}
 
 	// search and sort once the list is long
@@ -237,8 +258,11 @@
 		<div ref="table" class="overflow-x-auto">
 			<table class="w-full text-sm">
 				<thead class="text-muted text-left">
-					<tr class="child:py-2 child:pr-3 child:whitespace-nowrap border-b border-white/10">
-						<th scope="col">{{ $t("exchanges.fixed.material") }}</th>
+					<tr
+						class="child:py-2 child:pr-3 child:whitespace-nowrap border-b border-white/10">
+						<th scope="col">
+							{{ $t("exchanges.fixed.material") }}
+						</th>
 						<th scope="col" class="text-right">
 							{{ $t("exchanges.fixed.buy") }}
 						</th>
@@ -268,13 +292,17 @@
 								size="sm"
 								:min="0"
 								:value="row.buy"
-								:placeholder="$t('exchanges.fixed.exchange_placeholder')"
+								:placeholder="
+									$t('exchanges.fixed.exchange_placeholder')
+								"
 								:aria-label="
 									$t('exchanges.fixed.buy_label', {
 										ticker: row.ticker,
 									})
 								"
-								@update:value="(v) => setSide(row, 'buy', v ?? null)" />
+								@update:value="
+									(v) => setSide(row, 'buy', v ?? null)
+								" />
 						</td>
 						<td class="w-28 min-w-24">
 							<PInputNumber
@@ -282,13 +310,17 @@
 								size="sm"
 								:min="0"
 								:value="row.sell"
-								:placeholder="$t('exchanges.fixed.exchange_placeholder')"
+								:placeholder="
+									$t('exchanges.fixed.exchange_placeholder')
+								"
 								:aria-label="
 									$t('exchanges.fixed.sell_label', {
 										ticker: row.ticker,
 									})
 								"
-								@update:value="(v) => setSide(row, 'sell', v ?? null)" />
+								@update:value="
+									(v) => setSide(row, 'sell', v ?? null)
+								" />
 						</td>
 						<td class="text-muted whitespace-nowrap">
 							<div>
@@ -298,7 +330,8 @@
 								<template v-if="m.diff !== null">
 									·
 									<span class="tabular-nums">
-										{{ m.diff > 0 ? "+" : "" }}{{ formatNumber(m.diff, 0) }} %
+										{{ m.diff > 0 ? "+" : ""
+										}}{{ formatNumber(m.diff, 0) }} %
 									</span>
 								</template>
 							</div>
@@ -315,10 +348,14 @@
 											class="inline-block tabular-nums"
 											tabindex="0">
 											{{ formatNumber(c.value) }}
-											<span class="block text-xs text-muted">
+											<span
+												class="block text-xs text-muted">
 												{{
 													c.plans > 1
-														? $t("exchanges.fixed.made_in", c.plans)
+														? $t(
+																"exchanges.fixed.made_in",
+																c.plans
+															)
 														: c.lowest.planName
 												}}
 											</span>
@@ -351,7 +388,9 @@
 								size="sm"
 								type="error"
 								:aria-label="
-									$t('exchanges.fixed.remove', { ticker: row.ticker })
+									$t('exchanges.fixed.remove', {
+										ticker: row.ticker,
+									})
 								"
 								@click="remove(row.ticker)">
 								<template #icon><ClearSharp /></template>
@@ -367,7 +406,9 @@
 							{{ row.buy === null ? "—" : formatNumber(row.buy) }}
 						</td>
 						<td class="text-right tabular-nums">
-							{{ row.sell === null ? "—" : formatNumber(row.sell) }}
+							{{
+								row.sell === null ? "—" : formatNumber(row.sell)
+							}}
 						</td>
 						<td :colspan="showCOGM ? 2 : 1">
 							{{ $t("exchanges.fixed.inherited") }}
@@ -398,7 +439,10 @@
 				:aria-label="$t('exchanges.fixed.add_select')"
 				:placeholder="$t('exchanges.fixed.add_select')"
 				:options="addOptions" />
-			<PButton type="secondary" :disabled="!newTicker" @click="addSelected">
+			<PButton
+				type="secondary"
+				:disabled="!newTicker"
+				@click="addSelected">
 				<template #icon><AddSharp /></template>
 				{{ $t("exchanges.fixed.add") }}
 			</PButton>

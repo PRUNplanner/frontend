@@ -220,10 +220,10 @@ export function createPriceBook(
 		materialTicker: string,
 		type: PriceType
 	): { price: number; source: IPriceSource } {
-		const result = (
-			price: number,
-			source: Omit<IPriceSource, "zero">
-		) => ({ price, source: { ...source, zero: price === 0 } });
+		const result = (price: number, source: Omit<IPriceSource, "zero">) => ({
+			price,
+			source: { ...source, zero: price === 0 },
+		});
 
 		try {
 			if (getCXData) cxData ??= getCXData();
@@ -362,7 +362,13 @@ export function explainPrice(
 				)
 			: undefined;
 		return rule
-			? { level, matched: true, value: rule.value, exchange: null, key: null }
+			? {
+					level,
+					matched: true,
+					value: rule.value,
+					exchange: null,
+					key: null,
+				}
 			: { level, ...none };
 	};
 

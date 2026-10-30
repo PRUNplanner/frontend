@@ -37,8 +37,7 @@
 	const isThrottled: Ref<boolean> = ref(false);
 
 	// the backend's detail, or "error" for any failure but a 429
-	const requestResponse: Ref<UserResponseDetail | "error" | null> =
-		ref(null);
+	const requestResponse: Ref<UserResponseDetail | "error" | null> = ref(null);
 
 	// the request's own schema, so the button never sends an invalid email
 	const canSend = computed(
@@ -105,7 +104,8 @@
 			</PFormItem>
 		</div>
 		<div :class="landingField">
-			<PFormItem :label="t('account.components.password_reset.form.code')">
+			<PFormItem
+				:label="t('account.components.password_reset.form.code')">
 				<PInput
 					v-model:value="inputCode"
 					autocomplete="one-time-code"

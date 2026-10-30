@@ -49,7 +49,9 @@
 					class="inline-flex items-center justify-center size-6 -my-0.5 text-negative"
 					data-testid="planet-full">
 					<BlockSharp class="size-4" aria-hidden="true" />
-					<span class="sr-only">{{ t("planet_search.plots.full") }}</span>
+					<span class="sr-only">{{
+						t("planet_search.plots.full")
+					}}</span>
 				</span>
 			</template>
 			{{ tooltip }}

@@ -74,7 +74,11 @@
 						<span
 							v-if="viewCount !== undefined"
 							class="shrink-0 flex items-center gap-1 px-1.75 rounded-full bg-positive/15 text-positive text-xs"
-							:title="$t('sharing.buttons.views', { count: viewCount })">
+							:title="
+								$t('sharing.buttons.views', {
+									count: viewCount,
+								})
+							">
 							<PIcon :size="12"><RemoveRedEyeSharp /></PIcon>
 							{{ viewCount }}
 						</span>
@@ -157,7 +161,9 @@
 							empire: e.empireName,
 						})
 					"
-					@update:checked="$emit('toggle', row.planUuid, e.empireUuid)" />
+					@update:checked="
+						$emit('toggle', row.planUuid, e.empireUuid)
+					" />
 			</div>
 		</td>
 	</tr>

@@ -79,7 +79,9 @@ describe("ChainTargets", () => {
 	});
 
 	it("steps by 5 between 20 and 100", async () => {
-		const { wrapper, updates } = await mountTargets([{ ticker: "DW", perDay: 30 }]);
+		const { wrapper, updates } = await mountTargets([
+			{ ticker: "DW", perDay: 30 },
+		]);
 		await button(wrapper, "more").trigger("click");
 		expect(updates.at(-1)![0].perDay).toBe(35);
 		await button(wrapper, "less").trigger("click");

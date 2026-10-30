@@ -231,8 +231,12 @@
 				.map((c) => c.building)
 				.join(", ");
 			return [
-				...(made ? [t("plan.picker.uses_made", { tickers: made })] : []),
-				...(feeds ? [t("plan.picker.feeds", { buildings: feeds })] : []),
+				...(made
+					? [t("plan.picker.uses_made", { tickers: made })]
+					: []),
+				...(feeds
+					? [t("plan.picker.feeds", { buildings: feeds })]
+					: []),
 				...(row.current
 					? [t("plan.picker.current")]
 					: row.inPlan
@@ -262,7 +266,9 @@
 		<header
 			class="flex flex-wrap items-center gap-2 px-3 py-2 border-b border-line">
 			<span class="text-sm font-medium text-ink-strong">{{ title }}</span>
-			<span v-if="subtitle" class="text-xs text-muted">{{ subtitle }}</span>
+			<span v-if="subtitle" class="text-xs text-muted">{{
+				subtitle
+			}}</span>
 			<span class="grow" />
 			<PSegmented
 				v-if="hasInsights"
@@ -290,15 +296,17 @@
 			</PIcon>
 			<span>{{ noteText }}</span>
 		</div>
-		<div
-			:class="grid"
-			class="px-3 py-1 text-xs font-medium text-muted">
+		<div :class="grid" class="px-3 py-1 text-xs font-medium text-muted">
 			<span>{{ t("plan.picker.columns.makes") }}</span>
 			<span>{{ t("plan.picker.columns.from") }}</span>
-			<span class="text-right">{{ t("plan.picker.columns.runtime") }}</span>
+			<span class="text-right">{{
+				t("plan.picker.columns.runtime")
+			}}</span>
 			<span class="text-right">{{ t("plan.picker.columns.daily") }}</span>
 			<span class="text-right">{{ t("plan.picker.columns.area") }}</span>
-			<span class="text-right">{{ t("plan.picker.columns.payback") }}</span>
+			<span class="text-right">{{
+				t("plan.picker.columns.payback")
+			}}</span>
 			<span class="text-right">
 				<template v-if="hasInsights">
 					{{ t("plan.picker.columns.plans") }}
@@ -366,7 +374,9 @@
 						{{ notes[i] }}
 					</span>
 				</span>
-				<span class="text-right text-sm text-ink text-nowrap" data-runtime>
+				<span
+					class="text-right text-sm text-ink text-nowrap"
+					data-runtime>
 					{{ humanizeTimeMs(row.recipe.time_ms) }}
 				</span>
 				<span class="text-right text-sm leading-tight">
@@ -396,7 +406,10 @@
 					<template v-if="hasInsights">
 						{{
 							plansHere(row.recipe.recipe_id) !== undefined
-								? formatPercent(plansHere(row.recipe.recipe_id)!, 0)
+								? formatPercent(
+										plansHere(row.recipe.recipe_id)!,
+										0
+									)
 								: t("plan.picker.below_threshold")
 						}}
 					</template>

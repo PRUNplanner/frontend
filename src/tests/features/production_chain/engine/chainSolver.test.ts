@@ -92,8 +92,10 @@ describe("solveChain", () => {
 	it("defaults to single-output recipes (AC 5)", () => {
 		const fe = defaultRecipe(ctx, "FE", 1)!;
 		expect(fe.startsWith("AML")).toBe(false);
-		expect(ctx.recipesByOutput.get("FE")!.find((r) => r.recipe_id === fe)!
-			.outputs.length).toBe(1);
+		expect(
+			ctx.recipesByOutput.get("FE")!.find((r) => r.recipe_id === fe)!
+				.outputs.length
+		).toBe(1);
 
 		const c = defaultRecipe(ctx, "C", 1);
 		// inputs bought: the chain cost is the local cost the default uses
@@ -115,14 +117,20 @@ describe("solveChain", () => {
 		expect(buy.rows.H2O.source).toBe("buy");
 		expect(buy.rows.H2O.buildings).toBe(0);
 
-		const ext = solveChain(chainInput([["DW", 100]], { rawSource: "extract" }), ctx);
+		const ext = solveChain(
+			chainInput([["DW", 100]], { rawSource: "extract" }),
+			ctx
+		);
 		const h2o = ext.rows.H2O;
 		const typical = ctx.extraction!.get("H2O")!.typical;
 		expect(h2o.source).toBe("extract");
 		expect(h2o.typicalSite).toBe(true);
 		expect(h2o.site).toEqual(typical);
 		expect(h2o.buildingTicker).toBe(typical.buildingTicker);
-		expect(h2o.buildings).toBeCloseTo(h2o.perDay / typical.dailyExtraction, 1);
+		expect(h2o.buildings).toBeCloseTo(
+			h2o.perDay / typical.dailyExtraction,
+			1
+		);
 
 		const one = solveChain(
 			chainInput([["DW", 100]], { source: { H2O: "extract" } }),
@@ -160,8 +168,10 @@ describe("solveChain", () => {
 			["CL", 100],
 		];
 		const chp = (mode: "cover" | "sell") =>
-			solveChain(chainInput(targets, { byproducts: mode }), ctx)
-				.buildingTypes.find((b) => b.ticker === "CHP")!.exact;
+			solveChain(
+				chainInput(targets, { byproducts: mode }),
+				ctx
+			).buildingTypes.find((b) => b.ticker === "CHP")!.exact;
 		expect(chp("cover")).toBeLessThan(chp("sell"));
 
 		const cover = solveChain(chainInput(targets), ctx);
@@ -169,7 +179,10 @@ describe("solveChain", () => {
 		expect(na.produced).toBeCloseTo(na.used + na.sold, 6);
 		expect(na.used).toBeGreaterThan(0);
 
-		const sell = solveChain(chainInput(targets, { byproducts: "sell" }), ctx);
+		const sell = solveChain(
+			chainInput(targets, { byproducts: "sell" }),
+			ctx
+		);
 		expect(sell.byproducts.every((b) => b.used === 0)).toBe(true);
 		expect(sell.totals.byproductsValue).toBeGreaterThan(0);
 	});
@@ -183,7 +196,8 @@ describe("solveChain", () => {
 			]),
 			ctx
 		);
-		for (const t of r.order) expect(r.rows[t].unitCost).toBeGreaterThanOrEqual(0);
+		for (const t of r.order)
+			expect(r.rows[t].unitCost).toBeGreaterThanOrEqual(0);
 		const parts = r.rows.CL.costParts!;
 		expect(parts.share).toBeGreaterThan(0);
 		expect(parts.share).toBeLessThan(1);
@@ -201,7 +215,9 @@ describe("solveChain", () => {
 			expect(r.rows[t].source).toBe("buy");
 			expect(r.rows[t].market!.level).not.toBeNull();
 		}
-		expect(r.warnings.cheaper.length + r.warnings.thin.length).toBeGreaterThan(0);
+		expect(
+			r.warnings.cheaper.length + r.warnings.thin.length
+		).toBeGreaterThan(0);
 
 		// buying the cheaper ones clears that warning
 		const source = Object.fromEntries(
@@ -222,9 +238,15 @@ describe("solveChain", () => {
 			ctx
 		);
 		const t = r.totals;
-		expect(t.profit).toBeCloseTo(t.outputValue - t.bought - t.upkeep - t.wear, 6);
+		expect(t.profit).toBeCloseTo(
+			t.outputValue - t.bought - t.upkeep - t.wear,
+			6
+		);
 		expect(t.wear).toBeCloseTo(t.construction / 180, 6);
-		expect(t.outputValue).toBeCloseTo(t.targetsValue + t.byproductsValue, 6);
+		expect(t.outputValue).toBeCloseTo(
+			t.targetsValue + t.byproductsValue,
+			6
+		);
 		const bought = r.order
 			.map((m) => r.rows[m])
 			.filter((row) => row.source === "buy");
@@ -238,12 +260,21 @@ describe("solveChain", () => {
 	});
 
 	it("efficiency scales buildings", () => {
-		const full = solveChain(chainInput([["RAT", 100]], { recipeId: { RAT: RAT_NUT } }), ctx);
-		const half = solveChain(
-			chainInput([["RAT", 100]], { recipeId: { RAT: RAT_NUT }, efficiency: 50 }),
+		const full = solveChain(
+			chainInput([["RAT", 100]], { recipeId: { RAT: RAT_NUT } }),
 			ctx
 		);
-		expect(half.rows.RAT.buildings).toBeCloseTo(full.rows.RAT.buildings * 2, 6);
+		const half = solveChain(
+			chainInput([["RAT", 100]], {
+				recipeId: { RAT: RAT_NUT },
+				efficiency: 50,
+			}),
+			ctx
+		);
+		expect(half.rows.RAT.buildings).toBeCloseTo(
+			full.rows.RAT.buildings * 2,
+			6
+		);
 	});
 
 	it("never buys a target and ignores invalid overrides", () => {

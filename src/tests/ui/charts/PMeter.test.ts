@@ -7,7 +7,11 @@ async function mountMeter(value: number, max: number) {
 	const { wrapper } = await mountComponent(
 		PMeter,
 		{ value, max, label: "Area" },
-		{ messages: { common: { ui: { meter: { used: "{label} {pct} % used" } } } } }
+		{
+			messages: {
+				common: { ui: { meter: { used: "{label} {pct} % used" } } },
+			},
+		}
 	);
 	const fill = wrapper.find("[role=img] > div");
 	return { meter: wrapper.find("[role=img]"), fill };

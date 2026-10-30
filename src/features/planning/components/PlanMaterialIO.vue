@@ -140,9 +140,7 @@
 		if (!props.checks) return undefined;
 		const { red, amber } = countLevels([...props.checks.values()]);
 		const parts = [
-			...(red
-				? [t("cx.market_flags.summary.red", { n: red }, red)]
-				: []),
+			...(red ? [t("cx.market_flags.summary.red", { n: red }, red)] : []),
 			...(amber
 				? [t("cx.market_flags.summary.amber", { n: amber }, amber)]
 				: []),
@@ -231,7 +229,10 @@
 			})
 		}}
 	</p>
-	<p v-if="summary" class="px-3 pt-2 text-sm text-muted-strong" data-market-summary>
+	<p
+		v-if="summary"
+		class="px-3 pt-2 text-sm text-muted-strong"
+		data-market-summary>
 		{{ summary }}
 		<button
 			type="button"

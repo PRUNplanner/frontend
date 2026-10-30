@@ -10,13 +10,17 @@ describe("PButtonGroup", () => {
 			slots: { default: "<button>A</button><button>B</button>" },
 		});
 
-		expect(wrapper.attributes("class")).toContain(buttonGroupConfig.horizontal);
+		expect(wrapper.attributes("class")).toContain(
+			buttonGroupConfig.horizontal
+		);
 		expect(wrapper.findAll("button")).toHaveLength(2);
 	});
 
 	it("stacks them when vertical", () => {
 		const wrapper = mount(PButtonGroup, { props: { vertical: true } });
 
-		expect(wrapper.attributes("class")).toContain(buttonGroupConfig.vertical);
+		expect(wrapper.attributes("class")).toContain(
+			buttonGroupConfig.vertical
+		);
 	});
 });

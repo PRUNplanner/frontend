@@ -41,7 +41,6 @@
 
 	const { t } = useI18n();
 
-
 	// the Exchanges scope whose rule sets the price; none without a CX
 	function exchangesLink(s: IPriceSource): string | undefined {
 		if (!cxUuid) return undefined;
@@ -121,7 +120,9 @@
 						{{ $t("plan.tools.cogm.table.materials") }}
 					</td>
 					<td>{{ $t("plan.tools.cogm.table.input_total") }}</td>
-					<td colspan="2" class="whitespace-nowrap text-end font-bold">
+					<td
+						colspan="2"
+						class="whitespace-nowrap text-end font-bold">
 						{{ formatNumber(data.inputTotal) }}
 						<span class="pl-1 font-light text-muted"> ȼ </span>
 					</td>
@@ -133,9 +134,7 @@
 						{{ $t("plan.tools.cogm.table.cost_total_unit") }}
 					</td>
 				</tr>
-				<tr
-					v-for="input in inputs"
-					:key="`INPUT#${input.ticker}`">
+				<tr v-for="input in inputs" :key="`INPUT#${input.ticker}`">
 					<td>
 						<div class="flex flex-wrap items-center gap-2">
 							<MaterialTile
@@ -149,7 +148,9 @@
 								:data-source="input.ticker">
 								<PTag
 									size="sm"
-									:type="input.noPrice ? 'warning' : 'secondary'">
+									:type="
+										input.noPrice ? 'warning' : 'secondary'
+									">
 									<span
 										v-if="
 											input.source.exchange &&

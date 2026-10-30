@@ -104,9 +104,10 @@ describe("useDB composable", () => {
 
 	it("getLoaded() reads the cache and throws before preload", async () => {
 		fakeStore.getAll.mockResolvedValue([{ id: "1", name: "Alpha" }]);
-		const { preload, getLoaded } = useDB<TestItem, "id">(
-			{ ...fakeStore, storeName: "test" } as any
-		);
+		const { preload, getLoaded } = useDB<TestItem, "id">({
+			...fakeStore,
+			storeName: "test",
+		} as any);
 
 		expect(() => getLoaded("1")).toThrowError("store 'test' is not loaded");
 

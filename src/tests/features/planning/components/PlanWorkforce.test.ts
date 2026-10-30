@@ -210,11 +210,17 @@ describe("PlanWorkforce", () => {
 		const full = await mountWorkforce({
 			workforceData: {
 				...WORKFORCE,
-				settler: wf("settler", { required: 200, capacity: 200, left: 0 }),
+				settler: wf("settler", {
+					required: 200,
+					capacity: 200,
+					left: 0,
+				}),
 			},
 		});
 		expect(bedsFree(full.wrapper, 1).text()).toBe("0 free");
-		expect(bedsFree(full.wrapper, 1).attributes("data-short")).toBe("false");
+		expect(bedsFree(full.wrapper, 1).attributes("data-short")).toBe(
+			"false"
+		);
 	});
 
 	it("shows each workforce's luxury tickers", async () => {

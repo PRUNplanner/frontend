@@ -98,7 +98,11 @@ describe("plan check market check", () => {
 				{ ...input, recipeOptions: false },
 				priced
 			);
-			marketCheck(result.materialio, priced.prices, getExchangeTickerLoaded);
+			marketCheck(
+				result.materialio,
+				priced.prices,
+				getExchangeTickerLoaded
+			);
 			realisticPlan(input, priced, getExchangeTickerLoaded);
 		});
 	}

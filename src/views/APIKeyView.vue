@@ -213,7 +213,9 @@
 					@click="useInBuilder">
 					{{ $t("api_keys.create.buttons.use_in_builder") }}
 				</PButton>
-				<PButton class="w-full sm:w-auto sm:grow" @click="closeCreation">
+				<PButton
+					class="w-full sm:w-auto sm:grow"
+					@click="closeCreation">
 					{{ $t("api_keys.create.buttons.saved") }}
 				</PButton>
 			</div>
@@ -277,7 +279,8 @@
 							{{ $t("api_keys.manage.title") }}
 						</h2>
 						<div class="flex flex-row gap-3">
-							<PButton @click="showCreateModal = !showCreateModal">
+							<PButton
+								@click="showCreateModal = !showCreateModal">
 								{{ $t("api_keys.manage.buttons.new_apikey") }}
 							</PButton>
 							<PButton
@@ -295,22 +298,40 @@
 								<thead>
 									<tr>
 										<th>
-											{{ $t("api_keys.manage.table.apikey_name") }}
+											{{
+												$t(
+													"api_keys.manage.table.apikey_name"
+												)
+											}}
 										</th>
 										<th>
-											{{ $t("api_keys.manage.table.apikey_prefix") }}
+											{{
+												$t(
+													"api_keys.manage.table.apikey_prefix"
+												)
+											}}
 										</th>
 										<th>
-											{{ $t("api_keys.manage.table.apikey_created") }}
+											{{
+												$t(
+													"api_keys.manage.table.apikey_created"
+												)
+											}}
 										</th>
 										<th>
-											{{ $t("api_keys.manage.table.apikey_lastused") }}
+											{{
+												$t(
+													"api_keys.manage.table.apikey_lastused"
+												)
+											}}
 										</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="apiKey in apiKeyData" :key="apiKey.id">
+									<tr
+										v-for="apiKey in apiKeyData"
+										:key="apiKey.id">
 										<td class="font-bold">
 											{{ apiKey.name }}
 										</td>
@@ -322,21 +343,35 @@
 										</td>
 										<td>
 											<span v-if="apiKey.last_used">
-												{{ relativeFromDate(apiKey.last_used) }}
+												{{
+													relativeFromDate(
+														apiKey.last_used
+													)
+												}}
 											</span>
 											<PTooltip v-else>
 												<template #trigger>
 													<span class="text-muted">
-														{{ $t("api_keys.manage.never") }}
+														{{
+															$t(
+																"api_keys.manage.never"
+															)
+														}}
 													</span>
 												</template>
-												{{ $t("api_keys.manage.last_used_hint") }}
+												{{
+													$t(
+														"api_keys.manage.last_used_hint"
+													)
+												}}
 											</PTooltip>
 										</td>
 										<td class="flex justify-end">
 											<PButton
 												type="error"
-												:loading="apiKey.id === inDeletionId"
+												:loading="
+													apiKey.id === inDeletionId
+												"
 												@click="revokeKey(apiKey)">
 												{{
 													$t(
@@ -373,29 +408,55 @@
 								<dl
 									class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
 									<dt class="text-muted">
-										{{ $t("api_keys.manage.table.apikey_prefix") }}
+										{{
+											$t(
+												"api_keys.manage.table.apikey_prefix"
+											)
+										}}
 									</dt>
-									<dd class="font-mono">{{ apiKey.prefix }}</dd>
+									<dd class="font-mono">
+										{{ apiKey.prefix }}
+									</dd>
 									<dt class="text-muted">
-										{{ $t("api_keys.manage.table.apikey_created") }}
+										{{
+											$t(
+												"api_keys.manage.table.apikey_created"
+											)
+										}}
 									</dt>
 									<dd class="font-mono">
 										{{ formatDate(apiKey.created) }}
 									</dd>
 									<dt class="text-muted">
-										{{ $t("api_keys.manage.table.apikey_lastused") }}
+										{{
+											$t(
+												"api_keys.manage.table.apikey_lastused"
+											)
+										}}
 									</dt>
 									<dd>
 										<span v-if="apiKey.last_used">
-											{{ relativeFromDate(apiKey.last_used) }}
+											{{
+												relativeFromDate(
+													apiKey.last_used
+												)
+											}}
 										</span>
 										<PTooltip v-else>
 											<template #trigger>
 												<span class="text-muted">
-													{{ $t("api_keys.manage.never") }}
+													{{
+														$t(
+															"api_keys.manage.never"
+														)
+													}}
 												</span>
 											</template>
-											{{ $t("api_keys.manage.last_used_hint") }}
+											{{
+												$t(
+													"api_keys.manage.last_used_hint"
+												)
+											}}
 										</PTooltip>
 									</dd>
 								</dl>

@@ -277,25 +277,23 @@
 							{{ $t("production_chains.base_picker.needs") }}
 						</PCheckbox>
 						<PCheckbox v-model:checked="cogcOnly">
-{{
-							$t("production_chains.base_picker.cogc")
-						}}
-</PCheckbox>
+							{{ $t("production_chains.base_picker.cogc") }}
+						</PCheckbox>
 						<PCheckbox v-if="farms" v-model:checked="fertileOnly">
-{{
-							$t("production_chains.base_picker.fertile")
-						}}
-</PCheckbox>
+							{{ $t("production_chains.base_picker.fertile") }}
+						</PCheckbox>
 						<PCheckbox v-model:checked="noExtras">
-{{
-							$t("production_chains.planet_picker.no_extras")
-						}}
-</PCheckbox>
+							{{
+								$t("production_chains.planet_picker.no_extras")
+							}}
+						</PCheckbox>
 						<PCheckbox v-model:checked="lmOnly">
-{{
-							$t("production_chains.planet_picker.local_market")
-						}}
-</PCheckbox>
+							{{
+								$t(
+									"production_chains.planet_picker.local_market"
+								)
+							}}
+						</PCheckbox>
 						<PCheckbox
 							v-model:checked="mineOnly"
 							data-testid="chain-base-picker-mine">

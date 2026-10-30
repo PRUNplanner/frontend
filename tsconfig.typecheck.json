@@ -1,11 +1,11 @@
 {
 	"extends": "./tsconfig.app.json",
 	"compilerOptions": {
-		"noEmit": true,
+		"noEmit": true
 	},
 	// unknown props and events on components fail the type check
 	"vueCompilerOptions": {
 		"checkUnknownProps": true,
-		"checkUnknownEvents": true,
-	},
+		"checkUnknownEvents": true
+	}
 }

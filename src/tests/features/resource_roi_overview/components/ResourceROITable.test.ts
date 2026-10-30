@@ -95,8 +95,7 @@ const filters = (wrapper: VueWrapper) =>
 const optionValues = (
 	wrapper: VueWrapper,
 	prop: "planetOptions" | "buildingOptions"
-) =>
-	(filters(wrapper).props(prop) as { value: string }[]).map((o) => o.value);
+) => (filters(wrapper).props(prop) as { value: string }[]).map((o) => o.value);
 
 /** planet and building per row */
 const shown = (wrapper: VueWrapper) =>
@@ -182,12 +181,7 @@ describe("ResourceROITable", () => {
 				.findAll(`td[data-col-key="${key}"]`)
 				.map((td) => td.find("span").classes("text-positive"));
 
-		expect(positive("dailyProfit")).toEqual([
-			true,
-			false,
-			false,
-			true,
-		]);
+		expect(positive("dailyProfit")).toEqual([true, false, false, true]);
 		expect(positive("planROI")).toEqual([true, false, false, true]);
 	});
 
@@ -196,7 +190,9 @@ describe("ResourceROITable", () => {
 		const widths = (key: string) =>
 			wrapper
 				.findAll(`td[data-col-key="${key}"]`)
-				.map((td) => td.find("[aria-hidden] > div").attributes("style"));
+				.map((td) =>
+					td.find("[aria-hidden] > div").attributes("style")
+				);
 
 		expect(widths("percentMaxDailyYield")[0]).toContain("width: 50%");
 		// profit 400, -50, 0, 120 against the column max 400
@@ -233,9 +229,7 @@ describe("ResourceROITable", () => {
 	it("highlights the planet active in the chart", async () => {
 		const { wrapper, setProps } = await mountTable();
 		const active = () =>
-			wrapper
-				.findAll("tbody tr")
-				.map((tr) => tr.classes("!bg-white/10"));
+			wrapper.findAll("tbody tr").map((tr) => tr.classes("!bg-white/10"));
 
 		expect(active()).toEqual([false, false, false, false]);
 		await setProps({ active: "Katoa-id#EXT" });
@@ -247,12 +241,20 @@ describe("ResourceROITable", () => {
 
 	it("hands its filtered rows to the chart", async () => {
 		const { wrapper } = await mountTable();
-		expect(wrapper.findComponent(ResourceROITable).emitted("filtered")!.at(-1)![0]).toHaveLength(4);
+		expect(
+			wrapper
+				.findComponent(ResourceROITable)
+				.emitted("filtered")!
+				.at(-1)![0]
+		).toHaveLength(4);
 
 		await select(wrapper, 1, "EXT");
 		expect(
 			(
-				wrapper.findComponent(ResourceROITable).emitted("filtered")!.at(-1)![0] as IResourceROIResult[]
+				wrapper
+					.findComponent(ResourceROITable)
+					.emitted("filtered")!
+					.at(-1)![0] as IResourceROIResult[]
 			).map((r) => r.planetName)
 		).toEqual(["Katoa", "Promitor"]);
 	});

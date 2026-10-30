@@ -46,16 +46,25 @@
 	function tone(pct: number | null) {
 		const sign = changeSign(pct);
 		return sign > 0
-			? { pill: "text-positive bg-positive/14", color: "--color-positive" }
+			? {
+					pill: "text-positive bg-positive/14",
+					color: "--color-positive",
+				}
 			: sign < 0
-				? { pill: "text-negative bg-negative/14", color: "--color-negative" }
+				? {
+						pill: "text-negative bg-negative/14",
+						color: "--color-negative",
+					}
 				: { pill: "text-muted bg-white/5", color: "--color-muted" };
 	}
 
 	function spark(values: (number | null)[]) {
 		return sparklineLayout(values, W, H).lines.map((line) => {
 			const xs = line.split(" ").map((p) => p.split(",")[0]);
-			return { line, area: `${line} ${xs[xs.length - 1]},${H} ${xs[0]},${H}` };
+			return {
+				line,
+				area: `${line} ${xs[xs.length - 1]},${H} ${xs[0]},${H}`,
+			};
 		});
 	}
 

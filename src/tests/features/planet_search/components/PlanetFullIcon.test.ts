@@ -4,7 +4,11 @@ import { DOMWrapper } from "@vue/test-utils";
 import PlanetFullIcon from "@/features/planet_search/components/PlanetFullIcon.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
-function plots(total: number | null, used: number | null, ghostAllowed = false) {
+function plots(
+	total: number | null,
+	used: number | null,
+	ghostAllowed = false
+) {
 	return {
 		plots_total: total,
 		plots_used: used,

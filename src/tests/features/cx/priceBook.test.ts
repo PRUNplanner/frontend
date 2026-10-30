@@ -226,8 +226,8 @@ describe("getPriceSource", () => {
 	});
 
 	it("passes through a scaled book", () => {
-		expect(scaledPriceBook(book, "RAT", 2).getPriceSource("RAT", "BUY")).toBe(
-			book.getPriceSource("RAT", "BUY")
-		);
+		expect(
+			scaledPriceBook(book, "RAT", 2).getPriceSource("RAT", "BUY")
+		).toBe(book.getPriceSource("RAT", "BUY"));
 	});
 });

@@ -32,9 +32,7 @@ const shares = (
 	wrapper: Awaited<ReturnType<typeof mountDetail>>["wrapper"],
 	heading: string
 ) => {
-	const section = wrapper
-		.findAll("h3")
-		.find((h) => h.text() === heading)!
+	const section = wrapper.findAll("h3").find((h) => h.text() === heading)!
 		.element.parentElement!;
 	return [...section.querySelectorAll("li")].map((li) =>
 		Number(/([\d.]+) %/.exec(li.textContent!)![1])
@@ -63,7 +61,6 @@ describe("ChainStepDetail", () => {
 		// RAT 2.50 + DW 2.00 FP of 5 built: 0.50 spare
 		const spare = wrapper.find("[data-testid='chain-spare']");
 		expect(spare.text()).toBe("up to +20.0 RAT / day");
-		for (const s of shares(wrapper, "Takes"))
-			expect(s).toBeGreaterThan(0);
+		for (const s of shares(wrapper, "Takes")) expect(s).toBeGreaterThan(0);
 	});
 });

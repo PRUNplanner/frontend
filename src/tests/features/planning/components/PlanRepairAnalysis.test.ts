@@ -59,7 +59,9 @@ const site = (repairedDaysAgo: (number | undefined)[]) => ({
 		...repairedDaysAgo.map((days) => ({
 			BuildingTicker: "FRM",
 			BuildingLastRepair:
-				days === undefined ? undefined : new Date(Date.now() - days * DAY_MS),
+				days === undefined
+					? undefined
+					: new Date(Date.now() - days * DAY_MS),
 			Condition: 0.9,
 			ReclaimableMaterials: [],
 			RepairMaterials: [{ MaterialTicker: "BBH", MaterialAmount: 2 }],
@@ -94,7 +96,11 @@ async function mountAnalysis(options: IMountOptions = {}) {
 			name: "CX",
 			cx_data: {
 				ticker_empire: Object.entries(PRICES).map(
-					([ticker, value]) => ({ ticker, type: "BUY" as const, value })
+					([ticker, value]) => ({
+						ticker,
+						type: "BUY" as const,
+						value,
+					})
 				),
 			},
 		}),
@@ -138,8 +144,9 @@ async function mountAnalysis(options: IMountOptions = {}) {
 			expect(
 				mounted.wrapper.findAll("[data-testid=repair-building-row]")
 					.length +
-					mounted.wrapper.findAll("[data-testid=repair-building-card]")
-						.length
+					mounted.wrapper.findAll(
+						"[data-testid=repair-building-card]"
+					).length
 			).toBeGreaterThan(0)
 		);
 	return mounted;
@@ -156,8 +163,7 @@ const detail = (wrapper: VueWrapper) =>
 const detailField = (wrapper: VueWrapper) =>
 	detail(wrapper).findComponent(PInputNumber);
 const slider = (wrapper: VueWrapper) =>
-	detail(wrapper).find("input[type=range]")
-		.element as HTMLInputElement;
+	detail(wrapper).find("input[type=range]").element as HTMLInputElement;
 const pressedPreset = (wrapper: VueWrapper) =>
 	detail(wrapper)
 		.find("[role=group]")
@@ -194,9 +200,9 @@ describe("PlanRepairAnalysis", () => {
 	it("lists every type, most expensive repair first, at its best day", async () => {
 		const { wrapper } = await mountAnalysis();
 
-		expect(rows(wrapper).map((r) => r.find("button[aria-pressed] span").text())).toEqual(
-			["1× EXT", "2× FRM"]
-		);
+		expect(
+			rows(wrapper).map((r) => r.find("button[aria-pressed] span").text())
+		).toEqual(["1× EXT", "2× FRM"]);
 		expect(rowField(wrapper, "FRM").props("value")).toBe(FRM_BEST);
 		// the first type is selected
 		expect(detail(wrapper).props("building").ticker).toBe("EXT");
@@ -330,9 +336,9 @@ describe("PlanRepairAnalysis", () => {
 		wrapper.unmount();
 
 		expect(
-			vi.mocked(trackEvent).mock.calls.map(
-				(c) => (c[1] as { ticker: string }).ticker
-			)
+			vi
+				.mocked(trackEvent)
+				.mock.calls.map((c) => (c[1] as { ticker: string }).ticker)
 		).toEqual(["FRM", "EXT"]);
 	});
 
@@ -345,11 +351,14 @@ describe("PlanRepairAnalysis", () => {
 			.trigger("click");
 		wrapper.unmount();
 
-		expect(trackEvent).toHaveBeenCalledWith("repair_analysis:interval_set", {
-			source: "reset",
-			ticker: "all",
-			in_range: true,
-		});
+		expect(trackEvent).toHaveBeenCalledWith(
+			"repair_analysis:interval_set",
+			{
+				source: "reset",
+				ticker: "all",
+				in_range: true,
+			}
+		);
 	});
 
 	it("without FIO: a notice linking to the profile, no FIO parts", async () => {
@@ -399,9 +408,9 @@ describe("PlanRepairAnalysis", () => {
 
 		await selectRow(wrapper, "FRM");
 		expect(wrapper.text()).toContain("Your FRM on Montem (FIO)");
-		expect(wrapper.findAll("[data-testid=repair-fio-building]")).toHaveLength(
-			2
-		);
+		expect(
+			wrapper.findAll("[data-testid=repair-fio-building]")
+		).toHaveLength(2);
 		// FIO has 2 FRM, like the plan
 		expect(wrapper.find("[data-testid=repair-fio-count]").exists()).toBe(
 			false
@@ -428,7 +437,10 @@ describe("PlanRepairAnalysis", () => {
 	});
 
 	it("reads FIO repair dates restored from storage as strings", async () => {
-		const { wrapper } = await mountAnalysis({ fio: "site", restored: true });
+		const { wrapper } = await mountAnalysis({
+			fio: "site",
+			restored: true,
+		});
 
 		const frmRow = rows(wrapper).find((r) => r.text().includes("× FRM"))!;
 		expect(frmRow.findComponent(PTag).text()).toBe("Overdue 5 d");
@@ -454,9 +466,9 @@ describe("PlanRepairAnalysis", () => {
 		expect(wrapper.find("[data-testid=repair-fio-note]").exists()).toBe(
 			false
 		);
-		expect(wrapper.find("[data-testid=repair-fio-buildings]").exists()).toBe(
-			false
-		);
+		expect(
+			wrapper.find("[data-testid=repair-fio-buildings]").exists()
+		).toBe(false);
 		expect(wrapper.text()).not.toContain("Next due");
 		expect(wrapper.findAll(".repair-fio-marker")).toHaveLength(0);
 	});
@@ -483,9 +495,9 @@ describe("PlanRepairAnalysis", () => {
 		expect(wrapper.find("[data-testid=repair-stats]").exists()).toBe(false);
 
 		await wrapper.find("[aria-label='Back to buildings']").trigger("click");
-		expect(wrapper.findAll("[data-testid=repair-building-card]")).toHaveLength(
-			2
-		);
+		expect(
+			wrapper.findAll("[data-testid=repair-building-card]")
+		).toHaveLength(2);
 		expect(detail(wrapper).exists()).toBe(false);
 	});
 });

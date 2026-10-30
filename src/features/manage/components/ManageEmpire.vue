@@ -241,7 +241,9 @@
 		trackEvent("manage:empire_delete");
 
 		try {
-			await useQuery("DeleteEmpire", { empireUuid: empireUuid }).execute();
+			await useQuery("DeleteEmpire", {
+				empireUuid: empireUuid,
+			}).execute();
 			// forced reload of all Empires
 			await refetchEmpires();
 		} catch (err) {
@@ -306,8 +308,7 @@
 				: 'opacity-100'
 		"
 		class="transition-all duration-500 border-t border-b border-white/10">
-		<div
-			class="flex flex-col gap-3 py-3 w-full sm:w-1/2 sm:min-w-100">
+		<div class="flex flex-col gap-3 py-3 w-full sm:w-1/2 sm:min-w-100">
 			<div class="grow">
 				<PForm>
 					<PFormItem :label="t('management.empire.form.empire_name')">
@@ -359,42 +360,42 @@
 		striped
 		class="pt-3">
 		<template #cell-empire_name="{ row }">
-				<router-link
-					:to="`/empire/${row.uuid}`"
-					class="text-link-primary font-bold hover:underline">
-					{{ row.empire_name }}
-				</router-link>
+			<router-link
+				:to="`/empire/${row.uuid}`"
+				class="text-link-primary font-bold hover:underline">
+				{{ row.empire_name }}
+			</router-link>
 		</template>
 		<template #cell-empire_faction="{ row }">
-				{{ capitalizeString(row.empire_faction) }}
+			{{ capitalizeString(row.empire_faction) }}
 		</template>
 		<template #cell-permits="{ row }">
-				{{ row.empire_permits_used }} /
-				{{ row.empire_permits_total }}
+			{{ row.empire_permits_used }} /
+			{{ row.empire_permits_total }}
 		</template>
 		<template #cell-plans="{ row }">
-				{{ row.plans.length }}
+			{{ row.plans.length }}
 		</template>
 		<template #cell-cx="{ row }">
-				<div class="max-w-50">
-					<PSelect
-						:key="`${row.uuid}#${refEmpireCXMap[row.uuid]}`"
-						v-model:value="refEmpireCXMap[row.uuid]"
-						:aria-label="$t('management.empire.table.cx')"
-						:options="refCXOptions" />
-				</div>
+			<div class="max-w-50">
+				<PSelect
+					:key="`${row.uuid}#${refEmpireCXMap[row.uuid]}`"
+					v-model:value="refEmpireCXMap[row.uuid]"
+					:aria-label="$t('management.empire.table.cx')"
+					:options="refCXOptions" />
+			</div>
 		</template>
 		<template #cell-configuration="{ row }">
-				<div class="justify-end flex gap-x-3">
-					<PButton
-						:aria-label="$t('common.buttons.delete')"
-						size="sm"
-						type="error"
-						:loading="refIsDeleting === row.uuid"
-						@click="handleDeleteConfirm(row.uuid)">
-						<template #icon><ClearSharp /></template>
-					</PButton>
-				</div>
+			<div class="justify-end flex gap-x-3">
+				<PButton
+					:aria-label="$t('common.buttons.delete')"
+					size="sm"
+					type="error"
+					:loading="refIsDeleting === row.uuid"
+					@click="handleDeleteConfirm(row.uuid)">
+					<template #icon><ClearSharp /></template>
+				</PButton>
+			</div>
 		</template>
 		<template #empty>
 			<div class="flex flex-col gap-y-3">

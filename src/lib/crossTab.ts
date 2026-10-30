@@ -85,9 +85,8 @@ async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {
 	if (userId !== tokenUserId(useUserStore().refreshToken)) return;
 
 	// the query layer loads with the first logged-in page, not the shell
-	const { invalidate } = await import(
-		"@/lib/query_cache/queries/queries.util"
-	);
+	const { invalidate } =
+		await import("@/lib/query_cache/queries/queries.util");
 	await invalidate(...keys);
 	remoteChange.value = {
 		keys,
@@ -111,10 +110,7 @@ function getChannel(): BroadcastChannel | null {
  * @param {JSONValue[]} keys Invalidated key prefixes
  * @param {string[]} [uuids=[]] Plans, empires or CXs that changed
  */
-export function broadcastChange(
-	keys: JSONValue[],
-	uuids: string[] = []
-): void {
+export function broadcastChange(keys: JSONValue[], uuids: string[] = []): void {
 	const userId = tokenUserId(useUserStore().refreshToken);
 	if (userId === undefined) return;
 	getChannel()?.postMessage({

@@ -113,14 +113,13 @@
 					timestamps. This data is processed solely for the purposes
 					of debugging, monitoring service health, and preventing
 					unauthorized access. This information is not used for
-					marketing or profiling purposes.
-					If a request to our server fails or returns data the app
-					cannot read, your browser reports this to our server, which
-					adds it to these logs: the kind of error, the API address
-					with ids removed, the HTTP status, timings, the app version,
-					and random request and session ids that link the report to
-					the matching server log entries. Nothing you entered is
-					included.
+					marketing or profiling purposes. If a request to our server
+					fails or returns data the app cannot read, your browser
+					reports this to our server, which adds it to these logs: the
+					kind of error, the API address with ids removed, the HTTP
+					status, timings, the app version, and random request and
+					session ids that link the report to the matching server log
+					entries. Nothing you entered is included.
 				</p>
 				<p id="analytics" class="py-3">
 					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
@@ -128,26 +127,24 @@
 					PostHog is only loaded after you have given your consent
 					(Art. 6 (1) a GDPR, § 25 (1) TDDDG). Visitors without an
 					account are asked in a small notice on their first visit;
-					logged-in users are asked once after logging in, unless
-					they already chose in this browser. With your
-					consent we collect usage events (pages visited, clicks,
-					navigation flows and actions in the tool), error reports
-					and performance metrics, session recordings of a sample of
-					visits (everything you type is masked) and your answers to
-					optional in-app surveys. Before you log in, this data is
-					not linked to any person; only after logging in is it
-					linked to your account id. It is used to improve
-					usability, fix bugs and analyze feature adoption. Consent
-					is voluntary. You can withdraw it at any time, in your
-					Profile under Usage analytics or, while logged out, with
-					the Analytics link in the page footer. Either stops the
-					collection and removes the PostHog data stored in your
-					browser. If your browser sends
-					a Do-Not-Track or Global Privacy Control signal, PostHog is
-					never loaded and you are not asked.
-					With your consent, the session id PostHog assigns is also
-					sent with requests to our server and appears in its logs, so
-					an error can be matched to its session recording.
+					logged-in users are asked once after logging in, unless they
+					already chose in this browser. With your consent we collect
+					usage events (pages visited, clicks, navigation flows and
+					actions in the tool), error reports and performance metrics,
+					session recordings of a sample of visits (everything you
+					type is masked) and your answers to optional in-app surveys.
+					Before you log in, this data is not linked to any person;
+					only after logging in is it linked to your account id. It is
+					used to improve usability, fix bugs and analyze feature
+					adoption. Consent is voluntary. You can withdraw it at any
+					time, in your Profile under Usage analytics or, while logged
+					out, with the Analytics link in the page footer. Either
+					stops the collection and removes the PostHog data stored in
+					your browser. If your browser sends a Do-Not-Track or Global
+					Privacy Control signal, PostHog is never loaded and you are
+					not asked. With your consent, the session id PostHog assigns
+					is also sent with requests to our server and appears in its
+					logs, so an error can be matched to its session recording.
 				</p>
 				<p class="py-3">
 					In the event that you opt to provide your email address for

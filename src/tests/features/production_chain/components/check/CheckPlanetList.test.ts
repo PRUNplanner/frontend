@@ -78,24 +78,30 @@ describe("CheckPlanetList", () => {
 		const target = ok[0].planet;
 		wrapper
 			.findAllComponents(PInput)
-			.find((c) => c.attributes("data-testid") === "check-planets-search")!
+			.find(
+				(c) => c.attributes("data-testid") === "check-planets-search"
+			)!
 			.vm.$emit("update:value", target.planet_natural_id);
 		await wrapper.vm.$nextTick();
 		expect(rows().length).toBe(1);
-		expect(rows()[0].find("[data-testid='check-planets-name']").text()).toBe(
-			planetDisplayName(target.planet_natural_id, target.planet_name)
-		);
+		expect(
+			rows()[0].find("[data-testid='check-planets-name']").text()
+		).toBe(planetDisplayName(target.planet_natural_id, target.planet_name));
 	});
 
 	it("sorts by payback and name", async () => {
 		const { body, rows, wrapper } = await mountList();
-		await body.find("[data-testid='check-planets-sort-payback']").trigger("click");
+		await body
+			.find("[data-testid='check-planets-sort-payback']")
+			.trigger("click");
 		const first = rows()[0].findAll("td")[0].text();
 		const best = [...finding.options].sort(
 			(a, b) => (a.payback ?? Infinity) - (b.payback ?? Infinity)
 		)[0];
 		expect(Number(first)).toBe(finding.options.indexOf(best) + 1);
-		await body.find("[data-testid='check-planets-sort-name']").trigger("click");
+		await body
+			.find("[data-testid='check-planets-sort-name']")
+			.trigger("click");
 		await wrapper.vm.$nextTick();
 		const names = rows().map((r) =>
 			r.find("[data-testid='check-planets-name']").text()
@@ -105,9 +111,13 @@ describe("CheckPlanetList", () => {
 
 	it("uses a planet and closes (AC 10)", async () => {
 		const { body, component } = await mountList();
-		await body.findAll("[data-testid='check-planets-use']")[1].trigger("click");
+		await body
+			.findAll("[data-testid='check-planets-use']")[1]
+			.trigger("click");
 		const id = component.emitted("use")![0][0];
-		expect(finding.options.map((o) => o.planet.planet_natural_id)).toContain(id);
+		expect(
+			finding.options.map((o) => o.planet.planet_natural_id)
+		).toContain(id);
 		expect(component.emitted("update:show")).toEqual([[false]]);
 	});
 });
@@ -127,7 +137,11 @@ describe("CheckPlanetList more", () => {
 			defaultCX: "AI1",
 		});
 		const body = new DOMWrapper(document.body);
-		return { wrapper, body, rows: () => body.findAll("[data-testid='check-planets-row']") };
+		return {
+			wrapper,
+			body,
+			rows: () => body.findAll("[data-testid='check-planets-row']"),
+		};
 	}
 
 	it("filters by program, extras and jumps, sorts every way", async () => {
@@ -138,7 +152,9 @@ describe("CheckPlanetList more", () => {
 				.find((c) => c.attributes("data-testid") === id)!;
 		box("check-planets-program").vm.$emit("update:checked", true);
 		await wrapper.vm.$nextTick();
-		expect(rows().length).toBe(finding.options.filter((o) => o.runsProgram).length);
+		expect(rows().length).toBe(
+			finding.options.filter((o) => o.runsProgram).length
+		);
 		box("check-planets-program").vm.$emit("update:checked", false);
 		box("check-planets-extras").vm.$emit("update:checked", true);
 		await wrapper.vm.$nextTick();
@@ -147,7 +163,9 @@ describe("CheckPlanetList more", () => {
 
 		const jumps = wrapper
 			.findAllComponents(PSelect)
-			.find((c) => c.attributes("data-testid") === "check-planets-jumps")!;
+			.find(
+				(c) => c.attributes("data-testid") === "check-planets-jumps"
+			)!;
 		jumps.vm.$emit("update:value", 0);
 		await wrapper.vm.$nextTick();
 		expect(rows().length).toBeLessThan(finding.options.length);
@@ -156,7 +174,9 @@ describe("CheckPlanetList more", () => {
 		expect(rows().length).toBe(Math.min(200, finding.options.length));
 
 		for (const col of ["jumps", "plots", "gain", "gain"]) {
-			await body.find(`[data-testid='check-planets-sort-${col}']`).trigger("click");
+			await body
+				.find(`[data-testid='check-planets-sort-${col}']`)
+				.trigger("click");
 			expect(rows().length).toBe(Math.min(200, finding.options.length));
 		}
 	});
@@ -166,7 +186,8 @@ describe("CheckPlanetList more", () => {
 		const picked = fixtureCheck({
 			picks: { [finding.step.key]: last.planet.planet_natural_id },
 		}).findings.find(
-			(f): f is ICheckLocationFinding => f.kind === "location" && f.base === "C"
+			(f): f is ICheckLocationFinding =>
+				f.kind === "location" && f.base === "C"
 		)!;
 		const { body } = await mountWith(picked);
 		expect(body.text()).toContain("production_chains.check.planets.in_use");
@@ -175,7 +196,8 @@ describe("CheckPlanetList more", () => {
 	it("shows extraction rates", async () => {
 		const rigs = fixtureCheck({ plans: fixtureWithRigs() });
 		const rig = rigs.findings.find(
-			(f): f is ICheckLocationFinding => f.kind === "location" && f.step.extraction
+			(f): f is ICheckLocationFinding =>
+				f.kind === "location" && f.step.extraction
 		)!;
 		const { wrapper } = await mountComponent(CheckPlanetList, {
 			show: true,
@@ -191,9 +213,13 @@ describe("CheckPlanetList more", () => {
 			"[data-testid='check-planets-row']"
 		);
 		expect(rows.length).toBe(Math.min(200, rig.options.length));
-		expect(rows[0].findAll("td")[2].text()).toContain(`/ ${rig.step.building}`);
+		expect(rows[0].findAll("td")[2].text()).toContain(
+			`/ ${rig.step.building}`
+		);
 		if (rig.options.length > 200)
-			expect(wrapper.text()).toContain("production_chains.check.planets.cut");
+			expect(wrapper.text()).toContain(
+				"production_chains.check.planets.cut"
+			);
 	});
 
 	it("names the program for other steps", async () => {

@@ -12,7 +12,9 @@ import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 // Types & Interfaces
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 
-async function mountPanel(settings: BaseROISettings = defaultBaseROISettings()) {
+async function mountPanel(
+	settings: BaseROISettings = defaultBaseROISettings()
+) {
 	const updates: BaseROISettings[] = [];
 	const setups: unknown[] = [];
 	const { wrapper } = await mountComponent(BaseROISettingsPanel, {
@@ -28,10 +30,15 @@ async function mountPanel(settings: BaseROISettings = defaultBaseROISettings()) 
 }
 
 /** the select whose aria-label is the key */
-const select = (wrapper: Awaited<ReturnType<typeof mountPanel>>["wrapper"], key: string) =>
+const select = (
+	wrapper: Awaited<ReturnType<typeof mountPanel>>["wrapper"],
+	key: string
+) =>
 	wrapper
 		.findAllComponents(PSelect)
-		.find((s) => s.attributes("aria-label") === `base_roi.settings.${key}`)!;
+		.find(
+			(s) => s.attributes("aria-label") === `base_roi.settings.${key}`
+		)!;
 
 describe("BaseROISettingsPanel (criterion 3)", () => {
 	it("every control writes its setting", async () => {
@@ -62,7 +69,8 @@ describe("BaseROISettingsPanel (criterion 3)", () => {
 		logistics.vm.$emit("update:value", "manual");
 		expect(updates.at(-1)!.logistics).toBe("manual");
 
-		const [resources, recipes, negative] = wrapper.findAllComponents(PCheckbox);
+		const [resources, recipes, negative] =
+			wrapper.findAllComponents(PCheckbox);
 		resources.vm.$emit("update:checked", false);
 		expect(updates.at(-1)!.showResources).toBe(false);
 		recipes.vm.$emit("update:checked", false);

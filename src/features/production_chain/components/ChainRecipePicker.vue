@@ -49,7 +49,8 @@
 					? t("production_chains.recipe_picker.no_change")
 					: t("production_chains.recipe_picker.profit", {
 							value:
-								signed(o.deltaProfit) + money(Math.abs(o.deltaProfit)),
+								signed(o.deltaProfit) +
+								money(Math.abs(o.deltaProfit)),
 						}),
 			built:
 				o.deltaBuilt === 0
@@ -81,7 +82,9 @@
 			if (!open) return was && anchor?.focus();
 			await nextTick();
 			const all = buttons();
-			(all.find((b) => b.getAttribute("aria-current")) ?? all[0])?.focus();
+			(
+				all.find((b) => b.getAttribute("aria-current")) ?? all[0]
+			)?.focus();
 		},
 		{ immediate: true }
 	);
@@ -116,10 +119,15 @@
 		@clickoutside="show = false">
 		<div
 			role="dialog"
-			:aria-label="t('production_chains.recipe_picker.title', { ticker })">
-			<div class="flex justify-between gap-3 px-3 py-2 border-b border-line">
+			:aria-label="
+				t('production_chains.recipe_picker.title', { ticker })
+			">
+			<div
+				class="flex justify-between gap-3 px-3 py-2 border-b border-line">
 				<span class="font-bold">
-					{{ $t("production_chains.recipe_picker.title", { ticker }) }}
+					{{
+						$t("production_chains.recipe_picker.title", { ticker })
+					}}
 				</span>
 				<span class="text-xs text-muted">
 					{{
@@ -142,15 +150,27 @@
 						data-testid="chain-recipe-option"
 						@click="pick(o.recipe.recipe_id)">
 						<span class="min-w-0">
-							<ChainRecipeText :recipe="o.recipe" :ticker="ticker" />
+							<ChainRecipeText
+								:recipe="o.recipe"
+								:ticker="ticker" />
 							<span class="block text-xs text-muted">
 								{{ o.recipe.building_ticker }} ·
 								{{ hours(o.recipe.time_ms) }}
 								<template v-if="o.isDefault">
-									· {{ $t("production_chains.recipe_picker.default") }}
+									·
+									{{
+										$t(
+											"production_chains.recipe_picker.default"
+										)
+									}}
 								</template>
 								<template v-if="o.byproducts">
-									· {{ $t("production_chains.recipe_picker.byproducts") }}
+									·
+									{{
+										$t(
+											"production_chains.recipe_picker.byproducts"
+										)
+									}}
 								</template>
 							</span>
 						</span>
@@ -159,7 +179,9 @@
 							<span
 								v-if="o.inUse"
 								class="block text-xs text-muted">
-								{{ $t("production_chains.recipe_picker.in_use") }}
+								{{
+									$t("production_chains.recipe_picker.in_use")
+								}}
 							</span>
 							<span
 								v-else

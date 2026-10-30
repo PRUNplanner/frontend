@@ -184,7 +184,9 @@ describe("PlanVisitationFrequency", () => {
 		const { wrapper, setProps } = await mountTool();
 
 		await setProps({
-			materialIO: [io("RAT", -100, { totalWeight: -21, totalVolume: -10 })],
+			materialIO: [
+				io("RAT", -100, { totalWeight: -21, totalVolume: -10 }),
+			],
 		});
 
 		expect(storageTable(wrapper).import).toEqual(["21.00", "10.00"]);

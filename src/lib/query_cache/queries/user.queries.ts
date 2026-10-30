@@ -1,5 +1,9 @@
 import { i18n } from "@/lib/i18n";
-import { trackEvent, trackUser, reportError } from "@/lib/analytics/useAnalytics";
+import {
+	trackEvent,
+	trackUser,
+	reportError,
+} from "@/lib/analytics/useAnalytics";
 import { isApiError } from "@/lib/apiError";
 
 // Stores
@@ -215,9 +219,7 @@ export const userQueries = {
 
 			// handle locale
 			const userLocale = userStore.preferences.locale || "en_US";
-			userStore
-				.setLocale(userLocale, i18n.global)
-				.catch(reportError);
+			userStore.setLocale(userLocale, i18n.global).catch(reportError);
 
 			return prefs;
 		},

@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import {
+	describe,
+	it,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	vi,
+} from "vitest";
 import { DOMWrapper, flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";

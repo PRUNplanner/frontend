@@ -32,7 +32,9 @@ describe("PlanetPlots", () => {
 		const trigger = wrapper.find(".ptooltip");
 		expect(trigger.attributes("tabindex")).toBe("0");
 		expect(trigger.classes()).toContain("touch-target");
-		expect(wrapper.find("[data-testid='planet-plots']").attributes("tabindex")).toBeUndefined();
+		expect(
+			wrapper.find("[data-testid='planet-plots']").attributes("tabindex")
+		).toBeUndefined();
 	});
 
 	it("red Full without ghost sites", async () => {

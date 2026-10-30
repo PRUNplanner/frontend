@@ -168,10 +168,4 @@ export type IBaseROISeries = Record<
 
 /** where a calculation is; "error" when a request failed */
 export type BaseROIStep =
-	| "idle"
-	| "game"
-	| "planets"
-	| "recipes"
-	| "calculating"
-	| "done"
-	| "error";
+	"idle" | "game" | "planets" | "recipes" | "calculating" | "done" | "error";

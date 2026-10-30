@@ -106,7 +106,9 @@ export function chainInput(
 		recipeId: {},
 		planetId: {},
 		// no experts: the factors stay the planet's; setup tests set their own
-		bases: [{ id: "A", name: "", planetId: null, cogc: "auto", experts: {} }],
+		bases: [
+			{ id: "A", name: "", planetId: null, cogc: "auto", experts: {} },
+		],
 		baseOf: {},
 		...overrides,
 	};
@@ -196,7 +198,11 @@ export function planContextFor(planetId: string): IPlanContext {
 
 /** fertility −0.5, no program, H2O */
 export const BARREN = "GY-110c";
-const CHECK_TIERS: [WorkforceType, InfrastructureType, "pioneers" | "settlers" | "technicians" | "engineers" | "scientists"][] = [
+const CHECK_TIERS: [
+	WorkforceType,
+	InfrastructureType,
+	"pioneers" | "settlers" | "technicians" | "engineers" | "scientists",
+][] = [
 	["pioneer", "HB1", "pioneers"],
 	["settler", "HB2", "settlers"],
 	["technician", "HB3", "technicians"],
@@ -267,9 +273,7 @@ export function checkFromPlan(id: string, plan: Plan): ICheckPlan {
 	};
 }
 
-export function checkPlan(
-	...args: Parameters<typeof fixturePlan>
-): ICheckPlan {
+export function checkPlan(...args: Parameters<typeof fixturePlan>): ICheckPlan {
 	return checkFromPlan(args[0], fixturePlan(...args));
 }
 
@@ -281,9 +285,14 @@ export const GRN4 = "FRM#4xH2O=>4xGRN";
 
 export function fixtureEmpirePlans(dwRecipe = DW): Plan[] {
 	return [
-		fixturePlan("A", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
-			["FP", 4, dwRecipe],
-		]),
+		fixturePlan(
+			"A",
+			FOOD_PLANET,
+			"FOOD_INDUSTRIES",
+			"both",
+			{ Food_Industries: 5 },
+			[["FP", 4, dwRecipe]]
+		),
 		// runs Agriculture, the plan doesn't count it; no luxuries or experts
 		fixturePlan("B", FARM_PLANET, "---", "none", {}, [
 			["FRM", 3, GRN1],
@@ -291,14 +300,20 @@ export function fixtureEmpirePlans(dwRecipe = DW): Plan[] {
 		]),
 		// counts Agriculture, the barren planet runs nothing
 		fixturePlan("C", BARREN, "AGRICULTURE", "both", {}, [["FRM", 2, GRN4]]),
-		fixturePlan("D", FOOD_PLANET, "FOOD_INDUSTRIES", "both", { Food_Industries: 5 }, [
-			["FP", 2, RAT],
-		]),
+		fixturePlan(
+			"D",
+			FOOD_PLANET,
+			"FOOD_INDUSTRIES",
+			"both",
+			{ Food_Industries: 5 },
+			[["FP", 2, RAT]]
+		),
 		// carbon: in no chain of DW and RAT
-		fixturePlan("E", BARREN, "---", "both", {}, [["INC", 1, "INC#4xGRN=>4xC"]]),
+		fixturePlan("E", BARREN, "---", "both", {}, [
+			["INC", 1, "INC#4xGRN=>4xC"],
+		]),
 	];
 }
-
 
 export function fixtureEmpire(dwRecipe = DW): ICheckPlan[] {
 	return fixtureEmpirePlans(dwRecipe).map((p, i) =>

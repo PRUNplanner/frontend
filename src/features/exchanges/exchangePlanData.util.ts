@@ -128,7 +128,8 @@ export function calculateMaterialCOGMs(
 				r.recipe,
 				r.efficiency,
 				// positive costs, as the engine passes them
-				getMaterialIOTotalPrice(book, r.constructionMaterials, "BUY") * -1,
+				getMaterialIOTotalPrice(book, r.constructionMaterials, "BUY") *
+					-1,
 				getMaterialIOTotalPrice(book, r.workforceMaterials, "BUY") * -1,
 				book
 			);

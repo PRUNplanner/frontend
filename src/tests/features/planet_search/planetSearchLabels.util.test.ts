@@ -24,7 +24,10 @@ const messages: Record<string, unknown> = { planet_search: en, game };
 function t(key: string, params: Record<string, unknown> = {}): string {
 	const value = key
 		.split(".")
-		.reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], messages);
+		.reduce<unknown>(
+			(o, k) => (o as Record<string, unknown>)?.[k],
+			messages
+		);
 	if (typeof value !== "string") throw new Error(`missing ${key}`);
 	return value.replace(/\{(\w+)\}/g, (_, p) => String(params[p]));
 }
@@ -84,9 +87,9 @@ describe("planet search labels", () => {
 		const f = { ...defaultFilter(), fertile: true };
 		const [chip] = activeChips(f);
 		const base = { filter: f, count: 12 };
-		expect(
-			hintLabel({ kind: "chip", chip, ...base }, {}, t, refName)
-		).toBe('Remove "Fertile" → 12 planets');
+		expect(hintLabel({ kind: "chip", chip, ...base }, {}, t, refName)).toBe(
+			'Remove "Fertile" → 12 planets'
+		);
 		expect(hintLabel({ kind: "gaseous", ...base }, {}, t, refName)).toBe(
 			"Include gaseous planets → 12 planets"
 		);

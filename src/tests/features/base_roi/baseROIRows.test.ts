@@ -62,13 +62,18 @@ const mock = new AxiosMockAdapter(apiService.client);
 
 describe("baseROIRows", () => {
 	let gameData: IGameData;
-	let getExchange: (id: string) => ReturnType<
+	let getExchange: (
+		id: string
+	) => ReturnType<
 		ReturnType<typeof useExchangeData>["getExchangeTickerLoaded"]
 	>;
 	const ctxOn = (planet: Planet): IPlanContext => ({
 		...gameData,
 		planet,
-		prices: usePlanContext().createPrices(planet.planet_natural_id, undefined),
+		prices: usePlanContext().createPrices(
+			planet.planet_natural_id,
+			undefined
+		),
 	});
 
 	// criterion 5 settings
@@ -122,7 +127,9 @@ describe("baseROIRows", () => {
 	it("a recipe row equals Recipe ROI for the same recipe (criterion 5)", async () => {
 		const ctx = ctxOn(STANDARD_PLANET);
 		const tnp = optimalProduction.find((o) => o.ticker === "TNP")!;
-		const definition = ref(usePlan().createBlankDefinition("OT-580b", null));
+		const definition = ref(
+			usePlan().createBlankDefinition("OT-580b", null)
+		);
 		definition.value.plan_data.experts.forEach((e) => (e.amount = 5));
 		const recipeROI = await useROIOverview(
 			definition,
@@ -200,7 +207,9 @@ describe("baseROIRows", () => {
 		const zero = row(candidate, ctx, { ...plain, experts: 0 }).metrics;
 		expect(none).toBeLessThan(matching);
 		expect(zero.dailyProfit).toBeLessThan(matching);
-		expect(zero.breakEven).toBeCloseTo(zero.buildingCost / zero.dailyProfit);
+		expect(zero.breakEven).toBeCloseTo(
+			zero.buildingCost / zero.dailyProfit
+		);
 	});
 
 	it("workforce matches the engine's required workforce (criterion 15)", () => {
@@ -248,7 +257,9 @@ describe("baseROIRows", () => {
 
 	it("missing exchange data: no bid, ask or traded volume", () => {
 		const ctx = ctxOn(STANDARD_PLANET);
-		const candidate = recipeCandidates(gameData).find((c) => c.building === "TNP")!;
+		const candidate = recipeCandidates(gameData).find(
+			(c) => c.building === "TNP"
+		)!;
 		const input = toRowInput(
 			candidate,
 			calculateBase(candidate, ctx, plain, undefined),
@@ -257,7 +268,9 @@ describe("baseROIRows", () => {
 				throw new Error("no data");
 			}
 		);
-		expect(input.materials.every((m) => m.bid === 0 && m.ask === 0)).toBe(true);
+		expect(input.materials.every((m) => m.bid === 0 && m.ask === 0)).toBe(
+			true
+		);
 		expect(input.outputs.every((o) => o.traded === 0)).toBe(true);
 	});
 

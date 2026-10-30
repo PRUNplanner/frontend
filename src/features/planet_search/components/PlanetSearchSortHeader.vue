@@ -35,7 +35,12 @@
 	function click(e: MouseEvent) {
 		emit(
 			"sort",
-			applySortClick(props.sorts, props.sortKey, props.firstDir, e.shiftKey)
+			applySortClick(
+				props.sorts,
+				props.sortKey,
+				props.firstDir,
+				e.shiftKey
+			)
 		);
 	}
 </script>
@@ -56,7 +61,12 @@
 		<span
 			class="whitespace-nowrap"
 			:class="{ 'flex flex-row justify-end': truncate }">
-			<span :class="{ 'line-clamp-2 break-words whitespace-normal': truncate }">{{ label }}</span>
+			<span
+				:class="{
+					'line-clamp-2 break-words whitespace-normal': truncate,
+				}"
+				>{{ label }}</span
+			>
 			<span v-if="active" aria-hidden="true" class="shrink-0 ml-1">
 				{{ active.dir === "asc" ? "▲" : "▼"
 				}}<sup v-if="sorts.length > 1" class="text-xs">{{

@@ -699,23 +699,31 @@ describe("PlanView", () => {
 			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
 			await vi.waitFor(() =>
 				expect(
-					wrapper.findComponent({ name: "PlanProfitBreakdown" }).exists()
+					wrapper
+						.findComponent({ name: "PlanProfitBreakdown" })
+						.exists()
 				).toBe(true)
 			);
-			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+			expect(activeTab(wrapper)).toBe(
+				"plan.tools.labels.profit_breakdown"
+			);
 			expect(trackEvent).toHaveBeenCalledWith("plan:result_tile_open", {
 				tile: "profit",
 			});
 			// a second click keeps it open instead of toggling it shut
 			await emitFrom(wrapper, PlanResultsBar, "open", "profit");
-			expect(activeTab(wrapper)).toBe("plan.tools.labels.profit_breakdown");
+			expect(activeTab(wrapper)).toBe(
+				"plan.tools.labels.profit_breakdown"
+			);
 
 			constructionCart.open();
 			await emitFrom(wrapper, PlanResultsBar, "open", "payback");
 			await vi.waitFor(() =>
 				expect(wrapper.text()).toContain("PlanConstructionCart")
 			);
-			expect(activeTab(wrapper)).toBe("plan.tools.labels.construction_cart");
+			expect(activeTab(wrapper)).toBe(
+				"plan.tools.labels.construction_cart"
+			);
 
 			await emitFrom(wrapper, PlanResultsBar, "open", "storage");
 			await vi.waitFor(() =>
@@ -735,8 +743,9 @@ describe("PlanView", () => {
 			const scroll = vi.spyOn(Element.prototype, "scrollIntoView");
 			const { wrapper } = await mountView({}, { login: true });
 			const section = (key: string) =>
-				wrapper.find<HTMLDetailsElement>(`details[data-section="${key}"]`)
-					.element;
+				wrapper.find<HTMLDetailsElement>(
+					`details[data-section="${key}"]`
+				).element;
 			const strip = () => wrapper.find("[data-base-strip]");
 			// both start open, close them to see the tiles open them
 			section("planet").open = false;
@@ -783,7 +792,13 @@ describe("PlanView", () => {
 			expect(base().props("result").area.permits).toBe(2);
 			await emitFrom(wrapper, PlanBase, "update:corphq", true);
 			expect(base().props("result").corphq).toBe(true);
-			await emitFrom(wrapper, PlanBase, "update:expert", "Agriculture", 3);
+			await emitFrom(
+				wrapper,
+				PlanBase,
+				"update:expert",
+				"Agriculture",
+				3
+			);
 			expect(base().props("result").experts.Agriculture.amount).toBe(3);
 		});
 
@@ -887,7 +902,8 @@ describe("PlanView", () => {
 			calcDebug.value = true;
 			const { wrapper } = await mountView();
 			await openDebug(wrapper);
-			const panel = () => wrapper.findComponent({ name: "PlanCalcDebug" });
+			const panel = () =>
+				wrapper.findComponent({ name: "PlanCalcDebug" });
 			expect(panel().exists()).toBe(true);
 
 			panel().vm.$emit("update:show", false);
@@ -900,7 +916,10 @@ describe("PlanView", () => {
 			calcDebug.value = true;
 			const { wrapper } = await mountView();
 
-			const event = press({ code: "Backquote", ctrlKey: true }, textField());
+			const event = press(
+				{ code: "Backquote", ctrlKey: true },
+				textField()
+			);
 			await flushPromises();
 
 			expect(event.defaultPrevented).toBe(false);
@@ -1016,9 +1035,9 @@ describe("PlanView", () => {
 				0,
 				5
 			);
-			expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
-				true
-			);
+			expect(
+				wrapper.findComponent(PlanSaveButton).props("modified")
+			).toBe(true);
 
 			press({ key: "s", ctrlKey: true });
 			await flushPromises();
@@ -1040,9 +1059,9 @@ describe("PlanView", () => {
 				planet_natural_id: "KW-688c",
 				trigger: "shortcut",
 			});
-			expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
-				false
-			);
+			expect(
+				wrapper.findComponent(PlanSaveButton).props("modified")
+			).toBe(false);
 
 			// the next save sends the version of this one
 			await emitFrom(
@@ -1215,9 +1234,9 @@ describe("PlanView", () => {
 			const patch = queryCalls("PatchPlan")[0];
 			expect(patch[1].planUuid).toBe("new-uuid");
 			expect(patch[1].data.base_modified_at).toBe(SAVED_AT);
-			expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
-				false
-			);
+			expect(
+				wrapper.findComponent(PlanSaveButton).props("modified")
+			).toBe(false);
 			expect(mocks.push).toHaveBeenCalledWith("/plan/KW-688c/new-uuid");
 		});
 
@@ -1271,10 +1290,12 @@ describe("PlanView", () => {
 
 			const modal = dialog();
 			expect(modal.text()).toContain("plan.components.save_as.title");
-			expect((modal.find("input").element as HTMLInputElement).value).toBe(
-				"EW COF RAT DW C (Copy)"
+			expect(
+				(modal.find("input").element as HTMLInputElement).value
+			).toBe("EW COF RAT DW C (Copy)");
+			expect(modal.text()).toContain(
+				"plan.components.save_as.form.empire"
 			);
-			expect(modal.text()).toContain("plan.components.save_as.form.empire");
 		});
 
 		it("leaves the copy's name empty for an unnamed plan and blocks creating", async () => {
@@ -1306,9 +1327,14 @@ describe("PlanView", () => {
 
 		it("creates the copy in a new tab", async () => {
 			respond({
-				CreatePlan: () => ({ uuid: "copy-uuid", modified_at: SAVED_AT }),
+				CreatePlan: () => ({
+					uuid: "copy-uuid",
+					modified_at: SAVED_AT,
+				}),
 			});
-			const open = vi.spyOn(window, "open").mockImplementation(() => null);
+			const open = vi
+				.spyOn(window, "open")
+				.mockImplementation(() => null);
 			const mounted = await mountView(
 				{ empireList: empires() },
 				{ login: true }
@@ -1339,7 +1365,10 @@ describe("PlanView", () => {
 
 		it("creates a copy for the empire picked in the dialog", async () => {
 			respond({
-				CreatePlan: () => ({ uuid: "copy-uuid", modified_at: SAVED_AT }),
+				CreatePlan: () => ({
+					uuid: "copy-uuid",
+					modified_at: SAVED_AT,
+				}),
 			});
 			vi.spyOn(window, "open").mockImplementation(() => null);
 			const mounted = await mountView(
@@ -1369,7 +1398,9 @@ describe("PlanView", () => {
 				},
 			});
 			vi.spyOn(console, "error").mockImplementation(() => {});
-			const open = vi.spyOn(window, "open").mockImplementation(() => null);
+			const open = vi
+				.spyOn(window, "open")
+				.mockImplementation(() => null);
 			const mounted = await mountView({}, { login: true });
 			await openSaveAs(mounted);
 
@@ -1540,7 +1571,9 @@ describe("PlanView", () => {
 			const tools = wrapper.find("[data-phone-tools]");
 			const plancheck = tools
 				.findAll("button")
-				.find((b) => b.text().startsWith("plan.tools.labels.plan_check"))!;
+				.find((b) =>
+					b.text().startsWith("plan.tools.labels.plan_check")
+				)!;
 			expect(plancheck.text()).toContain(
 				"plan.tools.descriptions.plan-check"
 			);

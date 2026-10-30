@@ -17,7 +17,6 @@
 	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { afterLoad } from "@/util/afterLoad";
 
-
 	// UI
 	import PDrawer from "@/ui/components/PDrawer.vue";
 	import {
@@ -97,9 +96,7 @@
 		"request-password-reset",
 		"password-reset",
 	]);
-	const showSections = computed(() =>
-		SECTION_ROUTES.has(String(route.name))
-	);
+	const showSections = computed(() => SECTION_ROUTES.has(String(route.name)));
 	const sections = ["how", "features", "tools"] as const;
 
 	/*
@@ -243,7 +240,10 @@
 				<button
 					type="button"
 					data-registration
-					:class="[landingPrimaryButton, 'min-h-11! px-3! sm:px-4.5! text-sm! sm:text-[15px]!']"
+					:class="[
+						landingPrimaryButton,
+						'min-h-11! px-3! sm:px-4.5! text-sm! sm:text-[15px]!',
+					]"
 					@click="toggleRegistration">
 					{{ $t("homepage.navigation.registration") }}
 				</button>
@@ -375,7 +375,9 @@
 					:aria-pressed="showRegistration"
 					:class="[
 						switchButton,
-						showRegistration ? 'bg-white/12 text-white' : 'text-white/70',
+						showRegistration
+							? 'bg-white/12 text-white'
+							: 'text-white/70',
 					]"
 					@click="switchTo('registration')">
 					{{ $t("homepage.navigation.registration") }}
@@ -385,10 +387,7 @@
 		<template v-if="forms">
 			<component :is="forms.context" />
 			<component :is="forms.login" v-if="showLogin" />
-			<component
-				:is="forms.registration"
-				v-else
-				@login="showLoginForm" />
+			<component :is="forms.registration" v-else @login="showLoginForm" />
 		</template>
 	</PDrawer>
 </template>

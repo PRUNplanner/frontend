@@ -15,9 +15,12 @@ async function typeInto(text: string) {
 }
 
 describe("PInputNumber", () => {
-	it.each(["-", ".", "-."])("emits nothing for a partial %s", async (text) => {
-		expect(await typeInto(text)).toEqual([]);
-	});
+	it.each(["-", ".", "-."])(
+		"emits nothing for a partial %s",
+		async (text) => {
+			expect(await typeInto(text)).toEqual([]);
+		}
+	);
 
 	it("emits null when cleared", async () => {
 		expect(await typeInto("")).toEqual([null]);

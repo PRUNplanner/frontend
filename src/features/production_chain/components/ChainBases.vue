@@ -116,7 +116,11 @@
 			{
 				key: string;
 				plan: ICheckPlan | null;
-				items: { ticker: string; perDay: number; surplus: number | null }[];
+				items: {
+					ticker: string;
+					perDay: number;
+					surplus: number | null;
+				}[];
 				value: number;
 			}
 		>();
@@ -128,7 +132,11 @@
 					items: [],
 					value: 0,
 				};
-				entry.items.push({ ticker, perDay: s.perDay, surplus: s.surplus });
+				entry.items.push({
+					ticker,
+					perDay: s.perDay,
+					surplus: s.surplus,
+				});
 				entry.value += s.perDay * result.rows[ticker].price;
 				plans.set(s.key, entry);
 			}
@@ -146,7 +154,9 @@
 		own.name ? unusedSurplus(own.surplus, result) : []
 	);
 
-	const byKey = computed(() => new Map(fromPlans.value.map((p) => [p.key, p])));
+	const byKey = computed(
+		() => new Map(fromPlans.value.map((p) => [p.key, p]))
+	);
 	const planOf = (end: string) => byKey.value.get(end)?.plan;
 	/** a route end's name: a base id, an exchange, a plan or "Your bases" */
 	function endName(end: string): string {
@@ -268,13 +278,19 @@
 			<h2 class="font-bold">
 				{{ $t("production_chains.have.bases_title") }}
 				<span class="font-normal text-muted">
-					{{ $t("production_chains.have.bases_value", { value: money(fromPlansValue) }) }}
+					{{
+						$t("production_chains.have.bases_value", {
+							value: money(fromPlansValue),
+						})
+					}}
 				</span>
 			</h2>
 			<p class="text-xs text-muted pb-2">
 				{{
 					own.name
-						? $t("production_chains.have.bases_note", { empire: own.name })
+						? $t("production_chains.have.bases_note", {
+								empire: own.name,
+							})
 						: $t("production_chains.have.bases_note_typed")
 				}}
 			</p>
@@ -284,8 +300,12 @@
 						<tr>
 							<th>{{ $t("production_chains.have.plan") }}</th>
 							<th>{{ $t("production_chains.have.planet") }}</th>
-							<th>{{ $t("production_chains.have.materials") }}</th>
-							<th class="numeric">{{ $t("production_chains.have.value") }}</th>
+							<th>
+								{{ $t("production_chains.have.materials") }}
+							</th>
+							<th class="numeric">
+								{{ $t("production_chains.have.value") }}
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -298,42 +318,67 @@
 									v-if="p.plan"
 									:to="{
 										name: 'plan',
-										params: { planetNaturalId: p.plan.planetId, planUuid: p.plan.uuid },
+										params: {
+											planetNaturalId: p.plan.planetId,
+											planUuid: p.plan.uuid,
+										},
 									}"
 									class="text-link hover:underline">
 									{{ p.plan.name }}&nbsp;↗
 								</RouterLink>
-								<span v-else>{{ $t("production_chains.have.your_bases") }}</span>
+								<span v-else>{{
+									$t("production_chains.have.your_bases")
+								}}</span>
 							</td>
-							<td class="whitespace-nowrap">{{ p.plan ? planetName(p.plan.planetId) : "–" }}</td>
+							<td class="whitespace-nowrap">
+								{{ p.plan ? planetName(p.plan.planetId) : "–" }}
+							</td>
 							<td>
 								<span class="flex flex-wrap gap-x-3 gap-y-1">
 									<span
 										v-for="m in p.items"
 										:key="m.ticker"
 										class="inline-flex items-center gap-1 tabular-nums">
-										<MaterialTile :key="m.ticker" :ticker="m.ticker" />
+										<MaterialTile
+											:key="m.ticker"
+											:ticker="m.ticker" />
 										{{ formatQty(m.perDay) }}
 										<span
-											v-if="m.surplus !== null && m.surplus - m.perDay > 1e-6"
+											v-if="
+												m.surplus !== null &&
+												m.surplus - m.perDay > 1e-6
+											"
 											class="text-muted whitespace-nowrap">
-											{{ $t("production_chains.have.of", { n: formatQty(m.surplus) }) }}
+											{{
+												$t(
+													"production_chains.have.of",
+													{ n: formatQty(m.surplus) }
+												)
+											}}
 										</span>
 									</span>
 								</span>
 							</td>
-							<td class="numeric tabular-nums whitespace-nowrap">{{ money(p.value) }}</td>
+							<td class="numeric tabular-nums whitespace-nowrap">
+								{{ money(p.value) }}
+							</td>
 						</tr>
 					</tbody>
 				</PTable>
 			</div>
 			<!-- an empire's surplus can be long: closed until asked for -->
-			<details v-if="unused.length" class="text-xs text-muted pt-1" data-testid="chain-unused-surplus">
+			<details
+				v-if="unused.length"
+				class="text-xs text-muted pt-1"
+				data-testid="chain-unused-surplus">
 				<summary class="cursor-pointer">
 					{{ $t("production_chains.have.unused", unused.length) }}
 				</summary>
 				<span class="flex flex-wrap gap-x-3 gap-y-1 pt-1 tabular-nums">
-					<span v-for="u in unused" :key="u.ticker" class="whitespace-nowrap">
+					<span
+						v-for="u in unused"
+						:key="u.ticker"
+						class="whitespace-nowrap">
 						{{ u.ticker }} {{ formatQty(u.perDay) }}
 					</span>
 				</span>

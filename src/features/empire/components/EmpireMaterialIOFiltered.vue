@@ -151,14 +151,12 @@
 	 * @returns {void}
 	 */
 	async function createFilter(): Promise<void> {
-		refMaterialSelectOptions.value = props.empireMaterialIO.map(
-			(m) => {
-				return {
-					label: m.ticker,
-					value: m.ticker,
-				};
-			}
-		);
+		refMaterialSelectOptions.value = props.empireMaterialIO.map((m) => {
+			return {
+				label: m.ticker,
+				value: m.ticker,
+			};
+		});
 
 		let availPlanetIds: string[] = [];
 
@@ -242,7 +240,9 @@
 		// market flag
 		if (refMarketFilter.value) {
 			filteredMaterialIO.value = filteredMaterialIO.value.filter(
-				(m) => marketChecks.value.get(m.ticker)?.level === refMarketFilter.value
+				(m) =>
+					marketChecks.value.get(m.ticker)?.level ===
+					refMarketFilter.value
 			);
 		}
 

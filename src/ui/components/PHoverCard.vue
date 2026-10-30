@@ -47,8 +47,11 @@
 	const triggerRef = ref<HTMLElement | null>(null);
 	const panelRef = ref<HTMLElement | null>(null);
 
-	const card = useHoverCard(triggerRef, panelRef, () => options, () =>
-		emit("open")
+	const card = useHoverCard(
+		triggerRef,
+		panelRef,
+		() => options,
+		() => emit("open")
 	);
 	const { open, pinned, sheet, id, triggerEvents, panelEvents } = card;
 
@@ -73,9 +76,10 @@
 		let free = window.innerWidth - 2 * EDGE;
 		if (wanted === "left" || wanted === "right") {
 			const other = wanted === "left" ? "right" : "left";
-			const pick = room[wanted] >= width || room[wanted] >= room[other]
-				? wanted
-				: other;
+			const pick =
+				room[wanted] >= width || room[wanted] >= room[other]
+					? wanted
+					: other;
 			side.value = (align ? `${pick}-${align}` : pick) as Placement;
 			free = room[pick];
 		}

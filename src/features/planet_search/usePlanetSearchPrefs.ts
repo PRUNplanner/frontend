@@ -38,17 +38,17 @@ export function usePlanetSearchPrefs(): {
 } {
 	const prefs: Ref<PlanetSearchPrefs> = ref(readPlanetSearchPrefs());
 
-	watch(
-		prefs,
-		(value) => writeStorage(STORAGE_KEY, JSON.stringify(value)),
-		{ deep: true }
-	);
+	watch(prefs, (value) => writeStorage(STORAGE_KEY, JSON.stringify(value)), {
+		deep: true,
+	});
 
 	// every hidden column: the ones hidden by the user and the opt-in ones not turned on
 	const hiddenColumns = computed({
 		get: (): PlanetSearchColumn[] => [
 			...prefs.value.hiddenColumns,
-			...OPT_IN_COLUMNS.filter((c) => !prefs.value.shownColumns.includes(c)),
+			...OPT_IN_COLUMNS.filter(
+				(c) => !prefs.value.shownColumns.includes(c)
+			),
 		],
 		set: (hidden: PlanetSearchColumn[]) => {
 			prefs.value.hiddenColumns = hidden.filter(

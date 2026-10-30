@@ -13,8 +13,9 @@ const results = [
 	{ resources: [{ material_ticker: "AR" }, { material_ticker: "FEO" }] },
 ] as PlanetSearchIndexEntry[];
 
-const body = <T extends Element>(selector: string) =>
-	[...document.body.querySelectorAll<T>(selector)];
+const body = <T extends Element>(selector: string) => [
+	...document.body.querySelectorAll<T>(selector),
+];
 
 async function openMenu(props: Record<string, unknown> = {}) {
 	const { component } = await mountComponent(PlanetSearchSortMenu, {
@@ -43,7 +44,9 @@ describe("PlanetSearchSortMenu", () => {
 		const menu = await openMenu();
 
 		// one ▲/▼ pair per key, then the remove buttons
-		body<HTMLButtonElement>('button[aria-label="planet_search.sort.asc"]')[1].click();
+		body<HTMLButtonElement>(
+			'button[aria-label="planet_search.sort.asc"]'
+		)[1].click();
 		expect(menu.emitted("sort")![0]).toEqual([
 			[
 				{ key: "ref:cx:NC1", dir: "asc" },
@@ -51,8 +54,12 @@ describe("PlanetSearchSortMenu", () => {
 			],
 		]);
 
-		body<HTMLButtonElement>('button[aria-label="planet_search.sort.remove"]')[0].click();
-		expect(menu.emitted("sort")![1]).toEqual([[{ key: "mat:FEO", dir: "desc" }]]);
+		body<HTMLButtonElement>(
+			'button[aria-label="planet_search.sort.remove"]'
+		)[0].click();
+		expect(menu.emitted("sort")![1]).toEqual([
+			[{ key: "mat:FEO", dir: "desc" }],
+		]);
 
 		expect(body(".pselect").length).toBe(1);
 	});
@@ -74,40 +81,58 @@ describe("PlanetSearchSortMenu", () => {
 	it("stays open while picking columns, closes on a click away", async () => {
 		const menu = await openMenu();
 		const open = () =>
-			body("h3").some((h) => h.textContent === "planet_search.sort.title");
+			body("h3").some(
+				(h) => h.textContent === "planet_search.sort.title"
+			);
 		expect(open()).toBe(true);
 
 		// pick in the teleported "then by" list
 		const select = body<HTMLElement>(".pselect")[0];
-		select.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+		select.dispatchEvent(
+			new KeyboardEvent("keydown", { key: "Enter", bubbles: true })
+		);
 		await flushPromises();
-		const option = body<HTMLElement>(".pselect-list .grow")
-			.find((o) => o.textContent?.trim() === "CI1")!;
+		const option = body<HTMLElement>(".pselect-list .grow").find(
+			(o) => o.textContent?.trim() === "CI1"
+		)!;
 		option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
 		option.click();
 		await flushPromises();
-		expect(menu.emitted("sort")!.at(-1)![0]).toContainEqual({ key: "ref:cx:CI1", dir: "asc" });
+		expect(menu.emitted("sort")!.at(-1)![0]).toContainEqual({
+			key: "ref:cx:CI1",
+			dir: "asc",
+		});
 		expect(open()).toBe(true);
 
-		document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+		document.body.dispatchEvent(
+			new MouseEvent("mousedown", { bubbles: true })
+		);
 		await flushPromises();
 		expect(open()).toBe(false);
 	});
 
 	it("removes the last key and shows the default order", async () => {
-		const menu = await openMenu({ sorts: [{ key: "mat:FEO", dir: "desc" }] });
-		body<HTMLButtonElement>('button[aria-label="planet_search.sort.remove"]')[0].click();
+		const menu = await openMenu({
+			sorts: [{ key: "mat:FEO", dir: "desc" }],
+		});
+		body<HTMLButtonElement>(
+			'button[aria-label="planet_search.sort.remove"]'
+		)[0].click();
 		expect(menu.emitted("sort")![0]).toEqual([[]]);
 
 		const empty = await openMenu({ sorts: [] });
-		expect(document.body.textContent).toContain("planet_search.sort.default");
+		expect(document.body.textContent).toContain(
+			"planet_search.sort.default"
+		);
 		expect(empty.findComponent(PSelect).exists()).toBe(true);
 	});
 
 	it("the trigger toggles, Escape spares an open dropdown", async () => {
 		const menu = await openMenu();
 		const open = () =>
-			body("h3").some((h) => h.textContent === "planet_search.sort.title");
+			body("h3").some(
+				(h) => h.textContent === "planet_search.sort.title"
+			);
 		const trigger = menu.find("button");
 
 		await trigger.trigger("click");
@@ -119,7 +144,11 @@ describe("PlanetSearchSortMenu", () => {
 		const select = () => body<HTMLElement>(".pselect")[0];
 		const key = (k: string) =>
 			select().dispatchEvent(
-				new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true })
+				new KeyboardEvent("keydown", {
+					key: k,
+					bubbles: true,
+					cancelable: true,
+				})
 			);
 
 		// list open: Escape only closes the list

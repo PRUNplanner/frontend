@@ -23,7 +23,9 @@ describe("index.html", () => {
 	it("names the game in the title and description", () => {
 		expect(doc.title).toContain("Prosperous Universe");
 		expect(
-			doc.querySelector('meta[name="description"]')!.getAttribute("content")
+			doc
+				.querySelector('meta[name="description"]')!
+				.getAttribute("content")
 		).toContain("Prosperous Universe (PrUn)");
 	});
 
@@ -94,7 +96,9 @@ describe("index.html's prerender check", () => {
 		const img = new DOMParser()
 			.parseFromString(html, "text/html")
 			.querySelector('img[fetchpriority="high"]')!;
-		expect(link.getAttribute("imagesrcset")).toBe(img.getAttribute("srcset"));
+		expect(link.getAttribute("imagesrcset")).toBe(
+			img.getAttribute("srcset")
+		);
 		expect(link.getAttribute("imagesizes")).toBe(img.getAttribute("sizes"));
 	});
 
@@ -107,7 +111,9 @@ describe("index.html's prerender check", () => {
 				},
 			});
 			new Function(check)();
-			return document.documentElement.classList.contains("skip-prerender");
+			return document.documentElement.classList.contains(
+				"skip-prerender"
+			);
 		};
 		window.history.replaceState({}, "", "/market");
 		expect(blocked()).toBe(true);
@@ -133,7 +139,10 @@ describe("checkLanding", () => {
 			.replace(/<h1[\s\S]*?<\/h1>/, "")
 			.replace(/<link rel="canonical"[^>]*>/, "")
 			.replace(/<meta property="og:type"[^>]*>/, "")
-			.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, "")
+			.replace(
+				/<script type="application\/ld\+json">[\s\S]*?<\/script>/,
+				""
+			)
 			.replace("<title>", "<title>x ");
 
 		expect(checkLanding(broken, "", "<urlset>")).toEqual([

@@ -138,12 +138,7 @@ export type ProductionChainAction =
 
 // what was done on the Planet Search page, besides searching
 type PlanetSearchAction =
-	| "pin"
-	| "save"
-	| "load"
-	| "link_copy"
-	| "reset"
-	| "plan_open";
+	"pin" | "save" | "load" | "link_copy" | "reset" | "plan_open";
 
 // which XIT transfer button: the tool, and which of its buttons
 export type XITTransferSource =

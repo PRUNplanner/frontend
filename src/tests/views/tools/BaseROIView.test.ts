@@ -12,7 +12,13 @@ const { passThrough } = vi.hoisted(() => ({
 		default: {
 			name,
 			emits: ["update:cx-uuid"],
-			setup(_: unknown, { slots, emit }: { slots: Slots; emit: (e: string, v: string) => void }) {
+			setup(
+				_: unknown,
+				{
+					slots,
+					emit,
+				}: { slots: Slots; emit: (e: string, v: string) => void }
+			) {
 				if (emitCX) emit("update:cx-uuid", "cx-1");
 				return () => slots.default?.();
 			},

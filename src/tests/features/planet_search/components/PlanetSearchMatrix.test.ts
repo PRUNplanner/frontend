@@ -612,18 +612,26 @@ describe("planets that can't be settled", () => {
 	it.each([
 		["list", PlanetSearchList],
 		["matrix", PlanetSearchMatrix],
-	] as const)("%s marks them next to the name, plots column hidden", async (_, view) => {
-		const { component } = await mountComponent(view, {
-			...props,
-			planets: [full, open],
-			hiddenMaterials: [],
-			hiddenColumns: ["plots"],
-		});
-		const rows = (component as VueWrapper).findAll("tbody tr");
-		const icon = (i: number) => rows[i].findAll("td")[1].find("[data-testid='planet-full']");
-		expect(icon(0).exists()).toBe(true);
-		expect(icon(1).exists()).toBe(false);
-		// the column is off by default here
-		expect((component as VueWrapper).find("[data-testid='planet-plots']").exists()).toBe(false);
-	});
+	] as const)(
+		"%s marks them next to the name, plots column hidden",
+		async (_, view) => {
+			const { component } = await mountComponent(view, {
+				...props,
+				planets: [full, open],
+				hiddenMaterials: [],
+				hiddenColumns: ["plots"],
+			});
+			const rows = (component as VueWrapper).findAll("tbody tr");
+			const icon = (i: number) =>
+				rows[i].findAll("td")[1].find("[data-testid='planet-full']");
+			expect(icon(0).exists()).toBe(true);
+			expect(icon(1).exists()).toBe(false);
+			// the column is off by default here
+			expect(
+				(component as VueWrapper)
+					.find("[data-testid='planet-plots']")
+					.exists()
+			).toBe(false);
+		}
+	);
 });

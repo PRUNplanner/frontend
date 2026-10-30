@@ -98,10 +98,7 @@ describe("FIOConnection", () => {
 	it("shows the stored profile and counts as saved", async () => {
 		const { wrapper } = await mountProfile(profile());
 
-		expect(values(wrapper)).toEqual([
-			"test-fio-key",
-			"test-prun-user",
-		]);
+		expect(values(wrapper)).toEqual(["test-fio-key", "test-prun-user"]);
 		expect(saveType(wrapper)).toBe("secondary");
 		expect(mock.history.get).toHaveLength(1);
 	});
@@ -114,10 +111,7 @@ describe("FIOConnection", () => {
 		);
 		const { wrapper } = await mountProfile(profile());
 
-		expect(values(wrapper)).toEqual([
-			"test-fio-key",
-			"renamed-user",
-		]);
+		expect(values(wrapper)).toEqual(["test-fio-key", "renamed-user"]);
 		// the refresh isn't a user edit
 		expect(saveType(wrapper)).toBe("secondary");
 	});
@@ -374,7 +368,6 @@ describe("FIOConnection", () => {
 		expect(wrapper.findAll("[role=alert]")).toHaveLength(0);
 	});
 
-
 	describe("FIO credential check", () => {
 		const ERRORS = "profile.change_profile.fio_errors";
 		const noFIO = profile({
@@ -427,7 +420,9 @@ describe("FIOConnection", () => {
 		it("falls back to a generic message for an unknown code", async () => {
 			const wrapper = await link(400, { prun_username: ["other"] });
 
-			expect(wrapper.find("[role=alert]").text()).toBe(`${ERRORS}.unknown`);
+			expect(wrapper.find("[role=alert]").text()).toBe(
+				`${ERRORS}.unknown`
+			);
 		});
 
 		it("shows no FIO error for other failures", async () => {
@@ -441,7 +436,9 @@ describe("FIOConnection", () => {
 		});
 
 		it("confirms the connection and clears old errors on success", async () => {
-			const wrapper = await link(400, { fio_apikey: ["fio_invalid_key"] });
+			const wrapper = await link(400, {
+				fio_apikey: ["fio_invalid_key"],
+			});
 			mock.resetHandlers();
 			mock.onPatch(PROFILE_URL).reply(
 				200,

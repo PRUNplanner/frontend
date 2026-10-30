@@ -165,10 +165,10 @@ describe("useROIOverview", async () => {
 		{ timeout: 40_000 },
 		async () => {
 			const { calculate, resultData, progress } = useROIOverview(
-					// @ts-expect-error mock definition
-					definition,
-					ref(undefined)
-				);
+				// @ts-expect-error mock definition
+				definition,
+				ref(undefined)
+			);
 
 			const first = calculate();
 			await new Promise((r) => setTimeout(r, 0));
@@ -187,10 +187,10 @@ describe("useROIOverview", async () => {
 		{ timeout: 60_000 },
 		async () => {
 			const { calculate, progress } = useROIOverview(
-					// @ts-expect-error mock definition
-					definition,
-					ref(undefined)
-				);
+				// @ts-expect-error mock definition
+				definition,
+				ref(undefined)
+			);
 
 			// start the next run once the first one counted its last building
 			let second: ReturnType<typeof calculate> | undefined;

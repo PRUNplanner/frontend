@@ -145,7 +145,12 @@ describe("RepairIntervalCharts", () => {
 					const x = Number(t.attributes("x"));
 					const anchor = t.attributes("text-anchor") ?? "start";
 					return {
-						left: anchor === "end" ? x - 68 : anchor === "middle" ? x - 34 : x,
+						left:
+							anchor === "end"
+								? x - 68
+								: anchor === "middle"
+									? x - 34
+									: x,
 						y: Number(t.attributes("y")),
 					};
 				});

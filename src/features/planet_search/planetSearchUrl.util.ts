@@ -49,10 +49,7 @@ function list(v: IQueryValue): string[] {
 	];
 }
 
-function oneOf<T extends string>(
-	values: string[],
-	options: readonly T[]
-): T[] {
+function oneOf<T extends string>(values: string[], options: readonly T[]): T[] {
 	return values.filter((v): v is T => options.includes(v as T));
 }
 
@@ -60,7 +57,9 @@ function oneOf<T extends string>(
  * Readable query params for a search state; defaults are left out
  * @author jplacht
  */
-export function encodeSearch(state: IPlanetSearchState): Record<string, string> {
+export function encodeSearch(
+	state: IPlanetSearchState
+): Record<string, string> {
 	const f = state.filter;
 	const def = defaultFilter();
 	const q: Record<string, string> = {};
@@ -91,14 +90,16 @@ export function encodeSearch(state: IPlanetSearchState): Record<string, string> 
 
 function decodeGroups(v: IQueryValue): PlanetSearchMaterialGroup[] {
 	// not list(): identical groups are allowed
-	return first(v).split(",").flatMap((part) => {
-		const [op, mats = ""] = part.split(":");
-		if (op !== "any" && op !== "all") return [];
-		const materials = [
-			...new Set(mats.split("|").filter((t) => TICKER.test(t))),
-		];
-		return [{ op, materials }];
-	});
+	return first(v)
+		.split(",")
+		.flatMap((part) => {
+			const [op, mats = ""] = part.split(":");
+			if (op !== "any" && op !== "all") return [];
+			const materials = [
+				...new Set(mats.split("|").filter((t) => TICKER.test(t))),
+			];
+			return [{ op, materials }];
+		});
 }
 
 function decodeSort(s: string): IPlanetSearchSort | null {
@@ -139,7 +140,12 @@ export function decodeSearch(query: IPlanetSearchQuery): IPlanetSearchState {
 	for (const part of list(query.d)) {
 		const [t, n] = part.split(":");
 		const value = Number(n);
-		if (materials.has(t) && n !== "" && Number.isFinite(value) && value >= 0)
+		if (
+			materials.has(t) &&
+			n !== "" &&
+			Number.isFinite(value) &&
+			value >= 0
+		)
 			minDaily[t] = value;
 	}
 
@@ -154,7 +160,10 @@ export function decodeSearch(query: IPlanetSearchQuery): IPlanetSearchState {
 
 	const j = Number(first(query.j));
 	const jumpsValid =
-		first(query.j) !== "" && Number.isInteger(j) && j >= 0 && j <= MAX_JUMPS;
+		first(query.j) !== "" &&
+		Number.isInteger(j) &&
+		j >= 0 &&
+		j <= MAX_JUMPS;
 
 	return {
 		filter: {
@@ -164,7 +173,9 @@ export function decodeSearch(query: IPlanetSearchQuery): IPlanetSearchState {
 			minDaily,
 			cogc: oneOf(
 				list(query.cogc),
-				PlanetCOGCProgramTypeSchema.options.filter((o) => o !== "Invalid")
+				PlanetCOGCProgramTypeSchema.options.filter(
+					(o) => o !== "Invalid"
+				)
 			),
 			infrastructure: oneOf(
 				list(query.infra),
@@ -172,7 +183,10 @@ export function decodeSearch(query: IPlanetSearchQuery): IPlanetSearchState {
 			),
 			fertile: first(query.fert) === "1",
 			surface: surface.length ? surface : def.surface,
-			acceptedExtras: oneOf(list(query.x), PlanetSearchExtraSchema.options),
+			acceptedExtras: oneOf(
+				list(query.x),
+				PlanetSearchExtraSchema.options
+			),
 			references,
 			maxJumps: jumpsValid ? j : def.maxJumps,
 		},

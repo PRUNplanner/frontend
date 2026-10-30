@@ -174,7 +174,6 @@
 		await calculateEmpire(true);
 	}
 
-
 	/**
 	 * Selects the empire the loader picked: the first one, when none is
 	 * selected or the selected one is gone. Gone from a list that had it

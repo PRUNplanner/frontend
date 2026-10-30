@@ -47,7 +47,11 @@ describe("own production", () => {
 
 	it("sums the net surplus, a material made and used counting only the net (AC 7)", () => {
 		const surplus = empireSurplus(plans);
-		expect(Object.fromEntries(surplus)).toEqual({ AL: 480, C: 110, BTS: 600 });
+		expect(Object.fromEntries(surplus)).toEqual({
+			AL: 480,
+			C: 110,
+			BTS: 600,
+		});
 		expect(surplus.has("RAT")).toBe(false);
 	});
 
@@ -82,7 +86,13 @@ describe("own production", () => {
 		);
 		const used = result.rows.GRN.have;
 		expect(
-			unusedSurplus(new Map([["GRN", used + 3], ["C", 7]]), result)
+			unusedSurplus(
+				new Map([
+					["GRN", used + 3],
+					["C", 7],
+				]),
+				result
+			)
 		).toEqual([
 			{ ticker: "GRN", perDay: expect.closeTo(3, 6) },
 			{ ticker: "C", perDay: 7 },
@@ -109,7 +119,11 @@ describe("own production", () => {
 		// picking an empire: the link's AL and the "off" go, typed BTS stays
 		const picked = typedOnly(o);
 		expect(picked).toEqual({ BTS: { value: 600, origin: "typed" } });
-		expect(effectiveHave(surplus, picked)).toEqual({ AL: 480, C: 110, BTS: 600 });
+		expect(effectiveHave(surplus, picked)).toEqual({
+			AL: 480,
+			C: 110,
+			BTS: 600,
+		});
 
 		// back to the empire's amount
 		expect(withHave(picked, "BTS", undefined, surplus)).toEqual({});

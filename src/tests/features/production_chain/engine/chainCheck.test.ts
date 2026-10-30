@@ -70,18 +70,23 @@ describe("checkEmpire", () => {
 		for (const p of PLANS)
 			for (const b of p.result.production.buildings)
 				expect(b.totalEfficiency).toBeGreaterThan(0);
-		expect(runningCOGC(index.find((p) => p.planet_natural_id === BARREN)!, NOW)).toBe("---");
+		expect(
+			runningCOGC(
+				index.find((p) => p.planet_natural_id === BARREN)!,
+				NOW
+			)
+		).toBe("---");
 	});
 
 	it("finds what the empire sells, its net amounts and the chains' materials (AC 5)", () => {
 		const r = check();
 		const a = PLANS[0].result.production.buildings[0];
-		const dwOut = (4 * a.totalEfficiency * DAY) / 17_280_000 * 10;
+		const dwOut = ((4 * a.totalEfficiency * DAY) / 17_280_000) * 10;
 		const dwUse = PLANS.reduce(
 			(s, p) =>
 				s +
-				(p.result.workforceMaterialIO.find((m) => m.ticker === "DW")?.input ??
-					0),
+				(p.result.workforceMaterialIO.find((m) => m.ticker === "DW")
+					?.input ?? 0),
 			0
 		);
 		expect(r.net.DW).toBeCloseTo(dwOut - dwUse, 6);
@@ -97,8 +102,8 @@ describe("checkEmpire", () => {
 		expect(dw.bases.sort()).toEqual(["A", "B"]);
 		const h2o = dw.rows[1];
 		expect(h2o.made).toBeCloseTo(
-			(2 * step(r, "B", "RIG").efficiency * DAY) /
-				step(r, "B", "RIG").recipe.time_ms *
+			((2 * step(r, "B", "RIG").efficiency * DAY) /
+				step(r, "B", "RIG").recipe.time_ms) *
 				step(r, "B", "RIG").recipe.outputs[0].material_amount,
 			6
 		);
@@ -151,10 +156,15 @@ describe("checkEmpire", () => {
 
 		const lost = base(r, "C").findings.find((f) => f.kind === "fix")!;
 		expect(lost.kind === "fix" && lost.fix).toBe("lost");
-		expect(lost.delta).toBeCloseTo(-0.2 * Math.max(step(r, "C", "FRM").margin, 0), 6);
+		expect(lost.delta).toBeCloseTo(
+			-0.2 * Math.max(step(r, "C", "FRM").margin, 0),
+			6
+		);
 		// fixes always show
 		expect(
-			base(check({ min: 1e12 }), "C").findings.some((f) => f.kind === "fix")
+			base(check({ min: 1e12 }), "C").findings.some(
+				(f) => f.kind === "fix"
+			)
 		).toBe(true);
 	});
 
@@ -172,7 +182,10 @@ describe("checkEmpire", () => {
 				},
 				ctx
 			);
-			return { rid, f: base(r, "A").findings.find((f) => f.kind === "recipe") };
+			return {
+				rid,
+				f: base(r, "A").findings.find((f) => f.kind === "recipe"),
+			};
 		});
 		const hit = results.find((x) => x.f)!;
 		expect(hit).toBeDefined();
@@ -186,7 +199,9 @@ describe("checkEmpire", () => {
 				(DAY * f.step.efficiency * f.recipe.outputs[0].material_amount),
 			6
 		);
-		expect(f.extra).toBe(Math.max(0, Math.ceil(f.need - f.step.buildings - 1e-6)));
+		expect(f.extra).toBe(
+			Math.max(0, Math.ceil(f.need - f.step.buildings - 1e-6))
+		);
 	});
 
 	it("finds make or buy for steps that cost more than the CX price (AC 8)", () => {
@@ -205,7 +220,10 @@ describe("checkEmpire", () => {
 				);
 				expect(!!f).toBe(shouldBuy);
 				if (f && f.kind === "buy") {
-					expect(f.delta).toBeCloseTo((s.unitCost - price) * s.perDay, 6);
+					expect(f.delta).toBeCloseTo(
+						(s.unitCost - price) * s.perDay,
+						6
+					);
 					expect(f.market.exchange).toBeTruthy();
 				}
 			}
@@ -230,7 +248,10 @@ describe("checkEmpire", () => {
 				-ctx.buildings
 					.get("FRM")!
 					.costs.reduce(
-						(s, c) => s - c.material_amount * ctx.prices.getPrice(c.material_ticker, "BUY"),
+						(s, c) =>
+							s -
+							c.material_amount *
+								ctx.prices.getPrice(c.material_ticker, "BUY"),
 						0
 					),
 			6
@@ -242,7 +263,9 @@ describe("checkEmpire", () => {
 		expect(own.payback).toBeCloseTo(own.construction / own.gain, 6);
 		// options are ranked by gain
 		for (let i = 1; i < f.options.length; i++)
-			expect(f.options[i - 1].gain).toBeGreaterThanOrEqual(f.options[i].gain);
+			expect(f.options[i - 1].gain).toBeGreaterThanOrEqual(
+				f.options[i].gain
+			);
 
 		const rig = base(r, "B").findings.find(
 			(x): x is ICheckLocationFinding =>
@@ -255,9 +278,11 @@ describe("checkEmpire", () => {
 			expect(sites.has(o.planet.planet_natural_id)).toBe(true);
 			expect(o.rate).toBe(
 				extractorRate(
-					ctx.extraction!.get("H2O")!.sites.find(
-						(s) => s.planetId === o.planet.planet_natural_id
-					)!
+					ctx
+						.extraction!.get("H2O")!
+						.sites.find(
+							(s) => s.planetId === o.planet.planet_natural_id
+						)!
 				)
 			);
 		}
@@ -274,20 +299,33 @@ describe("checkEmpire", () => {
 		const fresh = f.options.find((o) => o.own === null)!;
 		// plots as the index has them (spec planet-plots), unknown without
 		expect(fresh.plots).toEqual(planetPlots(fresh.planet));
-		for (const o of f.options) expect(o.full).toBe(!!o.plots && o.plots.free <= 0 && !o.plots.ghost);
-		const unknown = { ...ctx, planets: new Map(
-			[...ctx.planets!].map(([id, p]) => [
-				id,
-				{ ...p, plots_total: null, plots_used: null, supports_ghost_sites: null } as PlanetSearchIndexEntry,
-			])
-		) };
+		for (const o of f.options)
+			expect(o.full).toBe(
+				!!o.plots && o.plots.free <= 0 && !o.plots.ghost
+			);
+		const unknown = {
+			...ctx,
+			planets: new Map(
+				[...ctx.planets!].map(([id, p]) => [
+					id,
+					{
+						...p,
+						plots_total: null,
+						plots_used: null,
+						supports_ghost_sites: null,
+					} as PlanetSearchIndexEntry,
+				])
+			),
+		};
 		const u = base(check({ plans }, unknown), "C").findings.find(
 			(x): x is ICheckLocationFinding => x.kind === "location"
 		)!;
 		expect(u.options.every((o) => o.plots === null && !o.full)).toBe(true);
 		expect(u.suggested).not.toBeNull();
 		expect(f.options.every((o) => o.own === null)).toBe(true);
-		expect(fresh.area).toBeGreaterThan(25 + 2 * ctx.buildings.get("FRM")!.area_cost);
+		expect(fresh.area).toBeGreaterThan(
+			25 + 2 * ctx.buildings.get("FRM")!.area_cost
+		);
 		expect(f.suggested).toBe(
 			f.options.find((o) => o.fits && !o.full && !o.slow)
 		);
@@ -310,7 +348,9 @@ describe("checkEmpire", () => {
 		)!;
 		expect(fullOption.full).toBe(true);
 		expect(fullOption.plots).toEqual({ free: 0, total: 10, ghost: false });
-		expect(g.options.indexOf(fullOption)).toBe(f.options.indexOf(f.suggested!));
+		expect(g.options.indexOf(fullOption)).toBe(
+			f.options.indexOf(f.suggested!)
+		);
 		expect(g.option).not.toBe(fullOption);
 		expect(g.better).toContain(fullOption);
 
@@ -337,7 +377,9 @@ describe("checkEmpire", () => {
 			(x): x is ICheckLocationFinding => x.kind === "location"
 		)!;
 		expect(p.picked).toBe(true);
-		expect(p.option.planet.planet_natural_id).toBe(last.planet.planet_natural_id);
+		expect(p.option.planet.planet_natural_id).toBe(
+			last.planet.planet_natural_id
+		);
 		expect(p.delta).toBeCloseTo(last.gain, 6);
 		expect(p.construction).toBeCloseTo(last.construction, 6);
 
@@ -350,7 +392,9 @@ describe("checkEmpire", () => {
 		expect(s).toBeDefined();
 		expect(s!.kind === "location" && s!.picked).toBe(true);
 		expect(
-			base(check({ min: 1e12 }), "C").findings.some((x) => x.kind === "location")
+			base(check({ min: 1e12 }), "C").findings.some(
+				(x) => x.kind === "location"
+			)
 		).toBe(false);
 
 		const strict = check({ payback: 0.001 });
@@ -374,15 +418,25 @@ describe("checkEmpire", () => {
 		const lux = base(r, "B").findings.find(
 			(f) => f.kind === "setup" && f.setup === "lux"
 		)!;
-		if (lux.kind !== "setup" || lux.setup !== "lux") throw new Error("kind");
+		if (lux.kind !== "setup" || lux.setup !== "lux")
+			throw new Error("kind");
 		const w = PLANS[1].result.workforce;
-		const cost = (["pioneer", "settler", "technician", "engineer", "scientist"] as const)
+		const cost = (
+			[
+				"pioneer",
+				"settler",
+				"technician",
+				"engineer",
+				"scientist",
+			] as const
+		)
 			.filter((t) => w[t].required > 0)
 			.reduce(
 				(s, t) =>
 					s +
 					w[t].required *
-						(workerUpkeep(ctx, t, true, true) - workerUpkeep(ctx, t, false, false)),
+						(workerUpkeep(ctx, t, true, true) -
+							workerUpkeep(ctx, t, false, false)),
 				0
 			);
 		expect(lux.cost).toBeCloseTo(cost, 6);
@@ -398,16 +452,21 @@ describe("checkEmpire", () => {
 		const experts = base(r, "B").findings.find(
 			(f) => f.kind === "setup" && f.setup === "experts"
 		)!;
-		if (experts.kind !== "setup" || experts.setup !== "experts") throw new Error("kind");
+		if (experts.kind !== "setup" || experts.setup !== "experts")
+			throw new Error("kind");
 		expect(experts.experts.Agriculture).toBe(5);
 		expect(experts.experts.Resource_Extraction).toBe(1);
-		expect(base(r, "A").findings.some((f) => f.kind === "setup")).toBe(false);
+		expect(base(r, "A").findings.some((f) => f.kind === "setup")).toBe(
+			false
+		);
 
 		const hidden = check({ setup: false });
 		expect(hidden.findings.some((f) => f.kind === "setup")).toBe(false);
 		expect(hidden.totals.setupGain).toBe(0);
 		expect(r.totals.setupGain).toBeCloseTo(
-			r.findings.filter((f) => f.kind === "setup").reduce((s, f) => s + f.delta, 0),
+			r.findings
+				.filter((f) => f.kind === "setup")
+				.reduce((s, f) => s + f.delta, 0),
 			6
 		);
 	});
@@ -420,7 +479,9 @@ describe("checkEmpire", () => {
 		expect(r.totals.optimal).toBe(2);
 		const some = check({ min: 200 });
 		expect(
-			some.findings.every((f) => f.kind === "fix" || Math.abs(f.delta) >= 200)
+			some.findings.every(
+				(f) => f.kind === "fix" || Math.abs(f.delta) >= 200
+			)
 		).toBe(true);
 	});
 
@@ -431,7 +492,10 @@ describe("checkEmpire", () => {
 			let sum = 0;
 			for (const f of b.findings)
 				if (f.step && f.kind !== "fix")
-					best.set(f.step.key, Math.max(best.get(f.step.key) ?? 0, f.delta));
+					best.set(
+						f.step.key,
+						Math.max(best.get(f.step.key) ?? 0, f.delta)
+					);
 				else sum += f.delta;
 			for (const v of best.values()) sum += v;
 			expect(b.gain).toBeCloseTo(sum, 6);
@@ -455,7 +519,9 @@ describe("checkEmpire", () => {
 		expect(input.targets[0].ticker).toBe("RAT");
 		expect(input.targets[0].perDay).toBeCloseTo(r.net.RAT, 6);
 		const names = input.bases.map((b) => b.name);
-		expect(names).toEqual(expect.arrayContaining(["Plan B", "Plan C", "Plan D"]));
+		expect(names).toEqual(
+			expect.arrayContaining(["Plan B", "Plan C", "Plan D"])
+		);
 		const b = input.bases.find((x) => x.name === "Plan B")!;
 		expect(b.planetId).toBe(FARM_PLANET);
 		expect(b.cogc).toBe("none");
@@ -471,7 +537,13 @@ describe("checkEmpire", () => {
 	});
 
 	it("names bases and reads plan luxuries", () => {
-		expect([0, 25, 26, 27, 701].map(baseLetter)).toEqual(["A", "Z", "AA", "AB", "ZZ"]);
+		expect([0, 25, 26, 27, 701].map(baseLetter)).toEqual([
+			"A",
+			"Z",
+			"AA",
+			"AB",
+			"ZZ",
+		]);
 		expect(planLux(PLANS[0].result.workforce)).toBe("both");
 		expect(planLux(PLANS[1].result.workforce)).toBe("none");
 	});
@@ -489,17 +561,22 @@ describe("checkEmpire edges", () => {
 		]);
 		homeless.plan_data.infrastructure = [];
 		const r = check({
-			plans: [...PLANS, checkFromPlan("F", idle), checkFromPlan("G", homeless)],
+			plans: [
+				...PLANS,
+				checkFromPlan("F", idle),
+				checkFromPlan("G", homeless),
+			],
 			targets: ["RAT"],
 		});
 		const f = base(r, "F");
 		expect(f.steps.map((s) => s.building)).toEqual(["FP"]);
 		expect(f.lux).toBe("lux1");
-		const lux = f.findings.find((x) => x.kind === "setup" && x.setup === "lux");
-		expect(lux?.kind === "setup" && lux.setup === "lux" && lux.factor).toBeCloseTo(
-			15 / 13 - 1,
-			6
+		const lux = f.findings.find(
+			(x) => x.kind === "setup" && x.setup === "lux"
 		);
+		expect(
+			lux?.kind === "setup" && lux.setup === "lux" && lux.factor
+		).toBeCloseTo(15 / 13 - 1, 6);
 		const g = base(r, "G");
 		expect(g.steps).toEqual([]);
 		expect(g.efficiency).toEqual({ min: 0, max: 0 });
@@ -533,9 +610,9 @@ describe("checkEmpire edges", () => {
 
 	it("checks without the planet index: no fixes, no moves", () => {
 		const r = check({}, testContext(false));
-		expect(r.bases.every((b) => b.planet === null && b.running === "---")).toBe(
-			true
-		);
+		expect(
+			r.bases.every((b) => b.planet === null && b.running === "---")
+		).toBe(true);
 		expect(
 			r.findings.some((f) => f.kind === "fix" || f.kind === "location")
 		).toBe(false);
@@ -571,7 +648,9 @@ describe("checkEmpire edges", () => {
 		expect(target.name).toBe("Plan B");
 		// a new base joins the chain's bases
 		const fresh = move.options.find((o) => !o.own)!;
-		const moved = check({ picks: { [move.step.key]: fresh.planet.planet_natural_id } });
+		const moved = check({
+			picks: { [move.step.key]: fresh.planet.planet_natural_id },
+		});
 		const m = base(moved, "C").findings.find(
 			(x): x is ICheckLocationFinding => x.kind === "location"
 		)!;
@@ -579,7 +658,13 @@ describe("checkEmpire edges", () => {
 		const added = planned.bases.find((b) => b.id === planned.baseOf.GRN)!;
 		expect(added.planetId).toBe(fresh.planet.planet_natural_id);
 		expect(added.cogc).toBe("auto");
-		const buy = { ...p, kind: "buy" as const, cost: 1, price: 0.5, market: { sharePct: 1, level: null, exchange: "AI1" } };
+		const buy = {
+			...p,
+			kind: "buy" as const,
+			cost: 1,
+			price: 0.5,
+			market: { sharePct: 1, level: null, exchange: "AI1" },
+		};
 		expect(tryInPlanner(picked, buy)!.source[p.step.ticker]).toBe("buy");
 	});
 });
@@ -591,21 +676,27 @@ describe("checkEmpire more edges", () => {
 			(x): x is ICheckLocationFinding => x.kind === "location"
 		)!;
 		expect(rig.step.extraction).toBe(true);
-		const here = ctx.extraction!.get("H2O")!.sites.find(
-			(s) => s.planetId === BARREN
-		)!;
+		const here = ctx
+			.extraction!.get("H2O")!
+			.sites.find((s) => s.planetId === BARREN)!;
 		expect(rig.hereRate).toBe(extractorRate(here));
-		for (const o of rig.options) expect(o.rate!).toBeGreaterThan(rig.hereRate!);
+		for (const o of rig.options)
+			expect(o.rate!).toBeGreaterThan(rig.hereRate!);
 	});
 
 	it("reads plans with lux 2, idle orders, steps outside the chains and shared inputs", () => {
-		const lux2 = checkPlan("G", FOOD_PLANET, "---", "lux2", {}, [["FP", 1, RAT]]);
+		const lux2 = checkPlan("G", FOOD_PLANET, "---", "lux2", {}, [
+			["FP", 1, RAT],
+		]);
 		expect(planLux(lux2.result.workforce)).toBe("lux2");
 		const mixed = fixturePlan("H", FOOD_PLANET, "---", "both", {}, [
 			["FP", 1, RAT],
 			["INC", 1, "INC#4xGRN=>4xC"],
 		]);
-		mixed.plan_data.buildings[0].active_recipes.push({ recipeid: DW, amount: 0 });
+		mixed.plan_data.buildings[0].active_recipes.push({
+			recipeid: DW,
+			amount: 0,
+		});
 		const algae = checkPlan("I", FARM_PLANET, "---", "both", {}, [
 			["HYF", 1, "HYF#16xH2O 2xNS=>12xALG"],
 		]);
@@ -623,10 +714,9 @@ describe("checkEmpire more edges", () => {
 		const lux = base(r, "G").findings.find(
 			(x) => x.kind === "setup" && x.setup === "lux"
 		);
-		expect(lux?.kind === "setup" && lux.setup === "lux" && lux.factor).toBeCloseTo(
-			12 / 11 - 1,
-			6
-		);
+		expect(
+			lux?.kind === "setup" && lux.setup === "lux" && lux.factor
+		).toBeCloseTo(12 / 11 - 1, 6);
 		expect(
 			planetPlots({ plots_total: 4 } as unknown as PlanetSearchIndexEntry)
 		).toEqual({ free: 4, total: 4, ghost: false });

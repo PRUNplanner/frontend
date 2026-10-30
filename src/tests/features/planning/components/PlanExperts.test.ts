@@ -36,7 +36,8 @@ const bonus = (wrapper: VueWrapper, index: number) =>
 	rows(wrapper).at(index)!.find("[data-bonus]");
 const input = (wrapper: VueWrapper, index: number) =>
 	wrapper.findAll("input").at(index)!;
-const moreButton = (wrapper: VueWrapper) => wrapper.find("button[aria-expanded]");
+const moreButton = (wrapper: VueWrapper) =>
+	wrapper.find("button[aria-expanded]");
 
 describe("PlanExperts", () => {
 	it("lists only fields with experts, the rest behind a button", async () => {
@@ -105,7 +106,9 @@ describe("PlanExperts", () => {
 	it("has no more button when every field is used", async () => {
 		const { wrapper } = await mountExperts({
 			expertData: experts(
-				Object.fromEntries(ExpertTypeSchema.options.map((e) => [e, [1, 0]]))
+				Object.fromEntries(
+					ExpertTypeSchema.options.map((e) => [e, [1, 0]])
+				)
 			),
 		});
 
@@ -171,7 +174,9 @@ describe("PlanExperts", () => {
 		// Agriculture, the first of the more list
 		await input(wrapper, 2).setValue("1");
 
-		expect(component.emitted("update:expert")).toEqual([["Agriculture", 1]]);
+		expect(component.emitted("update:expert")).toEqual([
+			["Agriculture", 1],
+		]);
 	});
 
 	it("clamps amounts to 0..5", async () => {

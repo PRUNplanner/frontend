@@ -7,7 +7,10 @@ import { mountComponent } from "@/tests/mountComponent";
 
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
 vi.mock("@unhead/vue", () => head);
-const route = vi.hoisted(() => ({ path: "/", meta: {} as { indexable?: boolean } }));
+const route = vi.hoisted(() => ({
+	path: "/",
+	meta: {} as { indexable?: boolean },
+}));
 vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
 	useRoute: () => route,
@@ -16,10 +19,10 @@ vi.mock("@/App.vue", () => ({ default: { render: () => null } }));
 
 interface Head {
 	titleTemplate: (title?: string) => string;
-	htmlAttrs: { lang: unknown }
+	htmlAttrs: { lang: unknown };
 	meta: { name: string; content: () => string | undefined }[];
 	link: unknown;
-};
+}
 
 async function mountHead(path: string, indexable?: boolean): Promise<Head> {
 	route.path = path;

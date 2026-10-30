@@ -60,7 +60,14 @@ export function pickerOptions(
 		const current = sorted.find((r) => r.recipe_id === currentId);
 		return [
 			...(current
-				? [{ recipe: current, current: true, inPlan: true, disabled: true }]
+				? [
+						{
+							recipe: current,
+							current: true,
+							inPlan: true,
+							disabled: true,
+						},
+					]
 				: []),
 			...sorted
 				.filter((r) => r !== current)

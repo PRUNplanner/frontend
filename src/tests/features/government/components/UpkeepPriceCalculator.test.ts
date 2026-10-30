@@ -174,13 +174,7 @@ describe("UpkeepPriceCalculator", () => {
 
 		expect(
 			wrapper.findAllComponents(PButton).map((b) => b.props("pressed"))
-		).toEqual([
-			true,
-			false,
-			false,
-			false,
-			false,
-		]);
+		).toEqual([true, false, false, false, false]);
 
 		await needButton(wrapper, "health").trigger("click");
 
@@ -319,7 +313,9 @@ describe("UpkeepPriceCalculator", () => {
 		expect(tableRows(wrapper)).toHaveLength(0);
 		await new Promise((resolve) => setTimeout(resolve, 1100));
 		expect(trackEvent).not.toHaveBeenCalled();
-		expect(reportError).toHaveBeenCalledWith(new Error("prices unavailable"));
+		expect(reportError).toHaveBeenCalledWith(
+			new Error("prices unavailable")
+		);
 		expect(toasts.value.at(-1)).toMatchObject({
 			text: "common.ui.load_failed",
 			type: "error",

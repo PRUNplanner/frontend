@@ -64,15 +64,21 @@ describe("MarketInShort", () => {
 		expect(wrapper.findAll("article")).toHaveLength(4);
 		expect(tile().find("[data-skeleton]").exists()).toBe(true);
 
-		await setProps({ books: [book("AI1", 100, 90), book("NC1", 130, 120)] });
+		await setProps({
+			books: [book("AI1", 100, 90), book("NC1", 130, 120)],
+		});
 		expect(tile().text()).toContain("FE");
 		expect(tile().text()).toContain("buy on AI1, sell on NC1");
 		expect(tile().text()).toContain("ask 100");
 		expect(tile().text()).toContain("bid 120");
 		expect(tile().text()).toContain("+20.0");
 
-		await setProps({ books: [book("AI1", 100, 90), book("NC1", 130, 101)] });
-		expect(tile().text()).toContain("No open gap of 10 % or more right now");
+		await setProps({
+			books: [book("AI1", 100, 90), book("NC1", 130, 101)],
+		});
+		expect(tile().text()).toContain(
+			"No open gap of 10 % or more right now"
+		);
 
 		await setProps({ books: null, booksFailed: true });
 		expect(tile().text()).toContain("market_report.error");

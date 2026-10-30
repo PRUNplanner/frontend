@@ -15,9 +15,9 @@ describe("PSpin", () => {
 		["white", "text-white"],
 		["muted", "text-muted"],
 	] as const)("takes the %s colour from a fixed map", (color, cls) => {
-		expect(mount(PSpin, { props: { color } }).find("svg").classes()).toContain(
-			cls
-		);
+		expect(
+			mount(PSpin, { props: { color } }).find("svg").classes()
+		).toContain(cls);
 	});
 
 	it.each([

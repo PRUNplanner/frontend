@@ -201,21 +201,18 @@ describe("QueryCacheView", () => {
 		it.each([
 			[false, true],
 			[true, false],
-		])(
-			"switching from %s to %s switches debug",
-			async (before, after) => {
-				calcDebug.value = before;
-				const { wrapper } = await mountComponent(
-					QueryCacheView,
-					{},
-					{ pinia }
-				);
+		])("switching from %s to %s switches debug", async (before, after) => {
+			calcDebug.value = before;
+			const { wrapper } = await mountComponent(
+				QueryCacheView,
+				{},
+				{ pinia }
+			);
 
-				await wrapper.find("input[type=checkbox]").setValue(after);
+			await wrapper.find("input[type=checkbox]").setValue(after);
 
-				expect(setCalcDebug).toHaveBeenCalledExactlyOnceWith(after);
-			}
-		);
+			expect(setCalcDebug).toHaveBeenCalledExactlyOnceWith(after);
+		});
 	});
 
 	it("sets its title", async () => {
