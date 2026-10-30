@@ -18,6 +18,7 @@
 	const { t, locale } = useI18n({ useScope: "global" });
 
 	import { PButton, PDrawer, PNotice } from "@/ui";
+	import { reportError } from "@/lib/analytics/useAnalytics";
 	// showdown loads with the first opened drawer, not with every page
 	const VueShowdown = defineAsyncComponent(() =>
 		import("vue-showdown").then((m) => m.VueShowdown)
@@ -92,7 +93,7 @@
 			try {
 				markdownContent.value = await loadMarkdown();
 			} catch (err) {
-				console.error(err);
+				reportError(err);
 				loadFailed.value = true;
 			}
 		}

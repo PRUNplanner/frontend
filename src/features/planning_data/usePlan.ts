@@ -16,6 +16,7 @@ import type {
 	IPlanSaveResult,
 } from "@/features/planning_data/usePlan.types";
 import { getSaveError } from "@/features/save_conflict/saveConflict.util";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
@@ -182,7 +183,7 @@ export function usePlan() {
 				modifiedAt: createdData.modified_at,
 			};
 		} catch (err) {
-			console.error(`Error creating plan: ${err}`);
+			reportError(err);
 			return undefined;
 		}
 	}
@@ -221,7 +222,7 @@ export function usePlan() {
 			}).execute();
 			return { uuid: savedData.uuid, modifiedAt: savedData.modified_at };
 		} catch (err) {
-			console.error(`Error updating plan: ${err}`);
+			reportError(err);
 			return { error: getSaveError(err) ?? "failed" };
 		}
 	}

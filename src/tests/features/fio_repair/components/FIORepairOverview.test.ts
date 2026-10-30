@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { reportError } from "@/lib/analytics/useAnalytics";
+import { toasts } from "@/ui/useToast";
 import { DOMWrapper, flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import { h } from "vue";
@@ -28,6 +30,7 @@ import type { IFIORepairBase } from "@/features/fio_repair/fioRepair.types";
 const repair = vi.hoisted(() => ({
 	bases: undefined as unknown as { value: IFIORepairBase[] },
 	resolve: () => {},
+	reject: (_error: Error) => {},
 	flight: vi.fn(),
 }));
 
@@ -39,13 +42,20 @@ vi.mock("@/features/fio_repair/useFIORepair", async () => {
 			return {
 				bases: repair.bases,
 				progress: vueRef({ current: 0, total: 1 }),
-				load: () => new Promise<void>((r) => (repair.resolve = r)),
+				load: () =>
+					new Promise<void>((resolve, reject) => {
+						repair.resolve = resolve;
+						repair.reject = reject;
+					}),
 				flight: repair.flight,
 			};
 		},
 	};
 });
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	default: { name: "CXPreferenceSelector", render: () => h("div") },
 }));
@@ -121,6 +131,20 @@ describe("FIORepairOverview", () => {
 	afterEach(() => {
 		vi.unstubAllGlobals();
 		vi.useRealTimers();
+	});
+
+	it("says so when loading fails", async () => {
+		toasts.value = [];
+		await mountComponent(
+			FIORepairOverview,
+			{ plans: [], empires: [] },
+			{ pinia, messages }
+		);
+		repair.reject(new Error("no game data"));
+		await flushPromises();
+
+		expect(reportError).toHaveBeenCalledWith(new Error("no game data"));
+		expect(toasts.value.at(-1)).toMatchObject({ type: "error" });
 	});
 
 	it("wide: first base selected beside the list, one tool use", async () => {

@@ -21,7 +21,10 @@ import { mountComponent } from "@/tests/mountComponent";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",
 	async () => (await import("@/tests/stubs")).materialTile

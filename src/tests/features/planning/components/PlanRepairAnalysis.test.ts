@@ -19,7 +19,10 @@ import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculat
 // test data
 import plan from "@/locales/en_US/plan.json";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const CX_UUID = "cx-uuid";
 const PLANET = "ZV-307c";

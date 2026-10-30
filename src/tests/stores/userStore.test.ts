@@ -797,7 +797,9 @@ describe("User Store", () => {
 			await userStore.setLocale(xx, typed);
 
 			expect(error).toHaveBeenCalledWith(
-				"No files found for locale: xx_XX"
+				expect.objectContaining({
+					message: "No files found for locale: xx_XX",
+				})
 			);
 			expect(composer.locale.value).toBe("en_US");
 		});
@@ -861,10 +863,7 @@ describe("User Store", () => {
 
 			await userStore.setLocale(xx, typed);
 
-			expect(error).toHaveBeenCalledWith(
-				"Failed to load locale xx_XX:",
-				expect.any(Error)
-			);
+			expect(error).toHaveBeenCalledWith(expect.any(Error));
 			expect(composer.locale.value).toBe("en_US");
 		});
 	});

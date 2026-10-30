@@ -222,7 +222,13 @@ export function usePlanEdits(
 				handleUpdateInfrastructure(habType, count);
 			}
 		} else {
-			console.error(`Unable to optimize habs: ${solution.status}`);
+			if (import.meta.env.DEV)
+				console.warn(`Unable to optimize habs: ${solution.status}`);
+			// the automatic run stays quiet, a click gets an answer
+			if (force)
+				toast(t("plan.components.infrastructure.optimize_failed"), {
+					type: "error",
+				});
 		}
 	}
 

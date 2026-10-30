@@ -14,6 +14,7 @@ vi.mock("vue-i18n", async (importOriginal) => ({
 	useI18n: () => ({ t: (key: string) => key }),
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),

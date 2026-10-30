@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { nextTick, ref, type Slots } from "vue";
 import { RouterLinkStub, type VueWrapper } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
@@ -126,7 +126,10 @@ const calculatedEmpires = () =>
 		(c) => (c[0] as { empire?: { uuid: string } }).empire?.uuid
 	);
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("FIOBurnView", () => {
 	beforeEach(() => {
@@ -185,7 +188,6 @@ describe("FIOBurnView", () => {
 	});
 
 	it("hides the progress when the calculation fails", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		createContext.mockRejectedValue(new Error("no context"));
 
 		const wrapper = await mountView();
@@ -194,8 +196,7 @@ describe("FIOBurnView", () => {
 		expect(wrapper.findComponent(ComputingProgress).exists()).toBe(false);
 		expect(calculatePlan).not.toHaveBeenCalled();
 		expect(trackEvent).not.toHaveBeenCalled();
-		expect(error).toHaveBeenCalledWith(new Error("no context"));
-		error.mockRestore();
+		expect(reportError).toHaveBeenCalledWith(new Error("no context"));
 	});
 
 	describe("another tab changed the plans", () => {

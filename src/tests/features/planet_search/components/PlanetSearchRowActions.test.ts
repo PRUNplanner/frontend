@@ -20,7 +20,10 @@ const open = vi.hoisted(() => vi.fn());
 vi.mock("@/features/account/useAuthPanel", () => ({
 	useAuthPanel: () => ({ open }),
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("PlanetSearchRowActions", () => {
 	const planet = fixture[0];

@@ -408,6 +408,7 @@ describe("ManagePlanEmpireAssignments", () => {
 	});
 
 	it("keeps the plans and stops the spinner when deleting fails", async () => {
+		toasts.value = [];
 		mock.onDelete(new RegExp(`planning/plan/${P3}/$`)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper, host } = await mountAssignments();
@@ -425,6 +426,10 @@ describe("ManagePlanEmpireAssignments", () => {
 		).toBe("false");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.delete_failed",
+			type: "error",
+		});
 	});
 
 	it("selects all shown plans and deletes them after one confirmation", async () => {
@@ -778,7 +783,8 @@ describe("ManagePlanEmpireAssignments", () => {
 			expect(document.body.querySelector("[role=dialog]")).toBeNull();
 		});
 
-		it("stops the spinner when cloning fails", async () => {
+		it("stops the spinner and says so when cloning fails", async () => {
+			toasts.value = [];
 			mock.onPost(new RegExp(`planning/plan/${P1}/clone/$`)).reply(500);
 			const error = vi
 				.spyOn(console, "error")
@@ -791,6 +797,10 @@ describe("ManagePlanEmpireAssignments", () => {
 
 			expect(mock.history.post).toHaveLength(1);
 			expect(host.data.planList.value).toEqual([]);
+			expect(toasts.value.at(-1)).toMatchObject({
+				text: "common.ui.save_failed",
+				type: "error",
+			});
 			expect(
 				bodyRows(wrapper)[0]
 					.find("button[aria-busy]")

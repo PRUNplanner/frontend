@@ -18,6 +18,7 @@ a visitor who chose is not asked again after logging in. DNT/GPC means no. Code 
 | `trackPageview(routeName)` | `$pageview`, called by the router only |
 | `trackUser(props)` | person properties |
 | `identifyUser(profile)` / `resetUser()` | login and logout |
+| `reportError` | caught errors: sends non-API errors once, console in development only |
 | `trackException` / `trackVueError` | error tracking |
 
 The event names and their properties are the keys of

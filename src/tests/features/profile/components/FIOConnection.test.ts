@@ -7,13 +7,14 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
+import { toasts } from "@/ui/useToast";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { useUserStore } from "@/stores/userStore";
 import FIOConnection from "@/features/profile/components/FIOConnection.vue";
 import PButton from "@/ui/components/PButton.vue";
@@ -23,6 +24,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),
@@ -312,21 +314,22 @@ describe("FIOConnection", () => {
 	});
 
 	it("keeps the edit unsaved when the patch fails", async () => {
+		toasts.value = [];
 		mock.onPatch(PROFILE_URL).reply(500);
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountProfile(profile());
 		await inputs(wrapper).at(1)!.setValue("other-user");
 		await flushPromises();
 
 		await save(wrapper);
 
-		expect(error).toHaveBeenCalledWith(
-			"Error patching user profile",
-			expect.any(Error)
-		);
+		expect(reportError).toHaveBeenCalledWith(expect.any(Error));
 		expect(saveType(wrapper)).toBe("primary");
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
 		expect(values(wrapper).at(1)).toBe("other-user");
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.save_failed",
+			type: "error",
+		});
 	});
 
 	it("sends no second patch while one is in flight", async () => {

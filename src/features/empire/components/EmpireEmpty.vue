@@ -3,11 +3,15 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// UI
-	import { PButton } from "@/ui";
+	import { PButton, useToast } from "@/ui";
 	import { AddSharp } from "@vicons/material";
+	import { useI18n } from "vue-i18n";
+
+	const { t } = useI18n();
+	const toast = useToast();
 
 	const emit = defineEmits<{
 		(e: "created", empireUuid: string): void;
@@ -52,7 +56,8 @@
 
 			emit("created", empire.uuid);
 		} catch (err) {
-			console.error("Error creating empire", err);
+			reportError(err);
+			toast(t("common.ui.save_failed"), { type: "error" });
 		} finally {
 			isCreating.value = false;
 		}

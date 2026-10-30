@@ -3,13 +3,17 @@
 
 	// Composables
 	import { useSharing } from "@/features/sharing/useSharing";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { copyToClipboard } from "@/util/data";
 
 	// UI
-	import { PButton, PModal } from "@/ui";
+	import { PButton, PModal, useToast } from "@/ui";
+	import { useI18n } from "vue-i18n";
+
+	const { t } = useI18n();
+	const toast = useToast();
 
 	const props = defineProps({
 		planUuid: {
@@ -38,7 +42,8 @@
 			show.value = false;
 			trackEvent("plan:share_delete");
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.delete_failed"), { type: "error" });
 		} finally {
 			isDeleting.value = false;
 		}
@@ -50,7 +55,8 @@
 			await createSharing();
 			trackEvent("plan:share_create");
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.save_failed"), { type: "error" });
 		} finally {
 			isCreating.value = false;
 		}

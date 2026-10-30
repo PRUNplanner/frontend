@@ -10,7 +10,10 @@ import { experts } from "@/tests/features/planning/usePlanCalculation.fixtures";
 // Types & Interfaces
 import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackPlanEdit: vi.fn(),
+}));
 
 async function mountExperts(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanExperts, {

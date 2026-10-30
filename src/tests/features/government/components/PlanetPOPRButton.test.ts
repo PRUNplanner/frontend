@@ -14,7 +14,10 @@ import { mountComponent } from "@/tests/mountComponent";
 // test data
 import popr from "@/tests/test_data/api_data_popr_latest.json";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/government/components/PlanetPOPRTable.vue", () => ({
 	default: {
 		name: "PlanetPOPRTable",
@@ -140,17 +143,15 @@ describe("PlanetPOPRButton", () => {
 	});
 
 	it.each([
-		// no report yet (404) is empty, not an error worth logging
-		[404, "AA-006a", false],
-		[500, "AA-007a", true],
-	])("disables the button without a POPR (%i)", async (status, planet, logged) => {
+		// no report yet (404) is empty, not an error
+		[404, "AA-006a"],
+		[500, "AA-007a"],
+	])("disables the button without a POPR (%i)", async (status, planet) => {
 		mock.onGet(poprUrl(planet)).reply(status);
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountButton({ planetNaturalId: planet });
 
 		await click(wrapper);
-
-		expect(error.mock.calls.length > 0).toBe(logged);
 
 		expect(wrapper.find("button").text()).toBe(
 			"government.popr_button.buttons.no_popr"

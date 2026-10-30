@@ -79,7 +79,10 @@ const details = (wrapper: VueWrapper) =>
 const linkTargets = (el: VueWrapper) =>
 	el.findAllComponents(RouterLinkStub).map((l) => l.props("to"));
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("EmpireMaterialIO", () => {
 	beforeAll(async () => {

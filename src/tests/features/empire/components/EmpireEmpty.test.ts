@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { toasts } from "@/ui/useToast";
 import {
 	flushPromises,
 	RouterLinkStub,
@@ -81,7 +82,8 @@ describe("EmpireEmpty", () => {
 		expect(component.emitted("created")).toEqual([[EMPIRE]]);
 	});
 
-	it("reports nothing when creating fails", async () => {
+	it("emits nothing and says so when creating fails", async () => {
+		toasts.value = [];
 		mock.onPost(/planning\/empire\/$/).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper, component } = await mountComponent(EmpireEmpty, {});
@@ -90,6 +92,10 @@ describe("EmpireEmpty", () => {
 
 		expect(component.emitted("created")).toBeUndefined();
 		error.mockRestore();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.save_failed",
+			type: "error",
+		});
 	});
 
 	it("links to management", async () => {

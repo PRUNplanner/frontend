@@ -57,13 +57,17 @@ describe("createPriceBook", () => {
 		expect(getExchange).toHaveBeenCalledTimes(2);
 	});
 
-	it("returns 0 and logs when a price can't be resolved", () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
-		const book = createPriceBook(undefined, undefined, getExchange);
+	it("returns 0 and reports when a price can't be resolved", () => {
+		const onError = vi.fn();
+		const book = createPriceBook(
+			undefined,
+			undefined,
+			getExchange,
+			onError
+		);
 
 		expect(book.getPrice("FOO", "BUY")).toBe(0);
-		expect(error).toHaveBeenCalledOnce();
-		error.mockRestore();
+		expect(onError).toHaveBeenCalledOnce();
 	});
 
 	it("applies a planet exchange preference only on its own planet", () => {
@@ -195,15 +199,30 @@ describe("getPriceSource", () => {
 		});
 	});
 
+	it("reports one failed lookup per book", () => {
+		const onError = vi.fn();
+		const book = createPriceBook(
+			undefined,
+			undefined,
+			() => {
+				throw new Error("missing");
+			},
+			onError
+		);
+
+		book.getPrice("DW", "BUY");
+		book.getPrice("RAT", "BUY");
+
+		expect(onError).toHaveBeenCalledOnce();
+	});
+
 	it("is unresolved and zero when the lookup throws", () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const source = createPriceBook(
 			undefined,
 			undefined,
 			getExchange
 		).getPriceSource("FOO", "BUY");
 		expect(source).toMatchObject({ level: "unresolved", zero: true });
-		error.mockRestore();
 	});
 
 	it("passes through a scaled book", () => {

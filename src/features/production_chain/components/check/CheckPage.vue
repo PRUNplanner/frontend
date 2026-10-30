@@ -84,8 +84,8 @@
 		return { ok: n("ok"), imp: n("imp"), fix: n("fix"), out: n("out") };
 	});
 
-	function copyLink(): void {
-		copyToClipboard(checkLink());
+	async function copyLink(): Promise<void> {
+		if (!(await copyToClipboard(checkLink()))) return;
 		toast(t("production_chains.check.link_copied"));
 		track("link_copy");
 	}

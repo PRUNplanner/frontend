@@ -13,7 +13,10 @@ import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.typ
 import type { IPriceSource } from "@/features/cx/priceBook";
 import type { PSelectOption } from "@/ui/ui.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",
 	async () => (await import("@/tests/stubs")).materialTile

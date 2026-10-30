@@ -6,7 +6,10 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 // vi.mock factories are hoisted, so are their helpers
 const { stub, sse } = vi.hoisted(() => ({

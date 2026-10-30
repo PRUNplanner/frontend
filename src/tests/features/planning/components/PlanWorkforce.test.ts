@@ -12,6 +12,7 @@ import plan from "@/locales/en_US/plan.json";
 import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackPlanEdit: vi.fn(),
 }));

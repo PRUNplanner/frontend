@@ -143,6 +143,20 @@ describe("usePlanSave", () => {
 		expect(m.saveExistingPlan.mock.calls[1][2]).toBe("t1");
 	});
 
+	it("says so when Save as fails, and stays open", async () => {
+		const s = setup();
+		m.createNewPlan.mockResolvedValue(undefined);
+		const { result: saving } = await mountSave(s);
+		saving.openSaveAsModal();
+
+		await saving.saveAs();
+
+		expect(saving.refShowSaveAsModal.value).toBe(true);
+		expect(m.toast).toHaveBeenCalledWith("common.ui.save_failed", {
+			type: "error",
+		});
+	});
+
 	it("keeps the edits on a failed save and says so", async () => {
 		const s = setup();
 		m.saveExistingPlan.mockResolvedValue({ error: "failed" });

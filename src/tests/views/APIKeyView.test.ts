@@ -15,7 +15,10 @@ const { keys, calls } = vi.hoisted(() => ({
 }));
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
 		execute: async () => {

@@ -30,7 +30,7 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
 // vi.mock factories are hoisted, so are their helpers
 const { passThrough, nav, trackEvent, execute, copy } = vi.hoisted(() => ({
-	copy: vi.fn(),
+	copy: vi.fn(async (_value: string) => true),
 	passThrough: (name: string) => ({
 		__esModule: true,
 		default: {
@@ -58,7 +58,10 @@ vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
 	default: { name: "HelpDrawer", render: () => null },
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/util/data", async (original) => ({
 	...(await original<typeof import("@/util/data")>()),
 	copyToClipboard: copy,

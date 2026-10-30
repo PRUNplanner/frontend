@@ -89,7 +89,10 @@ vi.mock("@/features/fio/components/FIOBurnTable.vue", () =>
 	stub("FIOBurnTable", ["burnTable"])
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 /**
  * Golden: the burn tables FIO Burn hands its children, from real plan

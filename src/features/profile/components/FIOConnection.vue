@@ -3,12 +3,13 @@
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+	const toast = useToast();
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { isApiError } from "@/lib/apiError";
 
 	// Stores
@@ -21,7 +22,7 @@
 	import FIOInformation from "@/features/profile/components/FIOInformation.vue";
 
 	// UI
-	import { PForm, PFormItem, PInput, PButton } from "@/ui";
+	import { PForm, PFormItem, PInput, PButton, useToast } from "@/ui";
 
 	const userStore = useUserStore();
 
@@ -113,7 +114,7 @@
 			if (userHasFIO && !userHadFIO) trackEvent("account:fio_link");
 			fioConnected.value = userHasFIO && fioChanged;
 		} catch (err) {
-			console.error("Error patching user profile", err);
+			reportError(err);
 			const data = isApiError(err) ? err.responseData : undefined;
 			isThrottled.value = isApiError(err) && err.status === 429;
 			// DRF field errors: { field: [code] }
@@ -127,6 +128,8 @@
 			}
 			const reason = fioErrors.value.fio_apikey ?? fioErrors.value.prun_username;
 			if (reason) trackEvent("account:fio_link_failed", { reason });
+			else if (!isThrottled.value)
+				toast(t("common.ui.save_failed"), { type: "error" });
 		} finally {
 			isUpdating.value = false;
 		}

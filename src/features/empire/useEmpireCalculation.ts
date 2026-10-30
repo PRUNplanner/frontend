@@ -16,6 +16,7 @@ import {
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { planResultCacheKey } from "@/features/empire/empire.util";
 import { type IRun, useRunProgress } from "@/util/runProgress";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -144,7 +145,7 @@ export function useEmpireCalculation(
 			results.value = calculated;
 		} catch (err) {
 			// e.g. game data missing, never persist a partial empire state
-			if (run.isCurrent()) console.error(err);
+			if (run.isCurrent()) reportError(err);
 			return;
 		} finally {
 			if (run.isCurrent()) isCalculating.value = false;

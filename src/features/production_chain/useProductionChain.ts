@@ -18,7 +18,7 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { useCXData } from "@/features/cx/useCXData";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useChainPlans } from "@/features/production_chain/useChainPlans";
 import { remoteChange } from "@/lib/crossTab";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
@@ -450,7 +450,7 @@ export function useProductionChain() {
 			ownLoaded.value = uuid;
 			return true;
 		} catch (e) {
-			console.error(e);
+			reportError(e);
 			return false;
 		}
 	}

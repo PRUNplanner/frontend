@@ -23,7 +23,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { usePlanetSearchPrefs } from "@/features/planet_search/usePlanetSearchPrefs";
 	import { useUserStore } from "@/stores/userStore";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Engine & Util
 	import {
@@ -255,7 +255,7 @@
 				empires.value = await useQuery("GetAllEmpires").execute();
 				if (!loading.value) resolveEmpire();
 			} catch (error) {
-				console.error(error);
+				reportError(error);
 			}
 		}
 	);

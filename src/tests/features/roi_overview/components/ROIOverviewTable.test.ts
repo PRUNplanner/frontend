@@ -99,7 +99,10 @@ const outputs = (wrapper: VueWrapper) =>
 		.findAll('td[data-col-key="recipeOutputs"]')
 		.map((td) => td.find(".font-bold").text());
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("ROIOverviewTable", () => {
 	beforeAll(async () => {

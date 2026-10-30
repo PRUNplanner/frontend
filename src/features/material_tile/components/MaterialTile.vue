@@ -20,7 +20,7 @@
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Components
@@ -168,7 +168,7 @@
 			material.value = await getMaterial(props.ticker);
 			categoryCssClass.value = getMaterialClass(props.ticker);
 		} catch (err) {
-			console.error("Failed to fetch material:", err);
+			reportError(err);
 		}
 	});
 </script>

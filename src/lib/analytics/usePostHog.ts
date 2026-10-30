@@ -212,7 +212,8 @@ async function startAnalytics(deferred: boolean = false): Promise<void> {
 		sendMissedPageview();
 		queue?.forEach(([event, props]) => loaded.capture(event, props));
 	} catch (error) {
-		console.warn("Analytics failed to load", error);
+		if (import.meta.env.DEV)
+			console.warn("Analytics failed to load", error);
 	} finally {
 		if (run === runs) queue = null;
 	}

@@ -10,11 +10,12 @@
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+	const toast = useToast();
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useManageData } from "@/features/manage/useManageData";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import type {
@@ -39,6 +40,7 @@
 		PInputNumber,
 		PSelect,
 		useConfirm,
+		useToast,
 	} from "@/ui";
 	const confirm = useConfirm();
 	import type { PDataTableColumn } from "@/ui/ui.types";
@@ -216,7 +218,8 @@
 				await refetchEmpires();
 			}
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.save_failed"), { type: "error" });
 		} finally {
 			refIsCreating.value = false;
 			refShowCreateEmpire.value = false;
@@ -242,7 +245,8 @@
 			// forced reload of all Empires
 			await refetchEmpires();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.delete_failed"), { type: "error" });
 		} finally {
 			refIsDeleting.value = undefined;
 		}

@@ -14,7 +14,7 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useCXSave } from "@/features/cx/useCXSave";
 	import { useExchangePlanData } from "@/features/exchanges/useExchangePlanData";
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -172,6 +172,8 @@
 			return {
 				ticker: output.ticker,
 				cogm,
+				// infinite at 0 % efficiency: nothing to compare or use
+				hasCOGM: Number.isFinite(cogm),
 				market: marketPrice(output.ticker, "BUY"),
 				fixed,
 				drift:
@@ -269,7 +271,7 @@
 			// reload the CX from the store
 			if (saved) load();
 		} catch (err) {
-			console.error("Error saving CX", err);
+			reportError(err);
 			saveState.value = "error";
 		}
 	}
@@ -409,7 +411,7 @@
 						}}
 					</dd>
 				</dl>
-				<div v-if="o.fixed === null">
+				<div v-if="o.hasCOGM && o.fixed === null">
 					<PButton
 						type="secondary"
 						data-use-cogm
@@ -442,7 +444,7 @@
 						</PButton>
 					</template>
 				</PNotice>
-				<div v-else>
+				<div v-else-if="o.hasCOGM">
 					<PTag type="success" size="sm" data-matches>
 						<CheckSharp class="size-3" />
 						{{ $t("plan.tools.cogm.prices.matches") }}

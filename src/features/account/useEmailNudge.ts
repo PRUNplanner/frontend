@@ -7,7 +7,7 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 import { isApiError } from "@/lib/apiError";
 
 // Composables
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -123,7 +123,7 @@ export function useEmailNudge(planCount: MaybeRefOrGetter<number>) {
 			toast(t("account.email_nudge.code_sent"));
 			return true;
 		} catch (err) {
-			console.error("Error resending verification code", err);
+			reportError(err);
 			toast(
 				t(
 					isApiError(err) && err.status === 429

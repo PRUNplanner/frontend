@@ -19,7 +19,10 @@ import market_summary from "@/tests/test_data/api_data_market_summary.json";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
 	...(await importOriginal<object>()),
 	callMarketSummary: vi.fn(),

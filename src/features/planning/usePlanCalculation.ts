@@ -57,6 +57,7 @@ import {
 	type IVisitationData,
 	planEmptyResult,
 } from "@/features/planning/usePlanCalculation.types";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 const overviewEmpty: IOverviewData = {
@@ -137,9 +138,7 @@ export function usePlanCalculation(
 		planet.value = await getPlanet(planetNaturalId.value);
 		return planet.value;
 	})();
-	loaded.catch((err) => {
-		console.error(err);
-	});
+	loaded.catch(reportError);
 
 	function input(): IPlanInput {
 		return {
@@ -176,7 +175,7 @@ export function usePlanCalculation(
 				lastCalculation = calculatePlan(input(), context(planet.value));
 			} catch (err) {
 				// keep the last result, as a failed run did before
-				console.error(err);
+				reportError(err);
 			}
 			return lastCalculation;
 		}

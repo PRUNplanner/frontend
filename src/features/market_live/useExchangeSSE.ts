@@ -1,6 +1,5 @@
 import { ref, reactive, computed } from "vue";
 import { storeToRefs } from "pinia";
-import { z } from "zod";
 
 import config from "@/lib/config";
 import { i18n } from "@/lib/i18n";
@@ -19,10 +18,13 @@ import type {
 	MessageHistory,
 } from "@/features/market_live/cxDetectors.types";
 import { processUserDetectors } from "@/features/market_live/cxDetectors";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
+// messages that failed on this connection: the first is reported
+let messageFailures = 0;
 
 const cxPointMap = reactive<Record<string, CXDataPoint>>({});
 const eventLog = reactive<MarketEvent[]>([]);
@@ -180,6 +182,10 @@ export function useExchangeSSE() {
 		return next;
 	}
 
+	function reportMessageFailure(err: unknown) {
+		if (!messageFailures++) reportError(err);
+	}
+
 	function processData(event: MessageEvent) {
 		const rawData = JSON.parse(event.data);
 
@@ -187,10 +193,7 @@ export function useExchangeSSE() {
 		const result = SSECXSchema.safeParse(rawData);
 
 		if (!result.success) {
-			console.error(
-				"CX SEE Validation failed",
-				z.treeifyError(result.error)
-			);
+			reportMessageFailure(new Error("CX SSE validation failed"));
 			return;
 		}
 
@@ -247,6 +250,7 @@ export function useExchangeSSE() {
 		// already connected
 		if (eventSource || isConnected.value) return;
 
+		messageFailures = 0;
 		eventSource = new EventSource(urlCXSSE);
 
 		eventSource.onopen = () => {
@@ -254,8 +258,7 @@ export function useExchangeSSE() {
 			connectionError.value = null;
 		};
 
-		eventSource.onerror = (err) => {
-			console.error("CX SSE Error", err);
+		eventSource.onerror = () => {
 			connectionError.value = i18n.global.t("market_live.connection_lost");
 			isConnected.value = false;
 		};
@@ -282,7 +285,7 @@ export function useExchangeSSE() {
 			try {
 				processData(message);
 			} catch (err) {
-				console.error("CX SSE processing failed", err);
+				reportMessageFailure(err);
 			}
 		}
 

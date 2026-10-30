@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { toasts } from "@/ui/useToast";
 import { flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 
 import SharingModal from "@/features/sharing/components/SharingModal.vue";
 import { usePlanningStore } from "@/stores/planningStore";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import {
 	callCreateSharing,
 	callDeleteSharing,
@@ -13,6 +14,7 @@ import {
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),
@@ -107,16 +109,21 @@ describe("SharingModal", () => {
 		expect(button(CREATE)).toBeUndefined();
 	});
 
-	it("logs a failing create and lets the user retry", async () => {
+	it("says so when creating fails and lets the user retry", async () => {
+		toasts.value = [];
 		vi.mocked(callCreateSharing).mockRejectedValue(new Error("boom"));
 		await mountModal();
 
 		button(CREATE)!.click();
 		await flushPromises();
 
-		expect(console.error).toHaveBeenCalledWith(expect.any(Error));
+		expect(reportError).toHaveBeenCalledWith(expect.any(Error));
 		expect(trackEvent).not.toHaveBeenCalled();
 		expect(button(CREATE)).toBeDefined();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.save_failed",
+			type: "error",
+		});
 	});
 
 	it("shows views and url of a shared plan and copies the url", async () => {
@@ -168,6 +175,7 @@ describe("SharingModal", () => {
 	});
 
 	it("stays open when stopping fails", async () => {
+		toasts.value = [];
 		share();
 		vi.mocked(callDeleteSharing).mockRejectedValue(new Error("boom"));
 		const { component } = await mountModal();
@@ -175,9 +183,13 @@ describe("SharingModal", () => {
 		button(STOP)!.click();
 		await flushPromises();
 
-		expect(console.error).toHaveBeenCalledWith(expect.any(Error));
+		expect(reportError).toHaveBeenCalledWith(expect.any(Error));
 		expect(component.emitted("update:show")).toBeUndefined();
 		expect(trackEvent).not.toHaveBeenCalled();
 		expect(button(STOP)).toBeDefined();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.delete_failed",
+			type: "error",
+		});
 	});
 });

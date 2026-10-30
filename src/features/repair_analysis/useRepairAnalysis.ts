@@ -16,6 +16,7 @@ import {
 	repairMaterialsAt,
 	repairMaterialTotals,
 } from "@/features/repair_analysis/repairAnalysis.util";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
@@ -62,7 +63,7 @@ export function useRepairAnalysis(
 				const loaded = await getPriceBook();
 				if (run.isCurrent()) book.value = loaded;
 			} catch (err) {
-				console.error(err);
+				reportError(err);
 			}
 		},
 		{ deep: true, immediate: true }

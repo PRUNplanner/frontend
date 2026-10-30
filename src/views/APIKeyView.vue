@@ -107,9 +107,9 @@
 		resetCreation();
 	});
 
-	function copyKey(): void {
+	async function copyKey(): Promise<void> {
 		if (!lastCreatedKey.value) return;
-		copyToClipboard(lastCreatedKey.value);
+		if (!(await copyToClipboard(lastCreatedKey.value))) return;
 		toast(t("api_keys.create.copied"));
 		trackEvent("apikey:key_copy");
 	}

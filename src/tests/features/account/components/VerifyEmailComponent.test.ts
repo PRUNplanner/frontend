@@ -21,6 +21,7 @@ import VerifyEmailComponent from "@/features/account/components/VerifyEmailCompo
 import { mountComponent } from "@/tests/mountComponent";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),

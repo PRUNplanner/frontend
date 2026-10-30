@@ -18,6 +18,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { IPlanPreferenceOverview } from "@/features/preferences/userPreferences.types";
@@ -44,7 +45,7 @@ const patchPrefs = async (session: string | undefined, retry = true) => {
 		await useQuery("PatchPreferences", patch).execute();
 		markPreferencesSynced(patch);
 	} catch (err) {
-		console.error("Sync failed", err);
+		reportError(err);
 		if (retry) syncToBackend(session, false);
 	}
 };
@@ -217,7 +218,7 @@ export function usePreferences() {
 			userStore.setPreference("locale", v);
 			userStore
 				.setLocale(v, i18n.global)
-				.catch(console.error);
+				.catch(reportError);
 		},
 	});
 

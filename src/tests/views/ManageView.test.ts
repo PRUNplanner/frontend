@@ -236,9 +236,7 @@ describe("ManageView", () => {
 		expect(bar(wrapper).props("state")).toBe("error");
 		expect(bar(wrapper).props("count")).toBe(2);
 		expect(bar(wrapper).text()).toContain("management.save_bar.error");
-		expect(toast).toHaveBeenCalledWith("management.save_bar.error", {
-			type: "error",
-		});
+		expect(toast).not.toHaveBeenCalled();
 
 		await barButton(wrapper, "management.save_bar.retry").trigger("click");
 		await flushPromises();

@@ -7,7 +7,10 @@ const { toast, trackEvent, unsaved } = vi.hoisted(() => ({
 	unsaved: { value: false },
 }));
 vi.mock("@/ui/useToast", () => ({ toast }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/lib/useUnsavedGuard", () => ({
 	hasUnsavedChanges: () => unsaved.value,
 }));

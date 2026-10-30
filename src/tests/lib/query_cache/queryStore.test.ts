@@ -725,12 +725,11 @@ describe("useQueryStore: mutations and uncached reads", () => {
 		expect(Object.keys(store.cacheState)).toHaveLength(0);
 	});
 
-	it("a failing mutation logs, rethrows and leaves no entry", async () => {
+	it("a failing mutation rethrows and leaves no entry", async () => {
 		await expect(
 			// @ts-expect-error mock query repository
 			store.execute("failingMutation", undefined)
 		).rejects.toThrow("409");
-		expect(console.error).toHaveBeenCalledOnce();
 		expect(Object.keys(store.cacheState)).toHaveLength(0);
 	});
 

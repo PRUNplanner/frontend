@@ -19,7 +19,7 @@
 		getActiveEmpire,
 		usePlanContext,
 	} from "@/features/planning/usePlanContext";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { planEmpireUuid } from "@/layout/components/navigation/navigation.util";
 
@@ -253,7 +253,7 @@
 					same_planet: samePlanet(plan),
 				});
 			} catch (err) {
-				console.error(err);
+				reportError(err);
 				if (run !== latest) return;
 				other.value = undefined;
 				calcFailed.value = true;

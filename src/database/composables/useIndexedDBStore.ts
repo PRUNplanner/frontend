@@ -4,6 +4,7 @@ import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
 import { dbBlocked } from "@/database/dbBlocked";
 import { useVersionCheck } from "@/lib/useVersionCheck";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
 export interface IStoreStatistic {
@@ -84,7 +85,7 @@ export async function getDB() {
 	try {
 		await requestPersistence();
 	} catch (err) {
-		console.error("Error requesting store persistance.", err);
+		reportError(err);
 	}
 
 	return dbPromise;

@@ -23,7 +23,10 @@ vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
 	callMarketSummary: vi.fn(),
 	callCXSparklines: vi.fn(),
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const summary = fixture as MarketSummary;
 // every workforce ticker at 100 ȼ

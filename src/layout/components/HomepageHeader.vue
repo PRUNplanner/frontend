@@ -14,7 +14,7 @@
 	// Composables
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
 	import { prefetchMarketReport } from "@/features/market_report/marketReportPrefetch.util";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { afterLoad } from "@/util/afterLoad";
 
 
@@ -24,6 +24,11 @@
 		GITHUB_URL,
 		landingPrimaryButton,
 	} from "@/features/homepage/homepage.constants";
+	import { useToast } from "@/ui/useToast";
+	import { useI18n } from "vue-i18n";
+
+	const { t } = useI18n();
+	const toast = useToast();
 
 	const route = useRoute();
 	const {
@@ -62,8 +67,10 @@
 			.catch((error) => {
 				// closed, so the next request tries again
 				loading = undefined;
+				reportError(error);
+				if (asked.value)
+					toast(t("common.ui.load_failed"), { type: "error" });
 				close();
-				console.error(error);
 			});
 		return loading;
 	}

@@ -11,10 +11,11 @@
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+	const toast = useToast();
 
 	// Composables
 	import { usePrice } from "@/features/cx/usePrice";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Calculations
 	import {
@@ -35,7 +36,7 @@
 	} from "@/features/government/upkeepCalculations.types";
 
 	// UI
-	import { PProgressBar, PButton, PButtonGroup, PDataTable } from "@/ui";
+	import { PProgressBar, PButton, PButtonGroup, PDataTable, useToast } from "@/ui";
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
@@ -89,7 +90,8 @@
 			);
 			trackUse();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.load_failed"), { type: "error" });
 		} finally {
 			isCalculating.value = false;
 		}

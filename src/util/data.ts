@@ -1,5 +1,8 @@
 import { toRaw, isRef } from "vue";
 
+import { i18n } from "@/lib/i18n";
+import { toast } from "@/ui/useToast";
+
 /**
  * Unwraps reactive proxies at every level of plain objects and arrays.
  * Anything else (Date, Map, Set, typed arrays, primitives) is returned as is.
@@ -53,12 +56,17 @@ export function inertClone<T>(value: T): T {
  *
  * @export
  * @param {string} value Text
+ * @returns {Promise<boolean>} Copied, a failure has told the user
  */
-export function copyToClipboard(value: string): void {
+export function copyToClipboard(value: string): Promise<boolean> {
 	// denied without clipboard permission or focus
-	navigator.clipboard.writeText(value).catch((err: unknown) => {
-		console.error(err);
-	});
+	return navigator.clipboard.writeText(value).then(
+		() => true,
+		() => {
+			toast(i18n.global.t("common.ui.copy_failed"), { type: "error" });
+			return false;
+		}
+	);
 }
 
 /**

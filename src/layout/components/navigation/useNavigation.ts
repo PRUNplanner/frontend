@@ -41,6 +41,7 @@ import {
 	TerrainOutlined,
 	TuneSharp,
 } from "@vicons/material";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 const TOOLS_KEY = "prunplanner_nav_tools";
 
@@ -66,7 +67,7 @@ export function useNavigation() {
 	watch(
 		() => !state.value,
 		(missing) => {
-			if (missing) execute().catch(console.error);
+			if (missing) execute().catch(reportError);
 		},
 		{ immediate: true }
 	);

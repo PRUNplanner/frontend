@@ -11,7 +11,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 import { useExchangeData } from "@/database/services/useExchangeData";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 // Unit
 import {
@@ -200,6 +200,7 @@ export function useBaseROI(
 		run: IRun
 	): Promise<IBaseROIRowInput[] | null> {
 		const out: IBaseROIRowInput[] = [];
+		let failed = 0;
 		for (let i = 0; i < candidates.length; i += CHUNK_SIZE) {
 			for (const c of candidates.slice(i, i + CHUNK_SIZE)) {
 				const ctx = contextOf(c);
@@ -215,7 +216,7 @@ export function useBaseROI(
 					);
 				} catch (error) {
 					// a recipe the engine can't run is no row
-					console.error(error);
+					if (!failed++) reportError(error);
 				}
 			}
 			run.step(Math.min(CHUNK_SIZE, candidates.length - i));
@@ -237,7 +238,7 @@ export function useBaseROI(
 			return await calculateRun(run);
 		} catch (error) {
 			// a failed request: keep what is shown, say so, stop waiting
-			console.error(error);
+			reportError(error);
 			if (run.isCurrent()) {
 				step.value = "error";
 				planetRowsPending.value = false;

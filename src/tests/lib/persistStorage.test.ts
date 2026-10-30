@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 const trackException = vi.fn();
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackException }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackException,
+}));
 
 // localStorage whose writes throw once full is set
 const stored = new Map<string, string>();

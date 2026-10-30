@@ -196,9 +196,11 @@ describe("useExchangeSSE", () => {
 				.mockImplementation(() => {});
 
 			await deliver(source, message({ exchange_code: "XX1" }));
+			await deliver(source, message({ exchange_code: "XX1" }));
 
 			expect(sse.cxPointMap).toStrictEqual({});
-			expect(error).toHaveBeenCalled();
+			// once per connection, a stream of them is one report
+			expect(error).toHaveBeenCalledOnce();
 		});
 
 		it("lists only the main exchanges, sorted by ticker", async () => {

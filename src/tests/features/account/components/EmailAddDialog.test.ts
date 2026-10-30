@@ -15,6 +15,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),

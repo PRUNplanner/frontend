@@ -11,7 +11,10 @@ const { trackEvent, unsaved } = vi.hoisted(() => ({
 	trackEvent: vi.fn(),
 	unsaved: { value: false },
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/lib/useUnsavedGuard", () => ({
 	hasUnsavedChanges: () => unsaved.value,
 }));

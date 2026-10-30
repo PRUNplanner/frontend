@@ -1,4 +1,5 @@
 import { type Ref, ref, shallowRef, type ShallowRef } from "vue";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type {
@@ -46,7 +47,7 @@ export function useSaveConflict() {
 			.then((result) => {
 				if (current === request) changes.value = result;
 			})
-			.catch((err) => console.error("Loading the saved version", err))
+			.catch(reportError)
 			.finally(() => {
 				if (current === request) loading.value = false;
 			});

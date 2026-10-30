@@ -15,7 +15,10 @@ import type {
 	IProductionBuilding,
 } from "@/features/planning/usePlanCalculation.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 /** price is per unit, the row carries delta × price */
 const mio = (ticker: string, delta: number, price: number) =>

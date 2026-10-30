@@ -78,8 +78,8 @@
 		if (v != null && v >= 1) days.value = v;
 	}
 
-	function copyXIT(group: IChainBuyGroup): void {
-		copyToClipboard(
+	async function copyXIT(group: IChainBuyGroup): Promise<void> {
+		const copied = await copyToClipboard(
 			transferJSON(
 				group.items.map((i) => ({ ticker: i.ticker, value: i.units })),
 				{
@@ -92,6 +92,7 @@
 				}
 			).value
 		);
+		if (!copied) return;
 		toast(t("production_chains.buy_list.xit_copied"));
 		emit("xit");
 	}

@@ -24,7 +24,10 @@ const { loaded, trackEvent, replace } = vi.hoisted(() => ({
 	replace: vi.fn(),
 }));
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
 vi.mock("@unhead/vue", () => head);
 vi.mock("@/router", () => ({ default: { replace } }));

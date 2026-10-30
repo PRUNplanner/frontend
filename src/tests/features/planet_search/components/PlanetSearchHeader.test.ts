@@ -36,7 +36,10 @@ const bodyButton = (text: string) =>
 		(b) => b.textContent?.trim() === text
 	)!;
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("PlanetSearchHeader", () => {
 	it("opens the save field prefilled from the chips", async () => {

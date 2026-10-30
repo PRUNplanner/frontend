@@ -17,7 +17,7 @@
 		title: t("empire.view_title"),
 	});
 
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -155,7 +155,7 @@
 							empireState: data,
 						})
 							.execute()
-							.catch(console.error);
+							.catch(reportError);
 				}
 			);
 		}

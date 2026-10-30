@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
+import { toasts } from "@/ui/useToast";
 import { nextTick, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
@@ -28,7 +29,10 @@ const EMPIRE: PlanEmpireElement = {
 	modified_at: "v1",
 };
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("useEmpireForm", () => {
 	beforeAll(() => {
@@ -78,7 +82,6 @@ describe("useEmpireForm", () => {
 
 	it("reports a failed save", async () => {
 		mock.onPut(PUT_URL).reply(500);
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { isLoading, save } = useEmpireForm(() => EMPIRE);
 
 		expect(await save()).toBe(false);
@@ -87,11 +90,11 @@ describe("useEmpireForm", () => {
 		});
 
 		expect(isLoading.value).toBe(false);
-		expect(error).toHaveBeenCalledWith(
-			"Error patching empire",
-			expect.any(Error)
-		);
-		error.mockRestore();
+		expect(reportError).toHaveBeenCalledWith(expect.any(Error));
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "Couldn't save that. Please try again.",
+			type: "error",
+		});
 	});
 
 	it("follows the empire and discards edits on reload", async () => {

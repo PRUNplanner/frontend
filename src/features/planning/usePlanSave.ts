@@ -19,7 +19,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
 import { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
-import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
+import { flushPlanEdits, trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useQuery } from "@/lib/query_cache/useQuery";
 import { remoteChange } from "@/lib/crossTab";
 import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
@@ -208,7 +208,10 @@ export function usePlanSave(
 
 		try {
 			const created = await createNewPlan(saveAsData);
-			if (!created) return;
+			if (!created) {
+				toast(t("common.ui.save_failed"), { type: "error" });
+				return;
+			}
 
 			// Persist the auto-optimize-habs preference
 			userStore.setPlanPreference(created.uuid, {
@@ -343,7 +346,8 @@ export function usePlanSave(
 		try {
 			applySavedPlan(await fetchSavedPlan());
 		} catch (err) {
-			console.error("Reloading the saved plan", err);
+			reportError(err);
+			toast(t("common.ui.load_failed"), { type: "error" });
 		}
 	}
 

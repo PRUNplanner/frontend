@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
+import { toasts } from "@/ui/useToast";
 import {
 	flushPromises,
 	RouterLinkStub,
@@ -196,6 +197,7 @@ describe("ManageCX", () => {
 	});
 
 	it("stops the create spinner when creating fails", async () => {
+		toasts.value = [];
 		mock.onPost(LIST_URL).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper, host } = await mountCX();
@@ -213,6 +215,10 @@ describe("ManageCX", () => {
 		expect(wrapper.find(".transition-all").classes()).not.toContain("h-0");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.save_failed",
+			type: "error",
+		});
 	});
 
 	it("deletes a CX only after confirmation", async () => {
@@ -243,6 +249,7 @@ describe("ManageCX", () => {
 	});
 
 	it("keeps the list and stops the spinner when deleting fails", async () => {
+		toasts.value = [];
 		mock.onDelete(deleteURL(REAL.uuid)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper, host } = await mountCX();
@@ -258,5 +265,9 @@ describe("ManageCX", () => {
 		);
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.delete_failed",
+			type: "error",
+		});
 	});
 });

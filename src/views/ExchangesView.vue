@@ -14,7 +14,7 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 	import { useCXSave } from "@/features/cx/useCXSave";
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -270,7 +270,7 @@
 				load(current.uuid);
 			saveState.value = "idle";
 		} catch (err) {
-			console.error(err);
+			reportError(err);
 			saveState.value = "error";
 		}
 	}

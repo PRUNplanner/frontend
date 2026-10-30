@@ -147,9 +147,10 @@ export function calculateProduction(
 			);
 
 			if (!recipeInfo) {
-				console.warn(
-					`Unable to find recipe info for ${b.name} with recipe id ${r.recipeid}`
-				);
+				if (import.meta.env.DEV)
+					console.warn(
+						`Unable to find recipe info for ${b.name} with recipe id ${r.recipeid}`
+					);
 			} else {
 				activeRecipes.push({
 					recipeId: r.recipeid,

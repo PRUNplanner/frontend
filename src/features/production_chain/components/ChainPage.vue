@@ -134,8 +134,8 @@
 			.sort((a, b) => a.value.localeCompare(b.value))
 	);
 
-	function copyLink(): void {
-		copyToClipboard(chainLink());
+	async function copyLink(): Promise<void> {
+		if (!(await copyToClipboard(chainLink()))) return;
 		toast(t("production_chains.header.link_copied"));
 		track("link_copy");
 	}

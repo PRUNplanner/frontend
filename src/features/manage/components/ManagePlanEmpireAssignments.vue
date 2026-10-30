@@ -20,7 +20,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useManageData } from "@/features/manage/useManageData";
 	import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import {
 		cellKey,
 		splitKey,
@@ -334,7 +334,7 @@
 				try {
 					await useQuery("DeletePlan", { planUuid }).execute();
 				} catch (err) {
-					console.error(err);
+					if (!failed.length) reportError(err);
 					failed.push(planUuid);
 				}
 				deleting.value = (deleting.value ?? 0) + 1;
@@ -343,7 +343,7 @@
 		try {
 			await refetch();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
 		}
 		selected.value = new Set(failed);
 		deleting.value = undefined;
@@ -453,7 +453,8 @@
 			}).execute();
 			await refetch();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.save_failed"), { type: "error" });
 		} finally {
 			busyPlan.value = undefined;
 		}
@@ -477,7 +478,8 @@
 			await useQuery("DeletePlan", { planUuid: planUuid }).execute();
 			await refetch();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.delete_failed"), { type: "error" });
 		} finally {
 			busyPlan.value = undefined;
 		}

@@ -6,7 +6,10 @@ const { toast, trackEvent } = vi.hoisted(() => ({
 	trackEvent: vi.fn(),
 }));
 vi.mock("@/ui/useToast", () => ({ toast }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 
 import { announceRelease } from "@/lib/whatsNew";
 

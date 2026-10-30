@@ -15,7 +15,10 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 // Types & Interfaces
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const plan = (uuid: string, plan_name: string, planet_natural_id: string) => ({
 	uuid,
