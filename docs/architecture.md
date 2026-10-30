@@ -62,7 +62,7 @@ it is created, so a visitor's first page doesn't load axios
   [seo.md](seo.md)). An unknown path renders `NotFoundView`.
 - `/dev/kit` (`views/dev/KitView.vue`) exists only on the dev server and in
   builds with `VITE_KIT_PAGE=true`.
-- A `beforeEach` guard turns `?debug=calc|gaps|off` on any route into
+- A `beforeEach` guard turns `?debug=calc|off` on any route into
   `lib/debugMode.ts` switches and drops the key from the URL.
 - Views set their title with `useHead({ title })`; `AppProvider`'s
   `titleTemplate` adds "· PRUNplanner".

@@ -5,6 +5,7 @@ import {
 	changeColor,
 	exchangeCards,
 	exchangeGaps,
+	formatBookPrice,
 	formatChange,
 	formatDate,
 	formatMoney,
@@ -30,6 +31,7 @@ import {
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 
 import fixture from "@/tests/test_data/api_data_market_summary.json";
+import tuningWeek from "@/tests/test_data/market_gaps_2026-10-29.json";
 
 // 20 Oct snapshot (prices to 19 Oct)
 const summary = MarketSummarySchema.parse(fixture);
@@ -246,8 +248,9 @@ describe("squarify", () => {
 });
 
 describe("price gaps", () => {
-	// the books of 22 Oct (MUS, GRA from the 22 Oct snapshot, LST from
-	// 14:50) and materials that must be left out
+	// prices of the books of 22 Oct (MUS, GRA from the 22 Oct snapshot, LST
+	// from 14:50), units raised over the floors, and materials that must be
+	// left out
 	const bk = (
 		ticker: string,
 		exchange_code: string,
@@ -265,34 +268,34 @@ describe("price gaps", () => {
 			bid,
 		}) as Exchange;
 	const books = [
-		bk("MUS", "AI1", 450, 1000, 500, 400),
-		bk("MUS", "CI1", 470, 1000, 520, 380),
-		bk("MUS", "IC1", 364.69, 1000, 460, 280),
-		bk("MUS", "NC1", 688.3, 1000, 700, 315),
-		bk("GRA", "AI1", 4766.39, 299, 5300, 4000),
-		bk("GRA", "CI1", 6422.45, 832, 7130, 5000),
-		bk("GRA", "IC1", 3768.03, 907, 4730, 2800),
-		bk("GRA", "NC1", 5003.05, 292, 4870, 4010),
+		bk("MUS", "AI1", 450, 100_000, 500, 400),
+		bk("MUS", "CI1", 470, 100_000, 520, 380),
+		bk("MUS", "IC1", 364.69, 100_000, 460, 280),
+		bk("MUS", "NC1", 688.3, 100_000, 700, 315),
+		bk("GRA", "AI1", 4766.39, 2000, 5300, 4000),
+		bk("GRA", "CI1", 6422.45, 2000, 7130, 5000),
+		bk("GRA", "IC1", 3768.03, 2000, 4730, 2800),
+		bk("GRA", "NC1", 5003.05, 2000, 4870, 4010),
 		// the all-exchange row is no exchange
 		bk("GRA", "UNIVERSE", 1, 2330, 0, 0),
 		bk("LST", "AI1", 186.8, 54068, 188, 167),
 		bk("LST", "CI1", 157.5, 40562, 142, 130),
 		bk("LST", "IC1", 170, 30000, 175, 160),
-		bk("LST", "NC1", 180, 20000, 195, 190),
+		bk("LST", "NC1", 180, 40000, 195, 190),
 		// flat
-		bk("FLT", "AI1", 100, 10000, 100, 99),
-		bk("FLT", "CI1", 300, 10000, 300, 299),
+		bk("FLT", "AI1", 100, 100_000, 100, 99),
+		bk("FLT", "CI1", 300, 100_000, 300, 299),
 		// CI1 under the unit floor leaves one exchange
-		bk("THN", "AI1", 100, 5000, 100, 99),
-		bk("THN", "CI1", 300, 10, 300, 299),
+		bk("THN", "AI1", 100, 100_000, 100, 99),
+		bk("THN", "CI1", 1_000_000, 10, 300, 299),
 		// AI1 under the turnover floor
 		bk("LOW", "AI1", 1, 1000, 1, 1),
-		bk("LOW", "CI1", 2, 1_000_000, 2, 2),
+		bk("LOW", "CI1", 2, 10_000_000, 2, 2),
 		// a gap under the minimum
-		bk("SML", "AI1", 100, 10000, 101, 99),
-		bk("SML", "CI1", 105, 10000, 106, 104),
+		bk("SML", "AI1", 100, 100_000, 101, 99),
+		bk("SML", "CI1", 105, 100_000, 106, 104),
 		// one exchange
-		bk("ONE", "NC1", 100, 10000, 100, 99),
+		bk("ONE", "NC1", 100, 100_000, 100, 99),
 	];
 	const gapSummary = {
 		...summary,
@@ -332,6 +335,17 @@ describe("price gaps", () => {
 		expect(gaps[0].gap).toBeCloseTo(33.8, 1);
 	});
 
+	it("the tuned floors on the last tuning snapshot, 29 Oct", () => {
+		const snapshot = {
+			...summary,
+			materials: tuningWeek.materials.map(material),
+		};
+		const books = tuningWeek.books as Exchange[];
+		// the owner accepted Last 7 days at 19, over the 5 to 15 target
+		expect(exchangeGaps(books, snapshot, "vwap")).toHaveLength(19);
+		expect(exchangeGaps(books, snapshot, "books")).toHaveLength(5);
+	});
+
 	it("a material missing from the summary is left out", () => {
 		expect(
 			exchangeGaps(books, { ...summary, materials: [] }, "vwap")
@@ -357,6 +371,10 @@ describe("formatting", () => {
 		expect(formatMoney(18_400)).toBe("18.4 k ȼ");
 		expect(formatMoney(37_250_000)).toBe("37.3 M ȼ");
 		expect(formatMoney(8_970_000_000)).toBe("8.97 B ȼ");
+		expect(formatBookPrice(142.5)).toBe("142.5");
+		expect(formatBookPrice(610)).toBe("610");
+		expect(formatBookPrice(48.25)).toBe("48.25");
+		expect(formatBookPrice(1234.5)).toBe("1,235");
 	});
 
 	it("change colour saturates at ±12 %", () => {

@@ -6,6 +6,7 @@
 	import {
 		changeSign,
 		exchangeGaps,
+		formatBookPrice,
 		formatChange,
 		formatDate,
 		formatMoney,
@@ -28,14 +29,11 @@
 		summary,
 		books,
 		booksFailed = false,
-		showGap = false,
 	} = defineProps<{
 		summary: MarketSummary;
 		/** null while the order books load */
 		books: Exchange[] | null;
 		booksFailed?: boolean;
-		/** the fourth tile, the biggest open gap in the books */
-		showGap?: boolean;
 	}>();
 	const { t } = useI18n();
 
@@ -113,14 +111,11 @@
 	const gap = computed(() =>
 		books ? (exchangeGaps(books, summary, "books")[0] ?? null) : null
 	);
-	const price = (v: number) =>
-		formatNumber(v, Number.isInteger(v) ? 0 : v < 100 ? 2 : 0);
 </script>
 
 <template>
 	<div
-		class="grid grid-cols-2 gap-2 md:gap-0 md:rounded-panel md:border md:border-line md:bg-white/2"
-		:class="showGap ? 'md:grid-cols-4' : 'md:grid-cols-3'">
+		class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-0 md:rounded-panel md:border md:border-line md:bg-white/2">
 		<article
 			v-for="tile in tiles"
 			:key="tile.key"
@@ -157,11 +152,7 @@
 			</svg>
 		</article>
 
-		<article
-			v-if="showGap"
-			class="tile"
-			aria-labelledby="mr-short-gap"
-			data-gap-tile>
+		<article class="tile" aria-labelledby="mr-short-gap" data-gap-tile>
 			<h3 id="mr-short-gap" class="tile-label">
 				{{ t("market_report.in_short.gap") }}
 			</h3>
@@ -201,10 +192,18 @@
 				<div
 					class="hidden lg:flex items-center gap-2 h-9 mt-auto text-[13px] tabular-nums">
 					<MarketExchangePill :code="gap.low" />
-					{{ t("market_report.gaps.ask", { price: price(gap.ask) }) }}
+					{{
+						t("market_report.gaps.ask", {
+							price: formatBookPrice(gap.ask),
+						})
+					}}
 					<span aria-hidden="true" class="text-muted">→</span>
 					<MarketExchangePill :code="gap.high" />
-					{{ t("market_report.gaps.bid", { price: price(gap.bid) }) }}
+					{{
+						t("market_report.gaps.bid", {
+							price: formatBookPrice(gap.bid),
+						})
+					}}
 				</div>
 			</template>
 			<p v-else class="tile-note">

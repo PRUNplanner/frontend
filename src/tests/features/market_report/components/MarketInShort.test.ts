@@ -25,20 +25,20 @@ const book = (exchange_code: string, ask: number, bid: number) =>
 		ticker: "FE",
 		exchange_code,
 		vwap_7d: 100,
-		sum_traded_7d: 10_000,
+		sum_traded_7d: 100_000,
 		ask,
 		bid,
 	}) as Exchange;
 
 describe("MarketInShort", () => {
-	it("three tiles with their start dates, the gap tile only when asked", async () => {
+	it("four tiles with their start dates, the fourth the gap", async () => {
 		const { wrapper } = await mountComponent(
 			MarketInShort,
 			{ summary, books: null },
 			{ messages }
 		);
 		const tiles = wrapper.findAll("article");
-		expect(tiles).toHaveLength(3);
+		expect(tiles).toHaveLength(4);
 		// each tile is named by its heading
 		tiles.forEach((tile) =>
 			expect(tile.attributes("aria-labelledby")).toBe(
@@ -51,17 +51,16 @@ describe("MarketInShort", () => {
 		expect(tiles[2].text()).toMatch(/ȼ a day/);
 		// a sparkline per tile, hidden on phones
 		expect(tiles[2].find("svg polyline").exists()).toBe(true);
-		expect(wrapper.find("[data-gap-tile]").exists()).toBe(false);
+		expect(tiles[3].attributes()).toHaveProperty("data-gap-tile");
 	});
 
 	it("the gap tile: a skeleton, the top open gap, or none", async () => {
 		const { wrapper, setProps } = await mountComponent(
 			MarketInShort,
-			{ summary, books: null, showGap: true },
+			{ summary, books: null },
 			{ messages }
 		);
 		const tile = () => wrapper.find("[data-gap-tile]");
-		expect(wrapper.findAll("article")).toHaveLength(4);
 		expect(tile().find("[data-skeleton]").exists()).toBe(true);
 
 		await setProps({
@@ -73,11 +72,17 @@ describe("MarketInShort", () => {
 		expect(tile().text()).toContain("bid 120");
 		expect(tile().text()).toContain("+20.0");
 
+		// the table's format: 142.5 stays 142.5
+		await setProps({
+			books: [book("AI1", 142.5, 90), book("NC1", 200, 170)],
+		});
+		expect(tile().text()).toContain("ask 142.5");
+
 		await setProps({
 			books: [book("AI1", 100, 90), book("NC1", 130, 101)],
 		});
 		expect(tile().text()).toContain(
-			"No open gap of 10 % or more right now"
+			"No open gap of 15 % or more right now"
 		);
 
 		await setProps({ books: null, booksFailed: true });
@@ -96,7 +101,7 @@ describe("MarketInShort", () => {
 		};
 		const { wrapper } = await mountComponent(
 			MarketInShort,
-			{ summary: thin, books: [], showGap: true },
+			{ summary: thin, books: [] },
 			{ messages }
 		);
 		const tiles = wrapper.findAll("article");

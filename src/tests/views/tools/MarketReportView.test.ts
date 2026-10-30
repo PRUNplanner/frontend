@@ -12,7 +12,6 @@ import MarketReportView from "@/views/tools/MarketReportView.vue";
 import MarketIndexChart from "@/features/market_report/components/MarketIndexChart.vue";
 import PLineChart from "@/ui/charts/PLineChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
-import { marketGapsDebug } from "@/lib/debugMode";
 import { memoryStorage } from "@/tests/memoryStorage";
 
 import market_summary from "@/tests/test_data/api_data_market_summary.json";
@@ -55,7 +54,6 @@ describe("MarketReportView", () => {
 			series: {},
 		});
 		vi.mocked(callDataExchanges).mockResolvedValue([]);
-		marketGapsDebug.value = false;
 	});
 
 	it("paints the frame with skeletons before any data", async () => {
@@ -71,6 +69,7 @@ describe("MarketReportView", () => {
 			"mr-treemap",
 			"mr-movers",
 			"mr-leaders",
+			"mr-gaps",
 			"mr-exchanges",
 		]);
 		expect(wrapper.text()).toContain("market_report.method.flat");
@@ -81,12 +80,9 @@ describe("MarketReportView", () => {
 		// one request up front, the books wait for the content
 		expect(callMarketSummary).toHaveBeenCalledOnce();
 		expect(callDataExchanges).not.toHaveBeenCalled();
-		// the price gaps are hidden until ?debug=gaps
-		expect(wrapper.find("#mr-gaps").exists()).toBe(false);
 	});
 
 	it("the books load once after the content, for In short, gaps and cards", async () => {
-		marketGapsDebug.value = true;
 		vi.mocked(callMarketSummary).mockResolvedValue(summary);
 		const { wrapper } = await mountView();
 		await new Promise((r) => setTimeout(r, 5));
@@ -163,7 +159,6 @@ describe("MarketReportView", () => {
 	});
 
 	it("workforce cards, movers and gaps switches are tracked", async () => {
-		marketGapsDebug.value = true;
 		vi.mocked(callMarketSummary).mockResolvedValue(summary);
 		const { wrapper } = await mountView();
 		const button = (label: string) =>

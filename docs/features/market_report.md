@@ -13,7 +13,7 @@ today" section (`features/homepage`) reuses its queries, maths,
 
 | File | Role |
 | --- | --- |
-| `marketReport.util.ts` | Pure maths: `marketKpis`, `marketBrief` (In short, with the pioneer cost's 15 days from the summary sparks), `exchangeGaps` (price gaps by VWAP 7D or the books, `GAP_MIN_*` floors), `workforceCost` / `workforceSeries` / `workforceDrivers` (`WORKFORCE_CONSUMPTION_MAP` × price, per 100 workers a day), `marketMovers` (5 M ȼ / 50 units floor, no flat), `indexChanges` / `sectorCards` / `marketLead` (the landing section), `exchangeCards`, `bookStats`, `squarify`, `changeColor` (±12 % on the polarity tokens), formatters with sign and arrow |
+| `marketReport.util.ts` | Pure maths: `marketKpis`, `marketBrief` (In short, with the pioneer cost's 15 days from the summary sparks), `exchangeGaps` (price gaps by VWAP 7D or the books, `GAP_MIN_*` floors: 20 units and 5 M ȼ on each exchange, a 15 % gap, tuned on the books of 22–29 Oct 2026), `workforceCost` / `workforceSeries` / `workforceDrivers` (`WORKFORCE_CONSUMPTION_MAP` × price, per 100 workers a day), `marketMovers` (5 M ȼ / 50 units floor, no flat), `indexChanges` / `sectorCards` / `marketLead` (the landing section), `exchangeCards`, `bookStats`, `squarify`, `changeColor` (±12 % on the polarity tokens), formatters with sign and arrow |
 | `marketReport.types.ts` | Frontend shapes |
 | `useMarketReport.ts` | Starts the summary; reads its cache entry even when stale; `failed`, `retry` |
 | `useMarketBooks.ts` | The order books' cache entry, `failed`, `load` |
@@ -34,9 +34,6 @@ camelCase names (`workstationBlank`) show as words ("Workstation Blank").
 Running text and captions show dates with the year (`formatDate`, "Jul 24,
 2026"); chart axes keep their short days (`PLineChart`).
 
-The price gaps (section and In short's fourth tile) are hidden until their
-floors are tuned: `?debug=gaps` shows them (`marketGapsDebug` in
-`lib/debugMode.ts`), `?debug=off` hides them again.
 
 The view holds the frame: title, as-of line, every heading, caption and
 toggle, and the method text render before any data. Toggles send
