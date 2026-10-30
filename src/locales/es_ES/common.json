@@ -98,6 +98,10 @@
 		},
 		"language": "Idioma",
 		"page_load_failed": "No se pudo cargar esta página. Recarga para obtener la última versión.",
+		"save_failed": "Couldn't save that. Please try again.",
+		"load_failed": "Couldn't load that. Please try again.",
+		"delete_failed": "Couldn't delete that. Please try again.",
+		"copy_failed": "Couldn't copy to the clipboard.",
 		"meter": {
 			"used": "{label} {pct} % usado"
 		},
