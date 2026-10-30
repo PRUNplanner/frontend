@@ -8,7 +8,10 @@ import PButton from "@/ui/components/PButton.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",
 	async () => (await import("@/tests/stubs")).materialTile

@@ -20,6 +20,7 @@ import {
 	trackEvent,
 	resetUser,
 	identifyUser,
+	reportError,
 } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
@@ -140,7 +141,7 @@ export const useUserStore = defineStore(
 			);
 
 			if (relevantFiles.length === 0) {
-				console.error(`No files found for locale: ${v}`);
+				reportError(new Error(`No files found for locale: ${v}`));
 				return;
 			}
 
@@ -162,7 +163,7 @@ export const useUserStore = defineStore(
 				// 5. Register and switch, untranslatable messages fall back
 				const { messages: validMessages, dropped } =
 					dropInvalidMessages(messages);
-				if (dropped.length > 0) {
+				if (import.meta.env.DEV && dropped.length > 0) {
 					console.warn(
 						`Invalid ${v} messages, using en_US:`,
 						dropped
@@ -175,7 +176,7 @@ export const useUserStore = defineStore(
 					document.querySelector("html")?.setAttribute("lang", v);
 				});
 			} catch (err) {
-				console.error(`Failed to load locale ${v}:`, err);
+				reportError(err);
 			}
 		}
 
@@ -295,7 +296,7 @@ export const useUserStore = defineStore(
 
 				return "ok";
 			} catch (err) {
-				console.error(err);
+				reportError(err);
 				return isApiError(err) && err.status === 429
 					? "throttled"
 					: "failed";
@@ -321,7 +322,7 @@ export const useUserStore = defineStore(
 
 					return true;
 				} catch (error) {
-					console.error(error);
+					reportError(error);
 					// apiService puts status on HTTP errors only, undefined
 					// without a response; a validation error has none
 					if (!isApiError(error)) return false;
@@ -371,7 +372,7 @@ export const useUserStore = defineStore(
 
 					profile.value = result;
 				} catch (error) {
-					console.error(error);
+					reportError(error);
 				}
 			}
 		}

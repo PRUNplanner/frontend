@@ -22,7 +22,10 @@ import type { VueWrapper } from "@vue/test-utils";
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
 import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 // the linked plans and their COGMs, crafted; without them the real ones
 const planData = vi.hoisted(() => ({
@@ -290,6 +293,36 @@ describe("PlanCOGM", () => {
 			pref("RAT", "BUY", 64.43),
 			pref("RAT", "SELL", 75),
 		]);
+	});
+
+	it.each([
+		["not fixed", []],
+		["fixed", [pref("RAT", "BUY", 65)]],
+	])("offers nothing without a COGM, price %s", async (_name, prices) => {
+		const data = cxData();
+		data.ticker_empire = prices;
+		const { wrapper } = await mountCOGM(
+			{
+				cxUuid: CX_UUID,
+				planetId: PLANET,
+				cogmData: {
+					...COGM,
+					outputCOGM: [
+						{
+							ticker: "RAT",
+							amount: 10,
+							costSplit: Infinity,
+							costTotal: Infinity,
+						},
+					],
+				},
+			},
+			data
+		);
+
+		expect(find(wrapper, "[data-buy-all]").exists()).toBe(true);
+		expect(find(wrapper, "[data-use-cogm]").exists()).toBe(false);
+		expect(find(wrapper, "[data-matches]").exists()).toBe(false);
 	});
 
 	it("shows a buy price within 2 % of the COGM as matching", async () => {

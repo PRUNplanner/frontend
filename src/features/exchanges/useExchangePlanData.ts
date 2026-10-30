@@ -28,6 +28,7 @@ import {
 	priceMaterials,
 	toPlanBase,
 } from "@/features/exchanges/exchangePlanData.util";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
@@ -102,6 +103,10 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			const planets = [
 				...new Set(todo.map((i) => plans.get(i.uuid)!.planet_natural_id)),
 			].sort();
+			let failed = 0;
+			const reportOnce = (err: unknown) => {
+				if (!failed++) reportError(err);
+			};
 			const loads: Promise<unknown>[] = [
 				useQuery("GetMaterials").execute(),
 				useQuery("GetExchanges").execute(),
@@ -115,7 +120,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 					}).execute()
 				);
 			// one failed load only costs the plans that need it
-			await Promise.all(loads.map((l) => l.catch(console.error)));
+			await Promise.all(loads.map((l) => l.catch(reportOnce)));
 
 			const gameData = await loadGameData();
 			const result: IExchangePlanBase[] = [];
@@ -162,7 +167,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 						await run.yield();
 					} catch (err) {
 						// e.g. its planet failed to load: skip this plan only
-						console.error(err);
+						reportOnce(err);
 					}
 				}
 				if (base) result.push({ ...base, linked: item.linked });
@@ -172,7 +177,7 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 			if (run.isCurrent()) bases.value = result;
 		} catch (err) {
 			// e.g. game data missing: keep what was shown
-			console.error(err);
+			reportError(err);
 		} finally {
 			if (run.isCurrent()) isCalculating.value = false;
 		}
@@ -215,7 +220,8 @@ export function useExchangePlanData(source: IExchangePlanDataSource) {
 		return createPriceBook(
 			cxData ? () => cxData : undefined,
 			planet,
-			getExchangeTickerLoaded
+			getExchangeTickerLoaded,
+			reportError
 		);
 	}
 

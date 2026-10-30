@@ -45,8 +45,8 @@ async function checkVersion(): Promise<void> {
 
 		latestVersion.value = data.version;
 		updateAvailable.value = data.version !== __BUILD_ID__;
-	} catch (err) {
-		console.warn("Version check failed", err);
+	} catch {
+		// offline or mid-deploy: the next check tries again
 	}
 }
 

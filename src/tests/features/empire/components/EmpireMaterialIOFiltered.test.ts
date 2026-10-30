@@ -14,7 +14,10 @@ import { mountComponent, tableRows } from "@/tests/mountComponent";
 // Types & Interfaces
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";

@@ -140,8 +140,8 @@
 		);
 	});
 
-	function copy(kind: APISnippetKind, text: string): void {
-		copyToClipboard(text);
+	async function copy(kind: APISnippetKind, text: string): Promise<void> {
+		if (!(await copyToClipboard(text))) return;
 		toast(t("api_keys.builder.copied"));
 		trackEvent("apikey:snippet_copy", {
 			endpoint: endpoint.value.id,

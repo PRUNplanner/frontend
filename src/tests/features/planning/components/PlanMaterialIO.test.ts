@@ -14,7 +14,10 @@ import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 import type { CXData } from "@/features/api/schemas/cxData.schemas";
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",

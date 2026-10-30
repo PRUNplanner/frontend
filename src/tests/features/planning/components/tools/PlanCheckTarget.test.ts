@@ -5,11 +5,10 @@ import {
 	vi,
 	beforeAll,
 	beforeEach,
-	onTestFinished,
 } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 import { PInputNumber, PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
@@ -20,7 +19,10 @@ import type { IPlanContext } from "@/features/planning/engine/engine.types";
 import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
 import type { ISensitivityRow } from "@/features/planning/util/whatIf.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 const explorationQuery = vi.fn();
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (_name: string, params: unknown) => ({
@@ -78,11 +80,9 @@ interface Pending {
 	resolve: (v: unknown) => void;
 	reject: (e: Error) => void;
 }
-// a failed range fetch logs its error
+// a failed range fetch reports its error
 function silenceErrors() {
-	const error = vi.spyOn(console, "error").mockImplementation(() => {});
-	onTestFinished(() => error.mockRestore());
-	return error;
+	return vi.mocked(reportError).mockClear();
 }
 async function setTarget(
 	w: Awaited<ReturnType<typeof mountTool>>,
@@ -182,7 +182,7 @@ describe("PlanCheckTarget", () => {
 		expect(range(wrapper).text()).toBe(
 			"plan.tools.plan_check.target.range_error"
 		);
-		expect(error).toHaveBeenCalledTimes(1);
+		expect(reportError).toHaveBeenCalledTimes(1);
 		expect(wrapper.text()).not.toContain(
 			"plan.tools.plan_check.target.above"
 		);

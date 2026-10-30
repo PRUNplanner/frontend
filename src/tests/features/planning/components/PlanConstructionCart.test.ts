@@ -43,7 +43,10 @@ vi.mock("@/features/cx/usePrice", async (importOriginal) => {
 	};
 });
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const mock = new AxiosMockAdapter(apiService.client);
 const PLAN_UUID = "plan-uuid";

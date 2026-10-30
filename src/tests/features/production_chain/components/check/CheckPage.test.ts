@@ -29,13 +29,16 @@ const { nav, trackEvent, execute, copy } = vi.hoisted(() => ({
 	},
 	trackEvent: vi.fn(),
 	execute: vi.fn(),
-	copy: vi.fn(),
+	copy: vi.fn(async (_value: string) => true),
 }));
 
 vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
 	default: { name: "HelpDrawer", render: () => null },
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/util/data", async (original) => ({
 	...(await original<typeof import("@/util/data")>()),
 	copyToClipboard: copy,

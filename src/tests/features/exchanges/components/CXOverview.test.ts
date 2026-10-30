@@ -15,7 +15,10 @@ import type {
 } from "@/features/exchanges/useExchangePlanData.types";
 import type { IExchangeNote } from "@/features/exchanges/exchangeNotes.util";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/database/services/usePlanetData", () => ({
 	usePlanetData: () => ({ planetName: (id: string) => id }),
 }));

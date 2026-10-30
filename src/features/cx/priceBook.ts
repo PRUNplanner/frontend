@@ -203,15 +203,18 @@ export function findExchangeRule(
  * @param {string | undefined} planetNaturalId Planet for planet preferences
  * @param {(tickerId: string) => Exchange} getExchange Exchange data by id,
  * e.g. "RAT.UNIVERSE"; throws if missing
+ * @param {Function} [onError] Gets the book's first failed lookup
  * @returns {IPriceBook} Price Book
  */
 export function createPriceBook(
 	getCXData: (() => CXData) | undefined,
 	planetNaturalId: string | undefined,
-	getExchange: (tickerId: string) => Exchange
+	getExchange: (tickerId: string) => Exchange,
+	onError?: (error: unknown) => void
 ): IPriceBook {
 	const resolved = new Map<string, { price: number; source: IPriceSource }>();
 	let cxData: CXData | undefined;
+	let failed = 0;
 
 	function resolve(
 		materialTicker: string,
@@ -265,10 +268,7 @@ export function createPriceBook(
 				volume,
 			});
 		} catch (error) {
-			if (error instanceof Error) {
-				const exchangeError: Error = error;
-				console.error(exchangeError);
-			}
+			if (!failed++) onError?.(error);
 			return result(0, {
 				level: "unresolved",
 				exchange: null,

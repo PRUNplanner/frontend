@@ -211,7 +211,8 @@
 		const data = dataOverviewMap.value.get(selectedMaterial.value);
 
 		if (!data) {
-			console.error(`Missing data for ${selectedMaterial.value}`);
+			if (import.meta.env.DEV)
+				console.warn(`Missing data for ${selectedMaterial.value}`);
 			return {} as IExchangeOverview;
 		}
 

@@ -124,7 +124,10 @@ vi.mock("@/features/empire/components/EmpireOnboarding.vue", () =>
 	stub("EmpireOnboarding")
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/ui/useToast", () => ({ useToast: () => vi.fn() }));
 vi.mock("vue-router", async (importOriginal) => ({
 	...(await importOriginal<typeof import("vue-router")>()),

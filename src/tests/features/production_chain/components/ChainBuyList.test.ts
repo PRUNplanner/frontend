@@ -12,7 +12,7 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 import { buyList } from "@/features/production_chain/productionChain.util";
 
-const { copy } = vi.hoisted(() => ({ copy: vi.fn() }));
+const { copy } = vi.hoisted(() => ({ copy: vi.fn(async (_value: string) => true) }));
 vi.mock("@/util/data", async (original) => ({
 	...(await original<typeof import("@/util/data")>()),
 	copyToClipboard: copy,

@@ -1,5 +1,6 @@
 import { afterEach, describe, it, expect, vi } from "vitest";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { toasts } from "@/ui/useToast";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
@@ -96,7 +97,10 @@ const rows = (wrapper: VueWrapper) =>
 		r.qtyPerDay,
 	]);
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("UpkeepPriceCalculator", () => {
 	afterEach(() => {
@@ -296,7 +300,7 @@ describe("UpkeepPriceCalculator", () => {
 	});
 
 	it("hides the progress bar when a price lookup fails", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		toasts.value = [];
 		priceGate.wait = Promise.reject(new Error("prices unavailable"));
 		const pinia = createPinia();
 		// @ts-expect-error mock data
@@ -315,8 +319,11 @@ describe("UpkeepPriceCalculator", () => {
 		expect(tableRows(wrapper)).toHaveLength(0);
 		await new Promise((resolve) => setTimeout(resolve, 1100));
 		expect(trackEvent).not.toHaveBeenCalled();
-		expect(error).toHaveBeenCalledWith(new Error("prices unavailable"));
-		error.mockRestore();
+		expect(reportError).toHaveBeenCalledWith(new Error("prices unavailable"));
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.load_failed",
+			type: "error",
+		});
 	});
 
 	it("reports one use per settled calculation", async () => {

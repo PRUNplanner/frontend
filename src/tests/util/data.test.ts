@@ -6,6 +6,7 @@ import {
 	vi,
 } from "vitest";
 import { ref, reactive, isReactive, toRaw } from "vue";
+import { toasts } from "@/ui/useToast";
 import {
 	copyToClipboard,
 	deepClone,
@@ -117,16 +118,20 @@ describe("copyToClipboard", async () => {
 		expect(mockWriteText).toHaveBeenCalledTimes(1);
 	});
 
-	it("logs a denied clipboard write", async () => {
-		const denied = new Error("test-denied");
+	it("tells the user about a denied clipboard write, and the caller", async () => {
 		Object.assign(navigator, {
-			clipboard: { writeText: vi.fn(() => Promise.reject(denied)) },
+			clipboard: {
+				writeText: vi.fn(() =>
+					Promise.reject(new Error("test-denied"))
+				),
+			},
 		});
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 
-		copyToClipboard("Foo");
-		await vi.waitFor(() => expect(error).toHaveBeenCalledWith(denied));
-		error.mockRestore();
+		await expect(copyToClipboard("Foo")).resolves.toBe(false);
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "Couldn't copy to the clipboard.",
+			type: "error",
+		});
 	});
 });
 

@@ -13,7 +13,10 @@ import type {
 	IMaterialSide,
 } from "@/features/exchanges/useExchangePlanData.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",
 	async () => (await import("@/tests/stubs")).materialTile

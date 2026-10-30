@@ -7,6 +7,7 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Util
 import { step } from "@/features/wrapper/dataLoader.util";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type {
@@ -112,7 +113,7 @@ export function useGameDataLoader(
 						s.cfg.onSuccess(d);
 					})
 					.catch((e) => {
-						console.error(e);
+						reportError(e);
 						s.error = e instanceof Error ? e : new Error(String(e));
 					})
 					.finally(() => {

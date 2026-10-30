@@ -139,8 +139,9 @@
 			: ""
 	);
 
-	function copy(): void {
-		copyToClipboard(detailText(name.value, sections.value));
+	async function copy(): Promise<void> {
+		if (!(await copyToClipboard(detailText(name.value, sections.value))))
+			return;
 		toast(t("base_roi.detail.copied"));
 	}
 

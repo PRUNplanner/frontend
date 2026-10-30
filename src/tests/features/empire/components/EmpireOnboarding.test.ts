@@ -51,7 +51,10 @@ function form(wrapper: VueWrapper) {
 const saveButton = (wrapper: VueWrapper) =>
 	wrapper.findAll("button").find((b) => b.text() === "common.buttons.save")!;
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 describe("EmpireOnboarding", () => {
 	beforeAll(() => {

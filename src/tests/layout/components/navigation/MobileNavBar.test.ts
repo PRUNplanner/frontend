@@ -37,7 +37,10 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 		execute: () => execute(name),
 	}),
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 // ZV-759c read as unnamed (named after its system), ZV-307b only once the
 // game data has loaded
 const planetMock = vi.hoisted(() => ({

@@ -14,7 +14,7 @@ import { useCXData } from "@/features/cx/useCXData";
 import { step } from "@/features/wrapper/dataLoader.util";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
 import { remoteChange } from "@/lib/crossTab";
-import { trackUser } from "@/lib/analytics/useAnalytics";
+import { trackUser, reportError } from "@/lib/analytics/useAnalytics";
 import { toWorkingCopy } from "@/features/sharing/sharedPlan.util";
 
 // Types & Interfaces
@@ -289,7 +289,7 @@ export function usePlanningDataLoader(
 					emits("refreshed");
 				})
 				// the old data stays, the next change or visit retries
-				.catch(console.error);
+				.catch(reportError);
 		});
 	});
 

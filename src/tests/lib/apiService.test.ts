@@ -11,6 +11,7 @@ import { reportClientError } from "@/lib/clientErrors";
 import config from "@/lib/config";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackException: vi.fn(),
 	trackContext: vi.fn(),
 }));

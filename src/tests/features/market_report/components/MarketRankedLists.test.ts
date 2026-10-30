@@ -16,7 +16,10 @@ import fixture from "@/tests/test_data/api_data_market_summary.json";
 import type { Exchange } from "@/features/api/schemas/gameData.schemas";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
 	...(await importOriginal<object>()),
 	callDataExchanges: vi.fn(),

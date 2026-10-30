@@ -13,7 +13,10 @@ vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 // the route's query, e.g. ?material=RAT from a material tile
 const route = { query: {} as Record<string, string> };
 vi.mock("vue-router", () => ({ useRoute: () => route }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 // vi.mock factories are hoisted, so are their helpers
 const { stub, chart, query, loader, health } = vi.hoisted(() => ({
@@ -143,6 +146,7 @@ describe("MarketExplorationView", () => {
 	beforeEach(() => {
 		vi.mocked(trackEvent).mockClear();
 		vi.spyOn(console, "error").mockImplementation(() => {});
+		vi.spyOn(console, "warn").mockImplementation(() => {});
 		chart.fetchData = vi.fn(async () => {});
 		chart.failed = false;
 		query.execute = vi.fn(async () => ({
@@ -546,12 +550,12 @@ describe("MarketExplorationView", () => {
 			);
 		});
 
-		it("logs and renders empty KPIs for a material without overview data", async () => {
+		it("warns and renders empty KPIs for a material without overview data", async () => {
 			const wrapper = await mountView();
 
 			await choose(wrapper, "NOPE");
 
-			expect(console.error).toHaveBeenCalledWith("Missing data for NOPE");
+			expect(console.warn).toHaveBeenCalledWith("Missing data for NOPE");
 			expect(wrapper.text()).toContain("market_exploration.kpis.supply");
 		});
 	});

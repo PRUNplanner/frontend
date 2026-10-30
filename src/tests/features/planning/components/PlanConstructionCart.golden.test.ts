@@ -42,7 +42,10 @@ vi.mock("@/database/services/usePlanetData", async () => {
 	};
 });
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 /**
  * Golden: the construction cart of the Etherwind plan at twice its size,

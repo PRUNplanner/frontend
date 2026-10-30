@@ -5,6 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useExchangeData } from "@/database/services/useExchangeData";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Price Book
 import {
@@ -53,7 +54,8 @@ export function usePrice(
 		return createPriceBook(
 			uuid ? () => planningStore.getCX(uuid).cx_data : undefined,
 			planetNaturalId.value || undefined,
-			getExchangeTickerLoaded
+			getExchangeTickerLoaded,
+			reportError
 		);
 	}
 

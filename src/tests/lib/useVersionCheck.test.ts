@@ -93,15 +93,11 @@ describe("useVersionCheck", () => {
 	});
 
 	it("ignores failed checks and non-JSON answers", async () => {
-		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 		const { updateAvailable, checkVersion } = await freshTab();
 
 		fetchMock.mockRejectedValueOnce(new Error("offline"));
 		await checkVersion();
-		expect(warn).toHaveBeenCalledWith(
-			"Version check failed",
-			expect.any(Error)
-		);
+		expect(updateAvailable.value).toBe(false);
 
 		// the SPA fallback during a deploy
 		fetchMock.mockResolvedValueOnce({

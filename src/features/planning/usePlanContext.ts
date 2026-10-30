@@ -12,6 +12,7 @@ import {
 
 // Composables
 import { usePlanetData } from "@/database/services/usePlanetData";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Engine
@@ -115,7 +116,8 @@ export function usePlanContext() {
 		return createPriceBook(
 			cxUuid ? () => planningStore.getCX(cxUuid).cx_data : undefined,
 			planetNaturalId || undefined,
-			getExchangeTickerLoaded
+			getExchangeTickerLoaded,
+			reportError
 		);
 	}
 

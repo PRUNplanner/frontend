@@ -10,6 +10,7 @@ import {
 import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { onSessionReset } from "@/lib/sessionReset";
 import { reportClientError } from "@/lib/clientErrors";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { isApiError } from "@/lib/apiError";
 
 import type {
@@ -159,10 +160,9 @@ export const useQueryStore = defineStore(
 					// a timer may fire just before the wall clock ends the block
 					blockedUntil.delete(keyHash);
 					if (!cacheState[keyHash]) return;
-					// logged and reported in execute already
 					execute(definitionName, params as QueryParams<QueryName>, {
 						forceRefetch: true,
-					}).catch(() => {});
+					}).catch(reportError);
 				}, queryLoopGuard.blockMs)
 			);
 			if (!loopReported.has(keyHash)) {
@@ -216,12 +216,7 @@ export const useQueryStore = defineStore(
 			// writes run outside the cache: no entry, no dedupe, nothing an
 			// invalidation could see or re-run
 			if ("mutation" in definition) {
-				try {
-					return await definition.fetchFn(params);
-				} catch (err) {
-					console.error(err);
-					throw err;
-				}
+				return definition.fetchFn(params);
 			}
 
 			const keyHash = toCacheKey(definition.key(params));
@@ -313,18 +308,16 @@ export const useQueryStore = defineStore(
 									: new Error(String(err)),
 							errorAt: Date.now(),
 						});
-					console.error(err);
 					throw err;
 				} finally {
 					if (isCurrent()) {
 						updateState(keyHash, { loading: false });
 						inFlight.delete(keyHash);
 						if (!shouldCache) deleteState(keyHash);
-						// logged and reported in execute already
 						if (refresh)
 							execute(definitionName, params, {
 								forceRefetch: true,
-							}).catch(() => {});
+							}).catch(reportError);
 					}
 				}
 			})();
@@ -520,8 +513,7 @@ export const useQueryStore = defineStore(
 							name,
 							entry.params as QueryParams<QueryName>
 						);
-						// logged and reported in execute already
-						request.catch(() => {});
+						request.catch(reportError);
 						const multiple = batchRefresh.find(
 							(b) => b.multiple === name
 						);

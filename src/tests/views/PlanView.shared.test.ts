@@ -485,7 +485,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 	});
 
 	it("reports a failed optimisation and keeps the habs", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 		const { wrapper } = await mountView();
 		const before = infrastructureOf(wrapper);
 		vi.mocked(optimizeHabs).mockReturnValueOnce({
@@ -496,8 +496,12 @@ describe("PlanView shared plans, toasts and habs", () => {
 
 		await emitFrom(wrapper, PlanInfrastructure, "optimize-habs", "cost");
 
-		expect(error).toHaveBeenCalledWith(
+		expect(warn).toHaveBeenCalledWith(
 			"Unable to optimize habs: infeasible"
+		);
+		expect(mocks.toast).toHaveBeenCalledWith(
+			"plan.components.infrastructure.optimize_failed",
+			{ type: "error" }
 		);
 		expect(infrastructureOf(wrapper)).toEqual(before);
 	});

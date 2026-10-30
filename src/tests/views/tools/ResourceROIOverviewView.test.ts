@@ -9,7 +9,10 @@ import { mountComponent } from "@/tests/mountComponent";
 import { memoryStorage } from "@/tests/memoryStorage";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 // vi.mock factories are hoisted, so are their helpers
 const { stub, passThrough, calculate, state } = vi.hoisted(() => ({

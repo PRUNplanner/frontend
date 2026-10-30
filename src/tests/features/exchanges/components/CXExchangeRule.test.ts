@@ -9,7 +9,10 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import type { CXDataExchangeOption } from "@/features/api/schemas/cxData.schemas";
 import type { VueWrapper } from "@vue/test-utils";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 async function mountRule(
 	rules: CXDataExchangeOption[],

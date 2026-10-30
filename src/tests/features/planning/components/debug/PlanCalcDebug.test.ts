@@ -14,7 +14,10 @@ const { trackEvent, setCalcDebug, checks } = vi.hoisted(() => ({
 	setCalcDebug: vi.fn(),
 	checks: { report: { checks: [], warnings: [] } as ICalcDebugReport },
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/lib/debugMode", () => ({ setCalcDebug }));
 vi.mock("@/features/planning/calcDebug.util", async (importOriginal) => ({
 	...(await importOriginal<

@@ -19,6 +19,7 @@
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton, PNotice, PTag } from "@/ui";
+	import { reportError } from "@/lib/analytics/useAnalytics";
 
 	const userStore = useUserStore();
 	const { state, resend } = useEmailNudge(0);
@@ -59,7 +60,7 @@
 			await useQuery("PatchUserProfile", { email: email.value }).execute();
 			codeSent.value = changed && !!email.value;
 		} catch (err) {
-			console.error("Error patching user profile", err);
+			reportError(err);
 			const data = isApiError(err) ? err.responseData : undefined;
 			isThrottled.value = isApiError(err) && err.status === 429;
 			// DRF field errors: { email: [code or message] }

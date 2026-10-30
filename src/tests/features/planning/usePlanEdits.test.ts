@@ -213,11 +213,23 @@ describe("usePlanEdits", () => {
 		// a button forces it, a failed solve changes nothing
 		s.auto.value = false;
 		optimizeHabs.mockReturnValue({ status: "infeasible", variables: [] });
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		toast.mockClear();
 		edits.applyOptimizeHabs("cost", true);
 		expect(optimizeHabs).toHaveBeenCalledTimes(2);
-		expect(error).toHaveBeenCalled();
-		error.mockRestore();
+		expect(warn).toHaveBeenCalled();
+		expect(toast).toHaveBeenCalledExactlyOnceWith(
+			"plan.components.infrastructure.optimize_failed",
+			{ type: "error" }
+		);
+
+		// the automatic run stays quiet
+		toast.mockClear();
+		s.auto.value = true;
+		edits.applyOptimizeHabs("auto", false);
+		expect(optimizeHabs).toHaveBeenCalledTimes(3);
+		expect(toast).not.toHaveBeenCalled();
+		warn.mockRestore();
 	});
 
 	it("applies a starter setup with habs on, an undo toast and tracking", async () => {

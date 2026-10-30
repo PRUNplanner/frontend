@@ -241,10 +241,7 @@ describe("EmpireConfiguration", () => {
 		expect(component.emitted("reload:empires")).toBeUndefined();
 		expect(form(wrapper).name).toBe("Renamed");
 		expect(button(wrapper, "save").attributes("aria-busy")).toBe("false");
-		expect(error).toHaveBeenCalledWith(
-			"Error patching empire",
-			expect.any(Error)
-		);
+		expect(error).toHaveBeenCalledWith(expect.any(Error));
 		error.mockRestore();
 	});
 });

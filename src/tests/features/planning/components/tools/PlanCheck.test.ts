@@ -21,7 +21,10 @@ import {
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 // the rows can be swapped for crafted ones, the plan is still calculated
 const crafted = vi.hoisted(() => ({
 	rows: undefined as ISensitivityRow[] | undefined,

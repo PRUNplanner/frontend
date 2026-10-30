@@ -22,6 +22,7 @@
 	// UI
 	import { PButton, PNotice, useToast } from "@/ui";
 	import { MailOutlineSharp } from "@vicons/material";
+	import { reportError } from "@/lib/analytics/useAnalytics";
 
 	/**
 	 * Asks for an email (or its confirmation) above the Empire, so a
@@ -67,7 +68,7 @@
 						(plans) =>
 							(planCount.value = Math.max(plans.length, knownPlans))
 					)
-					.catch(console.error);
+					.catch(reportError);
 		},
 		{ immediate: true }
 	);

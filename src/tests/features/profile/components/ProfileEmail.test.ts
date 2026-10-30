@@ -5,7 +5,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiService } from "@/lib/apiService";
 import axiosSetup from "@/util/axiosSetup";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { useUserStore } from "@/stores/userStore";
 import ProfileEmail from "@/features/profile/components/ProfileEmail.vue";
 import { mountComponent } from "@/tests/mountComponent";
@@ -14,6 +14,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	trackEvent: vi.fn(),
 	trackException: vi.fn(),
 	trackUser: vi.fn(),
@@ -123,18 +124,14 @@ describe("ProfileEmail", () => {
 		expect(document.body.textContent).toContain(CODE_STEP);
 	});
 
-	it("logs a failed code request and keeps the dialog closed", async () => {
+	it("reports a failed code request and keeps the dialog closed", async () => {
 		mock.onPost(RESEND_URL).reply(500);
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountEmail(profile({ is_email_verified: false }));
 
 		await resend(wrapper).trigger("click");
 		await flushPromises();
 
-		expect(error).toHaveBeenCalledWith(
-			"Error resending verification code",
-			expect.any(Error)
-		);
+		expect(reportError).toHaveBeenCalledWith(expect.any(Error));
 		expect(document.body.textContent).not.toContain(CODE_STEP);
 	});
 

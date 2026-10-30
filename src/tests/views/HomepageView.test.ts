@@ -18,7 +18,10 @@ import { callMarketSummary } from "@/features/api/gameData.api";
 
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
 vi.mock("@unhead/vue", () => head);
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/market_report/marketReportPrefetch.util", () => ({
 	prefetchMarketReport: vi.fn(),
 }));

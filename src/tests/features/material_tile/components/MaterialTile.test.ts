@@ -4,7 +4,7 @@ import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import MaterialMarketCard from "@/features/material_tile/components/MaterialMarketCard.vue";
 import { mountComponent } from "@/tests/mountComponent";
@@ -35,7 +35,10 @@ vi.mock("@/database/services/useExchangeData", async (importOriginal) => {
 		},
 	};
 });
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 // the card's sparklines
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: () => ({
@@ -367,19 +370,17 @@ describe("MaterialTile", () => {
 	});
 
 	it("still shows the ticker of an unknown material", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountComponent(MaterialTile, {
 			key: "tile",
 			ticker: "NOPE",
 			disableDrawer: false,
 		});
-		await vi.waitFor(() => expect(error).toHaveBeenCalled());
+		await vi.waitFor(() => expect(reportError).toHaveBeenCalled());
 
 		expect(tile(wrapper).text()).toBe("NOPE");
 		// without material data the drawer stays closed
 		await tile(wrapper).trigger("click");
 		await flushPromises();
 		expect(drawer().exists()).toBe(false);
-		error.mockRestore();
 	});
 });

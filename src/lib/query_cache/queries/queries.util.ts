@@ -107,10 +107,11 @@ export async function storeAndPreload<
  * @param {unknown} err Error
  */
 function onDBError(storeName: string, err: unknown): void {
-	console.warn(
-		`IndexedDB cache for '${storeName}' failed, keeping data in memory.`,
-		err
-	);
+	if (import.meta.env.DEV)
+		console.warn(
+			`IndexedDB cache for '${storeName}' failed, keeping data in memory.`,
+			err
+		);
 	if (
 		err instanceof DOMException &&
 		(err.name === "InvalidStateError" || err.name === "UnknownError")

@@ -41,7 +41,7 @@
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
 	import { userActivity } from "@/features/user_activity/userActivityStore";
-	import { identifyUser, trackEvent } from "@/lib/analytics/useAnalytics";
+	import { identifyUser, trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
 	import { getPostHogKey } from "@/lib/analytics/usePostHog";
 	import { dbBlocked } from "@/database/dbBlocked";
@@ -106,7 +106,7 @@
 			// The query layer isn't in a visitor's shell
 			import("@/lib/query_cache/useQuery")
 				.then(({ useQuery }) => useQuery("GetPreferences").execute())
-				.catch(console.error);
+				.catch(reportError);
 			userStore.loadProfile();
 		}
 	});

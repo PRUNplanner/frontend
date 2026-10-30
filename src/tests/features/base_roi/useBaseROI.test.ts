@@ -5,7 +5,7 @@ import { ref, watch } from "vue";
 import { useBaseROI } from "@/features/base_roi/useBaseROI";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Test Data
@@ -24,7 +24,10 @@ import type {
 } from "@/features/api/schemas/gameData.schemas";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const calls = vi.hoisted(() => ({
 	byName: {} as Record<string, unknown[]>,
@@ -91,6 +94,7 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		calls.hold = {};
 		calls.drop = new Set();
 		vi.mocked(trackEvent).mockClear();
+		vi.mocked(reportError).mockClear();
 	});
 
 	function setup(
@@ -164,7 +168,6 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 	});
 
 	it("a failed request keeps the recipe rows and ends in an error", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { roi } = setup();
 		calls.index = "fail";
 		expect(await roi.calculate()).toBe(false);
@@ -172,7 +175,7 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		expect(roi.planetRowsPending.value).toBe(false);
 		expect(roi.rows.value.length).toBeGreaterThan(0);
 		expect(trackEvent).not.toHaveBeenCalled();
-		error.mockRestore();
+		expect(reportError).toHaveBeenCalledOnce();
 	});
 
 	it("counts planet rows beyond max jumps as hidden, unfetched", async () => {

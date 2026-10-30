@@ -9,7 +9,7 @@
 import type { Router } from "vue-router";
 import { i18n } from "@/lib/i18n";
 import { toast } from "@/ui/useToast";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 import { hasUnsavedChanges } from "@/lib/useUnsavedGuard";
 
@@ -40,7 +40,7 @@ export function reloadOnce(url?: string): boolean {
 // the toast host lives in AppProvider, which stays mounted when a route's
 // chunk fails
 function showError(error: unknown): void {
-	console.error(error);
+	reportError(error);
 	toast(i18n.global.t("common.ui.page_load_failed"), {
 		type: "error",
 		duration: 0,

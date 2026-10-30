@@ -34,6 +34,7 @@ import {
 
 import { planetDisplayName } from "@/util/planetName";
 import { useRunProgress } from "@/util/runProgress";
+import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { IPriceBook } from "@/features/cx/priceBook";
@@ -165,6 +166,7 @@ export function useFIORepair(
 		if (!todo.size) return;
 
 		const run = startCalc(todo.size);
+		let failed = 0;
 		const gameData = await loadGameData();
 		for (const [key, c] of todo) {
 			if (!run.isCurrent()) return;
@@ -189,7 +191,7 @@ export function useFIORepair(
 					bestDays(result, ctx.prices)
 				);
 			} catch (err) {
-				console.error(err);
+				if (!failed++) reportError(err);
 			}
 			run.step();
 			await run.yield();
@@ -205,11 +207,14 @@ export function useFIORepair(
 	 */
 	async function load(): Promise<void> {
 		const map = new Map<string, Planet>();
+		let failed = 0;
 		await Promise.all(
 			sites.value.map((s) =>
 				getPlanet(s.PlanetIdentifier)
 					.then((p) => map.set(s.PlanetIdentifier, p))
-					.catch(console.error)
+					.catch((err) => {
+						if (!failed++) reportError(err);
+					})
 			)
 		);
 		planets.value = map;
@@ -219,11 +224,11 @@ export function useFIORepair(
 	}
 
 	watch(cxUuid, () => {
-		if (loaded.value) loadPrices().catch(console.error);
+		if (loaded.value) loadPrices().catch(reportError);
 	});
 	// a new pick, or a plan that matches now
 	watch(matches, () => {
-		if (loaded.value) calculate().catch(console.error);
+		if (loaded.value) calculate().catch(reportError);
 	});
 
 	const constructionCost = (

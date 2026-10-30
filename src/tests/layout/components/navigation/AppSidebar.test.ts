@@ -41,7 +41,10 @@ const execute = vi.fn();
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: () => ({ state: ref({ data: [] }), execute }),
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const body = () => new DOMWrapper(document.body);
 const NAV = "common.navigation";

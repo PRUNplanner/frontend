@@ -4,7 +4,7 @@
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Util
@@ -139,7 +139,7 @@
 						}
 					: null;
 			} catch (err) {
-				console.error(err);
+				reportError(err);
 				if (run === latest) rangeFailed.value = true;
 			}
 		}

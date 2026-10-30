@@ -27,10 +27,13 @@ const { lists, passThrough } = vi.hoisted(() => ({
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string) => ({ execute: async () => lists[name] ?? [] }),
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/util/data", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/util/data")>()),
-	copyToClipboard: vi.fn(),
+	copyToClipboard: vi.fn(async () => true),
 }));
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 	passThrough("WrapperGameDataLoader")
@@ -145,10 +148,25 @@ describe("APIURLBuilder", () => {
 		}
 	);
 
+	it("tracks no copy that failed", async () => {
+		vi.mocked(copyToClipboard).mockResolvedValueOnce(false);
+		const wrapper = await mountBuilder("real");
+		await wrapper
+			.find('[data-snippet="curl"]')
+			.find("button")
+			.trigger("click");
+		await flushPromises();
+		expect(trackEvent).not.toHaveBeenCalledWith(
+			"apikey:snippet_copy",
+			expect.anything()
+		);
+	});
+
 	it("copies exactly the shown text and tracks no key", async () => {
 		const wrapper = await mountBuilder("real");
 		const box = wrapper.find('[data-snippet="curl"]');
 		await box.find("button").trigger("click");
+		await flushPromises();
 		expect(copyToClipboard).toHaveBeenCalledWith(box.find("pre").text());
 		expect(trackEvent).toHaveBeenCalledWith("apikey:snippet_copy", {
 			endpoint: "empire_material_io",

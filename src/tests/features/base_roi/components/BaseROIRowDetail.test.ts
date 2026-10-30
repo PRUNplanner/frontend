@@ -39,7 +39,7 @@ const push = vi.fn();
 vi.mock("vue-router", () => ({ useRouter: () => ({ push }) }));
 vi.mock("@/util/data", async (original) => ({
 	...(await original()),
-	copyToClipboard: vi.fn(),
+	copyToClipboard: vi.fn(async () => true),
 }));
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: { name: "MaterialTile", props: ["ticker"], render: () => null },
@@ -104,6 +104,15 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const text = vi.mocked(copyToClipboard).mock.calls[0][0];
 		for (const dd of wrapper.findAll("dd").map((d) => d.text()))
 			expect(text).toContain(dd);
+	});
+
+	it("doesn't claim a copy that failed", async () => {
+		vi.mocked(copyToClipboard).mockResolvedValueOnce(false);
+		toast.mockReset();
+		const { button } = await mountDetail(rows[0]);
+		await button("base_roi.detail.copy").trigger("click");
+		await flushPromises();
+		expect(toast).not.toHaveBeenCalled();
 	});
 
 	it("opens a plan with the row's layout", async () => {

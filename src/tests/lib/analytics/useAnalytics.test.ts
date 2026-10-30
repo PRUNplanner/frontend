@@ -4,6 +4,7 @@ import type { ComponentPublicInstance } from "vue";
 import {
 	flushPlanEdits,
 	identifyUser,
+	reportError,
 	trackContext,
 	trackEvent,
 	trackPageview,
@@ -36,9 +37,67 @@ describe("useAnalytics", () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
+	describe("reportError", () => {
+		it("sends a runtime error, with its context", () => {
+			const error = new Error("boom 1");
+
+			reportError(error, { where: "test" });
+
+			expect(captureException).toHaveBeenCalledExactlyOnceWith(error, {
+				where: "test",
+			});
+		});
+
+		it("sends one error once, however many catch blocks see it", () => {
+			const error = new Error("boom 2");
+
+			reportError(error);
+			reportError(error);
+
+			expect(captureException).toHaveBeenCalledOnce();
+		});
+
+		it("sends a failure that repeats as a new error once", () => {
+			reportError(new Error("repeats"));
+			reportError(new Error("repeats"));
+
+			expect(captureException).toHaveBeenCalledOnce();
+		});
+
+		it("sends a thrown value that isn't an error once", () => {
+			reportError("thrown");
+			reportError("thrown");
+
+			expect(captureException).toHaveBeenCalledOnce();
+		});
+
+		it.each([
+			["an ApiError", new ApiError("response body")],
+			["a validation error", new ApiValidationError("zod issues")],
+			[
+				"an error with a status",
+				Object.assign(new Error("response body"), { status: 500 }),
+			],
+		])("leaves %s to apiService", (_name, error) => {
+			reportError(error);
+
+			expect(captureException).not.toHaveBeenCalled();
+			expect(console.error).toHaveBeenCalledWith(error);
+		});
+
+		it("stays out of the console in production", () => {
+			vi.stubEnv("DEV", false);
+
+			reportError(new Error("boom 3"));
+
+			expect(console.error).not.toHaveBeenCalled();
+			vi.unstubAllEnvs();
+		});
+	});
+
 	describe("trackVueError", () => {
 		it("captures with component and info, and still logs", () => {
-			const error = new Error("boom");
+			const error = new Error("boom 4");
 
 			trackVueError(error, instance({ name: "PlanView" }), "setup function");
 
@@ -51,7 +110,7 @@ describe("useAnalytics", () => {
 
 		it("falls back to the script setup file name", () => {
 			trackVueError(
-				new Error("boom"),
+				new Error("boom 5"),
 				instance({ __name: "PlanBonuses" }),
 				"native event handler"
 			);
@@ -63,7 +122,7 @@ describe("useAnalytics", () => {
 		});
 
 		it("works without a component instance", () => {
-			trackVueError(new Error("boom"), null, "app errorHandler");
+			trackVueError(new Error("boom 6"), null, "app errorHandler");
 
 			expect(captureException).toHaveBeenCalledWith(
 				expect.any(Error),

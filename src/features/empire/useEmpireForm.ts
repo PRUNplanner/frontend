@@ -3,8 +3,10 @@ import { isEqual } from "lodash-es";
 
 // Composables
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
+import { i18n } from "@/lib/i18n";
+import { toast } from "@/ui/useToast";
 
 // Util
 import { inertClone } from "@/util/data";
@@ -140,7 +142,9 @@ export function useEmpireForm(data: () => PlanEmpireElement) {
 		} catch (err) {
 			failure = getSaveError(err);
 			if (failure === "deleted") remoteNotice.value = "deleted";
-			console.error("Error patching empire", err);
+			if (!failure)
+				toast(i18n.global.t("common.ui.save_failed"), { type: "error" });
+			reportError(err);
 		} finally {
 			isLoading.value = false;
 			trackEvent("empire:update", { is_success: saved });

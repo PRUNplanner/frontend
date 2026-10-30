@@ -11,7 +11,8 @@ const execute = vi.fn();
 vi.mock("@/lib/query_cache/queryStore", () => ({
 	useQueryStore: () => ({ execute }),
 }));
-vi.mock("vue-i18n", () => ({
+vi.mock("vue-i18n", async (importOriginal) => ({
+	...(await importOriginal<typeof import("vue-i18n")>()),
 	useI18n: () => ({
 		t: (key: string, params?: Record<string, string>) =>
 			params ? `${key} ${Object.values(params).join("|")}` : key,

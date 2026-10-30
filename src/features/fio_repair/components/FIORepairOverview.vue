@@ -16,7 +16,7 @@
 	// Composables
 	import { useFIORepair } from "@/features/fio_repair/useFIORepair";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import ComputingProgress from "@/layout/components/ComputingProgress.vue";
@@ -32,7 +32,11 @@
 	import type { FIORepairFilter } from "@/features/fio_repair/fioRepair.types";
 
 	// UI
-	import { PDrawer } from "@/ui";
+	import { PDrawer, useToast } from "@/ui";
+	import { useI18n } from "vue-i18n";
+
+	const { t } = useI18n();
+	const toast = useToast();
 
 	/**
 	 * FIO Repair's page body once planning and game data are loaded:
@@ -65,7 +69,10 @@
 	const ready = ref(false);
 	onMounted(() =>
 		load()
-			.catch(console.error)
+			.catch((err) => {
+				reportError(err);
+				toast(t("common.ui.load_failed"), { type: "error" });
+			})
 			.finally(() => (ready.value = true))
 	);
 

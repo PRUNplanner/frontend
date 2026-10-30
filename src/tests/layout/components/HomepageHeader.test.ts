@@ -16,7 +16,10 @@ vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
 	useRoute: () => route,
 }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 vi.mock("@/features/market_report/marketReportPrefetch.util", () => ({
 	prefetchMarketReport: vi.fn(),
 }));

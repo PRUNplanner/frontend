@@ -7,7 +7,10 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 import type { IHomepageTourStep } from "@/features/homepage/homepageTour.types";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 
 const STEPS: IHomepageTourStep[] = [
 	{ key: "one", box: [0, 0, 1, 1], zoom: 1 },

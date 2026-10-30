@@ -22,7 +22,10 @@ import type {
 import materials from "@/tests/test_data/api_data_materials.json";
 
 const { trackEvent } = vi.hoisted(() => ({ trackEvent: vi.fn() }));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 
 // chart.js has no canvas in jsdom, stubs only keep the data
 vi.mock("@/ui/charts/EmpireBarChart.vue", () => ({

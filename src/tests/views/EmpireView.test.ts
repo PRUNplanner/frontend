@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { nextTick, ref, type Slots } from "vue";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
@@ -129,7 +130,10 @@ vi.mock("@/features/empire/components/EmpireOnboarding.vue", () =>
 	stub("EmpireOnboarding")
 );
 vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/ui/useToast", () => ({ useToast: () => toast }));
 vi.mock("vue-router", async (importOriginal) => ({
 	...(await importOriginal<typeof import("vue-router")>()),
@@ -214,7 +218,6 @@ describe("EmpireView", () => {
 	});
 
 	it("hides the progress and stores no state when the calculation fails", async () => {
-		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		createContext.mockRejectedValue(
 			new Error("Planet OT-580b not available.")
 		);
@@ -225,10 +228,9 @@ describe("EmpireView", () => {
 		expect(wrapper.findComponent(ComputingProgress).exists()).toBe(false);
 		expect(calculatePlan).not.toHaveBeenCalled();
 		expect(queries).not.toContain("PatchEmpireState");
-		expect(error).toHaveBeenCalledWith(
+		expect(reportError).toHaveBeenCalledWith(
 			new Error("Planet OT-580b not available.")
 		);
-		error.mockRestore();
 	});
 
 	it("follows the navigation's empire switch, also from a route empire", async () => {
@@ -543,10 +545,7 @@ describe("EmpireView", () => {
 			expect(costOverview).toHaveBeenLastCalledWith([], 7, 90);
 		});
 
-		it("a failing state patch is logged, a missing state is not sent", async () => {
-			const error = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+		it("a failing state patch is reported, a missing state is not sent", async () => {
 			const plans = [{ uuid: "P1", planet_natural_id: "OT-580b" }];
 
 			materialIOState.mockResolvedValueOnce(undefined);
@@ -558,9 +557,8 @@ describe("EmpireView", () => {
 			reply.patchFails = true;
 			await open([E1], plans);
 			await vi.waitFor(() =>
-				expect(error).toHaveBeenCalledWith(new Error("patch failed"))
+				expect(reportError).toHaveBeenCalledWith(new Error("patch failed"))
 			);
-			error.mockRestore();
 		});
 	});
 

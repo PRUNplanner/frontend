@@ -154,10 +154,10 @@ describe("PlanView save conflicts", () => {
 		await flushPromises();
 
 		expect(buildingAmounts(wrapper).EXT).toBe(5);
-		expect(console.error).toHaveBeenCalledWith(
-			"Reloading the saved plan",
-			expect.any(Error)
-		);
+		expect(console.error).toHaveBeenCalledWith(expect.any(Error));
+		expect(mocks.toast).toHaveBeenCalledWith("common.ui.load_failed", {
+			type: "error",
+		});
 	});
 
 	it("saves a conflicting plan as a copy and opens it", async () => {

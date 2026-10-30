@@ -6,7 +6,10 @@ import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackPlanEdit: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackPlanEdit: vi.fn(),
+}));
 
 async function mountBonuses(props: Record<string, unknown> = {}) {
 	return mountComponent(PlanBonuses, {

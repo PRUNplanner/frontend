@@ -41,8 +41,7 @@
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 	// UI
-	import { useToast } from "@/ui";
-	const toast = useToast();
+	import { reportError } from "@/lib/analytics/useAnalytics";
 
 	// Lists and the save bar's sections (CX selects, plan assignments)
 	const {
@@ -72,9 +71,8 @@
 			clearTimeout(savedTimer);
 			savedTimer = setTimeout(() => (justSaved.value = false), 4000);
 		} catch (err) {
-			console.error(err);
+			reportError(err);
 			saveState.value = "error";
-			toast(t("management.save_bar.error"), { type: "error" });
 		}
 	}
 

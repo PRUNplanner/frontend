@@ -16,7 +16,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import router from "@/router";
 
 // app + uses
-import { trackVueError } from "@/lib/analytics/useAnalytics";
+import { trackVueError, reportError } from "@/lib/analytics/useAnalytics";
 import { isPrerendered, mountApp, prepareMount } from "@/lib/seo/prerenderMount";
 import { registerChunkReload } from "@/lib/chunkReload";
 import { registerCrossTab } from "@/lib/crossTab";
@@ -58,12 +58,7 @@ app.use(head);
 // evaluating first
 useUserStore()
 	.initLocale(i18n.global)
-	.catch((error) =>
-		console.error(
-			"Failed to initialize locale, falling back to default",
-			error
-		)
-	)
+	.catch(reportError)
 	.then(() => prepareMount(router, i18n.global.locale.value))
-	.catch(console.error)
+	.catch(reportError)
 	.then(() => mountApp(app));

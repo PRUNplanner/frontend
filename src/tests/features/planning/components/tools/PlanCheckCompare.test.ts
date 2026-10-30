@@ -5,12 +5,11 @@ import {
 	vi,
 	beforeAll,
 	beforeEach,
-	onTestFinished,
 } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { usePlanningStore } from "@/stores/planningStore";
 import PlanCheck from "@/features/planning/components/tools/PlanCheck.vue";
 import PlanCheckCompare from "@/features/planning/components/tools/PlanCheckCompare.vue";
@@ -84,7 +83,10 @@ vi.mock("@/features/cx/marketCheck.util", async (importActual) => {
 		},
 	};
 });
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent: vi.fn(),
+}));
 const prefs = vi.hoisted((): { defaultEmpireUuid?: string } => ({}));
 vi.mock("@/stores/userStore", () => ({
 	useUserStore: () => ({ isLoggedIn: true, preferences: prefs }),
@@ -181,11 +183,9 @@ const check = (
 const EMPIRE_UUID = OPEN.empires![0].uuid;
 const CX_UUID = "00000000-0000-4000-8000-0000000000c1";
 
-// a failed calculation logs its error
+// a failed calculation reports its error
 function silenceErrors() {
-	const error = vi.spyOn(console, "error").mockImplementation(() => {});
-	onTestFinished(() => error.mockRestore());
-	return error;
+	return vi.mocked(reportError).mockClear();
 }
 // the Difference column's colour, after its static classes
 const deltaTones = (w: Wrapper) =>
@@ -500,7 +500,7 @@ describe("PlanCheckCompare", () => {
 			failFar(new Error("Planet ZV-307c not available."));
 			await flushPromises();
 
-			expect(error).toHaveBeenCalledTimes(1);
+			expect(reportError).toHaveBeenCalledTimes(1);
 			expect(wrapper.text()).not.toContain("compare.calc_error");
 			expect(verdict(wrapper)).toBe(
 				"plan.tools.plan_check.compare.verdict.same"

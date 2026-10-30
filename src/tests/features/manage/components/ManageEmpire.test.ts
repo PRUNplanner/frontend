@@ -7,6 +7,7 @@ import {
 	afterEach,
 	vi,
 } from "vitest";
+import { toasts } from "@/ui/useToast";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -250,6 +251,23 @@ describe("ManageEmpire", () => {
 		expect(createDisabled(wrapper)).toBe(true);
 	});
 
+	it("says so when creating an empire fails", async () => {
+		toasts.value = [];
+		mock.onPost(/planning\/empire\/$/).reply(500);
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountEmpire();
+
+		await fillCreate(wrapper, "Gamma", 5, 3);
+		await flushPromises();
+		await button(wrapper, "common.buttons.create").trigger("click");
+		await flushPromises();
+
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.save_failed",
+			type: "error",
+		});
+	});
+
 	it("creates an empire and reloads the list", async () => {
 		mock.onPost(/planning\/empire\/$/).reply(200, {
 			...EMPIRES[0],
@@ -302,6 +320,7 @@ describe("ManageEmpire", () => {
 	});
 
 	it("keeps the list and stops the spinner when deleting fails", async () => {
+		toasts.value = [];
 		mock.onDelete(new RegExp(`planning/empire/${E2}/$`)).reply(500);
 		const error = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper, host } = await mountEmpire();
@@ -324,6 +343,10 @@ describe("ManageEmpire", () => {
 		expect(deleteButton().attributes("aria-busy")).toBe("false");
 		expect(error).toHaveBeenCalled();
 		error.mockRestore();
+		expect(toasts.value.at(-1)).toMatchObject({
+			text: "common.ui.delete_failed",
+			type: "error",
+		});
 	});
 
 	it("shows the empty state without empires", async () => {

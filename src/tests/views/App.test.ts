@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { config, flushPromises } from "@vue/test-utils";
 import { createPinia, type Pinia, setActivePinia } from "pinia";
 
@@ -64,6 +65,7 @@ vi.mock("@/lib/useVersionCheck", () => ({
 }));
 vi.mock("@/lib/whatsNew", () => ({ announceRelease: mocks.announceRelease }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
 	identifyUser: mocks.identifyUser,
 	trackEvent: mocks.trackEvent,
 }));
@@ -182,15 +184,14 @@ describe("App", () => {
 			expect(loadProfile).toHaveBeenCalledOnce();
 		});
 
-		it("logs a failed preferences refresh", async () => {
+		it("reports a failed preferences refresh", async () => {
 			const failure = new Error("offline");
-			const error = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
 			mocks.execute.mockRejectedValue(failure);
 			await mountApp(true);
 
-			await vi.waitFor(() => expect(error).toHaveBeenCalledWith(failure));
+			await vi.waitFor(() =>
+				expect(reportError).toHaveBeenCalledWith(failure)
+			);
 		});
 
 		it("opens the changelog from the release notice", async () => {

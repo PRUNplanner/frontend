@@ -8,11 +8,12 @@
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+	const toast = useToast();
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { useManageData } from "@/features/manage/useManageData";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import type { CX } from "@/features/api/schemas/cxData.schemas";
@@ -21,7 +22,7 @@
 	import { inertClone } from "@/util/data";
 
 	// UI
-	import { PButton, PDataTable, PInput, PTag, useConfirm } from "@/ui";
+	import { PButton, PDataTable, PInput, PTag, useConfirm, useToast } from "@/ui";
 	const confirm = useConfirm();
 	import type { PDataTableColumn } from "@/ui/ui.types";
 	import { ClearSharp, PlusSharp } from "@vicons/material";
@@ -65,7 +66,8 @@
 				refNewCXName.value = "";
 				refShowCreateCX.value = false;
 			} catch (err) {
-				console.error(err);
+				reportError(err);
+				toast(t("common.ui.save_failed"), { type: "error" });
 			} finally {
 				refIsCreating.value = false;
 			}
@@ -92,7 +94,8 @@
 			// forced reload of all CX
 			await refetchCX();
 		} catch (err) {
-			console.error(err);
+			reportError(err);
+			toast(t("common.ui.delete_failed"), { type: "error" });
 		} finally {
 			refIsDeleting.value = undefined;
 		}

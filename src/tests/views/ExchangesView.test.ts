@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { nextTick, type Ref, type Slots } from "vue";
 import {
 	flushPromises,
@@ -89,7 +90,10 @@ vi.mock("@/features/exchanges/components/CXScopeRules.vue", () =>
 vi.mock("@/features/save_conflict/components/SaveConflictDialog.vue", () =>
 	stub("SaveConflictDialog")
 );
-vi.mock("@/lib/analytics/useAnalytics", () => ({ trackEvent }));
+vi.mock("@/lib/analytics/useAnalytics", () => ({
+	reportError: vi.fn(),
+	trackEvent,
+}));
 vi.mock("@/database/services/usePlanetData", () => ({
 	usePlanetData: () => ({ planetName: (id: string) => id }),
 }));
@@ -756,7 +760,6 @@ describe("ExchangesView", () => {
 		});
 
 		it("shows an error state, until discarded", async () => {
-			const log = vi.spyOn(console, "error").mockImplementation(() => {});
 			const failure = new Error("offline");
 			save.mockRejectedValueOnce(failure);
 			const wrapper = await mountView();
@@ -766,8 +769,7 @@ describe("ExchangesView", () => {
 			await flushPromises();
 
 			expect(bar(wrapper).props("state")).toBe("error");
-			expect(log).toHaveBeenCalledWith(failure);
-			log.mockRestore();
+			expect(reportError).toHaveBeenCalledWith(failure);
 
 			bar(wrapper).vm.$emit("discard");
 			await flushPromises();

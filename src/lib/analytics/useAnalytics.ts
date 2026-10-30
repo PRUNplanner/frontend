@@ -96,6 +96,29 @@ export function trackException(error: unknown, props?: Properties): void {
 	captureException(error, props);
 }
 
+// what this page load sent: a rethrown error reaches several catch blocks,
+// and a computed or a list of components repeats a failure as a new error
+const reported = new Set<string>();
+
+/**
+ * Sends a caught error to error tracking, once per page load. In production
+ * it stays out of the console.
+ *
+ * @param {unknown} err Error
+ * @param {Properties} context Properties sent along with it
+ */
+export function reportError(err: unknown, context?: Properties): void {
+	if (import.meta.env.DEV) console.error(err);
+	// apiService reports its own errors, and their message is the
+	// response body or the Zod issues, which must not be sent
+	if (err instanceof ApiError || isApiError(err)) return;
+	const key =
+		err instanceof Error ? `${err.name}:${err.message}` : String(err);
+	if (reported.has(key)) return;
+	reported.add(key);
+	trackException(err, context);
+}
+
 /**
  * Properties every later event and exception carries (e.g. route_name)
  */
@@ -112,15 +135,10 @@ export function trackVueError(
 	instance: ComponentPublicInstance | null,
 	info: string
 ): void {
-	// apiService reports its own errors, and their message is the
-	// response body or the Zod issues, which must not be sent
-	if (!(err instanceof ApiError || isApiError(err)))
-		trackException(err, {
-			component:
-				instance?.$options.name ?? instance?.$options.__name,
-			vue_info: info,
-		});
-	console.error(err);
+	reportError(err, {
+		component: instance?.$options.name ?? instance?.$options.__name,
+		vue_info: info,
+	});
 }
 
 export function trackUser(props: Properties): void {
