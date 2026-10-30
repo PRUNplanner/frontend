@@ -8,8 +8,8 @@ import { readStorage, writeStorage } from "@/lib/storage";
  * # Debug modes
  *
  * Hidden, opt-in debug tooling, stored in `localStorage` as a comma
- * separated list of mode names (`"calc"`, `"gaps"`). Unknown names are kept
- * but ignored. Without storage every mode is off. English only by
+ * separated list of mode names (`"calc"`). Unknown names are kept but
+ * ignored. Without storage every mode is off. English only by
  * decision, like all debug tooling.
  */
 
@@ -52,31 +52,9 @@ export function setCalcDebug(on: boolean): void {
 	);
 }
 
-/** the market report's price gaps show, hidden until their floors are tuned */
-export const marketGapsDebug: Ref<boolean> = ref(
-	readModes(readStorage(STORAGE_KEY)).includes("gaps")
-);
-
-/**
- * Shows or hides the market report's price gaps
- * @author jplacht
- *
- * @param {boolean} on Shown
- */
-export function setMarketGapsDebug(on: boolean): void {
-	writeMode("gaps", on);
-	marketGapsDebug.value = on;
-	if (on)
-		toast("Market price gaps shown. ?debug=off hides them.", {
-			type: "info",
-		});
-}
-
 // other tabs follow
 if (typeof window !== "undefined")
 	window.addEventListener("storage", (e: StorageEvent) => {
-		if (e.key === STORAGE_KEY || e.key === null) {
+		if (e.key === STORAGE_KEY || e.key === null)
 			calcDebug.value = readModes(e.newValue).includes("calc");
-			marketGapsDebug.value = readModes(e.newValue).includes("gaps");
-		}
 	});

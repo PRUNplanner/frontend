@@ -39,11 +39,11 @@ export const MOVER_MIN_UNITS = 50;
 /**
  * price gaps: each exchange needs units and ȼ traded in 7 days, the gap
  * this many % at least
- * ponytail: first guesses, set from the tuning week (spec 2026-10-22)
+ * tuned on the books of 22–29 Oct 2026 (spec 2026-10-22)
  */
 export const GAP_MIN_UNITS = 20;
-export const GAP_MIN_TURNOVER = 250_000;
-export const GAP_MIN_PCT = 10;
+export const GAP_MIN_TURNOVER = 5_000_000;
+export const GAP_MIN_PCT = 15;
 /** the treemap's colour scale ends at ± this change, in % */
 export const CHANGE_SCALE_PCT = 12;
 
@@ -446,6 +446,20 @@ export function formatMoney(value: number): string {
 		return `${formatNumber(value / 1e6, abs >= 1e8 ? 0 : 1)} M ȼ`;
 	if (abs >= 1e4) return `${formatNumber(value / 1e3, 1)} k ȼ`;
 	return `${formatNumber(value, 0)} ȼ`;
+}
+
+/**
+ * An order book price: whole prices without decimals, as the books quote
+ * them, else 2 decimals under 100, 1 under 1,000, none above
+ *
+ * @param {number} value Price
+ * @returns {string} Formatted price
+ */
+export function formatBookPrice(value: number): string {
+	return formatNumber(
+		value,
+		Number.isInteger(value) ? 0 : value < 100 ? 2 : value < 1000 ? 1 : 0
+	);
 }
 
 /**

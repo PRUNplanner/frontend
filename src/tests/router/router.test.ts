@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/userStore";
 
 import router from "@/router";
 import { trackPageview } from "@/lib/analytics/useAnalytics";
-import { calcDebug, marketGapsDebug } from "@/lib/debugMode";
+import { calcDebug } from "@/lib/debugMode";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -132,6 +132,7 @@ describe("Router NavigationGuard", () => {
 		["calc", true, true],
 		["off", true, false],
 		["x", true, true],
+		["gaps", false, false],
 		["calc", false, true],
 	])(
 		"?debug=%s switches calculation debug and drops the key",
@@ -149,18 +150,6 @@ describe("Router NavigationGuard", () => {
 			expect(router.currentRoute.value.hash).toBe("#y");
 		}
 	);
-
-	it("?debug=gaps shows the market's price gaps, ?debug=off hides them", async () => {
-		marketGapsDebug.value = false;
-		await router.push("/market?debug=gaps");
-		expect(marketGapsDebug.value).toBe(true);
-		expect(router.currentRoute.value.query).toEqual({});
-
-		calcDebug.value = true;
-		await router.push("/market?debug=off");
-		expect(marketGapsDebug.value).toBe(false);
-		expect(calcDebug.value).toBe(false);
-	});
 
 	it("counts a refused navigation as no pageview", async () => {
 		useUserStore().setToken("foo", "moo");

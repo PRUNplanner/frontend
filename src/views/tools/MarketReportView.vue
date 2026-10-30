@@ -57,7 +57,6 @@
 		MARKET_EXCHANGES,
 	} from "@/features/market_report/marketReport.util";
 	import { formatNumber } from "@/util/numbers";
-	import { marketGapsDebug } from "@/lib/debugMode";
 
 	// Types & Interfaces
 	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
@@ -169,7 +168,7 @@
 		"prices",
 		"index",
 		"movers",
-		...(marketGapsDebug.value ? ["gaps"] : []),
+		"gaps",
 		"heavy_day",
 		"not_included",
 		"flat",
@@ -210,8 +209,7 @@
 				<MarketInShort
 					:summary="summary!"
 					:books="books"
-					:books-failed="booksFailed"
-					:show-gap="marketGapsDebug" />
+					:books-failed="booksFailed" />
 			</MarketBlock>
 			<MarketBlock
 				:ready="!!summary"
@@ -365,10 +363,7 @@
 				</MarketBlock>
 			</section>
 
-			<section
-				v-if="marketGapsDebug"
-				class="flex flex-col gap-3"
-				aria-labelledby="mr-gaps">
+			<section class="flex flex-col gap-3" aria-labelledby="mr-gaps">
 				<div class="flex flex-wrap items-end justify-between gap-3">
 					<div class="max-w-3xl">
 						<h2 id="mr-gaps" class="text-base font-bold">

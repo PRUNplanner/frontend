@@ -6,7 +6,7 @@ import { useUserStore } from "@/stores/userStore";
 // Composables
 import { trackPageview } from "@/lib/analytics/useAnalytics";
 import { setClientErrorRoute } from "@/lib/clientErrors";
-import { setCalcDebug, setMarketGapsDebug } from "@/lib/debugMode";
+import { setCalcDebug } from "@/lib/debugMode";
 import { markNavigationStart } from "@/lib/perf/navigationStart";
 
 const router = createRouter({
@@ -235,19 +235,14 @@ const router = createRouter({
 
 router.beforeEach(() => markNavigationStart());
 
-// ?debug=calc turns calculation debug on, ?debug=gaps the market report's
-// price gaps, ?debug=off both off, on any page;
+// ?debug=calc turns calculation debug on, ?debug=off off, on any page;
 // the key is dropped so a shared or bookmarked URL never carries it
 router.beforeEach((to) => {
 	const debug = to.query.debug;
 	if (debug === undefined) return;
 
 	if (debug === "calc") setCalcDebug(true);
-	else if (debug === "gaps") setMarketGapsDebug(true);
-	else if (debug === "off") {
-		setCalcDebug(false);
-		setMarketGapsDebug(false);
-	}
+	else if (debug === "off") setCalcDebug(false);
 
 	const { debug: _debug, ...query } = to.query;
 	return { path: to.path, query, hash: to.hash, replace: true };

@@ -82,29 +82,17 @@ describe("debugMode", () => {
 		expect(calcDebug.value).toBe(true);
 	});
 
-	it("shows and hides the market's price gaps, keeping other modes", async () => {
-		stored.set("prunplanner_debug", "calc");
-		const { marketGapsDebug, setMarketGapsDebug, calcDebug } = await load();
-		expect(marketGapsDebug.value).toBe(false);
-
-		setMarketGapsDebug(true);
-		expect(marketGapsDebug.value).toBe(true);
-		expect(calcDebug.value).toBe(true);
-		expect(stored.get("prunplanner_debug")).toBe("calc,gaps");
-		expect(toast).toHaveBeenCalledOnce();
-
-		setMarketGapsDebug(false);
-		expect(marketGapsDebug.value).toBe(false);
-		expect(stored.get("prunplanner_debug")).toBe("calc");
-		// no toast when hidden
-		expect(toast).toHaveBeenCalledOnce();
-
+	it("a stored mode without a meaning is kept and ignored", async () => {
 		stored.set("prunplanner_debug", "gaps");
-		expect((await load()).marketGapsDebug.value).toBe(true);
+		const { calcDebug, setCalcDebug } = await load();
+		expect(calcDebug.value).toBe(false);
+
+		setCalcDebug(true);
+		expect(stored.get("prunplanner_debug")).toBe("gaps,calc");
 	});
 
 	it("follows other tabs through the storage event", async () => {
-		const { calcDebug, marketGapsDebug } = await load();
+		const { calcDebug } = await load();
 
 		window.dispatchEvent(
 			new StorageEvent("storage", {
@@ -113,7 +101,6 @@ describe("debugMode", () => {
 			})
 		);
 		expect(calcDebug.value).toBe(true);
-		expect(marketGapsDebug.value).toBe(false);
 
 		window.dispatchEvent(new StorageEvent("storage", { key: "other" }));
 		expect(calcDebug.value).toBe(true);

@@ -207,7 +207,7 @@ describe("price gaps", () => {
 			ticker,
 			exchange_code,
 			vwap_7d,
-			sum_traded_7d: 10_000,
+			sum_traded_7d: 1_000_000,
 			ask,
 			bid,
 		}) as Exchange;

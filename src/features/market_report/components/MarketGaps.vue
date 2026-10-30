@@ -10,13 +10,13 @@
 	// Util
 	import {
 		exchangeGaps,
+		formatBookPrice,
 		formatChange,
 		formatMoney,
 		GAP_MIN_PCT,
 		GAP_MIN_TURNOVER,
 		GAP_MIN_UNITS,
 	} from "@/features/market_report/marketReport.util";
-	import { formatNumber } from "@/util/numbers";
 	import { formatMaterialName } from "@/util/text";
 
 	// Components
@@ -130,21 +130,15 @@
 	}
 
 	const rowKey = (r: IGapRow) => r.ticker;
-	// whole prices without decimals, as the books quote them
-	const price = (v: number) =>
-		formatNumber(
-			v,
-			Number.isInteger(v) ? 0 : v < 100 ? 2 : v < 1000 ? 1 : 0
-		);
 	// the price on one side: VWAP 7D, or the ask and the bid
 	const lowPrice = (r: IGapRow) =>
 		basis === "vwap"
-			? price(r.lowPrice)
-			: t("market_report.gaps.ask", { price: price(r.lowPrice) });
+			? formatBookPrice(r.lowPrice)
+			: t("market_report.gaps.ask", { price: formatBookPrice(r.lowPrice) });
 	const highPrice = (r: IGapRow) =>
 		basis === "vwap"
-			? price(r.highPrice)
-			: t("market_report.gaps.bid", { price: price(r.highPrice) });
+			? formatBookPrice(r.highPrice)
+			: t("market_report.gaps.bid", { price: formatBookPrice(r.highPrice) });
 	const nowText = (r: IGapRow) =>
 		r.open == null
 			? t("market_report.gaps.closed")
@@ -153,13 +147,13 @@
 		[
 			r.ask > 0
 				? t("market_report.gaps.ask_on", {
-						price: price(r.ask),
+						price: formatBookPrice(r.ask),
 						exchange: r.low,
 					})
 				: t("market_report.gaps.no_ask", { exchange: r.low }),
 			r.bid > 0
 				? t("market_report.gaps.bid_on", {
-						price: price(r.bid),
+						price: formatBookPrice(r.bid),
 						exchange: r.high,
 					})
 				: t("market_report.gaps.no_bid", { exchange: r.high }),
