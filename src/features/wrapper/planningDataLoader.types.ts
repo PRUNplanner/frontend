@@ -5,7 +5,7 @@ import type {
 import type { CX } from "@/features/api/schemas/cxData.schemas";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { StepConfig } from "@/features/wrapper/dataLoader.types";
+import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 export interface PlanningDataLoaderProps {
@@ -37,13 +37,13 @@ export interface PlanningDataLoaderEmits {
 	(e: "update:empireUuid", data: string): void;
 }
 
-export type PlanningStepConfigsType = [
-	StepConfig<PlanShare>,
-	StepConfig<PlanEmpireElement[]>,
-	StepConfig<Plan>,
-	StepConfig<Plan[]>,
-	StepConfig<Planet>,
-	StepConfig<CX[]>,
-	StepConfig<Shared[]>,
-	StepConfig<Plan[]>,
-];
+export interface PlanningSteps {
+	sharedPlan: StepState<PlanShare>;
+	empireList: StepState<PlanEmpireElement[]>;
+	plan: StepState<Plan>;
+	planList: StepState<Plan[]>;
+	planet: StepState<Planet>;
+	cx: StepState<CX[]>;
+	sharedList: StepState<Shared[]>;
+	empirePlans: StepState<Plan[]>;
+}

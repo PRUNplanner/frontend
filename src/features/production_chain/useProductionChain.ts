@@ -3,7 +3,6 @@ import {
 	onScopeDispose,
 	ref,
 	shallowRef,
-	toRaw,
 	watch,
 	type ComputedRef,
 	type Ref,
@@ -165,10 +164,7 @@ export function useProductionChain() {
 		indexLoading.value = true;
 		indexError.value = false;
 		try {
-			// a cache hit returns the query store's reactive copy
-			index.value = toRaw(
-				await useQuery("GetPlanetSearchIndex").execute()
-			);
+			index.value = await useQuery("GetPlanetSearchIndex").execute();
 		} catch {
 			indexError.value = true;
 		} finally {

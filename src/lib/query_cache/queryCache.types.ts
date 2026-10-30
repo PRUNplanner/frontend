@@ -1,7 +1,14 @@
 export interface JSONObject {
 	[key: string]: JSONValue;
 }
-export type JSONValue = null | boolean | number | string | object;
+/** A cache key: JSON only, so it stringifies and compares as it is */
+export type JSONValue =
+	| null
+	| boolean
+	| number
+	| string
+	| JSONValue[]
+	| JSONObject;
 
 export interface IQueryState<TParams, TData> {
 	definitionName: string;

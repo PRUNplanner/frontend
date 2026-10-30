@@ -135,8 +135,10 @@ component / composable
   on. It merges the definitions in `queries/`, which are split by domain
   (`gameData`, `planning`, `user`). A read is wrapped in `defineQuery()`,
   a write in `defineMutation()` (below). A read has:
-  - `key(params)`: a JSON array such as `["planningdata", "plan", uuid]`.
-    Object keys are sorted by `toCacheKey`.
+  - `key(params)`: a JSON array such as `["planningdata", "plan", uuid]`,
+    typed `JSONValue` (JSON only: no `undefined`, functions, Dates or
+    Maps). Object keys are sorted by `toCacheKey`; a test pins every
+    query's key string.
   - `fetchFn(params)`: calls `call*()`, then performs side effects. It
     writes to IndexedDB or `planningStore` (`storeAndPreload`), seeds
     sibling cache entries (`addCacheState(name, params, data)`), or
@@ -183,7 +185,9 @@ component / composable
     (`loading`, `data`, `timestamp`, …) are tracked, but `data` is the raw
     fetch result. A cache hit returns the same object the fetch returned,
     so change cached data only by replacing it (refetch, `invalidateKey`),
-    never in place.
+    never in place. The loaders hand it out as is (no copy, no proxy).
+    `GetPlanetSearchIndex` is `markRaw`, so a component keeping it in a
+    `ref` doesn't deep-wrap the large index either.
   - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes
     either the exact key or every key that the given key is a subset of. It
     refetches when `autoRefetch` is set or `forceRefetch` is passed.

@@ -1,4 +1,4 @@
-import type { JSONObject, JSONValue } from "@/lib/query_cache/queryCache.types";
+import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 
 /**
  * Transforms any JSONValue cache key to its string representation
@@ -53,23 +53,18 @@ export function isSubset(subSet: JSONValue, fullSet: JSONValue): boolean {
 		return true;
 	}
 
+	// an array never matches an object
 	if (
 		typeof subSet === "object" &&
 		typeof fullSet === "object" &&
 		subSet !== null &&
-		fullSet !== null
+		fullSet !== null &&
+		!Array.isArray(subSet) &&
+		!Array.isArray(fullSet)
 	) {
-		const subKeys = Object.keys(subSet);
-		for (const key of subKeys) {
+		for (const key of Object.keys(subSet)) {
 			if (!(key in fullSet)) return false;
-			if (
-				!isSubset(
-					(subSet as JSONObject)[key],
-					(fullSet as JSONObject)[key]
-				)
-			) {
-				return false;
-			}
+			if (!isSubset(subSet[key], fullSet[key])) return false;
 		}
 		return true;
 	}

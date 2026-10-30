@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { isProxy, ref } from "vue";
 
-import type { Exchange, Material } from "@/features/api/schemas/gameData.schemas";
+import type {
+	Exchange,
+	Material,
+	PlanetSearchIndexEntry,
+} from "@/features/api/schemas/gameData.schemas";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 import { memoryStorage } from "@/tests/memoryStorage";
 import market_summary from "@/tests/test_data/api_data_market_summary.json";
@@ -11,6 +16,7 @@ vi.mock("@/features/api/gameData.api", async (importOriginal) => ({
 	callDataExchanges: vi.fn(),
 	callMarketSummary: vi.fn(),
 	callCXSparklines: vi.fn(),
+	callDataPlanetSearchIndex: vi.fn(),
 }));
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
@@ -311,5 +317,24 @@ describe("market report queries", () => {
 			"vwap_7d",
 			["DW"]
 		);
+	});
+});
+
+describe("planet search index query", () => {
+	it("stays raw on a cache hit, even inside a ref", async () => {
+		vi.resetModules();
+		const m = await load();
+		const index = [
+			{ planet_natural_id: "OT-580b" },
+		] as PlanetSearchIndexEntry[];
+		vi.mocked(m.api.callDataPlanetSearchIndex).mockResolvedValue(index);
+
+		await m.queryStore.execute("GetPlanetSearchIndex", undefined);
+		const hit = await m.queryStore.execute("GetPlanetSearchIndex", undefined);
+
+		expect(hit).toBe(index);
+		expect(m.api.callDataPlanetSearchIndex).toHaveBeenCalledOnce();
+		expect(isProxy(hit)).toBe(false);
+		expect(isProxy(ref(hit).value)).toBe(false);
 	});
 });
