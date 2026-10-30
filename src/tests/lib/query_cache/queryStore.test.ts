@@ -57,6 +57,13 @@ vi.mock("@/lib/query_cache/queryRepository", () => {
 			mutation: true,
 			fetchFn: () => Promise.reject(new Error("409")),
 		},
+		// throws before it returns a promise
+		syncThrowQuery: {
+			key: () => ["syncThrowQuery"],
+			fetchFn: vi.fn(() => {
+				throw new Error("sync");
+			}),
+		},
 		// a read whose result is dropped after the call
 		uncachedQuery: {
 			key: () => ["uncachedQuery"],
@@ -809,6 +816,22 @@ describe("useQueryStore: edge cases", () => {
 			).rejects.toBe("boom");
 
 			expect(state(["textRejectQuery"]).error).toEqual(new Error("boom"));
+		});
+
+		it("record a fetchFn that throws at once, and fetch again", async () => {
+			const fetchFn = getQueryDefinition(
+				// @ts-expect-error mock query repository
+				"syncThrowQuery"
+			).fetchFn as Mock;
+			// @ts-expect-error mock query repository
+			const run = () => store.execute("syncThrowQuery", undefined);
+
+			await expect(run()).rejects.toThrow("sync");
+			expect(state(["syncThrowQuery"]).error).toEqual(new Error("sync"));
+			expect(state(["syncThrowQuery"]).loading).toBe(false);
+
+			await expect(run()).rejects.toThrow("sync");
+			expect(fetchFn).toHaveBeenCalledTimes(2);
 		});
 
 		it("do not write an error after $reset", async () => {

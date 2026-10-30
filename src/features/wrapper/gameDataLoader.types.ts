@@ -5,7 +5,7 @@ import type {
 	Planet,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
-import type { StepConfig } from "./dataLoader.types";
+import type { StepState } from "@/features/wrapper/dataLoader.types";
 
 export interface GameDataLoaderProps {
 	readonly minimal?: boolean | undefined;
@@ -27,11 +27,11 @@ export interface GameDataLoaderEmits {
 	(e: "data:planet:multiple", data: Planet[]): void;
 }
 
-export type GameDataStepConfigsType = [
-	StepConfig<Material[]>,
-	StepConfig<Exchange[]>,
-	StepConfig<Building[]>,
-	StepConfig<Recipe[]>,
-	StepConfig<Planet>,
-	StepConfig<Planet[]>,
-];
+export interface GameDataSteps {
+	material: StepState<Material[]>;
+	exchange: StepState<Exchange[]>;
+	building: StepState<Building[]>;
+	recipe: StepState<Recipe[]>;
+	planet: StepState<Planet>;
+	planetMultiple: StepState<Planet[]>;
+}

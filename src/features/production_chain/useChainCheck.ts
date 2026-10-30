@@ -3,7 +3,6 @@ import {
 	onScopeDispose,
 	ref,
 	shallowRef,
-	toRaw,
 	watch,
 	type ComputedRef,
 	type Ref,
@@ -169,8 +168,7 @@ export function useChainCheck() {
 
 	async function loadIndex(): Promise<void> {
 		if (index.value) return;
-		// a cache hit returns the query store's reactive copy
-		index.value = toRaw(await useQuery("GetPlanetSearchIndex").execute());
+		index.value = await useQuery("GetPlanetSearchIndex").execute();
 	}
 
 	let run = 0;

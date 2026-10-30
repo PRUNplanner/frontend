@@ -90,7 +90,8 @@ function fetchOf(name: QueryName): (params: unknown) => Promise<unknown> {
 export const useQueryStore = defineStore(
 	"prunplanner_query_store",
 	() => {
-		const inFlight = new Map<string, Promise<unknown>>();
+		// one request per key; a dropped or replaced one is no longer here
+		const inFlight = new Map<string, { promise?: Promise<unknown> }>();
 		// fetch budget: recent network fetches and block end per key, and
 		// the keys this tab reported a loop of
 		const fetchTimes = new Map<string, number[]>();
@@ -250,7 +251,7 @@ export const useQueryStore = defineStore(
 
 			// return in-flight promise if exists
 			if (inFlight.has(keyHash) && !options?.forceRefetch) {
-				return inFlight.get(keyHash)! as Promise<QueryData<K>>;
+				return inFlight.get(keyHash)!.promise as Promise<QueryData<K>>;
 			}
 
 			// mark as loading
@@ -263,15 +264,15 @@ export const useQueryStore = defineStore(
 
 			// $reset (logout), invalidateKey or a forced refetch replace or
 			// drop this request; it must then not write into the cache.
-			// let, not const: a fetchFn throwing synchronously would read
-			// a const promise before its initialization
-			// eslint-disable-next-line prefer-const
-			let promise: Promise<QueryData<K>>;
-			const isCurrent = () => inFlight.get(keyHash) === promise;
+			// Registered before the fetch runs, so a fetchFn throwing
+			// synchronously is current too
+			const request: { promise?: Promise<QueryData<K>> } = {};
+			inFlight.set(keyHash, request);
+			const isCurrent = () => inFlight.get(keyHash) === request;
 			// the persisted copy was already expired: refetch once settled
 			let refresh = false;
 
-			promise = (async (): Promise<QueryData<K>> => {
+			const promise = (async (): Promise<QueryData<K>> => {
 				try {
 					const cached = initialData ? await initialData() : null;
 					if (cached) {
@@ -327,8 +328,7 @@ export const useQueryStore = defineStore(
 					}
 				}
 			})();
-
-			inFlight.set(keyHash, promise);
+			request.promise = promise;
 
 			return promise;
 		}

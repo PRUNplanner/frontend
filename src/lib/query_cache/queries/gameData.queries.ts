@@ -1,3 +1,5 @@
+import { markRaw } from "vue";
+
 import config from "@/lib/config";
 
 // Stores
@@ -275,11 +277,12 @@ export const gameDataQueries = {
 		},
 		expireTime: planetsExpireTime,
 	}),
-	// a different shape than Planet, so not written into planetsStore
+	// a different shape than Planet, so not written into planetsStore.
+	// Raw: large and read only, never worth a deep proxy
 	GetPlanetSearchIndex: defineQuery({
 		key: () => ["gamedata", "planet", "search-index"],
-		fetchFn: (): Promise<PlanetSearchIndexEntry[]> =>
-			callDataPlanetSearchIndex(),
+		fetchFn: async (): Promise<PlanetSearchIndexEntry[]> =>
+			markRaw(await callDataPlanetSearchIndex()),
 		expireTime: planetsExpireTime,
 	}),
 	GetPlanetLastPOPR: defineQuery({

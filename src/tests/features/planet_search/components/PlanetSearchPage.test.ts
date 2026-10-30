@@ -71,10 +71,8 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 			await gate.promise;
 			if (failIndex.value && name === "GetPlanetSearchIndex")
 				throw new Error("down");
-			// reactive, like a query cache hit
-			return name === "GetPlanetSearchIndex"
-				? reactive(fixture)
-				: empires;
+			// raw, like the query (GetPlanetSearchIndex is markRaw)
+			return name === "GetPlanetSearchIndex" ? fixture : empires;
 		},
 	}),
 }));
