@@ -558,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "添加建筑时，自动优化住房以满足劳动力需求。",
-			"amount_label": "{infrastructure}数量"
+			"amount_label": "{infrastructure}数量",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "每个基地最多可分配 6 名专家。你当前已分配 {expert_number} 名专家。",
