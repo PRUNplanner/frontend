@@ -4,7 +4,7 @@ The plan view reads from left to right: **Base** (set up), **Production** (build
 
 - **Base** holds the empire and prices, the planet (COGC program, permits, Corp HQ, planet resources), workforce with its luxuries, housing and experts. Each section folds; its summary line shows the setting at a glance.
 - **Tools** (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) open in place of the production list. While a tool is open, Base folds to a strip at the left, and for Repair, Profit and Plan check Material I/O folds too. Click a strip to show the pane again; it stays open until you fold it.
-- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and Save sits above the navigation bar while there is something to save.
+- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and the save status with Save sits above the navigation bar.
 
 **Results bar**
 
@@ -29,9 +29,19 @@ Click a recipe to open the picker under it, or "+ Recipe" to add one as a new or
 
 **保存与撤销**
 
-Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). The text next to Save shows the plan's state: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. 在保存成功前你的修改内容均会保留。
+Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). Undo, Redo, the plan's state and Save sit together in one control: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. 在保存成功前你的修改内容均会保留。
 
-Every change can be undone with the Undo and Redo buttons next to the name, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). 此记录涵盖最后50次更改，在保存或重新加载规划后重置。
+Unsaved changes of a saved plan are kept as a draft a few seconds after each change, so they survive a reload or a closed tab: when you open the plan again they are back, and the notice offers to discard them. "Draft not saved" means they aren't kept yet (click it to try again); the page then warns before you leave. If another tab or device saved a draft of the same plan, nothing is replaced until you choose which one to keep.
+
+Every change can be undone with the Undo and Redo buttons, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The history covers the last 50 changes and starts fresh after saving the plan or discarding the changes.
+
+**Versions**
+
+Every save keeps a version of the plan. Click the save state to see them. To name a version, open the arrow next to Save (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name and press Enter; the ⋯ menu of a version in the list names or renames it later. Named versions stay, the last 10 unnamed ones are kept. The same menu has Save as copy and Discard changes.
+
+The eye in the list shows an older version read-only, with its numbers in the results bar. From there, Compare with current lists what differs, Restore loads it as unsaved changes (Undo takes it back, saving makes it the active version), Open as new plan copies it into a new plan, and Back to current returns to your plan as it was.
+
+Make active, in the ⋯ menu or next to Restore, switches the plan to that version in one step: your empires and the plan's share link use it right away. It is added as a new version on top ("Restored from …"), the one you picked stays where it is. Unsaved changes are discarded after you confirm. Delete in the same menu removes a version for good, after you confirm; the active version can't be deleted.
 
 **Plan check**
 
