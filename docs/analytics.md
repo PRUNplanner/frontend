@@ -152,10 +152,11 @@ No key, URL or UUID goes into these events.
 | `plan:save_conflict` | `planet_natural_id`, `is_deleted`, `choice` (`save_as_new`, `overwrite`, `reload`, `close`) | the save conflict dialog was answered: the plan was saved (`is_deleted`: deleted) in another tab or device since it was loaded |
 
 `plan:edit` replaces one event per click. `field` is one of `building_add`,
-`building_amount`, `recipe_add`, `recipe_mix_add`, `recipe_change`,
-`recipe_delete`, `recipe_amount`, `workforce`, `infrastructure`, `expert`,
-`cogc`, `corphq`, `permits`. `recipe_mix_add` is the "Add" of the typical
-mix hint on a building without recipes (`amount`: recipes added). While
+`building_amount`, `building_delete`, `recipe_add`, `recipe_mix_add`,
+`recipe_change`, `recipe_delete`, `recipe_amount`, `workforce`,
+`infrastructure`, `expert`, `cogc`, `corphq`, `permits`. `recipe_mix_add` is
+the "Add" of the typical mix hint on a building without recipes (`amount`:
+recipes added). While
 plan suggestions are on, `building_add` has `is_from_popular` (picked from
 the "Popular on" group) and `recipe_add` / `recipe_change` have
 `is_most_planned` (the recipe is the planet's most planned one for that

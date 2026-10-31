@@ -231,10 +231,22 @@ describe("useAnalytics", () => {
 				infrastructure_type: "HB2",
 				amount: 1,
 			});
+			// deleting the building is not one more amount edit of it
+			trackPlanEdit({
+				planet_natural_id: "OT-580b",
+				field: "building_delete",
+				building_ticker: "FRM",
+			});
 
 			vi.advanceTimersByTime(1000);
 
-			expect(capture).toHaveBeenCalledTimes(4);
+			expect(capture).toHaveBeenCalledTimes(5);
+			expect(capture).toHaveBeenCalledWith("plan:edit", {
+				planet_natural_id: "OT-580b",
+				field: "building_delete",
+				building_ticker: "FRM",
+				is_shared: false,
+			});
 		});
 
 		it("sends a later edit of the same control again", () => {

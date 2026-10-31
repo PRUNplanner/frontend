@@ -165,9 +165,9 @@
 							@close="removeElement(entry.value)" />
 					</div>
 				</template>
-				<template v-else>
+				<span v-else>
 					{{ placeholder ?? $t("common.ui.select.select_options") }}
-				</template>
+				</span>
 			</div>
 
 			<div

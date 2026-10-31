@@ -651,11 +651,17 @@ describe("PlanProduction", () => {
 		]);
 		expect(trackPlanEdit.mock.calls.map((c) => c[0].field)).toEqual([
 			"building_amount",
+			"building_delete",
 			"recipe_amount",
 			"recipe_delete",
 			"recipe_add",
 			"recipe_change",
 		]);
+		expect(trackPlanEdit).toHaveBeenCalledWith({
+			field: "building_delete",
+			planet_natural_id: "ZV-307c",
+			building_ticker: "FP",
+		});
 	});
 
 	it("renders no rows without buildings", async () => {

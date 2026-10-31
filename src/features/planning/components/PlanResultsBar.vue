@@ -124,6 +124,7 @@
 					<!-- a phone's third of the bar fits the profit without its
 						cents -->
 					<span
+						translate="no"
 						class="text-xl @max-[30rem]:text-lg font-medium leading-tight text-nowrap">
 						<PValue
 							class="@max-[30rem]:hidden"
@@ -155,7 +156,7 @@
 				@click="emit('open', 'payback')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.payback") }}</span>
-					<span :class="value">{{
+					<span translate="no" :class="value">{{
 						formatPayback(overview.roi)
 					}}</span>
 				</div>
@@ -163,7 +164,9 @@
 				<div
 					class="flex flex-wrap items-baseline gap-x-1.5 mt-1 text-xs text-muted"
 					data-build-cost>
-					<span class="text-sm font-medium text-ink-strong">
+					<span
+						translate="no"
+						class="text-sm font-medium text-ink-strong">
 						{{ formatNumber(overview.totalConstructionCost, 0) }}
 					</span>
 					{{ t("plan.results.build_cost") }}
@@ -181,6 +184,7 @@
 						t("plan.results.workforce")
 					}}</span>
 					<span
+						translate="no"
 						:class="[value, shortTier ? 'text-negative!' : '']"
 						:data-short="!!shortTier"
 						:title="t('plan.results.lowest_efficiency')">
@@ -191,20 +195,21 @@
 						}}
 					</span>
 				</div>
-				<div :class="sub" data-workforce-tiers>
-					<template v-for="(part, i) in tierParts" :key="part.key">
-						<template v-if="i"> · </template>
+				<div translate="no" :class="sub" data-workforce-tiers>
+					<span v-for="(part, i) in tierParts" :key="part.key">
+						<span v-if="i"> · </span>
 						<span
 							class="whitespace-nowrap"
 							:class="part.short ? 'text-negative' : ''"
 							:data-short="part.short">
 							{{ part.text }}
 						</span>
-					</template>
+					</span>
 				</div>
 				<!-- one line, the full list on hover -->
 				<div
 					v-if="expertLine"
+					translate="no"
 					class="text-xs text-muted truncate @max-[60rem]:hidden"
 					:title="expertLine"
 					data-experts>
@@ -223,11 +228,12 @@
 					<span :class="label">{{ t("plan.results.area") }}</span>
 					<span :class="value">
 						<span
+							translate="no"
 							:class="area.areaLeft < 0 ? 'text-negative' : ''"
 							:data-over="area.areaLeft < 0">
 							{{ area.areaUsed }}
 						</span>
-						<span class="text-sm text-muted">
+						<span translate="no" class="text-sm text-muted">
 							/ {{ area.areaTotal }}
 						</span>
 					</span>
@@ -271,9 +277,9 @@
 				@click="emit('open', 'storage')">
 				<div :class="head">
 					<span :class="label">{{ t("plan.results.storage") }}</span>
-					<span :class="value">
+					<span translate="no" :class="value">
 						{{ formatNumber(visitation.storageFilled, 1) }}
-						<span class="text-sm text-muted">
+						<span translate="yes" class="text-sm text-muted">
 							{{ t("plan.results.days_to_full") }}
 						</span>
 					</span>

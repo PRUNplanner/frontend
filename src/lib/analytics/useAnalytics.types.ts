@@ -34,6 +34,7 @@ import type {
 export type PlanEditField =
 	| "building_add"
 	| "building_amount"
+	| "building_delete"
 	| "recipe_add"
 	| "recipe_mix_add"
 	| "recipe_change"

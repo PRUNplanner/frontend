@@ -308,6 +308,7 @@
 			"
 			data-building-row>
 			<span
+				translate="no"
 				class="flex items-center justify-center h-6 rounded-control border border-line-strong bg-surface text-xs font-bold text-ink-strong">
 				{{ localBuildingData.name }}
 			</span>
@@ -327,6 +328,7 @@
 				<span
 					class="flex items-center gap-1 font-medium text-ink-strong @min-[48rem]/prod:shrink-0 @min-[48rem]/prod:max-w-[60%]">
 					<span
+						translate="no"
 						class="truncate @max-[40rem]/prod:whitespace-normal"
 						:title="t(`game.building.${localBuildingData.name}`)">
 						{{ t(`game.building.${localBuildingData.name}`) }}
@@ -391,16 +393,16 @@
 						{{ t(`game.expertise.${localBuildingData.expertise}`) }}
 					</span>
 					<!-- break between the parts, never inside one -->
-					<template v-for="part in subParts" :key="part">
-						<template
+					<span v-for="part in subParts" :key="part">
+						<span
 							v-if="
 								localBuildingData.expertise ||
 								part !== subParts[0]
 							">
 							·
-						</template>
+						</span>
 						<span class="whitespace-nowrap">{{ part }}</span>
-					</template>
+					</span>
 				</span>
 			</button>
 			<PInputNumber
@@ -429,7 +431,9 @@
 				class="text-right text-sm whitespace-nowrap @max-[40rem]/prod:hidden">
 				<PTooltip>
 					<template #trigger>
-						<span class="text-ink-strong hover:cursor-help">
+						<span
+							translate="no"
+							class="text-ink-strong hover:cursor-help">
 							{{
 								formatPercent(
 									localBuildingData.totalEfficiency * 100,
@@ -468,7 +472,9 @@
 					}}
 				</span>
 			</span>
-			<span class="text-right text-sm text-ink @max-[40rem]/prod:hidden">
+			<span
+				translate="no"
+				class="text-right text-sm text-ink @max-[40rem]/prod:hidden">
 				{{ localBuildingData.areaUsed }}
 			</span>
 			<button

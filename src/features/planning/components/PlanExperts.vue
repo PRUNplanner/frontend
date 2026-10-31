@@ -122,9 +122,9 @@
 						expert.bonus === 0 ? 'text-muted' : 'text-muted-strong'
 					"
 					data-bonus>
-					<template v-if="fieldBuildings(expert.name)">
+					<span v-if="fieldBuildings(expert.name)">
 						{{ fieldBuildings(expert.name) }} ·
-					</template>
+					</span>
 					{{ formatNumber(expert.bonus * 100, 2, false, true) }} %
 				</div>
 			</div>

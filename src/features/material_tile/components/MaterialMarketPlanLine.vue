@@ -68,18 +68,18 @@
 		</div>
 		<div class="flex-1 min-w-48">
 			<div class="text-xs text-muted">
-				<template v-if="plan.checkExchange === 'UNIVERSE'">
+				<span v-if="plan.checkExchange === 'UNIVERSE'">
 					{{ $t("material_tile.card.plan.check_universe") }}
-				</template>
-				<template v-else-if="plan.checkExchange">
+				</span>
+				<span v-else-if="plan.checkExchange">
 					{{ $t("material_tile.card.plan.check") }}
 					<span class="font-bold text-ink-strong" data-check-cx>
 						· {{ plan.checkExchange }}
 					</span>
-				</template>
-				<template v-else>
+				</span>
+				<span v-else>
 					{{ $t("material_tile.card.plan.across") }}
-				</template>
+				</span>
 			</div>
 			<div
 				class="font-bold"
@@ -90,9 +90,9 @@
 			</div>
 			<div class="text-xs text-muted-strong" data-plan-detail>
 				{{ translateRef(t, plan.detail) }}
-				<template v-if="limits">
+				<span v-if="limits">
 					· {{ $t("material_tile.details.same_limits") }}
-				</template>
+				</span>
 			</div>
 		</div>
 	</div>

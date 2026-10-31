@@ -491,7 +491,14 @@
 						}
 					"
 					@delete:building="
-						(index: number) => emit('delete:building', index)
+						(index: number) => {
+							emit('delete:building', index);
+							trackPlanEdit({
+								field: 'building_delete',
+								planet_natural_id: props.planetId,
+								building_ticker: building.name,
+							});
+						}
 					"
 					@update:building:recipe:amount="
 						(

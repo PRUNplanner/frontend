@@ -174,7 +174,7 @@
 </script>
 
 <template>
-	<div class="inline-block" :class="`material-tile#${ticker}`">
+	<div translate="no" class="inline-block" :class="`material-tile#${ticker}`">
 		<div
 			class="flex flex-row items-center justify-center w-full child:first:size-full material-tile"
 			:class="[

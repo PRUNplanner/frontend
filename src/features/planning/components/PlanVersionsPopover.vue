@@ -256,9 +256,9 @@
 		</ul>
 		<p class="px-3 py-2 text-xs text-muted">
 			{{ t("plan.versions.footer") }}
-			<template v-if="hidden > 0">
+			<span v-if="hidden > 0">
 				{{ t("plan.versions.hidden", { n: hidden }, hidden) }}
-			</template>
+			</span>
 		</p>
 	</component>
 </template>

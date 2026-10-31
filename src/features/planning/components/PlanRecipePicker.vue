@@ -308,9 +308,9 @@
 				t("plan.picker.columns.payback")
 			}}</span>
 			<span class="text-right">
-				<template v-if="hasInsights">
+				<span v-if="hasInsights">
 					{{ t("plan.picker.columns.plans") }}
-				</template>
+				</span>
 			</span>
 		</div>
 		<div
@@ -354,7 +354,9 @@
 							:amount="m.material_amount"
 							disable-drawer />
 					</span>
-					<span class="md:hidden text-xs text-muted text-nowrap">
+					<span
+						translate="no"
+						class="md:hidden text-xs text-muted text-nowrap">
 						{{ humanizeTimeMs(row.recipe.time_ms) }}
 					</span>
 				</span>
@@ -375,6 +377,7 @@
 					</span>
 				</span>
 				<span
+					translate="no"
 					class="text-right text-sm text-ink text-nowrap"
 					data-runtime>
 					{{ humanizeTimeMs(row.recipe.time_ms) }}
@@ -399,11 +402,11 @@
 				<span class="text-right text-sm">
 					<PValue :value="row.recipe.profitPerArea" />
 				</span>
-				<span class="text-right text-sm text-ink">
+				<span translate="no" class="text-right text-sm text-ink">
 					{{ formatPayback(row.recipe.roi) }}
 				</span>
 				<span class="text-right text-xs text-muted-strong">
-					<template v-if="hasInsights">
+					<span v-if="hasInsights">
 						{{
 							plansHere(row.recipe.recipe_id) !== undefined
 								? formatPercent(
@@ -412,7 +415,7 @@
 									)
 								: t("plan.picker.below_threshold")
 						}}
-					</template>
+					</span>
 				</span>
 			</div>
 		</div>
