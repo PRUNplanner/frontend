@@ -71,6 +71,8 @@
 		(e: "retry-draft"): void;
 		(e: "preview", versionUuid: string): void;
 		(e: "rename", versionUuid: string, name: string): void;
+		(e: "activate", versionUuid: string): void;
+		(e: "delete", versionUuid: string): void;
 	}>();
 
 	const showSaveMenu = defineModel<boolean>("saveMenu", { default: false });
@@ -152,10 +154,22 @@
 					version?.created_at ?? props.savedAt,
 					t
 				);
-				return version?.name
-					? t("plan.save_status.saved_named", {
+				if (version?.name)
+					return t("plan.save_status.saved_named", {
+						time,
+						name: version.name,
+					});
+				// an unnamed restore names its source while it's listed
+				const source: PlanVersionListItem | undefined =
+					version?.kind === "restore"
+						? props.versions.find(
+								(v) => v.uuid === version.source_version
+							)
+						: undefined;
+				return source
+					? t("plan.save_status.saved_from", {
 							time,
-							name: version.name,
+							name: versionLabel(source, t),
 						})
 					: t("plan.save_status.saved_at", { time });
 			}
@@ -301,8 +315,8 @@
 			:anchor="refStatus ?? undefined"
 			:phone="phone"
 			@preview="(uuid: string) => emit('preview', uuid)"
-			@rename="
-				(uuid: string, name: string) => emit('rename', uuid, name)
-			" />
+			@rename="(uuid: string, name: string) => emit('rename', uuid, name)"
+			@activate="(uuid: string) => emit('activate', uuid)"
+			@delete="(uuid: string) => emit('delete', uuid)" />
 	</div>
 </template>

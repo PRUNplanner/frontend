@@ -13,6 +13,7 @@ import type {
 	InfrastructureType,
 	PlanCOGCProgram,
 	PlanFaction,
+	PlanVersionListItem,
 	WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type {
@@ -237,6 +238,15 @@ export interface IAnalyticsEventProperties {
 	"plan:version_restore": { named: boolean; age_days: number };
 	"plan:version_name": { from: "save" | "history" };
 	"plan:version_open_as_plan": undefined;
+	"plan:version_activate": {
+		named: boolean;
+		age_days: number;
+		from: "list" | "preview";
+	};
+	"plan:version_delete": {
+		named: boolean;
+		kind: PlanVersionListItem["kind"];
+	};
 	"plan:draft_restored": { age_minutes: number };
 	"plan:draft_discard": undefined;
 	"plan:discard_changes": undefined;

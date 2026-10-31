@@ -27,6 +27,7 @@ const m = vi.hoisted(() => ({
 	createNewPlan: vi.fn(),
 	saveExistingPlan: vi.fn(),
 	getPlan: vi.fn(),
+	activate: vi.fn(),
 	ask: vi.fn(),
 	guard: vi.fn(),
 	confirm: vi.fn(),
@@ -48,8 +49,13 @@ vi.mock("@/features/planning_data/usePlan", () => ({
 	}),
 }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
-	useQuery: (name: string) => ({
-		execute: () => (name === "GetPlan" ? m.getPlan() : undefined),
+	useQuery: (name: string, args: unknown) => ({
+		execute: () =>
+			name === "GetPlan"
+				? m.getPlan()
+				: name === "ActivatePlanVersion"
+					? m.activate(args)
+					: undefined,
 	}),
 }));
 vi.mock("@/features/save_conflict/useSaveConflict", () => ({
@@ -634,6 +640,114 @@ describe("usePlanSave", () => {
 		await flushPromises();
 		expect(m.saveExistingPlan.mock.calls[1][2]).toBeUndefined();
 		expect((m.draftOptions as IPlanDraftOptions).base()).toBe("t0");
+	});
+
+	describe("make a version active", () => {
+		const version = {
+			uuid: "v-1",
+			kind: "save",
+			name: "Early stage",
+			created_at: new Date(Date.now() - 3 * 86_400_000).toISOString(),
+			source_version: null,
+			is_active: false,
+			data_bytes: 1,
+		} as const;
+		const saved = { uuid: "p-1", modified_at: "t9", plan_name: "Early" };
+
+		function notFound(): Error {
+			return Object.assign(new Error("gone"), { status: 404 });
+		}
+
+		it("switches at once without unsaved changes, sending the seen draft", async () => {
+			const s = setup();
+			s.modified.value = false;
+			m.activate.mockResolvedValue(saved);
+			const { result: saving } = await mountSave(s);
+
+			expect(await saving.activateVersion(version, "list")).toBe(true);
+
+			expect(m.confirm).not.toHaveBeenCalled();
+			expect(m.activate).toHaveBeenCalledWith({
+				planUuid: "p-1",
+				versionUuid: "v-1",
+				draftUpdatedAt: "d-1",
+			});
+			expect(m.draft.saved).toHaveBeenCalled();
+			expect(s.preview.cancel).toHaveBeenCalled();
+			expect(s.preview.clearRestore).toHaveBeenCalled();
+			expect(s.plan.value).toEqual(saved);
+			expect(s.calculation.markSaved).toHaveBeenCalled();
+			expect(saving.refIsSaving.value).toBe(false);
+			expect(m.trackEvent).toHaveBeenCalledWith("plan:version_activate", {
+				named: true,
+				age_days: 3,
+				from: "list",
+			});
+		});
+
+		it("asks first with unsaved changes; cancel keeps the edits and the draft", async () => {
+			const s = setup();
+			m.confirm.mockResolvedValue(false);
+			const { result: saving } = await mountSave(s);
+
+			await saving.activateVersion(version, "list");
+
+			expect(m.confirm).toHaveBeenCalledWith(
+				expect.objectContaining({
+					content: "plan.versions.activate_confirm",
+				})
+			);
+			expect(m.activate).not.toHaveBeenCalled();
+			expect(m.draft.withSave).not.toHaveBeenCalled();
+			expect(s.modified.value).toBe(true);
+
+			m.confirm.mockResolvedValue(true);
+			m.activate.mockResolvedValue(saved);
+			await saving.activateVersion(version, "preview");
+			expect(m.activate).toHaveBeenCalled();
+			expect(s.modified.value).toBe(false);
+			expect(m.trackEvent).toHaveBeenCalledWith(
+				"plan:version_activate",
+				expect.objectContaining({ from: "preview" })
+			);
+		});
+
+		it("asks while previewing only if the edits set aside are unsaved", async () => {
+			const s = setup();
+			s.preview.previewing.value = true;
+			m.activate.mockResolvedValue(saved);
+			const { result: saving } = await mountSave(s);
+
+			await saving.activateVersion(version, "preview");
+			expect(m.confirm).not.toHaveBeenCalled();
+
+			s.preview.stashModified.value = true;
+			m.confirm.mockResolvedValue(false);
+			await saving.activateVersion(version, "preview");
+			expect(m.confirm).toHaveBeenCalledOnce();
+			expect(m.activate).toHaveBeenCalledOnce();
+		});
+
+		it("reports a version gone meanwhile, other failures as a failed save", async () => {
+			const s = setup();
+			s.modified.value = false;
+			const { result: saving } = await mountSave(s);
+
+			m.activate.mockRejectedValueOnce(notFound());
+			expect(await saving.activateVersion(version, "list")).toBe(false);
+			expect(m.toast).toHaveBeenCalledWith("plan.versions.gone", {
+				type: "error",
+			});
+
+			m.activate.mockRejectedValueOnce(new Error("boom"));
+			expect(await saving.activateVersion(version, "list")).toBe(true);
+			expect(m.toast).toHaveBeenCalledWith("common.ui.save_failed", {
+				type: "error",
+			});
+			expect(m.draft.saved).not.toHaveBeenCalled();
+			expect(s.plan.value.modified_at).toBe("t0");
+			expect(saving.refIsSaving.value).toBe(false);
+		});
 	});
 
 	it("has nothing to discard without changes", async () => {

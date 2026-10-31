@@ -33,6 +33,7 @@
 
 	const emit = defineEmits<{
 		(e: "restore"): void;
+		(e: "activate"): void;
 		(e: "open-as-plan"): void;
 		(e: "back"): void;
 	}>();
@@ -63,6 +64,41 @@
 				})
 			}}
 		</p>
+		<!-- in the body, not the notice's #action: there the row can't wrap on a phone -->
+		<div class="flex flex-wrap gap-2 pt-2">
+			<PButton
+				type="secondary"
+				class="pointer-coarse:h-11"
+				@click="toggleCompare">
+				{{
+					refChanges
+						? t("plan.versions.hide_compare")
+						: t("plan.versions.compare")
+				}}
+			</PButton>
+			<PButton class="pointer-coarse:h-11" @click="emit('restore')">
+				{{ t("plan.versions.restore") }}
+			</PButton>
+			<PButton
+				v-if="!version.is_active"
+				type="secondary"
+				class="pointer-coarse:h-11"
+				@click="emit('activate')">
+				{{ t("plan.versions.make_active") }}
+			</PButton>
+			<PButton
+				type="secondary"
+				class="pointer-coarse:h-11"
+				@click="emit('open-as-plan')">
+				{{ t("plan.versions.open_as_plan") }}
+			</PButton>
+			<PButton
+				type="secondary"
+				class="pointer-coarse:h-11"
+				@click="emit('back')">
+				{{ t("plan.versions.back") }}
+			</PButton>
+		</div>
 		<div v-if="refChanges" class="pt-2" data-version-compare>
 			<h3 class="font-bold pb-1">
 				{{ t("plan.versions.compare_title", { name }) }}
@@ -74,34 +110,5 @@
 				<li v-for="(line, index) in lines" :key="index">{{ line }}</li>
 			</ul>
 		</div>
-		<template #action>
-			<div class="flex flex-wrap gap-2">
-				<PButton
-					type="secondary"
-					class="pointer-coarse:h-11"
-					@click="toggleCompare">
-					{{
-						refChanges
-							? t("plan.versions.hide_compare")
-							: t("plan.versions.compare")
-					}}
-				</PButton>
-				<PButton class="pointer-coarse:h-11" @click="emit('restore')">
-					{{ t("plan.versions.restore") }}
-				</PButton>
-				<PButton
-					type="secondary"
-					class="pointer-coarse:h-11"
-					@click="emit('open-as-plan')">
-					{{ t("plan.versions.open_as_plan") }}
-				</PButton>
-				<PButton
-					type="secondary"
-					class="pointer-coarse:h-11"
-					@click="emit('back')">
-					{{ t("plan.versions.back") }}
-				</PButton>
-			</div>
-		</template>
 	</PNotice>
 </template>

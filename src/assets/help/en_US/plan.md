@@ -37,9 +37,11 @@ Every change can be undone with the Undo and Redo buttons, or Ctrl+Z and Ctrl+Sh
 
 **Versions**
 
-Every save keeps a version of the plan. Click the save state to see them. To name a version, open the arrow next to Save (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name and press Enter; the pencil in the list names or renames one later. Named versions stay, the last 10 unnamed ones are kept. The same menu has Save as copy and Discard changes.
+Every save keeps a version of the plan. Click the save state to see them. To name a version, open the arrow next to Save (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name and press Enter; the ⋯ menu of a version in the list names or renames it later. Named versions stay, the last 10 unnamed ones are kept. The same menu has Save as copy and Discard changes.
 
 The eye in the list shows an older version read-only, with its numbers in the results bar. From there, Compare with current lists what differs, Restore loads it as unsaved changes (Undo takes it back, saving makes it the active version), Open as new plan copies it into a new plan, and Back to current returns to your plan as it was.
+
+Make active, in the ⋯ menu or next to Restore, switches the plan to that version in one step: your empires and the plan's share link use it right away. It is added as a new version on top ("Restored from …"), the one you picked stays where it is. Unsaved changes are discarded after you confirm. Delete in the same menu removes a version for good, after you confirm; the active version can't be deleted.
 
 
 **Plan check**

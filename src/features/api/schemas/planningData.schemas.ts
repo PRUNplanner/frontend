@@ -249,6 +249,11 @@ export const PlanVersionRenameSchema = z.object({ name: z.string().max(80) });
 // the clone takes no body
 export const PlanVersionClonePayloadSchema = z.object({});
 
+// the updated_at of the draft this tab last saw, null if none: only that draft is deleted (raw string, as on a save)
+export const PlanVersionActivatePayloadSchema = z.object({
+	draft_updated_at: z.string().nullable(),
+});
+
 export const PlanDraftSchema = PlanVersionSchema.pick({
 	plan_name: true,
 	planet_natural_id: true,

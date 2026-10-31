@@ -14,7 +14,9 @@ import {
 	callGetPlanlist,
 	callDeletePlan,
 	callClonePlan,
+	callActivatePlanVersion,
 	callClonePlanVersion,
+	callDeletePlanVersion,
 	callDeletePlanDraft,
 	callGetPlanDraft,
 	callGetPlanVersion,
@@ -209,6 +211,24 @@ describe("Plan versions and draft API calls", () => {
 		expect((await callClonePlanVersion(plan, version)).uuid).toBe(
 			plan_etherwind.uuid
 		);
+	});
+
+	it("activates a version with the seen draft and deletes a version", async () => {
+		const seen = "2026-10-31T10:00:00.123456Z";
+		mock.onPost(
+			`/planning/plan/${plan}/versions/${version}/activate/`
+		).reply((config) => [
+			JSON.parse(config.data).draft_updated_at === seen ? 200 : 400,
+			plan_etherwind,
+		]);
+		expect((await callActivatePlanVersion(plan, version, seen)).uuid).toBe(
+			plan_etherwind.uuid
+		);
+
+		mock.onDelete(`/planning/plan/${plan}/versions/${version}/`).reply(204);
+		await expect(
+			callDeletePlanVersion(plan, version)
+		).resolves.toBeUndefined();
 	});
 
 	it("gets no draft or the draft, keeping updated_at raw", async () => {
