@@ -112,6 +112,8 @@ No key, URL or UUID goes into these events.
 | `plan:version_restore` | `named`, `age_days` | the previewed version was loaded as unsaved edits |
 | `plan:version_name` | `from` (`save`, `history`) | a version was named while saving or in the versions list |
 | `plan:version_open_as_plan` | | a new plan was made from the previewed version |
+| `plan:version_activate` | `named`, `age_days`, `from` (`list`, `preview`) | a version was made the plan as saved (Make active) |
+| `plan:version_delete` | `named`, `kind` | a version was deleted |
 | `plan:draft_restored` | `age_minutes` | the plan opened with the unsaved edits of its autosave draft |
 | `plan:draft_discard` | | the restored draft was discarded from its notice |
 | `plan:discard_changes` | | the unsaved edits were discarded from the save menu |

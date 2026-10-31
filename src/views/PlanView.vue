@@ -21,6 +21,7 @@
 
 	// Types & Interfaces
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
@@ -265,6 +266,7 @@
 		openSaveAsModal,
 		discardChanges,
 		applySavedPlan,
+		activateVersion,
 		conflict,
 		draftPossible,
 		draftSavedAt,
@@ -286,11 +288,30 @@
 		refVersions,
 		load: loadVersions,
 		rename: renameVersion,
+		remove: removeVersion,
 	} = usePlanVersions(
 		() => refPlanData.value.uuid,
 		() => draftPossible.value
 	);
 	onMounted(() => void loadVersions());
+
+	/**
+	 * Makes a version active from the list or the preview banner
+	 *
+	 * @param {PlanVersionListItem} version Version
+	 * @param {"list" | "preview"} from Where
+	 */
+	async function makeVersionActive(
+		version: PlanVersionListItem,
+		from: "list" | "preview"
+	): Promise<void> {
+		// a stale list: it's gone
+		if (!(await activateVersion(version, from))) void loadVersions(true);
+	}
+
+	function findVersion(versionUuid: string): PlanVersionListItem | undefined {
+		return refVersions.value.find((v) => v.uuid === versionUuid);
+	}
 
 	// the save control's menu (name a version), also from the keyboard
 	const refShowSaveMenu: Ref<boolean> = ref(false);
@@ -455,6 +476,20 @@
 			return preview.open(versionUuid);
 		},
 		rename: renameVersion,
+		activate: (versionUuid: string) => {
+			const version = findVersion(versionUuid);
+			if (version) return makeVersionActive(version, "list");
+		},
+		delete: async (versionUuid: string) => {
+			const version = findVersion(versionUuid);
+			// the previewed version is gone: back to the edits
+			if (
+				version &&
+				(await removeVersion(version)) &&
+				refPreview.value?.uuid === versionUuid
+			)
+				preview.back();
+		},
 	};
 
 	// props change with every recalculation, the component only on a switch
@@ -673,6 +708,7 @@
 			:version="refPreview"
 			:compare="preview.compare"
 			@restore="preview.restoreVersion"
+			@activate="makeVersionActive(refPreview, 'preview')"
 			@open-as-plan="preview.openAsPlan"
 			@back="preview.back" />
 
