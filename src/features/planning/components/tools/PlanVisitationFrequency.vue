@@ -216,21 +216,28 @@
 					tag="p"
 					class="text-sm text-muted text-pretty">
 					<template #storages>
-						<span
-							v-for="(item, index) in storageAmountsForDisplay"
-							:key="item.ticker">
-							<strong class="text-ink">{{ item.amount }}</strong>
-							{{ item.ticker }}
+						<span>
 							<span
-								v-if="
-									index < storageAmountsForDisplay.length - 1
-								">
-								{{
-									index ===
-									storageAmountsForDisplay.length - 2
-										? " and "
-										: ", "
-								}}
+								v-for="(
+									item, index
+								) in storageAmountsForDisplay"
+								:key="item.ticker">
+								<strong class="text-ink">{{
+									item.amount
+								}}</strong>
+								{{ item.ticker }}
+								<span
+									v-if="
+										index <
+										storageAmountsForDisplay.length - 1
+									">
+									{{
+										index ===
+										storageAmountsForDisplay.length - 2
+											? " and "
+											: ", "
+									}}
+								</span>
 							</span>
 						</span>
 					</template>

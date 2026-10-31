@@ -10,6 +10,7 @@ const sources = import.meta.glob("/src/**/*.vue", {
 // the template AST, as far as the check reads it (compiler-core's NodeTypes)
 interface INode {
 	type: number;
+	tag?: string;
 	tagType?: number;
 	content?: string;
 	props?: { type: number; name: string }[];
@@ -48,20 +49,25 @@ const isText = (n: INode | undefined, side: "l" | "r"): boolean => {
 function textEdgedFragments(source: string): string[] {
 	const ast = parse(source).descriptor.template?.ast as INode | undefined;
 	const found: string[] = [];
-	const walk = (node: INode) => {
+	const walk = (node: INode, parent?: INode) => {
 		const list = kids(node);
+		// <i18n-t> puts a slot's content between the message's text
+		const inI18nSlot =
+			has(node, "slot") &&
+			/^(i18n-t|I18nT|i18n)$/.test(parent?.tag ?? "");
 		list.forEach((child, i) => {
 			if (
 				isFragment(child) &&
 				(isText(list[i - 1], "r") ||
 					isText(list[i + 1], "l") ||
+					(inI18nSlot && (i === 0 || i === list.length - 1)) ||
 					(isTemplateFragment(child) &&
 						(isText(child, "l") || isText(child, "r"))))
 			)
 				found.push(
 					`${child.loc.start.line}: ${child.loc.source.split("\n")[0].trim()}`
 				);
-			walk(child);
+			walk(child, node);
 		});
 	};
 	if (ast) walk(ast);
@@ -76,11 +82,12 @@ describe("templates survive page translation", () => {
 	it("finds text at a fragment's edge", () => {
 		expect(
 			textEdgedFragments(
-				`<template><p>a <template v-if="x">b</template></p><p><span v-for="i in 2" :key="i" />c</p><p><template v-if="y"><b /></template><i /></p></template>`
+				`<template><p>a <template v-if="x">b</template></p><p><span v-for="i in 2" :key="i" />c</p><p><template v-if="y"><b /></template><i /></p><i18n-t keypath="k" tag="p"><template #list><b v-for="j in 2" :key="j" /></template><template #ok><span><b v-for="j in 2" :key="j" /></span></template></i18n-t></template>`
 			)
 		).toEqual([
 			`1: <template v-if="x">b</template>`,
 			`1: <span v-for="i in 2" :key="i" />`,
+			`1: <b v-for="j in 2" :key="j" />`,
 		]);
 	});
 
