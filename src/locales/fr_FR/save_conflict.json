@@ -25,6 +25,35 @@
 	"deleted_option_help": {
 		"save_as_new": "Crée un nouveau plan avec tes modifications."
 	},
+	"draft": {
+		"title": "Draft saved elsewhere",
+		"text": "Another tab or device saved a draft of this plan after yours. Autosave is paused until you choose.",
+		"theirs": "In the other draft",
+		"mine": "Your changes",
+		"option": {
+			"overwrite": "Keep mine",
+			"reload": "Load the other draft",
+			"close": "Decide later"
+		},
+		"option_help": {
+			"overwrite": "Replaces the other draft with your changes.",
+			"reload": "Drops your changes here and loads the other draft."
+		}
+	},
+	"draft_base": {
+		"title": "Unsaved changes on an older version",
+		"text": "You left unsaved changes on this plan, and it was saved again since. Nothing changes until you choose.",
+		"mine": "Your unsaved changes",
+		"option": {
+			"overwrite": "Keep my changes",
+			"reload": "Use the saved version",
+			"close": "Decide later"
+		},
+		"option_help": {
+			"overwrite": "Loads your unsaved changes on top of the saved version.",
+			"reload": "Deletes your unsaved changes and keeps the saved version."
+		}
+	},
 	"type": {
 		"BUY": "achat",
 		"SELL": "vente",
