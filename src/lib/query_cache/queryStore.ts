@@ -413,18 +413,22 @@ export const useQueryStore = defineStore("prunplanner_query_store", () => {
 
 	/**
 	 * Seeds a query's cache state, e.g. each plan from a plan list.
-	 * Never overwrites an existing state.
+	 * Never overwrites an existing state, unless `replace`: then the data
+	 * replaces it in one write (the entry is never missing in between)
+	 * and a fetch in flight is dropped, so it can't write older data.
 	 *
 	 * @author jplacht
 	 *
 	 * @param {K} definitionName Query name
 	 * @param {QueryParams<K>} params Query params, also build the key
 	 * @param {QueryData<K>} data Result data
+	 * @param {boolean} [replace=false] Overwrite an existing state
 	 */
 	function addCacheState<K extends QueryName>(
 		definitionName: K,
 		params: QueryParams<K>,
-		data: QueryData<K>
+		data: QueryData<K>,
+		replace: boolean = false
 	): void {
 		const definition:
 			| IQueryDefinition<[QueryParams<K>], QueryData<K>>
@@ -434,13 +438,15 @@ export const useQueryStore = defineStore("prunplanner_query_store", () => {
 		const keyHash: string = toCacheKey(definition.key(params));
 
 		// do not overwrite existing state for key
-		if (!cacheState[keyHash]) {
+		if (replace) inFlight.delete(keyHash);
+		if (replace || !cacheState[keyHash]) {
 			updateState(keyHash, {
 				definitionName,
 				params: params,
 				data: data,
 				loading: false,
 				error: null,
+				errorAt: undefined,
 				timestamp: Date.now(),
 				expireTime: definition.expireTime,
 			});

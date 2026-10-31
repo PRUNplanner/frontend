@@ -375,11 +375,29 @@ the tabs of one browser are kept in step explicitly (registered in
 
 - **Planning changes.** The planning mutations in `planning.queries.ts`
   (all but `PatchEmpireState`) invalidate through `changed(prefixes,
-  uuid, exact)`, the shared plans through `dropShared`. It posts
+  uuid, exact, remote)`, the shared plans through `dropShared`. It posts
   `{userId, keys, uuids, uuid}` on the `"prunplanner"` `BroadcastChannel`
   (`uuid` only when exactly one object changed, for tabs on an older
-  build). The user's other tabs run the same `invalidate`, then set
-  `remoteChange` (`uuids`, from `uuid` for an older sender).
+  build); `remote` keys are only posted, not invalidated in this tab. The
+  user's other tabs merge what they receive: 100 ms after the last
+  message, at the latest 1 s after the first, they run one `invalidate`
+  of the deduped keys and set `remoteChange` once with all uuids (`uuid`
+  for an older sender). So a tab woken after many changes elsewhere
+  refetches each key once. A logout drops what is still waiting.
+- **Plan saves.** The PUT answers with the full plan. `PatchPlan` stores
+  it (planning store, and the plan's `GetPlan` entry through
+  `addCacheState(..., replace)`), so the saving tab doesn't fetch the plan
+  again. It invalidates only what a save changes: the plan list, every
+  empire's plan list, and the empire list (plan names only) when the name
+  differs from the one this tab had or that one is unknown. The plan's own
+  key is a `remote` key: other tabs reload it and its versions. The saving
+  tab's version list (always shown on the plan page) refreshes 1 s after a
+  save, at least 3 s after its last refresh; a refresh still waiting covers
+  the saves meanwhile. So saves at any pace refetch it at most 4 times in
+  10 s, within the fetch budget. A logout drops a waiting refresh.
+- **Overlapping keys.** `invalidate` and `changed` skip a key that another
+  prefix of the same call covers: invalidating both would drop the covered
+  entry's refetch and start a second one.
 - **Bulk actions.** A loop of mutations runs inside `batchChanges(fn)`
   (chain "Create plans", Manage bulk delete): while `fn` runs, `changed`
   only records its keys (deduped) and uuids; when it ends, also by a throw,

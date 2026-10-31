@@ -4,6 +4,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import type {
+	Plan,
 	PlanCOGCProgram,
 	PlanCreateData,
 	PlanSaveCreateResponse,
@@ -209,21 +210,15 @@ export function usePlan() {
 		version: IPlanSaveVersion = {}
 	): Promise<IPlanSaveResult> {
 		try {
-			const savedData: PlanSaveCreateResponse = await useQuery(
-				"PatchPlan",
-				{
-					planUuid: planUuid,
-					data: {
-						uuid: planUuid,
-						...data,
-						...version,
-						base_modified_at: baseModifiedAt,
-					},
-				}
-			).execute();
-
-			await useQuery("GetPlan", {
-				planUuid: savedData.uuid,
+			// the answer seeds the plan's GetPlan entry, no fetch after it
+			const savedData: Plan = await useQuery("PatchPlan", {
+				planUuid: planUuid,
+				data: {
+					uuid: planUuid,
+					...data,
+					...version,
+					base_modified_at: baseModifiedAt,
+				},
 			}).execute();
 			return { uuid: savedData.uuid, modifiedAt: savedData.modified_at };
 		} catch (err) {

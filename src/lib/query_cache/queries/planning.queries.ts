@@ -4,7 +4,8 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Util
 import { broadcastChange } from "@/lib/crossTab";
-import { toCacheKey } from "@/lib/query_cache/cacheKeys";
+import { onSessionReset } from "@/lib/sessionReset";
+import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 import {
 	defineMutation,
 	defineQuery,
@@ -90,6 +91,8 @@ const CXS = ["planningdata", "cx"];
 interface IChangedKey {
 	key: JSONValue;
 	exact: boolean;
+	// false: only the other tabs invalidate it, this one has it already
+	local: boolean;
 }
 
 // the running batchChanges: keys to invalidate (deduped) and changed objects
@@ -103,8 +106,11 @@ let batch: { keys: Map<string, IChangedKey>; uuids: Set<string> } | null = null;
  */
 async function flush(keys: IChangedKey[], uuids: string[]): Promise<void> {
 	const queryStore = useQueryStore();
-	for (const { key, exact } of keys)
-		await queryStore.invalidateKey(key, { exact });
+	const local = keys.filter((k) => k.local);
+	// a key a local prefix covers would be dropped twice (two refetches)
+	for (const k of local)
+		if (!local.some((o) => o !== k && !o.exact && isSubset(o.key, k.key)))
+			await queryStore.invalidateKey(k.key, { exact: k.exact });
 	broadcastChange(
 		keys.map((k) => k.key),
 		uuids
@@ -118,20 +124,27 @@ async function flush(keys: IChangedKey[], uuids: string[]): Promise<void> {
  * @param {JSONValue[]} prefixes Key prefixes
  * @param {string} [uuid] Changed plan, empire or CX
  * @param {JSONValue[]} [exact=[]] Keys invalidated exactly
+ * @param {JSONValue[]} [remote=[]] Key prefixes only the other tabs invalidate
  */
 async function changed(
 	prefixes: JSONValue[],
 	uuid?: string,
-	exact: JSONValue[] = []
+	exact: JSONValue[] = [],
+	remote: JSONValue[] = []
 ): Promise<void> {
-	const keys = [
-		...prefixes.map((key) => ({ key, exact: false })),
-		...exact.map((key) => ({ key, exact: true })),
+	const keys: IChangedKey[] = [
+		...prefixes.map((key) => ({ key, exact: false, local: true })),
+		...exact.map((key) => ({ key, exact: true, local: true })),
+		...remote.map((key) => ({ key, exact: false, local: false })),
 	];
 	const uuids = uuid ? [uuid] : [];
 	if (!batch) return flush(keys, uuids);
 
-	keys.forEach((k) => batch!.keys.set(`${k.exact}:${toCacheKey(k.key)}`, k));
+	keys.forEach((k) => {
+		const id = `${k.exact}:${toCacheKey(k.key)}`;
+		// invalidated here as soon as one change needs it
+		if (!batch!.keys.get(id)?.local) batch!.keys.set(id, k);
+	});
 	uuids.forEach((u) => batch!.uuids.add(u));
 }
 
@@ -155,6 +168,44 @@ export async function batchChanges<T>(fn: () => Promise<T>): Promise<T> {
 		if (current.keys.size)
 			await flush([...current.keys.values()], [...current.uuids]);
 	}
+}
+
+// the saving tab's version list (the plan page always shows it): 1 s
+// after a save, at least 3 s after the last refresh, and a refresh still
+// waiting covers the saves meanwhile. So at most 4 per 10 s, under the
+// fetch budget of 5 with the page load's fetch
+const VERSIONS_DELAY_MS = 1000;
+const VERSIONS_GAP_MS = 3000;
+const versionRefresh = new Map<
+	string,
+	{ timer?: ReturnType<typeof setTimeout>; last: number }
+>();
+onSessionReset(() => {
+	versionRefresh.forEach((s) => clearTimeout(s.timer));
+	versionRefresh.clear();
+});
+
+/**
+ * Invalidates a plan's version list (it refetches) soon, throttled
+ *
+ * @param {string} planUuid Saved plan
+ */
+function refreshVersionsSoon(planUuid: string): void {
+	const state = versionRefresh.get(planUuid) ?? { last: -Infinity };
+	versionRefresh.set(planUuid, state);
+	if (state.timer) return;
+
+	const delay = Math.max(
+		VERSIONS_DELAY_MS,
+		state.last + VERSIONS_GAP_MS - Date.now()
+	);
+	state.timer = setTimeout(() => {
+		state.timer = undefined;
+		state.last = Date.now();
+		void useQueryStore().invalidateKey([...PLANS, planUuid, "versions"], {
+			exact: true,
+		});
+	}, delay);
 }
 
 /** Drops every shared plan entry without refetching the list. */
@@ -375,9 +426,39 @@ export const planningQueries = {
 		fetchFn: async (params: {
 			planUuid: string;
 			data: PlanSaveData;
-		}): Promise<PlanSaveCreateResponse> => {
+		}): Promise<Plan> => {
+			const queryStore = useQueryStore();
+			const planningStore = usePlanningStore();
+			const key = [...PLANS, params.planUuid];
+			const nameBefore: string | undefined =
+				planningStore.plans[params.planUuid]?.plan_name ??
+				queryStore.peekQueryState<unknown, Plan>(key)?.data?.plan_name;
+
 			const data = await callSavePlan(params.planUuid, params.data);
-			await changed([PLANS, EMPIRES], params.planUuid);
+
+			// the answer is the saved plan: this tab doesn't fetch it again
+			planningStore.setPlan(data);
+			queryStore.addCacheState(
+				"GetPlan",
+				{ planUuid: params.planUuid },
+				data,
+				true
+			);
+
+			// the empire list holds only the plans' names and planets
+			const renamed =
+				nameBefore === undefined || data.plan_name !== nameBefore;
+			await changed(
+				[[...EMPIRES, "plans"]],
+				params.planUuid,
+				[
+					[...PLANS, "list"],
+					...(renamed ? [[...EMPIRES, "list"]] : []),
+				],
+				// other tabs reload the plan and its versions
+				[key]
+			);
+			refreshVersionsSoon(params.planUuid);
 			return data;
 		},
 	}),

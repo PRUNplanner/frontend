@@ -108,17 +108,17 @@ export async function callCreatePlan(
  * @async
  * @param {string} planUuid Plan Uuid
  * @param {PlanSaveData} data Plan Data to be stored
- * @returns {Promise<PlanSaveCreateResponse>} Plan Uuid
+ * @returns {Promise<Plan>} Saved plan, as `GET /planning/plan/<uuid>/`
  */
 export async function callSavePlan(
 	planUuid: string,
 	data: PlanSaveData
-): Promise<PlanSaveCreateResponse> {
+): Promise<Plan> {
 	return apiService.put(
 		`/planning/plan/${planUuid}/`,
 		data,
 		PlanSaveDataSchema,
-		PlanSaveCreateResponseSchema
+		PlanSchema
 	);
 }
 

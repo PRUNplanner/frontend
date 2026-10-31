@@ -7,6 +7,10 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
 
+import { useQueryStore } from "@/lib/query_cache/queryStore";
+import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+
 import {
 	callCreatePlan,
 	callGetPlan,
@@ -96,14 +100,15 @@ describe("usePlan", async () => {
 	describe("saveExistingPlan", async () => {
 		const fakeUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
-		it("success, uuid and new version", async () => {
+		it("success, uuid and new version, from the answer without a fetch", async () => {
 			const { saveExistingPlan } = usePlan();
-			vi.mocked(callSavePlan).mockResolvedValueOnce({
+			const saved = {
+				...plan_etherwind,
 				uuid: fakeUuid,
 				modified_at: "v2",
-			});
-			// @ts-expect-error mock data
-			vi.mocked(callGetPlan).mockResolvedValueOnce({ uuid: fakeUuid });
+			} as Plan;
+			vi.mocked(callSavePlan).mockResolvedValueOnce(saved);
+			vi.mocked(callGetPlan).mockClear();
 
 			// @ts-expect-error mock data
 			const result = await saveExistingPlan(fakeUuid, {}, "v1");
@@ -113,6 +118,15 @@ describe("usePlan", async () => {
 				uuid: fakeUuid,
 				base_modified_at: "v1",
 			});
+			expect(callGetPlan).not.toHaveBeenCalled();
+			expect(planningStore.plans[fakeUuid]).toStrictEqual(saved);
+			expect(
+				useQueryStore().peekQueryState([
+					"planningdata",
+					"plan",
+					fakeUuid,
+				])?.data
+			).toBe(saved);
 		});
 
 		it.each([

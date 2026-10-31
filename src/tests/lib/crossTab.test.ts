@@ -217,6 +217,103 @@ describe("crossTab", () => {
 			);
 			expect(remoteChange.value?.uuids).toStrictEqual([]);
 		});
+
+		const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+		it("merges the messages a woken tab gets at once", async () => {
+			userStore.setToken("access", jwt(7));
+			const invalidateKey = vi.spyOn(useQueryStore(), "invalidateKey");
+			const before = remoteChange.value?.seq ?? 0;
+
+			// 1 create, 4 saves and an empire assignment, queued
+			const keys = [
+				[
+					["planningdata", "plan"],
+					["planningdata", "empire"],
+				],
+				...Array(4).fill([
+					["planningdata", "empire", "plans"],
+					["planningdata", "plan", "plan-a"],
+				]),
+				[["planningdata", "empire"]],
+			];
+			keys.forEach((k, i) =>
+				otherTab.postMessage({
+					userId: "7",
+					keys: k,
+					uuids: [i < 5 ? `plan-${i ? "a" : "new"}` : "empire-a"],
+				})
+			);
+			await vi.waitFor(() =>
+				expect(remoteChange.value?.seq).toBe(before + 1)
+			);
+			await wait(150);
+
+			expect(remoteChange.value?.seq).toBe(before + 1);
+			expect(remoteChange.value?.keys).toStrictEqual([
+				["planningdata", "plan"],
+				["planningdata", "empire"],
+				["planningdata", "empire", "plans"],
+				["planningdata", "plan", "plan-a"],
+			]);
+			expect(remoteChange.value?.uuids).toStrictEqual([
+				"plan-new",
+				"plan-a",
+				"empire-a",
+			]);
+			// each key once, those under another key with it
+			expect(invalidateKey.mock.calls).toEqual([
+				[["planningdata", "plan"], { exact: false }],
+				[["planningdata", "empire"], { exact: false }],
+			]);
+		});
+
+		it("handles messages 100 ms apart one by one", async () => {
+			userStore.setToken("access", jwt(7));
+			const before = remoteChange.value?.seq ?? 0;
+			const message = { userId: "7", keys: [["planningdata", "cx"]] };
+
+			otherTab.postMessage(message);
+			await wait(200);
+			expect(remoteChange.value?.seq).toBe(before + 1);
+			otherTab.postMessage(message);
+			await vi.waitFor(() =>
+				expect(remoteChange.value?.seq).toBe(before + 2)
+			);
+		});
+
+		it("flushes a steady stream at least every second", async () => {
+			userStore.setToken("access", jwt(7));
+			const before = remoteChange.value?.seq ?? 0;
+
+			for (let i = 0; i < 24; i++) {
+				otherTab.postMessage({
+					userId: "7",
+					keys: [["planningdata", "cx"]],
+				});
+				await wait(50);
+			}
+
+			// 1.2 s of messages 50 ms apart, never quiet for 100 ms
+			expect(remoteChange.value?.seq).toBeGreaterThan(before);
+		});
+
+		it("a logout drops the messages still waiting", async () => {
+			userStore.setToken("access", jwt(7));
+			const invalidateKey = vi.spyOn(useQueryStore(), "invalidateKey");
+			const before = remoteChange.value?.seq ?? 0;
+
+			otherTab.postMessage({
+				userId: "7",
+				keys: [["planningdata", "plan"]],
+			});
+			await wait(30);
+			userStore.resetSession();
+			await wait(200);
+
+			expect(remoteChange.value?.seq).toBe(before);
+			expect(invalidateKey).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("login state", () => {
