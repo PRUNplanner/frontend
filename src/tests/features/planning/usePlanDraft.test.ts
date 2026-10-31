@@ -47,7 +47,14 @@ function plan(n: number) {
 		plan_cogc: "---" as const,
 		plan_corphq: false,
 		plan_permits_used: 1,
-		plan_data: { n } as unknown as PlanDraft["plan_data"],
+		// n tells the states apart; the arrays make a diffable plan
+		plan_data: {
+			n,
+			buildings: [],
+			infrastructure: [],
+			experts: [],
+			workforce: [],
+		} as unknown as PlanDraft["plan_data"],
 	};
 }
 
@@ -622,7 +629,9 @@ describe("usePlanDraft", () => {
 		keepaliveAnswer(null);
 		await waiting;
 		expect(calls("SavePlanDraft")).toHaveLength(3);
-		expect(calls("SavePlanDraft")[2][1].data.plan_data).toEqual({ n: 4 });
+		expect(calls("SavePlanDraft")[2][1].data.plan_data).toMatchObject({
+			n: 4,
+		});
 	});
 
 	it("takes its own keepalive draft before a save, a discard or an undo", async () => {
@@ -766,5 +775,130 @@ describe("usePlanDraft", () => {
 		await s.edit(2);
 		expect(calls("SavePlanDraft")).toHaveLength(0);
 		expect(s.result.draftFailed.value).toBe(true);
+	});
+	describe("edge paths", () => {
+		it("lists both sides in the dialogs: the other draft, or an older save's draft", async () => {
+			const s = await setup();
+			answers.SavePlanDraft = () => {
+				throw conflictError();
+			};
+			answers.GetPlanDraft = () => draftOf(9, OTHER);
+			s.ask.mockResolvedValue(null);
+			await s.edit(2);
+			const changes = await s.ask.mock.calls[0][0].loadChanges();
+			expect(changes).toEqual(
+				expect.objectContaining({
+					theirs: expect.any(Array),
+					mine: expect.any(Array),
+				})
+			);
+
+			const base = await setup({ base: "b1" });
+			answers.GetPlanDraft = () => draftOf(5, U1, "b0");
+			base.ask.mockResolvedValue(null);
+			await base.result.load(async () => {});
+			const older = await base.ask.mock.calls[0][0].loadChanges();
+			// the older save isn't known: nothing on its side
+			expect(older.theirs).toEqual([]);
+		});
+
+		it("reports a failed delete, and a discard whose other draft is gone meanwhile", async () => {
+			const s = await setup();
+			await s.edit(2);
+			answers.DeletePlanDraft = () => {
+				throw new Error("offline");
+			};
+			expect(await s.result.discard()).toBe("failed");
+			expect(s.result.draftFailed.value).toBe(true);
+
+			answers.DeletePlanDraft = () => {
+				throw conflictError();
+			};
+			answers.GetPlanDraft = () => null;
+			expect(await s.result.discard()).toBe("ok");
+			expect(s.ask).not.toHaveBeenCalled();
+		});
+
+		it("deletes nothing when edits are undone before any write", async () => {
+			const s = await setup();
+			await s.edit(2, false);
+			await s.edit(1, false);
+			await flushPromises();
+			expect(calls("DeletePlanDraft")).toHaveLength(0);
+			expect(s.result.draftPending.value).toBe(false);
+		});
+
+		it("sends no keepalive when logged out", async () => {
+			const s = await setup();
+			await s.edit(2, false);
+			useUserStore().$patch({ accessToken: undefined });
+			hide();
+			expect(m.keepalive).not.toHaveBeenCalled();
+		});
+
+		it("ignores a keepalive answer after a later write was stored", async () => {
+			const s = await setup();
+			let keepaliveAnswer: (v: string | null) => void = () => {};
+			m.keepalive.mockReturnValue(
+				new Promise<string | null>((r) => (keepaliveAnswer = r))
+			);
+			await s.edit(2, false);
+			hide();
+			answers.SavePlanDraft = () => U2;
+			await s.edit(3);
+			keepaliveAnswer(OTHER);
+			await flushPromises();
+
+			answers.SavePlanDraft = () => U1;
+			await s.edit(4);
+			expect(
+				calls("SavePlanDraft").at(-1)![1].data.draft_updated_at
+			).toBe(U2);
+		});
+
+		it("loads nothing for a disabled plan", async () => {
+			const s = await setup({ enabled: false });
+			expect(await s.result.load(async () => {})).toBeNull();
+			expect(calls("GetPlanDraft")).toHaveLength(0);
+		});
+
+		it("drops nothing while stopped on another draft", async () => {
+			const s = await setup();
+			answers.SavePlanDraft = () => {
+				throw conflictError();
+			};
+			answers.GetPlanDraft = () => draftOf(9, OTHER);
+			s.ask.mockResolvedValue(null);
+			await s.edit(2);
+			await s.result.drop();
+			expect(calls("DeletePlanDraft")).toHaveLength(0);
+		});
+
+		it("retries a failed write, and resumes when the other draft is gone", async () => {
+			const s = await setup();
+			answers.SavePlanDraft = () => {
+				throw new Error("offline");
+			};
+			await s.edit(2);
+			answers.SavePlanDraft = () => U1;
+			await s.result.retry();
+			expect(s.result.draftFailed.value).toBe(false);
+			expect(calls("SavePlanDraft")).toHaveLength(2);
+
+			const stopped = await setup();
+			answers.SavePlanDraft = () => {
+				throw conflictError();
+			};
+			answers.GetPlanDraft = () => draftOf(9, OTHER);
+			stopped.ask.mockResolvedValue(null);
+			await stopped.edit(2);
+			answers.GetPlanDraft = () => null;
+			answers.SavePlanDraft = () => U2;
+			await stopped.result.retry();
+			expect(stopped.result.draftFailed.value).toBe(false);
+			expect(
+				calls("SavePlanDraft").at(-1)![1].data.draft_updated_at
+			).toBeNull();
+		});
 	});
 });

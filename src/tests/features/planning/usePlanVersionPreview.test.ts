@@ -217,4 +217,25 @@ describe("usePlanVersionPreview", () => {
 		expect(preview.previewing.value).toBe(false);
 		expect(preview.refRestoredFrom.value).toBeNull();
 	});
+
+	it("does nothing without a plan or a preview", async () => {
+		const plan = ref(planOf(1));
+		const planName = ref<string | undefined>("Plan");
+		const { result } = await mountComposable(
+			() =>
+				usePlanVersionPreview(
+					usePlanHistory(
+						plan,
+						planName
+					) as unknown as IPlanCalculation,
+					() => undefined
+				),
+			{ pinia }
+		);
+		await result.open("v-1");
+		result.restoreVersion();
+		await result.openAsPlan();
+		expect(m.query).not.toHaveBeenCalled();
+		expect(result.refRestoredFrom.value).toBeNull();
+	});
 });

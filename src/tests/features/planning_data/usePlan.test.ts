@@ -136,6 +136,37 @@ describe("usePlan", async () => {
 				}
 			);
 		});
+
+		it("the restored version is gone: its own error, only for a restore", async () => {
+			const { saveExistingPlan } = usePlan();
+			const gone = Object.assign(new Error(), {
+				status: 400,
+				responseData: { restored_from: "Not a version of this plan." },
+			});
+			vi.mocked(callSavePlan).mockRejectedValueOnce(gone);
+			await expect(
+				// @ts-expect-error mock data
+				saveExistingPlan(fakeUuid, {}, "v1", {
+					restored_from: fakeUuid,
+				})
+			).resolves.toStrictEqual({ error: "restored_from" });
+
+			// another 400 on a restore, and the same 400 without one: failed
+			vi.mocked(callSavePlan).mockRejectedValueOnce(
+				Object.assign(new Error(), { status: 400, responseData: {} })
+			);
+			await expect(
+				// @ts-expect-error mock data
+				saveExistingPlan(fakeUuid, {}, "v1", {
+					restored_from: fakeUuid,
+				})
+			).resolves.toStrictEqual({ error: "failed" });
+			vi.mocked(callSavePlan).mockRejectedValueOnce(gone);
+			await expect(
+				// @ts-expect-error mock data
+				saveExistingPlan(fakeUuid, {}, "v1")
+			).resolves.toStrictEqual({ error: "failed" });
+		});
 	});
 
 	describe("getPlanNamePlanet", async () => {

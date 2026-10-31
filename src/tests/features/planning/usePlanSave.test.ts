@@ -16,6 +16,8 @@ import type {
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
+import type { IPlanDraftOptions } from "@/features/planning/usePlanDraft.types";
+import type { PlanDraft } from "@/features/api/schemas/planningData.schemas";
 
 const m = vi.hoisted(() => ({
 	trackEvent: vi.fn(),
@@ -601,5 +603,45 @@ describe("usePlanSave", () => {
 		// not in the draft yet
 		(m.draft.draftPending as { value: boolean }).value = true;
 		expect(dirty()).toBe(true);
+	});
+
+	it("hands the draft the plan, its base and how to show a draft", async () => {
+		const s = setup();
+		await mountSave(s);
+		const o = m.draftOptions as IPlanDraftOptions;
+		expect(o.planUuid()).toBe("p-1");
+		expect(o.enabled()).toBe(true);
+		expect(o.payload()).toEqual({ plan_name: "Plan" });
+		expect(o.base()).toBe("t0");
+		o.applyDraft({ plan_name: "Draft" } as PlanDraft);
+		expect(s.calculation.applyState).toHaveBeenCalledWith(
+			expect.stringContaining("Draft")
+		);
+		// no drafts while previewing
+		s.preview.previewing.value = true;
+		expect(o.enabled()).toBe(false);
+	});
+
+	it("keeps the last base for drafts after an overwrite cleared it", async () => {
+		const s = setup();
+		m.saveExistingPlan
+			.mockResolvedValueOnce({ error: "conflict" })
+			.mockResolvedValueOnce({ error: "failed" });
+		m.ask.mockResolvedValue("overwrite");
+		const { result: saving } = await mountSave(s);
+		await saving.save();
+		await nextTick();
+		await flushPromises();
+		expect(m.saveExistingPlan.mock.calls[1][2]).toBeUndefined();
+		expect((m.draftOptions as IPlanDraftOptions).base()).toBe("t0");
+	});
+
+	it("has nothing to discard without changes", async () => {
+		const s = setup();
+		s.modified.value = false;
+		const { result: saving } = await mountSave(s);
+		await saving.discardChanges();
+		expect(m.confirm).not.toHaveBeenCalled();
+		expect(m.draft.discard).not.toHaveBeenCalled();
 	});
 });

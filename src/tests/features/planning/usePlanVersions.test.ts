@@ -104,4 +104,17 @@ describe("usePlanVersions", () => {
 			type: "error",
 		});
 	});
+
+	it("renames nothing before the plan exists", async () => {
+		const { result } = await mountComposable(
+			() =>
+				usePlanVersions(
+					() => undefined,
+					() => true
+				),
+			{ pinia }
+		);
+		await result.rename("v-1", "x");
+		expect(m.query).not.toHaveBeenCalled();
+	});
 });
