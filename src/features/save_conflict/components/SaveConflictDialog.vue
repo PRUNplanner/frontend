@@ -34,25 +34,40 @@
 		() => props.conflict.options.value
 	);
 
+	// a draft conflict has its own texts under save_conflict.<variant>.*
+	function key(name: string): string {
+		const variant = props.conflict.variant.value;
+		return variant === "save"
+			? `save_conflict.${name}`
+			: `save_conflict.${variant}.${name}`;
+	}
+
 	const sides = computed(() => {
 		const changes = props.conflict.changes.value;
 		if (!changes) return [];
 		const both = new Set(changes.both);
 
-		return [
-			{ title: t("save_conflict.theirs"), lines: changes.theirs },
-			{ title: t("save_conflict.mine"), lines: changes.mine },
-		].map(({ title, lines }) => {
-			const { shown, more } = collapse(lines);
-			return {
-				title,
-				more,
-				lines: shown.map((line) => ({
-					text: changeLineText(line, t, (id) => planetName(id, id)),
-					both: both.has(line.area),
-				})),
-			};
-		});
+		// a draft of an older save: that save isn't known, only the draft's
+		// changes from the current one are
+		const theirs =
+			props.conflict.variant.value === "draft_base"
+				? []
+				: [{ title: t(key("theirs")), lines: changes.theirs }];
+		return [...theirs, { title: t(key("mine")), lines: changes.mine }].map(
+			({ title, lines }) => {
+				const { shown, more } = collapse(lines);
+				return {
+					title,
+					more,
+					lines: shown.map((line) => ({
+						text: changeLineText(line, t, (id) =>
+							planetName(id, id)
+						),
+						both: both.has(line.area),
+					})),
+				};
+			}
+		);
 	});
 </script>
 
@@ -63,14 +78,14 @@
 		:title="
 			conflict.deleted.value
 				? t('save_conflict.deleted_title')
-				: t('save_conflict.title')
+				: t(key('title'))
 		"
 		@update:show="(value: boolean) => !value && conflict.choose(null)">
 		<p class="pb-3">
 			{{
 				conflict.deleted.value
 					? t("save_conflict.deleted_text")
-					: t("save_conflict.text")
+					: t(key("text"))
 			}}
 		</p>
 		<p v-if="conflict.loading.value" class="text-muted">
@@ -109,18 +124,18 @@
 		</p>
 		<ul class="pt-4 flex flex-col gap-1 text-xs text-muted">
 			<li v-for="option in options" :key="option">
-				<strong>{{ t(`save_conflict.option.${option}`) }}:</strong>
+				<strong>{{ t(key(`option.${option}`)) }}:</strong>
 				{{
 					conflict.deleted.value
 						? t(`save_conflict.deleted_option_help.${option}`)
-						: t(`save_conflict.option_help.${option}`)
+						: t(key(`option_help.${option}`))
 				}}
 			</li>
 		</ul>
 		<template #action>
 			<div class="flex flex-wrap justify-end gap-3">
 				<PButton type="secondary" @click="conflict.choose(null)">
-					{{ t("save_conflict.option.close") }}
+					{{ t(key("option.close")) }}
 				</PButton>
 				<PButton
 					v-for="(option, index) in [...options].reverse()"
@@ -129,7 +144,7 @@
 						index === options.length - 1 ? 'primary' : 'secondary'
 					"
 					@click="conflict.choose(option)">
-					{{ t(`save_conflict.option.${option}`) }}
+					{{ t(key(`option.${option}`)) }}
 				</PButton>
 			</div>
 		</template>

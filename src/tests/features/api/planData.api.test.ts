@@ -14,6 +14,14 @@ import {
 	callGetPlanlist,
 	callDeletePlan,
 	callClonePlan,
+	callClonePlanVersion,
+	callDeletePlanDraft,
+	callGetPlanDraft,
+	callGetPlanVersion,
+	callGetPlanVersions,
+	callRenamePlanVersion,
+	callSavePlanDraft,
+	sendPlanDraftKeepalive,
 } from "@/features/api/planData.api";
 
 // test data
@@ -143,5 +151,148 @@ describe("PlanData API Calls", async () => {
 
 		await expect(callDeletePlan("foo")).resolves.toBeUndefined();
 		expect(spyApiServiceDelete).toHaveBeenCalled();
+	});
+});
+
+describe("Plan versions and draft API calls", () => {
+	const plan = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
+	const version = "5f0c3b8e-1d2a-4c3b-9e8f-7a6b5c4d3e2f";
+	// as the backend sends them: microseconds, Z
+	const created = "2026-10-12T18:20:00.123456Z";
+	const updated = "2026-10-30T12:00:01.654321Z";
+	const item = {
+		uuid: version,
+		kind: "restore",
+		name: "",
+		created_at: created,
+		source_version: null,
+		is_active: true,
+		data_bytes: 812,
+	};
+	const snapshot = {
+		plan_name: plan_etherwind.plan_name,
+		planet_natural_id: plan_etherwind.planet_natural_id,
+		plan_permits_used: plan_etherwind.plan_permits_used,
+		plan_cogc: plan_etherwind.plan_cogc,
+		plan_corphq: plan_etherwind.plan_corphq,
+		plan_data: plan_etherwind.plan_data,
+	};
+
+	beforeAll(() => {
+		setActivePinia(createPinia());
+		axiosSetup();
+	});
+
+	it("lists, gets, renames and clones versions", async () => {
+		mock.onGet(`/planning/plan/${plan}/versions/`).reply(200, [item]);
+		expect(await callGetPlanVersions(plan)).toEqual([item]);
+
+		mock.onGet(`/planning/plan/${plan}/versions/${version}/`).reply(200, {
+			...item,
+			...snapshot,
+		});
+		const detail = await callGetPlanVersion(plan, version);
+		expect(detail.created_at).toBe(created);
+		expect(detail.plan_data).toEqual(plan_etherwind.plan_data);
+
+		mock.onPatch(`/planning/plan/${plan}/versions/${version}/`).reply(
+			(config) => [200, { ...item, name: JSON.parse(config.data).name }]
+		);
+		expect((await callRenamePlanVersion(plan, version, "Late")).name).toBe(
+			"Late"
+		);
+
+		mock.onPost(`/planning/plan/${plan}/versions/${version}/clone/`).reply(
+			201,
+			plan_etherwind
+		);
+		expect((await callClonePlanVersion(plan, version)).uuid).toBe(
+			plan_etherwind.uuid
+		);
+	});
+
+	it("gets no draft or the draft, keeping updated_at raw", async () => {
+		mock.onGet(`/planning/plan/${plan}/draft/`).replyOnce(200, {
+			draft: null,
+		});
+		expect(await callGetPlanDraft(plan)).toBeNull();
+
+		mock.onGet(`/planning/plan/${plan}/draft/`).replyOnce(200, {
+			draft: {
+				...snapshot,
+				base_modified_at: created,
+				updated_at: updated,
+			},
+		});
+		expect((await callGetPlanDraft(plan))?.updated_at).toBe(updated);
+	});
+
+	it("saves the draft and deletes it with the encoded updated_at", async () => {
+		mock.onPut(`/planning/plan/${plan}/draft/`).reply((config) => {
+			expect(JSON.parse(config.data)).toMatchObject({
+				base_modified_at: created,
+				draft_updated_at: null,
+			});
+			return [200, { updated_at: updated }];
+		});
+		expect(
+			await callSavePlanDraft(plan, {
+				...snapshot,
+				base_modified_at: created,
+				draft_updated_at: null,
+			} as Parameters<typeof callSavePlanDraft>[1])
+		).toBe(updated);
+
+		mock.onDelete(
+			`/planning/plan/${plan}/draft/?draft_updated_at=${encodeURIComponent(updated)}`
+		).reply(204);
+		await expect(
+			callDeletePlanDraft(plan, updated)
+		).resolves.toBeUndefined();
+	});
+
+	it("flushes the draft with an authenticated keepalive fetch under the cap", async () => {
+		const fetch = vi.fn(() =>
+			Promise.resolve(
+				new Response(JSON.stringify({ updated_at: updated }), {
+					status: 200,
+				})
+			)
+		);
+		vi.stubGlobal("fetch", fetch);
+		const data = {
+			...snapshot,
+			base_modified_at: created,
+			draft_updated_at: updated,
+		} as Parameters<typeof sendPlanDraftKeepalive>[1];
+
+		// its answer: the stored draft's updated_at, raw
+		await expect(sendPlanDraftKeepalive(plan, data, "tok")).resolves.toBe(
+			updated
+		);
+		const [url, init] = fetch.mock.calls[0] as unknown as [
+			string,
+			RequestInit,
+		];
+		expect(url).toMatch(new RegExp(`/planning/plan/${plan}/draft/$`));
+		expect(init).toMatchObject({ method: "PUT", keepalive: true });
+		expect((init.headers as Record<string, string>).Authorization).toBe(
+			"Bearer tok"
+		);
+
+		// not stored (an expired token): null, the caller writes again
+		fetch.mockResolvedValueOnce(new Response("", { status: 401 }));
+		await expect(
+			sendPlanDraftKeepalive(plan, data, "tok")
+		).resolves.toBeNull();
+
+		// over 64 KiB: not sent
+		const big = {
+			...data,
+			plan_name: "x".repeat(70 * 1024),
+		};
+		expect(sendPlanDraftKeepalive(plan, big, "tok")).toBe(false);
+		expect(fetch).toHaveBeenCalledTimes(2);
+		vi.unstubAllGlobals();
 	});
 });

@@ -6,6 +6,7 @@ import type {
 	IChanges,
 	ISaveConflictRequest,
 	SaveConflictOption,
+	SaveConflictVariant,
 } from "@/features/save_conflict/saveConflict.types";
 
 /**
@@ -17,6 +18,7 @@ import type {
 export function useSaveConflict() {
 	const show: Ref<boolean> = ref(false);
 	const deleted: Ref<boolean> = ref(false);
+	const variant: Ref<SaveConflictVariant> = ref("save");
 	const options: Ref<SaveConflictOption[]> = ref([]);
 	const changes: ShallowRef<IChanges | null> = shallowRef(null);
 	const loading: Ref<boolean> = ref(false);
@@ -37,6 +39,7 @@ export function useSaveConflict() {
 		answer?.(null);
 		current = request;
 		deleted.value = request.deleted;
+		variant.value = request.variant ?? "save";
 		options.value = request.options;
 		changes.value = null;
 		loading.value = !!request.loadChanges;
@@ -68,5 +71,5 @@ export function useSaveConflict() {
 		resolve?.(option);
 	}
 
-	return { show, deleted, options, changes, loading, ask, choose };
+	return { show, deleted, variant, options, changes, loading, ask, choose };
 }

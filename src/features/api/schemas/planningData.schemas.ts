@@ -182,10 +182,16 @@ export const PlanCreateDataSchema = PlanSchema.pick({
 export type PlanCreateData = z.input<typeof PlanCreateDataSchema>;
 
 // base_modified_at: the version the edit started from, a newer stored one
-// makes the save fail with 409; absent or null overwrites
+// makes the save fail with 409; absent or null overwrites.
+// version_name names the version the save creates, restored_from marks it
+// as a restore of that version, draft_updated_at deletes the draft only if
+// it is still the one this tab saw (raw string, microseconds matter)
 export const PlanSaveDataSchema = PlanCreateDataSchema.extend({
 	uuid: z.uuid(),
 	base_modified_at: z.string().nullish(),
+	version_name: z.string().max(80).optional(),
+	restored_from: z.uuid().nullish(),
+	draft_updated_at: z.string().nullish(),
 });
 export type PlanSaveData = z.input<typeof PlanSaveDataSchema>;
 
@@ -198,3 +204,76 @@ export type PlanSaveCreateResponse = z.infer<
 >;
 
 export const PlanClonePayloadSchema = PlanSchema.pick({ plan_name: true });
+
+/**
+ * PLAN VERSIONS AND DRAFT
+ */
+
+export const PlanVersionKindSchema = z.enum([
+	"save",
+	"restore",
+	"baseline",
+	"admin",
+]);
+
+// name "" is an unnamed version, source_version the version a restore
+// came from (null once pruned)
+export const PlanVersionListItemSchema = z.object({
+	uuid: z.uuid(),
+	kind: PlanVersionKindSchema,
+	name: z.string(),
+	created_at: z.string(),
+	source_version: z.uuid().nullable(),
+	is_active: z.boolean(),
+	data_bytes: z.number(),
+});
+export type PlanVersionListItem = z.infer<typeof PlanVersionListItemSchema>;
+
+export const PlanVersionListSchema = z.array(PlanVersionListItemSchema);
+
+// the stored snapshot, not migrated: older plan_data may lack newer keys
+export const PlanVersionSchema = PlanVersionListItemSchema.extend({
+	...PlanSchema.pick({
+		plan_name: true,
+		planet_natural_id: true,
+		plan_corphq: true,
+		plan_cogc: true,
+		plan_data: true,
+	}).shape,
+	plan_permits_used: z.number(),
+});
+export type PlanVersion = z.infer<typeof PlanVersionSchema>;
+
+export const PlanVersionRenameSchema = z.object({ name: z.string().max(80) });
+
+// the clone takes no body
+export const PlanVersionClonePayloadSchema = z.object({});
+
+export const PlanDraftSchema = PlanVersionSchema.pick({
+	plan_name: true,
+	planet_natural_id: true,
+	plan_permits_used: true,
+	plan_corphq: true,
+	plan_cogc: true,
+	plan_data: true,
+}).extend({
+	base_modified_at: z.string(),
+	updated_at: z.string(),
+});
+export type PlanDraft = z.infer<typeof PlanDraftSchema>;
+
+export const PlanDraftResponseSchema = z.object({
+	draft: PlanDraftSchema.nullable(),
+});
+
+// draft_updated_at: the draft this tab saw (null: none), another one
+// stored meanwhile answers 409 draft_conflict
+export const PlanDraftSaveDataSchema = PlanCreateDataSchema.omit({
+	empire_uuid: true,
+}).extend({
+	base_modified_at: z.string(),
+	draft_updated_at: z.string().nullable(),
+});
+export type PlanDraftSaveData = z.input<typeof PlanDraftSaveDataSchema>;
+
+export const PlanDraftSavedSchema = z.object({ updated_at: z.string() });

@@ -69,13 +69,20 @@ const { gate, tool, stub, attrsTool, mocks } = vi.hoisted(() => ({
 	},
 	mocks: {
 		query: vi.fn(),
+		confirm: vi.fn(),
 		getPlanet: vi.fn(),
 		push: vi.fn(),
 		toast: vi.fn(),
 		useHead: vi.fn(),
 		openInsights: vi.fn(),
 	} as Record<
-		"query" | "getPlanet" | "push" | "toast" | "useHead" | "openInsights",
+		| "query"
+		| "confirm"
+		| "getPlanet"
+		| "push"
+		| "toast"
+		| "useHead"
+		| "openInsights",
 		Mock
 	>,
 }));
@@ -126,9 +133,11 @@ vi.mock("@/database/services/usePlanetData", () => ({
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, args: unknown) => ({
 		execute: (options?: unknown) => mocks.query(name, args, options),
+		state: { value: undefined },
 	}),
 }));
 vi.mock("@/router", () => ({ default: { push: mocks.push } }));
+vi.mock("@/ui/useConfirm", () => ({ useConfirm: () => mocks.confirm }));
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackEvent: vi.fn(),
@@ -228,11 +237,19 @@ export async function mountView(
 export type Mounted = Awaited<ReturnType<typeof mountView>>;
 
 /** Answers the backend queries by name; the rest resolve undefined */
+// a plan without versions or a draft, unless a test answers these
+const versionReads: Record<string, () => unknown> = {
+	GetPlanVersions: () => [],
+	GetPlanDraft: () => null,
+};
+
 export function respond(
 	handlers: Record<string, (args: any, options?: any) => unknown>
 ) {
 	mocks.query.mockImplementation(async (name, args, options) =>
-		handlers[name]?.(args, options)
+		name in handlers
+			? handlers[name](args, options)
+			: versionReads[name]?.()
 	);
 }
 
@@ -349,7 +366,7 @@ export function setupPlanViewSuite(): void {
 	});
 	beforeEach(() => {
 		// a test may answer differently, see respond()
-		mocks.query.mockResolvedValue(undefined);
+		mocks.query.mockImplementation(async (name) => versionReads[name]?.());
 		mocks.getPlanet.mockResolvedValue(planet_etherwind);
 		mocks.toast.mockImplementation(() => ({ destroy: vi.fn() }));
 		remoteChange.value = null;

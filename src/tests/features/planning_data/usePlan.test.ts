@@ -138,16 +138,6 @@ describe("usePlan", async () => {
 		});
 	});
 
-	it("reloadExistingPlan", async () => {
-		const fakeUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
-		const { reloadExistingPlan } = usePlan();
-		planningStore.getPlan = vi.fn().mockResolvedValue({});
-
-		const result = await reloadExistingPlan(fakeUuid);
-
-		expect(result).toStrictEqual({});
-	});
-
 	describe("getPlanNamePlanet", async () => {
 		it("unknown plan throws error", async () => {
 			const { getPlanNamePlanet } = usePlan();

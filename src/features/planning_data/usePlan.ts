@@ -4,7 +4,6 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import type {
-	Plan,
 	PlanCOGCProgram,
 	PlanCreateData,
 	PlanSaveCreateResponse,
@@ -14,8 +13,10 @@ import type {
 	IPlanDefinition,
 	IPlanSaved,
 	IPlanSaveResult,
+	IPlanSaveVersion,
 } from "@/features/planning_data/usePlan.types";
 import { getSaveError } from "@/features/save_conflict/saveConflict.util";
+import { isApiError } from "@/lib/apiError";
 import { reportError } from "@/lib/analytics/useAnalytics";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
@@ -197,12 +198,15 @@ export function usePlan() {
 	 * @param {string} planUuid Plan Uuid
 	 * @param {PlanCreateData} data Plan Data
 	 * @param {string} [baseModifiedAt] Version the edit started from
+	 * @param {IPlanSaveVersion} [version] Name, restore and seen draft of the
+	 * version the save creates
 	 * @returns {Promise<IPlanSaveResult>} Uuid and new version, or the error
 	 */
 	async function saveExistingPlan(
 		planUuid: string,
 		data: PlanCreateData,
-		baseModifiedAt?: string
+		baseModifiedAt?: string,
+		version: IPlanSaveVersion = {}
 	): Promise<IPlanSaveResult> {
 		try {
 			const savedData: PlanSaveCreateResponse = await useQuery(
@@ -212,6 +216,7 @@ export function usePlan() {
 					data: {
 						uuid: planUuid,
 						...data,
+						...version,
 						base_modified_at: baseModifiedAt,
 					},
 				}
@@ -222,23 +227,18 @@ export function usePlan() {
 			}).execute();
 			return { uuid: savedData.uuid, modifiedAt: savedData.modified_at };
 		} catch (err) {
+			// the restored version was pruned meanwhile
+			if (
+				isApiError(err) &&
+				err.status === 400 &&
+				version.restored_from &&
+				(err.responseData as Record<string, unknown> | undefined)
+					?.restored_from !== undefined
+			)
+				return { error: "restored_from" };
 			reportError(err);
 			return { error: getSaveError(err) ?? "failed" };
 		}
-	}
-
-	/**
-	 * Reloading an existing plan is fetching the plan data from
-	 * planning store again. The planning view won't persist changes
-	 * to the stores data itself.
-	 * @author jplacht
-	 *
-	 * @async
-	 * @param {string} planUuid Plan Uuid
-	 * @returns {Promise<Plan>} Plan Data
-	 */
-	async function reloadExistingPlan(planUuid: string): Promise<Plan> {
-		return await planningStore.getPlan(planUuid);
 	}
 
 	return {
@@ -246,7 +246,6 @@ export function usePlan() {
 		createBlankDefinition,
 		createNewPlan,
 		saveExistingPlan,
-		reloadExistingPlan,
 		// in the store, so usePreferences doesn't load this module
 		getPlanNamePlanet: planningStore.getPlanNamePlanet,
 	};

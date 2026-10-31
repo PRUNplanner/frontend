@@ -45,7 +45,7 @@ import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanBase from "@/features/planning/components/PlanBase.vue";
 import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
 import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
-import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
+import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";
 import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 import { hoverTooltip } from "@/tests/mountComponent";
 import { calcDebug } from "@/lib/debugMode";
@@ -173,7 +173,7 @@ describe("PlanView", () => {
 			expect(
 				wrapper.find("button[aria-label='plan.history.undo']").exists()
 			).toBe(false);
-			expect(wrapper.findComponent(PlanSaveButton).exists()).toBe(false);
+			expect(wrapper.findComponent(PlanSaveControl).exists()).toBe(false);
 			expect(
 				wrapper.findComponent(PlanProduction).props("disabled")
 			).toBe(true);
@@ -1036,7 +1036,7 @@ describe("PlanView", () => {
 				5
 			);
 			expect(
-				wrapper.findComponent(PlanSaveButton).props("modified")
+				wrapper.findComponent(PlanSaveControl).props("modified")
 			).toBe(true);
 
 			press({ key: "s", ctrlKey: true });
@@ -1048,6 +1048,8 @@ describe("PlanView", () => {
 			expect(patch[1].data).toMatchObject({
 				uuid: PLAN_UUID,
 				base_modified_at: "v1",
+				// no draft seen: another one stays
+				draft_updated_at: null,
 			});
 			expect(
 				patch[1].data.plan_data.buildings.find(
@@ -1058,9 +1060,11 @@ describe("PlanView", () => {
 			expect(trackEvent).toHaveBeenCalledWith("plan:save", {
 				planet_natural_id: "KW-688c",
 				trigger: "shortcut",
+				named: false,
+				restore: false,
 			});
 			expect(
-				wrapper.findComponent(PlanSaveButton).props("modified")
+				wrapper.findComponent(PlanSaveControl).props("modified")
 			).toBe(false);
 
 			// the next save sends the version of this one
@@ -1071,7 +1075,7 @@ describe("PlanView", () => {
 				0,
 				6
 			);
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 			const patches = queryCalls("PatchPlan");
 			expect(patches).toHaveLength(2);
@@ -1079,6 +1083,8 @@ describe("PlanView", () => {
 			expect(trackEvent).toHaveBeenCalledWith("plan:save", {
 				planet_natural_id: "KW-688c",
 				trigger: "button",
+				named: false,
+				restore: false,
 			});
 		});
 
@@ -1105,7 +1111,7 @@ describe("PlanView", () => {
 				"plan.save_status.failed_message",
 				{ type: "error" }
 			);
-			const button = wrapper.findComponent(PlanSaveButton);
+			const button = wrapper.findComponent(PlanSaveControl);
 			expect(button.props("failed")).toBe(true);
 			expect(button.props("modified")).toBe(true);
 			expect(button.props("saving")).toBe(false);
@@ -1147,7 +1153,7 @@ describe("PlanView", () => {
 				{ login: true }
 			);
 			await rename(wrapper, "Mine");
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 
 			expect(queryCalls("CreatePlan")).toHaveLength(1);
@@ -1174,7 +1180,7 @@ describe("PlanView", () => {
 				}
 			);
 
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 
 			expect(trackEvent).toHaveBeenCalledWith("plan:create", {
@@ -1195,7 +1201,7 @@ describe("PlanView", () => {
 				{ login: true }
 			);
 
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 
 			expect(mocks.toast).toHaveBeenCalledWith(
@@ -1227,7 +1233,7 @@ describe("PlanView", () => {
 			);
 			editing.wrapper = wrapper;
 
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 
 			expect(queryCalls("PatchPlan")).toHaveLength(1);
@@ -1235,7 +1241,7 @@ describe("PlanView", () => {
 			expect(patch[1].planUuid).toBe("new-uuid");
 			expect(patch[1].data.base_modified_at).toBe(SAVED_AT);
 			expect(
-				wrapper.findComponent(PlanSaveButton).props("modified")
+				wrapper.findComponent(PlanSaveControl).props("modified")
 			).toBe(false);
 			expect(mocks.push).toHaveBeenCalledWith("/plan/KW-688c/new-uuid");
 		});
@@ -1265,11 +1271,11 @@ describe("PlanView", () => {
 			);
 			editing.wrapper = wrapper;
 
-			wrapper.findComponent(PlanSaveButton).vm.$emit("save");
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
 			await flushPromises();
 
 			expect(mocks.push).not.toHaveBeenCalled();
-			expect(wrapper.findComponent(PlanSaveButton).props("failed")).toBe(
+			expect(wrapper.findComponent(PlanSaveControl).props("failed")).toBe(
 				true
 			);
 		});
@@ -1277,7 +1283,9 @@ describe("PlanView", () => {
 
 	describe("save as", () => {
 		async function openSaveAs(mounted: Mounted) {
-			mounted.wrapper.findComponent(PlanMoreMenu).vm.$emit("save-as");
+			mounted.wrapper
+				.findComponent(PlanSaveControl)
+				.vm.$emit("save-as-copy");
 			await flushPromises();
 		}
 
@@ -1430,36 +1438,10 @@ describe("PlanView", () => {
 		});
 	});
 
-	describe("reloading", () => {
-		it("reloads the saved plan and drops the history", async () => {
-			const savedPlan = { ...etherwindPlan(), plan_name: "Saved name" };
-			const { wrapper } = await mountView(
-				{},
-				{
-					login: true,
-					seed: ({ planning }) => planning.setPlan(savedPlan),
-				}
-			);
-			wrapper.findComponent(PlanMoreMenu).vm.$emit("reload");
-			await flushPromises();
-
-			expect(wrapper.find("h1").text()).toBe("Saved name");
-			expect(trackEvent).toHaveBeenCalledWith("plan:reload", {
-				planet_natural_id: "KW-688c",
-			});
-		});
-
-		it("asks before a reload throws edits away", async () => {
-			const savedPlan = { ...etherwindPlan(), plan_name: "Saved name" };
-			const confirmReload = vi.fn(() => false);
-			vi.stubGlobal("confirm", confirmReload);
-			const { wrapper } = await mountView(
-				{},
-				{
-					login: true,
-					seed: ({ planning }) => planning.setPlan(savedPlan),
-				}
-			);
+	describe("discarding, drafts and versions", () => {
+		it("discards the edits after confirming", async () => {
+			mocks.confirm.mockResolvedValue(false);
+			const { wrapper } = await mountView({}, { login: true });
 			await emitFrom(
 				wrapper,
 				PlanProduction,
@@ -1468,30 +1450,166 @@ describe("PlanView", () => {
 				5
 			);
 
-			wrapper.findComponent(PlanMoreMenu).vm.$emit("reload");
-			await flushPromises();
-			expect(confirmReload).toHaveBeenCalledWith(
-				"plan.actions.reload_confirm"
+			await emitFrom(wrapper, PlanSaveControl, "discard");
+			expect(mocks.confirm).toHaveBeenCalledWith(
+				expect.objectContaining({
+					content: "plan.versions.discard_confirm",
+				})
 			);
 			expect(buildingAmounts(wrapper).EXT).toBe(5);
 
-			confirmReload.mockReturnValue(true);
-			wrapper.findComponent(PlanMoreMenu).vm.$emit("reload");
-			await flushPromises();
+			mocks.confirm.mockResolvedValue(true);
+			await emitFrom(wrapper, PlanSaveControl, "discard");
 			expect(buildingAmounts(wrapper).EXT).toBe(1);
-			expect(wrapper.find("h1").text()).toBe("Saved name");
+			expect(
+				wrapper.findComponent(PlanSaveControl).props("modified")
+			).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith("plan:discard_changes");
+			// no draft was written yet, none to delete
+			expect(queryCalls("DeletePlanDraft")).toEqual([]);
 		});
 
-		it("cannot reload a plan that was never saved", async () => {
+		it("brings back the draft of the same save as unsaved edits", async () => {
+			const plan = { ...etherwindPlan(), modified_at: "v1" };
+			const draft = {
+				...plan,
+				plan_data: {
+					...plan.plan_data,
+					buildings: plan.plan_data.buildings.map((b, i) =>
+						i === 0 ? { ...b, amount: 7 } : b
+					),
+				},
+				base_modified_at: "v1",
+				updated_at: "2026-10-30T12:00:00.123456Z",
+			};
+			respond({ GetPlan: () => plan, GetPlanDraft: () => draft });
 			const { wrapper } = await mountView(
-				{ planData: newPlan() },
+				{ planData: plan },
 				{ login: true }
 			);
 
-			wrapper.findComponent(PlanMoreMenu).vm.$emit("reload");
-			await flushPromises();
+			expect(buildingAmounts(wrapper).EXT).toBe(7);
+			const control = wrapper.findComponent(PlanSaveControl);
+			expect(control.props("modified")).toBe(true);
+			expect(control.props("draftResumed")).toBe(true);
+			expect(control.props("canUndo")).toBe(false);
+			expect(mocks.toast).toHaveBeenCalledWith(
+				"plan.versions.draft_restored",
+				expect.objectContaining({
+					action: expect.objectContaining({
+						label: "plan.versions.discard",
+					}),
+				})
+			);
+		});
 
-			expect(String(errors[0])).toContain("Unable to reload plan");
+		it("doesn't preview while the pending draft write met another draft", async () => {
+			const plan = { ...etherwindPlan(), modified_at: "v1" };
+			respond({
+				GetPlan: () => plan,
+				SavePlanDraft: () => {
+					throw Object.assign(new Error("409"), {
+						status: 409,
+						responseData: { code: "draft_conflict" },
+					});
+				},
+				GetPlanDraft: () => ({
+					...plan,
+					plan_name: "Other tab",
+					base_modified_at: "v1",
+					updated_at: "2026-10-30T12:00:00.000001Z",
+				}),
+			});
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+			// an edit, its write still waiting for the debounce
+			await emitFrom(
+				wrapper,
+				PlanProduction,
+				"update:building:amount",
+				0,
+				5
+			);
+
+			await emitFrom(wrapper, PlanSaveControl, "preview", "v-1");
+			await vi.waitFor(() => expect(dialog().exists()).toBe(true));
+			expect(dialog().text()).toContain("save_conflict.draft.title");
+			expect(queryCalls("GetPlanVersion")).toEqual([]);
+			expect(wrapper.find("[data-version-preview]").exists()).toBe(false);
+		});
+
+		it("previews a version read-only, restores it as one undo step", async () => {
+			const plan = { ...etherwindPlan(), modified_at: "v1" };
+			const version = {
+				...plan,
+				uuid: "5f0c3b8e-1d2a-4c3b-9e8f-7a6b5c4d3e2f",
+				kind: "save",
+				name: "Early stage",
+				created_at: "2026-10-12T18:20:00.000000Z",
+				source_version: null,
+				is_active: false,
+				data_bytes: 100,
+				plan_data: {
+					...plan.plan_data,
+					buildings: plan.plan_data.buildings.map((b, i) =>
+						i === 0 ? { ...b, amount: 3 } : b
+					),
+				},
+			};
+			respond({
+				GetPlan: () => plan,
+				GetPlanVersion: () => version,
+				PatchPlan: () => ({ uuid: PLAN_UUID, modified_at: "v2" }),
+			});
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+
+			await emitFrom(wrapper, PlanSaveControl, "preview", version.uuid);
+			expect(buildingAmounts(wrapper).EXT).toBe(3);
+			expect(wrapper.find("[data-version-preview]").exists()).toBe(true);
+			expect(
+				wrapper.findComponent(PlanProduction).props("disabled")
+			).toBe(true);
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:version_preview",
+				expect.objectContaining({ named: true })
+			);
+
+			// back: the edits as they were
+			await wrapper
+				.findAll("[data-version-preview] button")
+				.find((b) => b.text() === "plan.versions.back")!
+				.trigger("click");
+			expect(buildingAmounts(wrapper).EXT).toBe(1);
+			expect(wrapper.find("[data-version-preview]").exists()).toBe(false);
+			expect(
+				wrapper.findComponent(PlanSaveControl).props("modified")
+			).toBe(false);
+
+			// restore: unsaved, one undo step back
+			await emitFrom(wrapper, PlanSaveControl, "preview", version.uuid);
+			await wrapper
+				.findAll("[data-version-preview] button")
+				.find((b) => b.text() === "plan.versions.restore")!
+				.trigger("click");
+			await flushPromises();
+			const control = () => wrapper.findComponent(PlanSaveControl);
+			expect(buildingAmounts(wrapper).EXT).toBe(3);
+			expect(control().props("restoredFrom")).toMatchObject({
+				uuid: version.uuid,
+			});
+			expect(control().props("canUndo")).toBe(true);
+
+			// the save is marked as the restore
+			control().vm.$emit("save", "");
+			await flushPromises();
+			expect(queryCalls("PatchPlan")[0][1].data).toMatchObject({
+				restored_from: version.uuid,
+			});
 		});
 	});
 
@@ -1620,11 +1738,18 @@ describe("PlanView", () => {
 			).toBe("false");
 		});
 
-		it("saves from a bar above the app's bottom bar while unsaved", async () => {
+		it("saves from a bar above the app's bottom bar, history in the header", async () => {
 			const { wrapper } = await mountView({}, { login: true });
-			expect(wrapper.find("[data-phone-save]").exists()).toBe(false);
-			// the header has no Save button on a phone
-			expect(wrapper.findAllComponents(PlanSaveButton)).toHaveLength(0);
+			// a saved plan: its status (the versions) in the bar
+			const bar = wrapper.find("[data-phone-save]");
+			expect(bar.exists()).toBe(true);
+			expect(bar.findComponent(PlanSaveControl).props("part")).toBe(
+				"save"
+			);
+			// the header keeps undo and redo, no Save
+			const [header] = wrapper.findAllComponents(PlanSaveControl);
+			expect(header.props("part")).toBe("history");
+			expect(header.find("[data-save]").exists()).toBe(false);
 
 			await emitFrom(
 				wrapper,
@@ -1634,11 +1759,10 @@ describe("PlanView", () => {
 				5
 			);
 
-			const bar = wrapper.find("[data-phone-save]");
-			expect(bar.exists()).toBe(true);
-			expect(bar.findComponent(PlanSaveButton).props("modified")).toBe(
+			expect(bar.findComponent(PlanSaveControl).props("modified")).toBe(
 				true
 			);
+			expect(bar.find("[data-save]").exists()).toBe(true);
 		});
 	});
 });

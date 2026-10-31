@@ -8,7 +8,7 @@ import { mountComponent } from "@/tests/mountComponent";
 async function mountMenu(props: Record<string, unknown> = {}) {
 	return mountComponent(
 		PlanMoreMenu,
-		{ existing: true, own: true, debug: false, ...props },
+		{ debug: false, ...props },
 		{ attach: true }
 	);
 }
@@ -44,13 +44,11 @@ describe("PlanMoreMenu", () => {
 		);
 	});
 
-	it("lists save as copy, reload with its hint and the CSV download", async () => {
+	it("lists the CSV download; save as copy is in the save menu", async () => {
 		const { wrapper } = await mountMenu();
 		await open(wrapper);
 
 		expect(items().map((o) => o.textContent?.trim())).toEqual([
-			"plan.actions.save_as_copy",
-			"plan.actions.reloadplan.actions.reload_hint",
 			"plan.actions.download_csv",
 		]);
 		expect(document.body.querySelector("[role=separator]")).toBeNull();
@@ -58,8 +56,6 @@ describe("PlanMoreMenu", () => {
 	});
 
 	it.each([
-		["plan.actions.save_as_copy", "save-as"],
-		["plan.actions.reload_hint", "reload"],
 		["plan.actions.download_csv", "csv"],
 		["Calculation debug", "debug"],
 	])("emits %s as %s and closes", async (label, event) => {
@@ -90,23 +86,10 @@ describe("PlanMoreMenu", () => {
 
 		key("ArrowDown", button);
 		await flushPromises();
-		key("ArrowDown", menu()!);
 		key("Enter", menu()!);
 		await flushPromises();
-		expect(component.emitted("reload")).toHaveLength(1);
+		expect(component.emitted("csv")).toHaveLength(1);
 		expect(document.activeElement).toBe(button);
-	});
-
-	it.each([
-		["without a saved version", { existing: false }],
-		["that isn't the user's", { own: false }],
-	])("offers only the CSV download on a plan %s", async (_, props) => {
-		const { wrapper } = await mountMenu(props);
-		await open(wrapper);
-
-		expect(items().map((o) => o.textContent?.trim())).toEqual([
-			"plan.actions.download_csv",
-		]);
 	});
 
 	it("adds the calculation debug after a divider when opted in", async () => {

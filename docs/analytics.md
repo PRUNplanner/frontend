@@ -104,9 +104,17 @@ No key, URL or UUID goes into these events.
 | --- | --- | --- |
 | `plan:view` | `planet_natural_id` (not for a shared plan), `is_shared` | a plan page opened |
 | `plan:create` | `planet_natural_id`, `is_first_plan` | a new plan was saved. `is_first_plan` is read from the local plan store |
-| `plan:save` | `planet_natural_id`, `trigger` (`button`, `shortcut`) | an existing plan was saved |
+| `plan:save` | `planet_natural_id`, `trigger` (`button`, `shortcut`), `named`, `restore` | an existing plan was saved, as a named version (`named`) or as the restore of an older version (`restore`) |
 | `plan:save_as` | `planet_natural_id` | |
-| `plan:reload` | `planet_natural_id` | |
+| `plan:history_open` | `trigger` (`button`) | the versions list opened (the save status clicked) |
+| `plan:version_preview` | `named`, `age_days` | an older version was opened read-only |
+| `plan:version_compare` | | the previewed version was compared with the edits |
+| `plan:version_restore` | `named`, `age_days` | the previewed version was loaded as unsaved edits |
+| `plan:version_name` | `from` (`save`, `history`) | a version was named while saving or in the versions list |
+| `plan:version_open_as_plan` | | a new plan was made from the previewed version |
+| `plan:draft_restored` | `age_minutes` | the plan opened with the unsaved edits of its autosave draft |
+| `plan:draft_discard` | | the restored draft was discarded from its notice |
+| `plan:discard_changes` | | the unsaved edits were discarded from the save menu |
 | `plan:leave_unsaved` | `planet_natural_id` | the plan page was left with unsaved changes |
 | `plan:shared_clone` | `planet_natural_id`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
 | `plan:shared_reset` | `planet_natural_id` | the working copy was reset to the shared version |
