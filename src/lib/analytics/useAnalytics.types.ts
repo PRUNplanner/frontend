@@ -224,9 +224,22 @@ export interface IAnalyticsEventProperties {
 
 	"plan:view": { planet_natural_id: string | undefined; is_shared: boolean };
 	"plan:create": { planet_natural_id: string; is_first_plan: boolean };
-	"plan:save": { planet_natural_id: string; trigger: Trigger };
+	"plan:save": {
+		planet_natural_id: string;
+		trigger: Trigger;
+		named: boolean;
+		restore: boolean;
+	};
 	"plan:save_as": { planet_natural_id: string };
-	"plan:reload": { planet_natural_id: string };
+	"plan:history_open": { trigger: Trigger };
+	"plan:version_preview": { named: boolean; age_days: number };
+	"plan:version_compare": undefined;
+	"plan:version_restore": { named: boolean; age_days: number };
+	"plan:version_name": { from: "save" | "history" };
+	"plan:version_open_as_plan": undefined;
+	"plan:draft_restored": { age_minutes: number };
+	"plan:draft_discard": undefined;
+	"plan:discard_changes": undefined;
 	"plan:leave_unsaved": { planet_natural_id: string };
 	"plan:shared_clone": {
 		planet_natural_id: string;

@@ -376,4 +376,46 @@ describe("SaveConflictDialog", () => {
 			await expect(answer).resolves.toBeNull();
 		});
 	});
+
+	it("words a draft conflict as one, without a copy", async () => {
+		const { answer } = await openDialog({
+			variant: "draft",
+			options: ["overwrite", "reload"],
+			changes: {
+				theirs: [line("corphq_on")],
+				mine: [line("corphq_off")],
+				both: [],
+			},
+		});
+
+		expect(modal().text()).toContain(save_conflict.draft.title);
+		expect(modal().text()).toContain(save_conflict.draft.text);
+		expect(sides().map((s) => s.title)).toEqual([
+			save_conflict.draft.theirs,
+			save_conflict.draft.mine,
+		]);
+		expect(modal().text()).toContain(
+			save_conflict.draft.option_help.reload
+		);
+		expect(button(save_conflict.option.save_as_new)).toBeUndefined();
+
+		await button(save_conflict.draft.option.overwrite)!.trigger("click");
+		expect(await answer).toBe("overwrite");
+	});
+
+	it("shows only the draft's changes for a draft of an older save", async () => {
+		const { answer } = await openDialog({
+			variant: "draft_base",
+			options: ["overwrite", "reload"],
+			changes: { theirs: [], mine: [line("corphq_on")], both: [] },
+		});
+
+		expect(modal().text()).toContain(save_conflict.draft_base.title);
+		expect(sides().map((s) => s.title)).toEqual([
+			save_conflict.draft_base.mine,
+		]);
+
+		await button(save_conflict.draft_base.option.close)!.trigger("click");
+		expect(await answer).toBeNull();
+	});
 });

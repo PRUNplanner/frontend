@@ -19,9 +19,16 @@ export interface IChanges {
 
 export type SaveConflictOption = "save_as_new" | "overwrite" | "reload";
 
+/**
+ * What the dialog is about: a save (default), another tab's autosave draft
+ * (draft) or a draft made on an older save (draft_base)
+ */
+export type SaveConflictVariant = "save" | "draft" | "draft_base";
+
 export interface ISaveConflictRequest {
 	/** the object was deleted (404) instead of saved elsewhere (409) */
 	deleted: boolean;
+	variant?: SaveConflictVariant;
 	options: SaveConflictOption[];
 	/** loads the saved version and diffs it; failing leaves the lists out */
 	loadChanges?: () => Promise<IChanges>;

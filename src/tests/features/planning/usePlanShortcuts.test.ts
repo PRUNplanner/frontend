@@ -25,7 +25,9 @@ const undo = vi.fn();
 const redo = vi.fn();
 const save = vi.fn();
 const openSaveAsModal = vi.fn();
+const openSaveMenu = vi.fn();
 const canSave = ref(true);
+const readOnly = ref(false);
 
 function press(key: string, init: KeyboardEventInit = {}, target?: Element) {
 	const e = new KeyboardEvent("keydown", {
@@ -52,6 +54,8 @@ async function mountShortcuts(props: Partial<IPlanViewProps> = {}) {
 				canSave: computed(() => canSave.value),
 				save,
 				openSaveAsModal,
+				openSaveMenu,
+				readOnly: () => readOnly.value || !!props.disabled,
 			}),
 		{ pinia }
 	);
@@ -62,6 +66,7 @@ describe("usePlanShortcuts", () => {
 		setActivePinia(pinia);
 		vi.clearAllMocks();
 		canSave.value = true;
+		readOnly.value = false;
 		canUndo.value = true;
 		calcDebug.value = false;
 	});
@@ -77,6 +82,29 @@ describe("usePlanShortcuts", () => {
 			press("S", { metaKey: true, ctrlKey: false }).defaultPrevented
 		).toBe(true);
 		expect(save).toHaveBeenCalledTimes(1);
+	});
+
+	it("opens the save menu on Ctrl+Alt+S and Cmd+Option+S (ß)", async () => {
+		await mountShortcuts();
+		expect(press("s", { altKey: true }).defaultPrevented).toBe(true);
+		const mac = {
+			code: "KeyS",
+			altKey: true,
+			metaKey: true,
+			ctrlKey: false,
+		};
+		expect(press("ß", mac).defaultPrevented).toBe(true);
+		expect(openSaveMenu).toHaveBeenCalledTimes(2);
+		expect(save).not.toHaveBeenCalled();
+
+		// AltGr (Ctrl+Alt) types letters on that key, e.g. Polish ś
+		expect(
+			press("ś", { code: "KeyS", altKey: true }).defaultPrevented
+		).toBe(false);
+
+		canSave.value = false;
+		press("ß", mac);
+		expect(openSaveMenu).toHaveBeenCalledTimes(2);
 	});
 
 	it("opens Save as on a shared plan, only when logged in", async () => {
@@ -107,6 +135,11 @@ describe("usePlanShortcuts", () => {
 		document.body.append(input);
 		expect(press("z", {}, input).defaultPrevented).toBe(false);
 		input.remove();
+		expect(undo).toHaveBeenCalledTimes(1);
+
+		// a version preview is read-only
+		readOnly.value = true;
+		press("z");
 		expect(undo).toHaveBeenCalledTimes(1);
 	});
 

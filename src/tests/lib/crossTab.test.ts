@@ -9,6 +9,7 @@ import {
 	registerCrossTab,
 	remoteChange,
 	sessionReplaced,
+	tokenExpiresAt,
 	tokenUserId,
 } from "@/lib/crossTab";
 import { persistStorage } from "@/lib/persistStorage";
@@ -93,6 +94,15 @@ describe("crossTab", () => {
 		// a readable token without the claim
 		const noClaim = btoa(JSON.stringify({ jti: "a" }));
 		expect(tokenUserId(`header.${noClaim}.signature`)).toBeUndefined();
+	});
+
+	it("reads when a token expires", () => {
+		const claims = btoa(JSON.stringify({ exp: 1_800_000_000 }));
+		expect(tokenExpiresAt(`header.${claims}.signature`)).toBe(
+			1_800_000_000_000
+		);
+		expect(tokenExpiresAt(jwt(7))).toBeUndefined();
+		expect(tokenExpiresAt("not-a-jwt")).toBeUndefined();
 	});
 
 	describe("planning changes", () => {

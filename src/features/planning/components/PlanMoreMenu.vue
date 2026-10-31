@@ -10,23 +10,18 @@
 	// UI
 	import { PButton, PDropdown } from "@/ui";
 	import {
-		ChangeCircleOutlined,
-		ContentCopySharp,
 		FileDownloadSharp,
 		MoreHorizSharp,
 		TerminalOutlined,
 	} from "@vicons/material";
 
-	type MoreAction = "save-as" | "reload" | "csv" | "debug";
+	type MoreAction = "csv" | "debug";
 
 	/**
 	 * The plan header's secondary actions, so Save stays the one primary.
-	 * Save as and Reload only on the user's own saved plan.
+	 * Save as copy is in the save control's menu.
 	 */
-	const { existing, own, debug } = defineProps<{
-		existing: boolean;
-		// the user's own plan, not a shared copy or a read-only one
-		own: boolean;
+	const { debug } = defineProps<{
 		// calculation debug is opted in
 		debug: boolean;
 	}>();
@@ -37,20 +32,6 @@
 
 	const options: ComputedRef<PDropdownOption[]> = computed(() => {
 		const items: PDropdownOption[] = [];
-		if (own && existing)
-			items.push(
-				{
-					key: "save-as",
-					label: t("plan.actions.save_as_copy"),
-					icon: ContentCopySharp,
-				},
-				{
-					key: "reload",
-					label: t("plan.actions.reload"),
-					hint: t("plan.actions.reload_hint"),
-					icon: ChangeCircleOutlined,
-				}
-			);
 		items.push({
 			key: "csv",
 			label: t("plan.actions.download_csv"),

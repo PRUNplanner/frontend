@@ -29,12 +29,13 @@ function isTextField(target: EventTarget | null): boolean {
 
 /**
  * Plan keyboard shortcuts and tracked undo / redo: Ctrl/Cmd+S saves,
+ * Ctrl+Alt+S / Cmd+Option+S opens the save menu (name a version),
  * Ctrl/Cmd+Z undoes, +Shift redoes, Ctrl/Cmd+` opens calculation debug
  * @author jplacht
  *
  * @param {IPlanCalculation} calculation The plan's calculation (history)
  * @param {IPlanViewProps} props The view's props
- * @param {{ canSave: ComputedRef<boolean>; save: (trigger: "shortcut") => void; openSaveAsModal: () => void }} saving Save actions
+ * @param {{ canSave: ComputedRef<boolean>; save: (trigger: "shortcut") => void; openSaveAsModal: () => void; openSaveMenu: () => void; readOnly: () => boolean }} saving Save actions, read-only while previewing a version
  */
 export function usePlanShortcuts(
 	calculation: IPlanCalculation,
@@ -43,6 +44,8 @@ export function usePlanShortcuts(
 		canSave: ComputedRef<boolean>;
 		save: (trigger: "shortcut") => unknown;
 		openSaveAsModal: () => void;
+		openSaveMenu: () => void;
+		readOnly: () => boolean;
 	}
 ) {
 	const userStore = useUserStore();
@@ -79,13 +82,25 @@ export function usePlanShortcuts(
 		) {
 			e.preventDefault();
 			toggleCalcDebug("shortcut");
-		} else if (key === "s") {
-			// never open the browser's save dialog on the plan page
+		} else if (
+			key === "s" ||
+			(e.metaKey && e.altKey && e.code === "KeyS")
+		) {
+			// never open the browser's save dialog on the plan page. Cmd+Option+S
+			// types "ß" on a Mac, so the key code decides there only: AltGr
+			// (Ctrl+Alt on Windows) types letters such as "ś" on that key
 			e.preventDefault();
 			if (props.shared) {
 				if (userStore.isLoggedIn) saving.openSaveAsModal();
-			} else if (saving.canSave.value) saving.save("shortcut");
-		} else if (key === "z" && !props.disabled && !isTextField(e.target)) {
+			} else if (saving.canSave.value) {
+				if (e.altKey) saving.openSaveMenu();
+				else saving.save("shortcut");
+			}
+		} else if (
+			key === "z" &&
+			!saving.readOnly() &&
+			!isTextField(e.target)
+		) {
 			e.preventDefault();
 			if (e.shiftKey) trackedRedo("shortcut");
 			else trackedUndo("shortcut");

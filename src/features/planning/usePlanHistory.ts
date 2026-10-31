@@ -176,6 +176,11 @@ export function usePlanHistory(
 		undo,
 		redo,
 		markSaved,
+		/**
+		 * Shows a state without an undo step (a draft, a version preview);
+		 * inside `record` it becomes one
+		 */
+		applyState: restore,
 		/** true until the flush after an undo/redo */
 		isRestoring: (): boolean => restoring,
 		/** the current state, to pass to `markSaved` after a save */

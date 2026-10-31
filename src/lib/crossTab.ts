@@ -64,20 +64,42 @@ export const remoteChange: Ref<IRemoteChange | null> = ref(null);
 let channel: BroadcastChannel | null = null;
 
 /**
+ * Claims of a JWT's payload
+ *
+ * @param {string} [token] JWT
+ * @returns {Record<string, unknown> | undefined} Claims, undefined if none or unreadable
+ */
+function tokenClaims(
+	token: string | undefined
+): Record<string, unknown> | undefined {
+	try {
+		const payload = token!.split(".")[1];
+		return JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+	} catch {
+		return undefined;
+	}
+}
+
+/**
  * User id of a JWT (the `user_id` claim)
  *
  * @param {string} [token] JWT
  * @returns {string | undefined} User id, undefined if none or unreadable
  */
 export function tokenUserId(token: string | undefined): string | undefined {
-	try {
-		const payload = token!.split(".")[1];
-		const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
-		const id = JSON.parse(json).user_id;
-		return id === undefined ? undefined : String(id);
-	} catch {
-		return undefined;
-	}
+	const id = tokenClaims(token)?.user_id;
+	return id === undefined ? undefined : String(id);
+}
+
+/**
+ * When a JWT expires (the `exp` claim)
+ *
+ * @param {string} [token] JWT
+ * @returns {number | undefined} Epoch ms, undefined if none or unreadable
+ */
+export function tokenExpiresAt(token: string | undefined): number | undefined {
+	const exp = tokenClaims(token)?.exp;
+	return typeof exp === "number" ? exp * 1000 : undefined;
 }
 
 async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {

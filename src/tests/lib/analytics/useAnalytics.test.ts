@@ -161,11 +161,15 @@ describe("useAnalytics", () => {
 			trackEvent("plan:save", {
 				planet_natural_id: "OT-580b",
 				trigger: "shortcut",
+				named: false,
+				restore: false,
 			});
 
 			expect(capture).toHaveBeenCalledWith("plan:save", {
 				planet_natural_id: "OT-580b",
 				trigger: "shortcut",
+				named: false,
+				restore: false,
 			});
 		});
 

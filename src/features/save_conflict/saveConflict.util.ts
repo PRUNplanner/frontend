@@ -24,6 +24,22 @@ export function getSaveError(err: unknown): "conflict" | "deleted" | null {
 }
 
 /**
+ * Another autosave draft than the one this tab saw is stored (409
+ * draft_conflict on a draft write or delete)
+ *
+ * @param {unknown} err Error thrown by the call
+ * @returns {boolean} Draft conflict
+ */
+export function isDraftConflict(err: unknown): boolean {
+	return (
+		isApiError(err) &&
+		err.status === 409 &&
+		(err.responseData as { code?: unknown } | undefined)?.code ===
+			"draft_conflict"
+	);
+}
+
+/**
  * Matches two lists by key, never by position
  *
  * @param {T[]} from Old list

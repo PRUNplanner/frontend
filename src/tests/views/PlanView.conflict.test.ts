@@ -19,7 +19,7 @@ import type { IMountOptions } from "@/tests/views/PlanView.harness";
 import { describe, it, expect, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
-import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
+import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";
 import { remoteChange } from "@/lib/crossTab";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { etherwindPlan } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -124,7 +124,7 @@ describe("PlanView save conflicts", () => {
 
 		expect(wrapper.find("h1").text()).toBe("Their name");
 		expect(buildingAmounts(wrapper).EXT).toBe(2);
-		expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
+		expect(wrapper.findComponent(PlanSaveControl).props("modified")).toBe(
 			false
 		);
 		expect(trackEvent).toHaveBeenCalledWith(
@@ -172,7 +172,7 @@ describe("PlanView save conflicts", () => {
 		expect(create.empire_uuid).toBe(SKY_EMPIRE);
 		expect(user.preferences.planOverrides["copy-uuid"]).toBeDefined();
 		expect(mocks.push).toHaveBeenCalledWith("/plan/KW-688c/copy-uuid");
-		expect(wrapper.findComponent(PlanSaveButton).props("modified")).toBe(
+		expect(wrapper.findComponent(PlanSaveControl).props("modified")).toBe(
 			false
 		);
 	});

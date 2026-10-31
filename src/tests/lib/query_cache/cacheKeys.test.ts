@@ -104,6 +104,7 @@ describe("every query's cache key", () => {
 		searchId: "search",
 		sharedPlanUuid: "shared",
 		tickers: ["DW", "RAT"],
+		versionUuid: "version",
 	};
 
 	it("keeps its string", () => {
@@ -137,6 +138,9 @@ describe("every query's cache key", () => {
 			  "GetMaterials": "["gamedata","materials"]",
 			  "GetMultiplePlanets": "["gamedata","planet","multiple",["OT-580b","KW-688c"]]",
 			  "GetPlan": "["planningdata","plan","plan"]",
+			  "GetPlanDraft": "["planningdata","plan_draft","plan"]",
+			  "GetPlanVersion": "["planningdata","plan","plan","version","version"]",
+			  "GetPlanVersions": "["planningdata","plan","plan","versions"]",
 			  "GetPlanet": "["gamedata","planet","OT-580b"]",
 			  "GetPlanetLastPOPR": "["gamedata","planet","popr","last","OT-580b"]",
 			  "GetPlanetSearchIndex": "["gamedata","planet","search-index"]",

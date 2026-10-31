@@ -14,12 +14,19 @@ import {
 // API Calls
 import {
 	callClonePlan,
+	callClonePlanVersion,
 	callCreatePlan,
 	callDeletePlan,
+	callDeletePlanDraft,
 	callGetPlan,
+	callGetPlanDraft,
 	callGetPlanlist,
+	callGetPlanVersion,
+	callGetPlanVersions,
 	callGetShared,
+	callRenamePlanVersion,
 	callSavePlan,
+	callSavePlanDraft,
 } from "@/features/api/planData.api";
 import {
 	callCreateEmpire,
@@ -60,10 +67,14 @@ import type {
 import type {
 	Plan,
 	PlanCreateData,
+	PlanDraft,
+	PlanDraftSaveData,
 	PlanEmpire,
 	PlanSaveCreateResponse,
 	PlanSaveData,
 	PlanShare,
+	PlanVersion,
+	PlanVersionListItem,
 } from "@/features/api/schemas/planningData.schemas";
 import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 import type {
@@ -389,5 +400,81 @@ export const planningQueries = {
 				[...PLANS, params.planUuid],
 			]);
 		},
+	}),
+
+	// Plan versions: under the plan key, so a save (PatchPlan) refreshes them
+	GetPlanVersions: defineQuery({
+		key: (params) => [...PLANS, params.planUuid, "versions"],
+		// the save control shows the active version: refetch after a save
+		autoRefetch: true,
+		fetchFn: async (params: {
+			planUuid: string;
+		}): Promise<PlanVersionListItem[]> =>
+			callGetPlanVersions(params.planUuid),
+	}),
+	// a version never changes, only its name (not part of the snapshot)
+	GetPlanVersion: defineQuery({
+		key: (params) => [
+			...PLANS,
+			params.planUuid,
+			"version",
+			params.versionUuid,
+		],
+		fetchFn: async (params: {
+			planUuid: string;
+			versionUuid: string;
+		}): Promise<PlanVersion> =>
+			callGetPlanVersion(params.planUuid, params.versionUuid),
+	}),
+	RenamePlanVersion: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			versionUuid: string;
+			name: string;
+		}): Promise<PlanVersionListItem> => {
+			const data = await callRenamePlanVersion(
+				params.planUuid,
+				params.versionUuid,
+				params.name
+			);
+			await changed([], undefined, [
+				[...PLANS, params.planUuid, "versions"],
+			]);
+			return data;
+		},
+	}),
+	ClonePlanVersion: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			versionUuid: string;
+		}): Promise<Plan> => {
+			const data = await callClonePlanVersion(
+				params.planUuid,
+				params.versionUuid
+			);
+			await changed([EMPIRES], data.uuid, [[...PLANS, "list"]]);
+			return data;
+		},
+	}),
+	// Drafts: never cached, read fresh every time; writes invalidate nothing
+	GetPlanDraft: defineQuery({
+		key: (params) => ["planningdata", "plan_draft", params.planUuid],
+		cache: false,
+		fetchFn: async (params: {
+			planUuid: string;
+		}): Promise<PlanDraft | null> => callGetPlanDraft(params.planUuid),
+	}),
+	SavePlanDraft: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			data: PlanDraftSaveData;
+		}): Promise<string> => callSavePlanDraft(params.planUuid, params.data),
+	}),
+	DeletePlanDraft: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			draftUpdatedAt: string;
+		}): Promise<void> =>
+			callDeletePlanDraft(params.planUuid, params.draftUpdatedAt),
 	}),
 };

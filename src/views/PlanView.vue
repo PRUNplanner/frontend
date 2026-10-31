@@ -39,6 +39,8 @@
 	import { countLevels, marketCheck } from "@/features/cx/marketCheck.util";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlanSave } from "@/features/planning/usePlanSave";
+	import { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
+	import { usePlanVersions } from "@/features/planning/usePlanVersions";
 	import { usePlanShortcuts } from "@/features/planning/usePlanShortcuts";
 	import { usePlanEdits } from "@/features/planning/usePlanEdits";
 	import { usePlanSharedCopy } from "@/features/planning/usePlanSharedCopy";
@@ -65,7 +67,8 @@
 	import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 	import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
-	import PlanSaveButton from "@/features/planning/components/PlanSaveButton.vue";
+	import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";
+	import PlanVersionPreviewBanner from "@/features/planning/components/PlanVersionPreviewBanner.vue";
 	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
 	import PlanToolFallback from "@/features/planning/components/PlanToolFallback.vue";
@@ -87,9 +90,7 @@
 	// UI
 	import {
 		PButton,
-		PButtonGroup,
 		PIcon,
-		PTooltip,
 		PForm,
 		PFormItem,
 		PInput,
@@ -104,8 +105,6 @@
 		CloseSharp,
 		EditSharp,
 		MenuOpenSharp,
-		UndoSharp,
-		RedoSharp,
 	} from "@vicons/material";
 
 	const props = defineProps<IPlanViewProps>();
@@ -240,6 +239,17 @@
 		return red + amber;
 	});
 
+	// An older version previewed read-only, restored into the edits
+	const preview = usePlanVersionPreview(
+		calculation,
+		() => refPlanData.value.uuid
+	);
+	const { refPreview, previewing, refRestoredFrom } = preview;
+	// nothing can be edited: a read-only plan or a version preview
+	const readOnly: ComputedRef<boolean> = computed(
+		() => !!props.disabled || previewing.value
+	);
+
 	// Plan Saving & Reloading, Save As, conflicts and the leave guard
 	const {
 		refIsSaving,
@@ -253,16 +263,37 @@
 		saveAsEmpireOptions,
 		saveAs,
 		openSaveAsModal,
-		reloadPlan,
+		discardChanges,
 		applySavedPlan,
 		conflict,
+		draftPossible,
+		draftSavedAt,
+		draftResumed,
+		draftFailed,
+		retryDraft,
+		flushDraft,
 	} = usePlanSave(
 		calculation,
 		refPlanData,
 		{ uuid: refEmpireUuid, list: refEmpireList },
 		refAutoOptimizeHabs,
-		props
+		props,
+		preview
 	);
+
+	// the plan's saved versions, for the save control
+	const {
+		refVersions,
+		load: loadVersions,
+		rename: renameVersion,
+	} = usePlanVersions(
+		() => refPlanData.value.uuid,
+		() => draftPossible.value
+	);
+	onMounted(() => void loadVersions());
+
+	// the save control's menu (name a version), also from the keyboard
+	const refShowSaveMenu: Ref<boolean> = ref(false);
 
 	// Keyboard, tracked undo / redo and calculation debug
 	const { refShowCalcDebug, toggleCalcDebug, trackedUndo, trackedRedo } =
@@ -270,6 +301,8 @@
 			canSave,
 			save,
 			openSaveAsModal,
+			openSaveMenu: () => (refShowSaveMenu.value = true),
+			readOnly: () => readOnly.value,
 		});
 
 	// Recipe and building edits with undo, starter setup, hab optimizing
@@ -387,6 +420,43 @@
 		() => userStore.isLoggedIn && !props.disabled && !props.shared
 	);
 
+	// the save control, in the header and on a phone in the save bar
+	const saveControl = computed(() => ({
+		readOnly: readOnly.value,
+		own: isOwnPlan.value,
+		existing: existing.value,
+		saveable: saveable.value,
+		saving: refIsSaving.value,
+		failed: refSaveFailed.value,
+		modified: modified.value,
+		canUndo: canUndo.value,
+		canRedo: canRedo.value,
+		savedAt: savedAt.value,
+		versions: refVersions.value,
+		versioned: draftPossible.value,
+		draftSavedAt: draftSavedAt.value,
+		draftResumed: draftResumed.value,
+		draftFailed: draftFailed.value,
+		restoredFrom: refRestoredFrom.value,
+		preview: refPreview.value,
+		phone: refIsPhone.value,
+	}));
+	const saveControlEvents = {
+		undo: () => trackedUndo("button"),
+		redo: () => trackedRedo("button"),
+		save: (name: string) => save("button", name),
+		"save-as-copy": openSaveAsModal,
+		discard: () => discardChanges("menu"),
+		"retry-draft": retryDraft,
+		preview: async (versionUuid: string) => {
+			await flushDraft();
+			// that write met another draft: the dialog's choice comes first
+			if (conflict.show.value) return;
+			return preview.open(versionUuid);
+		},
+		rename: renameVersion,
+	};
+
 	// props change with every recalculation, the component only on a switch
 	const compViewToolMeta = computed(() => {
 		switch (refShowTool.value) {
@@ -395,7 +465,7 @@
 					props: {
 						storage: result.value.storage,
 						materialIO: result.value.materialio,
-						disabled: props.disabled,
+						disabled: readOnly.value,
 						planUuid: refPlanData.value.uuid,
 					},
 					listeners: {},
@@ -442,7 +512,7 @@
 					props: {
 						planetNaturalId: planetData.planet_natural_id,
 						planUuid: refPlanData.value.uuid,
-						disabled: props.disabled,
+						disabled: readOnly.value,
 						cxUuid: refCXUuid.value,
 						constructionData: result.value.constructionMaterials,
 						productionBuildingData:
@@ -563,7 +633,7 @@
 							{{ planName || t("plan.name.untitled") }}
 						</h1>
 						<PButton
-							v-if="!disabled"
+							v-if="!readOnly"
 							type="ghost"
 							size="sm"
 							:aria-label="t('plan.header.rename')"
@@ -574,42 +644,13 @@
 				</div>
 			</div>
 			<div class="flex flex-wrap items-center gap-3">
-				<PButtonGroup v-if="!disabled">
-					<PTooltip placement="bottom">
-						<template #trigger>
-							<PButton
-								:aria-label="t('plan.history.undo')"
-								type="ghost"
-								:disabled="!canUndo"
-								@click="trackedUndo('button')">
-								<template #icon><UndoSharp /></template>
-							</PButton>
-						</template>
-						{{ t("plan.history.undo_key") }}
-					</PTooltip>
-					<PTooltip placement="bottom">
-						<template #trigger>
-							<PButton
-								:aria-label="t('plan.history.redo')"
-								type="ghost"
-								:disabled="!canRedo"
-								@click="trackedRedo('button')">
-								<template #icon><RedoSharp /></template>
-							</PButton>
-						</template>
-						{{ t("plan.history.redo_key") }}
-					</PTooltip>
-				</PButtonGroup>
 				<!-- a phone saves from the bar above the app's bottom bar -->
-				<PlanSaveButton
-					v-if="isOwnPlan && !refIsPhone"
-					:existing="existing"
-					:saveable="saveable"
-					:saving="refIsSaving"
-					:failed="refSaveFailed"
-					:modified="modified"
-					:saved-at="savedAt"
-					@save="save()" />
+				<PlanSaveControl
+					v-if="!disabled"
+					v-model:save-menu="refShowSaveMenu"
+					v-bind="saveControl"
+					:part="refIsPhone ? 'history' : 'all'"
+					v-on="saveControlEvents" />
 				<template v-if="isOwnPlan && refPlanData.uuid">
 					<PButton type="secondary" @click="refShowShare = true">
 						{{ t("plan.actions.share_link") }}
@@ -619,16 +660,21 @@
 						:plan-uuid="refPlanData.uuid" />
 				</template>
 				<PlanMoreMenu
-					:existing="existing"
-					:own="isOwnPlan"
 					:debug="calcDebug"
-					@save-as="openSaveAsModal"
-					@reload="reloadPlan"
 					@csv="downloadMaterialIO"
 					@debug="toggleCalcDebug('button')" />
 				<HelpDrawer file-name="plan" />
 			</div>
 		</header>
+		<!-- an older version, read-only until restored -->
+		<PlanVersionPreviewBanner
+			v-if="refPreview"
+			class="mx-6 max-md:mx-4 mb-3"
+			:version="refPreview"
+			:compare="preview.compare"
+			@restore="preview.restoreVersion"
+			@open-as-plan="preview.openAsPlan"
+			@back="preview.back" />
 
 		<!-- Results (sticky); from 48rem its first and last tile carry the
 			side padding, so their hover reaches the edges -->
@@ -736,7 +782,7 @@
 				</div>
 				<PlanBase
 					ref="base"
-					:disabled="disabled"
+					:disabled="readOnly"
 					:result="result"
 					:planet="planetData"
 					:auto-optimize-habs="refAutoOptimizeHabs"
@@ -875,7 +921,7 @@
 					"
 					data-production>
 					<PlanProduction
-						:disabled="disabled"
+						:disabled="readOnly"
 						:production-data="result.production"
 						:planet-resources="planetData.resources"
 						:cogc="result.cogc"
@@ -1045,24 +1091,22 @@
 				</dl>
 			</aside>
 		</div>
-		<!-- a phone: save from a bar above the app's bottom bar, shown while
-			there is something to save -->
+		<!-- a phone: the save status and Save in a bar above the app's
+			bottom bar, for a saved plan (its versions) or while there is
+			something to save -->
 		<div
 			v-if="
 				refIsPhone &&
 				isOwnPlan &&
-				(modified || refIsSaving || refSaveFailed)
+				(existing || modified || refIsSaving || refSaveFailed)
 			"
 			class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-1000 px-4 py-2 border-t border-line bg-surface [&>div]:w-full [&>div]:justify-between"
 			data-phone-save>
-			<PlanSaveButton
-				:existing="existing"
-				:saveable="saveable"
-				:saving="refIsSaving"
-				:failed="refSaveFailed"
-				:modified="modified"
-				:saved-at="savedAt"
-				@save="save()" />
+			<PlanSaveControl
+				v-model:save-menu="refShowSaveMenu"
+				v-bind="saveControl"
+				part="save"
+				v-on="saveControlEvents" />
 		</div>
 		<PlanCalcDebug
 			v-if="calcDebug && refShowCalcDebug"

@@ -23,6 +23,13 @@ vi.mock("@/features/api/planData.api", () => ({
 	callCreatePlan: vi.fn(async () => ({ uuid: "new", modified_at: "v1" })),
 	callDeletePlan: vi.fn(async () => true),
 	callClonePlan: vi.fn(async () => ({ uuid: "clone" })),
+	callClonePlanVersion: vi.fn(async () => ({ uuid: "clone-v" })),
+	callRenamePlanVersion: vi.fn(async () => ({ uuid: "v-1", name: "n" })),
+	callGetPlanVersions: vi.fn(async () => []),
+	callGetPlanVersion: vi.fn(async () => ({ uuid: "v-1" })),
+	callGetPlanDraft: vi.fn(async () => null),
+	callSavePlanDraft: vi.fn(async () => "u1"),
+	callDeletePlanDraft: vi.fn(async () => undefined),
 }));
 vi.mock("@/features/api/empireData.api", () => ({
 	callPatchEmpire: vi.fn(async () => ({ modified_at: "v2" })),
@@ -72,6 +79,16 @@ describe("planning queries tell the other tabs", () => {
 			[[EMPIRES, [...PLANS, "list"]], ["clone"]],
 		],
 		[
+			"ClonePlanVersion",
+			{ planUuid: "plan-a", versionUuid: "v-1" },
+			[[EMPIRES, [...PLANS, "list"]], ["clone-v"]],
+		],
+		[
+			"RenamePlanVersion",
+			{ planUuid: "plan-a", versionUuid: "v-1", name: "n" },
+			[[[...PLANS, "plan-a", "versions"]], []],
+		],
+		[
 			"PatchEmpire",
 			{ empireUuid: "empire-a", data: {} },
 			[[EMPIRES], ["empire-a"]],
@@ -113,6 +130,42 @@ describe("planning queries tell the other tabs", () => {
 			[[["planningdata", "shared"]]],
 			[[PLANS, EMPIRES], ["clone-shared"]],
 		]);
+	});
+
+	it("draft writes tell nobody, they are never cached", async () => {
+		const q = planningQueries;
+		await q.SavePlanDraft.fetchFn({
+			planUuid: "plan-a",
+			// @ts-expect-error mock data
+			data: {},
+		});
+		await q.DeletePlanDraft.fetchFn({
+			planUuid: "plan-a",
+			draftUpdatedAt: "u1",
+		});
+		expect(await q.GetPlanDraft.fetchFn({ planUuid: "plan-a" })).toBeNull();
+		expect(q.GetPlanDraft.cache).toBe(false);
+		expect(broadcastChange).not.toHaveBeenCalled();
+
+		// versions sit under their plan: a save refreshes them
+		expect(q.GetPlanVersions.key({ planUuid: "plan-a" })).toEqual([
+			...PLANS,
+			"plan-a",
+			"versions",
+		]);
+		expect(q.GetPlanVersions.autoRefetch).toBe(true);
+		expect(await q.GetPlanVersions.fetchFn({ planUuid: "plan-a" })).toEqual(
+			[]
+		);
+		expect(
+			q.GetPlanVersion.key({ planUuid: "plan-a", versionUuid: "v-1" })
+		).toEqual([...PLANS, "plan-a", "version", "v-1"]);
+		expect(
+			await q.GetPlanVersion.fetchFn({
+				planUuid: "plan-a",
+				versionUuid: "v-1",
+			})
+		).toEqual({ uuid: "v-1" });
 	});
 
 	it("PatchCX sends the base version", async () => {
