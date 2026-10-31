@@ -52,12 +52,12 @@
 			tag="p"
 			class="text-sm text-muted">
 			<template #empires>
-				<template v-for="(e, i) in cx.empires" :key="e.uuid">
-					<template v-if="i > 0">, </template>
+				<span v-for="(e, i) in cx.empires" :key="e.uuid">
+					<span v-if="i > 0">, </span>
 					<RouterLink :to="`/empire/${e.uuid}`" class="text-link">
 						{{ e.empire_name }}
 					</RouterLink>
-				</template>
+				</span>
 			</template>
 			<template #management>
 				<RouterLink to="/manage" class="text-link">

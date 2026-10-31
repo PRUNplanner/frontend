@@ -242,7 +242,7 @@
 							)
 						}}
 					</span>
-					<template v-if="!planetRowsPending && totalHidden">
+					<span v-if="!planetRowsPending && totalHidden">
 						·
 						<span class="font-bold">
 							{{
@@ -277,7 +277,7 @@
 										]),
 							].join(" · ")
 						}}
-					</template>
+					</span>
 				</p>
 				<p
 					v-if="step === 'error'"

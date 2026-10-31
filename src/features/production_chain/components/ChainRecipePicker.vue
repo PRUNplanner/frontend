@@ -156,22 +156,22 @@
 							<span class="block text-xs text-muted">
 								{{ o.recipe.building_ticker }} ·
 								{{ hours(o.recipe.time_ms) }}
-								<template v-if="o.isDefault">
+								<span v-if="o.isDefault">
 									·
 									{{
 										$t(
 											"production_chains.recipe_picker.default"
 										)
 									}}
-								</template>
-								<template v-if="o.byproducts">
+								</span>
+								<span v-if="o.byproducts">
 									·
 									{{
 										$t(
 											"production_chains.recipe_picker.byproducts"
 										)
 									}}
-								</template>
+								</span>
 							</span>
 						</span>
 						<span class="text-right shrink-0 tabular-nums">

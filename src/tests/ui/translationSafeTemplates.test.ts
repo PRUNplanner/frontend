@@ -1,17 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { parse } from "vue/compiler-sfc";
 
-// the plan editor: its view, components and tools, and what they render
-const sources = import.meta.glob(
-	[
-		"/src/views/PlanView.vue",
-		"/src/features/planning/components/**/*.vue",
-		"/src/features/plan_analytics/components/*.vue",
-		"/src/features/material_tile/components/*.vue",
-		"/src/ui/components/*.vue",
-	],
-	{ query: "?raw", import: "default", eager: true }
-) as Record<string, string>;
+const sources = import.meta.glob("/src/**/*.vue", {
+	query: "?raw",
+	import: "default",
+	eager: true,
+}) as Record<string, string>;
 
 // the template AST, as far as the check reads it (compiler-core's NodeTypes)
 interface INode {
@@ -76,9 +70,9 @@ function textEdgedFragments(source: string): string[] {
 
 // Browser page translation replaces each run of text nodes with its own
 // <font>, Vue's empty fragment markers included. Removing or moving such a
-// fragment then crashes the patch and the plan editor stops updating
+// fragment then crashes the patch, and the page stops updating
 // (#700). Text next to a fragment goes in an element (a <span v-if>).
-describe("plan editor templates survive page translation", () => {
+describe("templates survive page translation", () => {
 	it("finds text at a fragment's edge", () => {
 		expect(
 			textEdgedFragments(
@@ -91,7 +85,7 @@ describe("plan editor templates survive page translation", () => {
 	});
 
 	it("keeps text out of fragment edges", () => {
-		expect(Object.keys(sources).length).toBeGreaterThan(50);
+		expect(Object.keys(sources).length).toBeGreaterThan(250);
 		for (const [file, source] of Object.entries(sources))
 			expect(textEdgedFragments(source), file).toEqual([]);
 	});

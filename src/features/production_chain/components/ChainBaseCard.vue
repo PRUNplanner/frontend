@@ -255,11 +255,11 @@
 					<span class="block font-bold">{{ planet.name }}</span>
 					<span class="block text-xs text-muted">
 						{{ planet.surface }}
-						<template v-if="planet.extras.length">
-							· {{ planet.extras.join(", ") }}</template
+						<span v-if="planet.extras.length">
+							· {{ planet.extras.join(", ") }}</span
 						>
-						<template v-if="planet.fertility">
-							· {{ planet.fertility }}</template
+						<span v-if="planet.fertility">
+							· {{ planet.fertility }}</span
 						>
 						·
 						<span class="text-link"
@@ -376,9 +376,9 @@
 
 		<p v-if="fitLine" class="text-sm text-positive">
 			{{ fitLine }}
-			<template v-if="planned">
+			<span v-if="planned">
 				{{ $t("production_chains.bases.planned") }}
-			</template>
+			</span>
 		</p>
 		<ul
 			v-if="

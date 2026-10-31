@@ -104,14 +104,14 @@
 			{{ t(`account.email_nudge.${state}.title`) }}
 		</div>
 		<div class="text-sm text-muted">
-			<template v-if="state === 'unconfirmed'">
+			<span v-if="state === 'unconfirmed'">
 				{{
 					t("account.email_nudge.unconfirmed.body", {
 						email: maskEmail(userStore.profile?.email ?? ""),
 					})
 				}}
-			</template>
-			<template v-else-if="planCount !== null">
+			</span>
+			<span v-else-if="planCount !== null">
 				{{
 					t(
 						"account.email_nudge.none.body",
@@ -119,10 +119,10 @@
 						planCount
 					)
 				}}
-			</template>
-			<template v-else>
+			</span>
+			<span v-else>
 				{{ t("account.email_nudge.none.body_plain") }}
-			</template>
+			</span>
 		</div>
 		<template #action>
 			<div class="flex flex-row flex-wrap gap-2 max-sm:flex-col">

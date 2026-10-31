@@ -345,17 +345,17 @@
 					</template>
 					<template #cell-planets="{ row }">
 						<!-- breaks between planets, never inside an ID -->
-						<template
+						<span
 							v-for="(p, i) in row.planets.slice(
 								0,
 								USED_ON_SHOWN
 							)"
 							:key="p">
-							<template v-if="i">, </template>
+							<span v-if="i">, </span>
 							<span class="whitespace-nowrap">{{
 								planetName(p, p)
 							}}</span>
-						</template>
+						</span>
 						<PTooltip v-if="row.planets.length > USED_ON_SHOWN">
 							<template #trigger>
 								<span

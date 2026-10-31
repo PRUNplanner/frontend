@@ -440,7 +440,7 @@ the text nodes Vue rendered with its own `<font>` elements (#700):
   `<template v-if>` that starts or ends with text, and don't put text right
   next to a `v-for` list or another fragment. The translator takes Vue's
   empty fragment markers with it, and removing the fragment then crashes
-  the patch. `translationSafeTemplates.test.ts` checks the plan editor.
+  the patch. `translationSafeTemplates.test.ts` checks every template.
 
 ### Adding or changing text
 

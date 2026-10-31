@@ -90,9 +90,9 @@
 								? `${row.planetName} · ${row.planetId}`
 								: row.planetId
 						">
-						<template v-if="row.planetName">
+						<span v-if="row.planetName">
 							{{ row.planetName }} ·
-						</template>
+						</span>
 						<span class="font-mono">{{ row.planetId }}</span>
 					</div>
 				</div>

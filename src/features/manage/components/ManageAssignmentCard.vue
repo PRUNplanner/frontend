@@ -63,9 +63,7 @@
 					{{ row.planName }}
 				</router-link>
 				<div class="text-xs text-muted truncate">
-					<template v-if="row.planetName">
-						{{ row.planetName }} ·
-					</template>
+					<span v-if="row.planetName"> {{ row.planetName }} · </span>
 					<span class="font-mono">{{ row.planetId }}</span>
 				</div>
 			</div>

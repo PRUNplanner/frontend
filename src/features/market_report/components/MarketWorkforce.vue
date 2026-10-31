@@ -209,7 +209,7 @@
 							<span :class="changeClass(headline.change)">
 								{{ formatChange(headline.change) }}
 							</span>
-							<template v-if="headline.since">
+							<span v-if="headline.since">
 								<!-- the space would be dropped between the tags -->
 								{{
 									" " +
@@ -217,7 +217,7 @@
 										date: formatDate(headline.since),
 									})
 								}}
-							</template>
+							</span>
 						</div>
 					</div>
 					<div class="flex flex-col gap-1 text-sm sm:items-end">
@@ -231,20 +231,29 @@
 						</div>
 						<div v-if="drivers.length" class="text-muted">
 							{{ t("market_report.workforce.drivers") }}:
-							<template v-for="(d, i) in drivers" :key="d.ticker">
-								<span v-if="i">, </span>
-								<span :class="changeClass(d.pct)">
-									{{
-										t("market_report.workforce.driver", {
-											ticker: d.ticker,
-											delta:
-												(d.delta >= 0 ? "+" : "−") +
-												formatMoney(Math.abs(d.delta)),
-											change: formatChange(d.pct),
-										})
-									}}
+							<span>
+								<span v-for="(d, i) in drivers" :key="d.ticker">
+									<span v-if="i">, </span>
+									<span :class="changeClass(d.pct)">
+										{{
+											t(
+												"market_report.workforce.driver",
+												{
+													ticker: d.ticker,
+													delta:
+														(d.delta >= 0
+															? "+"
+															: "−") +
+														formatMoney(
+															Math.abs(d.delta)
+														),
+													change: formatChange(d.pct),
+												}
+											)
+										}}
+									</span>
 								</span>
-							</template>
+							</span>
 						</div>
 					</div>
 				</div>

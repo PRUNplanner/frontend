@@ -241,7 +241,7 @@
 				<MarketIndexChart :summary="summary!" :view="indexView" />
 			</MarketBlock>
 			<p class="text-xs text-muted min-h-8 lg:min-h-4">
-				<template v-if="summary">
+				<span v-if="summary">
 					{{
 						t(`market_report.index.base_${indexView}`, {
 							date: formatDate(summary.index.base),
@@ -249,7 +249,7 @@
 							coverage: `${formatNumber((summary.index.coverage.ALL ?? 0) * 100, 0)} %`,
 						})
 					}}
-				</template>
+				</span>
 			</p>
 		</section>
 
