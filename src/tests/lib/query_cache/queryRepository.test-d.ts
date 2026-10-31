@@ -10,7 +10,6 @@ import type {
 import type { Material } from "@/features/api/schemas/gameData.schemas";
 import type {
 	Plan,
-	PlanSaveCreateResponse,
 	PlanSaveData,
 } from "@/features/api/schemas/planningData.schemas";
 
@@ -44,12 +43,10 @@ describe("query repository types", () => {
 			planUuid: string;
 			data: PlanSaveData;
 		}>();
-		expectTypeOf<
-			QueryData<"PatchPlan">
-		>().toEqualTypeOf<PlanSaveCreateResponse>();
+		expectTypeOf<QueryData<"PatchPlan">>().toEqualTypeOf<Plan>();
 		expectTypeOf(
 			useQuery("PatchPlan", { planUuid: "p", data: {} as PlanSaveData })
 				.execute
-		).returns.resolves.toEqualTypeOf<PlanSaveCreateResponse>();
+		).returns.resolves.toEqualTypeOf<Plan>();
 	});
 });

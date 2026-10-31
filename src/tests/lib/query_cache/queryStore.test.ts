@@ -222,6 +222,20 @@ describe("useQueryStore", () => {
 		const stateAfter = store.peekQueryState(key);
 		expect(stateAfter?.data).toEqual(data);
 	});
+	it("addCacheState with replace overwrites and drops the fetch in flight", async () => {
+		store.$reset();
+		// @ts-expect-error mock query repository
+		const pending = store.execute("slowQuery");
+		// @ts-expect-error mock query repository
+		store.addCacheState("slowQuery", undefined, "answer", true);
+		expect(store.peekQueryState(["slowQuery"])?.data).toBe("answer");
+		expect(store.peekQueryState(["slowQuery"])?.loading).toBe(false);
+
+		// the older fetch settles later and writes nothing
+		slow.resolvers.shift()!("older");
+		await pending;
+		expect(store.peekQueryState(["slowQuery"])?.data).toBe("answer");
+	});
 	it("should $reset correctly", async () => {
 		// @ts-expect-error mock query repository
 		await store.execute("testQuery", "reset");

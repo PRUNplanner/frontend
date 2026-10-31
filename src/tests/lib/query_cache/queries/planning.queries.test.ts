@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { watch } from "vue";
 
@@ -8,10 +8,21 @@ import {
 	batchChanges,
 	planningQueries,
 } from "@/lib/query_cache/queries/planning.queries";
+import { invalidate } from "@/lib/query_cache/queries/queries.util";
+import { resetLoadedModules } from "@/lib/sessionReset";
 import { broadcastChange } from "@/lib/crossTab";
 import { reportClientError } from "@/lib/clientErrors";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { toCacheKey } from "@/lib/query_cache/cacheKeys";
+import { usePlanningStore } from "@/stores/planningStore";
 import { callPatchCX } from "@/features/api/cxData.api";
+import {
+	callGetPlan,
+	callGetPlanVersions,
+	callSavePlan,
+} from "@/features/api/planData.api";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 import { callGetEmpireList } from "@/features/api/empireData.api";
 
 vi.mock("@/lib/crossTab", async (importOriginal) => ({
@@ -19,7 +30,12 @@ vi.mock("@/lib/crossTab", async (importOriginal) => ({
 	broadcastChange: vi.fn(),
 }));
 vi.mock("@/features/api/planData.api", () => ({
-	callSavePlan: vi.fn(async (uuid: string) => ({ uuid, modified_at: "v2" })),
+	callSavePlan: vi.fn(async (uuid: string) => ({
+		uuid,
+		plan_name: "P",
+		modified_at: "v2",
+	})),
+	callGetPlan: vi.fn(async (uuid: string) => ({ uuid, plan_name: "P" })),
 	callCreatePlan: vi.fn(async () => ({ uuid: "new", modified_at: "v1" })),
 	callDeletePlan: vi.fn(async () => true),
 	callClonePlan: vi.fn(async () => ({ uuid: "clone" })),
@@ -57,6 +73,17 @@ const PLANS = ["planningdata", "plan"];
 const EMPIRES = ["planningdata", "empire"];
 const CXS = ["planningdata", "cx"];
 
+// PatchPlan refreshes the version list on a timer
+beforeEach(() => {
+	vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+});
+afterEach(() => {
+	// a logout drops the refreshes still waiting
+	resetLoadedModules();
+	vi.clearAllTimers();
+	vi.useRealTimers();
+});
+
 describe("planning queries tell the other tabs", () => {
 	beforeEach(() => {
 		setActivePinia(createPinia());
@@ -67,7 +94,16 @@ describe("planning queries tell the other tabs", () => {
 		[
 			"PatchPlan",
 			{ planUuid: "plan-a", data: {} },
-			[[PLANS, EMPIRES], ["plan-a"]],
+			[
+				[
+					[...EMPIRES, "plans"],
+					[...PLANS, "list"],
+					// the name before is unknown here
+					[...EMPIRES, "list"],
+					[...PLANS, "plan-a"],
+				],
+				["plan-a"],
+			],
 		],
 		["CreatePlan", { data: {} }, [[PLANS, EMPIRES], ["new"]]],
 		[
@@ -222,11 +258,10 @@ describe("batchChanges", () => {
 				["empire-new", "new", "plan-a"],
 			],
 		]);
+		// the plan keys are under the plans prefix
 		expect(invalidateKey.mock.calls).toEqual([
 			[EMPIRES, { exact: false }],
 			[PLANS, { exact: false }],
-			[[...PLANS, "list"], { exact: true }],
-			[[...PLANS, "plan-a"], { exact: true }],
 		]);
 	});
 
@@ -306,5 +341,209 @@ describe("batchChanges", () => {
 			await q.CreatePlan.fetchFn({ data: {} });
 
 		expect(reportClientError).toHaveBeenCalledOnce();
+	});
+});
+
+describe("PatchPlan uses its answer", () => {
+	const q = planningQueries;
+	const key = [...PLANS, "plan-a"];
+	let invalidateKey: ReturnType<typeof vi.spyOn>;
+
+	function seedPlan(name: string): Plan {
+		const plan = { uuid: "plan-a", plan_name: name, modified_at: "v1" };
+		// @ts-expect-error mock data
+		usePlanningStore().setPlan(plan);
+		// @ts-expect-error mock data
+		useQueryStore().addCacheState("GetPlan", { planUuid: "plan-a" }, plan);
+		return plan as Plan;
+	}
+
+	function save() {
+		// @ts-expect-error mock data
+		return q.PatchPlan.fetchFn({ planUuid: "plan-a", data: {} });
+	}
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		vi.clearAllMocks();
+		invalidateKey = vi.spyOn(useQueryStore(), "invalidateKey");
+	});
+
+	it("stores the answer in the store and the GetPlan entry, no fetch", async () => {
+		seedPlan("P");
+
+		const saved = await save();
+
+		expect(usePlanningStore().plans["plan-a"]).toStrictEqual(saved);
+		expect(useQueryStore().peekQueryState(key)?.data).toBe(saved);
+		expect(
+			await useQueryStore().execute("GetPlan", { planUuid: "plan-a" })
+		).toBe(saved);
+		expect(callGetPlan).not.toHaveBeenCalled();
+	});
+
+	it("no rename: plan list and empire plan lists, not the empire list", async () => {
+		seedPlan("P");
+
+		await save();
+
+		expect(invalidateKey.mock.calls).toEqual([
+			[[...EMPIRES, "plans"], { exact: false }],
+			[[...PLANS, "list"], { exact: true }],
+		]);
+		// the other tabs refetch the plan and its versions
+		expect(broadcastChange).toHaveBeenCalledWith(
+			[[...EMPIRES, "plans"], [...PLANS, "list"], key],
+			["plan-a"]
+		);
+	});
+
+	const versions = [...PLANS, "plan-a", "versions"];
+	const refreshes = () =>
+		invalidateKey.mock.calls.filter(
+			(c: unknown[]) =>
+				toCacheKey(c[0] as JSONValue) === toCacheKey(versions)
+		).length;
+
+	it("a save refreshes the version list 1 s later", async () => {
+		seedPlan("P");
+
+		await save();
+		await vi.advanceTimersByTimeAsync(999);
+		expect(refreshes()).toBe(0);
+		await vi.advanceTimersByTimeAsync(1);
+		expect(refreshes()).toBe(1);
+	});
+
+	it("saves 1.1 s apart: at most 4 refreshes in 10 s, the last save's included", async () => {
+		seedPlan("P");
+
+		for (let i = 0; i < 10; i++) {
+			await save();
+			if (i < 9) await vi.advanceTimersByTimeAsync(1100);
+		}
+		// 9.9 s: refreshed at 1, 4 and 7 s, the next one waits
+		expect(refreshes()).toBe(3);
+		await vi.advanceTimersByTimeAsync(3000);
+		expect(refreshes()).toBe(4);
+	});
+
+	it("10 saves 1 s apart with the version list shown: no loop", async () => {
+		seedPlan("P");
+		const store = useQueryStore();
+		await store.execute("GetPlanVersions", { planUuid: "plan-a" });
+
+		for (let i = 0; i < 10; i++) {
+			await save();
+			await vi.advanceTimersByTimeAsync(1000);
+		}
+		await vi.advanceTimersByTimeAsync(3000);
+
+		// the page load's fetch and one per refresh
+		expect(
+			vi.mocked(callGetPlanVersions).mock.calls.length
+		).toBeLessThanOrEqual(5);
+		expect(reportClientError).not.toHaveBeenCalled();
+	});
+
+	it("a rename invalidates the empire list once", async () => {
+		seedPlan("old name");
+
+		await save();
+
+		expect(invalidateKey).toHaveBeenCalledWith([...EMPIRES, "list"], {
+			exact: true,
+		});
+		expect(vi.mocked(broadcastChange).mock.calls[0][0]).toContainEqual([
+			...EMPIRES,
+			"list",
+		]);
+	});
+
+	it("a failed save changes nothing", async () => {
+		const plan = seedPlan("P");
+		vi.mocked(callSavePlan).mockRejectedValueOnce(
+			Object.assign(new Error("conflict"), { status: 409 })
+		);
+
+		await expect(save()).rejects.toThrow("conflict");
+
+		expect(usePlanningStore().plans["plan-a"]).toStrictEqual(plan);
+		expect(useQueryStore().peekQueryState(key)?.data).toBe(plan);
+		expect(invalidateKey).not.toHaveBeenCalled();
+		expect(broadcastChange).not.toHaveBeenCalled();
+	});
+
+	it("in a batch the plan's own key is still only broadcast", async () => {
+		seedPlan("P");
+
+		await batchChanges(async () => {
+			await save();
+			await save();
+		});
+
+		expect(invalidateKey).not.toHaveBeenCalledWith(key, expect.anything());
+		expect(broadcastChange).toHaveBeenCalledOnce();
+		expect(vi.mocked(broadcastChange).mock.calls[0][0]).toContainEqual(key);
+		expect(useQueryStore().peekQueryState(key)?.data).toMatchObject({
+			modified_at: "v2",
+		});
+	});
+
+	it("10 saves with mounted plan and empire readers: no fetch, no loop", async () => {
+		seedPlan("P");
+		const store = useQueryStore();
+		// readers that load a dropped entry again right away
+		const readers: [JSONValue, () => Promise<unknown>][] = [
+			[
+				[...EMPIRES, "list"],
+				() => store.execute("GetAllEmpires", undefined),
+			],
+			[key, () => store.execute("GetPlan", { planUuid: "plan-a" })],
+		];
+		for (const [k, load] of readers)
+			watch(
+				() => !store.peekQueryState(k),
+				(missing) => {
+					if (missing) load().catch(() => {});
+				},
+				{ immediate: true, flush: "sync" }
+			);
+		await vi.waitFor(() =>
+			expect(callGetEmpireList).toHaveBeenCalledOnce()
+		);
+		vi.mocked(callGetEmpireList).mockClear();
+
+		for (let i = 0; i < 10; i++) await save();
+
+		expect(callGetEmpireList).not.toHaveBeenCalled();
+		expect(callGetPlan).not.toHaveBeenCalled();
+		expect(reportClientError).not.toHaveBeenCalled();
+	});
+});
+
+describe("invalidate", () => {
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		vi.clearAllMocks();
+	});
+
+	it("a key under another one refetches once, not twice", async () => {
+		// what another tab gets after a save
+		const store = useQueryStore();
+		await store.execute("GetPlanVersions", { planUuid: "plan-a" });
+		vi.mocked(callGetPlanVersions).mockClear();
+
+		await invalidate(
+			[...PLANS, "plan-a", "versions"],
+			[...PLANS, "plan-a"]
+		);
+		await vi.waitFor(() =>
+			expect(
+				store.peekQueryState([...PLANS, "plan-a", "versions"])?.loading
+			).toBe(false)
+		);
+
+		expect(callGetPlanVersions).toHaveBeenCalledOnce();
 	});
 });

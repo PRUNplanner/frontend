@@ -120,18 +120,15 @@ describe("PlanData API Calls", async () => {
 	it("callSavePlan", async () => {
 		const spyApiServicePatch = vi.spyOn(apiService, "put");
 
-		mock.onPut(`/planning/plan/${fakeUuid}/`).reply(200, {
-			uuid: fakeUuid,
-		});
+		// the answer is the full plan, as GET /planning/plan/<uuid>/
+		mock.onPut(`/planning/plan/${fakeUuid}/`).reply(200, plan_etherwind);
 
-		expect(
-			await callSavePlan(fakeUuid, {
-				uuid: fakeUuid,
-				...fakeSaveCreateData,
-			})
-		).toStrictEqual({
+		const saved = await callSavePlan(fakeUuid, {
 			uuid: fakeUuid,
+			...fakeSaveCreateData,
 		});
+		expect(saved.plan_name).toBe(plan_etherwind.plan_name);
+		expect(saved.plan_data).toBeDefined();
 		expect(spyApiServicePatch).toHaveBeenCalled();
 	});
 

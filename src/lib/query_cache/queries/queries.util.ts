@@ -6,6 +6,7 @@ import {
 } from "@/database/composables/useIndexedDBStore";
 import { gamedataMetaStore } from "@/database/stores";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
 
 // Types & Interfaces
 import type { IGameDataMeta } from "@/database/stores.types";
@@ -216,12 +217,20 @@ export async function readGameData<
 }
 
 /**
- * Invalidates every cache entry under each key prefix, in order.
+ * Invalidates every cache entry under each key prefix, in order. A prefix
+ * another one already covers is skipped: invalidating both would drop the
+ * covered entry's refetch and start it again (a second fetch).
  *
  * @param {JSONValue[]} prefixes Key prefixes, e.g. ["planningdata", "plan"]
  */
 export async function invalidate(...prefixes: JSONValue[]): Promise<void> {
 	const queryStore = useQueryStore();
-	for (const prefix of prefixes)
-		await queryStore.invalidateKey(prefix, { exact: false });
+	const unique = [
+		...new Map(prefixes.map((p) => [toCacheKey(p), p])).values(),
+	];
+	for (const prefix of unique)
+		if (
+			!unique.some((other) => other !== prefix && isSubset(other, prefix))
+		)
+			await queryStore.invalidateKey(prefix, { exact: false });
 }

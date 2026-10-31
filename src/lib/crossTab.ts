@@ -15,6 +15,8 @@ import { useUserStore } from "@/stores/userStore";
 // Util
 import { stopPersisting } from "@/lib/persistStorage";
 import { readStorage } from "@/lib/storage";
+import { onSessionReset } from "@/lib/sessionReset";
+import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import {
 	applyPreferencePatch,
@@ -63,6 +65,24 @@ export const remoteChange: Ref<IRemoteChange | null> = ref(null);
 
 let channel: BroadcastChannel | null = null;
 
+// a woken tab gets every message it missed at once: they are merged and
+// handled together, 100 ms after the last one, at the latest 1 s after
+// the first
+const QUIET_MS = 100;
+const MAX_WAIT_MS = 1000;
+let pending: { keys: Map<string, JSONValue>; uuids: Set<string> } | null = null;
+let quietTimer: ReturnType<typeof setTimeout> | undefined;
+let maxTimer: ReturnType<typeof setTimeout> | undefined;
+
+function dropPending(): void {
+	clearTimeout(quietTimer);
+	clearTimeout(maxTimer);
+	pending = null;
+}
+
+// a logout drops what the old session's tabs sent
+onSessionReset(dropPending);
+
 /**
  * Claims of a JWT's payload
  *
@@ -102,19 +122,36 @@ export function tokenExpiresAt(token: string | undefined): number | undefined {
 	return typeof exp === "number" ? exp * 1000 : undefined;
 }
 
-async function onMessage(event: MessageEvent<IChangeMessage>): Promise<void> {
-	const { userId, keys, uuid, uuids } = event.data;
-	if (userId !== tokenUserId(useUserStore().refreshToken)) return;
+/** Invalidates the merged keys once and tells the readers once */
+async function flushPending(): Promise<void> {
+	const merged = pending;
+	dropPending();
+	if (!merged) return;
 
+	const keys = [...merged.keys.values()];
 	// the query layer loads with the first logged-in page, not the shell
 	const { invalidate } =
 		await import("@/lib/query_cache/queries/queries.util");
 	await invalidate(...keys);
 	remoteChange.value = {
 		keys,
-		uuids: uuids ?? (uuid ? [uuid] : []),
+		uuids: [...merged.uuids],
 		seq: (remoteChange.value?.seq ?? 0) + 1,
 	};
+}
+
+function onMessage(event: MessageEvent<IChangeMessage>): void {
+	const { userId, keys, uuid, uuids } = event.data;
+	if (userId !== tokenUserId(useUserStore().refreshToken)) return;
+
+	if (!pending) {
+		pending = { keys: new Map(), uuids: new Set() };
+		maxTimer = setTimeout(flushPending, MAX_WAIT_MS);
+	}
+	keys.forEach((key) => pending!.keys.set(toCacheKey(key), key));
+	(uuids ?? (uuid ? [uuid] : [])).forEach((u) => pending!.uuids.add(u));
+	clearTimeout(quietTimer);
+	quietTimer = setTimeout(flushPending, QUIET_MS);
 }
 
 function getChannel(): BroadcastChannel | null {
