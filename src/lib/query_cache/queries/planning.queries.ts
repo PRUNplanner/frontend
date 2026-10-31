@@ -15,10 +15,12 @@ import {
 // API Calls
 import {
 	callClonePlan,
+	callActivatePlanVersion,
 	callClonePlanVersion,
 	callCreatePlan,
 	callDeletePlan,
 	callDeletePlanDraft,
+	callDeletePlanVersion,
 	callGetPlan,
 	callGetPlanDraft,
 	callGetPlanlist,
@@ -535,6 +537,34 @@ export const planningQueries = {
 			);
 			await changed([EMPIRES], data.uuid, [[...PLANS, "list"]]);
 			return data;
+		},
+	}),
+	// writes the plan as a save does: other tabs follow through remoteChange
+	ActivatePlanVersion: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			versionUuid: string;
+			draftUpdatedAt: string | null;
+		}): Promise<Plan> => {
+			const data = await callActivatePlanVersion(
+				params.planUuid,
+				params.versionUuid,
+				params.draftUpdatedAt
+			);
+			usePlanningStore().setPlan(data);
+			await changed([PLANS, EMPIRES], params.planUuid);
+			return data;
+		},
+	}),
+	DeletePlanVersion: defineMutation({
+		fetchFn: async (params: {
+			planUuid: string;
+			versionUuid: string;
+		}): Promise<void> => {
+			await callDeletePlanVersion(params.planUuid, params.versionUuid);
+			await changed([], undefined, [
+				[...PLANS, params.planUuid, "versions"],
+			]);
 		},
 	}),
 	// Drafts: never cached, read fresh every time; writes invalidate nothing

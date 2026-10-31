@@ -1611,6 +1611,102 @@ describe("PlanView", () => {
 				restored_from: version.uuid,
 			});
 		});
+		function previewFixture() {
+			const plan = { ...etherwindPlan(), modified_at: "v1" };
+			const listItem = {
+				uuid: "5f0c3b8e-1d2a-4c3b-9e8f-7a6b5c4d3e2f",
+				kind: "save",
+				name: "Early stage",
+				created_at: "2026-10-12T18:20:00.000000Z",
+				source_version: null,
+				is_active: false,
+				data_bytes: 100,
+			};
+			const plan_data = {
+				...plan.plan_data,
+				buildings: plan.plan_data.buildings.map((b, i) =>
+					i === 0 ? { ...b, amount: 3 } : b
+				),
+			};
+			const version = { ...plan, ...listItem, plan_data };
+			const active = {
+				...listItem,
+				uuid: "9a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d",
+				name: "",
+				is_active: true,
+			};
+			return { plan, listItem, version, active, plan_data };
+		}
+
+		it("deleting the previewed version returns to the edits", async () => {
+			const { plan, listItem, version, active } = previewFixture();
+			respond({
+				GetPlan: () => plan,
+				GetPlanVersions: () => [active, listItem],
+				GetPlanVersion: () => version,
+				DeletePlanVersion: () => undefined,
+			});
+			mocks.confirm.mockResolvedValue(true);
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+
+			await emitFrom(wrapper, PlanSaveControl, "preview", listItem.uuid);
+			expect(buildingAmounts(wrapper).EXT).toBe(3);
+
+			await emitFrom(wrapper, PlanSaveControl, "delete", listItem.uuid);
+			expect(queryCalls("DeletePlanVersion")[0][1]).toEqual({
+				planUuid: PLAN_UUID,
+				versionUuid: listItem.uuid,
+			});
+			expect(wrapper.find("[data-version-preview]").exists()).toBe(false);
+			expect(buildingAmounts(wrapper).EXT).toBe(1);
+			expect(
+				wrapper.findComponent(PlanSaveControl).props("versions")
+			).toEqual([active]);
+		});
+
+		it("makes the previewed version active from the banner", async () => {
+			const { plan, listItem, version, active, plan_data } =
+				previewFixture();
+			respond({
+				GetPlan: () => plan,
+				GetPlanVersions: () => [active, listItem],
+				GetPlanVersion: () => version,
+				ActivatePlanVersion: () => ({
+					...plan,
+					plan_data,
+					modified_at: "v3",
+				}),
+			});
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+
+			await emitFrom(wrapper, PlanSaveControl, "preview", listItem.uuid);
+			await wrapper
+				.findAll("[data-version-preview] button")
+				.find((b) => b.text() === "plan.versions.make_active")!
+				.trigger("click");
+			await flushPromises();
+
+			expect(mocks.confirm).not.toHaveBeenCalled();
+			expect(queryCalls("ActivatePlanVersion")[0][1]).toMatchObject({
+				planUuid: PLAN_UUID,
+				versionUuid: listItem.uuid,
+			});
+			expect(wrapper.find("[data-version-preview]").exists()).toBe(false);
+			expect(buildingAmounts(wrapper).EXT).toBe(3);
+			expect(
+				wrapper.findComponent(PlanSaveControl).props("modified")
+			).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:version_activate",
+				expect.objectContaining({ named: true, from: "preview" })
+			);
+		});
 	});
 
 	it("opens the sharing of a saved plan and closes it again", async () => {

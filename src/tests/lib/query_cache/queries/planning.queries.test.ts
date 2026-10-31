@@ -41,6 +41,8 @@ vi.mock("@/features/api/planData.api", () => ({
 	callClonePlan: vi.fn(async () => ({ uuid: "clone" })),
 	callClonePlanVersion: vi.fn(async () => ({ uuid: "clone-v" })),
 	callRenamePlanVersion: vi.fn(async () => ({ uuid: "v-1", name: "n" })),
+	callActivatePlanVersion: vi.fn(async () => ({ uuid: "plan-a" })),
+	callDeletePlanVersion: vi.fn(async () => undefined),
 	callGetPlanVersions: vi.fn(async () => []),
 	callGetPlanVersion: vi.fn(async () => ({ uuid: "v-1" })),
 	callGetPlanDraft: vi.fn(async () => null),
@@ -122,6 +124,16 @@ describe("planning queries tell the other tabs", () => {
 		[
 			"RenamePlanVersion",
 			{ planUuid: "plan-a", versionUuid: "v-1", name: "n" },
+			[[[...PLANS, "plan-a", "versions"]], []],
+		],
+		[
+			"ActivatePlanVersion",
+			{ planUuid: "plan-a", versionUuid: "v-1", draftUpdatedAt: null },
+			[[PLANS, EMPIRES], ["plan-a"]],
+		],
+		[
+			"DeletePlanVersion",
+			{ planUuid: "plan-a", versionUuid: "v-1" },
 			[[[...PLANS, "plan-a", "versions"]], []],
 		],
 		[

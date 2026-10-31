@@ -18,10 +18,13 @@ const version = {
 	data_bytes: 10,
 };
 
-async function mountBanner(compare: () => IChangeLine[] = vi.fn(() => [])) {
+async function mountBanner(
+	compare: () => IChangeLine[] = vi.fn(() => []),
+	extra: Partial<typeof version> = {}
+) {
 	const mounted = await mountComponent(
 		PlanVersionPreviewBanner,
-		{ version, compare },
+		{ version: { ...version, ...extra }, compare },
 		{ messages: { plan, save_conflict } }
 	);
 	const button = (label: string) =>
@@ -62,11 +65,19 @@ describe("PlanVersionPreviewBanner", () => {
 
 	it.each([
 		["Restore", "restore"],
+		["Make active", "activate"],
 		["Open as new plan", "open-as-plan"],
 		["Back to current", "back"],
 	])("%s emits %s", async (label, event) => {
 		const { component, button } = await mountBanner();
 		await button(label).trigger("click");
 		expect(component.emitted(event)).toHaveLength(1);
+	});
+
+	it("offers no Make active for the active version", async () => {
+		const { wrapper } = await mountBanner(undefined, { is_active: true });
+		const labels = wrapper.findAll("button").map((b) => b.text());
+		expect(labels).toContain("Restore");
+		expect(labels).not.toContain("Make active");
 	});
 });

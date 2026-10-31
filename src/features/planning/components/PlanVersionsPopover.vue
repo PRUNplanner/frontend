@@ -18,15 +18,31 @@
 
 	// Types & Interfaces
 	import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+	import type { PDropdownOption } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PCheckbox, PDrawer, PInput, PPopover, PTag } from "@/ui";
-	import { EditOutlined, VisibilityOutlined } from "@vicons/material";
+	import {
+		PButton,
+		PCheckbox,
+		PDrawer,
+		PDropdown,
+		PInput,
+		PPopover,
+		PTag,
+	} from "@/ui";
+	import {
+		DeleteOutlined,
+		EditOutlined,
+		HistoryOutlined,
+		MoreHorizSharp,
+		VisibilityOutlined,
+	} from "@vicons/material";
 
 	/**
 	 * The plan's versions, opened from the save status: named ones by
-	 * default, the draft on top while there are unsaved changes, rename
-	 * in place and preview. A bottom sheet on a phone.
+	 * default, the draft on top while there are unsaved changes, preview,
+	 * and a row menu to rename in place, make active or delete. A bottom
+	 * sheet on a phone.
 	 */
 	const props = defineProps<{
 		versions: PlanVersionListItem[];
@@ -40,6 +56,8 @@
 	const emit = defineEmits<{
 		(e: "preview", versionUuid: string): void;
 		(e: "rename", versionUuid: string, name: string): void;
+		(e: "activate", versionUuid: string): void;
+		(e: "delete", versionUuid: string): void;
 	}>();
 
 	const show = defineModel<boolean>("show", { default: false });
@@ -99,6 +117,41 @@
 	function preview(version: PlanVersionListItem): void {
 		show.value = false;
 		emit("preview", version.uuid);
+	}
+
+	// the active version is the plan as saved: it can't be made active or deleted
+	function rowOptions(version: PlanVersionListItem): PDropdownOption[] {
+		const items: PDropdownOption[] = [
+			{
+				key: "rename",
+				label: t("plan.versions.rename"),
+				icon: EditOutlined,
+			},
+		];
+		if (!version.is_active)
+			items.push(
+				{
+					key: "activate",
+					label: t("plan.versions.make_active"),
+					icon: HistoryOutlined,
+				},
+				{ type: "divider" },
+				{
+					key: "delete",
+					label: t("plan.versions.delete"),
+					icon: DeleteOutlined,
+					danger: true,
+				}
+			);
+		return items;
+	}
+
+	function onRowSelect(version: PlanVersionListItem, key: string): void {
+		if (key === "rename") startRename(version);
+		else if (key === "activate") {
+			show.value = false;
+			emit("activate", version.uuid);
+		} else if (key === "delete") emit("delete", version.uuid);
 	}
 
 	const draftSub: ComputedRef<string> = computed(() =>
@@ -179,17 +232,26 @@
 				<PButton
 					type="ghost"
 					:class="iconButton"
-					:aria-label="t('plan.versions.rename')"
-					@click="startRename(version)">
-					<template #icon><EditOutlined /></template>
-				</PButton>
-				<PButton
-					type="ghost"
-					:class="iconButton"
 					:aria-label="t('plan.versions.preview')"
 					@click="preview(version)">
 					<template #icon><VisibilityOutlined /></template>
 				</PButton>
+				<PDropdown
+					placement="bottom-end"
+					:options="rowOptions(version)"
+					@select="(key: string) => onRowSelect(version, key)">
+					<PButton
+						type="ghost"
+						:class="iconButton"
+						aria-haspopup="menu"
+						:aria-label="
+							t('plan.versions.actions', {
+								name: versionLabel(version, t),
+							})
+						">
+						<template #icon><MoreHorizSharp /></template>
+					</PButton>
+				</PDropdown>
 			</li>
 		</ul>
 		<p class="px-3 py-2 text-xs text-muted">

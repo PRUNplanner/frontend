@@ -96,6 +96,23 @@ describe("PlanSaveControl", () => {
 		expect(status(unnamed.wrapper).text()).toMatch(/^Saved [^·]+$/);
 	});
 
+	it("names the source of an unnamed active restore while it's listed", async () => {
+		const restore = version("v-4", "", {
+			kind: "restore",
+			source_version: "v-1",
+			is_active: true,
+		});
+		const { wrapper } = await mountControl({
+			versions: [restore, version("v-1", "Early stage")],
+		});
+		expect(status(wrapper).text()).toMatch(
+			/^Saved .+ · from “Early stage”$/
+		);
+
+		const gone = await mountControl({ versions: [restore] });
+		expect(status(gone.wrapper).text()).toMatch(/^Saved [^·]+$/);
+	});
+
 	it.each([
 		[{ modified: true }, "Unsaved changes"],
 		[
@@ -281,6 +298,23 @@ describe("PlanVersionsPopover", () => {
 		body()
 			.findAll("[data-version]")
 			.map((r) => r.text().replace(/\s+/g, " "));
+	// opens a row's menu, returns its items
+	async function rowMenu(row: number): Promise<string[]> {
+		const rowEl = body().findAll("[data-version]")[row];
+		await rowEl.find("button[aria-haspopup='menu']").trigger("click");
+		await flushPromises();
+		return body()
+			.findAll("[role=menuitem]")
+			.map((i) => i.text());
+	}
+	async function pick(row: number, label: string): Promise<void> {
+		await rowMenu(row);
+		await body()
+			.findAll("[role=menuitem]")
+			.find((i) => i.text() === label)!
+			.trigger("click");
+		await flushPromises();
+	}
 
 	beforeEach(() => {
 		document.body.innerHTML = "";
@@ -317,19 +351,15 @@ describe("PlanVersionsPopover", () => {
 
 	it("renames in place: Enter saves, Escape cancels", async () => {
 		const { component } = await openVersions();
-		const pencil = () =>
-			body().findAll("button[aria-label='Name this version']")[0];
 
-		await pencil().trigger("click");
-		await flushPromises();
+		await pick(0, "Name this version");
 		const input = body().find("input[aria-label='Version name']");
 		expect(document.activeElement).toBe(input.element);
 		await input.setValue("Final");
 		await input.trigger("keydown", { key: "Enter" });
 		expect(component.emitted("rename")).toEqual([["v-3", "Final"]]);
 
-		await pencil().trigger("click");
-		await flushPromises();
+		await pick(0, "Name this version");
 		await body()
 			.find("input[aria-label='Version name']")
 			.trigger("keydown", { key: "Escape" });
@@ -337,6 +367,70 @@ describe("PlanVersionsPopover", () => {
 			false
 		);
 		expect(component.emitted("rename")).toHaveLength(1);
+	});
+
+	it("offers make active and delete in the row menu, not on the active row", async () => {
+		await openVersions();
+		expect(
+			body()
+				.find("[data-version] button[aria-haspopup='menu']")
+				.attributes("aria-label")
+		).toBe("Actions for “Late stage”");
+		expect(await rowMenu(0)).toEqual(["Name this version"]);
+
+		document.body.innerHTML = "";
+		await openVersions();
+		expect(await rowMenu(1)).toEqual([
+			"Name this version",
+			"Make active",
+			"Delete",
+		]);
+		expect(
+			body()
+				.findAll("[role=menuitem]")
+				.find((i) => i.text() === "Delete")!
+				.classes()
+		).toContain("text-negative");
+	});
+
+	it("makes a version active and closes, deletes keeping the list open", async () => {
+		const { component } = await openVersions();
+		await pick(1, "Delete");
+		expect(component.emitted("delete")).toEqual([["v-0"]]);
+		expect(component.emitted("update:show")).toBeUndefined();
+
+		await pick(1, "Make active");
+		expect(component.emitted("activate")).toEqual([["v-0"]]);
+		expect(component.emitted("update:show")).toEqual([[false]]);
+	});
+
+	it("passes make active and delete through the save control", async () => {
+		const { wrapper, component } = await mountControl();
+		const popover = wrapper.findComponent(PlanVersionsPopover);
+		popover.vm.$emit("activate", "v-2");
+		popover.vm.$emit("delete", "v-1");
+		expect(component.emitted("activate")).toEqual([["v-2"]]);
+		expect(component.emitted("delete")).toEqual([["v-1"]]);
+	});
+
+	it("has no axe violations with a row menu open", async () => {
+		await openVersions();
+		await rowMenu(1);
+		const panels = [
+			document.querySelector("[data-versions]"),
+			document.querySelector("[role=menu]"),
+		];
+		for (const el of panels) {
+			expect(el).not.toBeNull();
+			const result = await axe.run(el!, {
+				rules: { "color-contrast": { enabled: false } },
+			});
+			expect(
+				result.violations.map(
+					(v) => `${v.id}: ${v.nodes.map((n) => n.html).join(" | ")}`
+				)
+			).toEqual([]);
+		}
 	});
 
 	it("previews a version and closes", async () => {

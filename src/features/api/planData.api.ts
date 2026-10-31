@@ -16,6 +16,7 @@ import {
 	PlanSchema,
 	PlanShareSchema,
 	PlanVersionListItemSchema,
+	PlanVersionActivatePayloadSchema,
 	PlanVersionClonePayloadSchema,
 	PlanVersionListSchema,
 	PlanVersionRenameSchema,
@@ -226,6 +227,43 @@ export async function callClonePlanVersion(
 		{},
 		PlanVersionClonePayloadSchema,
 		PlanSchema
+	);
+}
+
+/**
+ * Makes a version the plan as saved, through a new restore version on top
+ *
+ * @param {string} planUuid Plan Uuid
+ * @param {string} versionUuid Version Uuid
+ * @param {string | null} draftUpdatedAt The draft this tab last saw; only that one is deleted
+ * @returns {Promise<Plan>} The plan as now saved
+ */
+export async function callActivatePlanVersion(
+	planUuid: string,
+	versionUuid: string,
+	draftUpdatedAt: string | null
+): Promise<Plan> {
+	return apiService.post(
+		`/planning/plan/${planUuid}/versions/${versionUuid}/activate/`,
+		{ draft_updated_at: draftUpdatedAt },
+		PlanVersionActivatePayloadSchema,
+		PlanSchema
+	);
+}
+
+/**
+ * Deletes a version, never the active one
+ *
+ * @param {string} planUuid Plan Uuid
+ * @param {string} versionUuid Version Uuid
+ * @returns {Promise<void>} Resolves once deleted
+ */
+export async function callDeletePlanVersion(
+	planUuid: string,
+	versionUuid: string
+): Promise<void> {
+	return apiService.delete(
+		`/planning/plan/${planUuid}/versions/${versionUuid}/`
 	);
 }
 

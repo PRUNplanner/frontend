@@ -32,6 +32,7 @@ import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 
 // Util
 import { inertClone } from "@/util/data";
+import { isApiError } from "@/lib/apiError";
 import {
 	getSaveError,
 	threeWay,
@@ -39,6 +40,8 @@ import {
 import { diffPlan } from "@/features/planning_data/planDiff";
 import {
 	formatWhen,
+	versionAgeDays,
+	versionLabel,
 	versionState,
 } from "@/features/planning/planVersions.util";
 
@@ -47,6 +50,7 @@ import type {
 	Plan,
 	PlanCreateData,
 	PlanDraft,
+	PlanVersionListItem,
 } from "@/features/api/schemas/planningData.schemas";
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
@@ -407,6 +411,72 @@ export function usePlanSave(
 	}
 
 	/**
+	 * Makes a version the plan as saved in one step, through a new restore
+	 * version on top. Unsaved edits are discarded after a confirm, with this
+	 * tab's draft.
+	 *
+	 * @param {PlanVersionListItem} version Version to make active
+	 * @param {"list" | "preview"} from The versions list or the preview banner
+	 * @returns {Promise<boolean>} False when the version no longer exists, the
+	 * list is stale
+	 */
+	async function activateVersion(
+		version: PlanVersionListItem,
+		from: "list" | "preview"
+	): Promise<boolean> {
+		const unsaved: boolean = preview.previewing.value
+			? preview.stashModified.value
+			: modified.value;
+		if (
+			unsaved &&
+			!(await confirm({
+				title: t("plan.versions.make_active"),
+				content: t("plan.versions.activate_confirm", {
+					name: versionLabel(version, t),
+				}),
+				positiveText: t("plan.versions.make_active"),
+				negativeText: t("common.buttons.cancel"),
+			}))
+		)
+			return true;
+
+		refIsSaving.value = true;
+		try {
+			// after the draft writes queued before it; sends the draft this
+			// tab saw, so only that one is deleted
+			const plan: Plan = await draft.withSave(async (seen) => {
+				const result = await useQuery("ActivatePlanVersion", {
+					planUuid: refPlanData.value.uuid!,
+					versionUuid: version.uuid,
+					draftUpdatedAt: seen,
+				}).execute();
+				draft.saved();
+				return result;
+			});
+			draftToast?.destroy();
+			applySavedPlan(plan);
+			preview.clearRestore();
+			trackEvent("plan:version_activate", {
+				named: version.name !== "",
+				age_days: versionAgeDays(version),
+				from,
+			});
+			return true;
+		} catch (err) {
+			// pruned or deleted in another tab meanwhile
+			if (isApiError(err) && err.status === 404) {
+				toast(t("plan.versions.gone"), { type: "error" });
+				return false;
+			}
+			reportError(err);
+			toast(t("common.ui.save_failed"), { type: "error" });
+			return true;
+		} finally {
+			refIsSaving.value = false;
+		}
+	}
+
+	/**
 	 * Loads the plan as saved in the backend
 	 *
 	 * @returns {Promise<Plan>} Saved plan
@@ -640,6 +710,7 @@ export function usePlanSave(
 		openSaveAsModal,
 		discardChanges,
 		applySavedPlan,
+		activateVersion,
 		conflict,
 		draftPossible,
 		draftSavedAt: draft.draftSavedAt,
