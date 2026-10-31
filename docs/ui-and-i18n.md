@@ -429,6 +429,21 @@ Debug tooling is English only by decision: the `/debug` page,
 `features/planning/components/debug/` and `lib/debugMode.ts` hard-code
 their text and toasts.
 
+**Browser page translation** (Chrome's "Translate this page") replaces
+the text nodes Vue rendered with its own `<font>` elements (#700):
+
+- Text that changes and needs no translation (figures, tickers, building
+  names) gets `translate="no"`, or the translator's copy stays on screen
+  while Vue updates the original. `PValue` and `MaterialTile` set it
+  themselves. Labels, headings and help text stay translatable.
+- Keep text out of a fragment's edges: write `<span v-if>` instead of a
+  `<template v-if>` that starts or ends with text, and don't put text right
+  next to a `v-for` list or another fragment. An `<i18n-t>` slot sits
+  between the message's text, so a `v-for` list there gets a wrapping
+  `<span>`. The translator takes Vue's empty fragment markers with it, and
+  removing the fragment then crashes the patch.
+  `translationSafeTemplates.test.ts` checks every template.
+
 ### Adding or changing text
 
 1. Add the key to `src/locales/en_US/<namespace>.json`. Only edit `en_US`.

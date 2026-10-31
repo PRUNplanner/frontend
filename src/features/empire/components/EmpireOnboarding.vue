@@ -76,7 +76,7 @@
 					class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
 					:class="saved ? 'bg-positive text-black' : 'bg-white/10'">
 					<PIcon v-if="saved" :size="16"><CheckSharp /></PIcon>
-					<template v-else>1</template>
+					<span v-else>1</span>
 				</span>
 				<div class="grow min-w-0 flex flex-col gap-3">
 					<div>

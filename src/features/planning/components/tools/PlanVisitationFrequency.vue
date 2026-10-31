@@ -216,23 +216,30 @@
 					tag="p"
 					class="text-sm text-muted text-pretty">
 					<template #storages>
-						<template
-							v-for="(item, index) in storageAmountsForDisplay"
-							:key="item.ticker">
-							<strong class="text-ink">{{ item.amount }}</strong>
-							{{ item.ticker }}
-							<template
-								v-if="
-									index < storageAmountsForDisplay.length - 1
-								">
-								{{
-									index ===
-									storageAmountsForDisplay.length - 2
-										? " and "
-										: ", "
-								}}
-							</template>
-						</template>
+						<span>
+							<span
+								v-for="(
+									item, index
+								) in storageAmountsForDisplay"
+								:key="item.ticker">
+								<strong class="text-ink">{{
+									item.amount
+								}}</strong>
+								{{ item.ticker }}
+								<span
+									v-if="
+										index <
+										storageAmountsForDisplay.length - 1
+									">
+									{{
+										index ===
+										storageAmountsForDisplay.length - 2
+											? " and "
+											: ", "
+									}}
+								</span>
+							</span>
+						</span>
 					</template>
 					<template #total_weight>
 						{{ formatAmount(totalWeight) }}
@@ -311,13 +318,13 @@
 										)
 									}}
 								</PTooltip>
-								<template v-else>
+								<span v-else>
 									{{
 										t(
 											`plan.tools.visitation_frequency.storage.table.${row[0]}`
 										)
 									}}
-								</template>
+								</span>
 							</td>
 							<td class="numeric">{{ formatNumber(row[1]) }}</td>
 							<td class="numeric">{{ formatNumber(row[2]) }}</td>

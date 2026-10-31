@@ -106,9 +106,9 @@
 						</span>
 					</td>
 					<td class="numeric">
-						<template v-if="r.steps.length">{{
+						<span v-if="r.steps.length">{{
 							formatQty(r.made)
-						}}</template>
+						}}</span>
 						<span v-else class="text-muted">{{
 							$t("production_chains.check.chains_view.bought")
 						}}</span>

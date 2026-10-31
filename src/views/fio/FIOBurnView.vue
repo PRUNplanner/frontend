@@ -144,15 +144,15 @@
 					<div
 						class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
 						<h1 class="text-2xl font-normal my-auto">
-							<template v-if="selectedEmpireName">
+							<span v-if="selectedEmpireName">
 								{{ $t("fio.burn.title") }}
 								<span class="font-bold">
 									{{ selectedEmpireName }}
 								</span>
-							</template>
-							<template v-else>
+							</span>
+							<span v-else>
 								{{ $t("fio.burn.view_title") }}
-							</template>
+							</span>
 						</h1>
 						<div class="flex flex-row gap-x-3">
 							<div v-if="userStore.hasFIO" class="my-auto">

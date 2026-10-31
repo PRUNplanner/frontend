@@ -46,15 +46,15 @@
 			class="size-5.5 rounded-sm border border-positive/50 bg-unsaved-stripes" />
 		<div class="grow flex flex-wrap items-baseline gap-x-4" role="status">
 			<span class="font-medium text-base">
-				<template v-if="state === 'error'">
+				<span v-if="state === 'error'">
 					{{ $t("management.save_bar.error") }}
-				</template>
-				<template v-else-if="state === 'saving'">
+				</span>
+				<span v-else-if="state === 'saving'">
 					{{ $t("management.save_bar.saving", count) }}
-				</template>
-				<template v-else>
+				</span>
+				<span v-else>
 					{{ $t("management.save_bar.unsaved", count) }}
-				</template>
+				</span>
 			</span>
 			<span v-if="detail && state !== 'error'" class="text-muted">
 				{{ detail }}

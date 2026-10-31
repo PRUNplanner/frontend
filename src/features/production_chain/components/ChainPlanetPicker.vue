@@ -537,9 +537,9 @@
 								</span>
 							</td>
 							<td class="text-xs">
-								<template v-if="r.cogc">{{
+								<span v-if="r.cogc">{{
 									$t(`game.cogc_program.${r.cogc}`)
-								}}</template>
+								}}</span>
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td class="numeric tabular-nums">

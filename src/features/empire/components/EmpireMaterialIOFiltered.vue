@@ -306,7 +306,7 @@
 					</template>
 				</div>
 				<span class="text-xs text-muted-strong sm:ml-auto">
-					<template v-if="cxUuid">
+					<span v-if="cxUuid">
 						{{
 							marketExchanges.length
 								? t(
@@ -318,11 +318,11 @@
 								: t("cx.market_flags.exchange.all")
 						}}
 						· {{ t("cx.market_flags.exchange.from_empire") }}
-					</template>
-					<template v-else>
+					</span>
+					<span v-else>
 						{{ t("cx.market_flags.exchange.all") }} ·
 						{{ t("cx.market_flags.exchange.no_cx") }}
-					</template>
+					</span>
 				</span>
 				<p class="basis-full text-xs text-muted">
 					{{ t("cx.market_flags.empire.net_note") }}

@@ -28,7 +28,9 @@
 </script>
 
 <template>
-	<span :class="sign > 0 ? 'text-positive' : sign < 0 ? 'text-negative' : ''">
+	<span
+		translate="no"
+		:class="sign > 0 ? 'text-positive' : sign < 0 ? 'text-negative' : ''">
 		<span v-if="arrow && sign !== 0" aria-hidden="true" class="pr-0.5">
 			{{ sign > 0 ? "▲" : "▼" }}
 		</span>

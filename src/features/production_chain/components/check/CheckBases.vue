@@ -186,7 +186,7 @@
 													)
 												: b.plan.planetId
 										}}
-										<template v-if="b.running !== '---'">
+										<span v-if="b.running !== '---'">
 											·
 											{{
 												$t(
@@ -199,7 +199,7 @@
 													}
 												)
 											}}
-										</template>
+										</span>
 									</span>
 								</span>
 							</button>
@@ -294,14 +294,14 @@
 															:ticker="
 																s.ticker
 															" />
-														<template v-else>{{
+														<span v-else>{{
 															$t(
 																"production_chains.check.chains_view.extract",
 																{
 																	ticker: s.ticker,
 																}
 															)
-														}}</template>
+														}}</span>
 													</span>
 													<span
 														class="block text-xs text-muted truncate"

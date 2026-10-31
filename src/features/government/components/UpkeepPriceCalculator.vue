@@ -194,20 +194,20 @@
 					<div
 						class="text-nowrap"
 						:class="row.cxPrice <= 0 ? 'text-muted' : ''">
-						<template v-if="row.cxPrice > 0">
+						<span v-if="row.cxPrice > 0">
 							{{ formatNumber(row.pricePerNeed, 4) }}
-						</template>
-						<template v-else>&mdash;</template>
+						</span>
+						<span v-else>&mdash;</span>
 					</div>
 				</template>
 				<template #cell-cxPrice="{ row }">
 					<div
 						class="text-nowrap"
 						:class="row.cxPrice <= 0 ? 'text-muted' : ''">
-						<template v-if="row.cxPrice > 0">
+						<span v-if="row.cxPrice > 0">
 							{{ formatNumber(row.cxPrice, 2) }}
-						</template>
-						<template v-else>&mdash;</template>
+						</span>
+						<span v-else>&mdash;</span>
 					</div>
 				</template>
 				<template #cell-qtyPerDay="{ row }">

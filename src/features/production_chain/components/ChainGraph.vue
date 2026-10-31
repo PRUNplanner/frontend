@@ -358,10 +358,10 @@
 								"
 								:title="n.line2">
 								{{ n.line2 }}
-								<template v-if="n.row.cheaper">
+								<span v-if="n.row.cheaper">
 									·
 									{{ $t("production_chains.graph.buy_hint") }}
-								</template>
+								</span>
 							</span>
 						</span>
 						<span

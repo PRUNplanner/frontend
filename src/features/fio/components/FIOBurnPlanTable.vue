@@ -92,10 +92,10 @@
 			</router-link>
 			<!-- wraps between the parts only -->
 			<div class="text-xs text-muted">
-				<template v-for="(part, i) in summary(row)" :key="part">
-					<template v-if="i"> · </template>
+				<span v-for="(part, i) in summary(row)" :key="part">
+					<span v-if="i"> · </span>
 					<span class="whitespace-nowrap">{{ part }}</span>
-				</template>
+				</span>
 			</div>
 		</template>
 		<template #cell-strip="{ row }">

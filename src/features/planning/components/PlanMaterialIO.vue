@@ -181,12 +181,12 @@
 			</div>
 		</template>
 		<template #cell-input="{ row }">
-			<span :class="row.input === 0 ? 'text-muted' : ''">
+			<span translate="no" :class="row.input === 0 ? 'text-muted' : ''">
 				{{ formatNumber(row.input) }}
 			</span>
 		</template>
 		<template #cell-output="{ row }">
-			<span :class="row.output === 0 ? 'text-muted' : ''">
+			<span translate="no" :class="row.output === 0 ? 'text-muted' : ''">
 				{{ formatNumber(row.output) }}
 			</span>
 		</template>
@@ -209,12 +209,12 @@
 			<PValue :value="row.totalVolume" />
 		</template>
 		<template #cell-share7d="{ row }">
-			<span :class="shareClass(share(row, 7))">
+			<span translate="no" :class="shareClass(share(row, 7))">
 				{{ formatShare(share(row, 7)) }}
 			</span>
 		</template>
 		<template #cell-share30d="{ row }">
-			<span :class="shareClass(share(row, 30))">
+			<span translate="no" :class="shareClass(share(row, 30))">
 				{{ formatShare(share(row, 30)) }}
 			</span>
 		</template>

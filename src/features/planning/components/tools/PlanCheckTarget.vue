@@ -256,12 +256,12 @@
 					<span v-if="rangeFailed" class="text-negative">
 						{{ t("plan.tools.plan_check.target.range_error") }}
 					</span>
-					<template v-else-if="range">
+					<span v-else-if="range">
 						{{ money(range.low) }} – {{ money(range.high) }} ȼ
-					</template>
-					<template v-else-if="range === null">
+					</span>
+					<span v-else-if="range === null">
 						{{ t("cx.market_flags.popover.none") }}
-					</template>
+					</span>
 					<span v-else class="text-muted">…</span>
 				</dd>
 			</div>

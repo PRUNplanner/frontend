@@ -327,13 +327,13 @@
 								<span class="tabular-nums text-white">
 									{{ formatNumber(m.price) }}
 								</span>
-								<template v-if="m.diff !== null">
+								<span v-if="m.diff !== null">
 									·
 									<span class="tabular-nums">
 										{{ m.diff > 0 ? "+" : ""
 										}}{{ formatNumber(m.diff, 0) }} %
 									</span>
-								</template>
+								</span>
 							</div>
 							<div class="text-xs">
 								{{ priceSourceLabel(m.source, t) }}

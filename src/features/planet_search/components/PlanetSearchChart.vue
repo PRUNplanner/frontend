@@ -338,14 +338,14 @@
 								<dt class="font-bold">{{ point.label }}</dt>
 								<dd class="font-mono text-muted text-right">
 									{{ point.key }}
-									<template v-if="point.ring">
+									<span v-if="point.ring">
 										·
 										{{
 											t(
 												"planet_search.chart.legend_pinned"
 											)
 										}}
-									</template>
+									</span>
 								</dd>
 								<dt class="text-muted">{{ yTitle }}</dt>
 								<dd class="font-mono text-right">
@@ -425,7 +425,7 @@
 						}}
 					</p>
 					<p>
-						<template v-if="material && data.points.length">
+						<span v-if="material && data.points.length">
 							{{
 								t("planet_search.chart.size", {
 									min: formatNumber(fertRange.min, 0),
@@ -433,7 +433,7 @@
 								})
 							}}
 							·
-						</template>
+						</span>
 						{{
 							showPins
 								? t("planet_search.chart.actions")

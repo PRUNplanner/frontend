@@ -942,20 +942,20 @@
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td class="numeric tabular-nums whitespace-nowrap">
-								<template
+								<span
 									v-if="
 										entry.row.source !== 'buy' &&
 										entry.row.source !== 'have' &&
 										!entry.row.pending
 									">
 									{{ money(entry.row.unitCost) }}
-								</template>
+								</span>
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td class="numeric tabular-nums whitespace-nowrap">
-								<template v-if="entry.row.price">
+								<span v-if="entry.row.price">
 									{{ money(entry.row.price) }}
-								</template>
+								</span>
 								<span v-else class="text-muted">–</span>
 							</td>
 							<td>
@@ -1054,7 +1054,7 @@
 									list: b.from.join(", "),
 								})
 							}}
-							<template v-if="b.used > 1e-9">
+							<span v-if="b.used > 1e-9">
 								·
 								{{
 									$t(
@@ -1062,7 +1062,7 @@
 										{ n: formatQty(b.used) }
 									)
 								}}
-							</template>
+							</span>
 							·
 							{{
 								$t("production_chains.table.byproduct_sold", {

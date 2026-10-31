@@ -321,7 +321,7 @@
 		<div class="flex flex-col gap-2">
 			<p class="text-muted text-xs">
 				{{ $t("plan.tools.cogm.info") }}
-				<template v-if="loaded">
+				<span v-if="loaded">
 					{{
 						empireName
 							? $t("plan.tools.cogm.prices_from_empire", {
@@ -332,7 +332,7 @@
 									preference: cxName,
 								})
 					}}
-				</template>
+				</span>
 			</p>
 			<p class="text-muted text-xs">
 				{{ $t("plan.tools.cogm.workforce_note") }}
@@ -456,14 +456,14 @@
 							preference: cxName,
 						})
 					}}
-					<template v-if="o.buyers.length">
+					<span v-if="o.buyers.length">
 						{{
 							$t("plan.tools.cogm.prices.buyers", {
 								plans: o.buyers.join(", "),
 								ticker: o.ticker,
 							})
 						}}
-					</template>
+					</span>
 				</p>
 			</div>
 

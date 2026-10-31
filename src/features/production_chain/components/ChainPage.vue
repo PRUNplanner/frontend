@@ -298,7 +298,7 @@
 				class="text-xs"
 				:class="indexError ? 'text-negative' : 'text-muted'"
 				role="status">
-				<template v-if="indexError">
+				<span v-if="indexError">
 					{{ $t("production_chains.panel.planets_error") }}
 					<button
 						type="button"
@@ -306,10 +306,10 @@
 						@click="loadIndex">
 						{{ $t("production_chains.panel.retry") }}
 					</button>
-				</template>
-				<template v-else>{{
+				</span>
+				<span v-else>{{
 					$t("production_chains.panel.loading_planets")
-				}}</template>
+				}}</span>
 			</div>
 			<div
 				class="grid grid-cols-1 @min-[1600px]:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">

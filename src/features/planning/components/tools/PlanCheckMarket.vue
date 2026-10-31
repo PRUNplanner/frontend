@@ -256,7 +256,7 @@
 <template>
 	<div class="flex flex-col gap-3">
 		<p class="text-sm text-muted-strong @[1000px]:text-right">
-			<template v-if="cxUuid">
+			<span v-if="cxUuid">
 				<span class="text-white font-bold" data-exchange-caption>
 					{{
 						exchanges.length
@@ -270,13 +270,13 @@
 					}}
 				</span>
 				· {{ t("cx.market_flags.exchange.from_plan") }}
-			</template>
-			<template v-else>
+			</span>
+			<span v-else>
 				<span class="text-white font-bold">
 					{{ t("cx.market_flags.exchange.all") }}
 				</span>
 				· {{ t("cx.market_flags.exchange.no_cx") }}
-				<template v-if="own">
+				<span v-if="own">
 					·
 					<RouterLink
 						to="/exchanges"
@@ -284,8 +284,8 @@
 						data-set-cx>
 						{{ t("cx.market_flags.exchange.set_cx") }}
 					</RouterLink>
-				</template>
-			</template>
+				</span>
+			</span>
 		</p>
 
 		<p v-if="!checks.length" class="text-muted py-6">
@@ -603,7 +603,7 @@
 										formatNumber(real.diff, 0, false, true)
 									}}
 									ȼ
-									<template v-if="real.diffPct !== null">
+									<span v-if="real.diffPct !== null">
 										({{
 											formatNumber(
 												real.diffPct,
@@ -613,7 +613,7 @@
 											)
 										}}
 										%)
-									</template>
+									</span>
 								</dd>
 							</div>
 							<div class="flex justify-between gap-3 py-1.5">

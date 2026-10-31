@@ -547,13 +547,13 @@
 				<div
 					class="flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
 					<span>
-						<template v-if="matched.length > shown.length">
+						<span v-if="matched.length > shown.length">
 							{{
 								$t("production_chains.base_picker.cut", {
 									n: shown.length,
 								})
 							}}
-						</template>
+						</span>
 						{{ $t("production_chains.base_picker.footer") }}
 					</span>
 					<PButton

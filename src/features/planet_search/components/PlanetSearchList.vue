@@ -323,7 +323,7 @@
 						:title="t('planet_search.results.unreachable')"
 						>—</span
 					>
-					<template v-else>{{ j }}</template>
+					<span v-else>{{ j }}</span>
 				</td>
 				<template v-for="(j, ci) in row.cxJumps" :key="ci">
 					<td
@@ -339,7 +339,7 @@
 							:title="t('planet_search.results.unreachable')"
 							>—</span
 						>
-						<template v-else>{{ j }}</template>
+						<span v-else>{{ j }}</span>
 					</td>
 				</template>
 			</tr>

@@ -267,6 +267,7 @@
 		<!-- runtime over share, one column: the tiles get the room; a phone
 			puts them side by side on a second line with COGM and delete -->
 		<span
+			translate="no"
 			class="flex flex-col items-end @max-[40rem]/prod:flex-row @max-[40rem]/prod:items-center @max-[40rem]/prod:gap-2 @max-[40rem]/prod:col-span-2 @max-[40rem]/prod:justify-self-start text-xs leading-4 text-muted-strong text-nowrap">
 			<span>{{ humanizeTimeMs(localRecipeData.time) }}</span>
 			<span class="text-ink">

@@ -217,14 +217,14 @@
 		</h2>
 		<PNotice v-if="alertText || alertMessages.length" type="error">
 			{{ $t("account.components.registration.result.error") }}
-			<template v-if="alertText">
+			<span v-if="alertText">
 				<br />
 				{{ $t(`account.components.registration.result.${alertText}`) }}
-			</template>
-			<template v-for="(message, i) in alertMessages" :key="i">
+			</span>
+			<span v-for="(message, i) in alertMessages" :key="i">
 				<br />
 				{{ message }}
-			</template>
+			</span>
 		</PNotice>
 		<div :class="landingField">
 			<PFormItem
@@ -242,13 +242,13 @@
 						role="alert">
 						{{ fieldErrors.username.join(" ") }}
 					</span>
-					<template v-else>
+					<span v-else>
 						{{
 							$t(
 								"account.components.registration.form.username_info"
 							)
 						}}
-					</template>
+					</span>
 				</template>
 			</PFormItem>
 		</div>
@@ -269,13 +269,13 @@
 						role="alert">
 						{{ fieldErrors.password.join(" ") }}
 					</span>
-					<template v-else>
+					<span v-else>
 						{{
 							$t(
 								"account.components.registration.form.password_info"
 							)
 						}}
-					</template>
+					</span>
 				</template>
 			</PFormItem>
 		</div>
@@ -302,13 +302,13 @@
 							)
 						}}
 					</span>
-					<template v-else>
+					<span v-else>
 						{{
 							$t(
 								"account.components.registration.form.email_info"
 							)
 						}}
-					</template>
+					</span>
 				</template>
 			</PFormItem>
 		</div>

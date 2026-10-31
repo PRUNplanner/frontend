@@ -356,9 +356,7 @@
 										{{ sortDir === 1 ? "↑" : "↓" }}
 									</span>
 								</button>
-								<template v-else>{{
-									columnLabel(c.key)
-								}}</template>
+								<span v-else>{{ columnLabel(c.key) }}</span>
 							</th>
 							<th>
 								<span class="sr-only">{{
@@ -506,14 +504,14 @@
 							total: formatNumber(rows.length, 0),
 						})
 					}}
-					<template v-if="matched.length > MAX_ROWS">
+					<span v-if="matched.length > MAX_ROWS">
 						·
 						{{
 							$t("production_chains.check.planets.cut", {
 								n: MAX_ROWS,
 							})
 						}}
-					</template>
+					</span>
 				</span>
 				<span>{{ $t("production_chains.check.planets.footer") }}</span>
 			</div>
