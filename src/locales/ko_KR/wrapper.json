@@ -1,6 +1,7 @@
 {
 	"loading": "데이터 로딩 중...",
 	"retry": "다시 시도",
+	"error": "Error",
 	"gamedata": {
 		"material_data": "@:terms.materials Data",
 		"exchange_data": "@:terms.exchanges Data",

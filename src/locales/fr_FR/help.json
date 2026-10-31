@@ -10,6 +10,7 @@
 	"getting_started": {
 		"title": "Pour commencer",
 		"image_label": "Gestion",
+		"image_alt": "Management Screenshot",
 		"l1": {
 			"title": "Crée un empire dans {link} :",
 			"link": "Gestion",

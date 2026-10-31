@@ -48,6 +48,7 @@
 			"title": "Réinitialisez votre mot de passe",
 			"info": "Veuillez entrer le code reçu par e-mail ainsi que votre nouveau mot de passe.",
 			"throttled": "Trop de tentatives. Patiente quelques minutes et réessaie.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "Réinitialisation du mot de passe"
 			},

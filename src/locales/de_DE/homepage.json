@@ -29,7 +29,7 @@
 		"cta_logged_in": "Imperium öffnen",
 		"example": "Beispielplan öffnen",
 		"example_note": "Für das Beispiel brauchst du kein Konto. Mit geöffnetem Spiel ist die Registrierung in einer Minute erledigt.",
-		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Belegschaft, Übersicht, Produktionsgebäude und Material I/O",
+		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
 		"image_title": "prunplanner.org / plan / Montem iron"
 	},
 	"numbers": {
@@ -49,27 +49,27 @@
 			"label": "Schritte der Plan-Tour",
 			"whole": {
 				"title": "Der ganze Plan",
-				"text": "Eine Basis auf einem Bildschirm: Belegschaft, Kosten, Lager, Produktion und Materialfluss, aktualisiert bei jeder Änderung."
+				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
 			},
 			"buildings": {
 				"title": "Gebäude hinzufügen",
-				"text": "Wähle Gebäude und Aufträge aus dem, was der Planet bietet. Jedes zeigt Effizienz, Umsatz, Fläche und Baukosten."
+				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
 			},
 			"workforce": {
 				"title": "Belegschaft einplanen",
-				"text": "Benötigte Belegschaft gegenüber verfügbaren Unterkünften, je Stufe, mit den Luxusgütern, die du bereitstellen willst."
+				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
 			},
 			"money": {
 				"title": "Das Geld im Blick",
-				"text": "Diese Eisenbasis auf Montem bringt 19.312,82 pro Tag ein und zahlt sich in 63,79 Tagen aus."
+				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
 			},
 			"flow": {
 				"title": "Materialfluss prüfen",
-				"text": "Material I/O zeigt, was die Basis pro Tag verbraucht und produziert und was jede Zeile wert ist."
+				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
 			},
 			"tabs": {
 				"title": "Tiefer einsteigen",
-				"text": "POPR, Besuchsfrequenz, Konstruktion, Versorgung und Reparatur-Analyse sind nur einen Tab entfernt."
+				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
 			}
 		},
 		"planet_search": {
@@ -99,7 +99,7 @@
 			"label": "Schritte der Imperium-Tour",
 			"totals": {
 				"title": "Unterm Strich",
-				"text": "Umsatz, Kosten und Profit aller Basen zusammen: Dieses Imperium erwirtschaftet 186.973,33 pro Tag."
+				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
 			},
 			"plans": {
 				"title": "Alle Pläne nebeneinander",

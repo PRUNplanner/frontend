@@ -1,6 +1,7 @@
 {
 	"loading": "Загрузка данных...",
 	"retry": "Retry",
+	"error": "Error",
 	"gamedata": {
 		"material_data": "Данные @:terms.materials",
 		"exchange_data": "Данные @:terms.exchanges",

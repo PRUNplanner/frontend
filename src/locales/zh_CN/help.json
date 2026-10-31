@@ -10,6 +10,7 @@
 	"getting_started": {
 		"title": "入门指南",
 		"image_label": "管理",
+		"image_alt": "Management Screenshot",
 		"l1": {
 			"title": "在{link}中创建帝国：",
 			"link": "管理",

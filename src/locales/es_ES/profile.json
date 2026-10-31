@@ -135,6 +135,12 @@
 			"preferences": "Preferencias",
 			"planning": "Planificación",
 			"plan_specific_empty": "Ningún plan tiene ajustes propios todavía."
+		},
+		"plan_settings": {
+			"include_cm": "Include CM",
+			"visitation_exclusions": "Visitation Material Exclusions",
+			"construction_built": "Construction Cart: Built",
+			"auto_optimize_inactive": "Auto-Optimize Inactive"
 		}
 	},
 	"buttons": {

@@ -350,8 +350,7 @@
 				"experts": "Expertos",
 				"production_buildings": "@:terms.buildings_plural de producción",
 				"recipes": "@:terms.recipes_plural"
-			},
-			"toggle": "Alternar información"
+			}
 		},
 		"plan_starter": {
 			"title": "Empieza con una configuración típica en {planet}",
@@ -559,7 +558,8 @@
 		},
 		"infrastructure": {
 			"auto_optimize_tooltip": "Optimiza automáticamente los hábitats para cubrir las necesidades de mano de obra al añadir edificios.",
-			"amount_label": "Cantidad de {infrastructure}"
+			"amount_label": "Cantidad de {infrastructure}",
+			"optimize_failed": "Couldn't find a habitation setup for this workforce."
 		},
 		"experts": {
 			"warning": "El máximo de expertos en una base es 6. Ahora mismo tienes asignados {expert_number} expertos.",
@@ -597,6 +597,7 @@
 		},
 		"production_building": {
 			"no_recipe": "Sin @:terms.recipes_plural activas",
+			"no_recipe_available": "No recipe available for this building",
 			"zero_reason": {
 				"FERTILITY": "Planeta no fértil",
 				"WORKFORCE": "Sin mano de obra alojada"
@@ -629,15 +630,36 @@
 	"results": {
 		"label": "Plan results",
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost}",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
 		"payback": "Payback",
-		"build": "Build {cost} ȼ",
-		"profit_area": "Profit / area",
+		"build_cost": "ȼ build cost",
+		"profit_per_area": "ȼ profit / area",
 		"empire_average": "Empire {value}",
 		"area": "Area",
 		"storage": "Storage",
 		"days_to_full": "days to full",
-		"out_per_day": "{weight} t · {volume} m³ out / day"
+		"in_out_per_day": "{in} t in · {out} t out / day",
+		"in_out_volume_per_day": "{in} m³ in · {out} m³ out / day",
+		"workforce": "Workforce",
+		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
+		"tier_short": {
+			"pioneer": "PIO",
+			"settler": "SET",
+			"technician": "TEC",
+			"engineer": "ENG",
+			"scientist": "SCI"
+		},
+		"expert_short": {
+			"Agriculture": "Agri",
+			"Chemistry": "Chem",
+			"Construction": "Cons",
+			"Electronics": "Elec",
+			"Food_Industries": "Food",
+			"Fuel_Refining": "Fuel",
+			"Manufacturing": "Manu",
+			"Metallurgy": "Metal",
+			"Resource_Extraction": "Res"
+		}
 	},
 	"base": {
 		"label": "Base",
@@ -661,14 +683,14 @@
 			"luxuries": "Luxuries",
 			"supply": "Supply {ticker}",
 			"beds_free": "{n} free",
-			"not_needed": "{tiers}: not needed"
+			"show_not_needed": "Show {tiers} (not needed)",
+			"hide_not_needed": "Hide the workforce not needed"
 		},
 		"housing": {
-			"label": "Housing",
+			"label": "Infrastructure",
 			"auto": "Auto",
 			"cheapest": "Cheapest",
-			"least_area": "Least area",
-			"add": "+ Housing or storage"
+			"least_area": "Least area"
 		},
 		"experts": {
 			"label": "Experts",
@@ -693,7 +715,10 @@
 		"experts": "{n} expert | {n} experts",
 		"delete_building": "Delete {building}, undo with Ctrl+Z",
 		"change_recipe": "Change recipe {recipe}",
-		"cogm_label": "Cost of goods manufactured for {recipe}",
+		"recipe": "Recipe",
+		"cogm_label": "COGM: cost of goods manufactured for {recipe}",
+		"cogc_match": "The planet's COGC lifts this expertise",
+		"cogc_no_match": "The planet's COGC doesn't lift this expertise",
 		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
 		"add_recipe": "+ Recipe",
 		"card_meta": "ȼ/day · {efficiency} · area {area}",
@@ -712,6 +737,7 @@
 		"columns": {
 			"makes": "Makes",
 			"from": "From",
+			"runtime": "Runtime",
 			"daily": "ȼ / day",
 			"area": "ȼ / area",
 			"payback": "Payback",
@@ -759,7 +785,8 @@
 		"show_base": "Show base setup",
 		"show_io": "Show Material I/O",
 		"close": "Close",
-		"fold": "Fold",
+		"fold_base": "Fold base setup",
+		"fold_io": "Fold Material I/O",
 		"sections": "Plan sections",
 		"tools": "Tools",
 		"io_short": "I/O",

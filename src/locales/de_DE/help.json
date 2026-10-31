@@ -10,6 +10,7 @@
 	"getting_started": {
 		"title": "Erste Schritte",
 		"image_label": "Verwaltung",
+		"image_alt": "Management Screenshot",
 		"l1": {
 			"title": "Erstelle ein Imperium in {link}:",
 			"link": "Verwaltung",

@@ -98,6 +98,10 @@
 		},
 		"language": "Langue",
 		"page_load_failed": "Cette page n'a pas pu se charger. Recharge pour obtenir la dernière version.",
+		"save_failed": "Couldn't save that. Please try again.",
+		"load_failed": "Couldn't load that. Please try again.",
+		"delete_failed": "Couldn't delete that. Please try again.",
+		"copy_failed": "Couldn't copy to the clipboard.",
 		"meter": {
 			"used": "{label} {pct} % utilisé"
 		},
@@ -132,5 +136,12 @@
 		"title": "Page introuvable",
 		"text": "Il n'y a aucune page à cette adresse.",
 		"home": "Aller à la page d'accueil"
+	},
+	"not_implemented": {
+		"title": "Feature Not Yet Implemented",
+		"open_source": "PRUNplanner v2 is Open Source. Check out the {link}.",
+		"repository": "Github repository",
+		"contact": "Get in touch on the {link}.",
+		"discord": "PrUn Community Tools Discord"
 	}
 }

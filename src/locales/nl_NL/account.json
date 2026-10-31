@@ -48,6 +48,7 @@
 			"title": "Reset your Password",
 			"info": "Please enter the code sent to your email, along with your new password.",
 			"throttled": "Too many attempts. Please wait a few minutes and try again.",
+			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
 			"buttons": {
 				"send": "Reset Password"
 			},
