@@ -255,9 +255,29 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), {
 			series,
 		});
-		const chart = wrapper.findComponent({ name: "PLineChart" });
-		expect(chart.props("series")).toHaveLength(3);
-		expect(chart.props("days")).toHaveLength(30);
+		// absolute and scaled side by side, the scaled one 0–1 with the money shown
+		const [absolute, scaled] = wrapper.findAllComponents({
+			name: "PLineChart",
+		});
+		expect(absolute.props("series")).toHaveLength(3);
+		expect(absolute.props("days")).toHaveLength(30);
+		expect(wrapper.text()).toContain("base_roi.detail.history_absolute");
+		expect(wrapper.text()).toContain("base_roi.detail.history_scaled");
+		const abs = absolute.props("series") as {
+			values: number[];
+			shown?: number[];
+		}[];
+		const sc = scaled.props("series") as {
+			values: number[];
+			shown?: number[];
+		}[];
+		for (let i = 0; i < 3; i++) {
+			expect(sc[i].shown).toEqual(abs[i].values);
+			for (const v of sc[i].values) {
+				expect(v).toBeGreaterThanOrEqual(0);
+				expect(v).toBeLessThanOrEqual(1);
+			}
+		}
 		expect(wrapper.text()).toContain("base_roi.detail.history_note");
 
 		const none = await mountDetail(row, vi.fn(), createPinia(), {

@@ -34,4 +34,7 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 
 # Details
 
-Expand a row to see the 30-day profit chart and the full math below it, copy it as text, or open it as a new plan with the same layout (logged in).
+Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. You can also copy the math as text, or open the row as a new plan with the same layout (logged in).
+
+- **Absolute**: every line on one ȼ scale, to see how they relate.
+- **Each line in its own range**: every line runs from 0 (its lowest value in the 30 days) to 1 (its highest), so a small line's swings show next to large ones. The labels still show ȼ.

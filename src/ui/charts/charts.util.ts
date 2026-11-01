@@ -394,13 +394,18 @@ export function tooltipRows(
 	series: ILineSeries[],
 	index: number
 ): ILineTooltipRow[] {
+	// in the order of the lines (plotted values), saying what `shown` says
 	return series
 		.filter((s) => s.values[index] != null)
 		.map((s) => ({
-			key: s.key,
-			label: s.label,
-			color: s.color,
-			value: s.values[index]!,
+			row: {
+				key: s.key,
+				label: s.label,
+				color: s.color,
+				value: (s.shown ?? s.values)[index] ?? s.values[index]!,
+			},
+			plotted: s.values[index]!,
 		}))
-		.sort((a, b) => b.value - a.value);
+		.sort((a, b) => b.plotted - a.plotted)
+		.map((r) => r.row);
 }

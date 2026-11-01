@@ -73,3 +73,17 @@ export function hasHistory(
 			series[m.source.exchange]?.[m.ticker]?.some((p) => p !== null)
 	);
 }
+
+/**
+ * Each value placed in the series' own range: 0 at its lowest, 1 at its
+ * highest over the window, so a small line's swings show next to large
+ * ones. A flat series sits at 0.5.
+ *
+ * @param {number[]} values Values, oldest first
+ * @returns {number[]} Values from 0 to 1
+ */
+export function scaleToRange(values: number[]): number[] {
+	const min = Math.min(...values);
+	const span = Math.max(...values) - min;
+	return values.map((v) => (span > 0 ? (v - min) / span : 0.5));
+}

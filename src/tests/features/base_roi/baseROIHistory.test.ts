@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 // Unit
-import { hasHistory, profitHistory } from "@/features/base_roi/baseROIHistory";
+import {
+	hasHistory,
+	profitHistory,
+	scaleToRange,
+} from "@/features/base_roi/baseROIHistory";
 
 // Types & Interfaces
 import type { IPriceSource } from "@/features/cx/priceBook";
@@ -81,5 +85,16 @@ describe("baseROIHistory (criterion 22)", () => {
 			6
 		).profit;
 		expect(history).toEqual([7000, 7000, 6800, 6800, 7100, 7200]);
+	});
+});
+
+describe("scaleToRange", () => {
+	it("0 at the series' low, 1 at its high, whatever its size", () => {
+		expect(scaleToRange([-85_000, 260_000, 87_500])).toEqual([0, 1, 0.5]);
+		expect(scaleToRange([9_000_000, 9_000_100])).toEqual([0, 1]);
+	});
+
+	it("a flat series sits in the middle", () => {
+		expect(scaleToRange([5, 5, 5])).toEqual([0.5, 0.5, 0.5]);
 	});
 });
