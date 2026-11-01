@@ -221,6 +221,8 @@
 		"payback_five": "Payback at 5 experts",
 		"payback_fixed": "Building cost ÷ daily profit",
 		"history_note": "Daily VWAP of each material's exchange, last 30 days",
+		"history_absolute": "Absolute: ȼ per day, one scale for all lines",
+		"history_scaled": "Each line in its own range: 0 = its 30-day low, 1 = its high (labels show ȼ)",
 		"history_revenue": "Revenue",
 		"history_cost": "Running cost",
 		"history_profit": "Daily profit",

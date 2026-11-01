@@ -582,6 +582,31 @@ describe("tooltipRows", () => {
 		]);
 	});
 
+	it("says what shown says, in the order of the plotted lines", () => {
+		const scaled = [
+			{
+				key: "a",
+				label: "A",
+				color: "#1",
+				values: [1],
+				shown: [-85_000],
+			},
+			{
+				key: "b",
+				label: "B",
+				color: "#2",
+				values: [0],
+				shown: [9_000_000],
+			},
+			{ key: "c", label: "C", color: "#3", values: [0.5], shown: [null] },
+		];
+		expect(tooltipRows(scaled, 0).map((r) => [r.key, r.value])).toEqual([
+			["a", -85_000],
+			["c", 0.5],
+			["b", 9_000_000],
+		]);
+	});
+
 	it("leaves out series without a value that day", () => {
 		expect(tooltipRows(series, 1)).toEqual([
 			{ key: "NC1", label: "NC1", color: "#4", value: 269.42 },

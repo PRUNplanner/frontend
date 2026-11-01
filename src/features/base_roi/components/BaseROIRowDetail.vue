@@ -29,6 +29,7 @@
 	import {
 		hasHistory,
 		profitHistory,
+		scaleToRange,
 	} from "@/features/base_roi/baseROIHistory";
 	import { basePlan } from "@/features/base_roi/baseROIRows";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
@@ -255,6 +256,15 @@
 				]
 			: []
 	);
+	// each line in its own range, 0 its 30-day low, 1 its high: a small
+	// line's swings show next to large ones; labels keep the real money
+	const scaledSeries = computed<ILineSeries[]>(() =>
+		chartSeries.value.map((s) => ({
+			...s,
+			values: scaleToRange(s.values as number[]),
+			shown: s.values,
+		}))
+	);
 </script>
 
 <template>
@@ -339,11 +349,30 @@
 				class="mb-1 text-xs font-bold uppercase">
 				{{ t("base_roi.detail.s9") }}
 			</h4>
-			<div v-if="history" class="h-72">
-				<PLineChart
-					:days="historyDays"
-					:series="chartSeries"
-					:label="t('base_roi.detail.history_note')" />
+			<!-- side by side: absolute, then each line in its own 0–1 range -->
+			<div v-if="history" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				<figure class="flex flex-col gap-1 min-w-0">
+					<figcaption class="text-xs text-muted">
+						{{ t("base_roi.detail.history_absolute") }}
+					</figcaption>
+					<div class="h-72" data-history-absolute>
+						<PLineChart
+							:days="historyDays"
+							:series="chartSeries"
+							:label="t('base_roi.detail.history_absolute')" />
+					</div>
+				</figure>
+				<figure class="flex flex-col gap-1 min-w-0">
+					<figcaption class="text-xs text-muted">
+						{{ t("base_roi.detail.history_scaled") }}
+					</figcaption>
+					<div class="h-72" data-history-scaled>
+						<PLineChart
+							:days="historyDays"
+							:series="scaledSeries"
+							:label="t('base_roi.detail.history_scaled')" />
+					</div>
+				</figure>
 			</div>
 			<p class="mt-1 text-xs text-muted">
 				{{
