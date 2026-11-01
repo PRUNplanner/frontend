@@ -3,6 +3,8 @@ import { calculateExpertBonus } from "@/features/planning/engine/efficiency";
 
 // Static
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";
+import { isStaffed } from "@/features/base_roi/baseROIPopulation";
+import { planetPlots } from "@/features/planet_search/planetPlots.util";
 import {
 	EXPERT_STAGE_DAYS,
 	SHIPS,
@@ -21,6 +23,7 @@ import type {
 	IBaseROIRowInput,
 	IBaseROIScenario,
 	IBaseROIScenarioPrice,
+	IBaseROIStaffing,
 	IBaseROIStage,
 } from "@/features/base_roi/baseROI.types";
 
@@ -289,9 +292,16 @@ export function calculateMetrics(
 	};
 }
 
+const unstaffed = (s: IBaseROIStaffing | undefined): boolean =>
+	s !== undefined && !isStaffed(s);
+
 type RowFilter = Pick<
 	BaseROISettings,
-	"showResources" | "showRecipes" | "showNegative" | "minMarketCapacity"
+	| "showResources"
+	| "showRecipes"
+	| "showNegative"
+	| "showUnbuildable"
+	| "minMarketCapacity"
 >;
 
 /** the row kind filters, not counted as hidden */
@@ -323,22 +333,27 @@ export function matchesSearch(
 /**
  * The rows the table shows and how many each limit hides, every row
  * counted once at its first limit: max jumps, logistics, market capacity,
- * then negative profit while "Show negative" is off
+ * full planets and planets short of workers (while "Show planets without
+ * workers or plots" is off), then negative profit while "Show negative" is off
  *
  * @param {IBaseROIRow[]} rows Calculated rows
  * @param {Pick<IBaseROICandidate, "kind" | "building" | "expertise">[]} beyondJumps Planet rows beyond max jumps, never calculated
  * @param {RowFilter} filter Settings
+ * @param {Map<string, IBaseROIStaffing>} [staffing] Checked rows by key, the rest are not limited
  * @returns {{ rows: IBaseROIRow[]; hidden: IBaseROIHidden }} Shown rows, sorted by break-even, and hidden counts
  */
 export function filterRows(
 	rows: IBaseROIRow[],
 	beyondJumps: Pick<IBaseROICandidate, "kind" | "building" | "expertise">[],
-	filter: RowFilter
+	filter: RowFilter,
+	staffing: Map<string, IBaseROIStaffing> = new Map()
 ): { rows: IBaseROIRow[]; hidden: IBaseROIHidden } {
 	const hidden: IBaseROIHidden = {
 		maxJumps: beyondJumps.filter((c) => matchesFilters(c, filter)).length,
 		logistics: 0,
 		marketCapacity: 0,
+		noPlots: 0,
+		unstaffed: 0,
 		negative: 0,
 	};
 	const shown: IBaseROIRow[] = [];
@@ -348,6 +363,10 @@ export function filterRows(
 		if (!row.metrics.fitsLogistics) hidden.logistics++;
 		else if (row.metrics.marketCapacity < filter.minMarketCapacity)
 			hidden.marketCapacity++;
+		else if (!filter.showUnbuildable && planetPlots(row.plots)?.blocked)
+			hidden.noPlots++;
+		else if (!filter.showUnbuildable && unstaffed(staffing.get(row.key)))
+			hidden.unstaffed++;
 		else if (!filter.showNegative && row.metrics.dailyProfit <= 0)
 			hidden.negative++;
 		else shown.push(row);

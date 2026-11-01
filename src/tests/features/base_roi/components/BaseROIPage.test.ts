@@ -24,6 +24,8 @@ vi.mock("@/features/base_roi/useBaseROI", () => ({
 				maxJumps: 0,
 				logistics: 0,
 				marketCapacity: 0,
+				noPlots: 0,
+				unstaffed: 0,
 				negative: 0,
 			},
 		})),
@@ -33,6 +35,8 @@ vi.mock("@/features/base_roi/useBaseROI", () => ({
 		firstLoad: ref(true),
 		series: ref(null),
 		historyFailed: ref(false),
+		staffing: ref(new Map()),
+		populationFailed: ref(false),
 	}),
 }));
 const stub = vi.hoisted(() => (name: string) => ({

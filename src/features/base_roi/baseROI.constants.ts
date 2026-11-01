@@ -87,6 +87,7 @@ export const BASE_ROI_COLUMNS: BaseROIColumn[] = [
 	"running_cost",
 	"cargo",
 	"market_capacity",
+	"plots",
 	"workforce",
 	"history",
 ];
@@ -103,25 +104,25 @@ export const SETUP_PRESETS: Record<
 		logistics: "ship",
 		ship: "SCB",
 		minMarketCapacity: 0.7,
-		bufferDays: 9,
+		bufferDays: 10,
 		hiddenColumns: ["weekly_return", "running_cost"],
 	},
 	standard: {
 		logistics: "ship",
 		ship: "WCB",
 		minMarketCapacity: 0.7,
-		bufferDays: 9,
+		bufferDays: 10,
 		hiddenColumns: ["running_cost"],
 	},
 	veteran: {
 		logistics: "none",
 		minMarketCapacity: 0,
-		bufferDays: 9,
+		bufferDays: 10,
 		hiddenColumns: ["running_cost"],
 	},
 };
 
-/** exchanges with price history and a system to count jumps to */
+/** physical exchanges: a system to count jumps to */
 export const BASE_ROI_EXCHANGES = ["AI1", "CI1", "IC1", "NC1"] as const;
 
 /** the game's short workforce names, as on its population reports */

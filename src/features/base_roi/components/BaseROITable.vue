@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { computed, defineAsyncComponent, ref } from "vue";
+	import {
+		computed,
+		defineAsyncComponent,
+		onBeforeUnmount,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -8,6 +14,7 @@
 	import { formatNumber, formatPercent } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
 	import { profitHistory } from "@/features/base_roi/baseROIHistory";
+	import { planetPlots } from "@/features/planet_search/planetPlots.util";
 	import { recipeLabel } from "@/features/base_roi/baseROIDetail.util";
 
 	// Static
@@ -18,6 +25,7 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 	import BaseROIColumnsMenu from "@/features/base_roi/components/BaseROIColumnsMenu.vue";
 	import BaseROITableSkeleton from "@/features/base_roi/components/BaseROITableSkeleton.vue";
 	import BaseROICellMath from "@/features/base_roi/components/BaseROICellMath.vue";
@@ -32,6 +40,7 @@
 	import type {
 		BaseROIStep,
 		IBaseROIHidden,
+		IBaseROIStaffing,
 		IBaseROIRow,
 		IBaseROISeries,
 	} from "@/features/base_roi/baseROI.types";
@@ -64,6 +73,8 @@
 		planetRowsPending,
 		series,
 		historyFailed,
+		staffing,
+		populationFailed,
 		active = null,
 		tryOnPlanet,
 		cxUuid,
@@ -77,6 +88,9 @@
 		planetRowsPending: boolean;
 		series: IBaseROISeries | null;
 		historyFailed: boolean;
+		/** checked planet rows by key, empty until the reports are in */
+		staffing: Map<string, IBaseROIStaffing>;
+		populationFailed: boolean;
 		/** row key hovered in the chart */
 		active?: string | null;
 		tryOnPlanet: (row: IBaseROIRow, planet: string) => Promise<IBaseROIRow>;
@@ -126,8 +140,19 @@
 		running_cost: by((r) => r.metrics.runningCost),
 		cargo: by((r) => r.metrics.cargo),
 		market_capacity: by((r) => r.metrics.marketCapacity),
+		plots: by((r) => planetPlots(r.plots)?.free ?? -1),
 	};
-	const left = ["expertise", "workforce", "history"];
+	// a pinned Product column would leave a phone 54 px for the numbers
+	const wideQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(min-width: 640px)")
+			: null;
+	const isPhone: Ref<boolean> = ref(!(wideQuery?.matches ?? true));
+	const onMedia = (e: MediaQueryListEvent) => (isPhone.value = !e.matches);
+	wideQuery?.addEventListener("change", onMedia);
+	onBeforeUnmount(() => wideQuery?.removeEventListener("change", onMedia));
+
+	const left = ["expertise", "plots", "workforce", "history"];
 	// every column its width; wider than the page, the table scrolls sideways
 	const WIDTHS: Record<string, number> = {
 		product: 230,
@@ -139,6 +164,7 @@
 		running_cost: 170,
 		cargo: 120,
 		market_capacity: 130,
+		plots: 110,
 		workforce: 140,
 		history: 130,
 	};
@@ -203,6 +229,8 @@
 			hidden.maxJumps +
 			hidden.logistics +
 			hidden.marketCapacity +
+			hidden.noPlots +
+			hidden.unstaffed +
 			hidden.negative
 	);
 	const showSkeleton = computed(
@@ -244,6 +272,18 @@
 			: recipeLabel(row);
 	const expertise = (row: IBaseROIRow) =>
 		row.expertise ? capitalizeString(row.expertise) : "—";
+	// under the workforce: why this planet can't staff the base
+	const staffingNotes = (row: IBaseROIRow): string[] => {
+		const s = staffing.get(row.key);
+		if (!s) return [];
+		if (!s.hasReport) return [t("base_roi.table.no_population")];
+		return s.gaps.map((g) =>
+			t("base_roi.table.workforce_free", {
+				free: formatNumber(g.available, 0),
+				tier: WORKFORCE_SHORT[g.tier],
+			})
+		);
+	};
 	const workforceText = (row: IBaseROIRow) =>
 		row.workforce
 			.map(
@@ -293,6 +333,28 @@
 								t("base_roi.table.hidden_market", {
 									n: formatNumber(hidden.marketCapacity, 0),
 								}),
+								...(settings.showUnbuildable
+									? []
+									: [
+											t(
+												"base_roi.table.hidden_no_plots",
+												{
+													n: formatNumber(
+														hidden.noPlots,
+														0
+													),
+												}
+											),
+											t(
+												"base_roi.table.hidden_unstaffed",
+												{
+													n: formatNumber(
+														hidden.unstaffed,
+														0
+													),
+												}
+											),
+										]),
 								...(settings.showNegative
 									? []
 									: [
@@ -309,6 +371,12 @@
 							].join(" · ")
 						}}
 					</span>
+				</p>
+				<p
+					v-if="populationFailed"
+					class="text-sm text-warning"
+					role="status">
+					{{ t("base_roi.table.population_failed") }}
 				</p>
 				<p
 					v-if="step === 'error'"
@@ -385,7 +453,7 @@
 							})
 					"
 					striped
-					sticky-first
+					:sticky-first="!isPhone"
 					dense
 					:min-width="tableWidth"
 					:page-size="50"
@@ -416,6 +484,7 @@
 							'running_cost',
 							'cargo',
 							'market_capacity',
+							'plots',
 							'workforce',
 						]"
 						:key="c"
@@ -710,11 +779,23 @@
 							</span>
 						</BaseROICellMath>
 					</template>
+					<template #cell-plots="{ row }">
+						<PlanetPlots
+							v-if="row.planetNaturalId"
+							:planet="row.plots" />
+						<span v-else class="text-muted">—</span>
+					</template>
 					<template #cell-workforce="{ row }">
 						<span
 							class="block truncate text-xs"
 							:title="workforceText(row)">
 							{{ workforceText(row) }}
+						</span>
+						<span
+							v-if="staffingNotes(row).length"
+							class="block truncate text-xs text-warning"
+							:title="staffingNotes(row).join(' · ')">
+							{{ staffingNotes(row).join(" · ") }}
 						</span>
 					</template>
 					<template #cell-history="{ row }">

@@ -62,13 +62,16 @@ describe("BaseROIChartDrawer (criterion 23)", () => {
 			.props("points") as IScatterPoint[];
 		const drawn = rows.filter(
 			(r) =>
-				Number.isFinite(r.metrics.breakEven) && r.metrics.breakEven > 0
+				Number.isFinite(r.metrics.breakEven) &&
+				r.metrics.breakEven > 0 &&
+				Number.isFinite(r.metrics.marketCapacity) &&
+				r.metrics.marketCapacity > 0
 		);
 		expect(points.map((p) => p.key)).toEqual(drawn.map((r) => r.key));
 		for (const p of points) {
 			const row = drawn.find((r) => r.key === p.key)!;
-			expect(p.x).toBe(row.metrics.marketCapacity);
-			expect(p.y).toBe(row.metrics.breakEven);
+			expect(p.x).toBe(row.metrics.breakEven);
+			expect(p.y).toBe(row.metrics.marketCapacity);
 			expect(p.color).toBe(
 				row.kind === "recipe" ? "colour-IC1" : "colour-AI1"
 			);
@@ -120,6 +123,50 @@ describe("BaseROIChartDrawer (criterion 23)", () => {
 		const { wrapper, shows } = await mountDrawer(rows);
 		wrapper.findComponent(PLayerClose).vm.$emit("click");
 		expect(shows).toEqual([false]);
+	});
+
+	it("marks the best trade-offs: low break-even, high market capacity", async () => {
+		const row = (
+			key: string,
+			breakEven: number,
+			marketCapacity: number
+		) => ({
+			...rows[0],
+			key,
+			metrics: { ...rows[0].metrics, breakEven, marketCapacity },
+		});
+		const { wrapper } = await mountDrawer([
+			row("fast", 20, 5),
+			row("deep", 60, 400),
+			row("beaten", 90, 100),
+		]);
+		const scatter = wrapper.findComponent(PScatter);
+		expect(scatter.props("frontier")).toEqual(["fast", "deep"]);
+		expect(scatter.props("log")).toBe(true);
+		expect(
+			(scatter.props("points") as IScatterPoint[])
+				.filter((p) => p.emphasis)
+				.map((p) => p.key)
+		).toEqual(["fast", "deep"]);
+	});
+
+	it("a log axis has no 0: rows without market capacity are counted", async () => {
+		const noMarket = {
+			...rows[0],
+			key: "no-market",
+			metrics: { ...rows[0].metrics, marketCapacity: 0 },
+		};
+		const unlimited = {
+			...rows[0],
+			key: "unlimited",
+			metrics: { ...rows[0].metrics, marketCapacity: Infinity },
+		};
+		const { wrapper } = await mountDrawer([rows[0], noMarket, unlimited]);
+		const points = wrapper
+			.findComponent(PScatter)
+			.props("points") as IScatterPoint[];
+		expect(points.map((p) => p.key)).toEqual([rows[0].key]);
+		expect(wrapper.text()).toContain("base_roi.chart.no_market");
 	});
 
 	it("farming rows get their own colour; no drawable row says so", async () => {

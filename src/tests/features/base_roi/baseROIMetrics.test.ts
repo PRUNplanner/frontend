@@ -369,6 +369,8 @@ describe("baseROIMetrics", () => {
 			maxJumps: 1,
 			logistics: 1,
 			marketCapacity: 1,
+			noPlots: 0,
+			unstaffed: 0,
 			negative: 1,
 		});
 		expect(
@@ -404,6 +406,8 @@ describe("baseROIMetrics", () => {
 			maxJumps: 0,
 			logistics: 0,
 			marketCapacity: 0,
+			noPlots: 0,
+			unstaffed: 0,
 			negative: 0,
 		});
 	});

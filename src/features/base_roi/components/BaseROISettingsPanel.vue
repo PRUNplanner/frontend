@@ -323,6 +323,13 @@
 							@update:checked="(v) => set('showNegative', !!v)">
 							{{ t("base_roi.settings.show_negative") }}
 						</PCheckbox>
+						<PCheckbox
+							:checked="settings.showUnbuildable"
+							@update:checked="
+								(v) => set('showUnbuildable', !!v)
+							">
+							{{ t("base_roi.settings.show_unbuildable") }}
+						</PCheckbox>
 					</div>
 				</div>
 			</div>

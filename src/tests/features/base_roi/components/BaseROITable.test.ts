@@ -36,6 +36,8 @@ const HIDDEN = {
 	maxJumps: 5177,
 	logistics: 293,
 	marketCapacity: 181,
+	noPlots: 0,
+	unstaffed: 0,
 	negative: 287,
 };
 
@@ -52,6 +54,8 @@ async function mountTable(props: Record<string, unknown> = {}) {
 			planetRowsPending: false,
 			series: null,
 			historyFailed: false,
+			staffing: new Map(),
+			populationFailed: false,
 			tryOnPlanet: vi.fn(),
 			search: "",
 			...props,
@@ -86,6 +90,45 @@ describe("BaseROITable", () => {
 			settings: { ...defaultBaseROISettings(), showNegative: true },
 		});
 		expect(wrapper.text()).not.toContain("base_roi.table.hidden_negative");
+	});
+
+	it("pins the Product column, except on a phone", async () => {
+		const pinned = await mountTable();
+		expect(pinned.find(".p-data-table-sticky").exists()).toBe(true);
+
+		vi.stubGlobal("matchMedia", () => ({
+			matches: false,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		}));
+		const phone = await mountTable();
+		expect(phone.find(".p-data-table-sticky").exists()).toBe(false);
+		vi.unstubAllGlobals();
+	});
+
+	it("notes a planet's missing workers and counts the rows they hide", async () => {
+		const [short, none] = rows;
+		const wrapper = await mountTable({
+			hidden: { ...HIDDEN, unstaffed: 12 },
+			staffing: new Map([
+				[
+					short.key,
+					{
+						hasReport: true,
+						gaps: [
+							{ tier: "pioneer", required: 1100, available: 3 },
+						],
+					},
+				],
+				[none.key, { hasReport: false, gaps: [] }],
+			]),
+		});
+		expect(wrapper.text()).toContain("base_roi.table.workforce_free");
+		expect(wrapper.text()).toContain("base_roi.table.no_population");
+		expect(wrapper.text()).toContain("base_roi.table.hidden_unstaffed");
+
+		const failed = await mountTable({ populationFailed: true });
+		expect(failed.text()).toContain("base_roi.table.population_failed");
 	});
 
 	it("has no percentile numbers or tints (criterion 12)", async () => {
@@ -322,7 +365,7 @@ describe("BaseROITable", () => {
 		const wrapper = await mountTable();
 		const heads = wrapper.findAll("thead th .ptooltip");
 		// product + the shown columns (running cost hidden by default)
-		expect(heads).toHaveLength(10);
+		expect(heads).toHaveLength(11);
 		await wrapper
 			.find('th[data-col-key="break_even"] .ptooltip')
 			.trigger("mouseenter");

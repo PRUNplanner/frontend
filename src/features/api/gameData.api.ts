@@ -13,6 +13,7 @@ import {
 	PlanetSchema,
 	PlanetSearchAdvancedPayloadSchema,
 	PlanetSearchIndexSchema,
+	PlanetPopulationReportsSchema,
 	PopulationReportSchema,
 	RecipePayloadSchema,
 } from "@/features/api/schemas/gameData.schemas";
@@ -29,6 +30,7 @@ import type {
 	FIOStorage,
 	PlanetSearchAdvancedPayload,
 	PlanetSearchIndexEntry,
+	PlanetPopulationReport,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
 import {
@@ -275,4 +277,33 @@ export async function callPlanetLastPOPR(
 		`/data/planet/${planetNaturalId}/popr/`,
 		PopulationReportSchema
 	);
+}
+
+/**
+ * Calls the bulk population report endpoint, 200 planets per request
+ * @author jplacht
+ *
+ * @export
+ * @async
+ * @param {string[]} planetNaturalIds Planet Natural Ids
+ * @returns {Promise<PlanetPopulationReport[]>} Latest reports, planets without one are left out
+ */
+export async function callDataMultiplePOPR(
+	planetNaturalIds: string[]
+): Promise<PlanetPopulationReport[]> {
+	const chunks: string[][] = [];
+	for (let i = 0; i < planetNaturalIds.length; i += 200)
+		chunks.push(planetNaturalIds.slice(i, i + 200));
+
+	const results = await Promise.all(
+		chunks.map((chunk) =>
+			apiService.post(
+				"/data/planets/popr/",
+				chunk,
+				PlanetMultipleRequestPayloadSchema,
+				PlanetPopulationReportsSchema
+			)
+		)
+	);
+	return results.flat();
 }

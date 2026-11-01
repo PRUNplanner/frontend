@@ -53,6 +53,8 @@
 		firstLoad,
 		series,
 		historyFailed,
+		staffing,
+		populationFailed,
 	} = useBaseROI(settings, cxUuid);
 
 	// first visit: the setup asks before anything is stored
@@ -173,6 +175,8 @@
 					:planet-rows-pending="planetRowsPending"
 					:series="series"
 					:history-failed="historyFailed"
+					:staffing="staffing"
+					:population-failed="populationFailed"
 					:active="active"
 					:try-on-planet="tryOnPlanet"
 					:cx-uuid="cxUuid" />
