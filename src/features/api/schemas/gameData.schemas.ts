@@ -299,6 +299,14 @@ export const PopulationReportSchema = z.object({
 });
 export type PopulationReport = z.infer<typeof PopulationReportSchema>;
 
+/** the bulk endpoint: planets without a report are left out */
+export const PlanetPopulationReportsSchema = z.array(
+	PopulationReportSchema.extend({ planet_natural_id: z.string() })
+);
+export type PlanetPopulationReport = z.infer<
+	typeof PlanetPopulationReportsSchema
+>[number];
+
 /**
  * FIO STORAGE & SITES
  */

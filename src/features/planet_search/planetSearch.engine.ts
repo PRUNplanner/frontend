@@ -873,8 +873,8 @@ export function rankValues(
 	values: (number | null)[],
 	higherIsBetter: boolean
 ): (number | null)[] {
-	if (values.length < 2) return values.map(() => null);
 	const present = values.filter((v): v is number => v !== null);
+	if (values.length < 2 || !present.length) return values.map(() => null);
 	const max = Math.max(...present);
 	const min = Math.min(...present);
 	const missing = present.length < values.length;

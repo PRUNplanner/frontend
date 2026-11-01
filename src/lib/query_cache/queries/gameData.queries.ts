@@ -44,6 +44,7 @@ import {
 	callDataRecipes,
 	callExplorationData,
 	callMarketSummary,
+	callDataMultiplePOPR,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
@@ -61,6 +62,7 @@ import type {
 	Planet,
 	PlanetSearchAdvancedPayload,
 	PlanetSearchIndexEntry,
+	PlanetPopulationReport,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
@@ -306,6 +308,20 @@ export const gameDataQueries = {
 				if (isApiError(err) && err.status === 404) return null;
 				throw err;
 			}),
+		expireTime: planetsExpireTime,
+	}),
+	GetMultiplePlanetPOPR: defineQuery({
+		key: (params) => [
+			"gamedata",
+			"planet",
+			"popr",
+			"multiple",
+			params.planetNaturalIds,
+		],
+		fetchFn: (params: {
+			planetNaturalIds: string[];
+		}): Promise<PlanetPopulationReport[]> =>
+			callDataMultiplePOPR(params.planetNaturalIds),
 		expireTime: planetsExpireTime,
 	}),
 	GetExplorationData: defineQuery({

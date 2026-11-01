@@ -1,8 +1,11 @@
 <script setup lang="ts">
-	import { computed, ref, type Ref } from "vue";
+	import { computed, ref, shallowRef, watch, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
+
+	// Composables
+	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Engine
 	import {
@@ -17,10 +20,18 @@
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { MAX_PINS } from "@/features/planet_search/planetSearchUrl.util";
 	import { formatNumber } from "@/util/numbers";
+	import { poprAvailable } from "@/features/government/popr.util";
 	import { planetLabel } from "@/util/planetName";
 
+	// Schemas
+	import { WorkforceTypeSchema } from "@/features/api/schemas/planningData.schemas";
+
 	// Types & Interfaces
-	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+	import type {
+		PlanetPopulationReport,
+		PlanetSearchIndexEntry,
+	} from "@/features/api/schemas/gameData.schemas";
+	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
 	import type {
 		PlanetSearchFilter,
 		PlanetSearchReference,
@@ -37,6 +48,31 @@
 	const emit = defineEmits<{ (e: "unpin", planetNaturalId: string): void }>();
 
 	const open: Ref<boolean> = ref(true);
+
+	// latest reports of the pins; a planet without one isn't in here
+	const reports = shallowRef(new Map<string, PlanetPopulationReport>());
+
+	// the page passes a new array every render: only a changed pin fetches
+	watch(
+		() => props.planets.map((p) => p.planet_natural_id).join(),
+		async (joined, _previous, onCleanup) => {
+			let stale = false;
+			onCleanup(() => (stale = true));
+			if (!joined) return;
+
+			const found = await useQuery("GetMultiplePlanetPOPR", {
+				planetNaturalIds: joined.split(","),
+			})
+				.execute()
+				// the worker rows stay empty, the rest of the table works
+				.catch(() => []);
+			if (!stale)
+				reports.value = new Map(
+					found.map((r) => [r.planet_natural_id, r])
+				);
+		},
+		{ immediate: true }
+	);
 
 	// the pinned label column needs an opaque copy of the row tint
 	const differsHead =
@@ -102,6 +138,18 @@
 			const j = planetJumps(p, r, props.ctx);
 			return j === -1 ? null : j;
 		};
+		const freeWorkers = (
+			p: PlanetSearchIndexEntry,
+			tier: WorkforceType
+		) => {
+			const report = reports.value.get(p.planet_natural_id);
+			return report
+				? poprAvailable(
+						report[`free_${tier}`],
+						report[`open_jobs_${tier}`]
+					)
+				: null;
+		};
 
 		return [
 			textRow(t("planet_search.compare.extras"), (p) =>
@@ -154,6 +202,16 @@
 					(p) => jumps(p, r),
 					String,
 					false
+				)
+			),
+			...WorkforceTypeSchema.options.map((tier) =>
+				rankRow(
+					t("planet_search.compare.free_workers", {
+						tier: t(`game.workforce_type.${tier}`),
+					}),
+					(p) => freeWorkers(p, tier),
+					(v) => formatNumber(v, 0),
+					true
 				)
 			),
 		];
