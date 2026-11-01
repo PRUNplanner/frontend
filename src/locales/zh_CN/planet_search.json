@@ -228,7 +228,8 @@
 		"cogc": "全球商会",
 		"infrastructure": "基础设施",
 		"cx": "AI1 / CI1 / IC1 / NC1",
-		"jumps": "距{ref}的跃迁数"
+		"jumps": "距{ref}的跃迁数",
+		"free_workers": "Free {tier} workers"
 	},
 	"chart": {
 		"label": "Results chart: {y} against {x}",
