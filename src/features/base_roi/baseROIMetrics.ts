@@ -251,13 +251,24 @@ export function calculateMetrics(
 		fitsLogistics =
 			weight <= settings.manualWeight && volume <= settings.manualVolume;
 
-	const marketCapacity = row.outputs.length
-		? Math.min(
-				...row.outputs.map((o) =>
-					o.amount > 0 ? o.traded / o.amount : Infinity
-				)
-			)
-		: 0;
+	// double ended: the lowest traded ÷ amount per day of any output or
+	// recipe input, the side whose market runs out first
+	let marketCapacity = row.outputs.length ? Infinity : 0;
+	let capacitySide: IBaseROIMetrics["capacitySide"] = null;
+	let capacityTicker: string | null = null;
+	if (row.outputs.length)
+		for (const [side, list] of [
+			["output", row.outputs],
+			["input", row.recipeInputs],
+		] as const)
+			for (const m of list) {
+				const capacity = m.amount > 0 ? m.traded / m.amount : Infinity;
+				if (capacity < marketCapacity) {
+					marketCapacity = capacity;
+					capacitySide = side;
+					capacityTicker = m.ticker;
+				}
+			}
 
 	return {
 		dailyProfit,
@@ -272,6 +283,8 @@ export function calculateMetrics(
 		cargo,
 		fitsLogistics,
 		marketCapacity,
+		capacitySide,
+		capacityTicker,
 		scenarios: volatilityScenarios(row.materials, dailyProfit),
 	};
 }

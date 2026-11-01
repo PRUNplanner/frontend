@@ -80,6 +80,8 @@ export interface IBaseROIRowInput extends IBaseROICandidate {
 	expertBonus: number;
 	materials: IBaseROIMaterial[];
 	outputs: IBaseROIOutput[];
+	// what the recipe consumes per day (not the workforce), traded like outputs
+	recipeInputs: IBaseROIOutput[];
 	workforce: { tier: WorkforceType; required: number }[];
 	result: IPlanResult;
 }
@@ -121,6 +123,9 @@ export interface IBaseROIMetrics {
 	cargo: number;
 	fitsLogistics: boolean;
 	marketCapacity: number;
+	// the material that sets the market capacity, and on which side
+	capacitySide: "input" | "output" | null;
+	capacityTicker: string | null;
 	scenarios: IBaseROIScenario[];
 }
 

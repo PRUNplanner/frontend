@@ -233,7 +233,7 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		);
 	});
 
-	it("section 9: the 30-day chart from the series, or the no-history note", async () => {
+	it("section 9: the 90-day charts from the series, or the no-history note", async () => {
 		const row = rows[0];
 		// every material on AI1 with a 7D price: one series per ticker
 		const priced = {
@@ -260,7 +260,7 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 			name: "PLineChart",
 		});
 		expect(absolute.props("series")).toHaveLength(3);
-		expect(absolute.props("days")).toHaveLength(30);
+		expect(absolute.props("days")).toHaveLength(90);
 		expect(wrapper.text()).toContain("base_roi.detail.history_absolute");
 		expect(wrapper.text()).toContain("base_roi.detail.history_scaled");
 		const abs = absolute.props("series") as {

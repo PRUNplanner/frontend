@@ -137,8 +137,8 @@
 		weekly_return: 120,
 		building_cost: 130,
 		running_cost: 170,
-		cargo: 110,
-		market_capacity: 120,
+		cargo: 120,
+		market_capacity: 130,
 		workforce: 140,
 		history: 130,
 	};
@@ -231,6 +231,12 @@
 		`@ ${row.planetName ?? row.planetNaturalId} (${
 			row.jumps ?? t("base_roi.table.no_route")
 		})`;
+	// (I) or (O) next to cargo: the direction that moves more, by weight or volume
+	const cargoSide = (row: IBaseROIRow) =>
+		Math.max(row.weightIn, row.volumeIn) >
+		Math.max(row.weightOut, row.volumeOut)
+			? "input"
+			: "output";
 	// the product cell's tooltip: planet rows name their building too
 	const recipeText = (row: IBaseROIRow) =>
 		row.planetNaturalId
@@ -642,7 +648,20 @@
 											1
 										)
 									}}
-									t</span
+									t
+									<abbr
+										class="text-xs text-muted no-underline"
+										:title="
+											t(
+												`base_roi.table.side_${cargoSide(row)}_title`
+											)
+										"
+										>({{
+											t(
+												`base_roi.table.side_${cargoSide(row)}`
+											)
+										}})</abbr
+									></span
 								>
 								<span class="text-xs text-muted">
 									{{
@@ -674,6 +693,20 @@
 								{{
 									formatNumber(row.metrics.marketCapacity, 2)
 								}}
+								<abbr
+									v-if="row.metrics.capacitySide"
+									class="text-xs text-muted no-underline"
+									:title="
+										t(
+											`base_roi.table.side_${row.metrics.capacitySide}_title`
+										)
+									"
+									>({{
+										t(
+											`base_roi.table.side_${row.metrics.capacitySide}`
+										)
+									}})</abbr
+								>
 							</span>
 						</BaseROICellMath>
 					</template>

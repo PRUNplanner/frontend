@@ -75,7 +75,7 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 					return planets.get(params!.planetNaturalId as string)!;
 				case "GetCXSparklines":
 					if (calls.sparklines === "fail") throw new Error("down");
-					return { exchange: params!.exchange, days: 30, series: {} };
+					return { exchange: params!.exchange, days: 90, series: {} };
 				default:
 					throw new Error(`unexpected query ${name}`);
 			}
@@ -204,7 +204,7 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 		await roi.calculate();
 		await vi.waitFor(() => expect(roi.series.value).not.toBeNull());
 		expect(calls.byName.GetCXSparklines).toEqual([
-			{ exchange: "AI1", days: 30, metric: "vwap_daily" },
+			{ exchange: "AI1", days: 90, metric: "vwap_daily" },
 		]);
 		expect(roi.preferenceExchanges()).toEqual(["AI1"]);
 	});

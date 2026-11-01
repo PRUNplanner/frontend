@@ -15,8 +15,8 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 - **Weekly return**: 7 × daily profit ÷ building cost.
 - **Building cost**: construction, plus the options in Settings: buffer stock (buffer days × (inputs + consumables + revenue) ÷ 2) and the HQ upgrade for one more permit (HQ level N − 1).
 - **Daily running cost**: inputs + consumables + degradation. Hidden until you turn it on in Columns: the buffer stock in the building cost already covers the running cost to start with.
-- **Cargo / day**: the larger of the weight and volume the base moves in or out per day.
-- **Market capacity**: 7-day average traded volume of each output ÷ the base's output per day, the lowest output. Below 1, one base produces more than the market trades.
+- **Cargo / day**: the larger of the weight and volume the base moves in or out per day; (I) when more comes in, (O) when more goes out.
+- **Market capacity**: how many bases like this the market can take, on both sides. For each output it is the 7-day average traded volume ÷ what the base produces per day, and for each recipe input the traded volume ÷ what the base needs per day. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1, one base produces or needs more than the market trades.
 - **Workforce**: the workforce the base needs per tier.
 - **Profit, 30 days**: daily profit with the daily VWAP of each material's exchange over the last 30 days. Days without trades keep the last price. ASK, BID and fixed prices have no history.
 - **⚠**: a material priced from a 7D or 30D VWAP whose bid or ask is more than 30% off that price. The popover lists the daily profit with those prices.
