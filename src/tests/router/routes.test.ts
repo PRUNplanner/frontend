@@ -63,17 +63,16 @@ describe("router routes", () => {
 		}
 	});
 
-	it("Base ROI needs a login and stays out of the sitemap", async () => {
+	it("Base ROI opens without a login and stays out of the sitemap", async () => {
 		const route = router.getRoutes().find((r) => r.name === "base-roi")!;
 		expect(route.path).toBe("/base-roi");
-		expect(route.meta.requiresAuth).toBe(true);
+		expect(route.meta.requiresAuth).toBeUndefined();
 		expect(route.meta.indexable).toBeUndefined();
 
-		// logged out: the login, back to the page afterwards
+		// logged out: the page itself, no redirect to the login
 		setActivePinia(createPinia());
 		await router.push("/base-roi");
-		expect(router.currentRoute.value.name).toBe("homepage");
-		expect(router.currentRoute.value.query.redirectTo).toBe("/base-roi");
+		expect(router.currentRoute.value.name).toBe("base-roi");
 	});
 });
 

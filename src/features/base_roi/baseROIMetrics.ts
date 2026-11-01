@@ -5,8 +5,6 @@ import { calculateExpertBonus } from "@/features/planning/engine/efficiency";
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";
 import {
 	EXPERT_STAGE_DAYS,
-	SHIP_COST_FALLBACK,
-	SHIP_PRICE,
 	SHIPS,
 	VOLATILITY_MAX_COMBINATIONS,
 	VOLATILITY_THRESHOLD,
@@ -30,8 +28,8 @@ import type {
  * # Base ROI metrics
  *
  * Pure functions over one base's daily money and cargo (from the plan
- * engine) and the settings' add-ons: building cost with buffer stock, HQ
- * and ships, break-even with the expert ramp, weekly return, logistics,
+ * engine) and the settings' add-ons: building cost with buffer stock and
+ * HQ, break-even with the expert ramp, weekly return, logistics,
  * market capacity and volatility scenarios.
  */
 
@@ -40,7 +38,6 @@ type MetricsSettings = Pick<
 	| "experts"
 	| "bufferDays"
 	| "targetPermit"
-	| "roundTripHours"
 	| "logistics"
 	| "ship"
 	| "visitDays"
@@ -76,22 +73,6 @@ export function bufferStock(
 	revenue: number
 ): number {
 	return (days * (inputs + consumables + revenue)) / 2;
-}
-
-/**
- * Ships a base keeps busy: the larger of weight and volume per day over
- * the ship's capacity, times the round trip in days
- */
-export function shipsNeeded(
-	weight: number,
-	volume: number,
-	ship: { weight: number; volume: number },
-	roundTripHours: number
-): number {
-	return (
-		Math.max(weight / ship.weight, volume / ship.volume) *
-		(roundTripHours / 24)
-	);
 }
 
 /**
@@ -246,16 +227,7 @@ export function calculateMetrics(
 		row.consumables,
 		row.revenue
 	);
-	const ship =
-		SHIPS[
-			settings.logistics === "ship" ? settings.ship : SHIP_COST_FALLBACK
-		];
-	const ships =
-		settings.roundTripHours > 0
-			? shipsNeeded(weight, volume, ship, settings.roundTripHours)
-			: 0;
-	const shipCost = ships * SHIP_PRICE;
-	const buildingCost = row.construction + buffer + hqCost + shipCost;
+	const buildingCost = row.construction + buffer + hqCost;
 
 	let breakEven: number;
 	let timeline: IBaseROIStage[] = [];
@@ -270,11 +242,12 @@ export function calculateMetrics(
 	} else breakEven = fixedPayback;
 
 	let fitsLogistics = true;
-	if (settings.logistics === "ship")
+	if (settings.logistics === "ship") {
+		const ship = SHIPS[settings.ship];
 		fitsLogistics =
 			weight * settings.visitDays <= ship.weight &&
 			volume * settings.visitDays <= ship.volume;
-	else if (settings.logistics === "manual")
+	} else if (settings.logistics === "manual")
 		fitsLogistics =
 			weight <= settings.manualWeight && volume <= settings.manualVolume;
 
@@ -292,8 +265,6 @@ export function calculateMetrics(
 		buildingCost,
 		bufferStock: buffer,
 		hqCost,
-		shipCost,
-		shipsNeeded: ships,
 		breakEven,
 		payback: fixedPayback,
 		timeline,
@@ -307,24 +278,33 @@ export function calculateMetrics(
 
 type RowFilter = Pick<
 	BaseROISettings,
-	| "showResources"
-	| "showRecipes"
-	| "showNegative"
-	| "expertise"
-	| "building"
-	| "minMarketCapacity"
+	"showResources" | "showRecipes" | "showNegative" | "minMarketCapacity"
 >;
 
-/** the row kind and building filters, not counted as hidden */
+/** the row kind filters, not counted as hidden */
 export function matchesFilters(
-	row: Pick<IBaseROICandidate, "kind" | "building" | "expertise">,
+	row: Pick<IBaseROICandidate, "kind">,
 	filter: RowFilter
 ): boolean {
-	if (row.kind === "recipe" ? !filter.showRecipes : !filter.showResources)
-		return false;
-	if (filter.expertise && row.expertise !== filter.expertise) return false;
-	if (filter.building && row.building !== filter.building) return false;
-	return true;
+	return row.kind === "recipe" ? filter.showRecipes : filter.showResources;
+}
+
+/**
+ * The search above the table: industry (expertise, as stored or as
+ * shown, "resource extraction"), building or product ticker, any case
+ */
+export function matchesSearch(
+	row: Pick<IBaseROIRow, "expertise" | "building" | "outputs">,
+	query: string
+): boolean {
+	const q = query.trim().toLowerCase();
+	if (!q) return true;
+	return [
+		row.expertise ?? "",
+		(row.expertise ?? "").replaceAll("_", " "),
+		row.building,
+		...row.outputs.map((o) => o.ticker),
+	].some((s) => s.toLowerCase().includes(q));
 }
 
 /**

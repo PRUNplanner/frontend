@@ -2,11 +2,7 @@
 import { formatNumber } from "@/util/numbers";
 
 // Static
-import {
-	SHIP_COST_FALLBACK,
-	SHIP_PRICE,
-	SHIPS,
-} from "@/features/base_roi/baseROI.constants";
+import { SHIPS } from "@/features/base_roi/baseROI.constants";
 
 // Types & Interfaces
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
@@ -67,8 +63,7 @@ export function detailSections(
 		value: money(b.amount * b.unitCost),
 		formula: `${b.amount} × ${money(b.unitCost)}`,
 	}));
-	const ship = SHIPS[s.logistics === "ship" ? s.ship : SHIP_COST_FALLBACK];
-	const shipName = s.logistics === "ship" ? s.ship : SHIP_COST_FALLBACK;
+	const ship = SHIPS[s.ship];
 	layout.push(
 		{
 			label: k("area_used"),
@@ -92,19 +87,6 @@ export function detailSections(
 				s.targetPermit >= 3
 					? k("hq_formula", { level: s.targetPermit - 1 })
 					: k("hq_off"),
-		},
-		{
-			label: k("ships"),
-			value: money(m.shipCost),
-			formula:
-				s.roundTripHours > 0
-					? k("ships_formula", {
-							ships: num(m.shipsNeeded, 3),
-							price: money(SHIP_PRICE),
-							ship: shipName,
-							hours: s.roundTripHours,
-						})
-					: k("ships_off"),
 		},
 		{
 			label: k("buffer_stock"),
@@ -246,6 +228,9 @@ export function detailSections(
 					: `${num(amount, 2)} × ${num(price, 2)}`,
 		};
 	};
+	const consumed = row.result.workforceMaterialIO.filter(
+		(x) => x.input > 0
+	).length;
 	const moneyLines: IBaseROIDetailLine[] = [
 		{ label: k("outputs"), value: money(row.revenue) },
 		...row.materials
@@ -255,10 +240,16 @@ export function detailSections(
 		...row.result.productionMaterialIO
 			.filter((x) => x.input > x.output)
 			.map((x) => priced(x.ticker, x.input - x.output, -1)),
-		{ label: k("consumables"), value: money(-row.consumables) },
-		...row.result.workforceMaterialIO
-			.filter((x) => x.input > 0)
-			.map((x) => priced(x.ticker, x.input, -1)),
+		// one line: the workforce's materials add up to a single cost
+		{
+			label: k("consumables"),
+			value: money(-row.consumables),
+			formula: t(
+				"base_roi.detail.consumables_formula",
+				{ n: consumed },
+				consumed
+			),
+		},
 		{
 			label: k("degradation"),
 			value: money(-row.degradation),

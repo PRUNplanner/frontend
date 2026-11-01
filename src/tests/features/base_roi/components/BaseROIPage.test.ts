@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, h, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
+import { createPinia } from "pinia";
 
 import BaseROIPage from "@/features/base_roi/components/BaseROIPage.vue";
 import BaseROISettingsPanel from "@/features/base_roi/components/BaseROISettingsPanel.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { memoryStorage } from "@/tests/memoryStorage";
+import { useUserStore } from "@/stores/userStore";
 
 const calculate = vi.hoisted(() => vi.fn());
 // the rows the mocked composable returns for the next mount
@@ -43,8 +45,8 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () =>
 vi.mock("@/features/base_roi/components/BaseROITable.vue", () => ({
 	default: {
 		name: "BaseROITable",
-		props: ["rows", "step", "cxUuid"],
-		emits: ["update:settings"],
+		props: ["rows", "step", "cxUuid", "search"],
+		emits: ["update:settings", "update:search"],
 		// the real table marks its rows by key, the page scrolls to them
 		render() {
 			return h("table", [
@@ -72,11 +74,15 @@ vi.mock("@/features/base_roi/components/BaseROISetup.vue", () => ({
 	default: { name: "BaseROISetup", props: ["show"], render: () => null },
 }));
 
-async function mountPage(ready = true) {
-	const { wrapper } = await mountComponent(BaseROIPage, {
-		ready,
-		cxUuid: undefined,
-	});
+async function mountPage(ready = true, loggedIn = true) {
+	const pinia = createPinia();
+	if (loggedIn)
+		useUserStore(pinia).$patch({ accessToken: "a", refreshToken: "r" });
+	const { wrapper } = await mountComponent(
+		BaseROIPage,
+		{ ready, cxUuid: undefined },
+		{ pinia }
+	);
 	await flushPromises();
 	return wrapper;
 }
@@ -151,24 +157,54 @@ describe("BaseROIPage", () => {
 		page.unmount();
 	});
 
-	it("filter options come from the rows, buildings narrowed by the expertise", async () => {
+	it("the search narrows the table and the chart, without a calculation", async () => {
 		state.rows = [
-			{ key: "a", expertise: "CHEMISTRY", building: "CHP" },
-			{ key: "b", expertise: "MANUFACTURING", building: "PP1" },
-			{ key: "c", expertise: null, building: "RIG" },
+			{ key: "a", expertise: "CHEMISTRY", building: "CHP", outputs: [] },
+			{
+				key: "b",
+				expertise: "MANUFACTURING",
+				building: "PP1",
+				outputs: [{ ticker: "BSE" }],
+			},
+			{ key: "c", expertise: null, building: "RIG", outputs: [] },
 		];
 		storage.setItem(
 			"prunplanner_base_roi",
-			JSON.stringify({ expertise: "CHEMISTRY" })
+			JSON.stringify({ chartOpen: true })
 		);
 		const wrapper = await mountPage();
-		const panel = wrapper.findComponent(BaseROISettingsPanel);
-		expect(panel.props("expertiseOptions")).toEqual([
-			"CHEMISTRY",
-			"MANUFACTURING",
-		]);
-		expect(panel.props("buildingOptions")).toEqual(["CHP"]);
-		expect(panel.props("exchanges")).toEqual(["AI1"]);
+		expect(
+			wrapper.findComponent(BaseROISettingsPanel).props("exchanges")
+		).toEqual(["AI1"]);
+		const table = wrapper.findComponent({ name: "BaseROITable" });
+		const keys = (c: { props: (n: string) => unknown }) =>
+			(c.props("rows") as { key: string }[]).map((r) => r.key);
+		expect(keys(table)).toEqual(["a", "b", "c"]);
+		calculate.mockReset();
+
+		for (const [query, shown] of [
+			["chem", ["a"]],
+			["bse", ["b"]],
+			["rig", ["c"]],
+		] as const) {
+			table.vm.$emit("update:search", query);
+			await flushPromises();
+			expect(keys(table)).toEqual(shown);
+		}
+		expect(
+			keys(wrapper.findComponent({ name: "BaseROIChartDrawer" }))
+		).toEqual(["c"]);
+		expect(calculate).not.toHaveBeenCalled();
+	});
+
+	it("logged out: Universe 30D prices instead of the CX selector", async () => {
+		const wrapper = await mountPage(true, false);
+		expect(
+			wrapper.findComponent({ name: "CXPreferenceSelector" }).exists()
+		).toBe(false);
+		expect(wrapper.find("[data-universe-prices]").text()).toContain(
+			"base_roi.universe_prices"
+		);
 	});
 
 	it("the Chart button opens the drawer, a hovered dot scrolls to its row (criterion 23)", async () => {

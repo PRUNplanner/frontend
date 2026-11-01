@@ -4,6 +4,9 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Stores
+	import { useUserStore } from "@/stores/userStore";
+
 	// Components
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 
@@ -39,6 +42,7 @@
 		required: true,
 	});
 	const cxUuid = defineModel<string | undefined>("cxUuid");
+	const userStore = useUserStore();
 
 	const preset = ref<BaseROIPreset>("standard");
 	// Veteran's choice; "none" = no logistics limit
@@ -87,6 +91,14 @@
 		}))
 	);
 
+	// a preset picked: its columns, still open to change below
+	function pickPreset(p: BaseROIPreset): void {
+		preset.value = p;
+		columns.value = BASE_ROI_COLUMNS.filter(
+			(c) => !SETUP_PRESETS[p].hiddenColumns.includes(c)
+		);
+	}
+
 	function toggleColumn(c: BaseROIColumn, on: boolean): void {
 		columns.value = on
 			? [...columns.value, c]
@@ -134,7 +146,10 @@
 		<div class="flex flex-col gap-4">
 			<p class="text-muted">{{ t("base_roi.setup.intro") }}</p>
 
-			<div class="flex flex-col gap-1.5 min-w-0">
+			<!-- logged out: no CX preferences, the table uses Universe 30D -->
+			<div
+				v-if="userStore.isLoggedIn"
+				class="flex flex-col gap-1.5 min-w-0">
 				<span class="text-xs font-bold uppercase text-muted">
 					{{ t("base_roi.cx_select") }}
 				</span>
@@ -159,11 +174,12 @@
 						">
 						<span class="flex items-center gap-2 font-bold">
 							<input
-								v-model="preset"
+								:checked="preset === p"
 								class="accent-current"
 								type="radio"
 								name="base-roi-preset"
-								:value="p" />
+								:value="p"
+								@change="pickPreset(p)" />
 							{{ t(`base_roi.setup.${p}`) }}
 						</span>
 						<span class="text-xs text-muted">

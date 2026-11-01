@@ -27,10 +27,16 @@
 		placement = "top",
 		offset = 8,
 		disabled = false,
+		noFocus = false,
 	} = defineProps<{
 		placement?: Placement;
 		offset?: number;
 		disabled?: boolean;
+		/**
+		 * hover and tap only, no tab stop of its own: for many triggers in a
+		 * row (table cells) whose content is reachable another way
+		 */
+		noFocus?: boolean;
 	}>();
 
 	// a disabled control can't take focus: the wrapper does, for its tooltip
@@ -58,7 +64,7 @@
 		const inner = [...wrap.querySelectorAll(FOCUSABLE)].find(
 			(el) => el !== wrap
 		);
-		ownFocus.value = !inner && !disabled;
+		ownFocus.value = !inner && !disabled && !noFocus;
 		const target = disabled || !open.value ? null : (inner ?? wrap);
 		if (described && described !== target) describe(described, false);
 		if (target) describe(target, true);

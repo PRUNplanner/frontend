@@ -19,8 +19,6 @@ async function mountPanel(
 	const setups: unknown[] = [];
 	const { wrapper } = await mountComponent(BaseROISettingsPanel, {
 		settings,
-		expertiseOptions: ["CHEMISTRY", "MANUFACTURING"],
-		buildingOptions: ["CHP", "PP1"],
 		exchanges: ["AI1"],
 		"onUpdate:settings": (v: BaseROISettings) => updates.push(v),
 		onSetup: () => setups.push(true),
@@ -46,22 +44,22 @@ describe("BaseROISettingsPanel (criterion 3)", () => {
 		const cases: [string, keyof BaseROISettings, unknown][] = [
 			["experts", "experts", 3],
 			["buffer", "bufferDays", 14],
-			["min_market_capacity", "minMarketCapacity", 0.2],
 			["target_permit", "targetPermit", 10],
-			["round_trip", "roundTripHours", 8],
 			["ship", "ship", "WCB"],
 			["visit_days", "visitDays", 5],
-			["all_expertise", "expertise", "CHEMISTRY"],
-			["all_buildings", "building", "CHP"],
 		];
 		for (const [label, key, value] of cases) {
 			select(wrapper, label).vm.$emit("update:value", value);
 			expect(updates.at(-1)![key]).toBe(value);
 		}
-		select(wrapper, "all_expertise").vm.$emit("update:value", null);
-		expect(updates.at(-1)!.expertise).toBe("");
-		select(wrapper, "all_buildings").vm.$emit("update:value", undefined);
-		expect(updates.at(-1)!.building).toBe("");
+		// moved above the table or gone: no select here
+		for (const gone of [
+			"min_market_capacity",
+			"round_trip",
+			"all_expertise",
+			"all_buildings",
+		])
+			expect(select(wrapper, gone)).toBeUndefined();
 
 		const [cogc, logistics] = wrapper.findAllComponents(PSegmented);
 		cogc.vm.$emit("update:value", "none");

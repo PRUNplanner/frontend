@@ -26,6 +26,11 @@ export const BaseROIColumnSchema = z.enum([
 ]);
 export type BaseROIColumn = z.infer<typeof BaseROIColumnSchema>;
 
+/** running cost is off until turned on: the buffer stock in the building cost covers it */
+export const DEFAULT_HIDDEN_COLUMNS: readonly BaseROIColumn[] = [
+	"running_cost",
+];
+
 export const BaseROIPresetSchema = z.enum(["rookie", "standard", "veteran"]);
 export type BaseROIPreset = z.infer<typeof BaseROIPresetSchema>;
 
@@ -50,7 +55,7 @@ export const BaseROISettingsSchema = z.object({
 	bufferDays: z.union([z.literal(0), dayOption]).catch(9),
 	minMarketCapacity: z.number().min(0).max(1).catch(0.7),
 	logistics: z.enum(["ship", "manual", "none"]).catch("ship"),
-	ship: BaseROIShipSchema.catch("LCB"),
+	ship: BaseROIShipSchema.catch("WCB"),
 	visitDays: dayOption.catch(3),
 	manualWeight: z.number().min(0).catch(600),
 	manualVolume: z.number().min(0).catch(200),
@@ -58,16 +63,13 @@ export const BaseROISettingsSchema = z.object({
 	targetPermit: z
 		.union([z.literal(0), z.number().int().min(2).max(50)])
 		.catch(0),
-	// hours, 0: off
-	roundTripHours: z.number().int().min(0).max(25).catch(0),
 	maxJumps: z.number().int().min(0).catch(7),
 	showResources: z.boolean().catch(true),
 	showRecipes: z.boolean().catch(true),
 	showNegative: z.boolean().catch(false),
-	// "": all
-	expertise: z.string().catch(""),
-	building: z.string().catch(""),
-	hiddenColumns: z.array(BaseROIColumnSchema).catch([]),
+	hiddenColumns: z
+		.array(BaseROIColumnSchema)
+		.catch(() => [...DEFAULT_HIDDEN_COLUMNS]),
 	panelOpen: z.boolean().catch(true),
 	chartOpen: z.boolean().catch(false),
 });

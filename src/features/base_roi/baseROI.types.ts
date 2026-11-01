@@ -112,8 +112,6 @@ export interface IBaseROIMetrics {
 	buildingCost: number;
 	bufferStock: number;
 	hqCost: number;
-	shipCost: number;
-	shipsNeeded: number;
 	// days, Infinity = never
 	breakEven: number;
 	// payback at 5 experts (ramp), else the break-even

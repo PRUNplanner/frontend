@@ -9,6 +9,7 @@ import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
 import { copyToClipboard } from "@/util/data";
 import { usePlanningStore } from "@/stores/planningStore";
+import { useUserStore } from "@/stores/userStore";
 import { createPinia, type Pinia } from "pinia";
 
 // Types & Interfaces
@@ -69,8 +70,11 @@ async function mountDetail(
 	row: IBaseROIRow,
 	tryOnPlanet = vi.fn(),
 	pinia: Pinia = createPinia(),
-	props: Record<string, unknown> = {}
+	props: Record<string, unknown> = {},
+	loggedIn = true
 ) {
+	if (loggedIn)
+		useUserStore(pinia).$patch({ accessToken: "a", refreshToken: "r" });
 	const closes: unknown[] = [];
 	const { wrapper } = await mountComponent(
 		BaseROIRowDetail,
@@ -92,13 +96,29 @@ async function mountDetail(
 }
 
 describe("BaseROIRowDetail (criteria 16, 26)", () => {
-	it("shows all ten sections with formulas", async () => {
+	it("the profit chart first, the math of sections 1–8 below, recipe and planet in the header", async () => {
 		const { wrapper } = await mountDetail(rows[0]);
 		const sections = wrapper.findAll("section");
-		expect(sections).toHaveLength(10);
-		for (let i = 1; i <= 10; i++)
-			expect(sections[i - 1].text()).toContain(`base_roi.detail.s${i}`);
+		expect(sections).toHaveLength(9);
+		expect(sections[0].text()).toContain("base_roi.detail.s9");
+		for (let i = 1; i <= 8; i++)
+			expect(sections[i].text()).toContain(`base_roi.detail.s${i}`);
 		expect(wrapper.text()).toContain("base_roi.detail.buffer_formula");
+		expect(wrapper.find("h3 + p").text()).toContain(
+			"base_roi.detail.recipe"
+		);
+	});
+
+	it("logged out: no Open as plan", async () => {
+		const { button } = await mountDetail(
+			rows[0],
+			vi.fn(),
+			createPinia(),
+			{},
+			false
+		);
+		expect(button("base_roi.detail.open_plan")).toBeUndefined();
+		expect(button("base_roi.detail.copy")).toBeDefined();
 	});
 
 	it("copies the same numbers as text", async () => {

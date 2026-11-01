@@ -20,12 +20,6 @@ export const SHIPS: Record<BaseROIShip, { weight: number; volume: number }> = {
 	HCB: { weight: 5000, volume: 5000 },
 };
 
-/** ships are not traded on the CX: one price for every ship in v1 */
-export const SHIP_PRICE = 800_000;
-
-/** ship of the ship cost when logistics is manual or none */
-export const SHIP_COST_FALLBACK: BaseROIShip = "WCB";
-
 /**
  * Days with 0, 1, 2, 3 and 4 experts, each divided by the number of
  * production buildings: the length of each stage, not a running total
@@ -94,24 +88,33 @@ export const BASE_ROI_COLUMNS: BaseROIColumn[] = [
 	"history",
 ];
 
-/** what each setup preset writes; Veteran's ship comes from the dialog */
-export const SETUP_PRESETS: Record<BaseROIPreset, Partial<BaseROISettings>> = {
+/**
+ * What each setup preset writes; Veteran's ship comes from the dialog.
+ * Rookies see fewer columns: no weekly return, no running cost.
+ */
+export const SETUP_PRESETS: Record<
+	BaseROIPreset,
+	Partial<BaseROISettings> & { hiddenColumns: BaseROIColumn[] }
+> = {
 	rookie: {
 		logistics: "ship",
 		ship: "SCB",
 		minMarketCapacity: 0.7,
 		bufferDays: 9,
+		hiddenColumns: ["weekly_return", "running_cost"],
 	},
 	standard: {
 		logistics: "ship",
-		ship: "LCB",
+		ship: "WCB",
 		minMarketCapacity: 0.7,
 		bufferDays: 9,
+		hiddenColumns: ["running_cost"],
 	},
 	veteran: {
 		logistics: "none",
 		minMarketCapacity: 0,
 		bufferDays: 9,
+		hiddenColumns: ["running_cost"],
 	},
 };
 

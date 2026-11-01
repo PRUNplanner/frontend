@@ -189,6 +189,62 @@ describe("PDataTable", () => {
 		expect(w.findAll("nav button")[4].attributes("disabled")).toBeDefined();
 	});
 
+	it("paginationTop: the page selection above the table, none below", async () => {
+		const data = Array.from({ length: 60 }, (_, i) => ({
+			id: `r${i}`,
+			name: `n${i}`,
+			amount: i,
+		}));
+		const w = mountTable({ data, pageSize: 50, paginationTop: true });
+		const navs = w.findAll("nav");
+		expect(navs).toHaveLength(1);
+		expect(
+			navs[0].element.compareDocumentPosition(w.find("table").element) &
+				Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+		await navs[0].findAll("button")[2].trigger("click");
+		expect(ids(w)[0]).toBe("r50");
+	});
+
+	it("titleTooltip explains a header on hover and on its sort button's focus", async () => {
+		const w = mount(
+			defineComponent({
+				setup: () => () =>
+					h(PDataTable as never, {
+						columns: [
+							{ ...COLUMNS[0], titleTooltip: "What the name is" },
+							{ key: "id", title: "Id", titleTooltip: "The id" },
+							COLUMNS[1],
+						],
+						data: DATA,
+						rowKey: (r: Row) => r.id,
+					}),
+			}),
+			{
+				attachTo: document.body,
+				global: {
+					plugins: [createI18n({ legacy: false, locale: "en_US" })],
+				},
+			}
+		);
+		// no wrapper without a tooltip
+		expect(header(w, "amount").find(".ptooltip").exists()).toBe(false);
+		// the sort button is the focus target, the trigger adds no tab stop
+		const sortable = header(w, "name").find(".ptooltip");
+		expect(sortable.attributes("tabindex")).toBeUndefined();
+		await header(w, "name").find("button").trigger("focusin");
+		expect(document.body.textContent).toContain("What the name is");
+		// a header without a sort button takes focus itself
+		expect(header(w, "id").find(".ptooltip").attributes("tabindex")).toBe(
+			"0"
+		);
+		// sorting still works through the wrapper
+		await header(w, "name").find("button").trigger("click");
+		expect(header(w, "name").attributes("aria-sort")).toBe("descending");
+		w.unmount();
+		document.body.innerHTML = "";
+	});
+
 	it("toggles expanded rows through the expand button and v-model", async () => {
 		const expanded = ref<(string | number)[]>([]);
 		const w = mountTable(

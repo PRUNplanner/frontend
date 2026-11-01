@@ -149,6 +149,8 @@ export interface PDataTableColumn<T> {
 	title?: string;
 	align?: PDataTableAlign;
 	titleAlign?: PDataTableAlign;
+	/** explains the column in a tooltip on hover and focus of its header */
+	titleTooltip?: string;
 	/** true compares row[key]: numbers, strings, empty values first */
 	sorter?: true | ((a: T, b: T) => number);
 	defaultSortOrder?: PDataTableSortOrder;
