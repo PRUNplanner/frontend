@@ -24,9 +24,9 @@ editor UI. The engine is documented in depth in
 | `useMaterialIOUtil.ts` | Combine and enrich material I/O (`enhanceMaterialIO`). Also combines empire I/O (`combineEmpireMaterialIO`, `calculateEmpireCostOverview`, `empireMaterialIOState`) |
 | `planView.util.ts` | `PlanTool` keys, `foldedPanes`, and the Material I/O totals and CSV download (`materialIOTotals`, `materialIOCsv`) |
 | `planView.types.ts` | `IPlanCalculation` (what `usePlanCalculation` returns) and `IPlanViewProps`, shared by `PlanView` and its composables |
-| `usePlanSave.ts` | Save (a version, optionally named or a restore), Make active (`activateVersion`), Save as, discard, save conflicts (`useSaveConflict`), another tab's change (`remoteChange`) and the leave guard; owns the save version (`modified_at`) a save is sent from |
+| `usePlanSave.ts` | Save (a version, optionally named or a restore), Make active (`activateVersion`), Save as, discard, Reload saved version (`reloadPlan`), save conflicts (`useSaveConflict`), another tab's change (`remoteChange`) and the leave guard; owns the save version (`modified_at`) a save is sent from |
 | `usePlanShortcuts.ts` | Ctrl/Cmd with S, Z, Shift+Z and Backquote (calculation debug), the tracked `trackedUndo` / `trackedRedo` |
-| `usePlanDraft.ts` | The autosave draft in the backend: a debounced PUT after edits, a keepalive flush when the page hides, a DELETE on undo back or discard; one queue per tab for draft writes and saves; another tab's draft (409 `draft_conflict`) stops autosaving and asks |
+| `usePlanDraft.ts` | The autosave draft in the backend: a debounced PUT after edits, a keepalive flush when the page hides, a DELETE on undo back, discard or reload; a draft found when the plan opens is only offered (`restore`) and the next write replaces it; one queue per tab for draft writes and saves; another tab's draft (409 `draft_conflict`) stops autosaving and asks |
 | `usePlanVersions.ts` | The plan's saved versions for the save control, rename, delete (`remove`) |
 | `usePlanEdits.ts` | Edits with feedback: undo toasts for removed buildings and recipes, the recipe picker's status line, the starter setup and hab optimising (auto on workforce changes) |
 | `usePlanSharedCopy.ts` | A shared plan's working copy: the shared version's calculation to compare against, reset, the change summary copy, the viewer's empire for prices |

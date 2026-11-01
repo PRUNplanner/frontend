@@ -89,6 +89,7 @@ function fakeDraft() {
 			return null;
 		}),
 		// runs the save with the draft this tab saw
+		restore: vi.fn(() => true),
 		withSave: vi.fn((fn: (seen: string | null) => unknown) => fn("d-1")),
 		saved: vi.fn(),
 		discard: vi.fn(async () => "ok"),
@@ -452,8 +453,8 @@ describe("usePlanSave", () => {
 		expect(m.trackEvent).toHaveBeenCalledWith("plan:discard_changes");
 	});
 
-	it("brings back the draft on open, with a notice to discard it", async () => {
-		const s = setup();
+	/** opens the plan with a draft offered, 5 minutes old */
+	async function mountWithDraft(s: ReturnType<typeof setup>) {
 		const destroy = vi.fn();
 		m.toast.mockReturnValue({ destroy });
 		const updated = new Date(Date.now() - 5 * 60_000).toISOString();
@@ -463,24 +464,145 @@ describe("usePlanSave", () => {
 				return { updated_at: updated };
 			}
 		);
-		const { wrapper } = await mountSave(s);
+		const mounted = await mountSave(s);
+		const [text, options] = m.toast.mock.calls[0];
+		return { ...mounted, destroy, text, options };
+	}
+
+	it("offers the draft on open with a notice that restores it", async () => {
+		const s = setup();
+		s.modified.value = false;
+		const { wrapper, destroy, text, options } = await mountWithDraft(s);
 
 		expect(m.getPlan).toHaveBeenCalled();
+		expect(text).toBe("plan.versions.draft_found");
+		expect(options).toMatchObject({ duration: 0, closable: true });
+		expect(options.action.label).toBe("plan.versions.restore_draft");
+		expect(m.trackEvent).not.toHaveBeenCalledWith(
+			"plan:draft_restored",
+			expect.anything()
+		);
+
+		options.action.onClick();
+		expect(m.draft.restore).toHaveBeenCalled();
 		expect(m.trackEvent).toHaveBeenCalledWith("plan:draft_restored", {
 			age_minutes: 5,
 		});
-		const [text, options] = m.toast.mock.calls[0];
-		expect(text).toBe("plan.versions.draft_restored");
-		expect(options.action.label).toBe("plan.versions.discard");
-
-		// the notice's Discard asks nothing more
-		await options.action.onClick();
-		expect(m.confirm).not.toHaveBeenCalled();
-		expect(m.draft.discard).toHaveBeenCalled();
-		expect(m.trackEvent).toHaveBeenCalledWith("plan:draft_discard");
 
 		wrapper.unmount();
 		expect(destroy).toHaveBeenCalled();
+	});
+
+	it("tracks no restore when the draft is gone", async () => {
+		const s = setup();
+		const { options } = await mountWithDraft(s);
+		(m.draft.restore as ReturnType<typeof vi.fn>).mockReturnValueOnce(
+			false
+		);
+		options.action.onClick();
+		expect(m.trackEvent).not.toHaveBeenCalledWith(
+			"plan:draft_restored",
+			expect.anything()
+		);
+	});
+
+	it("closes the draft notice on the first edit", async () => {
+		const s = setup();
+		s.modified.value = false;
+		const { destroy } = await mountWithDraft(s);
+		expect(destroy).not.toHaveBeenCalled();
+
+		s.modified.value = true;
+		await nextTick();
+		expect(destroy).toHaveBeenCalled();
+	});
+
+	it("closes the draft notice when a preview opens", async () => {
+		const s = setup();
+		s.modified.value = false;
+		const { destroy } = await mountWithDraft(s);
+
+		s.preview.previewing.value = true;
+		await nextTick();
+		expect(destroy).toHaveBeenCalled();
+	});
+
+	it("reloads the saved plan after a confirm, dropping the draft", async () => {
+		const s = setup();
+		const { result: saving, destroy } = await mountWithDraft(s);
+		m.getPlan.mockClear();
+		m.getPlan.mockResolvedValue({ uuid: "p-1", modified_at: "t5" });
+
+		// cancelled: nothing happens
+		m.confirm.mockResolvedValueOnce(false);
+		await saving.reloadPlan();
+		expect(m.draft.drop).not.toHaveBeenCalled();
+		expect(m.getPlan).not.toHaveBeenCalled();
+
+		m.confirm.mockResolvedValueOnce(true);
+		await saving.reloadPlan();
+		expect(m.confirm).toHaveBeenLastCalledWith(
+			expect.objectContaining({ content: "plan.actions.reload_confirm" })
+		);
+		// the draft goes only once the saved plan is there
+		expect(
+			(m.draft.drop as ReturnType<typeof vi.fn>).mock
+				.invocationCallOrder[0]
+		).toBeGreaterThan(m.getPlan.mock.invocationCallOrder[0]);
+		expect(destroy).toHaveBeenCalled();
+		expect(s.plan.value.modified_at).toBe("t5");
+		expect(s.calculation.markSaved).toHaveBeenCalled();
+		expect(s.preview.cancel).toHaveBeenCalled();
+		expect(s.preview.clearRestore).toHaveBeenCalled();
+		expect(m.trackEvent).toHaveBeenCalledWith("plan:reload", {
+			planet_natural_id: PLANET,
+		});
+	});
+
+	it("reloads without asking when nothing is unsaved, asks for edits set aside by a preview", async () => {
+		const s = setup();
+		s.modified.value = false;
+		const { result: saving } = await mountSave(s);
+		await saving.reloadPlan();
+		expect(m.confirm).not.toHaveBeenCalled();
+		expect(m.trackEvent).toHaveBeenCalledWith("plan:reload", {
+			planet_natural_id: PLANET,
+		});
+
+		s.preview.previewing.value = true;
+		s.preview.stashModified.value = true;
+		m.confirm.mockResolvedValueOnce(false);
+		await saving.reloadPlan();
+		expect(m.confirm).toHaveBeenCalled();
+	});
+
+	it("keeps the edits and their draft when the reload's fetch fails", async () => {
+		const s = setup();
+		const { result: saving } = await mountSave(s);
+		m.confirm.mockResolvedValue(true);
+
+		m.getPlan.mockRejectedValueOnce(new Error("offline"));
+		await saving.reloadPlan();
+		expect(m.toast).toHaveBeenCalledWith("common.ui.load_failed", {
+			type: "error",
+		});
+		expect(m.draft.drop).not.toHaveBeenCalled();
+		expect(s.calculation.markSaved).not.toHaveBeenCalled();
+		expect(m.trackEvent).not.toHaveBeenCalledWith(
+			"plan:reload",
+			expect.anything()
+		);
+	});
+
+	it("closes the draft notice when a save or another tab's save lands", async () => {
+		const s = setup();
+		m.saveExistingPlan.mockResolvedValue({ modifiedAt: "t1" });
+		const { result: saving, destroy } = await mountWithDraft(s);
+		await saving.save("button", "Named");
+		expect(destroy).toHaveBeenCalledTimes(1);
+
+		saving.applySavedPlan({ uuid: "p-1", modified_at: "t2" } as never);
+		expect(destroy).toHaveBeenCalledTimes(2);
 	});
 
 	it("shows a newer save before looking for the draft", async () => {

@@ -114,8 +114,8 @@ No key, URL or UUID goes into these events.
 | `plan:version_open_as_plan` | | a new plan was made from the previewed version |
 | `plan:version_activate` | `named`, `age_days`, `from` (`list`, `preview`) | a version was made the plan as saved (Make active) |
 | `plan:version_delete` | `named`, `kind` | a version was deleted |
-| `plan:draft_restored` | `age_minutes` | the plan opened with the unsaved edits of its autosave draft |
-| `plan:draft_discard` | | the restored draft was discarded from its notice |
+| `plan:draft_restored` | `age_minutes` | the unsaved edits of the autosave draft were restored from the notice shown when the plan opened |
+| `plan:reload` | `planet_natural_id` | the plan was reloaded as saved with the header's Reload button, dropping unsaved edits and the draft |
 | `plan:discard_changes` | | the unsaved edits were discarded from the save menu |
 | `plan:leave_unsaved` | `planet_natural_id` | the plan page was left with unsaved changes |
 | `plan:shared_clone` | `planet_natural_id`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
