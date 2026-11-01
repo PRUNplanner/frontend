@@ -274,6 +274,28 @@ describe("baseROIRows", () => {
 		expect(input.outputs.every((o) => o.traded === 0)).toBe(true);
 	});
 
+	it("recipe inputs: what the recipe consumes per day, with traded volume", () => {
+		const ctx = ctxOn(STANDARD_PLANET);
+		const candidate = recipeCandidates(gameData).find(
+			(c) => c.building === "TNP"
+		)!;
+		const { input } = row(candidate, ctx);
+		const consumed = input.result.productionMaterialIO.filter(
+			(m) => m.input > m.output
+		);
+		expect(input.recipeInputs.map((m) => m.ticker)).toEqual(
+			consumed.map((m) => m.ticker)
+		);
+		for (const m of input.recipeInputs) expect(m.amount).toBeGreaterThan(0);
+		// workforce consumables are not recipe inputs
+		const consumables = input.result.workforceMaterialIO
+			.filter((m) => m.input > 0)
+			.map((m) => m.ticker)
+			.filter((t) => !consumed.some((c) => c.ticker === t));
+		for (const t of consumables)
+			expect(input.recipeInputs.some((m) => m.ticker === t)).toBe(false);
+	});
+
 	it("an unknown building has no layout", () => {
 		expect(() =>
 			calculateBase(

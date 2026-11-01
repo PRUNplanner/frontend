@@ -295,13 +295,36 @@ export function detailSections(
 		}
 	);
 
-	// 8 market capacity
-	const capacity: IBaseROIDetailLine[] = row.outputs.map((o) => ({
-		label: o.ticker,
-		ticker: o.ticker,
-		value: num(o.amount > 0 ? o.traded / o.amount : 0, 2),
-		formula: `${num(o.traded, 1)} ÷ ${num(o.amount, 1)}`,
-	}));
+	// 8 market capacity: traded per day ÷ the base's amount per day, on
+	// both sides; the lowest is the row's
+	const traded = (list: typeof row.outputs): IBaseROIDetailLine[] =>
+		list.map((x) => ({
+			label: x.ticker,
+			ticker: x.ticker,
+			value: num(x.amount > 0 ? x.traded / x.amount : 0, 2),
+			formula: `${num(x.traded, 1)} ÷ ${num(x.amount, 1)}`,
+		}));
+	const capacity: IBaseROIDetailLine[] = [
+		{ label: k("capacity_outputs"), value: "" },
+		...traded(row.outputs),
+		...(row.recipeInputs.length
+			? [
+					{ label: k("capacity_inputs"), value: "" },
+					...traded(row.recipeInputs),
+				]
+			: []),
+		{
+			label: k("capacity_total"),
+			value: num(m.marketCapacity, 2),
+			formula: m.capacityTicker
+				? k("capacity_total_formula", {
+						ticker: m.capacityTicker,
+						side: m.capacitySide === "input" ? "I" : "O",
+					})
+				: undefined,
+			total: true,
+		},
+	];
 
 	// 9 profit history: the chart, the note
 	const history: IBaseROIDetailLine[] = [

@@ -140,6 +140,9 @@ describe("BaseROITable", () => {
 
 		const loaded = await mountTable({ series: { AI1: {} } });
 		expect(loaded.findAllComponents(PSparkline)).toHaveLength(rows.length);
+		// the pocket chart keeps 30 days, whatever the history holds
+		for (const spark of loaded.findAllComponents(PSparkline))
+			expect(spark.props("points")).toHaveLength(30);
 
 		const failed = await mountTable({ historyFailed: true });
 		expect(failed.findAllComponents(PSparkline)).toHaveLength(0);
@@ -265,6 +268,26 @@ describe("BaseROITable", () => {
 		expect(
 			document.body.querySelector("[data-recipe]")!.textContent!.trim()
 		).toBe(recipeLabel(row));
+	});
+
+	it("(I) or (O) next to market capacity and cargo", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => r.metrics.capacitySide)!;
+		const tr = wrapper.find(`tr[data-row-key="${row.key}"]`);
+		const capacity = tr.find('td[data-col-key="market_capacity"] abbr');
+		expect(capacity.text()).toBe(
+			`(base_roi.table.side_${row.metrics.capacitySide})`
+		);
+		const cargo = tr.find('td[data-col-key="cargo"] abbr');
+		const side =
+			Math.max(row.weightIn, row.volumeIn) >
+			Math.max(row.weightOut, row.volumeOut)
+				? "input"
+				: "output";
+		expect(cargo.text()).toBe(`(base_roi.table.side_${side})`);
+		expect(cargo.attributes("title")).toBe(
+			`base_roi.table.side_${side}_title`
+		);
 	});
 
 	it("ramp: one break-even number, no payback line under it", async () => {

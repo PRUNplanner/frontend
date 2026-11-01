@@ -30,6 +30,7 @@ function row(metrics: Partial<IBaseROIMetrics> = {}): IBaseROIRow {
 			{ ticker: "A", amount: 10, traded: 50 },
 			{ ticker: "B", amount: 10, traded: 5 },
 		],
+		recipeInputs: [{ ticker: "C", amount: 20, traded: 4 }],
 		metrics: {
 			dailyProfit: 450,
 			runningCost: 550,
@@ -42,7 +43,9 @@ function row(metrics: Partial<IBaseROIMetrics> = {}): IBaseROIRow {
 			weeklyReturn: 0.2625,
 			cargo: 20,
 			fitsLogistics: true,
-			marketCapacity: 0.5,
+			marketCapacity: 0.2,
+			capacitySide: "input",
+			capacityTicker: "C",
 			scenarios: [],
 			...metrics,
 		},
@@ -172,24 +175,31 @@ describe("baseROITooltip.util", () => {
 		).toHaveLength(2);
 	});
 
-	it("one output: no 'lowest' line; an output not produced reads 0", () => {
-		const one = {
-			...row(),
-			outputs: [{ ticker: "A", amount: 0, traded: 50 }],
-		} as IBaseROIRow;
-		const lines = cellMath(one, "market_capacity", s(), t);
-		expect(lines).toHaveLength(1);
-		expect(lines[0]).toContain('"value":"0.00"');
-	});
-
-	it("market capacity per output, the lowest counts; no math for the rest", () => {
+	it("market capacity: outputs (O), recipe inputs (I), then the bottleneck", () => {
 		const lines = cellMath(row(), "market_capacity", s(), t);
 		expect(keys(lines)).toEqual([
-			k("capacity"),
-			k("capacity"),
-			k("lowest"),
+			k("capacity_out"),
+			k("capacity_out"),
+			k("capacity_in"),
+			k("bottleneck"),
 		]);
-		expect(lines[1]).toContain('"value":"0.50"');
+		expect(lines[2]).toContain('"value":"0.20"');
+		expect(lines[3]).toContain('"ticker":"C","side":"I"');
 		expect(cellMath(row(), "workforce", s(), t)).toEqual([]);
+	});
+
+	it("an output-side bottleneck says O; no bottleneck, no line; nothing produced reads 0", () => {
+		const out = row({ capacitySide: "output", capacityTicker: "B" });
+		expect(cellMath(out, "market_capacity", s(), t).at(-1)).toContain(
+			'"side":"O"'
+		);
+		const none = {
+			...row({ capacitySide: null, capacityTicker: null }),
+			outputs: [{ ticker: "A", amount: 0, traded: 50 }],
+			recipeInputs: [],
+		} as IBaseROIRow;
+		const lines = cellMath(none, "market_capacity", s(), t);
+		expect(lines).toHaveLength(1);
+		expect(lines[0]).toContain('"value":"0.00"');
 	});
 });

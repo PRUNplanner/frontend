@@ -157,18 +157,30 @@ export function cellMath(
 			}
 			return lines;
 		}
-		case "market_capacity":
-			return [
-				...row.outputs.map((o) =>
-					k("capacity", {
-						ticker: o.ticker,
-						traded: num(o.traded),
-						produced: num(o.amount),
-						value: num(o.amount > 0 ? o.traded / o.amount : 0, 2),
+		case "market_capacity": {
+			// both sides, outputs then recipe inputs, then which one limits
+			const side = (list: typeof row.outputs, key: string) =>
+				list.map((m) =>
+					k(key, {
+						ticker: m.ticker,
+						traded: num(m.traded),
+						amount: num(m.amount),
+						value: num(m.amount > 0 ? m.traded / m.amount : 0, 2),
 					})
-				),
-				...(row.outputs.length > 1 ? [k("lowest")] : []),
+				);
+			return [
+				...side(row.outputs, "capacity_out"),
+				...side(row.recipeInputs, "capacity_in"),
+				...(m.capacityTicker
+					? [
+							k("bottleneck", {
+								ticker: m.capacityTicker,
+								side: m.capacitySide === "input" ? "I" : "O",
+							}),
+						]
+					: []),
 			];
+		}
 		default:
 			return [];
 	}

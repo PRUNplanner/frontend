@@ -36,7 +36,10 @@
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 
 	// Static
-	import { STANDARD_PLAN_PLANET } from "@/features/base_roi/baseROI.constants";
+	import {
+		HISTORY_DAYS,
+		STANDARD_PLAN_PLANET,
+	} from "@/features/base_roi/baseROI.constants";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -210,18 +213,19 @@
 	}
 
 	/*
-	 * Section 9: revenue, running cost and profit of the last 30 days
+	 * Section 9: revenue, running cost and profit of the last HISTORY_DAYS days
 	 */
 	const history = computed(() =>
 		series
 			? profitHistory(
 					shown.value.materials,
 					shown.value.degradation,
-					series
+					series,
+					HISTORY_DAYS
 				)
 			: null
 	);
-	const chartDays = historyDays();
+	const chartDays = historyDays(HISTORY_DAYS);
 	const chartSeries = computed<ILineSeries[]>(() =>
 		history.value
 			? [
@@ -246,7 +250,7 @@
 				]
 			: []
 	);
-	// each line in its own range, 0 its 30-day low, 1 its high: a small
+	// each line in its own range, 0 its low over the window, 1 its high: a small
 	// line's swings show next to large ones; labels keep the real money
 	const scaledSeries = computed<ILineSeries[]>(() =>
 		chartSeries.value.map((s) => ({

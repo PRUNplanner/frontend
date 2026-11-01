@@ -67,6 +67,7 @@ function rowInput(overrides: Partial<IBaseROIRowInput> = {}): IBaseROIRowInput {
 		expertBonus: 0.284,
 		materials: [],
 		outputs: [{ ticker: "IND", amount: 10, traded: 20 }],
+		recipeInputs: [],
 		workforce: [],
 		result: {} as IBaseROIRowInput["result"],
 		...overrides,
@@ -228,6 +229,44 @@ describe("baseROIMetrics", () => {
 			0
 		);
 		expect(m.marketCapacity).toBe(0.5);
+	});
+
+	it("double ended: a recipe input with less traded volume sets it, marked input", () => {
+		const outputs = [{ ticker: "A", amount: 10, traded: 50 }];
+		const input = calculateMetrics(
+			rowInput({
+				outputs,
+				recipeInputs: [
+					{ ticker: "X", amount: 20, traded: 4 },
+					{ ticker: "Y", amount: 0, traded: 0 },
+				],
+			}),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(input.marketCapacity).toBe(0.2);
+		expect(input.capacitySide).toBe("input");
+		expect(input.capacityTicker).toBe("X");
+
+		const output = calculateMetrics(
+			rowInput({
+				outputs,
+				recipeInputs: [{ ticker: "X", amount: 1, traded: 100 }],
+			}),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(output.capacitySide).toBe("output");
+		expect(output.capacityTicker).toBe("A");
+
+		// no outputs: 0 and no side, as before
+		const none = calculateMetrics(
+			rowInput({ outputs: [], recipeInputs: [] }),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(none.marketCapacity).toBe(0);
+		expect(none.capacitySide).toBeNull();
 	});
 
 	describe("volatility (criterion 11)", () => {

@@ -387,6 +387,19 @@ export function toRowInput(
 			});
 	}
 
+	// what the recipe consumes, with the traded volume of its buy price's
+	// volume exchange: the input side of the market capacity
+	const recipeInputs: IBaseROIOutput[] = result.productionMaterialIO
+		.filter((m) => m.input > m.output)
+		.map((m) => ({
+			ticker: m.ticker,
+			amount: m.input - m.output,
+			traded:
+				exchange(
+					`${m.ticker}.${ctx.prices.getPriceSource(m.ticker, "BUY").volume}`
+				)?.avg_traded_7d ?? 0,
+		}));
+
 	// bought for the workforce, at most what the base buys in total
 	const bought = overview.dailyCost;
 	const consumables = Math.min(
@@ -453,6 +466,7 @@ export function toRowInput(
 		expertBonus: calculateExpertBonus(expert),
 		materials,
 		outputs,
+		recipeInputs,
 		workforce: WorkforceTypeSchema.options
 			.map((tier) => ({
 				tier,

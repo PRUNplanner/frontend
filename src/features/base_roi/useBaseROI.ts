@@ -30,6 +30,7 @@ import { getExchangeCodeKey } from "@/features/cx/priceBook";
 // Static
 import {
 	BASE_ROI_EXCHANGES,
+	HISTORY_DAYS,
 	CHUNK_SIZE,
 	STANDARD_PLANET,
 } from "@/features/base_roi/baseROI.constants";
@@ -367,7 +368,7 @@ export function useBaseROI(
 		return true;
 	}
 
-	/** daily VWAP of the last 30 days for every exchange a price uses */
+	/** daily VWAP of the last HISTORY_DAYS days for every exchange a price uses */
 	async function loadHistory(run: IRun): Promise<void> {
 		const exchanges = new Set<string>();
 		for (const row of inputs.value)
@@ -387,7 +388,7 @@ export function useBaseROI(
 					[...exchanges].map((exchange) =>
 						useQuery("GetCXSparklines", {
 							exchange,
-							days: 30,
+							days: HISTORY_DAYS,
 							metric: "vwap_daily",
 						}).execute()
 					)

@@ -26,6 +26,9 @@ export const SHIPS: Record<BaseROIShip, { weight: number; volume: number }> = {
  */
 export const EXPERT_STAGE_DAYS = [10, 12.5, 57.57, 276.5, 915.1];
 
+/** days of price history the big charts show (the backend serves up to 90) */
+export const HISTORY_DAYS = 90;
+
 export const DAY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 21, 28];
 
 /** a bid or ask this far off a VWAP price gives a volatility scenario */

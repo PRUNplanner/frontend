@@ -96,13 +96,17 @@
 		"volatility_title": "Bid or ask more than 30% off the VWAP price",
 		"bid": "bid",
 		"ask": "ask",
-		"details": "Show the math of {name}"
+		"details": "Show the math of {name}",
+		"side_input": "I",
+		"side_output": "O",
+		"side_input_title": "Input side",
+		"side_output_title": "Output side"
 	},
 	"trend": {
-		"title_industry": "Daily profit by industry, last 30 days",
-		"title_building": "Daily profit of the buildings in {focus}, last 30 days",
-		"title_product": "Daily profit of the products of {focus}, last 30 days",
-		"title_recipe": "Daily profit of the recipes for {focus}, last 30 days",
+		"title_industry": "Daily profit by industry, last 90 days",
+		"title_building": "Daily profit of the buildings in {focus}, last 90 days",
+		"title_product": "Daily profit of the products of {focus}, last 90 days",
+		"title_recipe": "Daily profit of the recipes for {focus}, last 90 days",
 		"note": "Volume-weighted: each base counts by its product's 7-day traded volume, planet rows of one recipe count once. Search an industry, building or product to drill in.",
 		"more": "{n} more not shown (least traded)",
 		"no_industry": "No industry",
@@ -116,8 +120,8 @@
 		"weekly_return": "A week's profit as a share of the building cost",
 		"building_cost": "Construction, the stock buffer to start with and the HQ upgrade, if set",
 		"running_cost": "Inputs, consumables and degradation per day",
-		"cargo": "The larger of cargo in and cargo out per day, by weight and volume",
-		"market_capacity": "How many bases like this the market can take: traded per day ÷ produced per day, lowest output",
+		"cargo": "The larger of cargo in and cargo out per day, by weight and volume; (I) when more comes in, (O) when more goes out",
+		"market_capacity": "How many bases like this the market can take: traded per day ÷ the base's amount per day, the lowest of its outputs (O) and recipe inputs (I)",
 		"workforce": "Workers the base needs per tier",
 		"history": "Daily profit with the daily VWAP of each material's exchange, last 30 days",
 		"math": {
@@ -143,8 +147,9 @@
 			"cargo_in": "In: {weight} t · {volume} m³",
 			"cargo_out": "Out: {weight} t · {volume} m³",
 			"cargo_ship": "{days} days: {weight} t · {volume} m³ of {ship} {capWeight} t · {capVolume} m³",
-			"capacity": "{ticker}: {traded} traded ÷ {produced} produced = {value}",
-			"lowest": "The lowest output counts"
+			"capacity_out": "{ticker} (O): {traded} traded ÷ {amount} produced = {value}",
+			"capacity_in": "{ticker} (I): {traded} traded ÷ {amount} needed = {value}",
+			"bottleneck": "Bottleneck: {ticker} ({side})"
 		}
 	},
 	"status": {
@@ -221,6 +226,10 @@
 		"consumables_formula": "{n} workforce material | {n} workforce materials",
 		"degradation": "Degradation",
 		"degradation_formula": "construction of the production buildings ÷ 180",
+		"capacity_outputs": "Outputs (O): traded ÷ produced",
+		"capacity_inputs": "Recipe inputs (I): traded ÷ needed",
+		"capacity_total": "Market capacity",
+		"capacity_total_formula": "lowest: {ticker} ({side})",
 		"daily_profit": "Daily profit",
 		"stage": "{n} experts",
 		"stage_line": "{remaining} left at {profit}/d for {days}",
@@ -230,9 +239,9 @@
 		"never": "Never pays off",
 		"payback_five": "Payback at 5 experts",
 		"payback_fixed": "Building cost ÷ daily profit",
-		"history_note": "Daily VWAP of each material's exchange, last 30 days",
+		"history_note": "Daily VWAP of each material's exchange, last 90 days",
 		"history_absolute": "Absolute: ȼ per day, one scale for all lines",
-		"history_scaled": "Each line in its own range: 0 = its 30-day low, 1 = its high (labels show ȼ)",
+		"history_scaled": "Each line in its own range: 0 = its 90-day low, 1 = its high (labels show ȼ)",
 		"history_revenue": "Revenue",
 		"history_cost": "Running cost",
 		"history_profit": "Daily profit",

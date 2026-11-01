@@ -74,6 +74,26 @@ describe("baseROIDetail.util (criterion 16)", () => {
 		expect(money.lines[at + 1].label).toBe("base_roi.detail.degradation");
 	});
 
+	it("section 8: outputs and recipe inputs, then the market capacity with its side", () => {
+		const row = rows.find((r) => r.recipeInputs.length)!;
+		const lines = detailSections(row, settings(), t).find(
+			(s) => s.id === 8
+		)!.lines;
+		expect(lines[0].label).toBe("base_roi.detail.capacity_outputs");
+		expect(
+			lines.some((l) => l.label === "base_roi.detail.capacity_inputs")
+		).toBe(true);
+		const total = lines.at(-1)!;
+		expect(total.label).toBe("base_roi.detail.capacity_total");
+		expect(total.total).toBe(true);
+		if (row.metrics.capacityTicker)
+			expect(total.formula).toContain(row.metrics.capacityTicker);
+		// one line per material, both sides
+		expect(lines.filter((l) => l.ticker)).toHaveLength(
+			row.outputs.length + row.recipeInputs.length
+		);
+	});
+
 	it("logistics check per mode", () => {
 		const row = rows[0];
 		expect(

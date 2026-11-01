@@ -14,6 +14,9 @@
 	import { profitTrend } from "@/features/base_roi/baseROITrend";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 
+	// Static
+	import { HISTORY_DAYS } from "@/features/base_roi/baseROI.constants";
+
 	// Components
 	import PLineChart from "@/ui/charts/PLineChart.vue";
 
@@ -25,7 +28,7 @@
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 
 	/**
-	 * Volume-weighted daily profit of the last 30 days: per industry, and
+	 * Volume-weighted daily profit of the last HISTORY_DAYS days: per industry, and
 	 * per building, product or recipe as the search drills in. Above the
 	 * table, from the table's rows and price history.
 	 */
@@ -38,7 +41,7 @@
 	}>();
 
 	const theme = useChartTheme();
-	const days = historyDays();
+	const days = historyDays(HISTORY_DAYS);
 
 	// every row's profit per day, again only when the rows or prices change
 	const profits = computed(() => {
@@ -47,7 +50,12 @@
 		for (const row of rows)
 			map.set(
 				row.key,
-				profitHistory(row.materials, row.degradation, series).profit
+				profitHistory(
+					row.materials,
+					row.degradation,
+					series,
+					HISTORY_DAYS
+				).profit
 			);
 		return map;
 	});

@@ -53,7 +53,7 @@ describe("BaseROITrendChart", () => {
 		expect(failed.find("[data-base-roi-trend]").exists()).toBe(false);
 	});
 
-	it("industries without a search, 30 days, named lines", async () => {
+	it("industries without a search, 90 days, named lines", async () => {
 		const wrapper = await mountChart();
 		expect(wrapper.text()).toContain("base_roi.trend.title_industry");
 		const chart = wrapper.findComponent({ name: "PLineChart" });
@@ -64,8 +64,8 @@ describe("BaseROITrendChart", () => {
 		expect(lines.length).toBeGreaterThan(0);
 		expect(lines.length).toBeLessThanOrEqual(7);
 		expect(lines.every((l) => l.label)).toBe(true);
-		expect(chart.props("days")).toHaveLength(30);
-		for (const l of lines) expect(l.values).toHaveLength(30);
+		expect(chart.props("days")).toHaveLength(90);
+		for (const l of lines) expect(l.values).toHaveLength(90);
 	});
 
 	it("the search drills into a building's products", async () => {
