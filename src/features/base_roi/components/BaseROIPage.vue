@@ -19,6 +19,7 @@
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import BaseROISettingsPanel from "@/features/base_roi/components/BaseROISettingsPanel.vue";
 	import BaseROITable from "@/features/base_roi/components/BaseROITable.vue";
+	import BaseROITrendChart from "@/features/base_roi/components/BaseROITrendChart.vue";
 	const BaseROISetup = defineAsyncComponent(
 		() => import("@/features/base_roi/components/BaseROISetup.vue")
 	);
@@ -154,6 +155,12 @@
 				v-model:settings="settings"
 				:exchanges="exchanges"
 				@setup="setupOpen = true" />
+			<!-- charts the table's rows, the search drills in; a skeleton until the prices are in -->
+			<BaseROITrendChart
+				:rows="filtered.rows"
+				:search="search"
+				:series="series"
+				:history-failed="historyFailed" />
 			<div ref="tableBox" class="relative">
 				<BaseROITable
 					v-model:settings="settings"

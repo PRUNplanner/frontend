@@ -22,6 +22,7 @@ opens by URL.
 | `baseROIHistory.ts` | Pure. Revenue, running cost and profit per day from the row's daily amounts and `GetCXSparklines` daily VWAP, no engine pass |
 | `baseROIDetail.util.ts` | The row detail's ten sections as data, shared by the view and "Copy as text" (the view shows 9 as the chart on top and 10 in its header) |
 | `baseROITooltip.util.ts` | Pure. `cellMath`: the napkin math of a table cell, shown by `BaseROICellMath.vue` |
+| `baseROITrend.ts` | Pure. `profitTrend`: the trend chart above the table, volume-weighted daily profit per industry, or per building, product or recipe as the search drills in (exact match first, then a partial search that names one building or industry); planet rows of one recipe merged, at most 7 lines. Shown by `BaseROITrendChart.vue` |
 | `useBaseROI.ts` | Orchestration: recipe rows first, the index and planets (fetched once per page: fertile ones with `PostPlanetSearch`, the rest with `GetMultiplePlanets`), planet rows merged once, 50-row chunks with `scheduler.yield()`, a newer run stops the older one, `performance.measure` (`base-roi:*`), one `tool:use` per finished run, the price history, `tryOnPlanet` |
 | `useBaseROISettings.ts`, `baseROI.schemas.ts` | Settings in localStorage (`prunplanner_base_roi`), each field falls back to its default on its own |
 | `baseROI.constants.ts` | Ships, `EXPERT_STAGE_DAYS`, presets (with their hidden columns), columns, `STANDARD_PLANET` |

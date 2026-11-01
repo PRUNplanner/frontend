@@ -98,6 +98,16 @@
 		"ask": "ask",
 		"details": "Show the math of {name}"
 	},
+	"trend": {
+		"title_industry": "Daily profit by industry, last 30 days",
+		"title_building": "Daily profit of the buildings in {focus}, last 30 days",
+		"title_product": "Daily profit of the products of {focus}, last 30 days",
+		"title_recipe": "Daily profit of the recipes for {focus}, last 30 days",
+		"note": "Volume-weighted: each base counts by its product's 7-day traded volume, planet rows of one recipe count once. Search an industry, building or product to drill in.",
+		"more": "{n} more not shown (least traded)",
+		"no_industry": "No industry",
+		"empty": "No rows with traded volume to chart."
+	},
 	"tooltips": {
 		"product": "The base's output, on a planet (jumps to the exchange) for resource and farming rows",
 		"expertise": "Industry and building of the base",

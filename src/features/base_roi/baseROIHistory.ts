@@ -87,3 +87,23 @@ export function scaleToRange(values: number[]): number[] {
 	const span = Math.max(...values) - min;
 	return values.map((v) => (span > 0 ? (v - min) / span : 0.5));
 }
+
+/**
+ * UTC midnights of the last days, today last: the x axis of the history
+ * charts
+ *
+ * @param {number} [days] Days
+ * @returns {number[]} Epochs in ms, oldest first
+ */
+export function historyDays(days: number = 30): number[] {
+	const today = new Date();
+	const midnight = Date.UTC(
+		today.getUTCFullYear(),
+		today.getUTCMonth(),
+		today.getUTCDate()
+	);
+	return Array.from(
+		{ length: days },
+		(_, i) => midnight - (days - 1 - i) * 86_400_000
+	);
+}
