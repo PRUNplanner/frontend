@@ -254,6 +254,19 @@ describe("BaseROITable", () => {
 			expect(tip.textContent).toContain(`${row.building} · `);
 	});
 
+	it("a recipe row's tooltip is its recipe alone", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => !r.planetNaturalId)!;
+		const cell = wrapper.find(
+			`tr[data-row-key="${row.key}"] td[data-col-key="product"] .ptooltip`
+		);
+		await cell.trigger("mouseenter");
+		await flushPromises();
+		expect(
+			document.body.querySelector("[data-recipe]")!.textContent!.trim()
+		).toBe(recipeLabel(row));
+	});
+
 	it("ramp: one break-even number, no payback line under it", async () => {
 		const wrapper = await mountTable();
 		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
