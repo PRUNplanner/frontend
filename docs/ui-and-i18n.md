@@ -149,7 +149,9 @@ modals and drawers) is imported by path, not from the barrel.
       it's open, the trigger's first focusable element gets
       `aria-describedby` (closed tooltips add nothing to the page); a trigger
       with nothing focusable becomes a tab stop itself (`disabled` turns
-      all of it off). Charts with their own SVG tooltips use the same rules
+      all of it off; `noFocus` keeps hover and tap but adds no tab stop,
+      for many triggers in a row such as table cells whose content is
+      reachable another way). Charts with their own SVG tooltips use the same rules
       through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
     - `<PHoverCard :label placement width>` with a `#trigger` slot is a
       card of content next to its trigger, not a tooltip (the material
@@ -259,14 +261,17 @@ const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
   (`ui/dataTableSort.ts`), the table's own comparison.
 - **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
   table scrolls sideways instead), `children` for grouped headers,
-  `titleColSpan` to let one title span the next columns. On the table,
+  `titleColSpan` to let one title span the next columns, `titleTooltip`
+  to explain a column in a tooltip on hover and on focus of its header (the
+  sort button sits inside the trigger). On the table,
   `stickyFirst` pins the first column (and expand button) while it scrolls
   sideways, `dense` narrows the cell padding.
 - **Rows:** `rowClick` makes rows clickable and keyboard-operable (Enter,
   Space), `rowClass` adds classes. The `expand` slot adds an expand button
   per row (`expandLabel` names it) and `v-model:expanded-row-keys`.
 - **Slots** `summary` (a full-width footer row) and `empty`. `pageSize`
-  paginates with `PPagination`. `popover` switches to the colours used
+  paginates with `PPagination` (below the table, above it with
+  `paginationTop` for a table taller than the screen). `popover` switches to the colours used
   inside a popover.
 - **Width and height:** `minWidth` on the table (e.g. `:min-width="960"`)
   makes it scroll sideways in its box instead of squeezing columns.

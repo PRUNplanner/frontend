@@ -45,26 +45,33 @@ describe("baseROIDetail.util (criterion 16)", () => {
 		for (const s of sections) expect(s.lines.length).toBeGreaterThan(0);
 	});
 
-	it("HQ and ships with the formula when on, the reason when off", () => {
+	it("HQ with the formula when on, the reason when off; no ships line", () => {
 		const row = rows[0];
 		expect(line(row, settings(), 1, "base_roi.detail.hq")!.formula).toBe(
 			"base_roi.detail.hq_off"
 		);
-		expect(line(row, settings(), 1, "base_roi.detail.ships")!.formula).toBe(
-			"base_roi.detail.ships_off"
-		);
-		const on = settings({
-			targetPermit: 10,
-			roundTripHours: 8,
-			logistics: "none",
-		});
+		const on = settings({ targetPermit: 10 });
 		expect(line(row, on, 1, "base_roi.detail.hq")!.formula).toContain(
 			'"level":9'
 		);
-		// no ship chosen: the WCB
-		expect(line(row, on, 1, "base_roi.detail.ships")!.formula).toContain(
-			'"ship":"WCB"'
+		expect(line(row, on, 1, "base_roi.detail.ships")).toBeUndefined();
+	});
+
+	it("consumables are one line with the count of workforce materials", () => {
+		const row = rows[0];
+		const money = detailSections(row, settings(), t).find(
+			(s) => s.id === 6
+		)!;
+		const at = money.lines.findIndex(
+			(l) => l.label === "base_roi.detail.consumables"
 		);
+		const consumed = row.result.workforceMaterialIO.filter(
+			(x) => x.input > 0
+		).length;
+		expect(consumed).toBeGreaterThan(0);
+		expect(money.lines[at].formula).toContain(`"n":${consumed}`);
+		// the next line is degradation, no per-material lines in between
+		expect(money.lines[at + 1].label).toBe("base_roi.detail.degradation");
 	});
 
 	it("logistics check per mode", () => {

@@ -8,7 +8,10 @@
 	import { BASE_ROI_COLUMNS } from "@/features/base_roi/baseROI.constants";
 
 	// Types & Interfaces
-	import type { BaseROIColumn } from "@/features/base_roi/baseROI.schemas";
+	import {
+		DEFAULT_HIDDEN_COLUMNS,
+		type BaseROIColumn,
+	} from "@/features/base_roi/baseROI.schemas";
 
 	// UI
 	import { PButton, PCheckbox, PPopover } from "@/ui";
@@ -60,7 +63,7 @@
 				size="sm"
 				type="secondary"
 				class="mt-2"
-				@click="hiddenColumns = []">
+				@click="hiddenColumns = [...DEFAULT_HIDDEN_COLUMNS]">
 				{{ t("base_roi.columns.reset") }}
 			</PButton>
 		</div>

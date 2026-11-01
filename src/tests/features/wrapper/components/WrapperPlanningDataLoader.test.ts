@@ -234,9 +234,30 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 		expect(planRequests()).toEqual([`planning/empire/${E2}/plans/`]);
 	});
 
+	it("logged out: no CX preferences requested, the page loads without", async () => {
+		const pinia = createPinia();
+		setActivePinia(pinia);
+
+		const { component } = await mountComponent(
+			WrapperPlanningDataLoader,
+			{ loadCX: true },
+			{ pinia }
+		);
+		await vi.waitFor(() =>
+			expect(component.emitted("complete")).toHaveLength(1)
+		);
+
+		expect(
+			mock.history.get.filter((r) => /planning\/cx\//.test(r.url!))
+		).toEqual([]);
+		expect(component.emitted("data:cx")).toBeUndefined();
+	});
+
 	it("reloads loaded lists another tab changed, keeping the page", async () => {
 		const pinia = createPinia();
 		setActivePinia(pinia);
+		// CX preferences load for a logged-in user only
+		useUserStore().$patch({ accessToken: "a", refreshToken: "r" });
 		const cx = {
 			uuid: E1,
 			cx_name: "CX",
@@ -286,6 +307,8 @@ describe("WrapperPlanningDataLoader with an empire list", () => {
 	it("a reloaded CX list keeps the selected CX", async () => {
 		const pinia = createPinia();
 		setActivePinia(pinia);
+		// CX preferences load for a logged-in user only
+		useUserStore().$patch({ accessToken: "a", refreshToken: "r" });
 		const cx = (id: string) => ({
 			uuid: id,
 			cx_name: `CX ${id}`,

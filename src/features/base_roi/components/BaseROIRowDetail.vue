@@ -10,6 +10,7 @@
 
 	// Stores
 	import { usePlanningStore } from "@/stores/planningStore";
+	import { useUserStore } from "@/stores/userStore";
 
 	// Composables
 	import { useBuildingData } from "@/database/services/useBuildingData";
@@ -65,6 +66,8 @@
 
 	const router = useRouter();
 	const planningStore = usePlanningStore();
+	// logged out: no plans to open
+	const userStore = useUserStore();
 	const { getBuilding } = useBuildingData();
 	const { findEmpireCXUuid } = useCXData();
 	const toast = useToast();
@@ -114,6 +117,15 @@
 
 	const shown = computed(() => tried.value ?? row);
 	const sections = computed(() => detailSections(shown.value, settings, t));
+	// 9 (profit history) is the chart on top, 10 (recipe, planet) the header
+	const mathSections = computed(() =>
+		sections.value.filter((s) => s.id <= 8)
+	);
+	const placeLine = computed(() =>
+		sections.value[9].lines
+			.map((l) => (l.value ? `${l.label}: ${l.value}` : l.label))
+			.join(" · ")
+	);
 	const name = computed(
 		() =>
 			`${shown.value.outputs.map((o) => o.ticker).join(", ")} · ${shown.value.building}`
@@ -253,7 +265,25 @@
 					v-for="o in shown.outputs.slice(0, 3)"
 					:key="o.ticker"
 					:ticker="o.ticker" />
-				<h3 class="font-bold text-base">{{ shown.building }}</h3>
+				<div class="flex flex-col min-w-0">
+					<h3 class="font-bold text-base">{{ shown.building }}</h3>
+					<!-- recipe and planet (section 10) in one line -->
+					<p class="text-xs text-muted">
+						<span>{{ placeLine }}</span>
+						<router-link
+							v-if="shown.planetNaturalId && userStore.isLoggedIn"
+							:to="`/plan/${shown.planetNaturalId}`"
+							class="ml-2 text-link-primary hover:underline">
+							{{
+								t("base_roi.detail.open_planet", {
+									planet:
+										shown.planetName ??
+										shown.planetNaturalId,
+								})
+							}}
+						</router-link>
+					</p>
+				</div>
 			</div>
 			<div class="flex flex-row flex-wrap items-center gap-2 ml-auto">
 				<template v-if="row.kind === 'recipe'">
@@ -283,6 +313,7 @@
 					{{ t("base_roi.detail.copy") }}
 				</PButton>
 				<PButton
+					v-if="userStore.isLoggedIn"
 					size="sm"
 					type="secondary"
 					:loading="creating"
@@ -301,11 +332,34 @@
 			{{ compare }}
 		</p>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+		<!-- the chart first: what happened beyond today's numbers -->
+		<section :aria-labelledby="`base-roi-${row.key}-history`">
+			<h4
+				:id="`base-roi-${row.key}-history`"
+				class="mb-1 text-xs font-bold uppercase">
+				{{ t("base_roi.detail.s9") }}
+			</h4>
+			<div v-if="history" class="h-72">
+				<PLineChart
+					:days="historyDays"
+					:series="chartSeries"
+					:label="t('base_roi.detail.history_note')" />
+			</div>
+			<p class="mt-1 text-xs text-muted">
+				{{
+					series && !hasHistory(shown.materials, series)
+						? t("base_roi.table.history_none")
+						: t("base_roi.detail.history_note")
+				}}
+			</p>
+		</section>
+
+		<!-- the math below: boxes flow in columns, no row stretches to the tallest -->
+		<div class="columns-1 md:columns-2 xl:columns-3 gap-3">
 			<section
-				v-for="s in sections"
+				v-for="s in mathSections"
 				:key="s.id"
-				class="rounded-md border border-white/10 p-3 min-w-0"
+				class="mb-3 break-inside-avoid rounded-md border border-white/10 p-3 min-w-0"
 				:aria-labelledby="`base-roi-${row.key}-s${s.id}`">
 				<h4
 					:id="`base-roi-${row.key}-s${s.id}`"
@@ -343,31 +397,6 @@
 						</span>
 					</div>
 				</dl>
-				<template v-if="s.id === 9">
-					<div v-if="history" class="mt-2 h-40">
-						<PLineChart
-							:days="historyDays"
-							:series="chartSeries"
-							:label="t('base_roi.detail.history_note')" />
-					</div>
-					<p class="mt-1 text-xs text-muted">
-						{{
-							series && !hasHistory(shown.materials, series)
-								? t("base_roi.table.history_none")
-								: t("base_roi.detail.history_note")
-						}}
-					</p>
-				</template>
-				<router-link
-					v-if="s.id === 10 && shown.planetNaturalId"
-					:to="`/plan/${shown.planetNaturalId}`"
-					class="mt-2 inline-block text-link-primary hover:underline">
-					{{
-						t("base_roi.detail.open_planet", {
-							planet: shown.planetName ?? shown.planetNaturalId,
-						})
-					}}
-				</router-link>
 			</section>
 		</div>
 	</div>

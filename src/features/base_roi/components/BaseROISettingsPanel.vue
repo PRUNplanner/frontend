@@ -4,9 +4,6 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
-	// Util
-	import { capitalizeString } from "@/util/text";
-
 	// Static
 	import { DAY_OPTIONS, SHIPS } from "@/features/base_roi/baseROI.constants";
 	import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
@@ -32,9 +29,7 @@
 		required: true,
 	});
 
-	const { expertiseOptions, buildingOptions, exchanges } = defineProps<{
-		expertiseOptions: string[];
-		buildingOptions: string[];
+	const { exchanges } = defineProps<{
 		/** exchanges max jumps counts to */
 		exchanges: string[];
 	}>();
@@ -55,12 +50,6 @@
 		{ label: t("base_roi.settings.buffer_off"), value: 0 },
 		...DAY_OPTIONS.map((n) => ({ label: days(n), value: n })),
 	]);
-	const capacityOptions = computed<PSelectOption[]>(() =>
-		Array.from({ length: 11 }, (_, i) => ({
-			label: t("base_roi.settings.bases", { n: (i / 10).toFixed(1) }),
-			value: i / 10,
-		}))
-	);
 	const shipOptions = computed<PSelectOption[]>(() =>
 		BaseROIShipSchema.options.map((ship) => ({
 			label: t("base_roi.settings.ship_option", {
@@ -84,21 +73,6 @@
 			value: i + 2,
 		})),
 	]);
-	const roundTripOptions = computed<PSelectOption[]>(() => [
-		{ label: off(), value: 0 },
-		...Array.from({ length: 25 }, (_, i) => ({
-			label: t("base_roi.settings.hours", { n: i + 1 }),
-			value: i + 1,
-		})),
-	]);
-	const optionsOf = (
-		all: string,
-		values: string[],
-		label: (v: string) => string = (v) => v
-	): PSelectOption[] => [
-		{ label: all, value: "" },
-		...values.map((v) => ({ label: label(v), value: v })),
-	];
 
 	/** one line with the settings that shape the table, for the closed panel */
 	const summary = computed(() => {
@@ -119,7 +93,6 @@
 				s.logistics === "ship"
 					? `${s.ship} / ${days(s.visitDays)}`
 					: t(`base_roi.settings.logistics_${s.logistics}`),
-			capacity: s.minMarketCapacity.toFixed(1),
 			jumps: s.maxJumps,
 		});
 	});
@@ -217,16 +190,6 @@
 
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t("base_roi.settings.min_market_capacity") }}
-					</span>
-					<PSelect
-						:aria-label="t('base_roi.settings.min_market_capacity')"
-						:value="settings.minMarketCapacity"
-						:options="capacityOptions"
-						@update:value="(v) => set('minMarketCapacity', v)" />
-				</div>
-				<div class="flex flex-col gap-1.5 min-w-0">
-					<span class="text-xs font-bold uppercase text-muted">
 						{{ t("base_roi.settings.logistics") }}
 					</span>
 					<div class="flex flex-col gap-2">
@@ -316,16 +279,6 @@
 
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
-						{{ t("base_roi.settings.round_trip") }}
-					</span>
-					<PSelect
-						:aria-label="t('base_roi.settings.round_trip')"
-						:value="settings.roundTripHours"
-						:options="roundTripOptions"
-						@update:value="(v) => set('roundTripHours', v)" />
-				</div>
-				<div class="flex flex-col gap-1.5 min-w-0">
-					<span class="text-xs font-bold uppercase text-muted">
 						{{ t("base_roi.settings.max_jumps") }}
 					</span>
 					<div class="flex flex-row items-center gap-2">
@@ -370,38 +323,6 @@
 							@update:checked="(v) => set('showNegative', !!v)">
 							{{ t("base_roi.settings.show_negative") }}
 						</PCheckbox>
-					</div>
-				</div>
-
-				<div class="flex flex-col gap-1.5 min-w-0">
-					<span class="text-xs font-bold uppercase text-muted">
-						{{ t("base_roi.settings.filters") }}
-					</span>
-					<div class="flex flex-row flex-wrap gap-2">
-						<PSelect
-							class="min-w-40 flex-1"
-							:value="settings.expertise"
-							:options="
-								optionsOf(
-									t('base_roi.settings.all_expertise'),
-									expertiseOptions,
-									capitalizeString
-								)
-							"
-							:aria-label="t('base_roi.settings.all_expertise')"
-							@update:value="(v) => set('expertise', v ?? '')" />
-						<PSelect
-							class="min-w-32 flex-1"
-							:value="settings.building"
-							:options="
-								optionsOf(
-									t('base_roi.settings.all_buildings'),
-									buildingOptions
-								)
-							"
-							searchable
-							:aria-label="t('base_roi.settings.all_buildings')"
-							@update:value="(v) => set('building', v ?? '')" />
 					</div>
 				</div>
 			</div>

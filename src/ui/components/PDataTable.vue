@@ -7,6 +7,7 @@
 		shallowRef,
 		useSlots,
 		watch,
+		type FunctionalComponent,
 		type VNode,
 	} from "vue";
 
@@ -14,6 +15,7 @@
 
 	// Components
 	import PPagination from "@/ui/components/PPagination.vue";
+	import PTooltip from "@/ui/components/PTooltip.vue";
 
 	// Util
 	import { sortRows } from "@/ui/dataTableSort";
@@ -49,6 +51,7 @@
 		maxHeight = undefined,
 		fill = false,
 		pageSize = undefined,
+		paginationTop = false,
 		rowClass = undefined,
 		rowClick = undefined,
 		popover = false,
@@ -67,6 +70,8 @@
 		/** fills a `flex-1 min-h-0` parent, the body scrolls under the header */
 		fill?: boolean;
 		pageSize?: number;
+		/** the page selection above the table, for a table taller than the screen */
+		paginationTop?: boolean;
 		rowClass?: string | ((row: T, index: number) => string);
 		/** makes rows clickable and keyboard-operable (Enter, Space) */
 		rowClick?: (row: T) => void;
@@ -83,6 +88,9 @@
 		/** narrower cell padding, for wide tables with many short columns */
 		dense?: boolean;
 	}>();
+
+	// a header without titleTooltip: its title alone, no wrapper
+	const NoTooltip: FunctionalComponent = (_, { slots }) => slots.trigger?.();
 
 	const expandedRowKeys = defineModel<(string | number)[]>(
 		"expandedRowKeys",
@@ -408,6 +416,12 @@
 			dense ? 'p-data-table-dense' : '',
 			windowed && !fill ? 'p-data-table-borderless' : '',
 		]">
+		<PPagination
+			v-if="paginationTop && pageSize && pageCount > 1"
+			class="!mt-0 mb-2"
+			:page="currentPage"
+			:page-count="pageCount"
+			@update:page="(p: number) => (page = p)" />
 		<!-- with fill, a 0px basis (not 0%): its rows never size the parent, it grows into the space -->
 		<div
 			ref="box"
@@ -476,40 +490,51 @@
 										? stickyLeft
 										: undefined,
 							}">
-							<button
-								v-if="cell.col.sorter"
-								type="button"
-								class="p-data-table-title"
-								@click="toggleSort(cell.col)">
-								<span class="p-data-table-title-text">
-									<slot :name="`header-${cell.col.key}`">
-										{{ cell.col.title }}
-									</slot>
-								</span>
-								<span
-									class="p-data-table-sorter"
-									:class="
-										isSorting(cell.col.key)
-											? sort.order === 'ascend'
-												? 'p-data-table-sorter-asc'
-												: 'p-data-table-sorter-desc'
-											: ''
-									"
-									aria-hidden="true">
-									<svg viewBox="0 0 28 28">
-										<path
-											d="M23.7916,15.2664 C24.0788,14.9679 24.0696,14.4931 23.7711,14.206 C23.4726,13.9188 22.9978,13.928 22.7106,14.2265 L14.7511,22.5007 L14.7511,3.74792 C14.7511,3.33371 14.4153,2.99792 14.0011,2.99792 C13.5869,2.99792 13.2511,3.33371 13.2511,3.74793 L13.2511,22.4998 L5.29259,14.2265 C5.00543,13.928 4.53064,13.9188 4.23213,14.206 C3.93361,14.4931 3.9244,14.9679 4.21157,15.2664 L13.2809,24.6944 C13.6743,25.1034 14.3289,25.1034 14.7223,24.6944 L23.7916,15.2664 Z"
-											fill="currentColor" />
-									</svg>
-								</span>
-							</button>
-							<div v-else class="p-data-table-title">
-								<span class="p-data-table-title-text">
-									<slot :name="`header-${cell.col.key}`">
-										{{ cell.col.title }}
-									</slot>
-								</span>
-							</div>
+							<!-- the sort button inside the trigger: its focus opens the tooltip too -->
+							<component
+								:is="
+									cell.col.titleTooltip ? PTooltip : NoTooltip
+								">
+								<template #trigger>
+									<button
+										v-if="cell.col.sorter"
+										type="button"
+										class="p-data-table-title"
+										@click="toggleSort(cell.col)">
+										<span class="p-data-table-title-text">
+											<slot
+												:name="`header-${cell.col.key}`">
+												{{ cell.col.title }}
+											</slot>
+										</span>
+										<span
+											class="p-data-table-sorter"
+											:class="
+												isSorting(cell.col.key)
+													? sort.order === 'ascend'
+														? 'p-data-table-sorter-asc'
+														: 'p-data-table-sorter-desc'
+													: ''
+											"
+											aria-hidden="true">
+											<svg viewBox="0 0 28 28">
+												<path
+													d="M23.7916,15.2664 C24.0788,14.9679 24.0696,14.4931 23.7711,14.206 C23.4726,13.9188 22.9978,13.928 22.7106,14.2265 L14.7511,22.5007 L14.7511,3.74792 C14.7511,3.33371 14.4153,2.99792 14.0011,2.99792 C13.5869,2.99792 13.2511,3.33371 13.2511,3.74793 L13.2511,22.4998 L5.29259,14.2265 C5.00543,13.928 4.53064,13.9188 4.23213,14.206 C3.93361,14.4931 3.9244,14.9679 4.21157,15.2664 L13.2809,24.6944 C13.6743,25.1034 14.3289,25.1034 14.7223,24.6944 L23.7916,15.2664 Z"
+													fill="currentColor" />
+											</svg>
+										</span>
+									</button>
+									<div v-else class="p-data-table-title">
+										<span class="p-data-table-title-text">
+											<slot
+												:name="`header-${cell.col.key}`">
+												{{ cell.col.title }}
+											</slot>
+										</span>
+									</div>
+								</template>
+								{{ cell.col.titleTooltip }}
+							</component>
 						</th>
 					</tr>
 				</thead>
@@ -669,7 +694,7 @@
 			</table>
 		</div>
 		<PPagination
-			v-if="pageSize && pageCount > 1"
+			v-if="!paginationTop && pageSize && pageCount > 1"
 			:page="currentPage"
 			:page-count="pageCount"
 			@update:page="(p: number) => (page = p)" />
@@ -739,11 +764,11 @@
 	}
 
 	/* the whole cell is the button */
-	.p-data-table-sortable > .p-data-table-title {
+	.p-data-table-sortable .p-data-table-title {
 		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
 	}
 
-	.p-data-table-dense .p-data-table-sortable > .p-data-table-title {
+	.p-data-table-dense .p-data-table-sortable .p-data-table-title {
 		@apply -mx-1.5 px-1.5 w-[calc(100%+12px)];
 	}
 
@@ -794,10 +819,18 @@
 
 	.p-data-table
 		tbody
-		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover,
+		> tr:not(
+			.p-data-table-empty-row,
+			.p-data-table-spacer,
+			.p-data-table-expanded
+		):hover,
 	.p-data-table
 		tbody
-		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover
+		> tr:not(
+			.p-data-table-empty-row,
+			.p-data-table-spacer,
+			.p-data-table-expanded
+		):hover
 		> td {
 		@apply bg-hover;
 	}
@@ -823,7 +856,11 @@
 
 	.p-data-table
 		tbody
-		> tr:not(.p-data-table-empty-row, .p-data-table-spacer):hover
+		> tr:not(
+			.p-data-table-empty-row,
+			.p-data-table-spacer,
+			.p-data-table-expanded
+		):hover
 		> td.p-data-table-sticky {
 		background-color: var(--app-bg);
 		background-image: linear-gradient(

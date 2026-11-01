@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 // Stores & Repository
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { useUserStore } from "@/stores/userStore";
 import { isApiError } from "@/lib/apiError";
 
 // Composables
@@ -56,6 +57,7 @@ export function usePlanningDataLoader(
 	const knowsEmpire = (list: PlanEmpireElement[], empireUuid: string) =>
 		list.some((e) => e.uuid === empireUuid);
 	const queryStore = useQueryStore();
+	const userStore = useUserStore();
 	const done: Ref<boolean> = ref(false);
 	// mount to all data loaded, a performance measure for the lab runs
 	const loadStart = performance.now();
@@ -188,7 +190,8 @@ export function usePlanningDataLoader(
 		}),
 		cx: step({
 			name: t("wrapper.planning_data.cx"),
-			enabled: () => !!props.loadCX,
+			// CX preferences are an account's: logged out, a page prices without them
+			enabled: () => !!props.loadCX && userStore.isLoggedIn,
 			load: () => queryStore.execute("GetAllCX", undefined),
 			refreshKey: () => ["planningdata", "cx"],
 			onSuccess: (d: CX[], refreshed?: boolean) => {
