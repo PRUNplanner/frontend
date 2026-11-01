@@ -83,7 +83,6 @@ function drill(
 	group: (r: IBaseROIRow) => string;
 } {
 	const q = query.trim().toLowerCase();
-	const industry = (r: IBaseROIRow) => (r.expertise ?? "").toLowerCase();
 	const byBuilding = (b: string) => ({
 		level: "product" as const,
 		focus: b,
@@ -115,11 +114,10 @@ function drill(
 						? `${r.building}: ${recipeLabel(r)}`
 						: `${r.building}: ${tickers(r)}`,
 			};
-		const expertise = rows.find(
-			(r) =>
-				r.expertise &&
-				(industry(r) === q || industry(r).replaceAll("_", " ") === q)
-		);
+		const expertise = rows.find((r) => {
+			const e = r.expertise?.toLowerCase();
+			return !!e && (e === q || e.replaceAll("_", " ") === q);
+		});
 		if (expertise) return byIndustry(expertise.expertise!);
 		// a partial search that still names one building or industry
 		if (rows.length && rows.every((r) => r.building === rows[0].building))

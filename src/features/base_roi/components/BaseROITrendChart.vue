@@ -64,7 +64,7 @@
 		t(`base_roi.trend.title_${trend.value.level}`, {
 			focus:
 				trend.value.level === "building"
-					? capitalizeString(trend.value.focus ?? "")
+					? capitalizeString(trend.value.focus!)
 					: trend.value.focus,
 		})
 	);

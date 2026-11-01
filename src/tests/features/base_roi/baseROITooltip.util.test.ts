@@ -172,6 +172,16 @@ describe("baseROITooltip.util", () => {
 		).toHaveLength(2);
 	});
 
+	it("one output: no 'lowest' line; an output not produced reads 0", () => {
+		const one = {
+			...row(),
+			outputs: [{ ticker: "A", amount: 0, traded: 50 }],
+		} as IBaseROIRow;
+		const lines = cellMath(one, "market_capacity", s(), t);
+		expect(lines).toHaveLength(1);
+		expect(lines[0]).toContain('"value":"0.00"');
+	});
+
 	it("market capacity per output, the lowest counts; no math for the rest", () => {
 		const lines = cellMath(row(), "market_capacity", s(), t);
 		expect(keys(lines)).toEqual([

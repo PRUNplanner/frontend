@@ -165,6 +165,36 @@ describe("profitTrend", () => {
 		expect(profitTrend(one, PROFITS, "ch").level).toBe("product");
 	});
 
+	it("a product made on planets: one line per building and product", () => {
+		const t = profitTrend(ROWS, PROFITS, "F");
+		expect(t.level).toBe("recipe");
+		expect(keys(t)).toEqual(["COL: F"]);
+		expect(line(t, "COL: F").values).toEqual([200, 300]);
+	});
+
+	it("rows without an industry: their own line, and no drill on a partial search", () => {
+		const loose = [
+			row("x", {
+				expertise: null,
+				building: "TNP",
+				outputs: [["ETC", 5]],
+			}),
+			row("y", {
+				expertise: null,
+				building: "XYZ",
+				outputs: [["ABC", 5]],
+			}),
+		];
+		const profits = new Map([
+			["x", [1, 2]],
+			["y", [3, 4]],
+		]);
+		const top = profitTrend(loose, profits, "");
+		expect(keys(top)).toEqual([""]);
+		// two buildings, no industry: stays at the top level
+		expect(profitTrend(loose, profits, "zz").level).toBe("industry");
+	});
+
 	it("caps the lines and counts the rest; no rows or no prices, no lines", () => {
 		const t = profitTrend(ROWS, PROFITS, "", 2);
 		expect(t.lines).toHaveLength(2);

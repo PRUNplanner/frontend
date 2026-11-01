@@ -191,6 +191,14 @@ describe("PLineChart", () => {
 		expect(wrapper.find(".line-label").text()).toBe("AI1 -85,000");
 	});
 
+	it("an end label falls back to the plotted value where shown has none", async () => {
+		const wrapper = await mountChart({
+			volume: [],
+			series: [{ ...SERIES[0], shown: [1, 2, 3, 4, null] }],
+		});
+		expect(wrapper.find(".line-label").text()).toBe("AI1 236");
+	});
+
 	it("draws the volume panel on its own axis with title and unit", async () => {
 		const wrapper = await mountChart();
 

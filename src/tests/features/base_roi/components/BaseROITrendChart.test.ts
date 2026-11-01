@@ -76,6 +76,41 @@ describe("BaseROITrendChart", () => {
 		expect(wrapper.text()).toContain("base_roi.trend.title_product");
 	});
 
+	it("rows without an industry get their own line; the rest beyond 7 is counted", async () => {
+		const wrapper = await mountChart({
+			rows: rows.map((r, i) => ({
+				...r,
+				expertise: i % 9 === 0 ? null : `IND_${i % 9}`,
+				outputs: r.outputs.map((o) => ({
+					...o,
+					traded: o.traded || 1,
+				})),
+			})),
+		});
+		const lines = wrapper
+			.findComponent({ name: "PLineChart" })
+			.props("series") as { label: string }[];
+		expect(lines).toHaveLength(7);
+		expect(wrapper.text()).toContain("base_roi.trend.more");
+		const all = await mountChart({
+			rows: rows.map((r) => ({
+				...r,
+				expertise: null,
+				outputs: r.outputs.map((o) => ({
+					...o,
+					traded: o.traded || 1,
+				})),
+			})),
+		});
+		expect(
+			(
+				all.findComponent({ name: "PLineChart" }).props("series") as {
+					label: string;
+				}[]
+			)[0].label
+		).toBe("base_roi.trend.no_industry");
+	});
+
 	it("says so when no row has traded volume", async () => {
 		const wrapper = await mountChart({
 			rows: rows.map((r) => ({
