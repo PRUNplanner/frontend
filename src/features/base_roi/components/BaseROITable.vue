@@ -45,6 +45,7 @@
 		PProgressBar,
 		PSelect,
 		PTag,
+		PTooltip,
 	} from "@/ui";
 	import { SearchSharp, WarningAmberSharp } from "@vicons/material";
 
@@ -129,7 +130,7 @@
 	const left = ["expertise", "workforce", "history"];
 	// every column its width; wider than the page, the table scrolls sideways
 	const WIDTHS: Record<string, number> = {
-		product: 280,
+		product: 230,
 		expertise: 170,
 		daily_profit: 150,
 		break_even: 120,
@@ -230,6 +231,11 @@
 		`@ ${row.planetName ?? row.planetNaturalId} (${
 			row.jumps ?? t("base_roi.table.no_route")
 		})`;
+	// the product cell's tooltip: planet rows name their building too
+	const recipeText = (row: IBaseROIRow) =>
+		row.planetNaturalId
+			? `${row.building} · ${recipeLabel(row)}`
+			: recipeLabel(row);
 	const expertise = (row: IBaseROIRow) =>
 		row.expertise ? capitalizeString(row.expertise) : "—";
 	const workforceText = (row: IBaseROIRow) =>
@@ -348,8 +354,8 @@
 					" />
 			</label>
 			<BaseROIColumnsMenu
-				class="ml-auto"
-				v-model:hidden-columns="hiddenColumns" />
+				v-model:hidden-columns="hiddenColumns"
+				class="ml-auto" />
 		</div>
 
 		<!-- part of the page: it grows with its rows, the page scrolls -->
@@ -424,21 +430,47 @@
 							<div class="flex flex-col min-w-0 flex-1">
 								<span
 									class="flex flex-row items-center gap-1.5 whitespace-nowrap min-w-0">
-									<span
-										v-if="row.planetNaturalId"
-										class="font-bold truncate">
-										{{ planetLine(row) }}
-									</span>
-									<span v-else class="font-bold">{{
-										row.building
-									}}</span>
-									<PTag
-										v-if="row.kind !== 'recipe'"
-										size="sm"
-										:type="kindType[row.kind]"
-										:value="
-											t(`base_roi.table.${row.kind}`)
-										" />
+									<!-- the recipe on hover, not on the tiles (their market card) -->
+									<div class="min-w-0">
+										<PTooltip no-focus placement="top">
+											<template #trigger>
+												<span
+													class="flex flex-row items-center gap-1.5 min-w-0">
+													<span
+														v-if="
+															row.planetNaturalId
+														"
+														class="font-bold truncate">
+														{{ planetLine(row) }}
+													</span>
+													<span
+														v-else
+														class="font-bold">
+														{{ row.building }}
+													</span>
+													<PTag
+														v-if="
+															row.kind !==
+															'recipe'
+														"
+														size="sm"
+														:type="
+															kindType[row.kind]
+														"
+														:value="
+															t(
+																`base_roi.table.${row.kind}`
+															)
+														" />
+												</span>
+											</template>
+											<span
+												data-recipe
+												class="font-mono text-xs">
+												{{ recipeText(row) }}
+											</span>
+										</PTooltip>
+									</div>
 									<PPopover
 										v-if="row.metrics.scenarios.length"
 										placement="bottom-start">
@@ -509,13 +541,6 @@
 											</ul>
 										</div>
 									</PPopover>
-								</span>
-								<span class="text-xs text-muted truncate">
-									{{
-										row.planetNaturalId
-											? `${row.building} · `
-											: ""
-									}}{{ recipeLabel(row) }}
 								</span>
 							</div>
 						</div>
