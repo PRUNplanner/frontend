@@ -27,6 +27,16 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 - **Min market capacity** (next to the search above the table), **Logistics limit** and **Max jumps** hide rows; the line above the table counts the hidden rows per limit. Max jumps counts to the nearest exchange of your CX preference.
 - **Run setup again** opens the first-visit setup with its presets: Rookie (SCB, without weekly return and running cost), Standard (WCB) and Veteran (any ship or no limit).
 
+# Profit chart
+
+Above the table, a chart shows the daily profit of the last 30 days for each industry. Each base counts by how much of its product the market trades (7-day average), and the many planets of one resource recipe count as one. Search to drill in:
+
+- an industry (e.g. "Chemistry") shows its buildings;
+- a building (e.g. "CHP") shows its products;
+- a product (e.g. "SC") shows the recipes that make it.
+
+The chart follows the table's settings and limits. It shows the 7 most traded lines and says how many more there are.
+
 # Search and tooltips
 
 - The search above the table filters by industry, building or product ticker.

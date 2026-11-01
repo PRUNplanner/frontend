@@ -28,6 +28,7 @@
 	} from "@/features/base_roi/baseROIDetail.util";
 	import {
 		hasHistory,
+		historyDays,
 		profitHistory,
 		scaleToRange,
 	} from "@/features/base_roi/baseROIHistory";
@@ -220,18 +221,7 @@
 				)
 			: null
 	);
-	const historyDays = computed(() => {
-		const today = new Date();
-		const midnight = Date.UTC(
-			today.getUTCFullYear(),
-			today.getUTCMonth(),
-			today.getUTCDate()
-		);
-		return Array.from(
-			{ length: 30 },
-			(_, i) => midnight - (29 - i) * 86_400_000
-		);
-	});
+	const chartDays = historyDays();
 	const chartSeries = computed<ILineSeries[]>(() =>
 		history.value
 			? [
@@ -357,7 +347,7 @@
 					</figcaption>
 					<div class="h-72" data-history-absolute>
 						<PLineChart
-							:days="historyDays"
+							:days="chartDays"
 							:series="chartSeries"
 							:label="t('base_roi.detail.history_absolute')" />
 					</div>
@@ -368,7 +358,7 @@
 					</figcaption>
 					<div class="h-72" data-history-scaled>
 						<PLineChart
-							:days="historyDays"
+							:days="chartDays"
 							:series="scaledSeries"
 							:label="t('base_roi.detail.history_scaled')" />
 					</div>
