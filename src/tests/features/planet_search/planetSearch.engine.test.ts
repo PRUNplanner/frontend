@@ -922,6 +922,7 @@ describe("planet search engine", () => {
 
 		it("ranks compare values", () => {
 			expect(rankValues([5], true)).toEqual([null]);
+			expect(rankValues([null, null], true)).toEqual([null, null]);
 			expect(rankValues([1, 3, 2], true)).toEqual([0, 1, 0.5]);
 			expect(rankValues([1, 3, 2], false)).toEqual([1, 0, 0.5]);
 			expect(rankValues([4, 4], true)).toEqual([1, 1]);
