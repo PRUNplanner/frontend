@@ -9,6 +9,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
+import { recipeLabel } from "@/features/base_roi/baseROIDetail.util";
 
 // Types & Interfaces
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
@@ -231,6 +232,28 @@ describe("BaseROITable", () => {
 		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
 	});
 
+	it("the recipe is a tooltip on the product name, not a line, not on the tiles", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => r.planetNaturalId) ?? rows[0];
+		const recipe = recipeLabel(row);
+		const cell = wrapper.find(
+			`tr[data-row-key="${row.key}"] td[data-col-key="product"]`
+		);
+		expect(cell.text()).not.toContain(recipe);
+		// the tiles keep their own market card: outside the trigger
+		const trigger = cell.find(".ptooltip");
+		expect(trigger.findComponent({ name: "MaterialTile" }).exists()).toBe(
+			false
+		);
+		expect(trigger.attributes("tabindex")).toBeUndefined();
+		await trigger.trigger("mouseenter");
+		await flushPromises();
+		const tip = document.body.querySelector("[data-recipe]")!;
+		expect(tip.textContent).toContain(recipe);
+		if (row.planetNaturalId)
+			expect(tip.textContent).toContain(`${row.building} · `);
+	});
+
 	it("ramp: one break-even number, no payback line under it", async () => {
 		const wrapper = await mountTable();
 		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
@@ -276,7 +299,9 @@ describe("BaseROITable", () => {
 		expect(cells.length).toBeGreaterThan(0);
 		for (const c of cells) expect(c.attributes("tabindex")).toBeUndefined();
 		await wrapper
-			.find("tbody tr[data-row-key] td .ptooltip")
+			.find(
+				'tbody tr[data-row-key] td[data-col-key="daily_profit"] .ptooltip'
+			)
 			.trigger("mouseenter");
 		await flushPromises();
 		expect(document.body.textContent).toContain(
