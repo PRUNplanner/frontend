@@ -1,3 +1,13 @@
+# 2026-11-01 - v. 0.35.0
+
+The headline of this release is **plan versions**: your plans now keep a history, and unsaved edits survive a reload.
+
+- **Plan versions**: undo, redo, save and versions now share one save control. Edits are autosaved as a draft, and you can name versions, preview and compare old ones, restore them, make one active in one step, open one as a new plan or delete it [[PR-697]](https://github.com/PRUNplanner/frontend/pull/697), [[PR-698]](https://github.com/PRUNplanner/frontend/pull/698)
+- **Price gaps on the market report**: /market now shows the price gaps between exchanges to everyone, with limits tuned on a week of real order books [[PR-696]](https://github.com/PRUNplanner/frontend/pull/696)
+- **Free workers in Planet Search**: the compare table shows free workers per tier, so you can see where you can hire without opening each POPR [[PR-706]](https://github.com/PRUNplanner/frontend/pull/706)
+- **Landing page**: new screenshots from the current app and a new share image [[PR-688]](https://github.com/PRUNplanner/frontend/pull/688)
+- **Fixes**: the plan editor keeps working with browser page translation on, failed actions now show an error, "Copied" only appears when copying worked, tabs reload far less after saves and bulk actions, and compare rows without any values no longer turn red [[PR-702]](https://github.com/PRUNplanner/frontend/pull/702), [[PR-694]](https://github.com/PRUNplanner/frontend/pull/694), [[PR-690]](https://github.com/PRUNplanner/frontend/pull/690), [[PR-699]](https://github.com/PRUNplanner/frontend/pull/699), [[PR-706]](https://github.com/PRUNplanner/frontend/pull/706)
+
 # 2026-10-29 - v. 0.34.1
 
 A follow-up to 0.34.0: Production Chains can now build on what you already make, and the new plan editor gets a round of polish from your feedback.
