@@ -228,7 +228,8 @@
 		"cogc": "COGC",
 		"infrastructure": "Infrastructure",
 		"cx": "AI1 / CI1 / IC1 / NC1",
-		"jumps": "Jumps to {ref}"
+		"jumps": "Jumps to {ref}",
+		"free_workers": "Free {tier} workers"
 	},
 	"chart": {
 		"label": "Results chart: {y} against {x}",
