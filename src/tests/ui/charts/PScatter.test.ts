@@ -114,6 +114,51 @@ describe("PScatter", () => {
 		expect(await xFirst({ xZero: false })).toBe("11.5");
 	});
 
+	it("places values by ratio on a log axis, with dense small dots", async () => {
+		const logPoints = [
+			{ key: "a", label: "a", x: 1, y: 1, size: 0 },
+			{ key: "b", label: "b", x: 10, y: 10, size: 1 },
+			{ key: "c", label: "c", x: 100, y: 100, size: 1 },
+		];
+		const wrapper = await mountScatter({
+			points: logPoints,
+			frontier: [],
+			log: true,
+			dense: true,
+		});
+		const dots = wrapper.findAll(".scatter-dot circle:last-child");
+		const cx = dots.map((d) => Number(d.attributes("cx")));
+		// 10 sits halfway between 1 and 100
+		expect(cx[1] - cx[0]).toBeCloseTo(cx[2] - cx[1]);
+		expect(dots[0].attributes("r")).toBe("2");
+		expect(dots[2].attributes("r")).toBe("6");
+		expect(dots[0].attributes("fill-opacity")).toBe("0.5");
+	});
+
+	it("labels only whole powers of ten on a narrow log axis", async () => {
+		const logPoints = [
+			{ key: "a", label: "a", x: 20, y: 1 },
+			{ key: "b", label: "b", x: 38_000, y: 700 },
+		];
+		const texts = async () =>
+			labels(
+				await mountScatter({
+					points: logPoints,
+					frontier: [],
+					log: true,
+				})
+			);
+		expect(await texts()).toContain("3,000");
+
+		vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(
+			300
+		);
+		const narrow = await texts();
+		expect(narrow).not.toContain("3,000");
+		expect(narrow).toContain("1,000");
+		expect(narrow.filter((t) => t === "100").length).toBeGreaterThan(0);
+	});
+
 	it("sizes dots by size, and labels only emphasised ones above maxLabels", async () => {
 		const wrapper = await mountScatter({ maxLabels: 2, frontier: [] });
 		const r = (label: string) =>

@@ -17,6 +17,7 @@
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 	import {
 		belowLabelX,
+		logTicks,
 		niceTicks,
 		placeLabels,
 	} from "@/ui/charts/scatter.util";
@@ -40,6 +41,8 @@
 		maxLabels = 40,
 		yBetter = "high",
 		xZero = true,
+		log = false,
+		dense = false,
 	} = defineProps<{
 		points: IScatterPoint[];
 		xTitle: string;
@@ -54,6 +57,10 @@
 		yBetter?: "high" | "low";
 		/** x axis from 0 (default), else fitted to the data, e.g. ROI days */
 		xZero?: boolean;
+		/** log scale on both axes, for values above 0 over several powers of ten */
+		log?: boolean;
+		/** small see-through dots, for hundreds of points */
+		dense?: boolean;
 	}>();
 
 	/** hovered or focused point, shared with e.g. a list beside the chart */
@@ -89,19 +96,23 @@
 	// plot area inside the svg: room for y ticks left, x ticks and title below
 	const M = { top: 24, right: 16, bottom: 44, left: 48 };
 	const CHAR_PX = 7;
+	const MIN_LOG_TICK_PX = 56;
 	const coarse =
 		typeof window.matchMedia === "function" &&
 		window.matchMedia("(pointer: coarse)").matches;
 
 	const xTicks = computed(() => {
 		const xs = points.map((p) => p.x);
+		if (log && xs.length) return logTicks(Math.min(...xs), Math.max(...xs));
 		return !xZero && xs.length
 			? niceTicks(Math.min(...xs), Math.max(...xs))
 			: niceTicks(0, Math.max(...xs, 1));
 	});
 	const yTicks = computed(() => {
 		const ys = points.map((p) => p.y);
-		return ys.length ? niceTicks(Math.min(...ys), Math.max(...ys)) : [0, 1];
+		if (!ys.length) return [0, 1];
+		const fit = log ? logTicks : niceTicks;
+		return fit(Math.min(...ys), Math.max(...ys));
 	});
 	const plot = computed(() => ({
 		x: M.left,
@@ -116,13 +127,20 @@
 		length: number,
 		flip: boolean
 	) {
-		const lo = ticks[0];
-		const span = ticks.at(-1)! - lo || 1;
-		return (v: number) =>
-			flip
-				? from + length - ((v - lo) / span) * length
-				: from + ((v - lo) / span) * length;
+		const place = log && ticks[0] > 0 ? Math.log10 : (v: number) => v;
+		const lo = place(ticks[0]);
+		const span = place(ticks.at(-1)!) - lo || 1;
+		return (v: number) => {
+			const at = ((place(v) - lo) / span) * length;
+			return flip ? from + length - at : from + at;
+		};
 	}
+	// room for a label each, else whole powers of ten only; grid lines stay
+	const xLabels = computed(() =>
+		log && plot.value.w / xTicks.value.length < MIN_LOG_TICK_PX
+			? xTicks.value.filter((v) => Number.isInteger(Math.log10(v)))
+			: xTicks.value
+	);
 	const sx = computed(() =>
 		scale(xTicks.value, plot.value.x, plot.value.w, false)
 	);
@@ -135,7 +153,12 @@
 			point: p,
 			cx: sx.value(p.x),
 			cy: sy.value(p.y),
-			r: p.size === undefined ? 6 : 5 + 6 * p.size,
+			r:
+				p.size === undefined
+					? 6
+					: dense
+						? 2 + 4 * p.size
+						: 5 + 6 * p.size,
 		}))
 	);
 	// emphasised dots on top; the order never follows the active dot or a
@@ -361,6 +384,7 @@
 						:y2="plot.y + plot.h"
 						:stroke="theme.grid" />
 					<text
+						v-if="xLabels.includes(v)"
 						:x="sx(v)"
 						:y="plot.y + plot.h + 18"
 						text-anchor="middle">
@@ -421,13 +445,20 @@
 				<circle
 					:cx="d.cx"
 					:cy="d.cy"
-					:r="coarse ? 22.5 : Math.max(d.r + 3, 12.5)"
+					:r="
+						coarse
+							? 22.5
+							: dense
+								? d.r + 2
+								: Math.max(d.r + 3, 12.5)
+					"
 					fill="transparent" />
 				<circle
 					:cx="d.cx"
 					:cy="d.cy"
 					:r="d.r"
 					:fill="d.point.color ?? theme.muted"
+					:fill-opacity="dense && !d.point.emphasis ? 0.5 : 1"
 					stroke="none" />
 			</g>
 

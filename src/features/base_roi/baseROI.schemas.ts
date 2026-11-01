@@ -21,6 +21,7 @@ export const BaseROIColumnSchema = z.enum([
 	"running_cost",
 	"cargo",
 	"market_capacity",
+	"plots",
 	"workforce",
 	"history",
 ]);
@@ -52,7 +53,7 @@ export const BaseROISettingsSchema = z.object({
 		.union([z.literal("ramp"), z.number().int().min(0).max(5)])
 		.catch("ramp"),
 	// 0: off
-	bufferDays: z.union([z.literal(0), dayOption]).catch(9),
+	bufferDays: z.union([z.literal(0), dayOption]).catch(10),
 	minMarketCapacity: z.number().min(0).max(1).catch(0.7),
 	logistics: z.enum(["ship", "manual", "none"]).catch("ship"),
 	ship: BaseROIShipSchema.catch("WCB"),
@@ -67,6 +68,7 @@ export const BaseROISettingsSchema = z.object({
 	showResources: z.boolean().catch(true),
 	showRecipes: z.boolean().catch(true),
 	showNegative: z.boolean().catch(false),
+	showUnbuildable: z.boolean().catch(false),
 	hiddenColumns: z
 		.array(BaseROIColumnSchema)
 		.catch(() => [...DEFAULT_HIDDEN_COLUMNS]),

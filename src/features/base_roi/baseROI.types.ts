@@ -1,4 +1,5 @@
 // Types & Interfaces
+import type { IPlanetPlotFields } from "@/features/planet_search/planetPlots.util";
 import type { IPriceSource } from "@/features/cx/priceBook";
 import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
 import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
@@ -28,6 +29,8 @@ export interface IBaseROICandidate {
 	planetNaturalId: string | null;
 	planetName: string | null;
 	jumps: number | null;
+	// planet rows only: free plots as far as the backend knows them
+	plots?: IPlanetPlotFields;
 }
 
 /** a material the base buys (amount < 0) or sells (amount > 0) per day */
@@ -133,10 +136,19 @@ export interface IBaseROIRow extends IBaseROIRowInput {
 	metrics: IBaseROIMetrics;
 }
 
+/** whether a planet's free workers fill a base's jobs */
+export interface IBaseROIStaffing {
+	hasReport: boolean;
+	// the tiers it can't fill
+	gaps: { tier: WorkforceType; required: number; available: number }[];
+}
+
 export interface IBaseROIHidden {
 	maxJumps: number;
 	logistics: number;
 	marketCapacity: number;
+	noPlots: number;
+	unstaffed: number;
 	negative: number;
 }
 

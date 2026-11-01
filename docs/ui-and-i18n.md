@@ -201,8 +201,8 @@ modals and drawers) is imported by path, not from the barrel.
     a decorative value-of-max bar in a table cell `PInlineBar.vue`.
     An x/y scatter with a best trade-off line, placed labels and a tooltip
     slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
-    `niceTicks` in `scatter.util.ts`; `yBetter="low"` for e.g. jumps,
-    `xZero=false` to fit X to the data). Lines over days (one per series,
+    `niceTicks`, `logTicks` in `scatter.util.ts`; `yBetter="low"` for e.g. jumps,
+    `xZero=false` to fit X to the data, `log` for values over several powers of ten, `dense` for hundreds of points). Lines over days (one per series,
     direct end labels, a crosshair tooltip sorted by value, an optional
     volume panel) are `PLineChart.vue`; a 24 px high trend line in a
     table cell is `PSparkline.vue` (100 px wide, its own y-scale; `domain`,

@@ -142,6 +142,7 @@ export function planetCandidates(
 			planetNaturalId: planet.planet_natural_id,
 			planetName: planet.planet_name,
 			jumps: jumps >= 0 ? jumps : null,
+			plots: planet,
 		});
 
 		for (const resource of planet.resources) {

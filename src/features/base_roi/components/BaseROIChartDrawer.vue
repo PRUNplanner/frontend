@@ -10,6 +10,7 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { paretoFrontier } from "@/ui/charts/scatter.util";
 
 	// Components
 	import PScatter from "@/ui/charts/PScatter.vue";
@@ -49,28 +50,48 @@
 			recipe: theme.value.exchange("IC1"),
 		})[kind];
 
+	const paysOff = (r: IBaseROIRow) =>
+		Number.isFinite(r.metrics.breakEven) && r.metrics.breakEven > 0;
+	// a log axis has no 0
+	const hasMarket = (r: IBaseROIRow) =>
+		Number.isFinite(r.metrics.marketCapacity) &&
+		r.metrics.marketCapacity > 0;
+
 	const drawn = computed(() =>
-		rows.filter(
-			(r) =>
-				Number.isFinite(r.metrics.breakEven) && r.metrics.breakEven > 0
+		rows.filter((r) => paysOff(r) && hasMarket(r))
+	);
+	const never = computed(() => rows.filter((r) => !paysOff(r)).length);
+	const noMarket = computed(
+		() => rows.filter((r) => paysOff(r) && !hasMarket(r)).length
+	);
+	const byKey = computed(() => new Map(drawn.value.map((r) => [r.key, r])));
+
+	// low break-even, high market capacity: nothing beats them on both
+	const frontier = computed(() =>
+		paretoFrontier(
+			drawn.value.map((r) => ({
+				key: r.key,
+				x: r.metrics.breakEven,
+				y: r.metrics.marketCapacity,
+			}))
 		)
 	);
-	const never = computed(() => rows.length - drawn.value.length);
-	const byKey = computed(() => new Map(drawn.value.map((r) => [r.key, r])));
 
 	const points = computed((): IScatterPoint[] => {
 		const profits = drawn.value.map((r) => r.metrics.dailyProfit);
 		const min = Math.min(...profits);
 		const max = Math.max(...profits);
+		const onFrontier = new Set(frontier.value);
 		return drawn.value.map((r) => ({
 			key: r.key,
 			label: r.planetNaturalId
 				? `${r.outputs[0]?.ticker ?? r.building} @ ${r.planetNaturalId}`
 				: `${r.outputs.map((o) => o.ticker).join(", ")} ${r.building}`,
-			x: r.metrics.marketCapacity,
-			y: r.metrics.breakEven,
+			x: r.metrics.breakEven,
+			y: r.metrics.marketCapacity,
 			size: max > min ? (r.metrics.dailyProfit - min) / (max - min) : 0.5,
 			color: colorOf(r.kind),
+			emphasis: onFrontier.has(r.key),
 		}));
 	});
 	const legend = computed(() =>
@@ -133,7 +154,9 @@
 				<PScatter
 					v-model:active="active"
 					:points="points"
-					y-better="low"
+					:frontier="frontier"
+					log
+					dense
 					:x-title="t('base_roi.chart.x')"
 					:y-title="t('base_roi.chart.y')"
 					:label="t('base_roi.chart.label')">
@@ -147,13 +170,13 @@
 								{{ t("base_roi.chart.tooltip_break_even") }}
 							</dt>
 							<dd class="font-mono text-right">
-								{{ formatNumber(point.y, 1) }}
+								{{ formatNumber(point.x, 1) }}
 							</dd>
 							<dt class="text-muted">
 								{{ t("base_roi.chart.tooltip_capacity") }}
 							</dt>
 							<dd class="font-mono text-right">
-								{{ formatNumber(point.x, 2) }}
+								{{ formatNumber(point.y, 2) }}
 							</dd>
 							<dt class="text-muted">
 								{{ t("base_roi.chart.tooltip_profit") }}
@@ -173,6 +196,9 @@
 			</div>
 			<p v-else class="flex-1 py-3 text-center text-muted">
 				{{ t("base_roi.chart.empty") }}
+			</p>
+			<p v-if="noMarket" class="text-xs text-muted">
+				{{ t("base_roi.chart.no_market", { n: noMarket }, noMarket) }}
 			</p>
 			<p v-if="never" class="text-xs text-muted">
 				{{ t("base_roi.chart.never", { n: never }, never) }}

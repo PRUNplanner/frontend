@@ -30,10 +30,10 @@
 		class="gap-0.5 p-0.5 rounded-panel border border-line bg-surface-sunken"
 		:class="
 			block === 'phone'
-				? 'flex w-full sm:inline-flex sm:w-auto'
+				? 'flex w-full sm:inline-flex sm:w-fit'
 				: block
 					? 'flex w-full'
-					: 'inline-flex'
+					: 'inline-flex w-fit'
 		">
 		<button
 			v-for="o in options"

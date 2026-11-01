@@ -66,7 +66,7 @@ describe("BaseROISetup (criterion 13)", () => {
 			logistics: "ship",
 			ship: "WCB",
 			minMarketCapacity: 0.7,
-			bufferDays: 9,
+			bufferDays: 10,
 		});
 		expect(shows).toEqual([false]);
 	});

@@ -53,6 +53,8 @@ describe("PSegmented", () => {
 		const props = { value: "exchange", options: OPTIONS, label: "x" };
 		const md = mount(PSegmented, { props });
 		expect(md.classes()).toContain("inline-flex");
+		// stays content wide in a flex column, which would stretch it
+		expect(md.classes()).toContain("w-fit");
 		expect(md.find("button").classes()).toContain("h-7");
 
 		const sm = mount(PSegmented, { props: { ...props, size: "sm" } });
@@ -68,7 +70,7 @@ describe("PSegmented", () => {
 			props: { ...props, block: "phone" },
 		});
 		expect(phone.classes()).toEqual(
-			expect.arrayContaining(["w-full", "sm:inline-flex", "sm:w-auto"])
+			expect.arrayContaining(["w-full", "sm:inline-flex", "sm:w-fit"])
 		);
 		expect(phone.find("button").classes()).toContain("sm:flex-none");
 	});

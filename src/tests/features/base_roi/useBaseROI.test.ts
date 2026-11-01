@@ -32,6 +32,7 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({
 const calls = vi.hoisted(() => ({
 	byName: {} as Record<string, unknown[]>,
 	sparklines: "ok" as "ok" | "fail",
+	reports: null as unknown[] | null,
 	index: "ok" as "ok" | "fail",
 	// a query waits for this before it answers
 	hold: {} as Record<string, Promise<void> | undefined>,
@@ -73,6 +74,9 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 						.map((id) => planets.get(id)!);
 				case "GetPlanet":
 					return planets.get(params!.planetNaturalId as string)!;
+				case "GetMultiplePlanetPOPR":
+					if (!calls.reports) throw new Error("down");
+					return calls.reports;
 				case "GetCXSparklines":
 					if (calls.sparklines === "fail") throw new Error("down");
 					return { exchange: params!.exchange, days: 90, series: {} };
@@ -92,6 +96,7 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 	beforeEach(() => {
 		calls.byName = {};
 		calls.sparklines = "ok";
+		calls.reports = null;
 		calls.index = "ok";
 		calls.hold = {};
 		calls.drop = new Set();
@@ -207,6 +212,40 @@ describe("useBaseROI", { timeout: 60_000 }, () => {
 			{ exchange: "AI1", days: 90, metric: "vwap_daily" },
 		]);
 		expect(roi.preferenceExchanges()).toEqual(["AI1"]);
+	});
+
+	it("loads the Universe price history without a CX preference", async () => {
+		const { roi } = setup();
+		await roi.calculate();
+		await vi.waitFor(() => expect(roi.series.value).not.toBeNull());
+		expect(calls.byName.GetCXSparklines).toEqual([
+			{ exchange: "UNIVERSE", days: 90, metric: "vwap_daily" },
+		]);
+	});
+	it("hides planets without workers, once the reports are in", async () => {
+		calls.reports = [];
+		const { roi, settings } = setup({ maxJumps: 3 });
+		await roi.calculate();
+		await vi.waitFor(() =>
+			expect(roi.staffing.value.size).toBeGreaterThan(0)
+		);
+		// no report for any planet: every planet row is checked and hidden
+		expect(roi.filtered.value.hidden.unstaffed).toBeGreaterThan(0);
+		expect(
+			roi.filtered.value.rows.filter((r) => r.planetNaturalId)
+		).toEqual([]);
+		expect(calls.byName.GetMultiplePlanetPOPR).toHaveLength(1);
+
+		settings.value = { ...settings.value, showUnbuildable: true };
+		expect(roi.filtered.value.hidden.unstaffed).toBe(0);
+	});
+
+	it("failed reports limit nothing and say so", async () => {
+		const { roi } = setup({ maxJumps: 3 });
+		await roi.calculate();
+		await vi.waitFor(() => expect(roi.populationFailed.value).toBe(true));
+		expect(roi.staffing.value.size).toBe(0);
+		expect(roi.filtered.value.hidden.unstaffed).toBe(0);
 	});
 
 	it("a failed history call leaves the column empty, not an error", async () => {

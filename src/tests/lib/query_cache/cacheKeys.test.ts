@@ -136,6 +136,7 @@ describe("every query's cache key", () => {
 			  "GetMarketExchanges": "["gamedata","market","exchanges"]",
 			  "GetMarketSummary": "["gamedata","market","summary"]",
 			  "GetMaterials": "["gamedata","materials"]",
+			  "GetMultiplePlanetPOPR": "["gamedata","planet","popr","multiple",["OT-580b","KW-688c"]]",
 			  "GetMultiplePlanets": "["gamedata","planet","multiple",["OT-580b","KW-688c"]]",
 			  "GetPlan": "["planningdata","plan","plan"]",
 			  "GetPlanDraft": "["planningdata","plan_draft","plan"]",

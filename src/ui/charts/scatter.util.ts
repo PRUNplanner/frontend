@@ -51,6 +51,30 @@ export function niceTicks(min: number, max: number): number[] {
 	return ticks;
 }
 
+/**
+ * Round ticks of a log scale: 1, 2, 5 per power of ten, or 1, 3 over more
+ * than two powers.
+ * @author jplacht
+ *
+ * @param {number} min lowest value, above 0
+ * @param {number} max highest value
+ * @returns {number[]} ticks, the first ≤ min and the last ≥ max
+ */
+export function logTicks(min: number, max: number): number[] {
+	if (max <= min) [min, max] = [min / 2, max * 2];
+	const from = Math.floor(Math.log10(min));
+	const to = Math.ceil(Math.log10(max));
+	const steps = to - from <= 2 ? [1, 2, 5] : [1, 3];
+	const ticks: number[] = [];
+	for (let power = from; power <= to; power++)
+		for (const step of steps)
+			ticks.push(Number((step * 10 ** power).toFixed(10)));
+	return ticks.slice(
+		ticks.findLastIndex((t) => t <= min),
+		ticks.findIndex((t) => t >= max) + 1
+	);
+}
+
 const LABEL_GAP = 4;
 const LABEL_HEIGHT = 14;
 const LABEL_SIDES: IScatterLabelSide[] = ["right", "left", "below", "above"];

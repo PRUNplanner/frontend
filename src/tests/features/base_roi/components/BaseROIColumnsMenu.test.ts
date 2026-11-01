@@ -32,7 +32,7 @@ describe("BaseROIColumnsMenu (criterion 14)", () => {
 		const boxes = wrapper.findAllComponents(PCheckbox);
 		// product first, always on and disabled
 		expect(boxes[0].props("disabled")).toBe(true);
-		expect(boxes).toHaveLength(11);
+		expect(boxes).toHaveLength(12);
 
 		boxes[1].vm.$emit("update:checked", false);
 		expect(updates.at(-1)).toEqual(["cargo", "expertise"]);

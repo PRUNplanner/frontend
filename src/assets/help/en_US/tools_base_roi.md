@@ -17,6 +17,7 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 - **Daily running cost**: inputs + consumables + degradation. Hidden until you turn it on in Columns: the buffer stock in the building cost already covers the running cost to start with.
 - **Cargo / day**: the larger of the weight and volume the base moves in or out per day; (I) when more comes in, (O) when more goes out.
 - **Market capacity**: how many bases like this the market can take, on both sides. For each output it is the 7-day average traded volume ÷ what the base produces per day, and for each recipe input the traded volume ÷ what the base needs per day. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1, one base produces or needs more than the market trades.
+- **Plots**: free plots on the planet, for planet rows. Sort by it to see the emptiest planets. Recipe rows run on a standard planet, so they show a dash.
 - **Workforce**: the workforce the base needs per tier.
 - **Profit, 30 days**: daily profit with the daily VWAP of each material's exchange over the last 30 days. Days without trades keep the last price. ASK, BID and fixed prices have no history.
 - **⚠**: a material priced from a 7D or 30D VWAP whose bid or ask is more than 30% off that price. The popover lists the daily profit with those prices.
@@ -25,6 +26,7 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 
 - **Stock buffer**: storage for this many days of cargo; STO or STA are added, and a production building is dropped when the base would no longer fit.
 - **Min market capacity** (next to the search above the table), **Logistics limit** and **Max jumps** hide rows; the line above the table counts the hidden rows per limit. Max jumps counts to the nearest exchange of your CX preference.
+- **Show planets without workers or plots**: off by default, so planet rows are hidden when no new base fits (every plot taken and no ghost sites) or when the latest population report can't fill the base's jobs, counting free workers less the jobs already open. A planet with no population report counts as having no workers. Turn it on to see these rows; the Workforce column shows what is missing. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
 - **Run setup again** opens the first-visit setup with its presets: Rookie (SCB, without weekly return and running cost), Standard (WCB) and Veteran (any ship or no limit).
 
 # Profit chart

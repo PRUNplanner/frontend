@@ -23,7 +23,7 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 		expect(settings.value).toMatchObject({
 			cogc: "matching",
 			experts: "ramp",
-			bufferDays: 9,
+			bufferDays: 10,
 			minMarketCapacity: 0.7,
 			logistics: "ship",
 			ship: "WCB",
@@ -35,6 +35,7 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 			showResources: true,
 			showRecipes: true,
 			showNegative: false,
+			showUnbuildable: false,
 			hiddenColumns: ["running_cost"],
 		});
 	});
@@ -63,7 +64,7 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 			JSON.stringify({ bufferDays: 13, ship: "XXX", maxJumps: 4 })
 		);
 		const { settings } = useBaseROISettings();
-		expect(settings.value.bufferDays).toBe(9);
+		expect(settings.value.bufferDays).toBe(10);
 		expect(settings.value.ship).toBe("WCB");
 		expect(settings.value.maxJumps).toBe(4);
 	});
