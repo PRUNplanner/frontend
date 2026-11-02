@@ -58,15 +58,16 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
    [Layout & hierarchy](docs/ui-and-i18n.md#layout--hierarchy).
 3. **No hard-coded user-facing strings.** Add keys only to
    `src/locales/en_US/<namespace>.json`; help pages live in
-   `src/assets/help/en_US/`. Every other locale is managed by Crowdin:
-   never edit it, and keep it out of feature PRs. Debug tooling (`/debug`,
+   `src/assets/help/en_US/`. Crowdin syncs every other locale and would
+   overwrite edits there, so keep them out of PRs. Debug tooling (`/debug`,
    `/dev/kit`, `features/planning/components/debug/`, `lib/debugMode.ts`)
    stays English only.
 4. **Backend calls follow one chain:** `call*()` in
    `src/features/api/*.api.ts` → Zod schema in `src/features/api/schemas/` →
    named `defineQuery()` / `defineMutation()` in
    `src/lib/query_cache/queries/*.queries.ts`. Components and composables
-   use `useQuery("Name", params).execute()`, never axios or `call*()`. Wrap
+   use `useQuery("Name", params).execute()`, not axios or `call*()`, so
+   caching and invalidation keep working. Wrap
    loops of planning mutations in `batchChanges()`. See
    [data-layer.md](docs/data-layer.md).
 5. **Game data** (materials, buildings, recipes, exchanges, planets) comes
@@ -95,7 +96,8 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
   `defineStore("prunplanner_x", () => {...})`. Generic helpers in
   `src/util/`.
 - **Naming.** Components are PascalCase with a feature prefix (`Plan*`,
-  `Empire*`, `CX*`, `FIO*`). Frontend-only interfaces start with `I`;
+  `Empire*`, `CX*` for commodity exchange, `FIO*`). Frontend-only
+  interfaces start with `I`;
   schema-derived types don't.
 - **Composables are synchronous.** Register watchers and lifecycle hooks
   before any `await` (Vue binds them only during synchronous setup). Put
@@ -113,17 +115,20 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
 
 Every shape has exactly one definition.
 
-- **Boundary data** (API, market SSE, FIO, localStorage): the Zod schema is
+- **Boundary data** (API, the market's server-sent events, FIO,
+  localStorage): the Zod schema is
   the source of truth. `export const ThingSchema = z.object({...})` with
   `export type Thing = z.infer<typeof ThingSchema>` next to it, in
   `src/features/api/schemas/<domain>.schemas.ts` or the feature's
   `*.schemas.ts`. Derive variants with `.extend/.pick/.omit/.partial`; use
-  `z.input` for payloads callers build; enums are `z.enum([...])`. Never
-  annotate `z.ZodType<…>` (only recursive schemas, with a comment).
+  `z.input` for payloads callers build; enums are `z.enum([...])`. Don't
+  annotate `z.ZodType<…>`: it widens the inferred type (recursive schemas
+  are the exception, with a comment).
 - **Frontend-only shapes** are plain TypeScript in `*.types.ts`, no Zod.
 - `type` for schema-derived types and unions, `interface` for object
-  shapes, `import type` for type-only imports. Schemas and frontend-only
-  types never share a file. Only the ambient files are `.d.ts`
+  shapes, `import type` for type-only imports. Keep schemas and
+  frontend-only types in separate files, so the file says which is
+  validated. Only the ambient files are `.d.ts`
   (`skipLibCheck` skips them).
 - Lint enforces the `ZodType` ban, `interface` and `import type`.
 - Details: [data-layer.md](docs/data-layer.md).
