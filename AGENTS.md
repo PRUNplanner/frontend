@@ -96,7 +96,8 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
   `defineStore("prunplanner_x", () => {...})`. Generic helpers in
   `src/util/`.
 - **Naming.** Components are PascalCase with a feature prefix: `Plan*`,
-  `Empire*`, `FIO*`, or `CX*` for the commodity exchange (CX).
+  `Empire*`, `CX*` for the commodity exchange (CX), or `FIO*` for the
+  community game-data API (FIO).
   Frontend-only interfaces start with `I`;
   schema-derived types don't.
 - **Composables are synchronous.** Register watchers and lifecycle hooks
