@@ -66,7 +66,7 @@ pnpm run dev
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/23225951d9584a80b51256487975453b)](https://app.codacy.com/gh/PRUNplanner/frontend/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
-PRUNplanners frontend historically lacked proper testing of its non-visual features and data validation. Backend calls can be mocked easily with [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter).
+Backend calls are mocked with [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter); see [docs/testing.md](docs/testing.md).
 
 ```shell
 # Run tests
@@ -95,7 +95,7 @@ pnpm run test:components
 | VITE_GAME_DATA_MAX_AGE_MINUTES_EXCHANGES | int | 30    |
 | VITE_GAME_DATA_WRITE_DELAY_MS | int | 5000 |
 | VITE_INDEXEDDB_DBNAME             | string | "prunplanner"                    |
-| VITE_KIT_PAGE                     | string | unset (`"true"` adds the `/dev/kit` page) |
+| VITE_KIT_PAGE                     | string | unset (`"true"` adds the `/dev/kit` page to a build; always on in dev) |
 
 The app version comes from `version` in `package.json`, not from an env var.
 
@@ -118,21 +118,7 @@ docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
 docker run -p 80:80 ghcr.io/prunplanner/prunplanner-frontend:latest --brotli --port 80
 ```
 
-Or use it with Docker Compose, as in the repo's `docker-compose.yaml`:
-
-```yaml
-services:
-    frontend:
-        image: ghcr.io/prunplanner/prunplanner-frontend:latest
-        container_name: prunplanner-frontend
-        entrypoint: ["sh", "-c"]
-        command: >
-            "echo \"window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' }\" > /code/env.js &&
-            /bin/go-http-server --port 80 --brotli"
-        ports:
-            - "80:80"
-        restart: unless-stopped
-```
+Or use Docker Compose with the repo's [`docker-compose.yaml`](docker-compose.yaml).
 
 `index.html` loads a runtime `/env.js` (`window.__APP_CONFIG__`) for the
 PostHog key; the compose file writes it from `POSTHOG_KEY` before starting

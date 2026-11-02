@@ -9,7 +9,7 @@ One page per `src/features/*` folder. Each page starts with **Purpose** and
 | Feature | One-liner |
 | --- | --- |
 | [planning](planning.md) | The plan engine (`engine/`, `usePlanCalculation`) and the plan editor panels/tools |
-| [planning_data](planning_data.md) | Plan create/save/clone/reload (`usePlan`) |
+| [planning_data](planning_data.md) | Plan create/save/clone/reload (`usePlan`) and plan diffs |
 | [empire](empire.md) | Empire dashboard components: cost overview, material I/O, opportunities |
 | [manage](manage.md) | Create empires and CX preferences, assign plans to empires |
 | [exchanges](exchanges.md) | Edit CX preferences (exchange and ticker prices), CSV import/export |
@@ -26,7 +26,7 @@ One page per `src/features/*` folder. Each page starts with **Purpose** and
 | [xit](xit.md) | Generate XIT action JSON (buy/transfer) |
 | [roi_overview](roi_overview.md) | ROI of every production recipe |
 | [resource_roi_overview](resource_roi_overview.md) | ROI of extracting a resource per planet |
-| [base_roi](base_roi.md) | Base ROI (`/base-roi`, test phase): every base layout ranked by break-even with the expert ramp, buffer, HQ and ship add-ons |
+| [base_roi](base_roi.md) | Base ROI (`/base-roi`, URL only): every base layout ranked by break-even |
 | [repair_analysis](repair_analysis.md) | Repair cost vs building age |
 | [hq_upgrade_calculator](hq_upgrade_calculator.md) | Materials and cost for HQ level upgrades |
 | [government](government.md) | POPR reports and the upkeep price calculator |
@@ -45,11 +45,11 @@ One page per `src/features/*` folder. Each page starts with **Purpose** and
 | [wrapper](wrapper.md) | Data-loading gates used by every view |
 | [save_bar](save_bar.md) | Sticky unsaved-changes bar (Manage, Exchanges, plan COGM prices) |
 | [save_conflict](save_conflict.md) | Dialog when a plan, empire or CX was saved or deleted in another tab |
-| [material_tile](material_tile.md) | The standard material ticker chip |
-| [plan_analytics](plan_analytics.md) | Planet insights box on the plan page |
+| [material_tile](material_tile.md) | The standard material ticker chip and its market card |
+| [plan_analytics](plan_analytics.md) | Community planet insights in the plan editor: insights box, "popular here" hints, starter setup |
 | [help](help.md) | Markdown help drawer and tutorial |
-| [homepage](homepage.md) | The logged-out landing page's guided tours, counts and landing styles |
-| [account](account.md) | Login, registration, email verification, password reset |
+| [homepage](homepage.md) | Logged-out landing page: guided tours, market today panel, counts and styles |
+| [account](account.md) | Login, registration, email verification and recovery, password reset |
 | [profile](profile.md) | Profile page sections |
 | [api_keys](api_keys.md) | Personal API key management |
 | [user_activity](user_activity.md) | Idle detection that throttles background refetching |

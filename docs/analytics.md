@@ -1,48 +1,47 @@
 # Analytics
 
-Product analytics go to PostHog, only with the user's consent
-(`useAnalyticsConsent`, see `src/lib/analytics/`). Logged-in users are asked
-once in `AnalyticsConsentDialog`; logged-out visitors in the small
-`AnalyticsConsentBanner` (bottom left, on every page), which the footer's
-"Analytics" link (`AnalyticsFooterLink`) opens again; the three live in
-`src/features/analytics/components/`. Both store the same choice in this browser, so
-a visitor who chose is not asked again after logging in. DNT/GPC means no. Code never talks to
-`posthog-js` directly, it uses the typed wrapper in
-`src/lib/analytics/useAnalytics.ts`:
+Product analytics go to PostHog, only with consent (`useAnalyticsConsent` in
+`src/lib/analytics/`). Logged-in users are asked in `AnalyticsConsentDialog`,
+visitors in `AnalyticsConsentBanner`, reopened by `AnalyticsFooterLink`
+(all in `src/features/analytics/components/`). One stored choice per
+browser; DNT/GPC means no. `posthog-js` loads only after a grant.
+
+Code never imports `posthog-js`; it uses `src/lib/analytics/useAnalytics.ts`:
 
 | Function | Use |
 | --- | --- |
 | `trackEvent(name, props)` | one event of the tracking plan below |
-| `trackPlanEdit(props)` | `plan:edit`, debounced (see below) |
-| `flushPlanEdits()` | sends the pending `plan:edit`s now (before a save, on leaving the plan) |
+| `trackPlanEdit(props)` / `flushPlanEdits()` | `plan:edit`, debounced; flush before a save and on leaving the plan |
 | `trackPageview(routeName)` | `$pageview`, called by the router only |
+| `trackContext(props)` | super properties sent with every later event |
 | `trackUser(props)` | person properties |
 | `identifyUser(profile)` / `resetUser()` | login and logout |
-| `reportError` | caught errors: sends non-API errors once, console in development only |
+| `reportError(err, context?)` | caught errors: once per page load, skips API errors (`apiService` reports those) |
 | `trackException` / `trackVueError` | error tracking |
 
-The event names and their properties are the keys of
-`IAnalyticsEventProperties` in `useAnalytics.types.ts`. That interface and
-the tables here list the same events; a test
-(`src/tests/lib/analytics/trackingPlan.test.ts`) fails when they differ.
+Events and their properties are the keys of `IAnalyticsEventProperties`
+(`useAnalytics.types.ts`). `src/tests/lib/analytics/trackingPlan.test.ts`
+fails when the event rows below (`` | `name` | `` at the line start) and
+that interface differ. Property keys in `SENSITIVE_KEYS` (`usePostHog.ts`:
+`email`, `password`, `code`, …) are redacted before sending.
 
 ## Conventions
 
-- **Events** are `category:object_action`: lowercase snake_case, present
-  tense verbs (`plan:save`, not `plan:saved`). Names are static, variation
-  goes into properties (`tool:use` with `tool_name`, not one event per tool).
-- **Properties** are snake_case, `object_adjective` (`planet_natural_id`,
-  `result_count`). Booleans start with `is_` or `has_`, timestamps end in
-  `_at`.
-- **No personal data** in event properties: no username, email or free
-  text. The person is identified already. No uuids either: they can't be
-  grouped or joined, send a count or a `has_*` instead.
-- **Every new user-facing feature** adds its events to the types and to this
-  doc in the same PR.
-- A new event fires when the thing happened (after the API call succeeded,
-  when the result is on screen), not when the user asked for it. Some
-  older events still fire on the click, before their API call:
-  `account:password_*`, `account:email_verify_request`, `empire:create`, `manage:*`, `exchange:update`, `planet:popr_load`.
+- **Events** are `category:object_action`, lowercase snake_case, present
+  tense (`plan:save`, not `plan:saved`). Names are static; variation goes
+  into properties (`tool:use` with `tool_name`).
+- **Properties** are snake_case `object_adjective` (`result_count`).
+  Booleans start with `is_` / `has_`, timestamps end in `_at`.
+- **No personal data or uuids**: no username, email, free text or ids.
+  Send a count or a `has_*` instead.
+- **Fire on the outcome** (API call succeeded, result on screen), not on
+  the click. Older exceptions that fire before their API call:
+  `account:password_*`, `account:email_verify_request`, `empire:create`,
+  `manage:*`, `exchange:update`, `planet:popr_load`.
+- **A new user-facing feature** adds its events to the types and this doc in
+  the same PR.
+- Events only arrive from consenting browsers, so signup and landing events
+  undercount; backend logs are the source for signup counts.
 
 ## Events
 
@@ -50,139 +49,118 @@ the tables here list the same events; a test
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `account:signup_complete` | | the registration call succeeded |
-| `account:signup_fail` | `fields` (field names of the API error, no values) | the registration call failed |
-| `account:login` | | login succeeded |
+| `account:signup_complete` | | registration call succeeded |
+| `account:signup_fail` | `fields` (API error field names, no values) | registration call failed |
+| `account:login` | | |
 | `account:logout` | | |
-| `account:email_verify` | `is_success`, `source` (`banner`, `profile` or `link`), `reason` (on failure: `invalid`, `expired`, `no_code`, `throttled`, `error`) | the verification code was checked |
-| `account:email_nudge_shown` | `state` (`none` or `unconfirmed`) | the Empire email banner showed, once per visit and state |
-| `account:email_nudge_action` | `action` (`add`, `enter_code`, `resend`, `later`, `never`, `undo`), `state` | a button of the Empire email banner |
-| `account:email_add` | `is_success`, `reason` (on failure: `email_taken`, `invalid_email`, `throttled`, `unknown`) | the email dialog saved an address |
-| `account:email_verify_request` | | a new verification email was requested |
+| `account:email_verify` | `is_success`, `source` (`banner`, `profile`, `link`), `reason` on failure (`invalid`, `expired`, `no_code`, `throttled`, `error`) | a verification code was checked |
+| `account:email_nudge_shown` | `state` (`none`, `unconfirmed`) | Empire email banner shown, once per visit and state |
+| `account:email_nudge_action` | `action` (`add`, `enter_code`, `resend`, `later`, `never`, `undo`), `state` | a banner button |
+| `account:email_add` | `is_success`, `reason` on failure (`email_taken`, `invalid_email`, `throttled`, `unknown`) | the email dialog saved an address |
+| `account:email_verify_request` | | a new verification email requested |
 | `account:password_reset_request` | | |
 | `account:password_reset` | | |
 | `account:password_change` | | |
-| `account:fio_link` | | FIO became active for a profile that had none |
-| `account:fio_link_failed` | `reason` | saving FIO credentials was refused: `fio_required`, `fio_invalid_key` or `fio_username_mismatch` |
+| `account:fio_link` | | FIO became active on a profile without it |
+| `account:fio_link_failed` | `reason` (the API's field error code, e.g. `fio_invalid_key`) | saving FIO credentials was refused |
 | `account:api_key_create` | | |
-| `account:api_key_revoke` | | a key was revoked, after the confirm |
-
-The signup events only reach PostHog from browsers that consented to analytics
-in an earlier session, so they undercount signups. Signup counts and rejection
-reasons come from the backend events and their Axiom panels (signup-01).
+| `account:api_key_revoke` | | after the confirm |
 
 ### Landing page
 
-The logged-out landing page (`HomepageView`, `HomepageHeader`, `HomepageTour`).
-The PostHog funnel for registrations from it: `landing:auth_open` with
-`panel = registration`, then `account:signup_complete`.
+Funnel: `landing:auth_open` with `panel = registration` → `account:signup_complete`.
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`, `planet_search_plan`: "+" or a Chart double-click on `/search`, `planet_search_distance`: the Distance section's "Log in") | the login / registration panel was opened |
-| `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" was clicked |
-| `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` (the step key) | a visitor clicked a tour step; automatic advances are not sent |
-| `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link of the "Market today" section or the header's "Market" link to `/market` was clicked |
-| `landing:planet_search_click` | `target` (`header`, `tour`) | the header's "Planet Search" link (nav or menu) or the tour card's "Try Planet Search" was clicked |
-
-Like the signup events, these reach PostHog only from visitors who consented.
+| `landing:auth_open` | `panel` (`login`, `registration`), `source` (`header`, `hero`, `closing`, `shared_plan`, `planet_search_plan`, `planet_search_distance`) | login / registration panel opened |
+| `landing:example_open` | `source` (`hero`, `shared_plans`) | "Open an example plan" |
+| `landing:tour_step` | `tour` (`plan`, `planet_search`, `empire`), `step` | a tour step clicked (auto-advance not sent) |
+| `landing:market_click` | `target` (`header`, `cta`, `sector`, `mover`) | a link to `/market` |
+| `landing:planet_search_click` | `target` (`header`, `tour`) | a link to Planet Search |
 
 ### API keys
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `apikey:key_copy` | | the new key was copied from the create dialog |
-| `apikey:use_in_builder` | | "Use in URL builder" in the create dialog |
-| `apikey:builder_change` | `endpoint` (entry id of `apiEndpoints.ts`), `format` (`csv` or `json`) | the URL builder's endpoint or format changed, debounced |
-| `apikey:snippet_copy` | `endpoint`, `format`, `kind` (`url`, `sheets`, `curl`, `python`), `has_key` (a real key, not the placeholder) | a builder snippet was copied |
-
-No key, URL or UUID goes into these events.
+| `apikey:key_copy` | | new key copied from the create dialog |
+| `apikey:use_in_builder` | | "Use in URL builder" |
+| `apikey:builder_change` | `endpoint` (entry id in `apiEndpoints.ts`), `format` (`csv`, `json`) | builder endpoint or format changed, debounced |
+| `apikey:snippet_copy` | `endpoint`, `format`, `kind` (`url`, `sheets`, `curl`, `python`), `has_key` (real key, not the placeholder) | a snippet copied |
 
 ### Plan
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `plan:view` | `planet_natural_id` (not for a shared plan), `is_shared` | a plan page opened |
-| `plan:create` | `planet_natural_id`, `is_first_plan` | a new plan was saved. `is_first_plan` is read from the local plan store |
-| `plan:save` | `planet_natural_id`, `trigger` (`button`, `shortcut`), `named`, `restore` | an existing plan was saved, as a named version (`named`) or as the restore of an older version (`restore`) |
+| `plan:view` | `planet_natural_id` (not for shared), `is_shared` | plan page opened |
+| `plan:create` | `planet_natural_id`, `is_first_plan` | a new plan saved |
+| `plan:save` | `planet_natural_id`, `trigger` (`button`, `shortcut`), `named`, `restore` | an existing plan saved |
 | `plan:save_as` | `planet_natural_id` | |
-| `plan:history_open` | `trigger` (`button`) | the versions list opened (the save status clicked) |
-| `plan:version_preview` | `named`, `age_days` | an older version was opened read-only |
-| `plan:version_compare` | | the previewed version was compared with the edits |
-| `plan:version_restore` | `named`, `age_days` | the previewed version was loaded as unsaved edits |
-| `plan:version_name` | `from` (`save`, `history`) | a version was named while saving or in the versions list |
-| `plan:version_open_as_plan` | | a new plan was made from the previewed version |
-| `plan:version_activate` | `named`, `age_days`, `from` (`list`, `preview`) | a version was made the plan as saved (Make active) |
-| `plan:version_delete` | `named`, `kind` | a version was deleted |
-| `plan:draft_restored` | `age_minutes` | the plan opened with the unsaved edits of its autosave draft |
-| `plan:draft_discard` | | the restored draft was discarded from its notice |
-| `plan:discard_changes` | | the unsaved edits were discarded from the save menu |
-| `plan:leave_unsaved` | `planet_natural_id` | the plan page was left with unsaved changes |
-| `plan:shared_clone` | `planet_natural_id`, `modified` | a shared plan's working copy was saved to the viewer's plans (`modified`: changed from the shared version) |
-| `plan:shared_reset` | `planet_natural_id` | the working copy was reset to the shared version |
-| `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | the working copy's change summary was copied for Discord |
+| `plan:history_open` | `trigger` (`button`) | versions list opened |
+| `plan:version_preview` | `named`, `age_days` | older version opened read-only |
+| `plan:version_compare` | | preview compared with the edits |
+| `plan:version_restore` | `named`, `age_days` | preview loaded as unsaved edits |
+| `plan:version_name` | `from` (`save`, `history`) | a version named |
+| `plan:version_open_as_plan` | | new plan made from the preview |
+| `plan:version_activate` | `named`, `age_days`, `from` (`list`, `preview`) | Make active |
+| `plan:version_delete` | `named`, `kind` | |
+| `plan:draft_restored` | `age_minutes` | plan opened with its autosave draft |
+| `plan:draft_discard` | | restored draft discarded from its notice |
+| `plan:discard_changes` | | edits discarded from the save menu |
+| `plan:leave_unsaved` | `planet_natural_id` | left with unsaved changes |
+| `plan:shared_clone` | `planet_natural_id`, `modified` | shared plan's working copy saved to own plans |
+| `plan:shared_reset` | `planet_natural_id` | working copy reset to the shared version |
+| `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | change summary copied |
 | `plan:share_create` | | |
 | `plan:share_delete` | | |
-| `plan:tool_toggle` | `panel` (the panel key, e.g. `construction-cart`) | a plan tool panel was opened. Before the release after 0.33.0 the property was `tool_name` |
-| `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | the Profit Breakdown tool switched between "By cost type" and "By building" |
-| `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (10, 20, 30, 50; only on a price change) | the Plan check tool's view or price change was switched. Before 2026-10-14 (the What-if tool) it was `plan:whatif_change`, sent only on a price change |
-| `plan:plancheck_compare` | `same_planet` | Plan check compared the open plan with another plan (each pick, also the preselected one). Before 2026-10-14: `plan:whatif_compare` |
-| `plan:plancheck_target` | `has_target` | the target price solver was first used (material or target profit changed), once per open view |
-| `plan:market_flag_open` | `where` (`plan`, `empire`), `level` (`red`, `amber`, `muted`) | a market flag's details were opened in a Material I/O |
+| `plan:tool_toggle` | `panel` (panel key, e.g. `construction-cart`) | a tool panel opened |
+| `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | |
+| `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (on a price change only) | Plan check view or price change switched |
+| `plan:plancheck_compare` | `same_planet` | Plan check compared with another plan |
+| `plan:plancheck_target` | `has_target` | target price solver first used, once per open view |
+| `plan:market_flag_open` | `where` (`plan`, `empire`), `level` (`red`, `amber`, `muted`) | a market flag's details opened |
 | `plan:cogm_open` | `planet_natural_id`, `recipe_id` | |
-| `plan:insights_open` | `planet_natural_id`, `source` (`planet`) | the planet insights box was opened from the planet link in Base (`source` since 2026-10-22; `button`, its floating button, only until it was removed in #679) |
-| `plan:recipe_picker_open` | `mode` (`change`, `add`) | the inline recipe picker opened under a recipe row or under "+ Recipe"; the pick itself is a `plan:edit` |
-| `plan:recipe_picker_undo` | | Undo in the status line after a picked recipe |
-| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane was folded by hand with its chevron (`folded: true`, at any width it sits side by side, since #679) or opened from its folded strip (`false`) |
-| `plan:overlay_open` | `panel` (`base`, `io`) | Base or Material I/O was opened as an overlay from the tab row (below 81rem, 71rem of page width) |
-| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile was clicked; it opens where its figure comes from (profit, payback and storage open a tool, which also sends `plan:tool_toggle`; area and workforce open a Base section) |
-| `plan:workforce_unneeded_toggle` | `is_shown` | the workforce tiers the plan needs no workers of were shown (`true`) or hidden again (`false`) in Base |
-| `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | a phone switched the plan section |
-| `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | the plan's Material I/O source, filter or unit was switched; the event carries all three |
-| `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | the recipe picker's sort was switched |
-| `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select was switched |
-| `plan:starter_show` | `planet_natural_id`, `candidate_count` | the "Start from a typical setup" card was shown on an empty plan, once per plan view |
-| `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | the typical setup was added to the plan (`is_selection_changed`: the user changed the preselected buildings) |
-| `plan:starter_dismiss` | `planet_natural_id` | "Start empty" on the card |
-| `plan:hab_optimize` | `goal` (`area`, `cost`) | the optimize buttons; the automatic run (`auto`) is not sent |
+| `plan:insights_open` | `planet_natural_id`, `source` (`planet`) | planet insights box opened from Base's planet link |
+| `plan:recipe_picker_open` | `mode` (`change`, `add`) | the pick itself is a `plan:edit` |
+| `plan:recipe_picker_undo` | | Undo after a picked recipe |
+| `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | |
+| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane folded or unfolded by hand |
+| `plan:overlay_open` | `panel` (`base`, `io`) | pane opened as an overlay on narrow pages |
+| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile clicked |
+| `plan:workforce_unneeded_toggle` | `is_shown` | unneeded workforce tiers shown / hidden |
+| `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | phone switched section |
+| `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | any of the three switched |
+| `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select |
+| `plan:starter_show` | `planet_natural_id`, `candidate_count` | typical-setup card shown, once per plan view |
+| `plan:starter_apply` | `planet_natural_id`, `building_count`, `expert_count`, `is_selection_changed` | typical setup added (not also sent as `plan:edit`) |
+| `plan:starter_dismiss` | `planet_natural_id` | "Start empty" |
+| `plan:hab_optimize` | `goal` (`area`, `cost`) | optimize buttons; `trackEvent` drops `goal: auto` |
 | `plan:hab_auto_toggle` | `is_active` | |
-| `plan:edit` | `planet_natural_id`, `field`, and the relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned`, `is_shared` | see below |
+| `plan:edit` | `planet_natural_id`, `field`, relevant of `building_ticker`, `recipe_id`, `amount`, `infrastructure_type`, `expert_type`, `workforce_type`, `lux_type`, `value`, `is_from_popular`, `is_most_planned`, `is_shared` | see below |
 | `plan:undo` | `trigger` (`button`, `shortcut`) | |
 | `plan:redo` | `trigger` (`button`, `shortcut`) | |
-| `plan:save_conflict` | `planet_natural_id`, `is_deleted`, `choice` (`save_as_new`, `overwrite`, `reload`, `close`) | the save conflict dialog was answered: the plan was saved (`is_deleted`: deleted) in another tab or device since it was loaded |
+| `plan:save_conflict` | `planet_natural_id`, `is_deleted`, `choice` (`save_as_new`, `overwrite`, `reload`, `close`) | save conflict dialog answered |
 
-`plan:edit` replaces one event per click. `field` is one of `building_add`,
-`building_amount`, `building_delete`, `recipe_add`, `recipe_mix_add`,
-`recipe_change`, `recipe_delete`, `recipe_amount`, `workforce`,
-`infrastructure`, `expert`, `cogc`, `corphq`, `permits`. `recipe_mix_add` is
-the "Add" of the typical mix hint on a building without recipes (`amount`:
-recipes added). While
-plan suggestions are on, `building_add` has `is_from_popular` (picked from
-the "Popular on" group) and `recipe_add` / `recipe_change` have
-`is_most_planned` (the recipe is the planet's most planned one for that
-building). `is_shared` is true for edits on a shared plan's working copy
-(`/shared/…`). It is sent through `trackPlanEdit`, which waits one second per
-edited control (field, building, and infrastructure, expert or workforce
-type): ten quick clicks on a building's + are one event with the final
-amount. Pending edits are sent before a save and when the plan page closes.
+`plan:edit`: `field` is a `PlanEditField`. `trackPlanEdit` debounces one
+second per edited control (field + building / infrastructure / expert /
+workforce / lux type), so ten clicks on + are one event with the final
+amount, and sets `is_shared` on `/shared/…` URLs. `is_from_popular`
+(`building_add`) and `is_most_planned` (`recipe_add`, `recipe_change`) are
+only sent while plan suggestions are on. `recipe_mix_add` has `amount` =
+recipes added.
 
-The typical setup is not also sent as `plan:edit` events; undoing it is a
-`plan:undo`. Funnel (built in PostHog): `plan:starter_show` →
-`plan:starter_apply` → `plan:create` in the same session.
-
-### Planet, empire, management, exchanges
+### Planet, empire, management, exchanges, materials
 
 | Event | Properties | When |
 | --- | --- | --- |
 | `planet:popr_load` | `planet_natural_id` | |
 | `empire:create` | | |
-| `empire:update` | `is_success` | the empire configuration was saved |
+| `empire:update` | `is_success` | empire configuration saved |
 | `empire:reload` | | |
-| `empire:material_io_expand` | | a Material I/O row was opened |
-| `empire:market_filter` | `level` (`red`, `amber`, `muted`, `null` when cleared) | a market flag chip above the empire's Material I/O was toggled |
-| `empire:view_change` | `view` (`materialio`, `analysis`, `opportunities`) | the empire page switched between Material I/O, Analysis and Production Opportunities, once per switch |
-| `empire:analysis_more_charts` | | the "More charts" section of Empire Analysis was opened |
-| `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of the empire configuration was answered |
+| `empire:material_io_expand` | | a Material I/O row opened |
+| `empire:market_filter` | `level` (`red`, `amber`, `muted`, `null` when cleared) | market flag chip toggled |
+| `empire:view_change` | `view` (`materialio`, `analysis`, `opportunities`) | |
+| `empire:analysis_more_charts` | | "More charts" opened |
+| `empire:save_conflict` | `choice` (`overwrite`, `reload`, `close`) | |
 | `manage:cx_create` | | |
 | `manage:cx_delete` | | |
 | `manage:empire_create` | | |
@@ -194,52 +172,46 @@ The typical setup is not also sent as `plan:edit` events; undoing it is a
 | `manage:plan_delete` | | |
 | `manage:plan_delete_bulk` | `count` | |
 | `exchange:update` | `location` (`exchanges_view`, `cogm`) | |
-| `exchange:discard` | `location` (`exchanges_view`, `cogm`) | unsaved rules were discarded (was `exchange:reload`) |
-| `exchange:price_detail` | `location`, `material_ticker` | a material's price cascade was expanded |
-| `exchange:preset` | `preset` (`average`, `trade_now`), `scope` (`all`, `planet`) | an exchange preset was applied |
-| `exchange:use_cogm` | `location` (`exchanges_view`, `cogm`), `material_ticker` | a COGM was used as fixed buy price |
-| `exchange:leave_unsaved` | `location` | leaving with unsaved rules asked to confirm |
-| `exchange:save_conflict` | `location` (`exchanges_view`, `cogm`), `choice` (`overwrite`, `reload`, `close`) | the save conflict dialog of a CX was answered |
-| `material:market_drawer_open` | `material_ticker`, `source` (`tile`, `card`) | the Market details drawer opened, from a click on the tile (Material I/O, HQ) or the card's "Market details" button |
-| `material:market_card_pin` | `material_ticker` | a click on a ticker pinned its market card open (no event per hover) |
+| `exchange:discard` | `location` | unsaved rules discarded |
+| `exchange:price_detail` | `location`, `material_ticker` | price cascade expanded |
+| `exchange:preset` | `preset` (`average`, `trade_now`), `scope` (`all`, `planet`) | |
+| `exchange:use_cogm` | `location`, `material_ticker` | a COGM used as fixed buy price |
+| `exchange:leave_unsaved` | `location` | leave with unsaved rules asked to confirm |
+| `exchange:save_conflict` | `location`, `choice` (`overwrite`, `reload`, `close`) | |
+| `material:market_drawer_open` | `material_ticker`, `source` (`tile`, `card`) | Market details drawer opened |
+| `material:market_card_pin` | `material_ticker` | a click pinned the market card (no hover events) |
 
 ### Tools
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `tool:use` | `tool_name`, plus the tool's own | the tool produced a result |
-| `repair_analysis:interval_set` | `source` (`input`, `slider`, `preset`, `reset`), `ticker` (`all` for a reset), `in_range` (within the good range) | a repair interval was changed in the plan's Repair Analysis, debounced 1 s |
-| `fio_repair:base_open` | `status` (`overdue`, `soon`, `later`, `unknown`), `confidence` (`match`, `likely`, `picked`, `nopick`, `none`) | a base was opened in FIO Repair (not the first one selected on load) |
-| `fio_repair:plan_link_set` | `to` (`plan`, `none`, `auto`) | a plan, "no plan" or "back to automatic" was picked for a FIO Repair base |
-| `fio_repair:setting_change` | `setting` (`interval`, `due_soon`, `arrival`, `exchange`, `use_plans`) | a FIO Repair setting was changed on the page, debounced 1 s per setting |
-| `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | Planet Search switched views (also when a link opens another view on the page) |
-| `planet_search:action` | `action` (`pin`, `save`, `load`, `link_copy`, `reset`, `plan_open`, `sort`, `column_toggle`); `sort` also `sort` (the first sort key: `name`, `fert`, `plots`, `mat:<ticker>`, `ref:cx:<code>` or `ref:plan`) and `sort_count`; `column_toggle` also `column` and `is_shown` | something was done on Planet Search besides searching: a planet pinned for compare, a search saved or loaded, the link copied, Reset, the "+" of a result that opens a new plan (logged in; a visitor gets `landing:auth_open`), a sort picked in a header or the sort menu, a column shown or hidden in the columns menu (e.g. the opt-in `plots`) |
-| `market_exploration:view_change` | `view` (`candles`, `exchanges`) | Market Exploration switched between the candle chart and the "All exchanges" chart |
-| `resource_roi:chart_open` | | the Resource ROI chart drawer was opened |
-| `production_chain:action` | `action` (`recipe_pick`, `source_set`, `buy_all`, `planet_pick`, `view_graph`, `focus`, `xit_copy`, `csv`, `link_copy`, `split`, `base_add`, `base_remove`, `base_move`, `base_planet`, `base_cogc`, `base_lux`, `base_experts`, `mode_check`, `check_add_all`, `check_open_base`, `check_open_plan`, `check_try`, `check_setup_toggle`, `have_set`, `own_pick`, `plans_create`); `plans_create` also `plan_count`, `empire` (`new`, `existing`, `none`) and `faction` for a new empire | something was done on the Production Chains page: a recipe or planet picked, a source set, "Buy all", the graph opened or a node focused, the XIT buy action, CSV or chain link copied, the chain split into bases, a base added or removed, a step moved to a base, a base's planet, COGC program, luxuries or experts set, plans created, a Have amount set or an empire picked for Own production; in Check an empire: the mode opened, all sold materials added, a base opened, a plan opened, a finding tried in the planner, setup gains shown or hidden |
-| `market:view_change` | `chart` (`index`, `workforce`, `movers`, `leaders`, `gaps`), `view` (index: `exchange`, `combined`, `sector`; workforce: the tier, e.g. `engineer`; movers: `rising`, `falling`; gaps: `vwap`, `books`; movers, leaders and gaps: `all` when "Show all" expands the list, and on collapse the list's own view, `top` for leaders) | a view was switched or a list expanded or collapsed on the public market report (`/market`) |
+| `tool:use` | `tool_name`, plus the tool's own (below) | the tool produced a result |
+| `repair_analysis:interval_set` | `source` (`input`, `slider`, `preset`, `reset`), `ticker` (`all` on reset), `in_range` | repair interval changed, debounced 1 s |
+| `fio_repair:base_open` | `status` (`overdue`, `soon`, `later`, `unknown`), `confidence` (`match`, `likely`, `picked`, `nopick`, `none`) | a base opened (not the initial one) |
+| `fio_repair:plan_link_set` | `to` (`plan`, `none`, `auto`) | |
+| `fio_repair:setting_change` | `setting` (`interval`, `due_soon`, `arrival`, `exchange`, `use_plans`) | debounced 1 s per setting |
+| `planet_search:view_change` | `view` (`list`, `matrix`, `chart`) | |
+| `planet_search:action` | `action` (`pin`, `save`, `load`, `link_copy`, `reset`, `plan_open`, `sort`, `column_toggle`); `sort` adds `sort` (first sort key) and `sort_count`; `column_toggle` adds `column`, `is_shown` | anything besides searching |
+| `market_exploration:view_change` | `view` (`candles`, `exchanges`) | |
+| `resource_roi:chart_open` | | |
+| `production_chain:action` | `action` (a `ProductionChainAction`, or `plans_create` with `plan_count`, `empire` (`new`, `existing`, `none`) and `faction` for a new empire) | an action on the Production Chains page |
+| `market:view_change` | `chart` (`index`, `workforce`, `movers`, `leaders`, `gaps`), `view` (that chart's view; `all` when a list expands, its own view again on collapse) | on `/market` |
 
-`tool:use` means a result, not an opened page (pageviews carry
-`route_name` for that). Tools with an input count only a result for an
-input the user chose. Tools that calculate on their own (recipe ROI, upkeep
-price, market live, FIO repair and burn) count the finished calculation,
-so for them `tool:use` is close to a pageview that got a result:
+`tool:use` means a result, not an opened page (pageviews cover that). Tools
+with input count only results for input the user chose:
 
 | `tool_name` | Extra properties | Fires when |
 | --- | --- | --- |
-| `planet_search` | `filter` (the URL query of the search without `q` and `ref`), `has_text` (the name field is set), `reference_count` (distance references), `result_count` | a changed filter settled (1 s) |
-| `market_exploration` | `exchange`, `material_ticker` | data for a chosen exchange, material or candle interval loaded, not the default on open |
-| `production_chain` | `mode: chain`, `targets` (tickers), `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings changed and settled (1 s); not for a chain opened from a link or the browser |
-| `production_chain` (check) | `mode: check`, `target_count`, `bases_checked`, `bases_optimal`, `finding_count` | the empire, chains or check settings changed and settled (1 s), with at least one chain; not for the check opened from a link |
-| `resource_roi` | `material_ticker` | the search finished |
-| `recipe_roi` | | the ROI calculation finished |
-| `base_roi` | | a Base ROI calculation finished (once per finished run, not for one a newer setting stopped) |
-| `hq_upgrade` | | levels or overrides changed and settled (1 s) |
-| `upkeep_price` | | the price calculation finished |
+| `planet_search` | `filter` (search query without `q`, `ref`), `has_text`, `reference_count`, `result_count` | a changed filter settled (1 s) |
+| `market_exploration` | `exchange`, `material_ticker` | data for a chosen exchange, material or interval loaded |
+| `production_chain` | `mode: chain`, `targets`, `target_count`, `material_count`, `efficiency`, `raw_source` (`buy`, `extract`), `byproducts` (`cover`, `sell`) | targets or settings settled (1 s); not for a chain opened from a link |
+| `production_chain` | `mode: check`, `target_count`, `bases_checked`, `bases_optimal`, `finding_count` | check inputs settled (1 s), with a chain; not from a link |
+| `resource_roi` | `material_ticker` | search finished |
+| `recipe_roi`, `base_roi`, `upkeep_price`, `fio_burn` | | calculation finished |
+| `hq_upgrade` | | levels or overrides settled (1 s) |
 | `market_live` | | live data arrived, once per visit |
-| `fio_repair` | | the page showed at least one base |
-| `fio_burn` | | the burn calculation finished for at least one plan |
-| `construction_cart` | `built_edited` (Built was changed in this visit) | the cart closed |
+| `fio_repair` | | page showed at least one base |
+| `construction_cart` | `built_edited` | the cart closed |
 
 ### XIT, app, debug, onboarding
 
@@ -248,76 +220,47 @@ so for them `tool:use` is close to a pageview that got a result:
 | `xit:burn_open` | | |
 | `xit:burn_copy` | | |
 | `xit:burn_ship_fit` | `weight`, `volume` | |
-| `xit:transfer_open` | `source` | |
+| `xit:transfer_open` | `source` (an `XITTransferSource`: which tool button) | |
 | `xit:transfer_copy` | `source` | |
-| `app:nav_click` | `target` (route name, or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | one click on a navigation entry; opening a menu, popover or sheet and the plan breadcrumb are not counted |
-| `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build: the update notice's Reload, the nav chip, or a navigation to another page that loaded the new build |
-| `app:version_later` | | the update notice was put off with Later |
-| `app:whats_new_click` | | "What's new" on the toast after a release bump, opens the changelog |
-| `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows: it reloaded, or (with unsaved edits, or deleted) showed a notice. A deleted empire is sent by the empire page, always with `has_unsaved_edits: false` |
-| `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab logged out, logged in, or logged in as another user; sent before this tab resets or reloads |
-| `app:db_blocked` | | the local game data database waits on an older PRUNplanner tab after a deploy |
-| `debug:calc_open` | `source` (`button`, `shortcut`) | the calculation debug panel was opened on a plan |
-| `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | a step of the first-run card on the Empire page |
-
-`source` on the XIT transfer events names the button: `supply_cart`,
-`supply_cart_initial` ("XIT Initial"), `construction_cart`,
-`construction_cart_need` (one building's row), `repair_due`, `repair_materials`,
-`fio_repair`, `hq_upgrade`. Before 2026-10-16 the events had no properties.
+| `app:nav_click` | `target` (route name or `logout`), `area` (`sidebar`, `rail`, `mobile_bar`, `mobile_sheet`), `section` (`empire`, `plans`, `planning`, `tools`, `footer`) | a navigation entry clicked |
+| `app:version_reload` | `source` (`notice`, `chip`, `navigation`) | reload onto a newer build |
+| `app:version_later` | | update notice put off |
+| `app:whats_new_click` | | "What's new" on the release toast |
+| `app:remote_change` | `object_type` (`plan`, `empire`, `cx`), `has_unsaved_edits`, `is_deleted` | another tab saved or deleted what an open editor shows |
+| `app:session_change` | `reason` (`logout`, `login`, `other_user`) | another tab changed the session |
+| `app:db_blocked` | | the game data IndexedDB waits on an older tab |
+| `debug:calc_open` | `source` (`button`, `shortcut`) | calculation debug panel opened |
+| `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | first-run card on the Empire page |
 
 ### Performance
 
 | Event | Properties | When |
 | --- | --- | --- |
-| `perf:gamedata_load` | `store` (`materials`, `exchanges`, `buildings`, `recipes`), `source` (`cache`, `network`), `is_stale`, `age_min`, `ms_total`, `ms_idb_read`, `ms_fetch`, `ms_idb_write` | a game data list's first load in a tab, once per store: from IndexedDB (`cache`) or the API (`network`). `is_stale`: the IndexedDB copy was older than its stale time (`cache`: refreshed in the background; `network`: older than its maximum age). `age_min` is that copy's age, null without one. `ms_total` is what the page waited; background phases (`ms_fetch` of a refresh, `ms_idb_write`) are in, as the event is sent once they end |
-| `perf:content_ready` | `ms`, `nav` (`hard`, `spa`), `loader_shown` | a page's main content had its first frame, once per mount (today: the market report's index chart with data). `ms` counts from the navigation start (0 for a hard load). Not sent if the tab was hidden during the load |
-
-### Retired
-
-Not sent since the release after 0.33.0, so their data stops there:
-`account:profile_update` and `account:fio_update` (fired on the click;
-`account:email_add`, `account:fio_link` and `account:fio_link_failed` say
-what happened), `app:navigation_toggle` (the person property
-`navigation_style` holds it), `debug:calc_toggle`, `debug:calc_copy`,
-`landing:auth_switch`, `landing:tour_toggle` and
-`landing:market_view_change`. The uuid properties of `manage:*`,
-`exchange:update` (`cx_uuid`) and `plan:shared_clone` (`shared_uuid`) went
-at the same time.
+| `perf:gamedata_load` | `IGameDataLoadProperties`: `store`, `source` (`cache`, `network`), `is_stale`, `age_min`, `ms_total`, `ms_idb_read`, `ms_fetch`, `ms_idb_write` | a game data list's first load per tab and store, sent after background phases end |
+| `perf:content_ready` | `ms` (from navigation start), `nav` (`hard`, `spa`), `loader_shown` | first frame of main content (`useContentReady`), once per mount; not sent if the tab was hidden |
 
 ## Pageviews
 
-PostHog's own pageview capture is off (`capture_pageview: false`,
-`capture_pageleave: true` keeps `$pageleave`). The router's `afterEach` calls
-`trackPageview`, which registers `route_name` as a super property and sends
-`$pageview`. URLs carry uuids and planet ids, so group pages by `route_name`
-(all plan pages are `plan` or `shared-plan`). Every later event and
-exception carries `route_name` too.
+PostHog's pageview autocapture is off (`$pageleave` stays on). The router's
+`afterEach` calls `trackPageview`, which registers `route_name` as a super
+property, so group pages by `route_name`, not URL. Failed or cancelled
+navigations and query-only changes send no pageview. The pageview dropped
+before a consent grant is sent once PostHog starts.
 
-- A navigation that failed or was cancelled (e.g. the unsaved-changes
-  confirm) and a query change on the same page (planet search writes its
-  filters into the URL) send no pageview.
-- The page a visitor grants consent on gets its pageview when PostHog
-  starts; it was dropped before the grant.
-- Saving a new plan moves to its uuid URL, which counts as a second `plan`
-  pageview.
-- The one-time codes in `/password-reset/<code>` and `/verify-email/<code>`
-  never leave the browser: `before_send` (`maskUrlCodes`) replaces them with
-  `:code` in every property of every event, nested ones included
-  (`$current_url`, `$pathname`, `$referrer`, `$initial_*`, exceptions,
-  session replay snapshots).
-- Chunk-load errors are not sent: `before_send`
-  (`dropChunkLoadErrors`) drops an exception whose entries are all
-  chunk-load errors. `chunkReload` handles them, but a programmatic
-  `router.push()` still rejects and posthog-js would report it as unhandled.
+`before_send` in `usePostHog.ts`:
+
+- `maskUrlCodes` replaces the one-time codes in `/password-reset/<code>`
+  and `/verify-email/<code>` with `:code` in every property, nested too.
+- `dropChunkLoadErrors` drops exceptions that are only chunk-load errors
+  (`chunkReload` handles them).
 
 ## Person properties
 
 | Property | Set from |
 | --- | --- |
-| `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile, on load and change (`identifyUser`) |
-| `language`, `color_palette`, `navigation_style`, `market_card_trigger`, `is_plan_suggestions_enabled`, `has_default_empire`, `has_default_cx`, `is_buy_from_cx_default`, `burn_days_red`, `burn_days_yellow`, `burn_resupply_days`, `burn_origin`, `supply_cart_days`, `fio_repair_interval_days`, `fio_repair_due_soon_days`, `fio_repair_arrival_days`, `fio_repair_plan_link_count`, `plan_override_count`, `email_nudge_dismissal`, `email_nudge_dismissed_at` | every preference, on load and on each sync (`trackPreferences` in `user.queries.ts`): ids only as `has_*`, per-plan and per-site settings as counts |
-| `plan_count`, `empire_count`, `cx_count` | the planning data loader, on every page that loads the lists |
+| `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile (`identifyUser`) |
+| `language`, `color_palette`, `navigation_style`, `market_card_trigger`, `is_plan_suggestions_enabled`, `has_default_empire`, `has_default_cx`, `is_buy_from_cx_default`, `burn_days_red`, `burn_days_yellow`, `burn_resupply_days`, `burn_origin`, `supply_cart_days`, `fio_repair_interval_days`, `fio_repair_due_soon_days`, `fio_repair_arrival_days`, `fio_repair_plan_link_count`, `plan_override_count`, `email_nudge_dismissal`, `email_nudge_dismissed_at` | preferences, on load and each sync (`trackPreferences` in `user.queries.ts`); ids only as `has_*`, maps as counts |
+| `plan_count`, `empire_count`, `cx_count` | `usePlanningDataLoader` |
 
-Person properties set before the user is identified are kept and sent with
-the identify call: PostHog only gets person profiles of logged-in users.
-Unchanged values are not sent again.
+Properties set before identify are held and sent with it (person profiles
+are identified-only); unchanged values are not resent.

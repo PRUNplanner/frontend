@@ -1,42 +1,34 @@
 # api_keys
 
-**Purpose.** This folder lets users create and delete personal API keys for
-the PRUNplanner backend, and build working URLs, Google Sheets formulas, curl
-and Python snippets with them. External tools use the keys to read the user's
-data.
+**Purpose.** Create and delete personal API keys, and build working URLs,
+Google Sheets formulas, curl and Python snippets with them.
 
 **Used by.** `views/APIKeyView.vue` (`/apikey`).
 
 ## Key files
 
-- `useAPIKeys.ts` → `useAPIKeys()` returns:
-  - `apiKeyData`, `loaded`, `inDeletionId` and `lastCreatedKey`. The full key
-    is shown only once, straight after creation.
-  - `fetchAPIKeys()`, `createAPIKey(name)`, `deleteAPIKey(id)` and
-    `resetCreation()`. These use the `GetAPIKeys`, `PostCreateAPIKey` and
-    `DeleteAPIKey` queries (which send `account:api_key_create` /
-    `account:api_key_revoke`).
-- `apiEndpoints.ts` → `API_ENDPOINTS`, the 17 `GET` endpoints the builder
-  offers (path templates, CSV variant, key or public, group). Add an endpoint
-  here and its label in `locales/en_US/api_keys.json`; check the path against
-  the backend's OpenAPI schema.
-- `useAPIBuilder.ts` → `buildSnippets()` (pure) and `useAPIBuilder(key)`, the
-  builder's state. The URL carries the key as `?api_key=`, curl and Python as
-  the `Authorization: Api-Key` header; Python always reads the CSV variant when
-  there is one.
-- `components/APIURLBuilder.vue` → the builder UI. It loads empires, plans and
-  CX preferences only when an endpoint needs them.
+- `useAPIKeys.ts`: list/create/delete via `GetAPIKeys`, `PostCreateAPIKey`,
+  `DeleteAPIKey`. `lastCreatedKey` is the full key, shown only once after
+  creation.
+- `apiEndpoints.ts`: `API_ENDPOINTS`, the `GET` endpoints the builder offers
+  (path template, optional CSV path, group; `public` needs no key). Adding
+  one: also add `api_keys.builder.endpoints.<id>.label/description` in
+  `locales/en_US/api_keys.json` and check the path against the backend's
+  OpenAPI schema. Types in `apiEndpoints.types.ts`.
+- `useAPIBuilder.ts`: `buildSnippets()` (pure) and `useAPIBuilder(key)`. The
+  URL carries the key as `?api_key=`, curl and Python as the
+  `Authorization: Api-Key` header; Python always reads the CSV variant when
+  there is one; the Sheets formula exists only for CSV.
+- `components/APIURLBuilder.vue`: the builder UI; loads empires, plans or CX
+  preferences only when the endpoint needs them.
 
-**The key stays in memory.** The key created on a visit lives in a `ref` of
-the view and is passed to the builder as a prop: never in Pinia, storage, the
-query cache or analytics. Snippet boxes and the modal key carry
-`ph-no-capture`.
+## Gotchas
 
-Schemas are in `features/api/schemas/apiKeysData.schemas.ts`.
+- The key stays in memory: a `ref` in the view passed to the builder as a
+  prop, never in Pinia, storage, the query cache or analytics. Snippet boxes
+  and the modal key carry `ph-no-capture`.
 
 ## Tests
 
-`src/tests/features/api_keys/`: `useAPIKeys.test.ts` (a good minimal example
-of the axios-mock-adapter pattern), `apiEndpoints.test.ts`,
-`useAPIBuilder.test.ts` and `components/APIURLBuilder.test.ts`; the page in
-`src/tests/views/APIKeyView.test.ts`.
+`src/tests/features/api_keys/` (`useAPIKeys.test.ts` is a minimal example of
+the axios-mock-adapter pattern); page in `src/tests/views/APIKeyView.test.ts`.

@@ -1,32 +1,18 @@
 # Developer & agent docs
 
-These are reference docs for working in this codebase. They point to code and
-don't copy it, so the code stays the source of truth. If a doc and the code
-disagree, trust the code and fix the doc.
+Reference docs for this codebase. They name files and symbols instead of
+copying code; when a doc and the code disagree, the code wins and the doc
+gets fixed. Rules, commands and the doc map are in the root
+[AGENTS.md](../AGENTS.md).
 
-## Reading order
+Start with [architecture.md](architecture.md), then the doc for the area you
+touch. [features/](features/README.md) has one page per `src/features/*`
+folder.
 
-1. [architecture.md](architecture.md): how `src/` is laid out and how a page
-   comes together.
-2. [data-layer.md](data-layer.md): API → query cache → IndexedDB/Pinia.
-3. [planning-engine.md](planning-engine.md): the core plan, empire and profit
-   calculations.
-4. [domain-glossary.md](domain-glossary.md): game vocabulary, each term mapped
-   to its code.
-5. [ui-and-i18n.md](ui-and-i18n.md): the UI kit, styling and translations.
-6. [testing.md](testing.md): Vitest setup, mocking and test isolation.
-7. [analytics.md](analytics.md): the tracking plan: events, properties and
-   naming rules.
-8. [seo.md](seo.md): the static head, `useHead` per route, the prerendered
-   landing page and how it is served.
-9. [features/](features/README.md): one page per `src/features/*` folder.
+## Writing docs
 
-The rules and the command cheat-sheet are in the root [AGENTS.md](../AGENTS.md).
-
-## Doc conventions
-
-- Name files and symbols, but leave out line numbers, which go stale quickly.
-- Keep each page short. Cover purpose, key files, how it works, gotchas, and
-  how to extend it.
-- When you add a feature folder, add `features/<name>.md` and a row in
+- Name files and symbols; no line numbers.
+- Keep pages short: purpose, key files, how it works, gotchas, how to
+  extend. No history or changelog; that is what git is for.
+- A new feature folder gets `features/<name>.md` and a row in
   [features/README.md](features/README.md).
