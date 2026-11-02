@@ -1,25 +1,21 @@
 # user_activity
 
-**Purpose.** This folder detects whether the user is idle, so that
-background work pauses in tabs nobody is looking at. Today that work is the
-query cache's automatic refetching.
+**Purpose.** Idle detection, so the query cache stops auto-refetching in
+tabs nobody is using.
 
 **Used by.** `src/lib/query_cache/queryStore.ts`
-(`checkEntryStatusAndRefresh` skips refetching while `shouldDelay()` is
-true). `App.vue` imports it so it initialises early.
+(`checkEntryStatusAndRefresh` skips while `shouldDelay()`); `App.vue`
+imports it so it starts early.
 
 ## Key files
 
 - **`useUserActivity.ts`**: `useUserActivity(inactivityThreshold = 5 min,
-  maxDelay = 3 h)`. It listens for mousemove, keydown, click, scroll and
-  touchstart, throttled to 200 ms.
-  - `shouldDelay()` returns true once the user has been idle longer than the
-    threshold.
-  - Once every `maxDelay` it returns false anyway, so data never goes more
-    than 3 h without a refresh.
-- **`userActivityStore.ts`**: `export const userActivity =
-  useUserActivity()`, the app-wide singleton. It is a plain module, not a
-  Pinia store.
+  maxDelay = 3 h)` listens to mousemove, keydown, click, scroll, touchstart
+  (throttled 200 ms). `shouldDelay()` is true after the threshold, but
+  returns false once per `maxDelay` so data never goes longer without a
+  refresh.
+- **`userActivityStore.ts`**: the app-wide singleton `userActivity` (a plain
+  module, not Pinia).
 
 ## Tests
 

@@ -1,28 +1,24 @@
 # save_bar
 
-**Purpose.** The sticky "unsaved changes" bar with Discard and Save. The
-parent owns the changes and the save; the bar only shows them.
+**Purpose.** Sticky "unsaved changes" bar with Discard and Save. The parent
+owns the changes and the save.
 
-**Used by.** `ManageView`, `ExchangesView` and the prices panel of
+**Used by.** `ManageView`, `ExchangesView`, the prices panel of
 `planning/components/tools/PlanCOGM.vue`.
 
 ## Key files
 
-- **`components/SaveBar.vue`**:
-  - **Props:** `count` (unsaved changes), an optional muted `detail`
-    (e.g. "3 plans · 2 empires") and `state` (`idle`, `saving` or
-    `error`; Save turns into Retry on `error`).
-  - **Emits:** `save` and `discard`.
-  - **Text:** `management.save_bar.*`.
+- **`components/SaveBar.vue`**: props `count`, `detail`, `state` (`idle`,
+  `saving`, `error`: Save becomes Retry); emits `save`, `discard`.
 
 ## Gotchas
 
-- On phones it sits above the app's bottom bar. Its `data-save-bar`
-  attribute lifts the toasts above it (`body:has([data-save-bar])` in
+- On phones it sits above the bottom bar; its `data-save-bar` attribute
+  lifts toasts above it (`body:has([data-save-bar])` in
   `src/assets/css/style.css`).
 
 ## Tests
 
-No test of its own: covered through `src/tests/views/ManageView.test.ts`,
-`src/tests/views/ExchangesView.test.ts` and
+None of its own: covered by `src/tests/views/ManageView.test.ts`,
+`ExchangesView.test.ts` and
 `src/tests/features/planning/components/PlanCOGM.test.ts`.

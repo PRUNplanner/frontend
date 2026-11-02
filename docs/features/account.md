@@ -1,71 +1,51 @@
 # account
 
-**Purpose.** This folder holds the authentication UI: login, registration,
-email verification, and requesting and performing a password reset. It
-also holds the email nudge: the Empire banner that asks for an email and the
-dialog that adds and confirms one.
+**Purpose.** Authentication UI (login, registration, email verification,
+password reset) and the email nudge (Empire banner, add-email dialog).
 
-**Used by.**
-- `layout/components/HomepageHeader.vue`, which shows `LoginComponent` or
-  `RegistrationComponent` in its slide-in panel (`PDrawer`). Both forms are
-  styled for that panel only (the landing classes in
-  `features/homepage/homepage.constants.ts`); their requests, validation
-  and redirects are their own.
-- `views/VerifyEmailView.vue`, `RequestPasswordResetView.vue` and
-  `PasswordResetView.vue`.
-- `views/EmpireView.vue` (`EmailNudgeBanner`) and
-  `profile/components/ProfileEmail.vue` (`EmailAddDialog`).
+**Used by.** `layout/components/HomepageHeader.vue` (login/registration
+panel), the verify-email and password-reset views, `EmpireView`
+(`EmailNudgeBanner`), `profile/ProfileEmail.vue` (`EmailAddDialog`).
+`HomepageView`, `SharedPlanBanner` and Planet Search open the panel via
+`useAuthPanel`.
 
 ## Key files
 
-| Component | Calls |
-| --- | --- |
-| `LoginComponent.vue` | `userStore.performLogin(username, password)`, which returns `"ok"`, `"throttled"` (429) or `"failed"`. On `"ok"` it has stored the tokens, started the profile load and loaded the preferences, then navigates, first match wins: to `?redirectTo=`, to the panel's `next` (read before the login, since the header and its panel leave on it), stays on a shared plan (`shared-plan`) or Planet Search (`search`, with its query), else to `/empire`. A 429 shows "too many login attempts" instead of the credentials error |
-| `RegistrationComponent.vue` | `PostUserRegistration` |
-| `VerifyEmailComponent.vue` | `PostUserVerifyEmail`, which returns the result code (`verified`, `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`) and refreshes the profile once confirmed. The route needs a login; the guard sends a logged-out visitor to the login with `redirectTo`, so the emailed link works on any device |
-| `EmailNudgeBanner.vue` | The Empire banner, above a loaded empire with plans: `none` (Add email, Not now, Don't remind me) or `unconfirmed` (Enter code, Send new code, Not now). Counts all plans with `GetAllPlans` once it shows |
-| `EmailAddDialog.vue` | Email, then code, then done: `PatchUserProfile` with `{email}` only, then `PostUserVerifyEmail`. Opens at `email` or `code`; used by the banner and Profile |
-| `RequestPasswordReset.vue` | `PostUserRequestPasswordReset`, enabled once the email passes the request schema and ignored while a request runs. A 429 shows the throttled message, any other error a generic one |
-| `PasswordReset.vue` | `PostUserPasswordReset`. It turns every error into a message, except a 429, which it rethrows so the component shows the throttled message |
+- `components/LoginComponent.vue`: `userStore.performLogin()` → `"ok"`,
+  `"throttled"` (429) or `"failed"`. Then navigates, first match wins:
+  `?redirectTo=`, the panel's `next` (read before login, the panel closes),
+  stay on `shared-plan` / `search`, else `/empire`.
+- `components/VerifyEmailComponent.vue`: result codes `verified`,
+  `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`.
+  The route requires login; the guard redirects with `redirectTo`, so the
+  emailed link works on any device.
+- `RegistrationComponent.vue`, `RequestPasswordReset.vue`,
+  `PasswordReset.vue`: forms over the `PostUser*` queries.
+- `useEmailNudge.ts` + `EmailNudgeBanner.vue`: shows when logged in,
+  preferences loaded, email missing or unverified, ≥ 1 plan, and not
+  dismissed (`emailNudgeDismissal` `"never"`, or `"later"` < 30 days).
+  Dismissals are preferences, so they hold on every device.
+- `EmailAddDialog.vue`: email → code (`PatchUserProfile` with `{email}`
+  only, then `PostUserVerifyEmail`).
+- `useAuthPanel.ts`: module-level panel state; `open(panel, source, { next,
+  context })` sends `landing:auth_open`. `next`/`context` survive a
+  `switchTo()` until `close()`; `AuthPanelContext.vue` names the `context`
+  planet above the forms.
+- `account.util.ts`: `isEmailAddress` (rule for every email field),
+  `maskEmail`.
 
-`useEmailNudge.ts` decides whether the banner shows: logged in, preferences
-loaded (`userStore.preferencesLoaded`), an email missing or unconfirmed, at
-least one plan, and not dismissed (`emailNudgeDismissal` `"never"`, or
-`"later"` under 30 days ago). Its `later` / `never` / `undo` write the two
-preferences, synced like any other. `account.util.ts` has `isEmailAddress`
-(the rule of every email field) and `maskEmail`.
+## Gotchas
 
-`useAuthPanel.ts` holds which form the header panel shows (login,
-registration or none), as module state: `HomepageHeader` renders the panel
-and toggles it from its buttons, `switchTo()` is the switch inside it, and
-the landing page, `SharedPlanBanner` and Planet Search ("+", the Chart's
-double-click, the Distance section) open it with
-`open(panel, source, { next, context })`. `next` is where a login leads,
-`context` the planet a plan is started on, which `AuthPanelContext.vue`
-names above both forms (loaded with them). Both last across the switch and
-the welcome state, until `close()`; the header's own buttons open the panel
-without them. Opening never scrolls: the panel slides in where the
-page is. `open` sends `landing:auth_open`.
-After a registration the welcome state's "Log in" emits `login`, and
-`showLoginForm()` switches the panel to the login form (no event: it is
-not the switch).
-
-## Data
-
-- Tokens and the profile live in `useUserStore` and are persisted. The
-  profile is loaded once per page load (`userStore.loadProfile()`): at login,
-  and in `App.vue` for a session restored from storage, so an email confirmed
-  or FIO linked elsewhere shows after a reload.
-- Refreshing the tokens and logging out are handled globally by
-  `src/util/axiosSetup.ts` and `userStore.logout()`. See
-  [../data-layer.md](../data-layer.md).
+- The forms are styled for the landing panel only
+  (`homepage/homepage.constants.ts` classes).
+- `PostUserPasswordReset` turns every error into a message except 429,
+  which it rethrows so the form shows the throttled message.
+- The profile loads once per page load (login, or `App.vue` for a restored
+  session), so an email confirmed elsewhere shows after a reload. Token
+  refresh and logout: [../data-layer.md](../data-layer.md).
 
 ## Tests
 
-The API is covered in `src/tests/features/api/userData.api.test.ts`. Login
-and refresh are covered in `src/tests/stores/userStore.test.ts`, where the
-login navigates in `src/tests/features/account/components/LoginComponent.test.ts`
-(`pnpm test:components`). Every other component but
-`AuthPanelContext` has a test there too;
-`useAuthPanel.test.ts` and `useEmailNudge.test.ts` are in
-`src/tests/features/account/`.
+`src/tests/features/account/` (+ `components/`); API in
+`src/tests/features/api/userData.api.test.ts`; login in
+`src/tests/stores/userStore.test.ts`.
