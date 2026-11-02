@@ -1,38 +1,32 @@
 # help
 
-**Purpose.** This folder provides the in-app help: a drawer that renders a
-localized markdown page, and the getting-started tutorial.
+**Purpose.** In-app help: a drawer rendering a localized markdown page, and
+the getting-started tutorial.
 
-**Used by.**
-- `HelpDrawer` appears in most views: plan, empire, exchanges, manage,
-  search, profile, FIO burn and repair, all tools, and the plan's Plan
-  Check.
-- `HelpTutorial` appears in `HelpView` (`/help`).
+**Used by.** `HelpDrawer` in most views and tools (plan, Plan Check, empire,
+exchanges, manage, planet search, profile, FIO burn/repair, every tool page);
+`HelpTutorial` in `HelpView` (`/help`).
 
 ## Key files
 
-- **`components/HelpDrawer.vue`**:
-  - **Usage:** `<HelpDrawer file-name="plan" />`.
-  - **Lookup:** it loads `src/assets/help/<current locale>/<file-name>.md`
-    through `import.meta.glob(..., { query: "?raw" })`, falls back to
-    `en_US`, and renders it with `VueShowdown` in a `PDrawer`. `VueShowdown` is an
-    async component: showdown loads with the first opened drawer, not with
-    the page.
-  - **Missing file:** if the file exists in neither locale, it logs the
-    error and shows "Unable to load"; nothing shows while a page loads.
-- **`components/HelpTutorial.vue`**: static tutorial built from the `help.*`
-  i18n keys and router links.
+- `components/HelpDrawer.vue`: `<HelpDrawer file-name="plan" />` loads
+  `src/assets/help/<locale>/<file-name>.md` via `import.meta.glob` (`?raw`),
+  falls back to `en_US`, renders with `VueShowdown` in a `PDrawer`.
+  `VueShowdown` is async, so showdown loads with the first opened drawer. A
+  file missing in both locales is reported and shows a load error (nothing
+  shows while loading).
+- `components/HelpTutorial.vue`: static tutorial from `help.*` i18n keys and
+  router links.
 
 ## Adding a help page
 
-1. Write `src/assets/help/en_US/<name>.md`. Only the English version:
-   Crowdin syncs the other locales.
+1. Write `src/assets/help/en_US/<name>.md` only; other locales are synced
+   by Crowdin.
 2. Add `<HelpDrawer file-name="<name>" />` to the view.
 
-`HelpView` also renders the changelog (`src/assets/help/changelog.md`).
-Update it when a release ships user-visible changes.
+`HelpView` also renders `src/assets/help/changelog.md`; update it when a
+release ships user-visible changes.
 
 ## Tests
 
-`src/tests/features/help/components/HelpDrawer.test.ts` and
-`HelpTutorial.test.ts`; the page in `src/tests/views/HelpView.test.ts`.
+`src/tests/features/help/components/` and `src/tests/views/HelpView.test.ts`.

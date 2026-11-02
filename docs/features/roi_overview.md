@@ -1,42 +1,31 @@
 # roi_overview
 
-**Purpose.** This folder computes the daily profit and ROI (payback time) of
-**every production recipe**. It uses a precomputed "optimal" base layout for
-each building and runs each one through the real plan engine.
+**Purpose.** Daily profit and ROI of every production recipe, each run
+through the plan engine on a precomputed optimal base layout per building.
 
 **Used by.** `views/tools/ROIOverviewView.vue` (`/roi-overview`).
-`optimalProduction` is also used by `resource_roi_overview` and the planning
-engine (`recipeOptions.ts`); `COGMButton` by `resource_roi_overview`.
+`assets/optimalProduction.ts` also feeds `resource_roi_overview`, `base_roi`
+and the plan engine (`recipeOptions.ts`); `COGMButton` is reused by
+`resource_roi_overview`.
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `useROIOverview.ts` | `useROIOverview(definitionRef, cxUuidRef)` exposes `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progress` (`{ current, total }`) and `formatOptimal()` |
-| `assets/optimalProduction.ts` | Static table (`IStaticOptimalProduction[]`) of each building's optimal count plus the habs and storage that fill one base |
-| `useROIOverview.types.ts` | `IROIResult`, `IStaticOptimalProduction` |
-| `components/ROIOverviewTable.vue`, `ROIOverviewTableFilters.vue` | Result table and filters |
-| `components/COGMButton.vue` | Opens the COGM breakdown for a result |
+| `useROIOverview.ts` | `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progress`, `formatOptimal()` |
+| `assets/optimalProduction.ts` | Each building's optimal count plus the habs and storage that fill one base |
+| `components/` | `ROIOverviewTable` (runs the composable), filters, `COGMButton` (COGM breakdown) |
 
-## How it works
-
-1. `calculate()` goes through `optimalProduction`, excluding the extractors
-   (`RIG`, `EXT`, `COL`) and the fertility buildings (`FRM`).
-2. For each building × recipe, it `deepClone`s the definition. The COGC is
-   set to the building's expertise, the buildings and habs come from the
-   optimal layout, and all experts are set to 5.
-3. It calculates each plan with the planning engine (`calculatePlan`,
-   without recipe options) and one shared context for the definition's
-   planet and CX; the overview comes from the same calculation. The loop
-   yields to the UI between buildings (`setTimeout(0)`).
+`calculate()` skips extractors and `FRM`; per building × recipe it sets
+experts to 5, COGC to the building's expertise and the optimal layout, and
+runs `calculatePlan` (`recipeOptions: false`) on one shared context,
+yielding to the UI between buildings.
 
 ## Gotchas
 
-- **`optimalProduction.ts` is large, hand-maintained data.** Keep it in sync
-  when building data changes. A test checks its length (48 buildings).
-- **Prices depend on the CX passed in.**
+- **`optimalProduction.ts` is hand-maintained**: update it when building
+  data changes; a test pins its length (48).
 
 ## Tests
 
-`src/tests/features/roi_overview/useROIOverview.test.ts`,
-`assets/optimalProduction.test.ts` and `components/ROIOverviewTable.test.ts`.
+`src/tests/features/roi_overview/` (incl. a CX golden snapshot).

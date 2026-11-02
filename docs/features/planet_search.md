@@ -1,67 +1,48 @@
 # planet_search
 
-**Purpose.** This folder powers planet search: one live, filter-driven page
-over a cached planet index from the backend (`GET /data/planets/search-index/`).
-Players filter by name, material groups (any/all, minimum /day), planet
-conditions (surface, fertility, accepted extra building materials), active
-COGC program, infrastructure and jumps to exchanges or their own plans.
-Results show as a List, a Matrix or a Chart (jumps against daily output,
-with the best trade-off planets), can be compared (desktop), shared as a
-link and saved in the browser. A result can be turned into a new plan.
+**Purpose.** Live, filter-driven planet search over a cached index
+(`GET /data/planets/search-index/`): name, materials, conditions, COGC,
+infrastructure and jumps to exchanges or the viewer's plans. Results show as
+List, Matrix or Chart, can be compared, shared as a link, saved in the
+browser and turned into a new plan.
 
-**Public.** `/search` works without an account (indexable, in the
-sitemap): visitors get the homepage header and footer, a one-line intro
-with the planet count, and the frame fits below the 64 px header. The
-planning parts become login prompts through `useAuthPanel().open()`: "+"
-(and a double-click in the Chart) opens the login panel with `next` set to
-the new plan and the planet named above the form; the Distance section's
-plan part is a "Log in" line that keeps the visitor on the search. After a
-login on the page, `PlanetSearchPage` loads the empires and the plan
-distances appear without a reload. Saved searches and the other prefs are
-in localStorage, so they work logged out too.
-
-**Used by.** `views/PlanetSearchView.vue` (`/search`).
-`environmentExtras.util.ts` is also used by `resource_roi_overview`;
-`production_chain` reuses `environmentExtras`, `createSearchContext`,
-`encodeSearch`, `SEARCH_CX`, `activeProgram` and `PlanetPlots`.
+**Used by.** `views/PlanetSearchView.vue` (`/search`, public). Helpers are
+reused by `production_chain` (engine, `environmentExtras`,
+`createSearchContext`, `encodeSearch`, `PlanetPlots`),
+`resource_roi_overview` (`environmentExtras`) and `base_roi` (`planetPlots`,
+`PlanetPlots`).
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `planetSearch.engine.ts` | Pure engine: `filterPlanets`, `facetCounts` (incl. the `any` count per section), `widenSection` / `isSectionWide` (the "Any" buttons), `activeChips`, `restrictionHints` (relaxations for a search without results, or within the name matches), `nameSearchNote` (name matches hidden by the other filters), `sortPlanets` (a chain of sort keys), `applySortClick`, `defaultSort`, `rankValues` and small helpers. Each planet gets a bitmask of the filter dimensions it fails; a facet only re-evaluates its own dimension on the planets failing nothing else |
-| `planetSearch.schemas.ts` | Zod source of truth for the filter model and the localStorage prefs |
-| `planetSearch.types.ts` | Engine context, facets, chips, hints, sort |
-| `planetSearchContext.util.ts` | `createSearchContext(index, planPlanets, now)`: resolves CX and the viewer's plans to jumps maps (`usePathfinder().getJumpsFrom`) |
+| `planetSearch.engine.ts` | Pure engine: `filterPlanets`, `facetCounts`, `activeChips`, `restrictionHints` / `nameSearchNote` (why results are missing), `sortPlanets` / `applySortClick`. Each planet gets a bitmask of failed filter dimensions; a facet only re-evaluates its own dimension on planets failing nothing else |
+| `planetSearch.schemas.ts` / `.types.ts` | Zod source of truth for the filter model and saved prefs; engine types |
+| `planetSearchContext.util.ts` | `createSearchContext(index, planPlanets, now)`: CX and plan references → jump maps (`usePathfinder`) |
 | `planetSearchUrl.util.ts` | `encodeSearch` / `decodeSearch`: readable query params, invalid values dropped |
-| `planetSearchLabels.util.ts` | Chip and hint texts with the actual values |
-| `planetSearchChart.util.ts` | `chartData`: the Chart view's X reference (the Distance picks, max jumps over several, else the nearest exchange), Y values (a searched material or fertility), points for the first 300 results and the counts without a route or value; `chartYMaterial` |
-| `usePlanetSearchPrefs.ts` | Saved searches, hidden columns/materials, shown opt-in columns (`OPT_IN_COLUMNS`: plots), collapsed panel, last view in localStorage (not `UserPreference`) |
-| `useIncrementalRows.ts` | Renders long result lists in steps of 100 rows |
-| `environmentExtras.util.ts` | `environmentExtras(buckets)` → extra building materials with their reason; `planetBuckets(planet)` for a full `Planet`. Mirrors `getPlanetSpecialMaterials` in the plan engine (tested for all combinations) |
-| `components/PlanetSearchPage.vue` | Orchestrates state, url sync (`router.replace` debounced by 300 ms, cancelled when leaving the route, flushed on any other unmount), data loading and layout. The title row and search header paint at once; only the body waits in `WrapperGameDataLoader` |
-| `components/PlanetSearchHeader.vue` / `PlanetSearchSavedActions.vue` | Name field; saved searches, copy link and reset beside it, or in one "⋯" popover below 640 px |
-| `components/PlanetSearchRowActions.vue` | "+" (a new-tab link to the plan logged in, a login prompt logged out) and the pin |
-| `components/PlanetSearchFilterPanel.vue` | The filters (also used in the small-screen drawer) |
-| `components/PlanetSearchList.vue` / `PlanetSearchMatrix.vue` | Result views with sticky header and planet column |
-| `components/PlanetSearchChart.vue` | Chart view: `PScatter` with the best trade-off (`paretoFrontier`), colour by frontier or COGC, a ranked list beside it; click pins, double-click opens a plan |
-| `components/PlanetSearchCompare.vue` | Docked compare tray, desktop only |
-| `components/PlanetSearchResultsBar.vue`, `PlanetSearchColumnsMenu.vue`, `PlanetSearchSortMenu.vue`, `PlanetSearchSortHeader.vue` | Count, view switch, columns and sort chain above the results; the sortable column headers (shift+click adds a tiebreaker) |
-| `planetPlots.util.ts`, `components/PlanetPlots.vue`, `PlanetFullIcon.vue` | `planetPlots(planet)`: free/total plots, full, blocked (full without ghost sites), null while unknown; the plots tag (opt-in column) and the red icon on a planet no new base can settle |
+| `planetSearchLabels.util.ts`, `planetSearchChart.util.ts` | Chip/hint/sort texts; Chart data (first 300 results) |
+| `usePlanetSearchPrefs.ts` | Saved searches, columns, panel, last view in localStorage (not `UserPreference`, so they work logged out) |
+| `useIncrementalRows.ts` | Renders long lists in steps of 100 rows |
+| `environmentExtras.util.ts` | Extra building materials per planet with reason; mirrors `getPlanetSpecialMaterials`, tested for all combinations |
+| `planetPlots.util.ts` | Free/total plots, full, blocked; null while unknown |
+| `components/PlanetSearchPage.vue` | State, URL sync (`router.replace` debounced 300 ms), data loading, layout; only the body waits in `WrapperGameDataLoader` |
+| Other `components/` | Filter panel, List/Matrix/Chart views (Chart: `PScatter` with Pareto frontier), compare tray (desktop), header, menus, sortable headers (shift+click adds a tiebreaker), row actions |
 
-## Data
+## Gotchas
 
-- `GetPlanetSearchIndex` query; the index is not written into `planetsStore`
-  (different shape). COGC programs that ended since the backend built the
-  index are ignored by comparing against the page's load time.
-- Plan references only resolve for plans of the selected empire; others (a
-  link from another player) are dropped.
+- The index (`GetPlanetSearchIndex`) is not written into `planetsStore`
+  (different shape).
+- COGC programs that ended after the backend built the index are ignored by
+  comparing against the page's load time (`now`).
+- Plan references only resolve for plans of the selected empire; others
+  (e.g. a link from another player) are dropped.
+- Public page: logged out, planning actions open the login panel
+  (`useAuthPanel().open()` with `next`); after a login on the page, plan
+  distances appear without a reload.
 
 ## Tests
 
-`src/tests/features/planet_search/`: engine (including property tests of
-the facet counts on `api_data_planet_search_index.json`, a production-size
-index), url round trip, prefs, labels, the chart data, plots, incremental
-rows, a reactive bench (`planetSearch.reactive.bench.ts`) and a bench
-(`planetSearch.engine.bench.ts`, budget 50 ms per recompute). Component
-tests in `components/` run with `pnpm test:components`.
+`src/tests/features/planet_search/`: engine (property tests of facet counts
+on the production-size `api_data_planet_search_index.json`), URL, prefs,
+labels, chart, plots, components (`pnpm test:components`) and benches
+(`planetSearch.engine.bench.ts`, budget 50 ms per recompute).

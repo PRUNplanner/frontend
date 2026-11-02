@@ -1,55 +1,37 @@
 # preferences
 
-**Purpose.** This folder manages user preferences: default empire and CX,
-burn thresholds, supply-cart days, FIO repair settings, layout, colour
-palette, market card trigger, plan suggestions, locale and **per-plan
-overrides**. They are stored in `userStore.preferences`, persisted to
-localStorage and synced to the backend.
+**Purpose.** User preferences (defaults, burn thresholds, cart days, FIO
+repair, layout, palette, locale, …) and per-plan overrides, kept in
+`userStore.preferences`, persisted to localStorage and synced to the backend.
 
-**Used by.**
-- `PlanView`, `EmpireView` and `FIOBurnView`.
-- The FIO, FIO repair and XIT components, the plan tools (supply and
-  construction cart, visitation frequency), `MaterialTile`, plan analytics,
-  planet search, the production chain check and the CX preference selector.
-- Profile `UserPreferences`, and the navigation and footer (layout and
-  locale).
+**Used by.** Plan, empire and FIO views and their tools, `MaterialTile`, plan
+analytics, planet search, production chain check, `CXPreferenceSelector`,
+profile `UserPreferences`, navigation and footer.
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `userPreferences.types.ts` | `IPreferenceDefault` and `IPlanPreferenceOverview` (frontend-only). `UserPreference` and `PreferencePerPlan` are derived from `UserPreferenceSchema` in `src/features/api/schemas/user.schemas.ts` |
-| `userDefaults.ts` | `preferenceDefaults`: every default, including `planDefaults` for per-plan keys |
-| `usePreferences.ts` | Writable computeds for each global preference, `planSettingsOverview` (plans whose overrides differ from the defaults), `getBurnDisplayClass()` and `setFioRepairPlanLink()`. It registers no watcher. `startPreferenceSync()`, called once from `main.ts`, watches the store and **debounces a `PatchPreferences` call by 5s** that sends only what changed since the last sync, flushed on `pagehide`; it syncs whether or not a caller is mounted |
-| `preferenceSync.ts` | The last state known to match the backend, `diffPreferences` (changed keys, `planOverrides` per uuid, `null` for removed) and `applyPreferencePatch`. Also used when another tab changed preferences, see [data-layer.md §6](../data-layer.md#6-several-tabs-srclibcrosstabts) |
-| `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: writable computeds for one plan's overrides, merged over `planDefaults`. `planUuid` is a ref, getter or string; while it is `undefined` it reads `planDefaults` and writes are no-ops |
+| `usePreferences.ts` | Writable computeds per global preference, `planSettingsOverview`, helpers; `startPreferenceSync()` (once, in `main.ts`) sends a 5 s debounced `PatchPreferences` with only the changed keys, flushed on `pagehide` |
+| `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: one plan's overrides over `planDefaults`; with no uuid it reads defaults and ignores writes |
+| `preferenceSync.ts` | Last synced state, `diffPreferences`, `applyPreferencePatch` (also for other tabs, see [data-layer.md §6](../data-layer.md#6-several-tabs-srclibcrosstabts)) |
+| `userDefaults.ts`, `userPreferences.types.ts` | `preferenceDefaults` (incl. `planDefaults`); frontend-only types |
 
-## Adding a preference
-
-1. Add the field to `UserPreferenceSchema` in
-   `src/features/api/schemas/user.schemas.ts` (per-plan preferences go
-   into `PreferencePerPlanSchema`). The `UserPreference` and
-   `PreferencePerPlan` types derive from it, and the backend round-trip
-   validates against it.
-2. Add its default to `preferenceDefaults` (or `planDefaults`).
-3. Expose a writable computed from `usePreferences` or `usePlanPreferences`.
+**Adding one:** field in `UserPreferenceSchema` (or `PreferencePerPlanSchema`)
+in `api/schemas/user.schemas.ts`, default in `preferenceDefaults`, writable
+computed in `usePreferences` / `usePlanPreferences`.
 
 ## Gotchas
 
-- **Never mutate `preferenceDefaults`.** `userStore` uses it to seed and
-  reset state, so clone it before changing anything. Tests that leaked
-  changes here have caused order-dependent failures.
-- **Backend sync is debounced and fire-and-forget.** Errors are only logged,
-  and a failed PATCH is retried once. A pending sync is dropped when the
-  session (refresh token) it was scheduled in has ended.
-- **A deleted plan's overrides are removed by the backend.** The frontend
-  never cleans them up itself: a stale tab would delete overrides of plans
-  another tab just created.
-- **`userStore.initLocale` loads the locale before mount.** Changing it
-  goes through `userStore.setLocale`, which lazy-loads the messages.
+- **Never mutate `preferenceDefaults`**: `userStore` seeds and resets from
+  it; clone first (leaks cause order-dependent test failures).
+- **Sync is fire-and-forget**: errors are reported, a failed PATCH is retried
+  once, a pending sync is dropped if its session (refresh token) ended.
+- **The backend removes a deleted plan's overrides**; the frontend must not,
+  or a stale tab deletes overrides of plans another tab just created.
+- **Locale** loads before mount (`userStore.initLocale`); change it with
+  `userStore.setLocale`, which lazy-loads the messages.
 
 ## Tests
 
-`src/tests/features/preferences/usePreferences.test.ts`,
-`usePreferences.sync.test.ts`, `preferenceSync.test.ts` and
-`usePlanPreferences.test.ts`, plus `usePreferences.bench.ts`.
+`src/tests/features/preferences/`.
