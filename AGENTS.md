@@ -95,9 +95,9 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
   Global stores in `src/stores/` are setup-style
   `defineStore("prunplanner_x", () => {...})`. Generic helpers in
   `src/util/`.
-- **Naming.** Components are PascalCase with a feature prefix (`Plan*`,
-  `Empire*`, `CX*` for commodity exchange, `FIO*`). Frontend-only
-  interfaces start with `I`;
+- **Naming.** Components are PascalCase with a feature prefix: `Plan*`,
+  `Empire*`, `FIO*`, or `CX*` for the commodity exchange (CX).
+  Frontend-only interfaces start with `I`;
   schema-derived types don't.
 - **Composables are synchronous.** Register watchers and lifecycle hooks
   before any `await` (Vue binds them only during synchronous setup). Put
