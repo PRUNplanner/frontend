@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
+import systems from "@/assets/static/fio_systemstars.json";
 
 const antares = "8ecf9670ba070d78cfb5537e8d9f1b6c";
 const montem = "49b6615d39ccba05752b3be77b2ebf36";
@@ -63,6 +64,39 @@ describe("usePathfinder", async () => {
 		);
 		expect(getJumpsFrom(systemidNC1)).toBe(jumps);
 		expect(getJumpsFrom("unknown").size).toBe(0);
+	});
+});
+
+// recorded on the full FIO export before it was trimmed to ids, names and
+// one entry per connection: the trimmed file must give the same distances
+describe("usePathfinder: trimmed systems file", () => {
+	const id = (naturalId: string) =>
+		systems.find((s) => s.NaturalId === naturalId)!.SystemId;
+
+	it.each([
+		["OT-580", "ZV-307", 12],
+		["ZV-307", "VH-331", 8],
+		["OT-580", "TD-203", 20],
+		["HM-049", "KW-602", 8],
+		["ZV-759", "UV-351", 8],
+		["AM-783", "FK-371", 23],
+		["JS-299", "QJ-149", 11],
+		["YK-649", "OF-375", 14],
+	])("%s → %s: %i jumps", (from, to, jumps) => {
+		const { getPathBetweenLength } = usePathfinder();
+		expect(getPathBetweenLength(id(from), id(to))).toBe(jumps);
+		expect(getPathBetweenLength(id(to), id(from))).toBe(jumps);
+	});
+
+	it.each([
+		["49b6615d39ccba05752b3be77b2ebf36", 8882],
+		["8ecf9670ba070d78cfb5537e8d9f1b6c", 11099],
+		["92029ff27c1abe932bd2c61ee4c492c7", 10368],
+		["f2f57766ebaca9d69efae41ccf4d8853", 9250],
+	])("from market %s: 637 systems, %i jumps in total", (market, total) => {
+		const jumps = usePathfinder().getJumpsFrom(market);
+		expect(jumps.size).toBe(637);
+		expect([...jumps.values()].reduce((a, b) => a + b, 0)).toBe(total);
 	});
 });
 

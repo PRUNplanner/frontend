@@ -15,6 +15,7 @@
 	// Util
 	import { formatNumber } from "@/util/numbers";
 	import {
+		barChartHeight,
 		chartScale,
 		chartTooltip,
 		topWithOther,
@@ -74,8 +75,9 @@
 		};
 	});
 
-	// no squashed bars: height grows with the bar count
-	const height = computed(() => `${bars.value.length * 28 + 40}px`);
+	const height = computed(() =>
+		barChartHeight(props.items.length, props.top)
+	);
 
 	const chartOptions = computed<ChartOptions<"bar">>(() => ({
 		indexAxis: "y",

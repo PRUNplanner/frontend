@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { type ComputedRef, computed } from "vue";
+	import { type ComputedRef, computed, defineAsyncComponent } from "vue";
 
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { useStoredFlag } from "@/lib/storage";
@@ -9,7 +9,7 @@
 	const { getMaterialClass } = useMaterialData();
 
 	// Components
-	import EmpireBarChart from "@/ui/charts/EmpireBarChart.vue";
+	import EmpireBarChartPlaceholder from "@/ui/charts/EmpireBarChartPlaceholder.vue";
 	import EmpireRevenueSplit from "@/features/empire/components/EmpireRevenueSplit.vue";
 	import EmpireMaterialButterfly from "@/features/empire/components/EmpireMaterialButterfly.vue";
 
@@ -19,6 +19,16 @@
 		IEmpirePlanListData,
 	} from "@/features/empire/empire.types";
 	import type { IChartBarItem } from "@/ui/charts/charts.types";
+
+	// chart.js loads only once "More charts" opens; the placeholder (same
+	// props, same height) keeps the layout until it is there
+	const EmpireBarChart = defineAsyncComponent({
+		loader: () => import("@/ui/charts/EmpireBarChart.vue"),
+		loadingComponent: EmpireBarChartPlaceholder,
+		delay: 0,
+		// a Suspense above would hide the placeholder
+		suspensible: false,
+	});
 
 	const props = defineProps<{
 		empireMaterialIO: IEmpireMaterialIO[];

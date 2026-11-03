@@ -3,7 +3,7 @@
  * name map used for planet display names.
  *
  *   pnpm refresh:systems            fetch /systemstars, write both files
- *   pnpm refresh:systems --offline  only regenerate system_names.json
+ *   pnpm refresh:systems --offline  re-trim the systems file, regenerate names
  *
  * @author jplacht
  */
@@ -28,6 +28,33 @@ function check(systems, previous) {
 		);
 }
 
+/**
+ * Keeps only what the app reads (the pathfinder and the name map) and each
+ * connection once: usePathfinder adds every edge in both directions, so B→A
+ * is dropped when A→B is listed. One-way connections stay.
+ */
+function trim(systems) {
+	const edges = new Set(
+		systems.flatMap((s) =>
+			(s.Connections ?? []).map((c) => `${s.SystemId}>${c.ConnectingId}`)
+		)
+	);
+	return systems.map((s) => ({
+		SystemId: s.SystemId,
+		NaturalId: s.NaturalId,
+		Name: s.Name,
+		Connections: (s.Connections ?? [])
+			.filter(
+				(c) =>
+					!(
+						s.SystemId > c.ConnectingId &&
+						edges.has(`${c.ConnectingId}>${s.SystemId}`)
+					)
+			)
+			.map((c) => ({ ConnectingId: c.ConnectingId })),
+	}));
+}
+
 const current = JSON.parse(readFileSync(SYSTEMS, "utf8"));
 let systems = current;
 
@@ -36,9 +63,10 @@ if (!process.argv.includes("--offline")) {
 	if (!res.ok) throw new Error(`${ENDPOINT}: HTTP ${res.status}`);
 	systems = await res.json();
 	check(systems, current.length);
-	writeFileSync(SYSTEMS, JSON.stringify(systems) + "\n");
 	console.log(`fio_systemstars.json: ${current.length} -> ${systems.length}`);
 }
+systems = trim(systems);
+writeFileSync(SYSTEMS, JSON.stringify(systems) + "\n");
 
 const names = Object.fromEntries(
 	systems
