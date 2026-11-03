@@ -40,7 +40,6 @@
 			"fio_username_mismatch": "Dieser API-Schlüssel gehört zu einem anderen PrUn Spieler.",
 			"unknown": "Speichern fehlgeschlagen. Bitte versuche es erneut."
 		},
-		"email_taken": "Diese Adresse wird bereits von einem anderen Konto verwendet.",
 		"code_sent_notice": "Gespeichert. Wir haben einen Code an die neue Adresse gesendet; Codes zum Zurücksetzen gehen dorthin, sobald sie bestätigt ist.",
 		"recovery": {
 			"label": "Kontowiederherstellung",
