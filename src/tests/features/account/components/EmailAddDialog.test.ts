@@ -58,6 +58,8 @@ let pinia: Pinia;
 // the modal is teleported to the body
 const body = () => new DOMWrapper(document.body);
 const input = () => body().find<HTMLInputElement>("input");
+const passwordInput = () =>
+	body().find<HTMLInputElement>("input[type=password]");
 const byTestId = (id: string) => body().find(`[data-testid=${id}]`);
 const button = (label: string) =>
 	body()
@@ -99,21 +101,27 @@ describe("EmailAddDialog", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("saves only the email, then asks for the code", async () => {
+	it("saves the email with the current password, then asks for the code", async () => {
 		mock.onPatch(PROFILE_URL).reply(200, profile({ email: "new@ex.com" }));
 		await mountDialog(profile());
 		expect(body().text()).toContain(`${TITLE}.email`);
+		const save = () => byTestId("email-dialog-save").attributes("disabled");
 
 		await input().setValue("not-an-email");
-		expect(
-			byTestId("email-dialog-save").attributes("disabled")
-		).toBeDefined();
+		await passwordInput().setValue("secret");
+		expect(save()).toBeDefined();
 
 		await input().setValue("new@ex.com");
+		await passwordInput().setValue("");
+		expect(save()).toBeDefined();
+
+		await passwordInput().setValue("secret");
+		expect(save()).toBeUndefined();
 		await click(byTestId("email-dialog-save"));
 
 		expect(JSON.parse(mock.history.patch[0].data)).toEqual({
 			email: "new@ex.com",
+			current_password: "secret",
 		});
 		expect(trackEvent).toHaveBeenCalledWith("account:email_add", {
 			is_success: true,
@@ -121,8 +129,19 @@ describe("EmailAddDialog", () => {
 		expect(body().text()).toContain(`${TITLE}.code`);
 	});
 
+	it("goes to the code step for the stored address without a request", async () => {
+		await mountDialog(profile({ email: "a@ex.com" }));
+
+		expect(passwordInput().exists()).toBe(false);
+		await click(byTestId("email-dialog-save"));
+
+		expect(mock.history.patch).toHaveLength(0);
+		expect(body().text()).toContain(`${TITLE}.code`);
+	});
+
 	it.each([
-		[400, { email: ["email_taken"] }, "email_taken"],
+		[400, { current_password: ["password_required"] }, "password_required"],
+		[400, { current_password: ["password_invalid"] }, "password_invalid"],
 		[400, { email: ["Enter a valid email address."] }, "invalid_email"],
 		[429, {}, "throttled"],
 		[500, {}, "unknown"],
@@ -130,11 +149,22 @@ describe("EmailAddDialog", () => {
 		mock.onPatch(PROFILE_URL).reply(status, data);
 		await mountDialog(profile());
 
-		await input().setValue("taken@ex.com");
+		await input().setValue("new@ex.com");
+		await passwordInput().setValue("wrong");
 		await click(byTestId("email-dialog-save"));
 
 		expect(body().text()).toContain(`${ERRORS}.${reason}`);
 		expect(body().text()).toContain(`${TITLE}.email`);
+		expect(input().element.value).toBe("new@ex.com");
+		expect(passwordInput().element.value).toBe("");
+		// password errors sit on the password field, the rest on the email
+		const onPassword = reason.startsWith("password_");
+		expect(passwordInput().attributes("aria-invalid")).toBe(
+			onPassword ? "true" : undefined
+		);
+		expect(input().attributes("aria-invalid")).toBe(
+			onPassword ? undefined : "true"
+		);
 		expect(trackEvent).toHaveBeenCalledWith("account:email_add", {
 			is_success: false,
 			reason,
@@ -147,7 +177,8 @@ describe("EmailAddDialog", () => {
 		await mountDialog(profile());
 
 		await input().setValue("new@ex.com");
-		await input().trigger("keydown", { key: "Enter" });
+		await passwordInput().setValue("secret");
+		await passwordInput().trigger("keydown", { key: "Enter" });
 		await flushPromises();
 		expect(mock.history.patch).toHaveLength(1);
 		expect(body().text()).toContain(`${TITLE}.code`);
