@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from "vitest";
-import { h, nextTick } from "vue";
-import type { VueWrapper } from "@vue/test-utils";
+import { h } from "vue";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
@@ -27,8 +27,10 @@ vi.mock("@/lib/analytics/useAnalytics", () => ({
 	trackEvent,
 }));
 
-// chart.js has no canvas in jsdom, stubs only keep the data
+// chart.js has no canvas in jsdom, stubs only keep the data; EmpireAnalysis
+// loads it async, so the stub is an ES module
 vi.mock("@/ui/charts/EmpireBarChart.vue", () => ({
+	__esModule: true,
 	default: {
 		name: "EmpireBarChart",
 		props: { items: Array },
@@ -203,7 +205,7 @@ describe("EmpireAnalysis", () => {
 		async function toggle(wrapper: VueWrapper, open: boolean) {
 			details(wrapper).open = open;
 			await wrapper.find("details").trigger("toggle");
-			await nextTick();
+			await flushPromises();
 		}
 
 		it("is closed by default and mounts no chart", async () => {
