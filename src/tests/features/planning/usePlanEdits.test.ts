@@ -42,6 +42,7 @@ function setup() {
 		production: {
 			buildings: [
 				{
+					name: "FRM",
 					recipeOptions: [
 						{
 							recipe_id: "r1",
@@ -81,7 +82,12 @@ function setup() {
 	};
 	const plan = ref({
 		plan_data: {
-			buildings: [{ active_recipes: [{ recipeid: "r1", amount: 1 }] }],
+			buildings: [
+				{
+					name: "FRM",
+					active_recipes: [{ recipeid: "r1", amount: 1 }],
+				},
+			],
 		},
 	} as unknown as IPlanDefinition);
 	const auto = ref(false);
@@ -131,6 +137,24 @@ describe("usePlanEdits", () => {
 			"plan.history.recipe_removed",
 			expect.anything()
 		);
+	});
+
+	// a stale row: the engine threw, its building was removed since
+	it("ignores a row whose building is not in the plan", async () => {
+		const s = setup();
+		s.plan.value.plan_data.buildings = [];
+		const { result: edits } = await mountEdits(s);
+
+		edits.deleteBuilding(0);
+		edits.deleteBuildingRecipe(0, 0);
+		edits.changeBuildingRecipe(0, 0, "r2");
+		edits.addPickedRecipe(0, "r2");
+		expect(s.calculation.handleDeleteBuilding).not.toHaveBeenCalled();
+		expect(s.calculation.handleDeleteBuildingRecipe).not.toHaveBeenCalled();
+		expect(s.calculation.handleChangeBuildingRecipe).not.toHaveBeenCalled();
+		expect(s.calculation.handleAddBuildingRecipes).not.toHaveBeenCalled();
+		expect(toast).not.toHaveBeenCalled();
+		expect(edits.refRecipeStatus.value).toBeUndefined();
 	});
 
 	it("closes the toast and status line on any later history change", async () => {

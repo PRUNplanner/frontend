@@ -142,38 +142,45 @@ export function usePlanCalculationHandlers(
 	}
 
 	/**
-	 * Updates the buildings amount at specified list index
+	 * Finds the plan's building shown at a row of the result. Rows come from
+	 * the last successful calculation, which may be older than the plan data
+	 * (the engine threw since), so the row is matched by ticker, not index.
 	 * @author jplacht
 	 *
-	 * @param {number} index Building array index
-	 * @param {number} value New amount
+	 * @param {number} index Building row in the result
+	 * @returns {PlanDataBuilding | undefined} Building, undefined if not in the plan
 	 */
-	function handleUpdateBuildingAmount(index: number, value: number): void {
-		// validate index
-		if (typeof planData.value.buildings[index] === "undefined") {
-			throw new Error(`Building at index '${index}' does not exist.`);
-		}
-
-		planData.value.buildings[index].amount = value;
+	function findBuilding(index: number): PlanDataBuilding | undefined {
+		const ticker = planResult.value.production.buildings[index]?.name;
+		return planData.value.buildings.find((b) => b.name === ticker);
 	}
 
 	/**
-	 * Deletes the building at specified list index
+	 * Updates the amount of the building at specified result row
 	 * @author jplacht
 	 *
-	 * @param {number} index Building array index
+	 * @param {number} index Building row in the result
+	 * @param {number} value New amount
+	 */
+	function handleUpdateBuildingAmount(index: number, value: number): void {
+		const building = findBuilding(index);
+		if (building) building.amount = value;
+	}
+
+	/**
+	 * Deletes the building at specified result row
+	 * @author jplacht
+	 *
+	 * @param {number} index Building row in the result
 	 */
 	function handleDeleteBuilding(index: number): void {
-		// validate index
-		if (typeof planData.value.buildings[index] === "undefined") {
-			throw new Error(`Building at index '${index}' does not exist.`);
-		}
+		const building = findBuilding(index);
+		if (!building) return;
 
-		if (index === 0) {
-			planData.value.buildings.shift();
-		} else {
-			planData.value.buildings.splice(index, 1);
-		}
+		planData.value.buildings.splice(
+			planData.value.buildings.indexOf(building),
+			1
+		);
 	}
 
 	/**
@@ -246,11 +253,32 @@ export function usePlanCalculationHandlers(
 	}
 
 	/**
-	 * Changes the recipes amount for given building by building array
-	 * index and its active recipes at the arrays index
+	 * Finds an active recipe of the building at specified result row
 	 * @author jplacht
 	 *
-	 * @param {number} buildingIndex Building Array Index
+	 * @param {number} buildingIndex Building row in the result
+	 * @param {number} recipeIndex Building Active Recipes Array Index
+	 * @returns Building and recipe, undefined if the building is not in the plan
+	 */
+	function findRecipe(buildingIndex: number, recipeIndex: number) {
+		const building = findBuilding(buildingIndex);
+		if (!building) return undefined;
+
+		const recipe = building.active_recipes[recipeIndex];
+		if (typeof recipe === "undefined") {
+			throw new Error(
+				`Building '${building.name}' has no recipe at index '${recipeIndex}'.`
+			);
+		}
+		return { building, recipe };
+	}
+
+	/**
+	 * Changes the recipes amount for given building by result row and its
+	 * active recipes at the arrays index
+	 * @author jplacht
+	 *
+	 * @param {number} buildingIndex Building row in the result
 	 * @param {number} recipeIndex Building Active Recipes Array Index
 	 * @param {number} value Amount to set
 	 */
@@ -259,71 +287,30 @@ export function usePlanCalculationHandlers(
 		recipeIndex: number,
 		value: number
 	): void {
-		// validate building index
-		if (typeof planData.value.buildings[buildingIndex] === "undefined") {
-			throw new Error(
-				`Building at index '${buildingIndex}' does not exist.`
-			);
-		}
-
-		// validate recipe index
-		if (
-			typeof planData.value.buildings[buildingIndex].active_recipes[
-				recipeIndex
-			] === "undefined"
-		) {
-			throw new Error(
-				`Building at index '${buildingIndex}' has no recipe at index '${recipeIndex}.`
-			);
-		}
-
-		planData.value.buildings[buildingIndex].active_recipes[
-			recipeIndex
-		].amount = value;
+		const found = findRecipe(buildingIndex, recipeIndex);
+		if (found) found.recipe.amount = value;
 	}
 
 	/**
 	 * Deletes specified recipe by its index from a buildings (defined by
-	 * the buildings index) from the list of active recipes
+	 * its result row) from the list of active recipes
 	 * @author jplacht
 	 *
-	 * @param {number} buildingIndex Building Array Index
+	 * @param {number} buildingIndex Building row in the result
 	 * @param {number} recipeIndex Building Active Recipes Array Index
 	 */
 	function handleDeleteBuildingRecipe(
 		buildingIndex: number,
 		recipeIndex: number
 	): void {
-		// validate building index
-		if (typeof planData.value.buildings[buildingIndex] === "undefined") {
-			throw new Error(
-				`Building at index '${buildingIndex}' does not exist.`
-			);
-		}
-
-		// validate recipe index
-		if (
-			typeof planData.value.buildings[buildingIndex].active_recipes[
-				recipeIndex
-			] === "undefined"
-		) {
-			throw new Error(
-				`Building at index '${buildingIndex}' has no recipe at index '${recipeIndex}.`
-			);
-		}
-
-		if (recipeIndex === 0) {
-			planData.value.buildings[buildingIndex].active_recipes.shift();
-		} else {
-			planData.value.buildings[buildingIndex].active_recipes.splice(
-				recipeIndex,
-				1
-			);
-		}
+		findRecipe(buildingIndex, recipeIndex)?.building.active_recipes.splice(
+			recipeIndex,
+			1
+		);
 	}
 
 	/**
-	 * Adds a new recipe to the building at specified index
+	 * Adds a new recipe to the building at specified result row
 	 *
 	 * @remark Will throw an error if the building has no recipe
 	 * options it can set, eg. an EXT building with no recipes because
@@ -331,57 +318,43 @@ export function usePlanCalculationHandlers(
 	 *
 	 * @author jplacht
 	 *
-	 * @param {number} buildingIndex Building Array Index
+	 * @param {number} buildingIndex Building row in the result
 	 */
 	function handleAddBuildingRecipe(buildingIndex: number): void {
-		// validate building index
-		if (typeof planData.value.buildings[buildingIndex] === "undefined") {
-			throw new Error(
-				`Building at index '${buildingIndex}' does not exist.`
-			);
-		}
+		const building = findBuilding(buildingIndex);
+		if (!building) return;
 
-		// ensure the building is also in the result + got recipe options
-		if (
-			typeof planResult.value.production.buildings[buildingIndex] ===
-				"undefined" ||
-			planResult.value.production.buildings[buildingIndex].recipeOptions
-				.length === 0
-		) {
+		const options =
+			planResult.value.production.buildings[buildingIndex].recipeOptions;
+		if (options.length === 0) {
 			throw new Error(
-				`Building at index '${buildingIndex} does not exist or has no recipe options.`
+				`Building '${building.name}' has no recipe options.`
 			);
 		}
 
 		// add first option to the data
-		planData.value.buildings[buildingIndex].active_recipes.push({
-			recipeid:
-				planResult.value.production.buildings[buildingIndex]
-					.recipeOptions[0].recipe_id,
+		building.active_recipes.push({
+			recipeid: options[0].recipe_id,
 			amount: 1,
 		});
 	}
 
 	/**
-	 * Adds several recipes to the building at specified index, e.g. the
+	 * Adds several recipes to the building at specified result row, e.g. the
 	 * planet's typical mix. A recipe it already runs becomes a second order
 	 * (free accounts split their runs that way).
 	 *
 	 * @author jplacht
 	 *
-	 * @param {number} buildingIndex Building Array Index
+	 * @param {number} buildingIndex Building row in the result
 	 * @param {PlanDataBuilding["active_recipes"]} recipes Recipes and amounts
 	 */
 	function handleAddBuildingRecipes(
 		buildingIndex: number,
 		recipes: PlanDataBuilding["active_recipes"]
 	): void {
-		const building = planData.value.buildings[buildingIndex];
-		if (typeof building === "undefined") {
-			throw new Error(
-				`Building at index '${buildingIndex}' does not exist.`
-			);
-		}
+		const building = findBuilding(buildingIndex);
+		if (!building) return;
 
 		recipes.forEach(({ recipeid, amount }) =>
 			building.active_recipes.push({ recipeid, amount })
@@ -404,18 +377,20 @@ export function usePlanCalculationHandlers(
 	): Promise<void> {
 		for (const { ticker, amount, recipes } of setup.buildings) {
 			await handleCreateBuilding(ticker);
-			const index = planData.value.buildings.findIndex(
+			// the plan's own building: the result may not have its row yet
+			const building = planData.value.buildings.find(
 				(e) => e.name === ticker
 			);
-			handleUpdateBuildingAmount(index, amount);
+			if (!building) continue;
+
+			building.amount = amount;
 			// a building already in the plan keeps the recipes it runs once
-			const runs = planData.value.buildings[index].active_recipes;
-			handleAddBuildingRecipes(
-				index,
-				recipes.filter(
-					(r) => !runs.some((e) => e.recipeid === r.recipeid)
-				)
-			);
+			const runs = building.active_recipes;
+			recipes
+				.filter((r) => !runs.some((e) => e.recipeid === r.recipeid))
+				.forEach(({ recipeid, amount }) =>
+					runs.push({ recipeid, amount })
+				);
 		}
 		setup.experts.forEach(({ type, amount }) =>
 			handleUpdateExpert(type, amount)
@@ -423,11 +398,11 @@ export function usePlanCalculationHandlers(
 	}
 
 	/**
-	 * Changes the Building Recipe for a building defined by its array index
+	 * Changes the Building Recipe for a building defined by its result row
 	 * and its active recipes defined by index to a new recipe id
 	 * @author jplacht
 	 *
-	 * @param {number} buildingIndex Building Array Index
+	 * @param {number} buildingIndex Building row in the result
 	 * @param {number} recipeIndex Building Active Recipe Array Index
 	 * @param {string} recipeId Recipe ID to be set
 	 */
@@ -436,28 +411,8 @@ export function usePlanCalculationHandlers(
 		recipeIndex: number,
 		recipeId: string
 	): void {
-		// validate building index
-		if (typeof planData.value.buildings[buildingIndex] === "undefined") {
-			throw new Error(
-				`Building at index '${buildingIndex}' does not exist.`
-			);
-		}
-
-		// validate recipe index
-		if (
-			typeof planData.value.buildings[buildingIndex].active_recipes[
-				recipeIndex
-			] === "undefined"
-		) {
-			throw new Error(
-				`Building at index '${buildingIndex}' has no recipe at index '${recipeIndex}.`
-			);
-		}
-
-		// change recipeId at this point
-		planData.value.buildings[buildingIndex].active_recipes[
-			recipeIndex
-		].recipeid = recipeId;
+		const found = findRecipe(buildingIndex, recipeIndex);
+		if (found) found.recipe.recipeid = recipeId;
 	}
 
 	/**
