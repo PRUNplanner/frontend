@@ -32,7 +32,13 @@ export function reloadOnce(url?: string): boolean {
 	if (Date.now() - last < GUARD_MS) return false;
 
 	sessionStorage.setItem(KEY, String(Date.now()));
-	if (url) window.location.assign(url);
+	// a route path like "//host" resolves to another origin
+	if (url)
+		window.location.assign(
+			new URL(url, window.location.href).origin === window.location.origin
+				? url
+				: "/"
+		);
 	else window.location.reload();
 	return true;
 }

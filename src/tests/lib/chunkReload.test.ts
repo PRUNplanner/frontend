@@ -36,7 +36,12 @@ describe("chunkReload", () => {
 		reload.mockReset();
 		assign.mockReset();
 		toast.mockReset();
-		vi.stubGlobal("location", { reload, assign });
+		vi.stubGlobal("location", {
+			reload,
+			assign,
+			href: "https://prunplanner.org/plan",
+			origin: "https://prunplanner.org",
+		});
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		vi.spyOn(window, "addEventListener").mockImplementation(
 			(type: string, listener: EventListenerOrEventListenerObject) => {
@@ -80,6 +85,11 @@ describe("chunkReload", () => {
 		vi.advanceTimersByTime(2_000);
 		expect(reloadOnce("/help")).toBe(true);
 		expect(assign).toHaveBeenCalledWith("/help");
+	});
+
+	it("reloads only to a URL on this origin", () => {
+		expect(reloadOnce("//example.org")).toBe(true);
+		expect(assign).toHaveBeenCalledWith("/");
 	});
 
 	function mockRouter() {

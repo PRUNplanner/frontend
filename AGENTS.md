@@ -156,4 +156,5 @@ it describes.
 | [testing.md](docs/testing.md) | write or fix tests |
 | [analytics.md](docs/analytics.md) | add or change a tracked event or person property |
 | [seo.md](docs/seo.md) | touch titles, `index.html`, the landing prerender or server config |
+| [security.md](docs/security.md) | touch help rendering, redirects, inline scripts or response headers |
 | [features/](docs/features/README.md) | work inside a `src/features/*` folder |

@@ -49,6 +49,29 @@ describe("LoginComponent", () => {
 		expect(router.push).toHaveBeenCalledWith({ path: "/manage" });
 	});
 
+	it.each(["//example.org", "/\\example.org", "https://example.org"])(
+		"stays on the site for redirectTo=%s",
+		async (target) => {
+			route.value = { name: "homepage" };
+			window.history.replaceState(
+				{},
+				"",
+				`/?redirectTo=${encodeURIComponent(target)}`
+			);
+			await login();
+
+			expect(router.push).toHaveBeenCalledWith({ path: "/empire" });
+		}
+	);
+
+	it("honours a redirectTo plan path", async () => {
+		route.value = { name: "homepage" };
+		window.history.replaceState({}, "", "/?redirectTo=/plan/x");
+		await login();
+
+		expect(router.push).toHaveBeenCalledWith({ path: "/plan/x" });
+	});
+
 	it("goes where the panel was opened for, after a redirectTo", async () => {
 		route.value = { name: "search" };
 		useAuthPanel().open("login", "planet_search_plan", {
