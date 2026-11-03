@@ -7,7 +7,8 @@
 **Used by.** `src/lib/query_cache/queries/*.queries.ts` (UI goes through
 `useQuery`). Exceptions: `stores/userStore.ts` lazy-imports `userData.api.ts`
 (login, refresh, profile); `planning/usePlanDraft.ts` calls
-`sendPlanDraftKeepalive`. Other features import only the types.
+`sendPlanDraftKeepalive`; `preferences/usePreferences.ts` lazy-imports it (for
+`sendPreferencesKeepalive`). Other features import only the types.
 
 ## Key files
 
@@ -36,7 +37,8 @@
 
 - `sendPlanDraftKeepalive` bypasses `apiService`: a raw `fetch` with
   `keepalive` (survives page unload); returns `false` when the body exceeds
-  the keepalive cap.
+  the keepalive cap. `sendPreferencesKeepalive` does the same for the
+  preferences PATCH on `pagehide`.
 
 ## Tests
 
