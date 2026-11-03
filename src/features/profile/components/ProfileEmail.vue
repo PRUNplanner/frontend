@@ -29,6 +29,8 @@
 	const isThrottled: Ref<boolean> = ref(false);
 	const hasFailed: Ref<boolean> = ref(false);
 	const emailError: Ref<string | null> = ref(null);
+	const password: Ref<string | null> = ref(null);
+	const passwordError: Ref<string | null> = ref(null);
 	const codeSent: Ref<boolean> = ref(false);
 	const showDialog: Ref<boolean> = ref(false);
 
@@ -37,6 +39,12 @@
 		(stored) => (email.value = stored ?? null)
 	);
 	watch(email, () => (emailError.value = null));
+	watch(password, () => (passwordError.value = null));
+
+	// adding, changing and clearing the email all need the current password
+	const needsPassword = computed(
+		() => (email.value ?? "") !== (userStore.profile?.email ?? "")
+	);
 
 	const recovery = computed(
 		() =>
@@ -50,10 +58,12 @@
 	);
 
 	async function patchEmail(): Promise<void> {
-		if (isUpdating.value) return;
+		const changed = needsPassword.value;
+		if (isUpdating.value || (changed && !password.value)) return;
 
-		const changed =
-			(email.value ?? "") !== (userStore.profile?.email ?? "");
+		// cleared before the request, so it is gone after a save or a failure
+		const currentPassword = password.value;
+		password.value = null;
 		isUpdating.value = true;
 		isThrottled.value = false;
 		hasFailed.value = false;
@@ -62,20 +72,29 @@
 		try {
 			await useQuery("PatchUserProfile", {
 				email: email.value,
+				...(changed ? { current_password: currentPassword! } : {}),
 			}).execute();
 			codeSent.value = changed && !!email.value;
 		} catch (err) {
 			reportError(err);
 			const data = isApiError(err) ? err.responseData : undefined;
 			isThrottled.value = isApiError(err) && err.status === 429;
-			// DRF field errors: { email: [code or message] }
-			const messages =
-				data && typeof data === "object" && "email" in data
-					? data.email
-					: undefined;
-			const field = Array.isArray(messages) ? messages[0] : undefined;
-			if (field === "email_taken")
-				emailError.value = t("profile.change_profile.email_taken");
+			// DRF field errors: { email | current_password: [code or message] }
+			const first = (key: string): unknown => {
+				const messages =
+					data && typeof data === "object" && key in data
+						? (data as Record<string, unknown>)[key]
+						: undefined;
+				return Array.isArray(messages) ? messages[0] : undefined;
+			};
+			const field = first("email");
+			const passwordCode = first("current_password");
+			if (passwordCode !== undefined)
+				passwordError.value = t(
+					passwordCode === "password_required"
+						? "account.email_dialog.errors.password_required"
+						: "account.email_dialog.errors.password_invalid"
+				);
 			else if (typeof field === "string")
 				emailError.value = t(
 					"account.email_dialog.errors.invalid_email"
@@ -101,6 +120,17 @@
 				type="email"
 				autocomplete="email"
 				class="w-full max-w-sm" />
+		</PFormItem>
+		<PFormItem
+			v-if="needsPassword"
+			:label="t('account.email_dialog.password_label')"
+			:error="passwordError ?? undefined">
+			<PInput
+				v-model:value="password"
+				type="password"
+				autocomplete="current-password"
+				class="w-full max-w-sm"
+				@keydown.enter.prevent="patchEmail" />
 		</PFormItem>
 		<PFormItem :label="t('profile.change_profile.recovery.label')">
 			<div
@@ -150,12 +180,8 @@
 	<PButton
 		class="self-start"
 		:loading="isUpdating"
-		:disabled="isUpdating"
-		:type="
-			(email ?? '') !== (userStore.profile?.email ?? '')
-				? 'primary'
-				: 'secondary'
-		"
+		:disabled="isUpdating || (needsPassword && !password)"
+		:type="needsPassword ? 'primary' : 'secondary'"
 		@click="patchEmail">
 		{{ t("profile.buttons.save") }}
 	</PButton>
