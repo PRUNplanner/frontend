@@ -48,8 +48,10 @@ export function renderSitemap(date: Date): string {
 // (a background tab), so the text paints without waiting for the scripts.
 // Where index.html hides the page (skip-prerender) nothing paints: it starts
 // right away. Either way only once the page is parsed, after /env.js has run.
+// The entry is an attribute, so the script, and its CSP hash, stay the same
+// across builds (docs/security.md).
 const START_AFTER_PAINT = (src: string) =>
-	`<script>(function(){var s=0;function load(){var e=document.createElement("script");e.type="module";e.crossOrigin="";e.src=${JSON.stringify(src)};document.head.appendChild(e)}function go(){if(s)return;s=1;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",load);else load()}if(document.documentElement.classList.contains("skip-prerender"))go();try{new PerformanceObserver(function(l){if(l.getEntriesByName("first-contentful-paint").length)go()}).observe({type:"paint",buffered:true})}catch(e){}setTimeout(go,1000)})()</script>`;
+	`<script data-entry="${src}">(function(){var s=0,src=document.querySelector("script[data-entry]").dataset.entry;function load(){var e=document.createElement("script");e.type="module";e.crossOrigin="";e.src=src;document.head.appendChild(e)}function go(){if(s)return;s=1;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",load);else load()}if(document.documentElement.classList.contains("skip-prerender"))go();try{new PerformanceObserver(function(l){if(l.getEntriesByName("first-contentful-paint").length)go()}).observe({type:"paint",buffered:true})}catch(e){}setTimeout(go,1000)})()</script>`;
 
 /**
  * dist/index.html with the landing page in #app, marked for main.ts (which

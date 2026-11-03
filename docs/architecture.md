@@ -37,8 +37,8 @@
    (`lib/seo/prerenderMount.ts`). This chain is **not awaited**: lazy chunks
    import from `main.ts`, which must finish evaluating first.
 
-vue-showdown isn't installed globally: `HelpView` and `HelpDrawer` import
-`VueShowdown` themselves. The auth interceptors register when `apiService`
+vue-showdown isn't installed globally: `HelpView` and `HelpDrawer` render
+through `HelpMarkdown`, which sanitises (docs/security.md). The auth interceptors register when `apiService`
 is created, so a visitor's first page doesn't load axios.
 
 ## Routing (`src/router/index.ts`)

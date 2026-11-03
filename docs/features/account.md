@@ -13,7 +13,8 @@ panel), the verify-email and password-reset views, `EmpireView`
 
 - `components/LoginComponent.vue`: `userStore.performLogin()` → `"ok"`,
   `"throttled"` (429) or `"failed"`. Then navigates, first match wins:
-  `?redirectTo=`, the panel's `next` (read before login, the panel closes),
+  `?redirectTo=` (a path on this site only, see
+  [security.md](../security.md#redirects)), the panel's `next` (read before login, the panel closes),
   stay on `shared-plan` / `search`, else `/empire`.
 - `components/VerifyEmailComponent.vue`: result codes `verified`,
   `already_verified`, `invalid`, `expired`, `no_code`, `throttled`, `error`.
