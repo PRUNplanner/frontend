@@ -96,7 +96,18 @@ export function usePlanEdits(
 		});
 	}
 
+	// the plan's building shown at a result row, by ticker: the result may be
+	// older than the plan data. A row without one changes nothing, so it gets
+	// no toast or status line (its Undo would take back an earlier edit).
+	function planBuilding(buildingIndex: number) {
+		const ticker = result.value.production.buildings[buildingIndex]?.name;
+		return refPlanData.value.plan_data.buildings.find(
+			(b) => b.name === ticker
+		);
+	}
+
 	function deleteBuilding(index: number): void {
+		if (!planBuilding(index)) return;
 		handleDeleteBuilding(index);
 		toastUndo(t("plan.history.building_removed"));
 	}
@@ -105,6 +116,7 @@ export function usePlanEdits(
 		buildingIndex: number,
 		recipeIndex: number
 	): void {
+		if (!planBuilding(buildingIndex)) return;
 		handleDeleteBuildingRecipe(buildingIndex, recipeIndex);
 		toastUndo(t("plan.history.recipe_removed"));
 	}
@@ -124,11 +136,12 @@ export function usePlanEdits(
 		recipeIndex: number,
 		recipeId: string
 	): void {
-		const building = refPlanData.value.plan_data.buildings[buildingIndex];
+		const building = planBuilding(buildingIndex);
+		if (!building) return;
 		// picking the recipe it already has changes nothing, and Undo would
 		// take back the edit before it
 		const before: string | undefined =
-			building?.active_recipes[recipeIndex]?.recipeid;
+			building.active_recipes[recipeIndex]?.recipeid;
 		if (before === recipeId) return;
 
 		handleChangeBuildingRecipe(buildingIndex, recipeIndex, recipeId);
@@ -143,14 +156,14 @@ export function usePlanEdits(
 	}
 
 	function addPickedRecipe(buildingIndex: number, recipeId: string): void {
+		const building = planBuilding(buildingIndex);
+		if (!building) return;
 		handleAddBuildingRecipes(buildingIndex, [
 			{ recipeid: recipeId, amount: 1 },
 		]);
 		refRecipeStatus.value = {
 			building: buildingIndex,
-			recipe:
-				refPlanData.value.plan_data.buildings[buildingIndex]
-					.active_recipes.length - 1,
+			recipe: building.active_recipes.length - 1,
 			text: t("plan.picker.added", {
 				recipe: recipeLabel(buildingIndex, recipeId),
 			}),
