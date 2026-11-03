@@ -34,7 +34,7 @@ import type {
 } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
-import { persistStorage } from "@/lib/persistStorage";
+import { persistSerializer, persistStorage } from "@/lib/persistStorage";
 import { deepClone } from "@/util/data";
 import { isApiError } from "@/lib/apiError";
 import {
@@ -64,9 +64,20 @@ export const useUserStore = defineStore(
 		const accessToken: Ref<string | undefined> = ref(undefined);
 		const refreshToken: Ref<string | undefined> = ref(undefined);
 		const profile: Ref<UserProfile | undefined> = ref(undefined);
+		// the FIO key isn't persisted (a third-party secret): whether one
+		// is set is, so a restored session knows it before the profile GET
+		const fioKeySet: Ref<boolean> = ref(false);
+		watch(
+			() => profile.value?.fio_apikey,
+			(key) => {
+				// undefined: restored from storage, keep what was stored
+				if (key !== undefined) fioKeySet.value = !!key;
+			},
+			{ flush: "sync" }
+		);
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
-		const intialPreferencesCalled: Ref<boolean> = ref(false);
+		const initialPreferencesCalled: Ref<boolean> = ref(false);
 		// the GET answered: dismissals and the like are known
 		const preferencesLoaded: Ref<boolean> = ref(false);
 		const preferences: Reactive<UserPreference> = reactive<UserPreference>(
@@ -80,11 +91,12 @@ export const useUserStore = defineStore(
 			accessToken.value = undefined;
 			refreshToken.value = undefined;
 			profile.value = undefined;
+			fioKeySet.value = false;
 			Object.assign(preferences, deepClone(preferenceDefaults));
 			setSyncedPreferences(preferences);
 			// the next login must load its own profile and preferences
 			initialProfileCalled.value = false;
-			intialPreferencesCalled.value = false;
+			initialPreferencesCalled.value = false;
 			preferencesLoaded.value = false;
 		}
 
@@ -195,8 +207,7 @@ export const useUserStore = defineStore(
 		const hasFIO: ComputedRef<boolean> = computed(
 			() =>
 				profile.value !== undefined &&
-				profile.value.fio_apikey !== "" &&
-				profile.value.fio_apikey !== null &&
+				fioKeySet.value &&
 				profile.value.prun_username !== "" &&
 				profile.value.prun_username !== null
 		);
@@ -259,9 +270,9 @@ export const useUserStore = defineStore(
 		}
 
 		async function queryPreferences(): Promise<void> {
-			if (intialPreferencesCalled.value) return;
+			if (initialPreferencesCalled.value) return;
 
-			intialPreferencesCalled.value = true;
+			initialPreferencesCalled.value = true;
 
 			// update preferences; the query layer loads on first use too
 			const { useQuery } = await import("@/lib/query_cache/useQuery");
@@ -409,6 +420,7 @@ export const useUserStore = defineStore(
 			accessToken,
 			refreshToken,
 			profile,
+			fioKeySet,
 			// reset
 			$reset,
 			// getters
@@ -416,7 +428,7 @@ export const useUserStore = defineStore(
 			hasFIO,
 			fioStatus,
 			// preferences
-			intialPreferencesCalled,
+			initialPreferencesCalled,
 			preferencesLoaded,
 			preferences,
 			setPreference,
@@ -437,7 +449,17 @@ export const useUserStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
-			pick: ["accessToken", "refreshToken", "profile", "preferences"],
+			serializer: persistSerializer,
+			pick: [
+				"accessToken",
+				"refreshToken",
+				"profile",
+				"fioKeySet",
+				"preferences",
+			],
+			// no third-party secret or email in localStorage: the profile GET
+			// on start brings them back
+			omit: ["profile.fio_apikey", "profile.email"],
 			// overrides persisted before setPlanPreference stored complete
 			// ones fail the PATCH schema, which blocks every preference sync
 			afterHydrate: ({ store }) => {

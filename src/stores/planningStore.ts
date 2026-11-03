@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { ref, type Ref } from "vue";
+import { markRaw, ref, type Ref } from "vue";
 
 // Util
 import { getObjectSize, inertClone } from "@/util/data";
-import { persistStorage } from "@/lib/persistStorage";
+import { persistSerializer, persistStorage } from "@/lib/persistStorage";
 
 // Types & Interfaces
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -20,7 +20,7 @@ import type {
  * Read model for plans, empires, CX, shared plans and FIO storage. Written
  * only by the planning query fetchFns; the query cache tracks freshness.
  * Its objects (and the cache entries') are read-only: editors work on
- * getPlan / getCX clones and save through a query.
+ * getCX / plan query clones and save through a query.
  */
 export const usePlanningStore = defineStore(
 	"prunplanner_planning",
@@ -144,10 +144,14 @@ export const usePlanningStore = defineStore(
 		 * @param {FIOStorage} data FIO Storage Data
 		 */
 		function setFIOStorageData(data: FIOStorage): void {
-			fio_storage_planets.value = data.storage_data.planets;
-			fio_storage_warehouses.value = data.storage_data.warehouses;
-			fio_storage_ships.value = data.storage_data.ships;
-			fio_sites_planets.value = data.sites_data;
+			// read-only and replaced whole: raw, so the persist subscription's
+			// deep watch doesn't walk it on every plan change
+			fio_storage_planets.value = markRaw(data.storage_data.planets);
+			fio_storage_warehouses.value = markRaw(
+				data.storage_data.warehouses
+			);
+			fio_storage_ships.value = markRaw(data.storage_data.ships);
+			fio_sites_planets.value = markRaw(data.sites_data);
 
 			fio_storage_timestamp.value = data.last_modified;
 		}
@@ -214,26 +218,6 @@ export const usePlanningStore = defineStore(
 					planetId: findPlan.planet_natural_id,
 					planName: findPlan.plan_name ?? "Unnamed",
 				};
-
-			throw new Error(
-				`No data: Plan '${planUuid}'. Ensure Plan uuid is valid and planning data has been loaded.`
-			);
-		}
-
-		/**
-		 * Gets a plan by its Uuid
-		 *
-		 * @author jplacht
-		 *
-		 * @async
-		 * @param {string} planUuid Uuid
-		 * @returns {Promise<Plan>} Plan Data
-		 */
-		async function getPlan(planUuid: string): Promise<Plan> {
-			// try getting from already fetched data first
-			const findPlan: Plan | undefined = plans.value[planUuid];
-
-			if (findPlan) return inertClone(plans.value[planUuid]);
 
 			throw new Error(
 				`No data: Plan '${planUuid}'. Ensure Plan uuid is valid and planning data has been loaded.`
@@ -316,7 +300,6 @@ export const usePlanningStore = defineStore(
 			setFIOStorageData,
 			// getters
 			getCX,
-			getPlan,
 			getPlanNamePlanet,
 			getAllCX,
 			getSharedList,
@@ -327,6 +310,7 @@ export const usePlanningStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
+			serializer: persistSerializer,
 			// not FIO storage: too big for the quota, and GetFIOStorage
 			// refetches it on every app load
 			pick: ["plans", "empires", "cxs", "shared"],

@@ -51,7 +51,9 @@ interface IChangeMessage {
 interface IPersistedUser {
 	accessToken?: string;
 	refreshToken?: string;
-	profile?: UserProfile;
+	// without email and FIO key, which aren't persisted
+	profile?: Omit<UserProfile, "email" | "fio_apikey">;
+	fioKeySet?: boolean;
 	preferences?: UserPreference;
 }
 
@@ -239,8 +241,17 @@ export function onUserStorage(event: StorageEvent, router: Router): void {
 		userStore.accessToken = next.accessToken;
 	if (userStore.refreshToken !== next.refreshToken)
 		userStore.refreshToken = next.refreshToken;
-	if (next.profile && !isEqual(userStore.profile, next.profile))
-		userStore.profile = next.profile;
+	if (next.profile) {
+		// the stored profile lacks email and FIO key: keep this tab's
+		const profile = {
+			...userStore.profile,
+			...next.profile,
+		} as UserProfile;
+		if (next.fioKeySet === false) profile.fio_apikey = null;
+		if (!isEqual(userStore.profile, profile)) userStore.profile = profile;
+	}
+	if (next.fioKeySet !== undefined && userStore.fioKeySet !== next.fioKeySet)
+		userStore.fioKeySet = next.fioKeySet;
 
 	// only what the other tab changed, keys this tab changed and hasn't
 	// sent yet stay; the other tab sends its own changes. From the event:

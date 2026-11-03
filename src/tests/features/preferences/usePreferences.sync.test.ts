@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { effectScope, nextTick, type WatchHandle } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 
+import config from "@/lib/config";
 import { useUserStore } from "@/stores/userStore";
 import {
 	startPreferenceSync,
@@ -125,16 +126,75 @@ describe("usePreferences: backend sync", () => {
 		expect(patched).toHaveLength(0);
 	});
 
-	it("sends a pending change at once when the page is left", async () => {
-		userStore.setToken("access-a", "refresh-a");
-		const { burnDaysRed } = usePreferences();
+	describe("leaving the page", () => {
+		let fetchMock: ReturnType<typeof vi.fn>;
 
-		burnDaysRed.value = 3;
-		await nextTick();
-		window.dispatchEvent(new Event("pagehide"));
-		await vi.advanceTimersByTimeAsync(0);
+		beforeEach(() => {
+			fetchMock = vi.fn(() => Promise.resolve(new Response("{}")));
+			vi.stubGlobal("fetch", fetchMock);
+		});
 
-		expect(patched).toStrictEqual([{ burnDaysRed: 3 }]);
+		afterEach(() => vi.unstubAllGlobals());
+
+		const leave = async () => {
+			await vi.dynamicImportSettled();
+			window.dispatchEvent(new Event("pagehide"));
+		};
+
+		it("sends a pending change at once with a keepalive PATCH", async () => {
+			userStore.setToken("access-a", "refresh-a");
+			const { burnDaysRed } = usePreferences();
+
+			burnDaysRed.value = 3;
+			await nextTick();
+			await leave();
+
+			expect(fetchMock).toHaveBeenCalledTimes(1);
+			const [url, init] = fetchMock.mock.calls[0] as [
+				string,
+				RequestInit,
+			];
+			expect(url).toBe(`${config.API_BASE_URL}/user/preferences/`);
+			expect(init).toMatchObject({
+				method: "PATCH",
+				keepalive: true,
+				headers: expect.objectContaining({
+					"Content-Type": "application/json",
+					Authorization: "Bearer access-a",
+				}),
+			});
+			expect(JSON.parse(init.body as string)).toStrictEqual({
+				burnDaysRed: 3,
+			});
+
+			// sent once: the debounced sync doesn't follow
+			await vi.advanceTimersByTimeAsync(5000);
+			expect(patched).toHaveLength(0);
+			expect(fetchMock).toHaveBeenCalledTimes(1);
+		});
+
+		it("sends nothing without a pending change", async () => {
+			userStore.setToken("access-a", "refresh-a");
+			const { burnDaysRed } = usePreferences();
+			burnDaysRed.value = 4;
+			await nextTick();
+			await vi.advanceTimersByTimeAsync(5000);
+			expect(patched).toHaveLength(1);
+
+			await leave();
+
+			expect(fetchMock).not.toHaveBeenCalled();
+		});
+
+		it("sends nothing when logged out", async () => {
+			const { burnDaysRed } = usePreferences();
+
+			burnDaysRed.value = 5;
+			await nextTick();
+			await leave();
+
+			expect(fetchMock).not.toHaveBeenCalled();
+		});
 	});
 
 	it("never sends a pending sync as the next logged in user", async () => {

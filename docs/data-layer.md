@@ -221,7 +221,8 @@ query takes them (a type error otherwise). `/debug`
     deleted, rows replaced, meta written last. A store without a meta row
     is never read, so a cut-off write is harmless.
   - Planets (`GetPlanet`, `GetMultiplePlanets`, searches) write through
-    `storeAndPreload` and have no `initialData`.
+    `storeAndPreload` (IndexedDB, then the written rows into memory; no
+    full re-read) and have no `initialData`.
   - Each phase is a `performance.measure`
     (`gamedata:<store>:idb-read|fetch|fill|idb-write`); the first load per
     store and tab is sent as `perf:gamedata_load`
@@ -234,18 +235,19 @@ query takes them (a type error otherwise). `/debug`
 
 Setup-style; persisted to localStorage by `pinia-plugin-persistedstate`
 with `persist.pick`. The user and planning stores write through
-`lib/persistStorage.ts`: a failed write (quota) keeps the stored value and
+`lib/persistStorage.ts` (`persistSerializer` stringifies the raw state, not
+the reactive proxies): a failed write (quota) keeps the stored value and
 is reported once per key, and §6 can stop all writes.
 
 | Store (`id`) | Holds | Persisted keys |
 | --- | --- | --- |
-| `useUserStore` (`prunplanner_user`) | Tokens, profile, preferences (incl. per-plan overrides), locale; login, refresh, logout, `setLocale` | `accessToken`, `refreshToken`, `profile`, `preferences` |
+| `useUserStore` (`prunplanner_user`) | Tokens, profile, preferences (incl. per-plan overrides), locale; login, refresh, logout, `setLocale` | `accessToken`, `refreshToken`, `profile` without `email` and `fio_apikey` (`persist.omit`; the profile GET on start brings them back), `fioKeySet` (keeps `hasFIO` until then), `preferences` |
 | `usePlanningStore` (`prunplanner_planning`) | `plans`, `empires`, `cxs` (by uuid), `shared` (by plan uuid), FIO storage + timestamp | `plans`, `empires`, `cxs`, `shared` (not FIO storage: too big; `GetFIOStorage` refetches it) |
-| `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules, per browser (not synced) | `userAlerts` |
+| `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules, per browser and user (not synced) | not by the plugin: `userAlerts` under `prunplanner_alerts:<user id>` (`userStorageKey` in `lib/storage.ts`, which also moves the old unkeyed value to the first user); written through `persistStorage`, read through `StoredAlertsSchema` (invalid: none, reported) |
 | `useQueryStore` (`prunplanner_query_store`) | Query cache state | not persisted |
 
-- `planningStore` is written **only by query `fetchFn`s**; `getPlan` and
-  `getCX` return `inertClone` copies.
+- `planningStore` is written **only by query `fetchFn`s**;
+  `getCX` returns an `inertClone` copy.
 - **Loaded on first use.** The app shell (`main.ts`, `App.vue`,
   `userStore`, `crossTab`, `usePreferences`, `preferenceSync`) statically
   imports none of the query store/repository, `features/api`, zod, axios or
@@ -294,7 +296,8 @@ explicitly (`registerCrossTab` in `main.ts`):
   - another user, or a login while this tab had none: `stopPersisting()`
     (so this tab never writes the old session back), reset and reload;
   - same user: adopt tokens and profile from the **currently stored**
-    value (not the event's, which a later write may have replaced), and
+    value (not the event's, which a later write may have replaced; merged
+    over this tab's profile, as storage has no email or FIO key), and
     only the preference keys the other tab changed. Assign only values that
     differ, or the persist plugin bounces writes between tabs.
 - **Preferences** (`features/preferences/preferenceSync.ts`) keep the last

@@ -18,6 +18,7 @@ import {
 	register,
 } from "@/lib/analytics/usePostHog";
 import { ApiError, ApiValidationError } from "@/lib/apiError";
+import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 vi.mock("@/lib/analytics/usePostHog", () => ({
 	capture: vi.fn(),
@@ -315,4 +316,23 @@ describe("useAnalytics", () => {
 			});
 		}
 	);
+
+	it("identifyUser takes FIO as given for a profile restored without its key", () => {
+		identifyUser(
+			{
+				id: 7,
+				username: "foo",
+				is_email_verified: true,
+				prun_username: "PRUN",
+				fio_status: "ok",
+				fio_last_refreshed_at: null,
+			} as UserProfile,
+			true
+		);
+
+		expect(identify).toHaveBeenCalledWith(
+			"7",
+			expect.objectContaining({ is_fio_enabled: true })
+		);
+	});
 });

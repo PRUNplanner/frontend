@@ -208,7 +208,26 @@ describe("App", () => {
 		useUserStore().profile = PROFILE;
 		await mountApp();
 
-		expect(mocks.identifyUser).toHaveBeenCalledExactlyOnceWith(PROFILE);
+		expect(mocks.identifyUser).toHaveBeenCalledExactlyOnceWith(
+			PROFILE,
+			false
+		);
+	});
+
+	it("tells analytics a restored session has FIO, though its key isn't stored", async () => {
+		const { fio_apikey: _key, ...restored } = PROFILE;
+		const userStore = useUserStore();
+		userStore.profile = {
+			...restored,
+			prun_username: "PRUN",
+		} as UserProfile;
+		userStore.fioKeySet = true;
+		await mountApp();
+
+		expect(mocks.identifyUser).toHaveBeenCalledExactlyOnceWith(
+			expect.objectContaining({ prun_username: "PRUN" }),
+			true
+		);
 	});
 
 	describe("blocked database", () => {

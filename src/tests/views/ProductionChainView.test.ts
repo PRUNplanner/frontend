@@ -15,6 +15,8 @@ import ProductionChainView from "@/views/tools/ProductionChainView.vue";
 import ChainSettings from "@/features/production_chain/components/ChainSettings.vue";
 import { toasts } from "@/ui/useToast";
 import { usePlanningStore } from "@/stores/planningStore";
+import { useUserStore } from "@/stores/userStore";
+import { jwt } from "@/tests/jwt";
 import cxList from "@/tests/test_data/api_data_cx_list.json";
 import { mountComponent } from "@/tests/mountComponent";
 import {
@@ -82,6 +84,13 @@ vi.mock("vue-router", async (original) => ({
 
 const STORAGE_KEY = "prunplanner_production_chain";
 
+/** a pinia with a logged-in user: the last chain is stored per user */
+function piniaAs(userId: number) {
+	const pinia = createPinia();
+	useUserStore(pinia).refreshToken = jwt(userId);
+	return pinia;
+}
+
 /** the mocked queries: no empires, the planet index for the rest */
 const byName =
 	(answers: Record<string, () => Promise<unknown>>) => (name: string) =>
@@ -146,14 +155,22 @@ describe("ProductionChainView", () => {
 
 	it("writes changes to the URL and the browser, and tracks them", async () => {
 		nav.route.query = { t: "DW:100" };
-		const { wrapper } = await mountComponent(ProductionChainView);
+		const { wrapper } = await mountComponent(
+			ProductionChainView,
+			{},
+			{
+				pinia: piniaAs(1),
+			}
+		);
 		await wrapper
 			.find("button[aria-label='production_chains.targets.more']")
 			.trigger("click");
 		await flushPromises();
 		const query = nav.replace.mock.calls.at(-1)![0].query;
 		expect(query.t).toBe("DW:110");
-		expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).t).toBe("DW:110");
+		expect(JSON.parse(localStorage.getItem(`${STORAGE_KEY}:1`)!).t).toBe(
+			"DW:110"
+		);
 
 		// 1 s after the last change
 		vi.advanceTimersByTime(900);
@@ -172,11 +189,43 @@ describe("ProductionChainView", () => {
 	});
 
 	it("opens the last chain from the browser without a link", async () => {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify({ t: "OVE:50" }));
-		const { wrapper } = await mountComponent(ProductionChainView);
+		localStorage.setItem(
+			`${STORAGE_KEY}:1`,
+			JSON.stringify({ t: "OVE:50" })
+		);
+		const { wrapper } = await mountComponent(
+			ProductionChainView,
+			{},
+			{
+				pinia: piniaAs(1),
+			}
+		);
 		expect(wrapper.find("[data-testid='chain-row-OVE']").exists()).toBe(
 			true
 		);
+	});
+
+	it("keeps the last chain per user, the one from before goes to the first", async () => {
+		const hasOVE = async (userId: number) => {
+			const { wrapper } = await mountComponent(
+				ProductionChainView,
+				{},
+				{
+					pinia: piniaAs(userId),
+				}
+			);
+			const found = wrapper
+				.find("[data-testid='chain-row-OVE']")
+				.exists();
+			wrapper.unmount();
+			return found;
+		};
+		localStorage.setItem(STORAGE_KEY, JSON.stringify({ t: "OVE:50" }));
+
+		expect(await hasOVE(1)).toBe(true);
+		expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+		expect(await hasOVE(2)).toBe(false);
+		expect(await hasOVE(1)).toBe(true);
 	});
 
 	it("loads the planet index only when something extracts (AC 6)", async () => {
