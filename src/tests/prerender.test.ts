@@ -23,11 +23,12 @@ const SHELL = `<!DOCTYPE html><html><head><title>t</title>
 
 // runs the loader as the page would: its script element is in the document
 function runLoader(index: string): void {
-	const [, entry, code] = index.match(
-		/<script data-entry="([^"]+)">(.*?)<\/script>/
+	const [, entry, preload, code] = index.match(
+		/<script data-entry="([^"]+)" data-preload="([^"]*)">(.*?)<\/script>/
 	)!;
 	const tag = document.createElement("script");
 	tag.dataset.entry = entry;
+	tag.dataset.preload = preload;
 	document.body.append(tag);
 	new Function(code!)();
 	tag.remove();
@@ -89,13 +90,15 @@ describe("prerender", () => {
 	it("starts the scripts after the first paint, without modulepreloads", () => {
 		const index = injectLanding(SHELL, "<h1>landing</h1>");
 
-		expect(index).not.toContain("modulepreload");
+		expect(index).not.toContain('<link rel="modulepreload"');
 		expect(index).not.toContain('<script type="module"');
-		expect(index).toContain('<script data-entry="/assets/index.abc.js">');
+		expect(index).toContain(
+			'<script data-entry="/assets/index.abc.js" data-preload="/assets/chunks/vendor_vue.abc.js">'
+		);
 		expect(index).toContain("first-contentful-paint");
 	});
 
-	it("starts right away where the landing page is hidden, once the page is parsed", () => {
+	it("preloads at once and starts once the page is parsed where the landing page is hidden", () => {
 		const appended = vi
 			.spyOn(document.head, "appendChild")
 			.mockImplementation((n) => n);
@@ -106,10 +109,18 @@ describe("prerender", () => {
 		const index = injectLanding(SHELL, "");
 
 		runLoader(index);
-		expect(appended).not.toHaveBeenCalled();
+		// the entry and the chunks the shell preloaded, at once
+		const links = appended.mock.calls.map(([n]) => n as HTMLLinkElement);
+		expect(links.map((l) => [l.rel, l.getAttribute("href")])).toEqual([
+			["modulepreload", "/assets/index.abc.js"],
+			["modulepreload", "/assets/chunks/vendor_vue.abc.js"],
+		]);
+		for (const l of links) expect(l.crossOrigin).toBe("");
 		document.dispatchEvent(new Event("DOMContentLoaded"));
 
-		expect(appended).toHaveBeenCalledTimes(1);
+		expect(appended).toHaveBeenCalledTimes(3);
+		const script = appended.mock.calls[2][0] as HTMLScriptElement;
+		expect(script.getAttribute("src")).toBe("/assets/index.abc.js");
 		document.documentElement.classList.remove("skip-prerender");
 		state.mockRestore();
 		appended.mockRestore();

@@ -27,7 +27,7 @@ Roll out as `Content-Security-Policy-Report-Only` first, then enforce:
 ```
 Content-Security-Policy-Report-Only:
   default-src 'self';
-  script-src 'self' 'sha256-4VVhsDrfr6mCP6LTxhBTHgID6wXoxtjxKTuZApEOWus=' 'sha256-9exqtx/UzcJ/YlZuQ9e3HLpQNUnpjqQQZCosIr8EFgE=' https://squirrel.prunplanner.org;
+  script-src 'self' 'sha256-4VVhsDrfr6mCP6LTxhBTHgID6wXoxtjxKTuZApEOWus=' 'sha256-qGfboBC4zQTYouMnJL5r/frTpqNBOihr+YI4LaEq+jY=' https://squirrel.prunplanner.org;
   connect-src 'self' https://api.prunplanner.org https://squirrel.prunplanner.org;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob:;
