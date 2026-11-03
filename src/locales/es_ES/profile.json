@@ -40,7 +40,6 @@
 			"fio_username_mismatch": "Esta clave de API pertenece a otro usuario de PrUn.",
 			"unknown": "No se pudo guardar. Inténtalo de nuevo."
 		},
-		"email_taken": "Esta dirección ya la usa otra cuenta.",
 		"code_sent_notice": "Guardado. Enviamos un código a la nueva dirección; los restablecimientos irán allí cuando se confirme.",
 		"recovery": {
 			"label": "Recuperación de la cuenta",
