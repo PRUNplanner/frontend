@@ -22,8 +22,8 @@ the folder layout and the editor.
 | `usePlanCalculation.ts` / `.types.ts` | Editor adapter (synchronous `computed`), `IPlanResult` |
 | `usePlanCalculationHandlers.ts` | Every edit operation (`handle*`), each mutating `plan.plan_data` |
 | `usePlanHistory.ts` | Undo/redo (one step per edit), `modified`, `savedSnapshot()` (save conflict base) |
-| `usePlanSave.ts` | Save, Make active, Save as, discard, save conflicts, other tabs' changes, leave guard; owns the save version (`modified_at`) |
-| `usePlanDraft.ts` | Backend autosave draft: debounced PUT, keepalive flush on page hide, DELETE on undo-to-saved or discard; one write queue per tab shared with saves; another tab's draft (409) stops autosaving and asks |
+| `usePlanSave.ts` | Save, Make active, Save as, discard, Reload saved (`reloadPlan`), save conflicts, other tabs' changes, leave guard; owns the save version (`modified_at`) |
+| `usePlanDraft.ts` | Backend autosave draft: debounced PUT, keepalive flush on page hide, DELETE on undo-to-saved, discard or reload; a draft found on open is only offered (`restore`), the next write replaces it; one write queue per tab shared with saves; another tab's draft (409) stops autosaving and asks |
 | `usePlanVersions.ts`, `usePlanVersionPreview.ts`, `planVersions.util.ts` | Saved versions and the read-only preview of an older one |
 | `usePlanEdits.ts`, `usePlanSharedCopy.ts`, `usePlanLayout.ts`, `usePlanIO.ts`, `usePlanShortcuts.ts`, `usePlanCheckView.ts` | Page composables: edit feedback (undo toasts, starter setup, hab auto-optimise), shared-plan working copy, tool tabs and pane folding, Material I/O pane, keyboard shortcuts, Plan check view |
 | `planView.util.ts` / `.types.ts`, `recipePicker.util.ts` | `PlanTool` keys, `foldedPanes`, Material I/O totals/CSV, page types; recipe picker ordering |
