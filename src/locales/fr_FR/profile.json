@@ -40,7 +40,6 @@
 			"fio_username_mismatch": "Cette clé API appartient à un autre nom d'utilisateur PrUn.",
 			"unknown": "Échec de l'enregistrement. Réessaie."
 		},
-		"email_taken": "Cette adresse est déjà utilisée par un autre compte.",
 		"code_sent_notice": "Enregistré. Nous avons envoyé un code à la nouvelle adresse ; les réinitialisations y seront envoyées une fois confirmée.",
 		"recovery": {
 			"label": "Récupération du compte",
