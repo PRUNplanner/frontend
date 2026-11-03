@@ -40,7 +40,6 @@
 			"fio_username_mismatch": "此 API 密钥属于另一 PrUn 用户。",
 			"unknown": "保存失败，请稍后重试。"
 		},
-		"email_taken": "This address is already used by another account.",
 		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
 		"recovery": {
 			"label": "Account recovery",
