@@ -8,6 +8,7 @@ import {
 	useQueryStore,
 } from "@/lib/query_cache/queryStore";
 import { reportClientError } from "@/lib/clientErrors";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 import { useUserActivity } from "@/features/user_activity/useUserActivity";
 import { userActivity } from "@/features/user_activity/userActivityStore";
@@ -26,10 +27,21 @@ const persisted = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
+vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
+	reportError: vi.fn(),
+}));
 
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
 	const repository: Record<string, unknown> = {
+		// a slow read with store writes for its result
+		slowStoreQuery: {
+			key: () => ["slowStoreQuery"],
+			fetchFn: () =>
+				new Promise((resolve) => slow.resolvers.push(resolve)),
+			onData: vi.fn(),
+		},
 		slowQuery: {
 			key: () => ["slowQuery"],
 			autoRefetch: false,
@@ -359,6 +371,25 @@ describe("useQueryStore: stale in-flight requests", () => {
 		await pending;
 
 		expect(cachedSlow()).toBeUndefined();
+	});
+
+	it("run their store writes only while current", async () => {
+		// @ts-expect-error mock query repository
+		const onData = getQueryDefinition("slowStoreQuery").onData as Mock;
+		onData.mockClear();
+
+		// @ts-expect-error mock query repository
+		const dropped = store.execute("slowStoreQuery", undefined);
+		await store.invalidateKey(["slowStoreQuery"], { skipRefetch: true });
+		slow.resolvers[0]("stale");
+		await dropped;
+		expect(onData).not.toHaveBeenCalled();
+
+		// @ts-expect-error mock query repository
+		const current = store.execute("slowStoreQuery", undefined);
+		slow.resolvers[1]("fresh");
+		await current;
+		expect(onData).toHaveBeenCalledExactlyOnceWith("fresh");
 	});
 });
 
@@ -911,6 +942,31 @@ describe("useQueryStore: edge cases", () => {
 			});
 
 			expect(testFetch).toHaveBeenCalledWith("a");
+		});
+
+		it("keeps the exact default when other options are passed", async () => {
+			// @ts-expect-error mock query repository
+			await store.execute("testQuery", "a");
+
+			await store.invalidateKey(["testQuery"], { skipRefetch: true });
+
+			expect(state(["testQuery", "a"])).toBeDefined();
+		});
+
+		it("reports a failed auto refetch instead of leaving it unhandled", async () => {
+			const unhandled = vi.fn();
+			process.on("unhandledRejection", unhandled);
+			// @ts-expect-error mock query repository
+			await store.execute("autoRefetchQuery", "a");
+			const failure = new Error("refetch failed");
+			autoFetch.mockRejectedValueOnce(failure);
+
+			await store.invalidateKey(["autoRefetchQuery", "a"]);
+			await vi.advanceTimersByTimeAsync(0);
+			process.off("unhandledRejection", unhandled);
+
+			expect(reportError).toHaveBeenCalledWith(failure);
+			expect(unhandled).not.toHaveBeenCalled();
 		});
 	});
 

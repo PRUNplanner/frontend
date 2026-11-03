@@ -209,9 +209,9 @@ export const userQueries = {
 	}),
 	GetPreferences: defineQuery({
 		key: () => ["user", "profile"],
-		fetchFn: async (): Promise<UserPreference> => {
+		fetchFn: (): Promise<UserPreference> => callGetUserPreferences(),
+		onData: (prefs) => {
 			const userStore = useUserStore();
-			const prefs = await callGetUserPreferences();
 			Object.assign(userStore.preferences, prefs);
 			setSyncedPreferences(prefs);
 			userStore.preferencesLoaded = true;
@@ -220,8 +220,6 @@ export const userQueries = {
 			// handle locale
 			const userLocale = userStore.preferences.locale || "en_US";
 			userStore.setLocale(userLocale, i18n.global).catch(reportError);
-
-			return prefs;
 		},
 		cache: false,
 	}),

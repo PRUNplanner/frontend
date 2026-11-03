@@ -443,6 +443,79 @@ describe("WrapperPlanningDataLoader plan data", () => {
 		]);
 	});
 
+	/** A response the test sends when it wants */
+	function deferred() {
+		let send!: (body: unknown) => void;
+		const reply = new Promise<[number, unknown]>(
+			(resolve) => (send = (body) => resolve([200, body]))
+		);
+		return { reply: () => reply, send };
+	}
+
+	it("drops the old plan's answer after a switch to another plan", async () => {
+		const other = { ...plan, uuid: uuid(7), plan_name: "Other plan" };
+		const [a, b] = [deferred(), deferred()];
+		mock.onGet(`/planning/plan/${plan.uuid}/`).reply(a.reply);
+		mock.onGet(`/planning/plan/${other.uuid}/`).reply(b.reply);
+
+		const { loader, slot, setProps } = await mountWithSlot({
+			planUuid: plan.uuid,
+		});
+		await setProps({ planUuid: other.uuid });
+		await flushPromises();
+		expect(loader.emitted("complete")).toBeUndefined();
+
+		b.send(other);
+		await vi.waitFor(() =>
+			expect(loader.emitted("complete")).toHaveLength(1)
+		);
+		a.send(plan);
+		await flushPromises();
+
+		expect(
+			loader.emitted<[typeof plan]>("data:plan")!.map(([p]) => p.uuid)
+		).toEqual([other.uuid]);
+		expect((slot.current.planData as typeof plan).uuid).toBe(other.uuid);
+		expect((slot.current.planDefinition as typeof plan).uuid).toBe(
+			other.uuid
+		);
+	});
+
+	it("drops the old empire's plans after a switch to another empire", async () => {
+		const [e1, e2] = [deferred(), deferred()];
+		const e2Plan = {
+			...plan,
+			uuid: uuid(8),
+			planet_natural_id: "E2-PLANET",
+		};
+		mock.onGet(`/planning/empire/${E1}/plans/`).reply(e1.reply);
+		mock.onGet(`/planning/empire/${E2}/plans/`).reply(e2.reply);
+
+		const { loader, slot, setProps } = await mountWithSlot({
+			empireUuid: E1,
+		});
+		await setProps({ empireUuid: E2 });
+		await flushPromises();
+
+		// the old answer first: it neither ends the load nor shows
+		e1.send([plan]);
+		await flushPromises();
+		expect(loader.emitted("complete")).toBeUndefined();
+		expect(loader.emitted("data:empire:plans")).toBeUndefined();
+
+		e2.send([e2Plan]);
+		await vi.waitFor(() =>
+			expect(loader.emitted("complete")).toHaveLength(1)
+		);
+		const uuids = (plans: (typeof plan)[]) => plans.map((p) => p.uuid);
+		expect(
+			loader
+				.emitted<[(typeof plan)[]]>("data:empire:plans")!
+				.map(([plans]) => uuids(plans))
+		).toEqual([[e2Plan.uuid]]);
+		expect(slot.current.empirePlanetList).toEqual(["E2-PLANET"]);
+	});
+
 	it("creates a blank plan for a planet without a plan", async () => {
 		mock.onGet(/data\/planet\//).reply(200, planet);
 
