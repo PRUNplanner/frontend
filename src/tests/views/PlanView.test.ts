@@ -1469,7 +1469,7 @@ describe("PlanView", () => {
 			expect(queryCalls("DeletePlanDraft")).toEqual([]);
 		});
 
-		it("brings back the draft of the same save as unsaved edits", async () => {
+		it("opens the saved plan and offers the draft of the same save, restored as unsaved edits", async () => {
 			const plan = { ...etherwindPlan(), modified_at: "v1" };
 			const draft = {
 				...plan,
@@ -1488,19 +1488,95 @@ describe("PlanView", () => {
 				{ login: true }
 			);
 
-			expect(buildingAmounts(wrapper).EXT).toBe(7);
+			// the saved version shows
+			expect(buildingAmounts(wrapper).EXT).toBe(1);
 			const control = wrapper.findComponent(PlanSaveControl);
-			expect(control.props("modified")).toBe(true);
-			expect(control.props("draftResumed")).toBe(true);
-			expect(control.props("canUndo")).toBe(false);
+			expect(control.props("modified")).toBe(false);
 			expect(mocks.toast).toHaveBeenCalledWith(
-				"plan.versions.draft_restored",
+				"plan.versions.draft_found",
 				expect.objectContaining({
 					action: expect.objectContaining({
-						label: "plan.versions.discard",
+						label: "plan.versions.restore_draft",
 					}),
 				})
 			);
+
+			const [, options] = mocks.toast.mock.calls.find(
+				([text]) => text === "plan.versions.draft_found"
+			)!;
+			options.action.onClick();
+			await flushPromises();
+			expect(buildingAmounts(wrapper).EXT).toBe(7);
+			expect(control.props("modified")).toBe(true);
+			expect(control.props("draftResumed")).toBe(true);
+			expect(control.props("canUndo")).toBe(false);
+		});
+
+		it("reloads the saved plan from its own button", async () => {
+			const plan = { ...etherwindPlan(), modified_at: "v1" };
+			respond({ GetPlan: () => plan });
+			mocks.confirm.mockResolvedValue(true);
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+			await emitFrom(
+				wrapper,
+				PlanProduction,
+				"update:building:amount",
+				0,
+				5
+			);
+
+			await wrapper
+				.find("button[aria-label='plan.actions.reload']")
+				.trigger("click");
+			await flushPromises();
+			expect(mocks.confirm).toHaveBeenCalledWith(
+				expect.objectContaining({
+					content: "plan.actions.reload_confirm",
+				})
+			);
+			expect(queryCalls("GetPlan").length).toBeGreaterThan(0);
+			expect(buildingAmounts(wrapper).EXT).toBe(1);
+			expect(
+				wrapper.findComponent(PlanSaveControl).props("modified")
+			).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith("plan:reload", {
+				planet_natural_id: plan.planet_natural_id,
+			});
+		});
+
+		it("has no reload button on a plan not saved yet, a shared copy or a read-only plan", async () => {
+			const { wrapper: fresh } = await mountView(
+				{ planData: draftPlan() },
+				{ login: true }
+			);
+			expect(
+				fresh.find("button[aria-label='plan.actions.reload']").exists()
+			).toBe(false);
+
+			const { wrapper: shared } = await mountView(
+				{
+					planData: draftPlan(),
+					shared: true,
+					sharedPlanUuid: "shared-uuid",
+				},
+				{ login: true }
+			);
+			expect(
+				shared.find("button[aria-label='plan.actions.reload']").exists()
+			).toBe(false);
+
+			const { wrapper: readOnly } = await mountView(
+				{ disabled: true },
+				{ login: true }
+			);
+			expect(
+				readOnly
+					.find("button[aria-label='plan.actions.reload']")
+					.exists()
+			).toBe(false);
 		});
 
 		it("doesn't preview while the pending draft write met another draft", async () => {

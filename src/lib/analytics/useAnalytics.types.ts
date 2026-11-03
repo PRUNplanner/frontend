@@ -249,7 +249,7 @@ export interface IAnalyticsEventProperties {
 		kind: PlanVersionListItem["kind"];
 	};
 	"plan:draft_restored": { age_minutes: number };
-	"plan:draft_discard": undefined;
+	"plan:reload": { planet_natural_id: string };
 	"plan:discard_changes": undefined;
 	"plan:leave_unsaved": { planet_natural_id: string };
 	"plan:shared_clone": {

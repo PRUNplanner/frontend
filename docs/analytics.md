@@ -103,8 +103,8 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:version_open_as_plan` | | new plan made from the preview |
 | `plan:version_activate` | `named`, `age_days`, `from` (`list`, `preview`) | Make active |
 | `plan:version_delete` | `named`, `kind` | |
-| `plan:draft_restored` | `age_minutes` | plan opened with its autosave draft |
-| `plan:draft_discard` | | restored draft discarded from its notice |
+| `plan:draft_restored` | `age_minutes` | autosave draft restored from its notice on plan open |
+| `plan:reload` | `planet_natural_id` | header Reload: plan reloaded as saved, edits and draft dropped |
 | `plan:discard_changes` | | edits discarded from the save menu |
 | `plan:leave_unsaved` | `planet_natural_id` | left with unsaved changes |
 | `plan:shared_clone` | `planet_natural_id`, `modified` | shared plan's working copy saved to own plans |

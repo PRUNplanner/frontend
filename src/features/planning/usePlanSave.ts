@@ -240,6 +240,7 @@ export function usePlanSave(
 
 				refBaseModifiedAt.value = saved.modifiedAt;
 				markSaved(sent);
+				draftToast?.destroy();
 				preview.clearRestore();
 				trackEvent("plan:save", {
 					planet_natural_id: planetNaturalId,
@@ -362,16 +363,10 @@ export function usePlanSave(
 	 * Drops the unsaved edits and their draft, back to the saved state.
 	 * The editor reverts only once the draft is gone: another tab's draft
 	 * opens the conflict dialog and the edits stay.
-	 *
-	 * @param {"menu" | "toast"} [from] The save menu, or the notice of a
-	 * restored draft
 	 */
-	async function discardChanges(
-		from: "menu" | "toast" = "menu"
-	): Promise<void> {
+	async function discardChanges(): Promise<void> {
 		if (!modified.value) return;
 		if (
-			from === "menu" &&
 			!(await confirm({
 				title: t("plan.versions.discard"),
 				content: t("plan.versions.discard_confirm"),
@@ -393,8 +388,31 @@ export function usePlanSave(
 		refSaveFailed.value = false;
 		preview.clearRestore();
 		markSaved(savedSnapshot());
-		if (from === "toast") trackEvent("plan:draft_discard");
-		else trackEvent("plan:discard_changes");
+		trackEvent("plan:discard_changes");
+	}
+
+	/**
+	 * The Reload button: the plan as saved in the backend, unsaved edits
+	 * (after a confirm) and the draft are dropped
+	 */
+	async function reloadPlan(): Promise<void> {
+		const unsaved: boolean = preview.previewing.value
+			? preview.stashModified.value
+			: modified.value;
+		if (
+			unsaved &&
+			!(await confirm({
+				title: t("plan.actions.reload"),
+				content: t("plan.actions.reload_confirm"),
+				positiveText: t("plan.actions.reload"),
+				negativeText: t("common.buttons.cancel"),
+			}))
+		)
+			return;
+
+		if (!(await reloadSavedPlan())) return;
+		preview.clearRestore();
+		trackEvent("plan:reload", { planet_natural_id: planetNaturalId });
 	}
 
 	/**
@@ -404,6 +422,7 @@ export function usePlanSave(
 	 */
 	function applySavedPlan(plan: IPlanDefinition): void {
 		preview.cancel();
+		draftToast?.destroy();
 		refPlanData.value = inertClone(plan);
 		refBaseModifiedAt.value = plan.modified_at;
 		refSaveFailed.value = false;
@@ -530,16 +549,20 @@ export function usePlanSave(
 
 	/**
 	 * Drops the edits for the saved plan, a failed load keeps them
+	 *
+	 * @returns {Promise<boolean>} Reloaded
 	 */
-	async function reloadSavedPlan(): Promise<void> {
+	async function reloadSavedPlan(): Promise<boolean> {
 		try {
 			const plan: Plan = await fetchSavedPlan();
 			// the edits are dropped, so is their draft
 			await draft.drop();
 			applySavedPlan(plan);
+			return true;
 		} catch (err) {
 			reportError(err);
 			toast(t("common.ui.load_failed"), { type: "error" });
+			return false;
 		}
 	}
 
@@ -646,9 +669,10 @@ export function usePlanSave(
 	);
 
 	/*
-	 * Opening the plan: its unsaved edits from an earlier visit come back
-	 * from the draft. With a draft the plan is refetched first: GetPlan
-	 * never expires and a long-lived tab would compare an old save.
+	 * Opening the plan shows it as saved; unsaved edits from an earlier
+	 * visit are offered back from the draft until the first edit. With a
+	 * draft the plan is refetched first: GetPlan never expires and a
+	 * long-lived tab would compare an old save.
 	 */
 	let draftToast: PToastHandle | undefined;
 
@@ -665,27 +689,38 @@ export function usePlanSave(
 	async function resumeDraft(): Promise<void> {
 		if (!refPlanData.value.uuid || !draftPossible.value) return;
 
-		const restored: PlanDraft | null = await draft.load(refreshSavedPlan);
-		if (!restored) return;
+		const offered: PlanDraft | null = await draft.load(refreshSavedPlan);
+		if (!offered) return;
 
-		trackEvent("plan:draft_restored", {
-			age_minutes: Math.floor(
-				(Date.now() - Date.parse(restored.updated_at)) / 60_000
-			),
-		});
 		draftToast = toast(
-			t("plan.versions.draft_restored", {
-				when: formatWhen(restored.updated_at, t),
+			t("plan.versions.draft_found", {
+				when: formatWhen(offered.updated_at, t),
 			}),
 			{
-				duration: 15_000,
+				duration: 0,
+				closable: true,
 				action: {
-					label: t("plan.versions.discard"),
-					onClick: () => discardChanges("toast"),
+					label: t("plan.versions.restore_draft"),
+					onClick: () => {
+						draftToast?.destroy();
+						if (!draft.restore()) return;
+						trackEvent("plan:draft_restored", {
+							age_minutes: Math.floor(
+								(Date.now() - Date.parse(offered.updated_at)) /
+									60_000
+							),
+						});
+					},
 				},
 			}
 		);
 	}
+
+	// the first edit writes over the offered draft; a preview closes the
+	// notice too, the draft stays for the next visit
+	watch([modified, preview.previewing], ([m, p]) => {
+		if (m || p) draftToast?.destroy();
+	});
 
 	onMounted(() => void resumeDraft());
 
@@ -709,6 +744,7 @@ export function usePlanSave(
 		saveAs,
 		openSaveAsModal,
 		discardChanges,
+		reloadPlan,
 		applySavedPlan,
 		activateVersion,
 		conflict,
