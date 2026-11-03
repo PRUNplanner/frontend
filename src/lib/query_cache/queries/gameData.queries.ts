@@ -384,11 +384,8 @@ export const gameDataQueries = {
 	}),
 	GetFIOStorage: defineQuery({
 		key: () => ["gamedata", "fio", "storage"],
-		fetchFn: async (): Promise<FIOStorage> => {
-			const data = await callDataFIOStorage();
-			usePlanningStore().setFIOStorageData(data);
-			return data;
-		},
+		fetchFn: (): Promise<FIOStorage> => callDataFIOStorage(),
+		onData: (data) => usePlanningStore().setFIOStorageData(data),
 		autoRefetch: true,
 		expireTime: staleMinutes(5),
 	}),

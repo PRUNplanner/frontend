@@ -7,6 +7,7 @@ component / composable
             └─ definition.fetchFn                 src/lib/query_cache/queries/*.queries.ts
                  ├─ call*()  → apiService (axios + Zod)   src/features/api/*.api.ts
                  └─ side effects: write IndexedDB / planningStore / invalidate keys
+            └─ definition.onData  (a read's store writes, only while the request is current)
 ```
 
 ## 1. HTTP: `apiService` (`src/lib/apiService.ts`)
@@ -80,8 +81,8 @@ component / composable
 - The **query cache** tracks freshness and dedupes requests. For planning
   data its entry is in practice a "loaded and fresh" marker.
 - **`planningStore`** is the read model for plans, empires, CX, shared
-  plans and FIO storage: persisted, written by the planning `fetchFn`s,
-  read by components.
+  plans and FIO storage: persisted, written by the planning reads'
+  `onData` and the mutations' `fetchFn`s, read by components.
 - **`useDB` / IndexedDB** is the read model for game data (§4).
 - A cache hit doesn't re-run `fetchFn`, so side effects happen once per
   fetch.
@@ -104,6 +105,11 @@ registered by hand.
     (`addCacheState`), invalidates (`invalidate(...prefixes)`). **It must
     let errors throw**: a `[]` or `false` returned on failure is cached as
     fresh data, loaders report success and calculations fail later.
+  - `onData(data)`: store writes for a fetched result (`planningStore`,
+    preferences, `setPlans` seeding `GetPlan`). Runs only while the
+    request is current: one replaced or dropped meanwhile (see
+    `execute`) changes nothing, so an older list can't overwrite a plan
+    just saved. Not run for an `initialData` copy.
   - Annotate `fetchFn`'s params and return type, even when inferable (a
     body touching the query store makes inference circular).
   - Optional: `expireTime` (ms), `autoRefetch` (default `false`),
@@ -130,7 +136,9 @@ registered by hand.
   never mutate it. `GetPlanetSearchIndex` is also `markRaw`.
 - `invalidateKey(key, { exact, forceRefetch, skipRefetch })` deletes the
   exact key or (`exact: false`) every key the given one is a prefix of, and
-  refetches those with `autoRefetch` or when forced.
+  refetches those with `autoRefetch` or when forced (a failed refetch is
+  reported). Each option defaults on its own: `exact: true`, the others
+  `false`.
 - A 10 s interval refetches expired `autoRefetch` entries and evicts other
   expired ones; it pauses while the user is idle
   ([features/user_activity.md](features/user_activity.md)). A transient
@@ -246,7 +254,8 @@ is reported once per key, and §6 can stop all writes.
 | `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules, per browser and user (not synced) | not by the plugin: `userAlerts` under `prunplanner_alerts:<user id>` (`userStorageKey` in `lib/storage.ts`, which also moves the old unkeyed value to the first user); written through `persistStorage`, read through `StoredAlertsSchema` (invalid: none, reported) |
 | `useQueryStore` (`prunplanner_query_store`) | Query cache state | not persisted |
 
-- `planningStore` is written **only by query `fetchFn`s**;
+- `planningStore` is written **only by queries** (a read's `onData`, a
+  mutation's `fetchFn`);
   `getCX` returns an `inertClone` copy.
 - **Loaded on first use.** The app shell (`main.ts`, `App.vue`,
   `userStore`, `crossTab`, `usePreferences`, `preferenceSync`) statically
