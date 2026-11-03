@@ -20,10 +20,11 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 import { useCXData } from "@/features/cx/useCXData";
 import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useChainPlans } from "@/features/production_chain/useChainPlans";
-import { remoteChange } from "@/lib/crossTab";
+import { remoteChange, tokenUserId } from "@/lib/crossTab";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
 import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
-import { readStorage, writeStorage } from "@/lib/storage";
+import { readStorage, userStorageKey, writeStorage } from "@/lib/storage";
+import { useUserStore } from "@/stores/userStore";
 
 // Engine
 import {
@@ -85,10 +86,18 @@ const RESOURCES: ReadonlySet<string> = new Set(
 	RESOURCE_MATERIAL_OPTIONS.map((o) => o.value)
 );
 
+/** The user's last chain is kept per user: the next user of the browser never sees it */
+function storageKey(): string | undefined {
+	const id = tokenUserId(useUserStore().refreshToken);
+	return id === undefined ? undefined : userStorageKey(STORAGE_KEY, id);
+}
+
 function readStored(): IChainState | null {
+	const key = storageKey();
+	if (!key) return null;
 	try {
 		const parsed = ChainStorageSchema.safeParse(
-			JSON.parse(readStorage(STORAGE_KEY) ?? "null")
+			JSON.parse(readStorage(key) ?? "null")
 		);
 		return parsed.success ? decodeChain(parsed.data) : null;
 	} catch {
@@ -99,8 +108,10 @@ function readStored(): IChainState | null {
 
 /** blocked or full storage: the URL still holds the chain */
 function writeStored(state: IChainState): void {
+	const key = storageKey();
+	if (!key) return;
 	writeStorage(
-		STORAGE_KEY,
+		key,
 		state.input.targets.length ? JSON.stringify(encodeChain(state)) : null
 	);
 }

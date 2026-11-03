@@ -77,8 +77,9 @@ under "Ignore below" hide, fixes never.
   inside the loaders.
 - **A CX from a link** counts only if it is one of the viewer's CX
   preferences.
-- **The last chain lives in localStorage** (`prunplanner_production_chain`),
-  never the backend; one without `bases` opens as base A.
+- **The last chain lives in localStorage** per user
+  (`prunplanner_production_chain:<user id>`), never the backend; one
+  without `bases` opens as base A.
 - **COGC programs are checked at page-open time**; created plans keep the
   base's program anyway.
 - **Check is for own empires only**; its state is in the URL. Plot fields

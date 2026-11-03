@@ -85,6 +85,11 @@ describe("useEmailNudge", () => {
 			1,
 		],
 		["no profile", () => (setup().profile = undefined), 1],
+		[
+			"a restored profile before its GET (no email stored)",
+			() => setup({ email: undefined }),
+			1,
+		],
 		["logged out", () => (setup().accessToken = undefined), 1],
 		[
 			"never",

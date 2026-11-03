@@ -239,9 +239,9 @@ is reported once per key, and §6 can stop all writes.
 
 | Store (`id`) | Holds | Persisted keys |
 | --- | --- | --- |
-| `useUserStore` (`prunplanner_user`) | Tokens, profile, preferences (incl. per-plan overrides), locale; login, refresh, logout, `setLocale` | `accessToken`, `refreshToken`, `profile`, `preferences` |
+| `useUserStore` (`prunplanner_user`) | Tokens, profile, preferences (incl. per-plan overrides), locale; login, refresh, logout, `setLocale` | `accessToken`, `refreshToken`, `profile` without `email` and `fio_apikey` (`persist.omit`; the profile GET on start brings them back), `fioKeySet` (keeps `hasFIO` until then), `preferences` |
 | `usePlanningStore` (`prunplanner_planning`) | `plans`, `empires`, `cxs` (by uuid), `shared` (by plan uuid), FIO storage + timestamp | `plans`, `empires`, `cxs`, `shared` (not FIO storage: too big; `GetFIOStorage` refetches it) |
-| `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules, per browser (not synced) | `userAlerts` |
+| `useAlertsStore` (`prunplanner_alerts`) | Market-live alert rules, per browser and user (not synced) | not by the plugin: `userAlerts` under `prunplanner_alerts:<user id>` (`userStorageKey` in `lib/storage.ts`, which also moves the old unkeyed value to the first user) |
 | `useQueryStore` (`prunplanner_query_store`) | Query cache state | not persisted |
 
 - `planningStore` is written **only by query `fetchFn`s**; `getPlan` and
@@ -294,7 +294,8 @@ explicitly (`registerCrossTab` in `main.ts`):
   - another user, or a login while this tab had none: `stopPersisting()`
     (so this tab never writes the old session back), reset and reload;
   - same user: adopt tokens and profile from the **currently stored**
-    value (not the event's, which a later write may have replaced), and
+    value (not the event's, which a later write may have replaced; merged
+    over this tab's profile, as storage has no email or FIO key), and
     only the preference keys the other tab changed. Assign only values that
     differ, or the persist plugin bounces writes between tabs.
 - **Preferences** (`features/preferences/preferenceSync.ts`) keep the last

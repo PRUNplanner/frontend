@@ -64,6 +64,8 @@ export function useEmailNudge(planCount: MaybeRefOrGetter<number>) {
 		if (
 			!userStore.isLoggedIn ||
 			!userStore.profile ||
+			// restored from storage, which has no email: wait for the GET
+			userStore.profile.email === undefined ||
 			!userStore.preferencesLoaded ||
 			state.value === "ready" ||
 			toValue(planCount) < 1 ||

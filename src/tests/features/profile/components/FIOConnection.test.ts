@@ -116,6 +116,16 @@ describe("FIOConnection", () => {
 		expect(saveType(wrapper)).toBe("secondary");
 	});
 
+	it("fills the FIO key from the profile GET of a restored session", async () => {
+		// restored from storage, which holds neither key nor email
+		const { fio_apikey: _key, email: _email, ...stored } = profile();
+		const { wrapper } = await mountProfile(stored as UserProfile);
+
+		expect(mock.history.get).toHaveLength(1);
+		expect(values(wrapper)).toEqual(["test-fio-key", "test-prun-user"]);
+		expect(saveType(wrapper)).toBe("secondary");
+	});
+
 	it("follows later changes of the stored profile", async () => {
 		const { wrapper } = await mountProfile(profile());
 
@@ -154,7 +164,6 @@ describe("FIOConnection", () => {
 		expect(patchBody()).toEqual({
 			fio_apikey: "testfiokey",
 			prun_username: "test-prun-user",
-			email: "test@example.com",
 		});
 		// FIO was active before
 		expect(trackEvent).not.toHaveBeenCalledWith("account:fio_link");
@@ -199,7 +208,7 @@ describe("FIOConnection", () => {
 		expect(saveButton(wrapper).attributes("aria-busy")).toBe("false");
 	});
 
-	it("sends cleared fields as null and keeps the stored email", async () => {
+	it("sends cleared fields as null, without the email", async () => {
 		mock.onPatch(PROFILE_URL).reply(
 			200,
 			profile({ fio_apikey: null, prun_username: null })
@@ -213,7 +222,6 @@ describe("FIOConnection", () => {
 		expect(patchBody()).toEqual({
 			fio_apikey: null,
 			prun_username: null,
-			email: "test@example.com",
 		});
 	});
 
@@ -227,7 +235,6 @@ describe("FIOConnection", () => {
 		expect(patchBody()).toEqual({
 			fio_apikey: null,
 			prun_username: null,
-			email: null,
 		});
 	});
 
