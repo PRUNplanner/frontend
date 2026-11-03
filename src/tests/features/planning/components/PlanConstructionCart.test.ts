@@ -54,6 +54,22 @@ const PLAN_UUID = "plan-uuid";
 const CX_UUID = "cx-uuid";
 // BUY prices of the CX
 const PRICES = { BBH: 100, BSE: 50, MCG: 10 };
+// a second CX, twice the prices
+const CX_B_UUID = "cx-b-uuid";
+
+const cxWithPrices = (uuid: string, prices: Record<string, number>) =>
+	cxFixture({
+		uuid,
+		name: uuid,
+		cx_data: {
+			ticker_empire: Object.entries(prices).map(([ticker, value]) => ({
+				ticker,
+				type: "BUY" as const,
+				value,
+			})),
+		},
+	});
+const PRICES_B = { BBH: 200, BSE: 100, MCG: 20 };
 
 const mat = (ticker: string, input: number) => ({ ticker, input, output: 0 });
 // FRM: 50 pioneers, HB1: houses 100 pioneers, CM: core module
@@ -82,19 +98,8 @@ async function mountCart(
 		});
 	const planningStore = usePlanningStore(pinia);
 	planningStore.setCXs([
-		cxFixture({
-			uuid: CX_UUID,
-			name: "CX",
-			cx_data: {
-				ticker_empire: Object.entries(PRICES).map(
-					([ticker, value]) => ({
-						ticker,
-						type: "BUY" as const,
-						value,
-					})
-				),
-			},
-		}),
+		cxWithPrices(CX_UUID, PRICES),
+		cxWithPrices(CX_B_UUID, PRICES_B),
 	]);
 
 	if (options.fio || options.fioFails) {
@@ -117,7 +122,7 @@ async function mountCart(
 			infrastructureData: { HB1: 1 },
 		},
 		{ pinia }
-	).then((r) => ({ ...r, userStore }));
+	).then((r) => ({ ...r, userStore, planningStore }));
 }
 
 const tables = (wrapper: VueWrapper) => wrapper.findAll("table");
@@ -315,6 +320,24 @@ describe("PlanConstructionCart", () => {
 			weight: "29.00",
 			volume: "18.00",
 		});
+	});
+
+	it("follows the plan's CX and its saved prices", async () => {
+		const { wrapper, setProps, planningStore } = await mountCart();
+		expect(summary(wrapper, 0).price).toBe("3,100.00");
+
+		await setProps({ cxUuid: CX_B_UUID });
+		await flushPromises();
+		// 14 * 200 + 14 * 100 + 100 * 20
+		expect(summary(wrapper, 0).price).toBe("6,200.00");
+		expect(summary(wrapper, 1).price).toBe("6,200.00");
+
+		// saving a fixed price replaces the CX in the store
+		planningStore.setCX(cxWithPrices(CX_B_UUID, { ...PRICES_B, BBH: 0 }));
+		await flushPromises();
+		// 14 * 0 + 14 * 100 + 100 * 20
+		expect(summary(wrapper, 0).price).toBe("3,400.00");
+		expect(summary(wrapper, 1).price).toBe("3,400.00");
 	});
 
 	it("keeps the latest building total when an older one finishes last", async () => {
