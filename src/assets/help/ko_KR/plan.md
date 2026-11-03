@@ -31,7 +31,7 @@ Click a recipe to open the picker under it, or "+ Recipe" to add one as a new or
 
 Name your plan with the pencil next to its name and save it with Save / Create or Ctrl+S (Cmd+S on a Mac). Undo, Redo, the plan's state and Save sit together in one control: when it was saved, unsaved changes, "Saving…", or a failed save with a retry. 저장에 성공할 때까지 변경 사항은 유지됩니다.
 
-Unsaved changes of a saved plan are kept as a draft a few seconds after each change, so they survive a reload or a closed tab: when you open the plan again they are back, and the notice offers to discard them. "Draft not saved" means they aren't kept yet (click it to try again); the page then warns before you leave. If another tab or device saved a draft of the same plan, nothing is replaced until you choose which one to keep.
+Unsaved changes of a saved plan are kept as a draft a few seconds after each change, so a reload or a closed tab doesn't lose them. Opening the plan again always shows it as saved; a notice offers to restore the draft, and your next change replaces it. The Reload saved version button next to Save goes back to the saved plan at any time and drops the draft, after asking if you have unsaved changes. "Draft not saved" means they aren't kept yet (click it to try again); the page then warns before you leave. If another tab or device saved a draft of the same plan, nothing is replaced until you choose which one to keep.
 
 Every change can be undone with the Undo and Redo buttons, or Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The history covers the last 50 changes and starts fresh after saving the plan or discarding the changes.
 
