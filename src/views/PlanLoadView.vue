@@ -21,14 +21,17 @@
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	const AsyncWrapperGameData = defineAsyncComponent(
-		() => import("@/features/wrapper/components/WrapperGameDataLoader.vue")
-	);
+	// both chunks load while the plan data does, not after it; a failure
+	// shows where the components render
+	const gameData =
+		import("@/features/wrapper/components/WrapperGameDataLoader.vue");
+	const AsyncWrapperGameData = defineAsyncComponent(() => gameData);
 
 	// Views
-	const AsyncPlanView = defineAsyncComponent(
-		() => import("@/views/PlanView.vue")
-	);
+	const planView = import("@/views/PlanView.vue");
+	const AsyncPlanView = defineAsyncComponent(() => planView);
+	gameData.catch(() => {});
+	planView.catch(() => {});
 
 	const props = defineProps({
 		planetNaturalId: {
