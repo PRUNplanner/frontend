@@ -81,7 +81,7 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip
    [planning-engine.md](docs/planning-engine.md).
 7. **Keep knip green:** delete dead code rather than leaving it exported.
 8. **Don't mutate shared module state** (`preferenceDefaults`, JSON
-   fixtures, objects from `planningStore.getPlan` / `getCX`). Clone with
+   fixtures, objects from `planningStore.getCX` or a plan query). Clone with
    `deepClone` / `inertClone` (`src/util/data.ts`) and save through a query.
 9. **Test new logic** in `src/tests/`, mirroring the `src/` path. See
    [testing.md](docs/testing.md).

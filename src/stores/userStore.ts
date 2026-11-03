@@ -34,7 +34,7 @@ import type {
 } from "@/features/api/schemas/user.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
-import { persistStorage } from "@/lib/persistStorage";
+import { persistSerializer, persistStorage } from "@/lib/persistStorage";
 import { deepClone } from "@/util/data";
 import { isApiError } from "@/lib/apiError";
 import {
@@ -77,7 +77,7 @@ export const useUserStore = defineStore(
 		);
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
-		const intialPreferencesCalled: Ref<boolean> = ref(false);
+		const initialPreferencesCalled: Ref<boolean> = ref(false);
 		// the GET answered: dismissals and the like are known
 		const preferencesLoaded: Ref<boolean> = ref(false);
 		const preferences: Reactive<UserPreference> = reactive<UserPreference>(
@@ -96,7 +96,7 @@ export const useUserStore = defineStore(
 			setSyncedPreferences(preferences);
 			// the next login must load its own profile and preferences
 			initialProfileCalled.value = false;
-			intialPreferencesCalled.value = false;
+			initialPreferencesCalled.value = false;
 			preferencesLoaded.value = false;
 		}
 
@@ -270,9 +270,9 @@ export const useUserStore = defineStore(
 		}
 
 		async function queryPreferences(): Promise<void> {
-			if (intialPreferencesCalled.value) return;
+			if (initialPreferencesCalled.value) return;
 
-			intialPreferencesCalled.value = true;
+			initialPreferencesCalled.value = true;
 
 			// update preferences; the query layer loads on first use too
 			const { useQuery } = await import("@/lib/query_cache/useQuery");
@@ -428,7 +428,7 @@ export const useUserStore = defineStore(
 			hasFIO,
 			fioStatus,
 			// preferences
-			intialPreferencesCalled,
+			initialPreferencesCalled,
 			preferencesLoaded,
 			preferences,
 			setPreference,
@@ -449,6 +449,7 @@ export const useUserStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
+			serializer: persistSerializer,
 			pick: [
 				"accessToken",
 				"refreshToken",

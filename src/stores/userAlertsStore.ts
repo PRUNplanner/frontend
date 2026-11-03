@@ -4,22 +4,30 @@ import { computed, ref, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { i18n } from "@/lib/i18n";
 import { tokenUserId } from "@/lib/crossTab";
-import { readStorage, userStorageKey, writeStorage } from "@/lib/storage";
+import { readStorage, userStorageKey } from "@/lib/storage";
+import { persistStorage } from "@/lib/persistStorage";
+import { reportError } from "@/lib/analytics/useAnalytics";
 import { deepClone } from "@/util/data";
+import { StoredAlertsSchema } from "@/features/market_live/schemas/alerts.schemas";
 
 // Types & Interfaces
 import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
 
 const STORE_KEY = "prunplanner_alerts";
 
-/** The alerts stored under a key, none if missing or corrupt */
+/** The alerts stored under a key, none if missing or corrupt (reported) */
 function readAlerts(key: string): DetectorConfig[] {
+	const raw = readStorage(key);
+	if (raw === null) return [];
 	try {
-		const stored = JSON.parse(readStorage(key) ?? "null")?.userAlerts;
-		return Array.isArray(stored) ? stored : [];
+		const parsed = StoredAlertsSchema.safeParse(JSON.parse(raw));
+		if (parsed.success) return parsed.data.userAlerts;
 	} catch {
-		return [];
+		// not JSON
 	}
+	// no Zod issues: they may echo the user's alert names
+	reportError(new Error("Stored alerts are invalid"), { key: STORE_KEY });
+	return [];
 }
 
 export const useAlertsStore = defineStore(STORE_KEY, () => {
@@ -48,8 +56,10 @@ export const useAlertsStore = defineStore(STORE_KEY, () => {
 	watch(
 		userAlerts,
 		(alerts) => {
+			// persistStorage: stops once another tab started a new session,
+			// reports a failed write
 			if (storageKey.value)
-				writeStorage(
+				persistStorage.setItem(
 					storageKey.value,
 					JSON.stringify({ userAlerts: alerts })
 				);

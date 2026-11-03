@@ -69,10 +69,10 @@ describe("User Store", () => {
 		getProfile.mockClear();
 
 		userStore.setToken("access-a", "refresh-a");
-		userStore.intialPreferencesCalled = true;
+		userStore.initialPreferencesCalled = true;
 		userStore.logout();
 
-		expect(userStore.intialPreferencesCalled).toBe(false);
+		expect(userStore.initialPreferencesCalled).toBe(false);
 		userStore.setToken("access-b", "refresh-b");
 		// the API module loads on first use
 		await vi.waitFor(() => expect(getProfile).toHaveBeenCalledTimes(2));
@@ -734,7 +734,7 @@ describe("User Store", () => {
 			vi.mocked(callGetUserPreferences).mockClear();
 
 			await userStore.performLogin("user", "pw");
-			expect(userStore.intialPreferencesCalled).toBe(true);
+			expect(userStore.initialPreferencesCalled).toBe(true);
 			expect(callGetUserPreferences).toHaveBeenCalledTimes(1);
 
 			// a second login in the same session does not ask again

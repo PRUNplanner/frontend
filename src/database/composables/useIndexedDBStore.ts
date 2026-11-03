@@ -16,6 +16,8 @@ let dbPromise: Promise<IDBPDatabase> | null = null;
 // a newer version of the app opened the database in another tab: this tab
 // works from the data it has in memory and never reopens the old version
 let outdated: boolean = false;
+// persistent storage is asked for once per tab, after the first open
+let persistenceRequested: boolean = false;
 
 export async function requestPersistence() {
 	if (navigator && navigator.storage && navigator.storage.persist) {
@@ -72,6 +74,11 @@ export async function getDB() {
 		)
 			.then((db) => {
 				dbBlocked.value = false;
+				// not awaited: the browser may take long to answer
+				if (!persistenceRequested) {
+					persistenceRequested = true;
+					requestPersistence().catch(reportError);
+				}
 				return db;
 			})
 			.catch((err: unknown) => {
@@ -79,12 +86,6 @@ export async function getDB() {
 				dbBlocked.value = false;
 				throw err;
 			});
-	}
-	// Request persistence after DB is ready
-	try {
-		await requestPersistence();
-	} catch (err) {
-		reportError(err);
 	}
 
 	return dbPromise;

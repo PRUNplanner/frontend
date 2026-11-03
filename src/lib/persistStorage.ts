@@ -1,4 +1,5 @@
-import type { StorageLike } from "pinia-plugin-persistedstate";
+import { toRaw } from "vue";
+import type { Serializer, StorageLike } from "pinia-plugin-persistedstate";
 import { trackException } from "@/lib/analytics/useAnalytics";
 import { readStorage } from "@/lib/storage";
 
@@ -38,3 +39,13 @@ export const persistStorage: StorageLike = {
 export function stopPersisting(): void {
 	stopped = true;
 }
+
+/**
+ * JSON of a persisted store's state, read through the raw objects: the
+ * same string as `JSON.stringify` on the reactive state, without the
+ * proxy access on every property
+ */
+export const persistSerializer: Serializer = {
+	serialize: (data) => JSON.stringify(data, (_key, value) => toRaw(value)),
+	deserialize: (data) => JSON.parse(data),
+};

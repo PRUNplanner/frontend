@@ -62,14 +62,40 @@ describe("storeAndPreload", () => {
 		expect(console.warn).toHaveBeenCalledOnce();
 	});
 
-	it("keeps the data in memory when the read-back fails", async () => {
+	it("keeps the data in memory when the first read fails", async () => {
 		vi.spyOn(store, "getAll").mockRejectedValue(
 			new DOMException("closing", "InvalidStateError")
 		);
 
-		await storeAndPreload(store, [material("A")], true);
+		await storeAndPreload(store, [material("A")]);
 
 		expect(useDB(store).getLoaded("A")).toEqual(material("A"));
+	});
+
+	it("reads the store once, not after every write", async () => {
+		await store.setMany([material("A")], true);
+		const getAll = vi.spyOn(store, "getAll");
+
+		await storeAndPreload(store, [material("B")]);
+		await storeAndPreload(store, [material("C")]);
+		await storeAndPreload(store, [material("D")], true);
+
+		expect(getAll).toHaveBeenCalledOnce();
+		const db = useDB(store);
+		expect(db.allData.value.map((m) => m.ticker)).toStrictEqual(["D"]);
+		expect(await store.getAll()).toEqual([material("D")]);
+	});
+
+	it("keeps rows already loaded on an upsert, as IndexedDB does", async () => {
+		await storeAndPreload(store, [material("A")], true);
+		await storeAndPreload(store, [material("B"), material("A")]);
+
+		const db = useDB(store);
+		expect(db.allData.value.map((m) => m.ticker).sort()).toStrictEqual([
+			"A",
+			"B",
+		]);
+		expect(await store.getAll()).toEqual(db.allData.value);
 	});
 
 	it("reopens the connection after InvalidStateError or UnknownError only", async () => {
