@@ -333,7 +333,11 @@
 	);
 
 	const empireSplit: ComputedRef<IEmpireSplitParts> = computed(() =>
-		empireSplitParts(costOverview.value, planListData.value)
+		empireSplitParts(
+			costOverview.value,
+			combinedEmpireMaterialIO.value,
+			planListData.value
+		)
 	);
 
 	/**
