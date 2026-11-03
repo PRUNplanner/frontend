@@ -65,8 +65,9 @@ export const UserProfilePatchSchema = z
 			.string()
 			.transform((val) => (val === "" || !val ? null : val))
 			.nullable(),
+		current_password: z.string(),
 	})
-	// the email dialog sends the email alone
+	// email changes carry current_password; FIO saves leave it out
 	.partial();
 export type UserProfilePatch = z.input<typeof UserProfilePatchSchema>;
 
