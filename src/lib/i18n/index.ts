@@ -17,9 +17,12 @@ const en_US = Object.entries(enModules).reduce(
 	{} as Record<string, unknown>
 );
 
-export const localeLazyLoaders = import.meta.glob("@/locales/**/*.json", {
-	import: "default",
-});
+// en_US is loaded above; listed here too, its files would become chunks of
+// their own that the i18n chunk imports
+export const localeLazyLoaders = import.meta.glob(
+	["@/locales/**/*.json", "!@/locales/en_US/**"],
+	{ import: "default" }
+);
 
 /**
  * Splits off the messages vue-i18n can't compile (e.g. a translated
