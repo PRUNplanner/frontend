@@ -11,10 +11,13 @@ exchanges, manage, planet search, profile, FIO burn/repair, every tool page);
 
 - `components/HelpDrawer.vue`: `<HelpDrawer file-name="plan" />` loads
   `src/assets/help/<locale>/<file-name>.md` via `import.meta.glob` (`?raw`),
-  falls back to `en_US`, renders with `VueShowdown` in a `PDrawer`.
-  `VueShowdown` is async, so showdown loads with the first opened drawer. A
+  falls back to `en_US`, renders with `HelpMarkdown` in a `PDrawer`.
+  `HelpMarkdown` is async, so showdown loads with the first opened drawer. A
   file missing in both locales is reported and shows a load error (nothing
   shows while loading).
+- `components/HelpMarkdown.vue` + `sanitizeHelp.ts`: every help markdown
+  (drawer and changelog) renders through showdown, then DOMPurify; see
+  [security.md](../security.md#help-markdown).
 - `components/HelpTutorial.vue`: static tutorial from `help.*` i18n keys and
   router links.
 

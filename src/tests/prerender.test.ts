@@ -21,6 +21,18 @@ const SHELL = `<!DOCTYPE html><html><head><title>t</title>
 		<link rel="modulepreload" crossorigin href="/assets/chunks/vendor_vue.abc.js">
 	</head><body><div id="app"></div></body></html>`;
 
+// runs the loader as the page would: its script element is in the document
+function runLoader(index: string): void {
+	const [, entry, code] = index.match(
+		/<script data-entry="([^"]+)">(.*?)<\/script>/
+	)!;
+	const tag = document.createElement("script");
+	tag.dataset.entry = entry;
+	document.body.append(tag);
+	new Function(code!)();
+	tag.remove();
+}
+
 describe("prerender", () => {
 	it("renders the logged-out landing page in English, without events or requests", async () => {
 		const get = vi.spyOn(apiService, "get");
@@ -79,7 +91,7 @@ describe("prerender", () => {
 
 		expect(index).not.toContain("modulepreload");
 		expect(index).not.toContain('<script type="module"');
-		expect(index).toContain('e.src="/assets/index.abc.js"');
+		expect(index).toContain('<script data-entry="/assets/index.abc.js">');
 		expect(index).toContain("first-contentful-paint");
 	});
 
@@ -93,7 +105,7 @@ describe("prerender", () => {
 		document.documentElement.classList.add("skip-prerender");
 		const index = injectLanding(SHELL, "");
 
-		new Function(index.match(/<script>(.*?)<\/script>/)![1])();
+		runLoader(index);
 		expect(appended).not.toHaveBeenCalled();
 		document.dispatchEvent(new Event("DOMContentLoaded"));
 
@@ -122,9 +134,7 @@ describe("prerender", () => {
 			}
 		);
 		const index = injectLanding(SHELL, "");
-		const loader = index.match(/<script>(.*?)<\/script>/)![1];
-
-		new Function(loader)();
+		runLoader(index);
 		report({ getEntriesByName: () => [] });
 		expect(appended).not.toHaveBeenCalled();
 		report({ getEntriesByName: () => [{}] });
