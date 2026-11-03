@@ -54,7 +54,8 @@
 		"discard": "Discard changes",
 		"discard_confirm": "Discard your unsaved changes and go back to the saved version?",
 		"discard_failed": "Your changes couldn't be discarded. Try again.",
-		"draft_restored": "Your unsaved changes from {when} are back.",
+		"draft_found": "You have unsaved changes from {when}.",
+		"restore_draft": "Restore",
 		"when": {
 			"today": "Today {time}",
 			"yesterday": "Yesterday {time}"
@@ -81,7 +82,9 @@
 		"save_as_copy": "Enregistrer une copie…",
 		"share_link": "Partager le lien",
 		"tools": "Outils du plan",
-		"download_csv": "Download Material I/O (CSV)"
+		"download_csv": "Download Material I/O (CSV)",
+		"reload": "Reload saved version",
+		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost."
 	},
 	"name": {
 		"untitled": "Plan sans nom"
