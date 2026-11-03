@@ -141,6 +141,26 @@ describe("useIndexedDBStore", () => {
 		await expect(requestPersistence()).resolves.not.toThrow();
 	});
 
+	it("getDB asks for persistence once and doesn't wait for it", async () => {
+		await resetDB();
+		// a fresh module: the flag is per tab
+		vi.resetModules();
+		const persist = vi.fn(() => new Promise<boolean>(() => {}));
+		// @ts-expect-error
+		navigator.storage = { persist };
+		const fresh = await import("@/database/composables/useIndexedDBStore");
+
+		const db = await fresh.getDB();
+		fresh.dropDB();
+		await fresh.getDB();
+
+		expect(db.objectStoreNames.length).toBeGreaterThan(0);
+		expect(persist).toHaveBeenCalledOnce();
+		// @ts-expect-error
+		delete navigator.storage;
+		await fresh.resetDB();
+	});
+
 	it("should insert and get a single item", async () => {
 		await store.set(fakeMaterial_1);
 
