@@ -87,6 +87,14 @@ describe("localeLazyLoaders", () => {
 		expect(files.length).toBeGreaterThan(0);
 		for (const mod of messages) expect(typeof mod).toBe("object");
 	});
+
+	it("leaves out en_US, which is loaded with the app", () => {
+		expect(
+			Object.keys(localeLazyLoaders).filter((path) =>
+				path.startsWith("/src/locales/en_US/")
+			)
+		).toEqual([]);
+	});
 });
 
 describe("en_US volume terms", () => {
