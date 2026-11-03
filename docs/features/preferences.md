@@ -12,7 +12,7 @@ profile `UserPreferences`, navigation and footer.
 
 | File | Role |
 | --- | --- |
-| `usePreferences.ts` | Writable computeds per global preference, `planSettingsOverview`, helpers; `startPreferenceSync()` (once, in `main.ts`) sends a 5 s debounced `PatchPreferences` with only the changed keys, flushed on `pagehide` |
+| `usePreferences.ts` | Writable computeds per global preference, `planSettingsOverview`, helpers; `startPreferenceSync()` (once, in `main.ts`) sends a 5 s debounced `PatchPreferences` with only the changed keys; on `pagehide` a pending change goes out as a keepalive `fetch` (`sendPreferencesKeepalive`) instead, as axios requests are cancelled on unload |
 | `usePlanPreferences.ts` | `usePlanPreferences(planUuid)`: one plan's overrides over `planDefaults`; with no uuid it reads defaults and ignores writes |
 | `preferenceSync.ts` | Last synced state, `diffPreferences`, `applyPreferencePatch` (also for other tabs, see [data-layer.md §6](../data-layer.md#6-several-tabs-srclibcrosstabts)) |
 | `userDefaults.ts`, `userPreferences.types.ts` | `preferenceDefaults` (incl. `planDefaults`); frontend-only types |

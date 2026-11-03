@@ -1,4 +1,6 @@
 import { apiService } from "@/lib/apiService";
+import config from "@/lib/config";
+import { correlationId } from "@/lib/requestIds";
 
 // Schemas
 import { z } from "zod";
@@ -226,6 +228,33 @@ export async function callPatchUserPreferences(
 		UserPreferencePatchSchema,
 		UserPreferenceSchema
 	);
+}
+
+/**
+ * Sends a preferences patch while the page unloads: a keepalive fetch
+ * outlives the page, axios can't send one. Same request as
+ * callPatchUserPreferences, but the token is set by hand and can't be
+ * refreshed on a 401. Like `sendPlanDraftKeepalive`.
+ *
+ * @author jplacht
+ *
+ * @param {UserPreferencePatch} preferences Patch
+ * @param {string} token Access token
+ */
+export function sendPreferencesKeepalive(
+	preferences: UserPreferencePatch,
+	token: string
+): void {
+	fetch(`${config.API_BASE_URL}/user/preferences/`, {
+		method: "PATCH",
+		keepalive: true,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+			"X-Correlation-ID": correlationId(),
+		},
+		body: JSON.stringify(UserPreferencePatchSchema.parse(preferences)),
+	}).catch(() => {});
 }
 
 export async function callGetUserPreferences(): Promise<UserPreference> {
