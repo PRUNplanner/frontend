@@ -18,6 +18,7 @@ import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
 import type { IPlanDraftOptions } from "@/features/planning/usePlanDraft.types";
 import type { PlanDraft } from "@/features/api/schemas/planningData.schemas";
+import plan from "@/locales/en_US/plan.json";
 
 const m = vi.hoisted(() => ({
 	trackEvent: vi.fn(),
@@ -156,7 +157,10 @@ function setup(id: string | null = "p-1", props = {}) {
 	};
 }
 
-async function mountSave(s: ReturnType<typeof setup>) {
+async function mountSave(
+	s: ReturnType<typeof setup>,
+	i18n: Parameters<typeof mountComposable>[1] = {}
+) {
 	const mounted = await mountComposable(
 		() =>
 			usePlanSave(
@@ -167,7 +171,7 @@ async function mountSave(s: ReturnType<typeof setup>) {
 				s.viewProps,
 				s.preview as unknown as ReturnType<typeof usePlanVersionPreview>
 			),
-		{ pinia }
+		{ pinia, ...i18n }
 	);
 	// the draft check on mount
 	await flushPromises();
@@ -385,11 +389,29 @@ describe("usePlanSave", () => {
 		expect(m.push).toHaveBeenCalledWith(`/plan/${PLANET}/p-9`);
 	});
 
+	it("names the copy in the user's locale", async () => {
+		const { result: saving } = await mountSave(setup(), {
+			locale: "de_DE",
+			messages: {
+				plan: {
+					components: { save_as: { copy_name: "{name} (Kopie)" } },
+				},
+			},
+		});
+
+		saving.openSaveAsModal();
+		expect(saving.refSaveAsName.value).toBe("Plan (Kopie)");
+	});
+
 	it("saves as a copy in a new tab, a shared copy in place", async () => {
 		const s = setup();
 		m.createNewPlan.mockResolvedValue({ uuid: "p-3", modifiedAt: "t1" });
 		const open = vi.spyOn(window, "open").mockImplementation(() => null);
-		const { result: saving } = await mountSave(s);
+		const { result: saving } = await mountSave(s, {
+			messages: {
+				plan: { components: { save_as: plan.components.save_as } },
+			},
+		});
 
 		saving.openSaveAsModal();
 		expect(saving.refSaveAsName.value).toBe("Plan (Copy)");

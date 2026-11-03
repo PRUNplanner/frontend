@@ -18,6 +18,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import PDropdown from "@/ui/components/PDropdown.vue";
 import ManageAssignmentCard from "@/features/manage/components/ManageAssignmentCard.vue";
 import { toasts } from "@/ui/useToast";
+import management from "@/locales/en_US/management.json";
 import { mountComponent } from "@/tests/mountComponent";
 import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
@@ -369,9 +370,18 @@ describe("ManagePlanEmpireAssignments", () => {
 		expect(menu().props("show")).toBe(false);
 	});
 
+	const cloneName = (locale: string, clone_name: string) => ({
+		locale,
+		messages: { management: { assignments: { menu: { clone_name } } } },
+	});
+
 	it("row menu clones a plan with a suffixed name", async () => {
 		mock.onPost(new RegExp(`planning/plan/${P2}/clone/$`)).reply(200, plan);
-		const { wrapper, host } = await mountAssignments();
+		const { wrapper, host } = await mountAssignments(
+			EMPIRES,
+			PLANS,
+			cloneName("en_US", management.assignments.menu.clone_name)
+		);
 
 		await openMenu(wrapper, 1);
 		expect(
@@ -389,6 +399,23 @@ describe("ManagePlanEmpireAssignments", () => {
 			plan_name: "Plan B (Clone)",
 		});
 		expect(host.data.refetchPlans).toHaveBeenCalledTimes(1);
+	});
+
+	it("names the clone in the user's locale", async () => {
+		mock.onPost(new RegExp(`planning/plan/${P2}/clone/$`)).reply(200, plan);
+		const { wrapper } = await mountAssignments(
+			EMPIRES,
+			PLANS,
+			cloneName("de_DE", "{name} (Klon)")
+		);
+
+		await openMenu(wrapper, 1);
+		menuOption("management.assignments.menu.clone")!.click();
+		await flushPromises();
+
+		expect(JSON.parse(mock.history.post[0].data)).toEqual({
+			plan_name: "Plan B (Klon)",
+		});
 	});
 
 	it("row menu deletes a plan only after confirmation", async () => {

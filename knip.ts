@@ -22,7 +22,8 @@ function getStyleImports(content: string): string {
 }
 
 const config = {
-	project: ["src/**/*.{ts,vue}"],
+	entry: ["src/prerender.ts!"],
+	project: ["src/**/*.{ts,vue}!", "!src/tests/**!"],
 	compilers: {
 		vue: (text: string, filename: string) => {
 			const { descriptor } = parse(text, { filename, sourceMap: false });

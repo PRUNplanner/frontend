@@ -83,6 +83,19 @@ describe("PlanData API Calls", async () => {
 		expect(loaded.plan_data.buildings[0].amount).toBe(0);
 	});
 
+	it("callGetPlan and callGetShared encode the id as one path segment", async () => {
+		const spyApiServiceGet = vi.spyOn(apiService, "get");
+		mock.onGet("/planning/plan/..%2Fx/").reply(200, plan_etherwind);
+		mock.onGet("/planning/shared/a%2F..%3Fb/").reply(200, shared);
+
+		await callGetPlan("../x");
+		await callGetShared("a/..?b");
+		expect(spyApiServiceGet.mock.calls.map((c) => c[0])).toEqual([
+			"/planning/plan/..%2Fx/",
+			"/planning/shared/a%2F..%3Fb/",
+		]);
+	});
+
 	it("callGetPlanlist", async () => {
 		const spyApiServiceGet = vi.spyOn(apiService, "get");
 

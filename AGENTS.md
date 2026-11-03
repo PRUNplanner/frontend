@@ -21,15 +21,15 @@ Node per `.nvmrc`, pnpm per `packageManager` in `package.json`.
 | Benchmarks | `pnpm vitest bench --run` |
 | Type check | `pnpm tsc` |
 | Lint and format | `pnpm lint` / `pnpm lint:fix` |
-| Unused exports, files, deps | `pnpm knip` |
+| Unused exports, files, deps | `pnpm knip` (`pnpm knip:prod`: exports only tests use) |
 
 ## Definition of done
 
-PR CI (`.github/workflows/`) runs both test suites, `tsc`, `lint` and `knip`.
+PR CI (`.github/workflows/`) runs both test suites, `tsc`, `lint` and `knip` (also in production mode).
 Run them before calling a change finished:
 
 ```
-pnpm test && pnpm tsc && pnpm lint && pnpm knip
+pnpm test && pnpm tsc && pnpm lint && pnpm knip && pnpm knip:prod
 ```
 
 - Run `pnpm test:components` too when you touch a component, a view or their

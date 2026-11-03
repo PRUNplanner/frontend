@@ -28,7 +28,7 @@ the folder layout and the editor.
 | `usePlanEdits.ts`, `usePlanSharedCopy.ts`, `usePlanLayout.ts`, `usePlanIO.ts`, `usePlanShortcuts.ts`, `usePlanCheckView.ts` | Page composables: edit feedback (undo toasts, starter setup, hab auto-optimise), shared-plan working copy, tool tabs and pane folding, Material I/O pane, keyboard shortcuts, Plan check view |
 | `planView.util.ts` / `.types.ts`, `recipePicker.util.ts` | `PlanTool` keys, `foldedPanes`, Material I/O totals/CSV, page types; recipe picker ordering |
 | `useMaterialIOUtil.ts` | Material I/O enrichment; also combines empire I/O |
-| `calculations/*.ts` | Engine wrappers (bonus, workforce, building), infrastructure, extraction, hab LP optimisation |
+| `calculations/*.ts` | Infrastructure, extraction, hab LP optimisation (the `.types.ts` there are engine types) |
 | `util/whatIf.util.ts`, `util/profitBreakdown.util.ts` | Plan check maths; profit waterfall |
 | `calcDebug.util.ts`, `components/debug/PlanCalcDebug.vue` | Calculation debug: traced-run self-checks, trace tree, copy as text/JSON |
 

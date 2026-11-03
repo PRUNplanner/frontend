@@ -14,6 +14,7 @@
 		chainCsv,
 		NO_OWN,
 	} from "@/features/production_chain/productionChain.util";
+	import { downloadFile } from "@/util/download";
 
 	// Types & Interfaces
 	import type {
@@ -136,12 +137,7 @@
 			(s) => t(`production_chains.table.${s}`),
 			t("production_chains.table.nothing")
 		);
-		const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = "production-chain.csv";
-		a.click();
-		URL.revokeObjectURL(url);
+		downloadFile("production-chain.csv", csv, "text/csv");
 		emit("track", "csv");
 	}
 </script>

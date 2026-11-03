@@ -106,6 +106,7 @@ export function dropDB(): void {
 
 /**
  * Testing / dev utility: completely resets the DB and clears cached dbPromise.
+ * @internal tests only, so `knip --production` skips it
  */
 export async function resetDB(): Promise<void> {
 	if (dbPromise) {

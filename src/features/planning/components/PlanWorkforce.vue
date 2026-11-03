@@ -8,7 +8,7 @@
 	// Utils
 	import { capitalizeString } from "@/util/text";
 	import { formatAmount, formatNumber } from "@/util/numbers";
-	import { WORKFORCE_CONSUMPTION_MAP } from "../calculations/workforceCalculations";
+	import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce";
 
 	// Types & Interfaces
 	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";

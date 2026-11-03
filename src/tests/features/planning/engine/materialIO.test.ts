@@ -1,14 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 // Composables
-import { useBuildingCalculation } from "@/features/planning/calculations/buildingCalculations";
+import { calculateMaterialIO } from "@/features/planning/engine/materialIO";
 import type { IProductionBuilding } from "@/features/planning/usePlanCalculation.types";
 
 describe("Planning: Workforce Calculations", async () => {
 	describe("calculateMaterialIO", async () => {
 		it("Calculate whole production material io", async () => {
-			const { calculateMaterialIO } = useBuildingCalculation();
-
 			const fakeData: IProductionBuilding[] = [
 				{
 					amount: 1,
@@ -98,8 +96,6 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Skip recipes which amount = 0", async () => {
-			const { calculateMaterialIO } = useBuildingCalculation();
-
 			const fakeData: IProductionBuilding[] = [
 				{
 					amount: 1,

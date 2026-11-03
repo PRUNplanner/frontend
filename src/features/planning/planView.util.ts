@@ -1,4 +1,5 @@
 import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import { toCsv } from "@/util/download";
 
 export type PlanTool =
 	| "visitation-frequency"
@@ -74,19 +75,16 @@ export function materialIOTotals(rows: IMaterialIO[]): {
  * @returns {string} CSV with a header line
  */
 export function materialIOCsv(rows: IMaterialIO[]): string {
-	const lines: string[] = [
-		"ticker,input,output,delta,value,weight,volume",
-		...rows.map((r) =>
-			[
-				r.ticker,
-				r.input,
-				r.output,
-				r.delta,
-				r.price,
-				r.totalWeight,
-				r.totalVolume,
-			].join(",")
-		),
-	];
-	return lines.join("\n");
+	return toCsv([
+		["ticker", "input", "output", "delta", "value", "weight", "volume"],
+		...rows.map((r) => [
+			r.ticker,
+			r.input,
+			r.output,
+			r.delta,
+			r.price,
+			r.totalWeight,
+			r.totalVolume,
+		]),
+	]);
 }

@@ -32,7 +32,8 @@ enableAutoUnmount(afterEach);
  * Pass listeners as props (`"onUpdate:value": fn`), or read them via
  * `component.emitted()`. `withDialog` renders PConfirmHost next to it
  * for components calling useConfirm(). `messages` (en_US) lets `<i18n-t>` render
- * its slots, which a key-only i18n drops. `attach` mounts it into the
+ * its slots, which a key-only i18n drops (`locale` puts them in another
+ * locale). `attach` mounts it into the
  * document, for focus checks. `setup` runs in the root's setup, to
  * provide() what the component injects.
  */
@@ -43,6 +44,8 @@ export async function mountComponent(
 		pinia?: Pinia;
 		withDialog?: boolean;
 		messages?: Record<string, unknown>;
+		// the locale `messages` belong to, en_US by default
+		locale?: string;
 		attach?: boolean;
 		// runs in the root's setup, e.g. to provide() for the component
 		setup?: () => void;
@@ -50,9 +53,11 @@ export async function mountComponent(
 ) {
 	const i18n = createI18n({
 		legacy: false,
-		locale: "en_US",
+		locale: options.locale ?? "en_US",
 		// untyped like the app i18n (lib/i18n), vue-i18n types messages recursively
-		messages: { en_US: options.messages ?? {} } as never,
+		messages: {
+			[options.locale ?? "en_US"]: options.messages ?? {},
+		} as never,
 		missingWarn: false,
 		fallbackWarn: false,
 	});

@@ -49,7 +49,7 @@ export async function callGetShared(
 	sharedPlanUuid: string
 ): Promise<PlanShare> {
 	return apiService.get(
-		`/planning/shared/${sharedPlanUuid}/`,
+		`/planning/shared/${encodeURIComponent(sharedPlanUuid)}/`,
 		PlanShareSchema
 	);
 }
@@ -64,7 +64,10 @@ export async function callGetShared(
  * @returns {Promise<Plan>} Plan Data
  */
 export async function callGetPlan(planUuid: string): Promise<Plan> {
-	return apiService.get(`/planning/plan/${planUuid}/`, PlanSchema);
+	return apiService.get(
+		`/planning/plan/${encodeURIComponent(planUuid)}/`,
+		PlanSchema
+	);
 }
 
 /**

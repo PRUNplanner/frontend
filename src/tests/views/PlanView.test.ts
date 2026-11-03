@@ -1292,7 +1292,17 @@ describe("PlanView", () => {
 		it("offers a copy under the current empire and plan name", async () => {
 			const mounted = await mountView(
 				{ empireList: empires() },
-				{ login: true }
+				{
+					login: true,
+					// the copy name only, the other labels stay keys
+					messages: {
+						plan: {
+							components: {
+								save_as: { copy_name: "{name} (Copy)" },
+							},
+						},
+					},
+				}
 			);
 			await openSaveAs(mounted);
 
