@@ -122,6 +122,7 @@
 			"done": "E-mail confirmado"
 		},
 		"email_label": "Dirección de e-mail",
+		"password_label": "Current password",
 		"email_placeholder": "tu{'@'}ejemplo.com",
 		"email_info": "Solo se usa para restablecer tu contraseña. Sin newsletters y nunca se comparte. Puedes cambiarlo o quitarlo en cualquier momento en Perfil.",
 		"email_code_info": "Te enviaremos un código de 8 caracteres para confirmar que es tuyo.",
@@ -142,7 +143,8 @@
 			"done": "Hecho"
 		},
 		"errors": {
-			"email_taken": "Esta dirección ya la usa otra cuenta.",
+			"password_required": "Enter your current password to change your email.",
+			"password_invalid": "That password is not correct.",
 			"invalid_email": "Esto no parece una dirección de e-mail.",
 			"invalid": "Ese código no ha funcionado. Compruébalo o envía uno nuevo.",
 			"expired": "Ese código ha caducado. Envía uno nuevo.",
