@@ -258,4 +258,18 @@ describe("EmpireView (golden)", () => {
 			"./__snapshots__/EmpireView.golden.json"
 		);
 	});
+
+	it("splits the engine's cost into known parts only", async () => {
+		// a new cost part (e.g. fees) fails here until the split has it
+		for (const input of [
+			{ empireUuid: "8804b0e1-73d8-48f7-93e3-48bb2ef7b727" },
+			{ empireUuid: "a208d74e-d07f-4722-8192-9b55d4140f58" },
+		]) {
+			const { costOverview } = await snapshot(input);
+			const { totalCost } = costOverview.costOverview;
+			const { inputs, workforce, degradation } = costOverview.split;
+			expect(totalCost).toBeGreaterThan(0);
+			expect(inputs + workforce + degradation).toBeCloseTo(totalCost, 6);
+		}
+	});
 });
