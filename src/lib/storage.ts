@@ -61,3 +61,22 @@ export function useStoredFlag(key: string, fallback: boolean): Ref<boolean> {
 	watch(flag, (v) => writeStorage(key, v ? "1" : "0"), { flush: "sync" });
 	return flag;
 }
+
+/**
+ * Key of one user's browser-only data (`<base>:<userId>`), so another user
+ * of the browser never sees it. A value stored under the bare key before
+ * keys were per user moves to the first user who reads it.
+ *
+ * @param {string} base Storage key shared by all users before
+ * @param {string} userId User id
+ * @returns {string} The user's key
+ */
+export function userStorageKey(base: string, userId: string): string {
+	const key = `${base}:${userId}`;
+	const legacy = readStorage(base);
+	if (legacy !== null) {
+		if (readStorage(key) === null) writeStorage(key, legacy);
+		writeStorage(base, null);
+	}
+	return key;
+}

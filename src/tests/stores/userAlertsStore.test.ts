@@ -1,7 +1,11 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
+import { nextTick } from "vue";
+
 import { useAlertsStore } from "@/stores/userAlertsStore";
+import { useUserStore } from "@/stores/userStore";
+import { jwt } from "@/tests/jwt";
 
 describe("Alerts Store", () => {
 	beforeEach(() => {
@@ -69,5 +73,74 @@ describe("Alerts Store", () => {
 		store.deleteAlert("unknown");
 
 		expect(store.userAlerts.map((a) => a.id)).toStrictEqual([second.id]);
+	});
+
+	describe("per user storage", () => {
+		const KEY = "prunplanner_alerts";
+
+		beforeEach(() => localStorage.clear());
+
+		// a login as another user replaces the refresh token
+		const loginAs = async (userId: number | undefined) => {
+			useUserStore().refreshToken =
+				userId === undefined ? undefined : jwt(userId);
+			await nextTick();
+		};
+
+		it("hides one user's alerts from the next, and shows them again", async () => {
+			const store = useAlertsStore();
+			await loginAs(1);
+			store.addAlert();
+			store.userAlerts[0].name = "A's alert";
+			await nextTick();
+			expect(JSON.parse(localStorage.getItem(`${KEY}:1`)!)).toMatchObject(
+				{
+					userAlerts: [{ name: "A's alert" }],
+				}
+			);
+
+			await loginAs(undefined);
+			expect(store.userAlerts).toStrictEqual([]);
+
+			await loginAs(2);
+			expect(store.userAlerts).toStrictEqual([]);
+			store.addAlert();
+			await nextTick();
+
+			await loginAs(1);
+			expect(store.userAlerts.map((a) => a.name)).toStrictEqual([
+				"A's alert",
+			]);
+			expect(
+				JSON.parse(localStorage.getItem(`${KEY}:2`)!).userAlerts
+			).toHaveLength(1);
+		});
+
+		it("moves the alerts stored before keys were per user to the first user", async () => {
+			localStorage.setItem(
+				KEY,
+				JSON.stringify({ userAlerts: [{ id: "x", name: "Old" }] })
+			);
+			const store = useAlertsStore();
+			await loginAs(3);
+
+			expect(store.userAlerts.map((a) => a.name)).toStrictEqual(["Old"]);
+			expect(localStorage.getItem(KEY)).toBeNull();
+
+			await loginAs(4);
+			expect(store.userAlerts).toStrictEqual([]);
+		});
+
+		it("drops a draft of the previous user and reads corrupt data as none", async () => {
+			localStorage.setItem(`${KEY}:5`, "{not json");
+			const store = useAlertsStore();
+			await loginAs(6);
+			store.addAlert();
+			store.startEditing(store.userAlerts[0]);
+
+			await loginAs(5);
+			expect(store.userAlerts).toStrictEqual([]);
+			expect(store.activeDraft).toBeNull();
+		});
 	});
 });

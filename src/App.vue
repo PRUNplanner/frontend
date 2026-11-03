@@ -99,7 +99,8 @@
 
 		// a session restored from storage: analytics knows the user from the
 		// stored profile until the fresh one (loaded below) arrives
-		if (userStore.profile) identifyUser(userStore.profile);
+		if (userStore.profile)
+			identifyUser(userStore.profile, userStore.hasFIO);
 
 		if (userStore.isLoggedIn) {
 			announceRelease(() => router.push("/help#changelog"));

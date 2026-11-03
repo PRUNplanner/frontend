@@ -21,8 +21,10 @@ calls `connect()` on mount and `disconnect()` on unmount.
 ## Gotchas
 
 - Alert rules live in `useAlertsStore` (`stores/userAlertsStore.ts`),
-  persisted to localStorage only, **not synced to the backend**, and not
-  Zod-parsed (`DetectorConfig` is a plain interface).
+  stored in localStorage per user (`prunplanner_alerts:<user id>`, by the
+  refresh token's user, so the next user of the browser never sees them),
+  **not synced to the backend**, and not Zod-parsed (`DetectorConfig` is a
+  plain interface).
 - Connection flags, points and logs are **module-level**, shared by every
   `useExchangeSSE()` caller; the `EventSource` itself is per call, so call
   `disconnect()` on the same instance on unmount or it stays open.

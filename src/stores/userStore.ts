@@ -64,6 +64,17 @@ export const useUserStore = defineStore(
 		const accessToken: Ref<string | undefined> = ref(undefined);
 		const refreshToken: Ref<string | undefined> = ref(undefined);
 		const profile: Ref<UserProfile | undefined> = ref(undefined);
+		// the FIO key isn't persisted (a third-party secret): whether one
+		// is set is, so a restored session knows it before the profile GET
+		const fioKeySet: Ref<boolean> = ref(false);
+		watch(
+			() => profile.value?.fio_apikey,
+			(key) => {
+				// undefined: restored from storage, keep what was stored
+				if (key !== undefined) fioKeySet.value = !!key;
+			},
+			{ flush: "sync" }
+		);
 
 		const initialProfileCalled: Ref<boolean> = ref(false);
 		const intialPreferencesCalled: Ref<boolean> = ref(false);
@@ -80,6 +91,7 @@ export const useUserStore = defineStore(
 			accessToken.value = undefined;
 			refreshToken.value = undefined;
 			profile.value = undefined;
+			fioKeySet.value = false;
 			Object.assign(preferences, deepClone(preferenceDefaults));
 			setSyncedPreferences(preferences);
 			// the next login must load its own profile and preferences
@@ -195,8 +207,7 @@ export const useUserStore = defineStore(
 		const hasFIO: ComputedRef<boolean> = computed(
 			() =>
 				profile.value !== undefined &&
-				profile.value.fio_apikey !== "" &&
-				profile.value.fio_apikey !== null &&
+				fioKeySet.value &&
 				profile.value.prun_username !== "" &&
 				profile.value.prun_username !== null
 		);
@@ -409,6 +420,7 @@ export const useUserStore = defineStore(
 			accessToken,
 			refreshToken,
 			profile,
+			fioKeySet,
 			// reset
 			$reset,
 			// getters
@@ -437,7 +449,16 @@ export const useUserStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
-			pick: ["accessToken", "refreshToken", "profile", "preferences"],
+			pick: [
+				"accessToken",
+				"refreshToken",
+				"profile",
+				"fioKeySet",
+				"preferences",
+			],
+			// no third-party secret or email in localStorage: the profile GET
+			// on start brings them back
+			omit: ["profile.fio_apikey", "profile.email"],
 			// overrides persisted before setPlanPreference stored complete
 			// ones fail the PATCH schema, which blocks every preference sync
 			afterHydrate: ({ store }) => {
