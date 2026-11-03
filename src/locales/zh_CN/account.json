@@ -122,6 +122,7 @@
 			"done": "Email confirmed"
 		},
 		"email_label": "Email address",
+		"password_label": "Current password",
 		"email_placeholder": "you{'@'}example.com",
 		"email_info": "Only used to reset your password. No newsletters, never shared. You can change or remove it any time in Profile.",
 		"email_code_info": "We'll send an 8-character code to confirm it's yours.",
@@ -142,7 +143,8 @@
 			"done": "Done"
 		},
 		"errors": {
-			"email_taken": "This address is already used by another account.",
+			"password_required": "Enter your current password to change your email.",
+			"password_invalid": "That password is not correct.",
 			"invalid_email": "This doesn't look like an email address.",
 			"invalid": "That code didn't work. Check it, or send a new one.",
 			"expired": "That code has expired. Send a new one.",
