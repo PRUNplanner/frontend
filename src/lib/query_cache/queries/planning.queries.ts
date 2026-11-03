@@ -252,11 +252,8 @@ export const planningQueries = {
 	}),
 	GetAllShared: defineQuery({
 		key: () => ["planningdata", "shared", "list"],
-		fetchFn: async (): Promise<Shared[]> => {
-			const data = await callGetSharedList();
-			usePlanningStore().setSharedList(data);
-			return data;
-		},
+		fetchFn: (): Promise<Shared[]> => callGetSharedList(),
+		onData: (data) => usePlanningStore().setSharedList(data),
 		autoRefetch: true,
 		expireTime: staleMinutes(60),
 	}),
@@ -289,20 +286,15 @@ export const planningQueries = {
 	// Empires
 	GetAllEmpires: defineQuery({
 		key: () => ["planningdata", "empire", "list"],
-		fetchFn: async (): Promise<PlanEmpireElement[]> => {
-			const data = await callGetEmpireList();
-			usePlanningStore().setEmpires(data);
-			return data;
-		},
+		fetchFn: (): Promise<PlanEmpireElement[]> => callGetEmpireList(),
+		onData: (data) => usePlanningStore().setEmpires(data),
 	}),
 	GetEmpirePlans: defineQuery({
 		key: (params) => ["planningdata", "empire", "plans", params.empireUuid],
 		// errors must propagate, [] would be cached as an empty empire
-		fetchFn: async (params: { empireUuid: string }): Promise<Plan[]> => {
-			const data = await callGetEmpirePlans(params.empireUuid);
-			setPlans(data);
-			return data;
-		},
+		fetchFn: (params: { empireUuid: string }): Promise<Plan[]> =>
+			callGetEmpirePlans(params.empireUuid),
+		onData: setPlans,
 	}),
 	CreateEmpire: defineMutation({
 		fetchFn: async (params: {
@@ -359,11 +351,8 @@ export const planningQueries = {
 	// CX
 	GetAllCX: defineQuery({
 		key: () => ["planningdata", "cx"],
-		fetchFn: async (): Promise<CX[]> => {
-			const data = await callGetCXList();
-			usePlanningStore().setCXs(data);
-			return data;
-		},
+		fetchFn: (): Promise<CX[]> => callGetCXList(),
+		onData: (data) => usePlanningStore().setCXs(data),
 	}),
 	CreateCX: defineMutation({
 		fetchFn: async (params: { cxName: string }): Promise<CX> => {
@@ -400,20 +389,15 @@ export const planningQueries = {
 	// Plans
 	GetPlan: defineQuery({
 		key: (params) => ["planningdata", "plan", params.planUuid],
-		fetchFn: async (params: { planUuid: string }): Promise<Plan> => {
-			const data = await callGetPlan(params.planUuid);
-			usePlanningStore().setPlan(data);
-			return data;
-		},
+		fetchFn: (params: { planUuid: string }): Promise<Plan> =>
+			callGetPlan(params.planUuid),
+		onData: (data) => usePlanningStore().setPlan(data),
 	}),
 	GetAllPlans: defineQuery({
 		key: () => ["planningdata", "plan", "list"],
 		// errors must propagate, [] would be cached as "no plans"
-		fetchFn: async (): Promise<Plan[]> => {
-			const data = await callGetPlanlist();
-			setPlans(data);
-			return data;
-		},
+		fetchFn: (): Promise<Plan[]> => callGetPlanlist(),
+		onData: setPlans,
 	}),
 	CreatePlan: defineMutation({
 		fetchFn: async (params: {

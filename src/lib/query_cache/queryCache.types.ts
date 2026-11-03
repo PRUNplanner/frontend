@@ -26,6 +26,9 @@ export interface IQueryState<TParams, TData> {
 export interface IQueryDefinition<A extends [] | [unknown], D> {
 	key: (...args: NoInfer<A>) => JSONValue;
 	fetchFn: (...args: A) => Promise<D>;
+	// store writes for a fetched result; skipped when the request was
+	// dropped or replaced meanwhile, so an older answer can't overwrite
+	onData?: (data: NoInfer<D>) => void;
 	autoRefetch?: boolean;
 	expireTime?: number;
 	// false: the result is dropped after the call (still deduped in flight)

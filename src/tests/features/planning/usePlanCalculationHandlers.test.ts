@@ -13,6 +13,17 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
 
+// the result rows of a plan whose calculation is current
+const resultOf = (plan: { buildings: object[] }) =>
+	ref({
+		production: {
+			buildings: plan.buildings.map((b) => ({
+				...b,
+				recipeOptions: [],
+			})),
+		},
+	});
+
 describe("Planning: Workforce Calculations", async () => {
 	beforeAll(async () => {
 		//@ts-expect-error mock data
@@ -280,7 +291,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleUpdateBuildingAmount(0, 6);
@@ -296,7 +307,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(plan),
 				ref(),
-				ref({})
+				resultOf(plan)
 			);
 
 			// 0 is a count, not an empty value
@@ -310,10 +321,10 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
-			expect(() => handleUpdateBuildingAmount(1, 6)).toThrowError();
+			expect(() => handleUpdateBuildingAmount(1, 6)).not.toThrow();
 		});
 	});
 
@@ -339,7 +350,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleDeleteBuilding(0);
@@ -368,7 +379,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleDeleteBuilding(1);
@@ -396,10 +407,72 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
-			expect(() => handleDeleteBuilding(999)).toThrowError();
+			expect(() => handleDeleteBuilding(999)).not.toThrow();
+		});
+	});
+
+	// the engine threw after an add, the rows are of the run before it
+	describe("with a stale result", async () => {
+		function stalePlan() {
+			const building = (name: string) => ({
+				name,
+				amount: 1,
+				active_recipes: [{ recipeid: `${name}#1`, amount: 1 }],
+			});
+			const plan = {
+				buildings: [building("FRM"), building("PP1"), building("HB1")],
+			};
+			// rows of the last successful run, then BMP was added
+			const result = resultOf(plan);
+			plan.buildings.push(building("BMP"));
+			return { plan, result };
+		}
+
+		it("edits the building shown in the row after a delete", async () => {
+			const { plan, result } = stalePlan();
+			const { handleDeleteBuilding, handleUpdateBuildingAmount } =
+				usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(plan),
+					ref(),
+					result
+				);
+
+			handleDeleteBuilding(0);
+			// the result is still stale: its last row is HB1
+			expect(() => handleUpdateBuildingAmount(2, 5)).not.toThrow();
+			expect(plan.buildings.map((b) => [b.name, b.amount])).toEqual([
+				["PP1", 1],
+				["HB1", 5],
+				["BMP", 1],
+			]);
+		});
+
+		it("changes nothing for a row whose building is gone", async () => {
+			const { plan, result } = stalePlan();
+			const {
+				handleDeleteBuilding,
+				handleUpdateBuildingAmount,
+				handleChangeBuildingRecipe,
+			} = usePlanCalculationHandlers(
+				// @ts-expect-error mock data
+				ref({}),
+				ref(plan),
+				ref(),
+				result
+			);
+
+			handleDeleteBuilding(0);
+			const before = structuredClone(plan);
+			// row 0 is still FRM, which the plan no longer has
+			expect(() => handleUpdateBuildingAmount(0, 9)).not.toThrow();
+			expect(() => handleDeleteBuilding(0)).not.toThrow();
+			expect(() => handleChangeBuildingRecipe(0, 0, "x")).not.toThrow();
+			expect(plan).toStrictEqual(before);
 		});
 	});
 
@@ -414,7 +487,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			expect(fakePlan.buildings.length).toBe(0);
@@ -435,7 +508,7 @@ describe("Planning: Workforce Calculations", async () => {
 					ref({}),
 					ref(fakePlan),
 					ref(),
-					ref({})
+					resultOf(fakePlan)
 				);
 
 			expect(fakePlan.buildings.length).toBe(0);
@@ -461,18 +534,19 @@ describe("Planning: Workforce Calculations", async () => {
 					ref({}),
 					ref(fakePlan),
 					ref(),
-					ref({})
+					resultOf(fakePlan)
 				);
 
 			expect(() =>
 				handleUpdateBuildingRecipeAmount(0, 0, 5)
-			).toThrowError();
+			).not.toThrow();
 		});
 
 		it("Update Amount, invalid recipe index", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [],
 					},
 				],
@@ -484,7 +558,7 @@ describe("Planning: Workforce Calculations", async () => {
 					ref({}),
 					ref(fakePlan),
 					ref(),
-					ref({})
+					resultOf(fakePlan)
 				);
 
 			expect(() =>
@@ -496,6 +570,7 @@ describe("Planning: Workforce Calculations", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [
 							{
 								amount: 0,
@@ -511,7 +586,7 @@ describe("Planning: Workforce Calculations", async () => {
 					ref({}),
 					ref(fakePlan),
 					ref(),
-					ref({})
+					resultOf(fakePlan)
 				);
 
 			handleUpdateBuildingRecipeAmount(0, 0, 100);
@@ -530,16 +605,17 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
-			expect(() => handleDeleteBuildingRecipe(0, 0)).toThrowError();
+			expect(() => handleDeleteBuildingRecipe(0, 0)).not.toThrow();
 		});
 
 		it("Delete Recipe, invalid recipe index", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [],
 					},
 				],
@@ -550,7 +626,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			expect(() => handleDeleteBuildingRecipe(0, 0)).toThrowError();
@@ -560,6 +636,7 @@ describe("Planning: Workforce Calculations", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [
 							{
 								amount: 0,
@@ -574,7 +651,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleDeleteBuildingRecipe(0, 0);
@@ -585,6 +662,7 @@ describe("Planning: Workforce Calculations", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [
 							{
 								amount: 0,
@@ -602,7 +680,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleDeleteBuildingRecipe(0, 1);
@@ -625,7 +703,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			await handleApplyStarterSetup({
@@ -676,7 +754,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			await handleApplyStarterSetup({
@@ -711,15 +789,15 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
-			expect(() => handleAddBuildingRecipe(0)).toThrowError();
+			expect(() => handleAddBuildingRecipe(0)).not.toThrow();
 		});
 
-		it("Add Recipe, undefined production building", async () => {
+		it("Add Recipe, no result row", async () => {
 			const fakePlan = {
-				buildings: [{}],
+				buildings: [{ name: "FRM" }],
 			};
 
 			const fakePlanResult = {
@@ -736,18 +814,19 @@ describe("Planning: Workforce Calculations", async () => {
 				ref(fakePlanResult)
 			);
 
-			expect(() => handleAddBuildingRecipe(0)).toThrowError();
+			expect(() => handleAddBuildingRecipe(0)).not.toThrow();
 		});
 
 		it("Add Recipe, no recipe options at production building", async () => {
 			const fakePlan = {
-				buildings: [{}],
+				buildings: [{ name: "FRM" }],
 			};
 
 			const fakePlanResult = {
 				production: {
 					buildings: [
 						{
+							name: "FRM",
 							recipeOptions: [],
 						},
 					],
@@ -769,6 +848,7 @@ describe("Planning: Workforce Calculations", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [],
 					},
 				],
@@ -778,6 +858,7 @@ describe("Planning: Workforce Calculations", async () => {
 				production: {
 					buildings: [
 						{
+							name: "FRM",
 							recipeOptions: [{ RecipeId: "moo" }],
 						},
 					],
@@ -798,16 +879,16 @@ describe("Planning: Workforce Calculations", async () => {
 	});
 
 	describe("handleAddBuildingRecipes", async () => {
-		it("throws for an invalid building index", async () => {
+		it("ignores a row without a plan building", async () => {
 			const { handleAddBuildingRecipes } = usePlanCalculationHandlers(
 				// @ts-expect-error mock data
 				ref({}),
 				ref({ buildings: [] }),
 				ref(),
-				ref({})
+				resultOf({ buildings: [] })
 			);
 
-			expect(() => handleAddBuildingRecipes(0, [])).toThrowError();
+			expect(() => handleAddBuildingRecipes(0, [])).not.toThrow();
 		});
 
 		// a second order of a recipe it runs: free accounts split runs so
@@ -826,7 +907,7 @@ describe("Planning: Workforce Calculations", async () => {
 				ref({}),
 				ref(fakePlan),
 				ref(),
-				ref({})
+				resultOf(fakePlan)
 			);
 
 			handleAddBuildingRecipes(0, [
@@ -863,15 +944,14 @@ describe("Planning: Workforce Calculations", async () => {
 				ref(fakePlanResult)
 			);
 
-			expect(() =>
-				handleChangeBuildingRecipe(0, 0, "moo")
-			).toThrowError();
+			expect(() => handleChangeBuildingRecipe(0, 0, "moo")).not.toThrow();
 		});
 
 		it("Change, wrong recipe Index", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [],
 					},
 				],
@@ -879,7 +959,7 @@ describe("Planning: Workforce Calculations", async () => {
 
 			const fakePlanResult = {
 				production: {
-					buildings: [],
+					buildings: [{ name: "FRM", recipeOptions: [] }],
 				},
 			};
 
@@ -900,6 +980,7 @@ describe("Planning: Workforce Calculations", async () => {
 			const fakePlan = {
 				buildings: [
 					{
+						name: "FRM",
 						active_recipes: [
 							{
 								recipeid: "foo",
@@ -913,6 +994,7 @@ describe("Planning: Workforce Calculations", async () => {
 				production: {
 					buildings: [
 						{
+							name: "FRM",
 							recipeOptions: [{ RecipeId: "13" }],
 						},
 					],

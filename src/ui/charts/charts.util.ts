@@ -44,6 +44,19 @@ export function topWithOther(
 }
 
 /**
+ * Height of a horizontal bar chart: no squashed bars, it grows with the
+ * bars topWithOther keeps. Shared by the chart and its loading placeholder.
+ * @author jplacht
+ *
+ * @param {number} count items before topWithOther
+ * @param {number} top items kept before "Other"
+ * @returns {string} CSS height
+ */
+export function barChartHeight(count: number, top: number): string {
+	return `${Math.min(count, top + 1) * 28 + 40}px`;
+}
+
+/**
  * chart.js tooltip style shared by every chart: dark surface, 12 px.
  * @author jplacht
  *

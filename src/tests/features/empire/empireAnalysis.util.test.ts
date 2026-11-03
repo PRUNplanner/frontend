@@ -7,9 +7,11 @@ import {
 	splitShares,
 	sumSplitParts,
 } from "@/features/empire/empireAnalysis.util";
+import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 
 // Types & Interfaces
 import type {
+	IEmpireCostOverview,
 	IEmpireMaterialIO,
 	IEmpirePlanListData,
 } from "@/features/empire/empire.types";
@@ -111,16 +113,41 @@ describe("splitShares", () => {
 
 describe("empireSplitParts", () => {
 	const plans = [plan("a", 200, 300, 100, 20), plan("b", -10, 60, 20, 10)];
+	// netted: 50 of the inputs were traded between the plans
+	const io = [
+		{ deltaPrice: 650 },
+		{ deltaPrice: -400 },
+		{ deltaPrice: -30 },
+	] as IEmpireMaterialIO[];
+	const { calculateEmpireCostOverview } = useMaterialIOUtil();
+	// cost the split doesn't account for
+	const unaccounted = (overview: IEmpireCostOverview) => {
+		const p = empireSplitParts(overview, io, plans);
+		return overview.totalCost - p.inputs - p.workforce - p.degradation;
+	};
+
+	it("covers the empire cost with known parts only", () => {
+		expect(unaccounted(calculateEmpireCostOverview(io, 0, 30))).toBeCloseTo(
+			0
+		);
+	});
+
+	it("catches a cost part it doesn't know", () => {
+		// e.g. production fees added to the plans' cost
+		const fees = 25;
+		expect(
+			unaccounted(calculateEmpireCostOverview(io, 0, 30 + fees))
+		).toBeCloseTo(fees);
+	});
 
 	it("matches the KPIs and adds up to 100 %", () => {
-		// netted: 50 of the inputs were traded between the plans
 		const overview = {
 			totalRevenue: 650,
 			totalCost: 460,
 			totalProfit: 190,
 			totalAreaUsed: 0,
 		};
-		const parts = empireSplitParts(overview, plans);
+		const parts = empireSplitParts(overview, io, plans);
 		expect(parts.degradation).toBeCloseTo(30);
 		expect(parts.inputs + parts.workforce).toBeCloseTo(430);
 		expect(parts.workforce / parts.inputs).toBeCloseTo(120 / 360);
@@ -135,7 +162,7 @@ describe("empireSplitParts", () => {
 			totalProfit: -360,
 			totalAreaUsed: 0,
 		};
-		const s = splitShares(empireSplitParts(overview, plans));
+		const s = splitShares(empireSplitParts(overview, io, plans));
 		expect(s.inputs + s.workforce + s.degradation).toBeCloseTo(100, 1);
 		expect(s.uncovered).toBeCloseTo((360 / 460) * 100);
 	});

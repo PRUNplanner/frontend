@@ -10,6 +10,7 @@ import {
 	sparklineLayout,
 	stripLayout,
 	tooltipRows,
+	barChartHeight,
 	topWithOther,
 	waterfallLayout,
 } from "@/ui/charts/charts.util";
@@ -613,5 +614,15 @@ describe("tooltipRows", () => {
 			{ key: "CI1", label: "CI1", color: "#2", value: 259.11 },
 			{ key: "AI1", label: "AI1", color: "#1", value: 245.67 },
 		]);
+	});
+});
+
+describe("barChartHeight", () => {
+	it("grows with the bars topWithOther keeps", () => {
+		expect(barChartHeight(0, 10)).toBe("40px");
+		expect(barChartHeight(3, 10)).toBe("124px");
+		expect(barChartHeight(11, 10)).toBe("348px");
+		// 10 kept + "Other"
+		expect(barChartHeight(50, 10)).toBe("348px");
 	});
 });
