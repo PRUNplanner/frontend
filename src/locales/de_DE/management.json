@@ -93,7 +93,8 @@
 		"menu": {
 			"clone": "Duplizieren",
 			"share": "Teilen…",
-			"delete": "Löschen"
+			"delete": "Löschen",
+			"clone_name": "{name} (Clone)"
 		}
 	},
 	"save_bar": {
