@@ -5,6 +5,8 @@ import axios, {
 } from "axios";
 
 import router from "@/router";
+import { i18n } from "@/lib/i18n";
+import { toast } from "@/ui/useToast";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -66,7 +68,11 @@ const discard = (config: InternalAxiosRequestConfig) =>
 function endSession(): void {
 	const userStore = useUserStore();
 	// several requests can fail on the same dead token, log out once
-	if (userStore.isLoggedIn) userStore.logout();
+	if (userStore.isLoggedIn) {
+		userStore.logout();
+		// a password change elsewhere or a revoked token: say why
+		toast(i18n.global.t("common.ui.session_ended"));
+	}
 	if (router.currentRoute.value.meta.requiresAuth) router.push("/");
 }
 

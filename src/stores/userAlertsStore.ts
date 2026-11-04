@@ -15,7 +15,7 @@ import type { DetectorConfig } from "@/features/market_live/cxDetectors.types";
 
 const STORE_KEY = "prunplanner_alerts";
 
-/** The alerts stored under a key, none if missing or corrupt (reported) */
+/** The alerts stored under a key, none if missing or corrupt (reported, kept under `<key>:corrupt`) */
 function readAlerts(key: string): DetectorConfig[] {
 	const raw = readStorage(key);
 	if (raw === null) return [];
@@ -27,6 +27,8 @@ function readAlerts(key: string): DetectorConfig[] {
 	}
 	// no Zod issues: they may echo the user's alert names
 	reportError(new Error("Stored alerts are invalid"), { key: STORE_KEY });
+	// kept aside: the empty list is written over the key next
+	persistStorage.setItem(`${key}:corrupt`, raw);
 	return [];
 }
 

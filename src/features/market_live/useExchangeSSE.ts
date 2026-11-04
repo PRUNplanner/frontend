@@ -23,6 +23,8 @@ import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
+// a refused stream (429 stream cap, 503) waits for its next try
+const isReconnecting = ref(false);
 // messages that failed on this connection: the first is reported
 let messageFailures = 0;
 
@@ -256,6 +258,7 @@ export function useExchangeSSE() {
 		if (eventSource || isConnected.value) return;
 		if (retryTimer !== null) clearTimeout(retryTimer);
 		retryTimer = null;
+		isReconnecting.value = false;
 
 		messageFailures = 0;
 		const source = new EventSource(urlCXSSE);
@@ -277,6 +280,7 @@ export function useExchangeSSE() {
 			// on an error answer (429 past the per-IP stream cap, 503)
 			if (source.readyState !== EventSource.CLOSED) return;
 			eventSource = null;
+			isReconnecting.value = true;
 			retryTimer = window.setTimeout(connect, retryDelay);
 			retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS);
 		};
@@ -321,6 +325,7 @@ export function useExchangeSSE() {
 		if (retryTimer !== null) clearTimeout(retryTimer);
 		retryTimer = null;
 		retryDelay = RETRY_MIN_MS;
+		isReconnecting.value = false;
 		if (frame !== null) clearTimeout(frame);
 		frame = null;
 		queue = [];
@@ -337,6 +342,7 @@ export function useExchangeSSE() {
 		detectorsActive,
 		isConnected,
 		connectionError,
+		isReconnecting,
 		isProcessing,
 		cxPointMap,
 		cxPointTableData,

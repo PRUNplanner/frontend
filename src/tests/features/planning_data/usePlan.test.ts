@@ -6,6 +6,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
+import * as analytics from "@/lib/analytics/useAnalytics";
 
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -180,6 +181,29 @@ describe("usePlan", async () => {
 				// @ts-expect-error mock data
 				saveExistingPlan(fakeUuid, {}, "v1")
 			).resolves.toStrictEqual({ error: "failed" });
+		});
+	});
+
+	describe("saveExistingPlan version cap", () => {
+		it("returns the backend's message, not reported", async () => {
+			const { saveExistingPlan } = usePlan();
+			const reportError = vi.spyOn(analytics, "reportError");
+			vi.mocked(callSavePlan).mockRejectedValueOnce(
+				Object.assign(new Error(), {
+					status: 400,
+					responseData: {
+						version_name: "At most 20 named versions.",
+					},
+				})
+			);
+			await expect(
+				// @ts-expect-error mock data
+				saveExistingPlan("p-1", {}, "v1", { version_name: "Late" })
+			).resolves.toStrictEqual({
+				error: "version_cap",
+				message: "At most 20 named versions.",
+			});
+			expect(reportError).not.toHaveBeenCalled();
 		});
 	});
 

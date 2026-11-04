@@ -107,6 +107,21 @@ describe("usePlanVersions", () => {
 		});
 	});
 
+	it("shows the version cap of a rename, not reported", async () => {
+		const versions = await setup();
+		m.query.mockRejectedValue(
+			Object.assign(new Error(), {
+				status: 400,
+				responseData: { name: ["At most 20 named versions."] },
+			})
+		);
+		await versions.rename("v-1", "Late");
+		expect(m.toast).toHaveBeenCalledWith("At most 20 named versions.", {
+			type: "error",
+		});
+		expect(m.reportError).not.toHaveBeenCalled();
+	});
+
 	it("deletes after confirming, a version already gone included", async () => {
 		const versions = await setup();
 		await versions.load();

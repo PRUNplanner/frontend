@@ -157,7 +157,8 @@ describe("ProfileEmail", () => {
 	it("asks for the password only when the email changes", async () => {
 		const { wrapper } = await mountEmail(profile());
 		expect(passwordInput(wrapper).exists()).toBe(false);
-		expect(saveButton(wrapper).props("disabled")).toBe(false);
+		// unchanged: nothing to save
+		expect(saveButton(wrapper).props("disabled")).toBe(true);
 
 		await input(wrapper).setValue("new@example.com");
 		expect(passwordInput(wrapper).attributes("autocomplete")).toBe(
@@ -242,15 +243,12 @@ describe("ProfileEmail", () => {
 		}
 	);
 
-	it("saves an unchanged email without a password", async () => {
-		mock.onPatch(PROFILE_URL).reply(200, profile());
+	it("sends nothing for an unchanged email", async () => {
 		const { wrapper } = await mountEmail(profile());
 
 		await save(wrapper);
 
-		expect(JSON.parse(mock.history.patch[0].data)).toEqual({
-			email: "test@example.com",
-		});
+		expect(mock.history.patch).toHaveLength(0);
 	});
 
 	it("shows any other email field error as the invalid text", async () => {
@@ -268,6 +266,25 @@ describe("ProfileEmail", () => {
 			"account.email_dialog.errors.invalid_email"
 		);
 		expect(wrapper.text()).not.toContain("Enter a valid email address.");
+	});
+
+	it("shows a password error of a hidden field as a failure", async () => {
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountEmail(profile());
+		await input(wrapper).setValue("new@example.com");
+		await passwordInput(wrapper).setValue("secret");
+		// the profile arrives with that address meanwhile: no password field
+		mock.onPatch(PROFILE_URL).reply(() => {
+			useUserStore().profile = profile({ email: "new@example.com" });
+			return [400, { current_password: ["password_required"] }];
+		});
+
+		await save(wrapper);
+
+		expect(passwordInput(wrapper).exists()).toBe(false);
+		expect(wrapper.find("[role=alert]").text()).toBe(
+			"profile.change_profile.fio_errors.unknown"
+		);
 	});
 
 	it("follows later changes of the stored email", async () => {

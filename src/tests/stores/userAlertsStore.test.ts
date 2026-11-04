@@ -160,6 +160,22 @@ describe("Alerts Store", () => {
 			expect(store.activeDraft).toBeNull();
 		});
 
+		it("keeps corrupt alerts aside before writing over them", async () => {
+			const corrupt = JSON.stringify({ userAlerts: [{ id: "x" }] });
+			localStorage.setItem(`${KEY}:5`, corrupt);
+			const store = useAlertsStore();
+
+			await loginAs(5);
+			expect(localStorage.getItem(`${KEY}:5:corrupt`)).toBe(corrupt);
+
+			// an edit and a user switch write the key, the backup stays
+			store.addAlert();
+			await loginAs(6);
+			await loginAs(5);
+			expect(store.userAlerts).toHaveLength(1);
+			expect(localStorage.getItem(`${KEY}:5:corrupt`)).toBe(corrupt);
+		});
+
 		it("reads invalid alerts as none and reports them, valid ones unchanged", async () => {
 			const valid = {
 				userAlerts: [

@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 
 // Composables
 import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
-import { isApiError } from "@/lib/apiError";
+import { apiFieldMessage, isApiError } from "@/lib/apiError";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
@@ -87,6 +87,12 @@ export function usePlanVersions(
 			if (renamed.name)
 				trackEvent("plan:version_name", { from: "history" });
 		} catch (err) {
+			// the plan has the most named versions: the backend says so
+			const capMessage = apiFieldMessage(err, "name");
+			if (capMessage) {
+				toast(capMessage, { type: "error" });
+				return;
+			}
 			reportError(err);
 			toast(t("common.ui.save_failed"), { type: "error" });
 		}

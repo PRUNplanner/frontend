@@ -49,6 +49,7 @@
 		eventLog,
 		detectorsActive,
 		isConnected,
+		isReconnecting,
 		isProcessing,
 	} = useExchangeSSE();
 
@@ -100,7 +101,9 @@
 							{{
 								isConnected
 									? t("market_live.status.connected")
-									: t("market_live.status.disconnected")
+									: isReconnecting
+										? t("market_live.status.reconnecting")
+										: t("market_live.status.disconnected")
 							}}
 						</span>
 					</div>

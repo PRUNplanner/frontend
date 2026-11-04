@@ -61,7 +61,8 @@ const empires = [
 		],
 	},
 ];
-const failIndex = { value: false };
+// the error the index load throws, none while false
+const failIndex: { value: false | Error } = { value: false };
 // holds the index back while set, resolve it to let the page finish loading
 const gate: { promise: Promise<void> | null } = { promise: null };
 const session = reactive({ loggedIn: true });
@@ -70,7 +71,7 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 		execute: async () => {
 			await gate.promise;
 			if (failIndex.value && name === "GetPlanetSearchIndex")
-				throw new Error("down");
+				throw failIndex.value;
 			// raw, like the query (GetPlanetSearchIndex is markRaw)
 			return name === "GetPlanetSearchIndex" ? fixture : empires;
 		},
@@ -312,11 +313,28 @@ describe("PlanetSearchPage", () => {
 
 	it("shows an error when the index can't load", async () => {
 		stubMedia(true);
-		failIndex.value = true;
+		failIndex.value = new Error("down");
 		const { wrapper } = await mountComponent(PlanetSearchPage);
 		await flushPromises();
 		failIndex.value = false;
 		expect(wrapper.text()).toContain("planet_search.load_error");
+	});
+
+	it("says how long to wait when throttled and retries", async () => {
+		stubMedia(true);
+		failIndex.value = Object.assign(new Error("throttled"), {
+			status: 429,
+			retryAfter: 30,
+		});
+		const { wrapper } = await mountComponent(PlanetSearchPage);
+		await flushPromises();
+		expect(wrapper.text()).toContain("planet_search.load_throttled");
+
+		failIndex.value = false;
+		await wrapper.find("[data-retry]").trigger("click");
+		await flushPromises();
+		expect(wrapper.text()).not.toContain("planet_search.load_throttled");
+		expect(wrapper.find("[data-retry]").exists()).toBe(false);
 	});
 
 	it("picks the empire holding all plan picks when a plan is in several", async () => {

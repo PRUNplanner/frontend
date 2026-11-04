@@ -35,6 +35,7 @@ import type {
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { setSyncedPreferences } from "@/features/preferences/preferenceSync";
 import { persistSerializer, persistStorage } from "@/lib/persistStorage";
+import type { Serializer } from "pinia-plugin-persistedstate";
 import { deepClone } from "@/util/data";
 import { isApiError } from "@/lib/apiError";
 import {
@@ -53,6 +54,21 @@ const loadUserApi = () =>
 		userApi = undefined;
 		throw error;
 	}));
+
+/**
+ * The persisted state: storage written before fioKeySet was persisted
+ * holds the key itself, so whether one is set comes from it before omit
+ * drops it
+ */
+const userSerializer: Serializer = {
+	...persistSerializer,
+	deserialize: (data) => {
+		const state = persistSerializer.deserialize(data);
+		if (state && !("fioKeySet" in state))
+			state.fioKeySet = !!state.profile?.fio_apikey;
+		return state;
+	},
+};
 
 const FIO_POLL_MS = 15_000;
 const FIO_POLL_TRIES = 20;
@@ -449,7 +465,7 @@ export const useUserStore = defineStore(
 	{
 		persist: {
 			storage: persistStorage,
-			serializer: persistSerializer,
+			serializer: userSerializer,
 			pick: [
 				"accessToken",
 				"refreshToken",

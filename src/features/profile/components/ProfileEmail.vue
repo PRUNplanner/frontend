@@ -58,8 +58,8 @@
 	);
 
 	async function patchEmail(): Promise<void> {
-		const changed = needsPassword.value;
-		if (isUpdating.value || (changed && !password.value)) return;
+		// unchanged: nothing to save
+		if (isUpdating.value || !needsPassword.value || !password.value) return;
 
 		// cleared before the request, so it is gone after a save or a failure
 		const currentPassword = password.value;
@@ -72,9 +72,9 @@
 		try {
 			await useQuery("PatchUserProfile", {
 				email: email.value,
-				...(changed ? { current_password: currentPassword! } : {}),
+				current_password: currentPassword,
 			}).execute();
-			codeSent.value = changed && !!email.value;
+			codeSent.value = !!email.value;
 		} catch (err) {
 			reportError(err);
 			const data = isApiError(err) ? err.responseData : undefined;
@@ -89,7 +89,9 @@
 			};
 			const field = first("email");
 			const passwordCode = first("current_password");
-			if (passwordCode !== undefined)
+			// the password field is hidden again (e.g. the profile arrived
+			// meanwhile): a password error there would show nowhere
+			if (passwordCode !== undefined && needsPassword.value)
 				passwordError.value = t(
 					passwordCode === "password_required"
 						? "account.email_dialog.errors.password_required"
@@ -180,7 +182,7 @@
 	<PButton
 		class="self-start"
 		:loading="isUpdating"
-		:disabled="isUpdating || (needsPassword && !password)"
+		:disabled="isUpdating || !needsPassword || !password"
 		:type="needsPassword ? 'primary' : 'secondary'"
 		@click="patchEmail">
 		{{ t("profile.buttons.save") }}

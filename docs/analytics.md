@@ -56,7 +56,7 @@ that interface differ. Property keys in `SENSITIVE_KEYS` (`usePostHog.ts`:
 | `account:email_verify` | `is_success`, `source` (`banner`, `profile`, `link`), `reason` on failure (`invalid`, `expired`, `no_code`, `throttled`, `error`) | a verification code was checked |
 | `account:email_nudge_shown` | `state` (`none`, `unconfirmed`) | Empire email banner shown, once per visit and state |
 | `account:email_nudge_action` | `action` (`add`, `enter_code`, `resend`, `later`, `never`, `undo`), `state` | a banner button |
-| `account:email_add` | `is_success`, `reason` on failure (`email_taken`, `invalid_email`, `throttled`, `unknown`) | the email dialog saved an address |
+| `account:email_add` | `is_success`, `reason` on failure (`invalid_email`, `password_required`, `password_invalid`, `throttled`, `unknown`) | the email dialog saved an address |
 | `account:email_verify_request` | | a new verification email requested |
 | `account:password_reset_request` | | |
 | `account:password_reset` | | |

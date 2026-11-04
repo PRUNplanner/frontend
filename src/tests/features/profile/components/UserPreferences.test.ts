@@ -215,13 +215,17 @@ describe("UserPreferences", () => {
 		});
 	});
 
-	it("replaces a default empire that no longer exists with the first one", async () => {
+	it("shows the first empire for a default that no longer exists, unsaved", async () => {
 		const userStore = seed();
 		userStore.preferences.defaultEmpireUuid =
 			"00000009-0000-4000-8000-000000000000";
-		await mountPreferences();
+		const { wrapper } = await mountPreferences();
 
-		expect(userStore.preferences.defaultEmpireUuid).toBe(FIRST_EMPIRE.uuid);
+		expect(selects(wrapper).at(3)!.props("value")).toBe(FIRST_EMPIRE.uuid);
+		// only picking one saves it
+		expect(userStore.preferences.defaultEmpireUuid).toBe(
+			"00000009-0000-4000-8000-000000000000"
+		);
 	});
 
 	it("keeps a default empire that still exists", async () => {
@@ -234,13 +238,16 @@ describe("UserPreferences", () => {
 		);
 	});
 
-	it("clears the default empire without any empires", async () => {
+	it("shows no empire without any empires, unsaved", async () => {
 		const userStore = seed({ empires: false });
 		userStore.preferences.defaultEmpireUuid = SECOND_EMPIRE.uuid;
 		const { wrapper } = await mountPreferences();
 
-		expect(userStore.preferences.defaultEmpireUuid).toBeUndefined();
+		expect(selects(wrapper).at(3)!.props("value")).toBeUndefined();
 		expect(selects(wrapper).at(3)!.props("options")).toEqual([]);
+		expect(userStore.preferences.defaultEmpireUuid).toBe(
+			SECOND_EMPIRE.uuid
+		);
 	});
 
 	it("keeps plan preferences of plans this tab doesn't know", async () => {
@@ -464,6 +471,28 @@ describe("UserPreferences", () => {
 		expect(userStore.preferences.planSuggestions).toBe(false);
 	});
 
+	it("sends no preferences on a load without a default empire", async () => {
+		const userStore = seed();
+		userStore.accessToken = "test-access-token";
+		userStore.refreshToken = "test-refresh-token";
+		mock.onPatch(PREFERENCES_URL).reply((config) => [200, config.data]);
+		vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+		vi.resetModules();
+		const { default: FreshPreferences } =
+			await import("@/features/profile/components/UserPreferences.vue");
+		const { startPreferenceSync } =
+			await import("@/features/preferences/usePreferences");
+		const stopSync = startPreferenceSync();
+		await mountComponent(FreshPreferences, {}, { pinia });
+		await flushPromises();
+
+		vi.advanceTimersByTime(10_000);
+		await flushPromises();
+		expect(mock.history.patch).toHaveLength(0);
+		expect(userStore.preferences.defaultEmpireUuid).toBeUndefined();
+		stopSync();
+	});
+
 	it("saves changes to the backend 5 seconds after the last one", async () => {
 		const userStore = seed();
 		userStore.accessToken = "test-access-token";
@@ -500,7 +529,6 @@ describe("UserPreferences", () => {
 		expect(JSON.parse(mock.history.patch.at(0)!.data)).toMatchObject({
 			burnDaysRed: 3,
 			burnDaysYellow: 8,
-			defaultEmpireUuid: FIRST_EMPIRE.uuid,
 		});
 		stopSync();
 	});

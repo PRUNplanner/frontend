@@ -31,3 +31,21 @@ export class ApiValidationError extends ApiError {
 export function isApiError(e: unknown): e is ApiError {
 	return e instanceof Error && "status" in e;
 }
+
+/**
+ * The first message of a field in a 400 answer: DRF field errors
+ * `{ field: [message] }`, or `{ field: message }` where a view raises
+ * its own dict (the named version cap)
+ *
+ * @param {unknown} e Error
+ * @param {string} field Field name
+ * @returns {string | undefined} Message, if the field has one
+ */
+export function apiFieldMessage(e: unknown, field: string): string | undefined {
+	if (!isApiError(e) || e.status !== 400) return undefined;
+	const messages = (e.responseData as Record<string, unknown> | undefined)?.[
+		field
+	];
+	const first: unknown = Array.isArray(messages) ? messages[0] : messages;
+	return typeof first === "string" ? first : undefined;
+}

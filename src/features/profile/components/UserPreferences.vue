@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
+	import { computed, ref, type ComputedRef, type Ref } from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -88,22 +88,13 @@
 		})
 	);
 
-	onMounted(() => {
-		// ensure defaultEmpire is still in the empire list
-		const validDefaultEmpire: boolean = empireOptions.value.find(
-			(e) => e.value === defaultEmpireUuid.value
-		)
-			? true
-			: false;
-		if (!validDefaultEmpire) {
-			// if there empires, use first
-			if (empireOptions.value.length > 0)
-				defaultEmpireUuid.value = empireOptions.value[0]
-					.value as string;
-			// or, reset to undefined
-			else defaultEmpireUuid.value = undefined;
-		}
-	});
+	// a default that is gone (or none) shows the first empire, which is what
+	// the app uses then; only picking one saves it
+	const shownEmpireUuid: ComputedRef<string | undefined> = computed(() =>
+		empireOptions.value.some((e) => e.value === defaultEmpireUuid.value)
+			? defaultEmpireUuid.value
+			: (empireOptions.value[0]?.value as string | undefined)
+	);
 
 	const groupHeading = "font-bold text-ink-strong pt-6 pb-2";
 	const note = "text-xs text-muted pt-1 pb-2";
@@ -156,7 +147,7 @@
 		</PFormSeparator>
 		<PFormItem :label="t('profile.preferences.form.default_empire')">
 			<PSelect
-				v-model:value="defaultEmpireUuid"
+				:value="shownEmpireUuid"
 				:options="empireOptions"
 				class="w-full"
 				@update:value="

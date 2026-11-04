@@ -137,11 +137,13 @@ describe("useExchangeSSE", () => {
 			// an error answer (429 past the per-IP cap) closes the source for good
 			source.readyState = FakeEventSource.CLOSED;
 			source.onerror?.(new Error("429"));
+			expect(sse.isReconnecting.value).toBe(true);
 			vi.advanceTimersByTime(4_999);
 			expect(FakeEventSource.last).toBe(source);
 			vi.advanceTimersByTime(1);
 			const second = FakeEventSource.last;
 			expect(second).not.toBe(source);
+			expect(sse.isReconnecting.value).toBe(false);
 
 			second.readyState = FakeEventSource.CLOSED;
 			second.onerror?.(new Error("429"));
@@ -169,6 +171,7 @@ describe("useExchangeSSE", () => {
 			vi.advanceTimersByTime(60_000);
 
 			expect(FakeEventSource.last).toBe(source);
+			expect(sse.isReconnecting.value).toBe(false);
 		});
 
 		it("closes the stream on disconnect", async () => {
