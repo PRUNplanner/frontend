@@ -23,6 +23,7 @@ import {
 	chainInput,
 	index,
 	NOW,
+	RAT,
 	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
 
@@ -430,5 +431,104 @@ describe("timing (AC 8)", () => {
 		const start = performance.now();
 		autoLayout(input, ctx, opts);
 		expect(performance.now() - start).toBeLessThan(300);
+	});
+});
+
+describe("auto layout limits", () => {
+	it("stops at 26 bases and puts the rest in the last one", () => {
+		const input = layoutBases(chainInput([["AIR", 40]]), ctx, nameOf);
+		expect(input.bases).toHaveLength(26);
+		const result = solveChain(input, ctx);
+		// every made step still has a base
+		for (const t of result.order)
+			if (result.rows[t].buildingTicker)
+				expect(result.rows[t].shares.length).toBeGreaterThan(0);
+	});
+
+	it("keeps extraction steps whole", () => {
+		const input = layoutBases(
+			chainInput([["AIR", 10]], { rawSource: "extract" }),
+			ctx,
+			nameOf
+		);
+		const result = solveChain(input, ctx);
+		const extracted = result.order.filter(
+			(t) => result.rows[t].source === "extract"
+		);
+		expect(extracted.length).toBeGreaterThan(0);
+		for (const t of extracted)
+			expect(Object.keys(input.baseOf[t] ?? { A: 1 })).toHaveLength(1);
+	});
+
+	it("keeps a base's planet and places the others elsewhere", () => {
+		const { input } = laid("AIR", 3);
+		const kept = input.bases[0].planetId!;
+		const next = pickPlanets(
+			{
+				...input,
+				bases: input.bases.map((b, i) =>
+					i ? { ...b, planetId: null } : b
+				),
+			},
+			ctx,
+			input.bases.slice(1).map((b) => b.id),
+			{ jumps }
+		);
+		expect(next.bases[0].planetId).toBe(kept);
+		expect(next.bases.slice(1).map((b) => b.planetId)).not.toContain(kept);
+	});
+
+	it("leaves a base without a planet when none is free", () => {
+		const input = chainInput([["DW", 100]], {
+			source: { PG: "buy" },
+			bases: ["A", "B"].map((id) => ({
+				id,
+				name: id,
+				planetId: null,
+				cogc: "auto" as const,
+			})),
+			baseOf: { DW: { A: 3, B: 3 } },
+		});
+		const one = index.find((p) => p.planet_natural_id === "XH-668c")!;
+		const tiny: IChainContext = {
+			...ctx,
+			planets: new Map([[one.planet_natural_id, one]]),
+		};
+		const next = pickPlanets(input, tiny, ["A", "B"], { jumps });
+		const planets = next.bases.map((b) => b.planetId);
+		expect(planets.filter(Boolean)).toEqual([one.planet_natural_id]);
+	});
+
+	it("balances a one-expertise base of several steps", () => {
+		const input = chainInput(
+			[
+				["DW", 200],
+				["RAT", 200],
+			],
+			{
+				source: { PG: "buy", GRN: "buy", ALG: "buy", NUT: "buy" },
+				recipeId: { RAT },
+			}
+		);
+		const result = solveChain(input, ctx);
+		const next = separateBase(result, input, ctx, "A", opts)!;
+		expect(next.bases).toHaveLength(2);
+		const after = solveChain(next, ctx);
+		expect(used(after)).toHaveLength(2);
+	});
+
+	it("can't separate when every base letter is used", () => {
+		const input = chainInput([["DW", 300]], {
+			source: { PG: "buy" },
+			bases: [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((id) => ({
+				id,
+				name: id,
+				planetId: null,
+				cogc: "auto" as const,
+			})),
+		});
+		expect(
+			separateBase(solveChain(input, ctx), input, ctx, "A", opts)
+		).toBeNull();
 	});
 });

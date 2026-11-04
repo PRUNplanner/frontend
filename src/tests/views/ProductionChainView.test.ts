@@ -459,6 +459,97 @@ describe("ProductionChainView interactions", () => {
 			await settle();
 		}
 
+		it("moves pieces, merges, separates and fits, kept in the URL (AC 5, 6)", async () => {
+			nav.route.query = {
+				t: "DW:300",
+				src: "PG:buy",
+				bases: "A:::auto,B:::auto",
+				base: "DW:A3.B3",
+			};
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			const panel = wrapper.findComponent({ name: "ChainPanel" });
+			const bases = () => wrapper.findComponent({ name: "ChainBases" });
+			const lastToast = () => toasts.value.at(-1)?.text;
+
+			// one piece of a split step moves; a whole step moves whole
+			panel.vm.$emit("base", "DW", "A", "B");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:A");
+			panel.vm.$emit("base", "DW", "B", "A");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:B");
+
+			// merging into itself changes nothing; B into A leaves A
+			bases().vm.$emit("merge", "A", "A");
+			await flushPromises();
+			expect(lastQuery().bases).toContain("B:");
+			bases().vm.$emit("merge", "B", "A");
+			await flushPromises();
+			expect(lastQuery().bases).toBe("A:::auto");
+			expect(lastToast()).toBe("production_chains.bases.merge_done");
+
+			// one expertise: halved into a new base with a planet
+			bases().vm.$emit("separate", "A");
+			await flushPromises();
+			expect(lastQuery().bases.split(",")).toHaveLength(2);
+			expect(lastQuery().base).toMatch(/^DW:A\d+\.B\d+$/);
+			expect(lastToast()).toBe("production_chains.bases.separate_done");
+
+			// fit: a second click while one runs is ignored
+			const targets = wrapper.findComponent({ name: "ChainTargets" });
+			targets.vm.$emit("fit", 1);
+			targets.vm.$emit("fit", 1);
+			await flushPromises();
+			expect(lastToast()).toBe("production_chains.targets.fit_done");
+			expect(lastQuery().t).not.toBe("DW:300");
+			targets.vm.$emit("fit", 0);
+			await flushPromises();
+			expect(lastToast()).toBe("production_chains.targets.fit_none");
+
+			expect(actions()).toEqual(
+				expect.arrayContaining([
+					"base_move",
+					"merge_bases",
+					"separate_base",
+					"fit_bases",
+				])
+			);
+		});
+
+		it("moves one of three pieces and can't separate a single building", async () => {
+			nav.route.query = {
+				t: "DW:300",
+				src: "PG:buy",
+				bases: "A:::auto,B:::auto,C:::auto",
+				base: "DW:A2.B2.C2",
+			};
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			wrapper
+				.findComponent({ name: "ChainPanel" })
+				.vm.$emit("base", "DW", "A", "B");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:A4.C2");
+
+			nav.route.query = { t: "DW:5", src: "PG:buy" };
+			const small = await mountComponent(ProductionChainView);
+			await openBases(small.wrapper);
+			small.wrapper
+				.findComponent({ name: "ChainBases" })
+				.vm.$emit("separate", "A");
+			await flushPromises();
+			expect(toasts.value.at(-1)?.text).toBe(
+				"production_chains.bases.separate_none"
+			);
+		});
+
 		it("lays out, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
 			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
 			execute.mockImplementation((name: string) =>
