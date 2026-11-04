@@ -157,5 +157,6 @@
 		"text": "Un empire regroupe tes plans de base et contient ta faction et tes permis.",
 		"create": "Créer un empire",
 		"manage": "Gérer les empires"
-	}
+	},
+	"unknown_empire": "Unknown"
 }
