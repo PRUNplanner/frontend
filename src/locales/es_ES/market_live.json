@@ -4,7 +4,8 @@
 	"connection_lost": "Conexión perdida. Reconectando...",
 	"status": {
 		"connected": "Conectado",
-		"disconnected": "Desconectado"
+		"disconnected": "Desconectado",
+		"reconnecting": "Reconnecting"
 	},
 	"severity_type": {
 		"LOW": "BAJA",
