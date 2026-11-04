@@ -157,5 +157,6 @@
 		"text": "Un imperio agrupa tus planes de base y guarda tu facción y tus permisos.",
 		"create": "Crear imperio",
 		"manage": "Gestionar imperios"
-	}
+	},
+	"unknown_empire": "Unknown"
 }
