@@ -11,7 +11,10 @@ vi.mock("@/features/market_live/cxDetectors", () => ({
 
 /** Minimal EventSource the composable can drive */
 class FakeEventSource {
+	static readonly CONNECTING = 0;
+	static readonly CLOSED = 2;
 	static last: FakeEventSource;
+	readyState = FakeEventSource.CONNECTING;
 	onopen?: () => void;
 	onerror?: (err: unknown) => void;
 	onmessage?: (event: { data: string }) => void;
@@ -116,6 +119,56 @@ describe("useExchangeSSE", () => {
 			expect(sse.connectionError.value).toBe(
 				"Connection lost. Reconnecting..."
 			);
+		});
+
+		it("leaves a dropped stream to the browser's own reconnect", async () => {
+			const { source } = await setup();
+			source.onopen?.();
+
+			source.onerror?.(new Error("dropped"));
+			vi.advanceTimersByTime(60_000);
+
+			expect(FakeEventSource.last).toBe(source);
+		});
+
+		it("reopens a stream the browser gave up on, with a growing delay", async () => {
+			const { sse, source } = await setup();
+
+			// an error answer (429 past the per-IP cap) closes the source for good
+			source.readyState = FakeEventSource.CLOSED;
+			source.onerror?.(new Error("429"));
+			vi.advanceTimersByTime(4_999);
+			expect(FakeEventSource.last).toBe(source);
+			vi.advanceTimersByTime(1);
+			const second = FakeEventSource.last;
+			expect(second).not.toBe(source);
+
+			second.readyState = FakeEventSource.CLOSED;
+			second.onerror?.(new Error("429"));
+			vi.advanceTimersByTime(5_000);
+			expect(FakeEventSource.last).toBe(second);
+			vi.advanceTimersByTime(5_000);
+			const third = FakeEventSource.last;
+			expect(third).not.toBe(second);
+
+			// an open stream starts the delay over
+			third.onopen?.();
+			expect(sse.isConnected.value).toBe(true);
+			third.readyState = FakeEventSource.CLOSED;
+			third.onerror?.(new Error("503"));
+			vi.advanceTimersByTime(5_000);
+			expect(FakeEventSource.last).not.toBe(third);
+		});
+
+		it("doesn't reopen after a disconnect", async () => {
+			const { sse, source } = await setup();
+			source.readyState = FakeEventSource.CLOSED;
+			source.onerror?.(new Error("429"));
+
+			sse.disconnect();
+			vi.advanceTimersByTime(60_000);
+
+			expect(FakeEventSource.last).toBe(source);
 		});
 
 		it("closes the stream on disconnect", async () => {
