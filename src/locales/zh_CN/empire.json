@@ -157,5 +157,6 @@
 		"text": "帝国将你的基地规划分组并储存你的派系和许可数。",
 		"create": "创建帝国",
 		"manage": "管理帝国"
-	}
+	},
+	"unknown_empire": "Unknown"
 }
