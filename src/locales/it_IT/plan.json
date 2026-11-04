@@ -640,7 +640,8 @@
 				"plan_name": "Nome",
 				"plan_name_placeholder": "Nuovo nome del @:terms.plan",
 				"empire": "@:terms.empire"
-			}
+			},
+			"copy_name": "{name} (Copy)"
 		},
 		"production": {
 			"form": {
