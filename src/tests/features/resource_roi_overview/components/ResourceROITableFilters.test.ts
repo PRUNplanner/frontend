@@ -4,6 +4,7 @@ import ResourceROITableFilters from "@/features/resource_roi_overview/components
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
+import resourceROI from "@/locales/en_US/resource_roi.json";
 
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",
@@ -55,6 +56,34 @@ describe("ResourceROITableFilters", () => {
 		expect(
 			mounted.wrapper.findComponent(MaterialTile).props("ticker")
 		).toBe("H2O");
+	});
+
+	it.each([
+		["en_US", resourceROI.filters],
+		[
+			"de_DE",
+			{
+				title: "Filter",
+				planet: "Planet",
+				building: "Gebäude",
+				positive_roi: "Positiver ROI",
+				searched_material: "Gesuchtes Material",
+			},
+		],
+	])("labels the filters in %s", async (locale, filters) => {
+		const { wrapper } = await mountComponent(
+			ResourceROITableFilters,
+			{
+				searchedMaterial: "H2O",
+				filterPositiveROI: false,
+				planetOptions: PLANETS,
+				buildingOptions: BUILDINGS,
+			},
+			{ locale, messages: { resource_roi: { filters } } }
+		);
+
+		for (const label of Object.values(filters))
+			expect(wrapper.text()).toContain(label);
 	});
 
 	it("emits each filter change", async () => {

@@ -4,7 +4,7 @@ import { type Ref, ref } from "vue";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { useBuildingData } from "@/database/services/useBuildingData";
-import { TOTALMSDAY } from "@/features/planning/calculations/buildingCalculations";
+import { TOTALMSDAY } from "@/features/planning/engine/materialIO";
 
 // Util
 import { deepClone } from "@/util/data";

@@ -9,6 +9,7 @@ import {
 	materialIOCsv,
 	materialIOTotals,
 } from "@/features/planning/planView.util";
+import { downloadFile } from "@/util/download";
 
 // Types & Interfaces
 import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
@@ -64,14 +65,11 @@ export function usePlanIO(
 	];
 
 	function downloadMaterialIO(): void {
-		const blob = new Blob([materialIOCsv(ioRows.value)], {
-			type: "text/csv",
-		});
-		const link = document.createElement("a");
-		link.href = URL.createObjectURL(blob);
-		link.download = `${fileName()}-material-io.csv`;
-		link.click();
-		URL.revokeObjectURL(link.href);
+		downloadFile(
+			`${fileName()}-material-io.csv`,
+			materialIOCsv(ioRows.value),
+			"text/csv"
+		);
 	}
 
 	return {

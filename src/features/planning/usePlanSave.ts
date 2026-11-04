@@ -344,7 +344,9 @@ export function usePlanSave(
 
 	function openSaveAsModal(): void {
 		// Pre-fill with current plan name + " (Copy)"
-		refSaveAsName.value = planName.value ? `${planName.value} (Copy)` : "";
+		refSaveAsName.value = planName.value
+			? t("plan.components.save_as.copy_name", { name: planName.value })
+			: "";
 		// Pre-fill with current empire
 		refSaveAsEmpireUuid.value = empire.uuid.value;
 		refShowSaveAsModal.value = true;

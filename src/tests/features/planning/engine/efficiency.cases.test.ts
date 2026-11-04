@@ -1,7 +1,12 @@
 import { describe, expect, test, it } from "vitest";
 
 // Types & Interfaces
-import { useBonusCalculation } from "@/features/planning/calculations/bonusCalculations";
+import {
+	calculateBuildingEfficiency,
+	calculateBuildingFactionBonus,
+	calculateBuildingWorkforceEfficiency,
+	calculateExpertBonus,
+} from "@/features/planning/engine/efficiency";
 import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 const bonusCases = [
@@ -188,8 +193,6 @@ describe("Planning: Bonus Calculations ", async () => {
 		test.each(bonusCases)(
 			"Bonus: $amount => $expected",
 			async ({ amount, expected }) => {
-				const { calculateExpertBonus } = useBonusCalculation();
-
 				expect(calculateExpertBonus(amount)).toBe(expected);
 			}
 		);
@@ -199,9 +202,6 @@ describe("Planning: Bonus Calculations ", async () => {
 		test.each(workforceCases)(
 			"Efficiency: $expected",
 			async ({ building, workforce, expected }) => {
-				const { calculateBuildingWorkforceEfficiency } =
-					useBonusCalculation();
-
 				expect(
 					calculateBuildingWorkforceEfficiency(building, workforce)
 				).toBe(expected);
@@ -213,8 +213,6 @@ describe("Planning: Bonus Calculations ", async () => {
 		test.each(factionBonusCases)(
 			"Faction Bonus: $description => $expected",
 			async ({ building, empire, expected }) => {
-				const { calculateBuildingFactionBonus } = useBonusCalculation();
-
 				if (typeof expected === "object") {
 					expect(
 						// @ts-expect-error test data mocking
@@ -232,8 +230,6 @@ describe("Planning: Bonus Calculations ", async () => {
 
 	describe("calculateBuildingEfficiency", async () => {
 		it("Calculate all Efficiency factors and total, advertising COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
-
 			const testBuilding = {
 				building_ticker: "FRM",
 				pioneers: 20,
@@ -344,8 +340,6 @@ describe("Planning: Bonus Calculations ", async () => {
 			});
 		});
 		it("Calculate all Efficiency factors and total, workforce COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
-
 			const testBuilding = {
 				building_ticker: "FRM",
 				pioneers: 20,
@@ -456,8 +450,6 @@ describe("Planning: Bonus Calculations ", async () => {
 			});
 		});
 		it("Calculate all Efficiency factors and total, workforce COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
-
 			const testBuilding = {
 				building_ticker: "FRM",
 				pioneers: 20,

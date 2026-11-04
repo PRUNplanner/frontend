@@ -1,5 +1,6 @@
 // Util
 import { formatNumber, formatPercent } from "@/util/numbers";
+import { toCsv } from "@/util/download";
 
 // Types & Interfaces
 import type { Material, Recipe } from "@/features/api/schemas/gameData.schemas";
@@ -147,11 +148,6 @@ export function buyList(
 	};
 }
 
-const csvCell = (v: string | number) => {
-	const s = String(v);
-	return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
-
 /**
  * The steps as CSV, one row per material in chain order
  * @author jplacht
@@ -168,26 +164,22 @@ export function chainCsv(
 	sourceLabel: (source: string) => string,
 	nothing: string
 ): string {
-	const lines = [header.map(csvCell).join(",")];
+	const lines: (string | number)[][] = [header];
 	for (let k = result.order.length - 1; k >= 0; k--) {
 		const row = result.rows[result.order[k]];
-		lines.push(
-			[
-				row.ticker,
-				row.perDay.toFixed(4),
-				sourceLabel(row.source),
-				row.recipe ? recipeLabel(row.recipe, nothing) : "",
-				row.buildingTicker ?? "",
-				row.buildings.toFixed(4),
-				row.unitCost.toFixed(2),
-				row.price.toFixed(2),
-				row.have.toFixed(4),
-			]
-				.map(csvCell)
-				.join(",")
-		);
+		lines.push([
+			row.ticker,
+			row.perDay.toFixed(4),
+			sourceLabel(row.source),
+			row.recipe ? recipeLabel(row.recipe, nothing) : "",
+			row.buildingTicker ?? "",
+			row.buildings.toFixed(4),
+			row.unitCost.toFixed(2),
+			row.price.toFixed(2),
+			row.have.toFixed(4),
+		]);
 	}
-	return lines.join("\n");
+	return toCsv(lines);
 }
 
 const WORKFORCE_PROGRAMS: PlanCOGCProgram[] = [

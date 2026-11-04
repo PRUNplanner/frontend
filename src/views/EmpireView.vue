@@ -235,7 +235,7 @@
 		if (selectedEmpire.value) {
 			return selectedEmpire.value.empire_name;
 		}
-		return "Unknown";
+		return t("empire.unknown_empire");
 	});
 
 	/**
@@ -289,7 +289,7 @@
 					return {
 						planetId: plan.planet_natural_id,
 						planUuid: planUuid,
-						planName: plan.plan_name ?? "Unknown Plan Name",
+						planName: plan.plan_name,
 						planCOGC: plan.plan_cogc,
 						materialIO: result.materialio,
 					};

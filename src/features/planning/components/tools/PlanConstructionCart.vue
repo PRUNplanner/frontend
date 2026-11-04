@@ -29,7 +29,7 @@
 	import { relativeFromDate } from "@/util/date";
 	import { useRunProgress } from "@/util/runProgress";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
-	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
+	import { workforceTypeNames } from "@/features/planning/engine/workforce";
 
 	// Types & Interfaces
 	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";

@@ -179,9 +179,8 @@ A CX preference (`CX.cx_data`) resolves first match wins:
 `BOTH` applies to buy and sell. An unresolvable price is 0; the book
 reports its first failure to `onError` (`reportError` in the app).
 
-`src/features/planning/calculations/` holds composable wrappers around
-engine functions, hab/storage lists, `calculateExtraction` and the `yalps`
-LP hab solver (`optimizeHabs`).
+`src/features/planning/calculations/` holds the hab/storage lists,
+`calculateExtraction` and the `yalps` LP hab solver (`optimizeHabs`).
 
 ## Tests and benchmarks
 

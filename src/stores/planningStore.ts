@@ -216,7 +216,7 @@ export const usePlanningStore = defineStore(
 			if (findPlan)
 				return {
 					planetId: findPlan.planet_natural_id,
-					planName: findPlan.plan_name ?? "Unnamed",
+					planName: findPlan.plan_name,
 				};
 
 			throw new Error(

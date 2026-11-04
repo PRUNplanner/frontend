@@ -70,6 +70,31 @@ describe("productionChain.util", () => {
 		expect(csv).toContain("buy");
 	});
 
+	it("keeps the CSV bytes, quoting cells with a comma or quote", () => {
+		expect(chainCsv(result, ["A,1", 'B"', "C"], (s) => s, "nothing"))
+			.toMatchInlineSnapshot(`
+			""A,1","B""",C
+			OVE,50.0000,make,50 PE + 1 RCO → 20 OVE,BMP,0.7500,74.93,122.04,0.0000
+			RCO,2.5000,make,2 H2O → 1 RCO,FRM,1.5000,667.57,1408.68,0.0000
+			PE,125.0000,make,1 C + 2 H → 200 PE,BMP,0.1750,5.45,11.08,0.0000
+			RAT,100.0000,make,1 GRN + 1 NUT + 1 MUS → 10 RAT,FP,2.5000,62.35,163.22,0.0000
+			MUS,10.0000,make,4 NS → 12 MUS,HYF,0.4167,168.90,293.63,0.0000
+			NS,3.3333,make,1 LST + 2 H2O + 2 N → 4 NS,CHP,0.1667,259.72,399.73,0.0000
+			N,1.6667,buy,,,0.0000,160.18,160.18,0.0000
+			LST,0.8333,buy,,,0.0000,150.85,150.85,0.0000
+			NUT,10.0000,make,1 H2O → 12 NUT,FRM,1.2500,123.37,366.84,0.0000
+			GRN,10.0000,make,1 H2O → 4 GRN,FRM,1.2500,131.22,408.23,0.0000
+			DW,100.0000,make,10 H2O + 1 PG → 10 DW,FP,2.0000,65.10,112.73,0.0000
+			PG,10.0000,make,1 C + 1 MG + 1 H → 50 PG,POL,0.0700,19.70,47.86,0.0000
+			H,1.4500,buy,,,0.0000,111.91,111.91,0.0000
+			MG,0.2000,make,1 MGS → 6 MG,BMP,0.0040,72.91,118.58,0.0000
+			MGS,0.0333,buy,,,0.0000,213.99,213.99,0.0000
+			C,0.8250,make,4 HCP → 4 C,INC,0.2062,344.23,971.11,0.0000
+			HCP,0.8250,make,2 H2O → 4 HCP,FRM,0.1031,143.00,408.13,0.0000
+			H2O,110.4125,buy,,,0.0000,47.13,47.13,0.0000"
+		`);
+	});
+
 	it("counts the Buy list and the CSV with own production (AC 2)", () => {
 		const had = solveChain(
 			chainInput(

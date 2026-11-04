@@ -22,6 +22,7 @@
 		"lint": "eslint . && prettier --check .",
 		"lint:fix": "eslint . --fix && prettier --write .",
 		"knip": "knip",
+		"knip:prod": "knip --production",
 		"refresh:systems": "node scripts/refresh-systems.mjs"
 	},
 	"dependencies": {

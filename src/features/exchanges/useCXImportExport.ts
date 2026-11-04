@@ -10,6 +10,8 @@ import {
 
 import Papa from "papaparse";
 
+import { toCsv } from "@/util/download";
+
 interface IExchangeCSVRow {
 	Location: string;
 	Type: string;
@@ -143,36 +145,30 @@ export function useCXImportExport() {
 		planetsCX: ICXPlanetMap[string][],
 		plantesTickerOptions: ICXPlanetMap[string][]
 	): string => {
-		let csvContent = "Location;Type;CX;Ticker;Price";
-
-		if (empireCX) {
-			for (const option of empireCX) {
-				csvContent = `${csvContent}\nEMPIRE;${option.type};${option.exchange};;`;
-			}
-		}
-
-		if (planetsCX) {
-			for (const planet of planetsCX) {
-				for (const option of planet.exchanges) {
-					csvContent = `${csvContent}\n${planet.planet};${option.type};${option.exchange};;`;
-				}
-			}
-		}
-
-		if (empireTickerOptions) {
-			for (const option of empireTickerOptions) {
-				csvContent = `${csvContent}\nEMPIRE;${option.type};;${option.ticker};${option.value}`;
-			}
-		}
-
-		if (plantesTickerOptions) {
-			for (const planet of plantesTickerOptions) {
-				for (const option of planet.ticker) {
-					csvContent = `${csvContent}\n${planet.planet};${option.type};;${option.ticker};${option.value}`;
-				}
-			}
-		}
-		return csvContent;
+		const rows: (string | number)[][] = [CSV_COLUMNS];
+		for (const option of empireCX ?? [])
+			rows.push(["EMPIRE", option.type, option.exchange, "", ""]);
+		for (const planet of planetsCX ?? [])
+			for (const option of planet.exchanges)
+				rows.push([
+					planet.planet,
+					option.type,
+					option.exchange,
+					"",
+					"",
+				]);
+		for (const option of empireTickerOptions ?? [])
+			rows.push(["EMPIRE", option.type, "", option.ticker, option.value]);
+		for (const planet of plantesTickerOptions ?? [])
+			for (const option of planet.ticker)
+				rows.push([
+					planet.planet,
+					option.type,
+					"",
+					option.ticker,
+					option.value,
+				]);
+		return toCsv(rows, ";");
 	};
 
 	return {

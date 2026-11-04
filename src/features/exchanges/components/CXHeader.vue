@@ -9,6 +9,9 @@
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 
+	// Util
+	import { downloadFile } from "@/util/download";
+
 	// Types & Interfaces
 	import type { CXData } from "@/features/api/schemas/cxData.schemas";
 
@@ -91,20 +94,11 @@
 			}))
 		);
 
-		const blob = new Blob([csvContent], {
-			type: "text/csv;charset=utf-8;",
-		});
-
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement("a");
-		link.href = url;
-		link.setAttribute("download", "PRUNPlannerExchangePreferences.csv");
-
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-
-		URL.revokeObjectURL(url);
+		downloadFile(
+			"PRUNPlannerExchangePreferences.csv",
+			csvContent,
+			"text/csv;charset=utf-8;"
+		);
 	}
 
 	const fileInput = useTemplateRef<HTMLInputElement>("file");

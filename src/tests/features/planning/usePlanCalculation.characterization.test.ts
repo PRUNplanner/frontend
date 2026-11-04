@@ -7,7 +7,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
-import { useBonusCalculation } from "@/features/planning/calculations/bonusCalculations";
+import { calculateBuildingEfficiency } from "@/features/planning/engine/efficiency";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -344,7 +344,7 @@ describe("usePlanCalculation characterization", () => {
 			workforce: IWorkforceRecord,
 			experts: IExpertRecord
 		) {
-			return useBonusCalculation().calculateBuildingEfficiency(
+			return calculateBuildingEfficiency(
 				{ ...fp, expertise: null } as unknown as Building,
 				// @ts-expect-error mock data
 				planet_etherwind,

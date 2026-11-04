@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:26-alpine AS build
+FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS build
 WORKDIR /app
 
 # Enable pnpm (the version in package.json); Node 25+ no longer bundles corepack
@@ -49,7 +49,7 @@ COPY . .
 RUN pnpm run build
 
 # --- PRODUCTION STAGE ---
-FROM devforth/spa-to-http:1.0.9 AS production
+FROM devforth/spa-to-http:1.0.9@sha256:dbbe7e2576d107628a99999fcfd4abd8785e7274f3ef5637a7d5179941043545 AS production
 COPY --from=build /app/dist/ .
 
 ARG BUILD_REVISION

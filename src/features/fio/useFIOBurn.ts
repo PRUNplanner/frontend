@@ -87,7 +87,7 @@ export function useFIOBurn(
 			const elementData: IFIOBurnTableElement = {
 				key: planUuid,
 				planUuid: planUuid,
-				planName: planData.plan_name ?? "Unnamed",
+				planName: planData.plan_name,
 				planetId: planData.planet_natural_id,
 				hasStorage,
 				burnMaterials: [] as IFIOBurnTableElementMaterial[],

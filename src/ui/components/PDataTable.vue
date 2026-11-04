@@ -763,9 +763,10 @@
 		@apply hover:bg-selected;
 	}
 
-	/* the whole cell is the button */
+	/* the whole cell is the button; on touch screens 44 px tall, as the hit
+	   area can't grow past the scroll box above or the first row below */
 	.p-data-table-sortable .p-data-table-title {
-		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] cursor-pointer;
+		@apply touch-target -mx-2.5 -my-1.25 px-2.5 py-1.25 w-[calc(100%+20px)] pointer-coarse:min-h-11 pointer-coarse:min-w-11 cursor-pointer;
 	}
 
 	.p-data-table-dense .p-data-table-sortable .p-data-table-title {

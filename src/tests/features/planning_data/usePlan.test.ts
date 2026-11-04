@@ -204,19 +204,5 @@ describe("usePlan", async () => {
 			expect(planetId).toBe("1");
 			expect(planName).toBe("2");
 		});
-
-		it("known plan returns planetId and default planName", async () => {
-			// @ts-expect-error mock data
-			planningStore.plans["foo"] = {
-				planet_natural_id: "1",
-			};
-
-			const { getPlanNamePlanet } = usePlan();
-
-			const { planetId, planName } = getPlanNamePlanet("foo");
-
-			expect(planetId).toBe("1");
-			expect(planName).toBe("Unnamed");
-		});
 	});
 });
