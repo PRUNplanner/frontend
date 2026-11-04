@@ -257,6 +257,7 @@
 	const {
 		refIsSaving,
 		refSaveFailed,
+		refFailedName,
 		canSave,
 		save,
 		refShowSaveAsModal,
@@ -452,6 +453,7 @@
 		saveable: saveable.value,
 		saving: refIsSaving.value,
 		failed: refSaveFailed.value,
+		failedName: refFailedName.value,
 		modified: modified.value,
 		canUndo: canUndo.value,
 		canRedo: canRedo.value,

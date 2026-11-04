@@ -148,8 +148,15 @@ describe("PlanSaveControl", () => {
 		await save.trigger("click");
 		expect(edited.component.emitted("save")).toEqual([[""]]);
 
-		const failed = await mountControl({ modified: true, failed: true });
+		const failed = await mountControl({
+			modified: true,
+			failed: true,
+			failedName: "Late stage",
+		});
 		expect(failed.wrapper.find("[data-save]").text()).toBe("Retry save");
+		// the retry sends the name of the failed save again
+		await failed.wrapper.find("[data-save]").trigger("click");
+		expect(failed.component.emitted("save")).toEqual([["Late stage"]]);
 		expect(
 			failed.wrapper
 				.findAllComponents(PButton)

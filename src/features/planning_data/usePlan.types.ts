@@ -21,9 +21,12 @@ export interface IPlanSaved {
 export interface IPlanSaveFailed {
 	/**
 	 * conflict: saved elsewhere meanwhile, deleted: gone (404),
-	 * restored_from: the restored version is gone (400)
+	 * restored_from: the restored version is gone (400), version_cap: the
+	 * plan has the most named versions (400)
 	 */
-	error: "conflict" | "deleted" | "restored_from" | "failed";
+	error: "conflict" | "deleted" | "restored_from" | "version_cap" | "failed";
+	/** the backend's message, for version_cap */
+	message?: string;
 }
 
 /** what a save sends about the version it creates */

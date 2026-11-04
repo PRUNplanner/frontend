@@ -131,6 +131,10 @@ export function usePlanSave(
 
 	const refIsSaving: Ref<boolean> = ref(false);
 	const refSaveFailed: Ref<boolean> = ref(false);
+	// the version name of the failed save, so a retry sends it again
+	const refFailedName: Ref<string> = ref("");
+	// the page is gone: an answer arriving later shows nothing
+	let unmounted: boolean = false;
 
 	// Keyboard and button: saving needs an own, changed, idle plan
 	const canSave: ComputedRef<boolean> = computed(
@@ -169,10 +173,17 @@ export function usePlanSave(
 		conflict,
 	});
 
-	function saveFailed(): void {
-		// keep modified state, the status offers a retry
+	/**
+	 * Keeps the modified state, the status offers a retry
+	 *
+	 * @param {string} [message] The backend's reason (e.g. the version cap),
+	 * else the generic message
+	 */
+	function saveFailed(message?: string): void {
 		refSaveFailed.value = true;
-		toast(t("plan.save_status.failed_message"), { type: "error" });
+		toast(message ?? t("plan.save_status.failed_message"), {
+			type: "error",
+		});
 	}
 
 	/**
@@ -203,6 +214,7 @@ export function usePlanSave(
 			// plan exists, trigger a save
 			if (existing.value) {
 				const versionName: string = name.trim();
+				refFailedName.value = versionName;
 				const restoredFrom = preview.refRestoredFrom.value;
 				// after the draft writes queued before it
 				const saved = await draft.withSave(async (seen) => {
@@ -231,6 +243,8 @@ export function usePlanSave(
 				});
 				if ("error" in saved) {
 					const kind = saved.error;
+					if (kind === "version_cap")
+						return saveFailed(saved.message);
 					if (kind === "failed" || kind === "restored_from")
 						return saveFailed();
 					// after the save settled, the dialog waits on the user
@@ -240,6 +254,7 @@ export function usePlanSave(
 
 				refBaseModifiedAt.value = saved.modifiedAt;
 				markSaved(sent);
+				refFailedName.value = "";
 				draftToast?.destroy();
 				preview.clearRestore();
 				trackEvent("plan:save", {
@@ -692,7 +707,8 @@ export function usePlanSave(
 		if (!refPlanData.value.uuid || !draftPossible.value) return;
 
 		const offered: PlanDraft | null = await draft.load(refreshSavedPlan);
-		if (!offered) return;
+		// left the plan meanwhile: the offer belongs to it
+		if (!offered || unmounted) return;
 
 		draftToast = toast(
 			t("plan.versions.draft_found", {
@@ -727,6 +743,7 @@ export function usePlanSave(
 	onMounted(() => void resumeDraft());
 
 	onUnmounted(() => {
+		unmounted = true;
 		flushPlanEdits();
 		// toasts belong to the app, don't let one outlive its plan
 		remoteToast?.destroy();
@@ -736,6 +753,7 @@ export function usePlanSave(
 	return {
 		refIsSaving,
 		refSaveFailed,
+		refFailedName,
 		canSave,
 		save,
 		refShowSaveAsModal,

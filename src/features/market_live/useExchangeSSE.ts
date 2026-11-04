@@ -23,6 +23,10 @@ import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
+// a closed stream (429 stream cap, 503) waits for its next try
+const isReconnecting = ref(false);
+const RECONNECT_MIN_MS = 5_000;
+const RECONNECT_MAX_MS = 60_000;
 // messages that failed on this connection: the first is reported
 let messageFailures = 0;
 
@@ -43,6 +47,8 @@ export function useExchangeSSE() {
 	const { userAlerts } = storeToRefs(alertsStore);
 
 	let eventSource: EventSource | null = null;
+	let reconnectTimer: number | null = null;
+	let reconnectDelay: number = RECONNECT_MIN_MS;
 
 	// messages of one frame (16 ms), processed together in arrival order so
 	// the table data recomputes once per frame instead of once per message.
@@ -256,6 +262,7 @@ export function useExchangeSSE() {
 		eventSource.onopen = () => {
 			isConnected.value = true;
 			connectionError.value = null;
+			reconnectDelay = RECONNECT_MIN_MS;
 		};
 
 		eventSource.onerror = () => {
@@ -263,6 +270,18 @@ export function useExchangeSSE() {
 				"market_live.connection_lost"
 			);
 			isConnected.value = false;
+			// a dropped stream retries by itself; after a non-200 answer the
+			// browser gives up for good, so try again with a new one
+			if (eventSource?.readyState !== EventSource.CLOSED) return;
+			eventSource.close();
+			eventSource = null;
+			isReconnecting.value = true;
+			reconnectTimer = window.setTimeout(() => {
+				reconnectTimer = null;
+				isReconnecting.value = false;
+				connect();
+			}, reconnectDelay);
+			reconnectDelay = Math.min(reconnectDelay * 2, RECONNECT_MAX_MS);
 		};
 
 		eventSource.onmessage = (event) => {
@@ -302,6 +321,10 @@ export function useExchangeSSE() {
 			eventSource.close();
 			eventSource = null;
 		}
+		if (reconnectTimer !== null) clearTimeout(reconnectTimer);
+		reconnectTimer = null;
+		reconnectDelay = RECONNECT_MIN_MS;
+		isReconnecting.value = false;
 		if (frame !== null) clearTimeout(frame);
 		frame = null;
 		queue = [];
@@ -318,6 +341,7 @@ export function useExchangeSSE() {
 		detectorsActive,
 		isConnected,
 		connectionError,
+		isReconnecting,
 		isProcessing,
 		cxPointMap,
 		cxPointTableData,

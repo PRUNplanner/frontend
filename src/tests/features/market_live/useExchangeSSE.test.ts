@@ -15,6 +15,8 @@ class FakeEventSource {
 	onopen?: () => void;
 	onerror?: (err: unknown) => void;
 	onmessage?: (event: { data: string }) => void;
+	static CLOSED = 2;
+	readyState = 0;
 	close = vi.fn();
 
 	constructor(public url: string) {
@@ -116,6 +118,62 @@ describe("useExchangeSSE", () => {
 			expect(sse.connectionError.value).toBe(
 				"Connection lost. Reconnecting..."
 			);
+		});
+
+		it("opens a new stream after a refused one, backing off", async () => {
+			const { sse, source } = await setup();
+			vi.spyOn(console, "error").mockImplementation(() => {});
+
+			// a 429 or 503 answer closes the stream for good
+			source.readyState = FakeEventSource.CLOSED;
+			source.onerror?.(new Error("429"));
+			expect(source.close).toHaveBeenCalledOnce();
+			expect(sse.isReconnecting.value).toBe(true);
+
+			vi.advanceTimersByTime(4_999);
+			expect(FakeEventSource.last).toBe(source);
+			vi.advanceTimersByTime(1);
+			const second = FakeEventSource.last;
+			expect(second).not.toBe(source);
+			expect(sse.isReconnecting.value).toBe(false);
+
+			// refused again: twice the wait
+			second.readyState = FakeEventSource.CLOSED;
+			second.onerror?.(new Error("429"));
+			vi.advanceTimersByTime(9_999);
+			expect(FakeEventSource.last).toBe(second);
+			vi.advanceTimersByTime(1);
+			const third = FakeEventSource.last;
+			expect(third).not.toBe(second);
+
+			// an open resets the wait
+			third.onopen?.();
+			third.readyState = FakeEventSource.CLOSED;
+			third.onerror?.(new Error("503"));
+			vi.advanceTimersByTime(5_000);
+			expect(FakeEventSource.last).not.toBe(third);
+		});
+
+		it("keeps a stream the browser retries itself", async () => {
+			const { source } = await setup();
+			vi.spyOn(console, "error").mockImplementation(() => {});
+			source.onerror?.(new Error("lost"));
+			vi.advanceTimersByTime(60_000);
+			expect(source.close).not.toHaveBeenCalled();
+			expect(FakeEventSource.last).toBe(source);
+		});
+
+		it("cancels a pending reconnect on disconnect", async () => {
+			const { sse, source } = await setup();
+			vi.spyOn(console, "error").mockImplementation(() => {});
+			source.readyState = FakeEventSource.CLOSED;
+			source.onerror?.(new Error("429"));
+
+			sse.disconnect();
+			vi.advanceTimersByTime(60_000);
+
+			expect(FakeEventSource.last).toBe(source);
+			expect(sse.isReconnecting.value).toBe(false);
 		});
 
 		it("closes the stream on disconnect", async () => {

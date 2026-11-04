@@ -936,6 +936,21 @@ describe("User Store: what is persisted", () => {
 		expect(userStore.profile?.fio_apikey).toBeUndefined();
 		expect(userStore.profile?.email).toBeUndefined();
 		expect(userStore.profile?.username).toBe("johndoe");
+		// it had a key: FIO shows before the profile GET answers
+		expect(userStore.fioKeySet).toBe(true);
+		expect(userStore.hasFIO).toBe(true);
+	});
+
+	it("a session stored before without a FIO key has none", () => {
+		localStorage.setItem(
+			"prunplanner_user",
+			JSON.stringify({
+				refreshToken: "r",
+				profile: { ...profile, fio_apikey: null },
+			})
+		);
+		persistedPinia();
+		expect(useUserStore().fioKeySet).toBe(false);
 	});
 
 	it("logout forgets that a key is set", () => {

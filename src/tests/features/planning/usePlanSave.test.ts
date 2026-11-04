@@ -302,6 +302,29 @@ describe("usePlanSave", () => {
 		);
 	});
 
+	it("shows the version cap and retries with the typed name", async () => {
+		const s = setup();
+		m.saveExistingPlan.mockResolvedValue({
+			error: "version_cap",
+			message: "At most 20 named versions.",
+		});
+		const { result: saving } = await mountSave(s);
+
+		await saving.save("button", " Late ");
+		expect(saving.refSaveFailed.value).toBe(true);
+		expect(saving.refFailedName.value).toBe("Late");
+		expect(s.calculation.markSaved).not.toHaveBeenCalled();
+		expect(m.toast).toHaveBeenCalledWith("At most 20 named versions.", {
+			type: "error",
+		});
+
+		// the retry sends the name again; a success forgets it
+		m.saveExistingPlan.mockResolvedValue({ modifiedAt: "t1" });
+		await saving.save("button", saving.refFailedName.value);
+		expect(m.saveExistingPlan.mock.calls[1][3].version_name).toBe("Late");
+		expect(saving.refFailedName.value).toBe("");
+	});
+
 	it("asks on a conflict and overwrites without a version", async () => {
 		const s = setup();
 		m.saveExistingPlan
@@ -490,6 +513,21 @@ describe("usePlanSave", () => {
 		const [text, options] = m.toast.mock.calls[0];
 		return { ...mounted, destroy, text, options };
 	}
+
+	it("offers no draft once the plan is gone", async () => {
+		const s = setup();
+		let answer: (draft: { updated_at: string }) => void = () => {};
+		(m.draft.load as ReturnType<typeof vi.fn>).mockImplementation(
+			() => new Promise((resolve) => (answer = resolve))
+		);
+		const { wrapper } = await mountSave(s);
+
+		wrapper.unmount();
+		answer({ updated_at: new Date().toISOString() });
+		await flushPromises();
+
+		expect(m.toast).not.toHaveBeenCalled();
+	});
 
 	it("offers the draft on open with a notice that restores it", async () => {
 		const s = setup();

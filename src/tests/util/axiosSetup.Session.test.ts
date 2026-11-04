@@ -11,6 +11,8 @@ vi.mock("@/router", () => ({
 	default: { push: vi.fn(), currentRoute: route },
 }));
 import router from "@/router";
+vi.mock("@/ui/useToast", () => ({ toast: vi.fn() }));
+import { toast } from "@/ui/useToast";
 
 const mock = new AxiosMockAdapter(axios);
 
@@ -50,6 +52,8 @@ describe("axiosSetup: responses of a previous session", () => {
 		await sent();
 
 		userStore.logout();
+		// a logout of the user's own says nothing
+		expect(toast).not.toHaveBeenCalled();
 		userStore.setToken("access-b", "refresh-b");
 		release();
 
@@ -224,6 +228,7 @@ describe("axiosSetup: a refresh without an answer", () => {
 	);
 
 	it("ends the session when the refresh is refused", async () => {
+		vi.mocked(toast).mockClear();
 		mock.onPost("/user/refresh/").replyOnce(401);
 
 		const error = await axios.get("/data").catch((e) => e);
@@ -231,6 +236,9 @@ describe("axiosSetup: a refresh without an answer", () => {
 		expect(error.response.status).toBe(401);
 		expect(userStore.isLoggedIn).toBe(false);
 		expect(router.push).toHaveBeenCalledWith("/");
+		expect(toast).toHaveBeenCalledExactlyOnceWith(
+			"Your session ended. Please log in again."
+		);
 	});
 });
 
@@ -278,6 +286,7 @@ describe("axiosSetup: parallel 401s", () => {
 	});
 
 	it("end the session once when the shared refresh fails", async () => {
+		vi.mocked(toast).mockClear();
 		mock.onPost("/user/refresh/").reply(401);
 		const logout = vi.spyOn(userStore, "logout");
 
@@ -291,6 +300,7 @@ describe("axiosSetup: parallel 401s", () => {
 		]);
 		expect(logout).toHaveBeenCalledTimes(1);
 		expect(router.push).toHaveBeenCalledTimes(1);
+		expect(toast).toHaveBeenCalledOnce();
 		expect(userStore.isLoggedIn).toBe(false);
 	});
 
