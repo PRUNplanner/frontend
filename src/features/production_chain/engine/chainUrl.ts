@@ -1,5 +1,6 @@
 // Engine
 import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
+import { MAX_AREAS } from "@/features/production_chain/engine/chainAutoLayout";
 import {
 	MAX_EXPERTS_PER_TYPE,
 	MAX_EXPERTS_TOTAL,
@@ -14,10 +15,12 @@ import {
 // Types & Interfaces
 import type {
 	ChainBaseCOGC,
+	ChainBaseShare,
 	ChainByproductMode,
 	ChainExperts,
 	ChainHave,
 	ChainLux,
+	ChainMaxArea,
 	ChainRawSource,
 	ChainSource,
 	IChainBase,
@@ -54,6 +57,27 @@ function pairs(v: IQueryValue): [string, string][] {
 			p.slice(p.indexOf(":") + 1),
 		])
 		.filter(([t, value]) => TICKER.test(t) && value !== "");
+}
+
+/** "A" for a whole step, "A3.B3" for a split one */
+function encodeShare(share: ChainBaseShare): string {
+	const entries = Object.entries(share);
+	return entries.length === 1
+		? entries[0][0]
+		: entries.map(([id, n]) => `${id}${n}`).join(".");
+}
+
+/** unknown bases and bad counts drop out; null when nothing is left */
+function decodeShare(v: string, bases: IChainBase[]): ChainBaseShare | null {
+	const known = (id: string) => bases.some((b) => b.id === id);
+	if (known(v)) return { [v]: 1 };
+	const share: ChainBaseShare = {};
+	for (const part of v.split(".")) {
+		const id = part.slice(0, 1);
+		const n = Number(part.slice(1));
+		if (known(id) && Number.isInteger(n) && n > 0) share[id] = n;
+	}
+	return Object.keys(share).length ? share : null;
 }
 
 /** the one base a chain starts with */
@@ -170,7 +194,12 @@ export function encodeChain(state: IChainState): Record<string, string> {
 	if (Object.keys(input.recipeId).length) query.r = join(input.recipeId);
 	if (Object.keys(input.planetId).length) query.planet = join(input.planetId);
 	query.bases = encodeBases(input.bases);
-	if (Object.keys(input.baseOf).length) query.base = join(input.baseOf);
+	if (Object.keys(input.baseOf).length)
+		query.base = Object.entries(input.baseOf)
+			.map(([t, s]) => `${t}:${encodeShare(s)}`)
+			.join(",");
+	if (input.maxArea && input.maxArea !== MAX_AREAS[0])
+		query.area = String(input.maxArea);
 	// two decimals are enough for amounts per day, rounded up so a link never
 	// leaves a sliver to make
 	const have = Object.fromEntries(
@@ -207,6 +236,7 @@ export function decodeChain(
 	const byp = first(query.byp) as ChainByproductMode;
 
 	const bases = decodeBases(query.bases);
+	const area = Number(first(query.area));
 	const have: Record<string, ChainHave> = {};
 	for (const [t, v] of pairs(query.have)) {
 		const n = Number(v);
@@ -231,10 +261,13 @@ export function decodeChain(
 			planetId: Object.fromEntries(pairs(query.planet)),
 			bases,
 			baseOf: Object.fromEntries(
-				pairs(query.base).filter(([, id]) =>
-					bases.some((b) => b.id === id)
-				)
+				pairs(query.base)
+					.map(([t, v]) => [t, decodeShare(v, bases)])
+					.filter(([, s]) => s !== null)
 			),
+			...(MAX_AREAS.includes(area as ChainMaxArea) && area !== 500
+				? { maxArea: area as ChainMaxArea }
+				: {}),
 			...(Object.keys(have).length ? { have } : {}),
 		},
 		cx: first(query.cx) || undefined,

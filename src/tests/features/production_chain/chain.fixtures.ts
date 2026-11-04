@@ -15,7 +15,6 @@ import {
 	groupRecipesByOutput,
 	solveChain,
 } from "@/features/production_chain/engine/chainSolver";
-import { splitByExpertise } from "@/features/production_chain/engine/chainBases";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { checkEmpire } from "@/features/production_chain/engine/chainCheck";
@@ -43,9 +42,11 @@ import type {
 	ICheckPlan,
 } from "@/features/production_chain/engine/chainCheck.types";
 import type {
+	ChainBaseShare,
 	ChainLux,
 	IChainContext,
 	IChainInput,
+	IChainResult,
 } from "@/features/production_chain/engine/chainSolver.types";
 
 // test data
@@ -114,6 +115,40 @@ export function chainInput(
 	};
 }
 
+/**
+ * The old "Split by expertise" for fixtures: groups of 1.5 or more
+ * buildings get a base, largest first, the rest join the first
+ */
+export function splitByExpertise(result: IChainResult, ctx: IChainContext) {
+	const groups = new Map<string, { exact: number; tickers: string[] }>();
+	const steps = result.order.filter((t) => result.rows[t].base);
+	for (const t of steps) {
+		const row = result.rows[t];
+		const e = ctx.buildings.get(row.buildingTicker!)?.expertise;
+		if (!e) continue;
+		const g = groups.get(e) ?? { exact: 0, tickers: [] };
+		g.exact += row.load;
+		g.tickers.push(t);
+		groups.set(e, g);
+	}
+	const kept = [...groups]
+		.sort((a, b) => b[1].exact - a[1].exact)
+		.filter(([, g]) => g.exact >= 1.5);
+	const idOf: Record<string, string> = Object.fromEntries(
+		steps.map((t) => [t, "A"])
+	);
+	kept.forEach(([, g], i) => {
+		for (const t of g.tickers) idOf[t] = String.fromCharCode(65 + i);
+	});
+	return {
+		expertise: kept.map(([e]) => e),
+		idOf,
+		baseOf: Object.fromEntries(
+			Object.entries(idOf).map(([t, id]) => [t, { [id]: 1 }])
+		) as Record<string, ChainBaseShare>,
+	};
+}
+
 /** runs Food Industries, not fertile */
 export const FOOD_PLANET = "XH-668c";
 /** runs Agriculture, fertility 0.4018, H2O */
@@ -132,10 +167,9 @@ export function splitInput(
 		["RAT", 100],
 		["OVE", 50],
 	];
-	const split = splitByExpertise(
+	const { baseOf } = splitByExpertise(
 		solveChain(chainInput(targets), ctx),
-		ctx,
-		100
+		ctx
 	);
 	return chainInput(targets, {
 		bases: [
@@ -152,7 +186,7 @@ export function splitInput(
 				cogc: "auto",
 			},
 		],
-		baseOf: split.baseOf,
+		baseOf,
 	});
 }
 

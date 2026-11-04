@@ -91,10 +91,12 @@ export function buyList(
 	// what each base's steps take of a bought material
 	const uses = new Map<string, Map<string, number>>();
 	for (const l of result.links) {
-		const base = result.rows[l.consumer]?.base;
-		if (result.rows[l.input]?.source !== "buy" || !base) continue;
+		const pieces = result.rows[l.consumer]?.shares ?? [];
+		if (result.rows[l.input]?.source !== "buy" || !pieces.length) continue;
 		const byBase = uses.get(l.input) ?? new Map<string, number>();
-		byBase.set(base, (byBase.get(base) ?? 0) + l.perDay);
+		// a split step's pieces each buy their share
+		for (const s of pieces)
+			byBase.set(s.base, (byBase.get(s.base) ?? 0) + l.perDay * s.share);
 		uses.set(l.input, byBase);
 	}
 

@@ -34,7 +34,9 @@ describe("ChainBases", () => {
 
 	it("forwards the toolbar and card actions", async () => {
 		const { wrapper, component } = await mountBases();
-		await wrapper.find("[data-testid='chain-split']").trigger("click");
+		await wrapper
+			.find("[data-testid='chain-auto-layout']")
+			.trigger("click");
 		await wrapper.find("[data-testid='chain-add-base']").trigger("click");
 		await wrapper
 			.find("[data-testid='chain-bases-create']")
@@ -45,7 +47,11 @@ describe("ChainBases", () => {
 		cards[1].vm.$emit("cogc", "none");
 		cards[0].vm.$emit("planet");
 		cards[0].vm.$emit("remove");
-		expect(component.emitted("split")).toHaveLength(1);
+		cards[0].vm.$emit("merge", "B");
+		cards[1].vm.$emit("separate");
+		expect(component.emitted("autoLayout")).toHaveLength(1);
+		expect(component.emitted("merge")).toEqual([["A", "B"]]);
+		expect(component.emitted("separate")).toEqual([["B"]]);
 		expect(component.emitted("add")).toHaveLength(1);
 		expect(component.emitted("create")).toHaveLength(1);
 		expect(component.emitted("rename")).toEqual([["B", "Kitchen"]]);

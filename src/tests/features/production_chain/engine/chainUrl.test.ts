@@ -29,7 +29,7 @@ describe("chain URL", () => {
 				},
 				{ id: "C", name: "", planetId: null, cogc: "AGRICULTURE" },
 			],
-			baseOf: { RAT: "A", VEG: "C" },
+			baseOf: { RAT: { A: 1 }, VEG: { C: 1 } },
 		},
 		cx: "abc-123",
 	};
@@ -116,10 +116,43 @@ describe("chain URL", () => {
 		expect(decoded.input.baseOf).toEqual({});
 	});
 
+	it("opens old one-base steps and split steps (AC 7)", () => {
+		const bases = "A:::auto,B:::auto";
+		const old = decodeChain({ t: "DW:10", bases, base: "DW:B,RAT:A" })!;
+		expect(old.input.baseOf).toEqual({ DW: { B: 1 }, RAT: { A: 1 } });
+		const split = decodeChain({
+			t: "DW:10",
+			bases,
+			base: "DW:A3.B3,RAT:A2.Z4,PG:Q1,OVE:Ax.B2",
+		})!;
+		// unknown bases and bad counts drop out
+		expect(split.input.baseOf).toEqual({
+			DW: { A: 3, B: 3 },
+			RAT: { A: 2 },
+			OVE: { B: 2 },
+		});
+		expect(encodeChain({ input: split.input, cx: undefined }).base).toBe(
+			"DW:A3.B3,RAT:A,OVE:B"
+		);
+	});
+
+	it("keeps a max base size other than 500", () => {
+		const s = {
+			...state,
+			input: { ...state.input, maxArea: 750 as const },
+		};
+		expect(encodeChain(s).area).toBe("750");
+		expect(decodeChain(encodeChain(s))).toEqual(s);
+		expect(encodeChain(state).area).toBeUndefined();
+		expect(
+			decodeChain({ t: "DW:10", area: "600" })!.input.maxArea
+		).toBeUndefined();
+	});
+
 	it("drops broken bases", () => {
 		const decoded = decodeChain({
 			t: "DW:10",
-			bases: "A:x::warp,A:dup::auto,Z:no::auto,B:%E0%A4%A::auto,C:ok:PG-899b:none",
+			bases: "A:x::warp,A:dup::auto,ZZ:no::auto,B:%E0%A4%A::auto,C:ok:PG-899b:none",
 		})!;
 		expect(decoded.input.bases).toEqual([
 			{ id: "A", name: "x", planetId: null, cogc: "auto" },

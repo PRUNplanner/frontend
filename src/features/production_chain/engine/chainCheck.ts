@@ -940,7 +940,9 @@ export function tryInPlanner(
 		const main = [...row.steps].sort(
 			(a, b) => b.outputs[row.ticker] - a.outputs[row.ticker]
 		)[0];
-		input.baseOf[row.ticker] = letters.get(main.base) ?? BASE_IDS[0];
+		input.baseOf[row.ticker] = {
+			[letters.get(main.base) ?? BASE_IDS[0]]: 1,
+		};
 		if (main.extraction) input.source[row.ticker] = "extract";
 		else {
 			input.source[row.ticker] = "make";
@@ -954,7 +956,7 @@ export function tryInPlanner(
 	else {
 		// fixes and setup have no step: a location
 		const o = (finding as ICheckLocationFinding).option;
-		input.baseOf[step.ticker] = o.own
+		const id = o.own
 			? fromPlan(o.own)
 			: addBase(
 					{
@@ -964,6 +966,7 @@ export function tryInPlanner(
 					},
 					o.planet.planet_natural_id
 				);
+		input.baseOf[step.ticker] = { [id]: 1 };
 	}
 	return input;
 }

@@ -459,33 +459,45 @@ describe("ProductionChainView interactions", () => {
 			await settle();
 		}
 
-		it("splits, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
+		it("lays out, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
 			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
 			const { wrapper } = await mountComponent(ProductionChainView);
 			await openBases(wrapper);
-			await wrapper.find("[data-testid='chain-split']").trigger("click");
+			await wrapper
+				.find("[data-testid='chain-auto-layout']")
+				.trigger("click");
 			await flushPromises();
-			expect(lastQuery().bases).toBe(
-				"A:game.expertise.AGRICULTURE::auto,B:game.expertise.FOOD_INDUSTRIES::auto"
+			const laid: string[] = lastQuery().bases.split(",");
+			expect(laid.length).toBeGreaterThan(1);
+			expect(lastQuery().bases).toContain(
+				"game.expertise.FOOD_INDUSTRIES"
 			);
-			expect(lastQuery().base).toContain("DW:B");
+			// every base got a planet
+			expect(
+				laid.every((b) => /^[A-Z]:[^:]*:[A-Z]{2}-\d{3}[a-z]:/.test(b))
+			).toBe(true);
+			expect(lastQuery().base).toMatch(/DW:[A-Z]/);
 
+			const next = String.fromCharCode(65 + laid.length);
 			wrapper
 				.findComponent({ name: "ChainPanel" })
 				.vm.$emit("base", "DW", "new");
 			await flushPromises();
-			expect(lastQuery().base).toContain("DW:C");
-			expect(lastQuery().bases).toContain("C:::auto");
+			expect(lastQuery().base).toContain(`DW:${next}`);
+			expect(lastQuery().bases).toContain(`${next}:::auto`);
 
 			wrapper
 				.findComponent({ name: "ChainBases" })
-				.vm.$emit("remove", "C");
+				.vm.$emit("remove", next);
 			await flushPromises();
-			expect(lastQuery().bases).not.toContain("C:");
+			expect(lastQuery().bases).not.toContain(`${next}:`);
 			// its steps go back to the first base
 			expect(lastQuery().base).not.toContain("DW:");
 			expect(actions()).toEqual([
-				"split",
+				"auto_layout",
 				"base_add",
 				"base_move",
 				"base_remove",
@@ -638,10 +650,10 @@ describe("ProductionChainView interactions", () => {
 			await flushPromises();
 			expect(lastQuery().bases).toBe("A::PG-899b:AGRICULTURE");
 
-			// eight bases at most; moving to a new one is then a no-op
-			for (let i = 0; i < 8; i++) bases().vm.$emit("add");
+			// 26 bases at most; moving to a new one is then a no-op
+			for (let i = 0; i < 26; i++) bases().vm.$emit("add");
 			await flushPromises();
-			expect(lastQuery().bases.split(",")).toHaveLength(8);
+			expect(lastQuery().bases.split(",")).toHaveLength(26);
 			const panel = wrapper.findComponent({ name: "ChainPanel" });
 			panel.vm.$emit("base", "DW", "new");
 			panel.vm.$emit("base", "RAT", "B");

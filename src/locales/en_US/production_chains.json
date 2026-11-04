@@ -17,7 +17,15 @@
 		"amount": "{ticker} per day",
 		"remove": "Remove {ticker}",
 		"add": "Add material",
-		"add_first": "Add a material, e.g. RAT"
+		"add_first": "Add a material, e.g. RAT",
+		"mode": "How much to produce",
+		"fit": "Fit into bases",
+		"fit_count": "Number of bases",
+		"fit_bases": "base | bases",
+		"fit_apply": "Fit",
+		"fit_hint": "Scales all targets to the largest rate that auto layout puts into this many bases.",
+		"fit_done": "Set the largest rate that fits into {n} base. | Set the largest rate that fits into {n} bases.",
+		"fit_none": "Even 0.01 per day needs more than {n} base. | Even 0.01 per day needs more than {n} bases."
 	},
 	"settings": {
 		"efficiency": "Efficiency",
@@ -27,7 +35,9 @@
 		"buy": "Buy",
 		"extract": "Extract",
 		"cover": "Cover demand",
-		"sell": "Sell"
+		"sell": "Sell",
+		"max_area": "Max base size",
+		"max_area_option": "{n} area"
 	},
 	"empty": {
 		"title": "What do you want to produce?",
@@ -148,7 +158,10 @@
 		"no_farming": "no farming",
 		"not_on_planet": "not on planet",
 		"group_have": "From your plans · {n}",
-		"have": "Have"
+		"have": "Have",
+		"piece_of": "Base of the {ticker} piece in base {id}",
+		"buy_hint": "Buy",
+		"buy_hint_title": "Under 0.2 building: a whole building costs more per unit than the CX price. Auto layout buys it."
 	},
 	"detail": {
 		"takes": "Takes",
@@ -282,10 +295,11 @@
 		"name": "Name of base {id}",
 		"remove": "Remove base {id}",
 		"remove_title": "Remove the base; its steps move to the first base",
-		"split": "Split by expertise",
-		"split_done": "Kept one base: no expertise needs 1.5 buildings. | Split into {n} bases by building expertise. Move single steps with the Base column.",
+		"auto_layout": "Auto layout",
+		"auto_layout_title": "Lays the chain out into bases of one expertise up to the max base size and picks a planet for each",
+		"auto_layout_done": "Laid out into {n} base. | Laid out into {n} bases. Merge, separate or move pieces to adjust.",
 		"add": "+ Add base",
-		"hint": "Move single steps with the Base column in Steps. A base runs on one planet.",
+		"hint": "Move steps or their pieces with the Base column in Steps. A base runs on one planet.",
 		"create": "Create {n} plan… | Create {n} plans…",
 		"rocky": "rocky",
 		"gaseous": "gaseous",
@@ -328,7 +342,15 @@
 		"experts_edit": "Edit",
 		"experts_of": "{type} experts",
 		"experts_limits": "At most 5 of one type and 6 per base.",
-		"experts_reset": "Auto"
+		"experts_reset": "Auto",
+		"mixed": "Mixed",
+		"merge": "Merge into…",
+		"merge_of": "Merge base {id} into another base",
+		"merge_done": "Merged base {from} into {into}.",
+		"separate": "Separate",
+		"separate_title": "Splits the base by expertise, or in half for one expertise, and picks planets for the new bases",
+		"separate_done": "Separated base {id}.",
+		"separate_none": "Base {id} has nothing to separate."
 	},
 	"shipping": {
 		"title": "Shipping per day",

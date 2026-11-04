@@ -61,7 +61,10 @@
 		created,
 		ready,
 		own = NO_OWN,
+		layingOut = false,
 	} = defineProps<{
+		/** auto layout or separate is picking planets */
+		layingOut?: boolean;
 		result: IChainResult;
 		bases: IChainBase[];
 		/** chain efficiency in % */
@@ -74,7 +77,9 @@
 	}>();
 
 	const emit = defineEmits<{
-		(e: "split"): void;
+		(e: "autoLayout"): void;
+		(e: "merge", from: string, into: string): void;
+		(e: "separate", id: string): void;
 		(e: "add"): void;
 		(e: "remove", id: string): void;
 		(e: "rename", id: string, name: string): void;
@@ -199,9 +204,11 @@
 			<PButton
 				size="sm"
 				type="secondary"
-				data-testid="chain-split"
-				@click="emit('split')">
-				{{ $t("production_chains.bases.split") }}
+				data-testid="chain-auto-layout"
+				:loading="layingOut"
+				:title="t('production_chains.bases.auto_layout_title')"
+				@click="emit('autoLayout')">
+				{{ $t("production_chains.bases.auto_layout") }}
 			</PButton>
 			<PButton
 				size="sm"
@@ -266,8 +273,11 @@
 				:efficiency="Math.max(efficiency, 1) / 100"
 				:removable="bases.length > 1"
 				:fits="fitsFor(b.id)"
+				:others="bases.filter((o) => o.id !== b.id)"
 				@rename="(name) => emit('rename', b.id, name)"
 				@remove="emit('remove', b.id)"
+				@merge="(into) => emit('merge', b.id, into)"
+				@separate="emit('separate', b.id)"
 				@cogc="(c) => emit('cogc', b.id, c)"
 				@lux="(l) => emit('lux', b.id, l)"
 				@experts="(x) => emit('experts', b.id, x)"

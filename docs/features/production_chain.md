@@ -12,7 +12,8 @@ which only gates the data and mounts `ChainPage` or the lazy `CheckPage`.
 | File | Role |
 | --- | --- |
 | `engine/chainSolver.ts` | `solveChain(input, ctx)`, the pure solver; `defaultRecipe`, `recipeEffects`, base setup (`bestExpertSplit`, `planetFactor`, `baseFootprint`) |
-| `engine/chainBases.ts` | `splitByExpertise`, `chainShipping`, `rankPlanets`, `planDrafts` (Create plans) |
+| `engine/chainBases.ts` | `chainShipping`, `rankPlanets`, `planDrafts` (Create plans) |
+| `engine/chainAutoLayout.ts` | `autoLayout` (`layoutBases` + `pickPlanets`), `mergeBases`, `separateBase`, `fitBases`, `buyHint` |
 | `engine/chainHave.ts` | Own production: `empireSurplus`, `haveSuppliers`, override rules |
 | `engine/chainCheck.ts` | `checkEmpire` (steps, chains, findings, verdicts), `tryInPlanner` |
 | `engine/chainExtraction.ts`, `chainLayout.ts`, `chainUrl.ts` | Extraction sites from the planet search index; graph layout; chain ⇄ URL |
@@ -46,7 +47,11 @@ thresholds) rather than copying their math.
   ones (`have=`) give way to it; the URL holds amounts, never the empire.
 - **Unit cost.** Inputs + upkeep (basic needs + the base's luxuries at CX) +
   wear (construction ÷ 180 per day); multi-output recipes split by CX value.
-- **Bases.** Up to 8 (A–H) via `baseOf`; bought rows have none; demand stays
+- **Bases.** Up to 26 (A–Z) via `baseOf` (base → built buildings; one
+  base = the whole step, URL `NA:A`; a split step `NA:A3.B3`, its load
+  shared by the counts). `row.base` is the largest piece, `row.shares` all
+  of them; a piece's buildings use its base's planet factor, its cost and
+  extraction site the largest piece's. Bought rows have none; demand stays
   one chain. Each base has luxuries (default both), experts (auto:
   `bestExpertSplit` over the top three expertises), COGC ("auto" = the
   planet's running program) and fertility, no HQ. FRM/ORC without fertility
@@ -56,8 +61,26 @@ thresholds) rather than copying their math.
   nothing fits is slow). Permits = ceil((area − 250) / 250), 1–3.
 - **Totals.** Profit = targets + sold byproducts − bought inputs − own
   production at CX BUY − upkeep − wear. Planet extras (MCG, AEF, …) ignored.
-- **Split by expertise.** Groups of ≥ 1.5 buildings get a base (max 4),
-  the rest join the first.
+- **Auto layout** (greedy, no optimiser). Solved in one plain base:
+  1. Steps under 0.2 building whose whole building costs more per unit
+     (`inputs + upkeepWear / buildings`) than the CX buy price are bought
+     (`buyHint`, also the table's Buy hint).
+  2. Expertise groups of ≥ 1.5 buildings, largest first, fill bases first
+     fit decreasing up to the max base size (`maxArea`: 500 default, 750,
+     1,000; `area=` in the URL), measured with `baseFootprint`; a step
+     that doesn't fit splits by whole buildings.
+  3. Smaller groups join the base they ship the most t/day with (links ×
+     weight) where they fit, else a new mixed base.
+  4. Experts stay auto. Planets (`pickPlanets`), largest base first: free
+     plot (unknown counts as free), no own plan on it, not picked yet;
+     then buildable (resources, fertility, area), then a running COGC
+     program the base benefits from, then mean jumps weighted by t/day to
+     placed bases plus mean jumps to the selected empire's planets.
+  Merge moves a base's counts into another (its planet stays); Separate
+  makes one base per further expertise, or halves a one-expertise base,
+  and picks planets for the new ones. Fit into N bases bisects one scale
+  on all targets (to 0.01/day on the largest) for the largest whose
+  layout uses ≤ N bases within the max size.
 - **Warnings.** Cheaper to buy; thin market (no trades in 30 days, or a
   large share of daily volume).
 

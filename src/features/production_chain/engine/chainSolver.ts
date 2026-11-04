@@ -64,6 +64,7 @@ import type {
 	IChainRecipeEffect,
 	IChainResult,
 	IChainRow,
+	IChainShare,
 	IChainTotals,
 } from "@/features/production_chain/engine/chainSolver.types";
 
@@ -860,10 +861,26 @@ export function solveChain(
 		return r;
 	};
 
-	const baseIdOf = (t: string): string =>
-		bases.some((b) => b.id === input.baseOf[t])
-			? input.baseOf[t]
-			: bases[0].id;
+	const shareCache = new Map<string, IChainShare[]>();
+	/** a step's pieces: its bases' counts as shares, the largest first */
+	const sharesOf = (t: string): IChainShare[] => {
+		let list = shareCache.get(t);
+		if (list) return list;
+		const entries = Object.entries(input.baseOf[t] ?? {}).filter(
+			([id, n]) => bases.some((b) => b.id === id) && n >= 0
+		);
+		const total = entries.reduce((s, [, n]) => s + n, 0);
+		list =
+			entries.length > 1 && total > 0
+				? entries
+						.filter(([, n]) => n > 0)
+						.map(([base, n]) => ({ base, share: n / total }))
+						.sort((a, b) => b.share - a.share)
+				: [{ base: entries[0]?.[0] ?? bases[0].id, share: 1 }];
+		shareCache.set(t, list);
+		return list;
+	};
+	const baseIdOf = (t: string): string => sharesOf(t)[0].base;
 	const planetOf = (id: string): PlanetSearchIndexEntry | null => {
 		const planetId = bases.find((b) => b.id === id)?.planetId;
 		return (planetId && ctx.planets?.get(planetId)) || null;
@@ -909,13 +926,12 @@ export function solveChain(
 	const setups = new Map<string, IChainSetup>();
 	// chain efficiency times the base's factor, per base and building
 	const factors = new Map<string, number>();
-	const effOf = (t: string): number => {
+	const effOf = (t: string, id: string = baseIdOf(t)): number => {
 		const ticker =
 			sourceOf(t) === "make"
 				? recipeOf(t).building_ticker
 				: siteOf(t)?.site.buildingTicker;
 		if (!ticker) return efficiency;
-		const id = baseIdOf(t);
 		const key = `${id}|${ticker}`;
 		let f = factors.get(key);
 		if (f === undefined) {
@@ -1071,7 +1087,8 @@ export function solveChain(
 		const value: Partial<Record<ExpertType, number>> = {};
 		const load: Partial<Record<ExpertType, number>> = {};
 		for (const t of order) {
-			if (baseIdOf(t) !== b.id) continue;
+			const piece = sharesOf(t).find((s) => s.base === b.id)?.share ?? 0;
+			if (piece <= 0) continue;
 			const source = sourceOf(t);
 			const ticker =
 				source === "make"
@@ -1084,8 +1101,9 @@ export function solveChain(
 			);
 			const p = pass.rows.get(t)!;
 			if (!type || p.load <= EPS) continue;
-			value[type] = (value[type] ?? 0) + p.perDay * sellPrice(ctx, t);
-			load[type] = (load[type] ?? 0) + p.load;
+			value[type] =
+				(value[type] ?? 0) + piece * p.perDay * sellPrice(ctx, t);
+			load[type] = (load[type] ?? 0) + piece * p.load;
 		}
 		const priced = Object.values(value).some((v) => v > EPS);
 		setups.set(b.id, {
@@ -1180,6 +1198,7 @@ export function solveChain(
 				: null,
 			buildingTicker,
 			base: noStep ? null : baseIdOf(t),
+			shares: noStep ? [] : sharesOf(t),
 			load: p.load,
 			efficiency: eff,
 			noFarming: !noStep && eff <= 0,
@@ -1223,19 +1242,26 @@ export function solveChain(
 	for (const t of order) {
 		const row = rows[t];
 		if (!row.buildingTicker || !row.base || row.buildings <= EPS) continue;
-		const key = `${row.base}|${row.buildingTicker}`;
-		const type = types.get(key) ?? {
-			ticker: row.buildingTicker,
-			base: row.base,
-			efficiency: row.efficiency,
-			exact: 0,
-			built: 0,
-			materials: [],
-			expertise: ctx.buildings.get(row.buildingTicker)?.expertise ?? null,
-		};
-		type.exact += row.buildings;
-		type.materials.push(t);
-		types.set(key, type);
+		// a split step's pieces run at their own base's efficiency
+		for (const piece of row.shares) {
+			const eff =
+				piece.base === row.base ? row.efficiency : effOf(t, piece.base);
+			if (eff <= 0) continue;
+			const key = `${piece.base}|${row.buildingTicker}`;
+			const type = types.get(key) ?? {
+				ticker: row.buildingTicker,
+				base: piece.base,
+				efficiency: eff,
+				exact: 0,
+				built: 0,
+				materials: [],
+				expertise:
+					ctx.buildings.get(row.buildingTicker)?.expertise ?? null,
+			};
+			type.exact += (row.load * piece.share) / eff;
+			type.materials.push(t);
+			types.set(key, type);
+		}
 	}
 	const buildingTypes = [...types.values()];
 	for (const type of buildingTypes)
@@ -1249,7 +1275,9 @@ export function solveChain(
 
 	const baseResults: IChainBaseResult[] = bases.map((b) => {
 		const own = buildingTypes.filter((type) => type.base === b.id);
-		const materials = order.filter((t) => rows[t].base === b.id);
+		const materials = order.filter((t) =>
+			rows[t].shares.some((s) => s.base === b.id)
+		);
 		return {
 			// a base without steps builds nothing, not even its STO
 			...(materials.length

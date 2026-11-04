@@ -267,3 +267,46 @@ describe("ChainBaseCard variants", () => {
 		expect(manual.component.emitted("experts")).toEqual([[undefined]]);
 	});
 });
+
+describe("ChainBaseCard merge and separate (AC 6)", () => {
+	beforeAll(seedGameData);
+
+	it("merges into another base and separates", async () => {
+		const input = splitInput([null, null]);
+		const result = solveChain(input, ctx);
+		const { wrapper, component } = await mountComponent(ChainBaseCard, {
+			base: result.bases[1],
+			choice: input.bases[1],
+			efficiency: 1,
+			removable: true,
+			fits: () => false,
+			others: [input.bases[0]],
+		});
+		const merge = wrapper.findComponent({ name: "PDropdown" });
+		expect(merge.props("options")).toEqual([
+			{ key: "A", label: "A · Agriculture" },
+		]);
+		merge.vm.$emit("select", "A");
+		await wrapper.find("[data-testid='chain-separate-B']").trigger("click");
+		expect(component.emitted("merge")).toEqual([["A"]]);
+		expect(component.emitted("separate")).toHaveLength(1);
+	});
+
+	it("offers no merge without other bases", async () => {
+		const input = splitInput([null, null]);
+		const result = solveChain(input, ctx);
+		const { wrapper } = await mountComponent(ChainBaseCard, {
+			base: result.bases[0],
+			choice: input.bases[0],
+			efficiency: 1,
+			removable: false,
+			fits: () => false,
+		});
+		expect(wrapper.find("[data-testid='chain-merge-A']").exists()).toBe(
+			false
+		);
+		expect(wrapper.find("[data-testid='chain-separate-A']").exists()).toBe(
+			true
+		);
+	});
+});

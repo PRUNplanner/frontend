@@ -9,8 +9,13 @@
 	// Types & Interfaces
 	import type {
 		ChainByproductMode,
+		ChainMaxArea,
 		ChainRawSource,
 	} from "@/features/production_chain/engine/chainSolver.types";
+
+	// Engine
+	import { MAX_AREAS } from "@/features/production_chain/engine/chainAutoLayout";
+	import { formatNumber } from "@/util/numbers";
 
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
@@ -58,6 +63,13 @@
 	const cxUuid = defineModel<string | undefined>("cxUuid", {
 		required: true,
 	});
+	const maxArea = defineModel<ChainMaxArea>("maxArea", { default: 500 });
+	const areaOptions = MAX_AREAS.map((a) => ({
+		value: a,
+		label: t("production_chains.settings.max_area_option", {
+			n: formatNumber(a, 0),
+		}),
+	}));
 
 	const rawOptions = computed(() => [
 		{ value: "buy" as const, label: t("production_chains.settings.buy") },
@@ -122,6 +134,21 @@
 				v-model:value="byproducts"
 				:options="byproductOptions"
 				:label="t('production_chains.settings.byproducts')" />
+		</div>
+		<div class="flex items-center gap-2">
+			<span class="text-xs uppercase tracking-wide text-muted">
+				{{ $t("production_chains.settings.max_area") }}
+			</span>
+			<PSelect
+				:value="maxArea"
+				:options="areaOptions"
+				size="sm"
+				class="w-28"
+				:aria-label="t('production_chains.settings.max_area')"
+				data-testid="chain-max-area"
+				@update:value="
+					(v) => v && (maxArea = Number(v) as ChainMaxArea)
+				" />
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
 			<span class="text-xs uppercase tracking-wide text-muted">

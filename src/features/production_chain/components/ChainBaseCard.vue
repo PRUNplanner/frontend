@@ -46,9 +46,23 @@
 	} from "@/features/production_chain/engine/chainSolver.types";
 
 	// UI
-	import { PButton, PInput, PInputNumber, PPopover, PSelect } from "@/ui";
+	import {
+		PButton,
+		PDropdown,
+		PInput,
+		PInputNumber,
+		PPopover,
+		PSelect,
+	} from "@/ui";
 
-	const { base, choice, efficiency, removable, fits } = defineProps<{
+	const {
+		base,
+		choice,
+		efficiency,
+		removable,
+		fits,
+		others = [],
+	} = defineProps<{
 		base: IChainBaseResult;
 		choice: IChainBase;
 		/** chain efficiency, 1 = 100 % */
@@ -56,17 +70,28 @@
 		removable: boolean;
 		/** whether a program helps any of the base's buildings */
 		fits: (program: PlanCOGCProgram) => boolean;
+		/** the other bases, to merge into */
+		others?: IChainBase[];
 	}>();
 
 	const emit = defineEmits<{
 		(e: "rename", name: string): void;
 		(e: "remove"): void;
+		(e: "merge", into: string): void;
+		(e: "separate"): void;
 		(e: "cogc", cogc: ChainBaseCOGC): void;
 		(e: "planet"): void;
 		(e: "lux", lux: ChainLux): void;
 		// undefined: auto
 		(e: "experts", experts: ChainExperts | undefined): void;
 	}>();
+
+	const mergeOptions = computed(() =>
+		others.map((o) => ({
+			key: o.id,
+			label: o.name ? `${o.id} · ${o.name}` : o.id,
+		}))
+	);
 
 	const LUX: ChainLux[] = ["both", "lux2", "lux1", "none"];
 	const luxOptions = LUX.map((lux) => ({
@@ -242,6 +267,31 @@
 				@click="emit('remove')">
 				×
 			</button>
+		</div>
+
+		<div v-if="base.materials.length" class="flex flex-wrap gap-2">
+			<PDropdown
+				v-if="mergeOptions.length"
+				:options="mergeOptions"
+				@select="(id: string) => emit('merge', id)">
+				<PButton
+					size="sm"
+					type="secondary"
+					:data-testid="`chain-merge-${base.id}`"
+					:aria-label="
+						t('production_chains.bases.merge_of', { id: base.id })
+					">
+					{{ $t("production_chains.bases.merge") }}
+				</PButton>
+			</PDropdown>
+			<PButton
+				size="sm"
+				type="secondary"
+				:data-testid="`chain-separate-${base.id}`"
+				:title="t('production_chains.bases.separate_title')"
+				@click="emit('separate')">
+				{{ $t("production_chains.bases.separate") }}
+			</PButton>
 		</div>
 
 		<div class="flex flex-wrap items-center gap-3">

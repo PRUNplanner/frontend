@@ -61,10 +61,28 @@ export interface IChainInput {
 	planetId: Record<string, string>;
 	/** at least one */
 	bases: IChainBase[];
-	/** base id per ticker, missing = the first base */
-	baseOf: Record<string, string>;
+	/**
+	 * per ticker the bases it is built in with their built buildings;
+	 * one base means the whole step (its count is ignored), missing = the
+	 * first base
+	 */
+	baseOf: Record<string, ChainBaseShare>;
 	/** own production per ticker and day, missing = none; targets ignore it */
 	have?: Record<string, ChainHave>;
+	/** largest base auto layout builds, undefined = 500 */
+	maxArea?: ChainMaxArea;
+}
+
+/** base id → built buildings of a step */
+export type ChainBaseShare = Record<string, number>;
+
+export type ChainMaxArea = 500 | 750 | 1000;
+
+/** a step's piece in one base */
+export interface IChainShare {
+	base: string;
+	/** of the step's load, all pieces sum to 1 */
+	share: number;
 }
 
 /** One planet a material can be extracted on */
@@ -138,8 +156,10 @@ export interface IChainRow {
 	recipeCount: number;
 	defaultRecipeId: string | null;
 	buildingTicker: string | null;
-	/** made or extracted in this base, null when bought */
+	/** made or extracted here (its largest piece), null when bought */
 	base: string | null;
+	/** its pieces per base, the largest first; empty when bought */
+	shares: IChainShare[];
 	/** buildings at 100 %, so buildings = load / efficiency */
 	load: number;
 	/** chain efficiency times the base planet's factors, 1 = 100 % */

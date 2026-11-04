@@ -38,6 +38,7 @@
 
 	// Engine
 	import { extractionUnitCost } from "@/features/production_chain/engine/chainSolver";
+	import { DEFAULT_MAX_AREA } from "@/features/production_chain/engine/chainAutoLayout";
 	import { SEARCH_CX } from "@/features/planet_search/planetSearch.engine";
 
 	// Util
@@ -47,6 +48,7 @@
 	// Types & Interfaces
 	import type {
 		ChainByproductMode,
+		ChainMaxArea,
 		ChainRawSource,
 		IChainExtractionSite,
 		IChainTarget,
@@ -78,7 +80,10 @@
 		removeBase,
 		moveTo,
 		updateBase,
-		split,
+		autoLayout,
+		merge,
+		separate,
+		fitBases,
 		created,
 		createPlans,
 		recipeOptions,
@@ -120,6 +125,11 @@
 	const efficiency = field("efficiency") as Ref<number>;
 	const rawSource = field("rawSource") as Ref<ChainRawSource>;
 	const byproducts = field("byproducts") as Ref<ChainByproductMode>;
+	const maxArea = computed({
+		get: () => input.value.maxArea ?? DEFAULT_MAX_AREA,
+		set: (v: ChainMaxArea) =>
+			(input.value = { ...input.value, maxArea: v }),
+	});
 
 	/** materials that can be produced: with a recipe or a planet resource */
 	const targetOptions = computed(() =>
@@ -172,14 +182,54 @@
 			: "AI1";
 	});
 
-	function onSplit(): void {
-		split((e) =>
-			e
-				? t(`game.expertise.${e}`)
-				: t("production_chains.bases.unnamed", { id: "A" })
-		);
+	/** a base's name from its expertise */
+	const nameOf = (e: string | null) =>
+		e ? t(`game.expertise.${e}`) : t("production_chains.bases.mixed");
+	/** auto layout, separate or fit is picking planets */
+	const layingOut = ref(false);
+	async function busy<T>(run: () => Promise<T>): Promise<T | undefined> {
+		if (layingOut.value) return undefined;
+		layingOut.value = true;
+		try {
+			return await run();
+		} finally {
+			layingOut.value = false;
+		}
+	}
+
+	async function onAutoLayout(): Promise<void> {
+		const n = await busy(() => autoLayout(nameOf));
+		if (n) toast(t("production_chains.bases.auto_layout_done", n));
+	}
+
+	function onMerge(from: string, into: string): void {
+		if (merge(from, into))
+			toast(t("production_chains.bases.merge_done", { from, into }));
+	}
+
+	async function onSeparate(id: string): Promise<void> {
+		const done = await busy(() => separate(id, nameOf));
+		if (done === undefined) return;
 		toast(
-			t("production_chains.bases.split_done", input.value.bases.length)
+			t(
+				done
+					? "production_chains.bases.separate_done"
+					: "production_chains.bases.separate_none",
+				{ id }
+			)
+		);
+	}
+
+	async function onFit(n: number): Promise<void> {
+		const done = await busy(() => fitBases(n, nameOf));
+		if (done === undefined) return;
+		toast(
+			t(
+				done
+					? "production_chains.targets.fit_done"
+					: "production_chains.targets.fit_none",
+				n
+			)
 		);
 	}
 
@@ -265,12 +315,17 @@
 		</header>
 
 		<div class="flex flex-col gap-3">
-			<ChainTargets v-model:targets="targets" :options="targetOptions" />
+			<ChainTargets
+				v-model:targets="targets"
+				:options="targetOptions"
+				:fitting="layingOut"
+				@fit="onFit" />
 			<ChainSettings
 				v-model:efficiency="efficiency"
 				v-model:raw-source="rawSource"
 				v-model:byproducts="byproducts"
 				v-model:cx-uuid="cxUuid"
+				v-model:max-area="maxArea"
 				:follow-default="!cxFromLink"
 				:empires="empires"
 				:own-empire="ownEmpire"
@@ -336,7 +391,10 @@
 							:created="created"
 							:ready="createReady"
 							:own="own"
-							@split="onSplit"
+							:laying-out="layingOut"
+							@auto-layout="onAutoLayout"
+							@merge="onMerge"
+							@separate="onSeparate"
 							@add="addBase"
 							@remove="removeBase"
 							@rename="(id, name) => updateBase(id, { name })"

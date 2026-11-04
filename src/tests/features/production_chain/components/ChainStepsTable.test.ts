@@ -7,6 +7,7 @@ import {
 	solveChain,
 	recipeEffects,
 } from "@/features/production_chain/engine/chainSolver";
+import { buyHint } from "@/features/production_chain/engine/chainAutoLayout";
 import {
 	FOOD_PLANET,
 	chainInput,
@@ -301,6 +302,42 @@ describe("ChainStepsTable bases", () => {
 		// bought rows have no base
 		const h2o = wrapper.find("[data-testid='chain-row-H2O']");
 		expect(h2o.find("[data-testid='chain-base-H2O']").exists()).toBe(false);
+	});
+
+	it("moves one piece of a split step (AC 6)", async () => {
+		const bases = [
+			{ id: "A", name: "", planetId: null, cogc: "auto" as const },
+			{ id: "B", name: "", planetId: null, cogc: "auto" as const },
+		];
+		const { wrapper, component } = await mountTable(
+			chainInput([["DW", 300]], {
+				bases,
+				baseOf: { DW: { A: 3, B: 3 } },
+			}),
+			{ bases }
+		);
+		const pieces = wrapper.find("[data-testid='chain-pieces-DW']");
+		expect(pieces.exists()).toBe(true);
+		const selects = pieces.findAllComponents(PSelect);
+		expect(
+			selects.map((s: (typeof selects)[number]) => s.props("value"))
+		).toEqual(["A", "B"]);
+		selects[1].vm.$emit("update:value", "A");
+		selects[0].vm.$emit("update:value", "A");
+		expect(component.emitted("base")).toEqual([["DW", "A", "B"]]);
+	});
+
+	it("hints Buy on a tiny step a whole building makes dearer (AC 4)", async () => {
+		const { wrapper, result } = await mountTable(chainInput([["AIR", 3]]));
+		const hinted = result.order.filter((t) => buyHint(result.rows[t]));
+		expect(hinted.length).toBeGreaterThan(0);
+		for (const t of hinted)
+			expect(
+				wrapper.find(`[data-testid='chain-buy-hint-${t}']`).exists()
+			).toBe(true);
+		expect(
+			wrapper.findAll("[data-testid^='chain-buy-hint-']")
+		).toHaveLength(hinted.length);
 	});
 
 	it("marks farms without fertility (AC 3)", async () => {
