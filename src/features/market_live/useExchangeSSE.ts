@@ -23,10 +23,8 @@ import type { CXDataPoint } from "@/features/market_live/cxExchange.types";
 
 const isConnected = ref(false);
 const connectionError = ref<string | null>(null);
-// a closed stream (429 stream cap, 503) waits for its next try
+// a refused stream (429 stream cap, 503) waits for its next try
 const isReconnecting = ref(false);
-const RECONNECT_MIN_MS = 5_000;
-const RECONNECT_MAX_MS = 60_000;
 // messages that failed on this connection: the first is reported
 let messageFailures = 0;
 
@@ -40,6 +38,8 @@ let processingTimeout: number | null = null;
 
 const EVENT_LOG_MAX = 500;
 const MESSAGE_HISTORY_MAX = 25;
+const RETRY_MIN_MS = 5_000;
+const RETRY_MAX_MS = 60_000;
 
 export function useExchangeSSE() {
 	const urlCXSSE = `${config.API_BASE_URL}/data/stream/?channels=cx`;
@@ -47,8 +47,9 @@ export function useExchangeSSE() {
 	const { userAlerts } = storeToRefs(alertsStore);
 
 	let eventSource: EventSource | null = null;
-	let reconnectTimer: number | null = null;
-	let reconnectDelay: number = RECONNECT_MIN_MS;
+	// a stream the browser gave up on is reopened after a growing delay
+	let retryTimer: number | null = null;
+	let retryDelay = RETRY_MIN_MS;
 
 	// messages of one frame (16 ms), processed together in arrival order so
 	// the table data recomputes once per frame instead of once per message.
@@ -255,33 +256,33 @@ export function useExchangeSSE() {
 	const connect = () => {
 		// already connected
 		if (eventSource || isConnected.value) return;
+		if (retryTimer !== null) clearTimeout(retryTimer);
+		retryTimer = null;
+		isReconnecting.value = false;
 
 		messageFailures = 0;
-		eventSource = new EventSource(urlCXSSE);
+		const source = new EventSource(urlCXSSE);
+		eventSource = source;
 
-		eventSource.onopen = () => {
+		source.onopen = () => {
 			isConnected.value = true;
 			connectionError.value = null;
-			reconnectDelay = RECONNECT_MIN_MS;
+			retryDelay = RETRY_MIN_MS;
 		};
 
-		eventSource.onerror = () => {
+		source.onerror = () => {
 			connectionError.value = i18n.global.t(
 				"market_live.connection_lost"
 			);
 			isConnected.value = false;
-			// a dropped stream retries by itself; after a non-200 answer the
-			// browser gives up for good, so try again with a new one
-			if (eventSource?.readyState !== EventSource.CLOSED) return;
-			eventSource.close();
+
+			// the browser reconnects a dropped stream by itself, but gives up
+			// on an error answer (429 past the per-IP stream cap, 503)
+			if (source.readyState !== EventSource.CLOSED) return;
 			eventSource = null;
 			isReconnecting.value = true;
-			reconnectTimer = window.setTimeout(() => {
-				reconnectTimer = null;
-				isReconnecting.value = false;
-				connect();
-			}, reconnectDelay);
-			reconnectDelay = Math.min(reconnectDelay * 2, RECONNECT_MAX_MS);
+			retryTimer = window.setTimeout(connect, retryDelay);
+			retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS);
 		};
 
 		eventSource.onmessage = (event) => {
@@ -321,9 +322,9 @@ export function useExchangeSSE() {
 			eventSource.close();
 			eventSource = null;
 		}
-		if (reconnectTimer !== null) clearTimeout(reconnectTimer);
-		reconnectTimer = null;
-		reconnectDelay = RECONNECT_MIN_MS;
+		if (retryTimer !== null) clearTimeout(retryTimer);
+		retryTimer = null;
+		retryDelay = RETRY_MIN_MS;
 		isReconnecting.value = false;
 		if (frame !== null) clearTimeout(frame);
 		frame = null;

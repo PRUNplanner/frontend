@@ -11,12 +11,13 @@ vi.mock("@/features/market_live/cxDetectors", () => ({
 
 /** Minimal EventSource the composable can drive */
 class FakeEventSource {
+	static readonly CONNECTING = 0;
+	static readonly CLOSED = 2;
 	static last: FakeEventSource;
+	readyState = FakeEventSource.CONNECTING;
 	onopen?: () => void;
 	onerror?: (err: unknown) => void;
 	onmessage?: (event: { data: string }) => void;
-	static CLOSED = 2;
-	readyState = 0;
 	close = vi.fn();
 
 	constructor(public url: string) {
@@ -120,16 +121,23 @@ describe("useExchangeSSE", () => {
 			);
 		});
 
-		it("opens a new stream after a refused one, backing off", async () => {
-			const { sse, source } = await setup();
-			vi.spyOn(console, "error").mockImplementation(() => {});
+		it("leaves a dropped stream to the browser's own reconnect", async () => {
+			const { source } = await setup();
+			source.onopen?.();
 
-			// a 429 or 503 answer closes the stream for good
+			source.onerror?.(new Error("dropped"));
+			vi.advanceTimersByTime(60_000);
+
+			expect(FakeEventSource.last).toBe(source);
+		});
+
+		it("reopens a stream the browser gave up on, with a growing delay", async () => {
+			const { sse, source } = await setup();
+
+			// an error answer (429 past the per-IP cap) closes the source for good
 			source.readyState = FakeEventSource.CLOSED;
 			source.onerror?.(new Error("429"));
-			expect(source.close).toHaveBeenCalledOnce();
 			expect(sse.isReconnecting.value).toBe(true);
-
 			vi.advanceTimersByTime(4_999);
 			expect(FakeEventSource.last).toBe(source);
 			vi.advanceTimersByTime(1);
@@ -137,35 +145,25 @@ describe("useExchangeSSE", () => {
 			expect(second).not.toBe(source);
 			expect(sse.isReconnecting.value).toBe(false);
 
-			// refused again: twice the wait
 			second.readyState = FakeEventSource.CLOSED;
 			second.onerror?.(new Error("429"));
-			vi.advanceTimersByTime(9_999);
+			vi.advanceTimersByTime(5_000);
 			expect(FakeEventSource.last).toBe(second);
-			vi.advanceTimersByTime(1);
+			vi.advanceTimersByTime(5_000);
 			const third = FakeEventSource.last;
 			expect(third).not.toBe(second);
 
-			// an open resets the wait
+			// an open stream starts the delay over
 			third.onopen?.();
+			expect(sse.isConnected.value).toBe(true);
 			third.readyState = FakeEventSource.CLOSED;
 			third.onerror?.(new Error("503"));
 			vi.advanceTimersByTime(5_000);
 			expect(FakeEventSource.last).not.toBe(third);
 		});
 
-		it("keeps a stream the browser retries itself", async () => {
-			const { source } = await setup();
-			vi.spyOn(console, "error").mockImplementation(() => {});
-			source.onerror?.(new Error("lost"));
-			vi.advanceTimersByTime(60_000);
-			expect(source.close).not.toHaveBeenCalled();
-			expect(FakeEventSource.last).toBe(source);
-		});
-
-		it("cancels a pending reconnect on disconnect", async () => {
+		it("doesn't reopen after a disconnect", async () => {
 			const { sse, source } = await setup();
-			vi.spyOn(console, "error").mockImplementation(() => {});
 			source.readyState = FakeEventSource.CLOSED;
 			source.onerror?.(new Error("429"));
 
