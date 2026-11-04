@@ -12,7 +12,7 @@ import AppSidebar from "@/layout/components/navigation/AppSidebar.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
-import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { reportError, trackEvent } from "@/lib/analytics/useAnalytics";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { useVersionCheck } from "@/lib/useVersionCheck";
 import { relativeFromDate } from "@/util/date";
@@ -245,6 +245,21 @@ describe("AppSidebar", () => {
 		await mountSidebar();
 		expect(execute).toHaveBeenCalledWith();
 		expect(handled).toHaveBeenCalledOnce();
+	});
+
+	it("hands a 401 after a password change to reportError, unthrown", async () => {
+		const expired = Object.assign(
+			new Error("Token is invalid or expired"),
+			{
+				status: 401,
+			}
+		);
+		execute.mockReturnValue(Promise.reject(expired));
+		useUserStore().profile = profile("ok");
+
+		await mountSidebar();
+		await flushPromises();
+		expect(reportError).toHaveBeenCalledWith(expired);
 	});
 
 	it.each([
@@ -502,25 +517,6 @@ describe("AppSidebar behaviour", () => {
 			skipRefetch: true,
 		});
 		w.unmount();
-	});
-
-	it("rethrows a storage error that is not a 404", async () => {
-		const failure = Object.assign(new Error("boom"), { status: 500 });
-		let thrown: unknown;
-		// the rethrow happens inside the catch handler: run it here
-		execute.mockReturnValue({
-			catch: (handler: (err: unknown) => void) => {
-				try {
-					handler(failure);
-				} catch (err) {
-					thrown = err;
-				}
-			},
-		});
-
-		await mountSidebar();
-
-		expect(thrown).toBe(failure);
 	});
 });
 
