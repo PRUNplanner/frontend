@@ -4,7 +4,8 @@
 	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "已连接",
-		"disconnected": "已断开"
+		"disconnected": "已断开",
+		"reconnecting": "Reconnecting"
 	},
 	"severity_type": {
 		"LOW": "低",
