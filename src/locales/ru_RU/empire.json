@@ -157,5 +157,6 @@
 		"text": "An empire groups your base plans and holds your faction and permits.",
 		"create": "Create empire",
 		"manage": "Manage empires"
-	}
+	},
+	"unknown_empire": "Unknown"
 }
