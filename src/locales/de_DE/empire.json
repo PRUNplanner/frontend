@@ -157,5 +157,6 @@
 		"text": "Ein Imperium gruppiert deine Pläne und hält deine Fraktion und Genehmigungen.",
 		"create": "Imperium erstellen",
 		"manage": "Imperien verwalten"
-	}
+	},
+	"unknown_empire": "Unknown"
 }
