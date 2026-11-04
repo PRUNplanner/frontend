@@ -48,5 +48,12 @@
 		"tooltip_roi": "ROI del plan (d)",
 		"tooltip_profit": "Beneficio diario (ȼ)",
 		"tooltip_jumps": "Saltos a {cx}"
+	},
+	"filters": {
+		"title": "Filter",
+		"planet": "Planet",
+		"building": "Building",
+		"positive_roi": "Positive ROI",
+		"searched_material": "Searched Material"
 	}
 }
