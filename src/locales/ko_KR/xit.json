@@ -8,7 +8,8 @@
 		"hide_infinite": "무한 항목 숨기기",
 		"json": "JSON",
 		"include_label": "{ticker} 포함",
-		"override_label": "{ticker} 값 직접 지정"
+		"override_label": "{ticker} 값 직접 지정",
+		"configure_on_execution": "Configure on Execution"
 	},
 	"buttons": {
 		"copy_json": "XIT JSON 복사",
