@@ -48,5 +48,12 @@
 		"tooltip_roi": "Plan-ROI (Tage)",
 		"tooltip_profit": "Täglicher Profit (ȼ)",
 		"tooltip_jumps": "Sprünge zu {cx}"
+	},
+	"filters": {
+		"title": "Filter",
+		"planet": "Planet",
+		"building": "Building",
+		"positive_roi": "Positive ROI",
+		"searched_material": "Searched Material"
 	}
 }
