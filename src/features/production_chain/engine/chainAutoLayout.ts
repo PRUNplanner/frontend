@@ -14,6 +14,7 @@ import {
 
 // Types & Interfaces
 import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 import type {
 	ChainBaseShare,
 	ChainMaxArea,
@@ -395,10 +396,23 @@ export function pickPlanets(
 		}));
 		const wSum = linked.reduce((s, l) => s + l.w, 0);
 		const choice = input.bases.find((b) => b.id === id)!;
-		// cheap keys first: COGC fit, then distance
-		const cheap = free
-			.map((planet) => {
-				const sys = planet.system_id;
+		// cheap keys first: COGC fit (per program), then distance (per
+		// system); planets without a fitting program only when none with
+		// one can build the base
+		const fitsProgram = new Map<PlanCOGCProgram, boolean>();
+		const cogcOf = (planet: PlanetSearchIndexEntry) => {
+			const program = baseCOGC(choice, planet, ctx.now);
+			let ok = fitsProgram.get(program);
+			if (ok === undefined) {
+				ok = cogcFits(ctx, program, tickers);
+				fitsProgram.set(program, ok);
+			}
+			return ok;
+		};
+		const bySystem = new Map<string, number>();
+		const distanceOf = (sys: string) => {
+			let d = bySystem.get(sys);
+			if (d === undefined) {
 				const toBases = wSum
 					? linked.reduce(
 							(s, l) => s + l.w * jumps(sys, l.p.system_id),
@@ -409,51 +423,58 @@ export function pickPlanets(
 					? empire.reduce((s, e) => s + jumps(sys, e), 0) /
 						empire.length
 					: 0;
-				return {
-					planet,
-					cogc: cogcFits(
-						ctx,
-						baseCOGC(choice, planet, ctx.now),
-						tickers
-					),
-					distance: toBases + toEmpire,
-				};
-			})
-			.sort(
-				(a, b) =>
-					Number(b.cogc) - Number(a.cogc) ||
-					a.distance - b.distance ||
-					a.planet.planet_natural_id.localeCompare(
-						b.planet.planet_natural_id
-					)
-			);
-		// solved only group by group (same COGC fit and distance) until one
-		// can build the base: rank every planet only when none can
+				d = toBases + toEmpire;
+				bySystem.set(sys, d);
+			}
+			return d;
+		};
+		const withCogc = free.filter(cogcOf);
+		const fitting = new Set(withCogc);
+		const without = free.filter((p) => !fitting.has(p));
 		let best: PlanetSearchIndexEntry | undefined;
-		for (let i = 0; i < cheap.length && !best;) {
-			let j = i + 1;
-			while (
-				j < cheap.length &&
-				cheap[j].cogc === cheap[i].cogc &&
-				Math.abs(cheap[j].distance - cheap[i].distance) < EPS
-			)
-				j++;
-			const fits = rankPlanets(
-				result,
-				input,
-				ctx,
-				id,
-				cheap.slice(i, j).map((c) => c.planet)
-			).filter(
-				(f) =>
-					!f.missing.length && !f.noFarming && f.area <= maxArea + EPS
-			);
-			fits.sort((a, b) => a.area - b.area);
-			best = fits[0]?.planet;
-			i = j;
+		let first: PlanetSearchIndexEntry | undefined;
+		for (const group of [withCogc, without]) {
+			if (best || !group.length) continue;
+			const cheap = group
+				.map((planet) => ({
+					planet,
+					distance: distanceOf(planet.system_id),
+				}))
+				.sort(
+					(a, b) =>
+						a.distance - b.distance ||
+						a.planet.planet_natural_id.localeCompare(
+							b.planet.planet_natural_id
+						)
+				);
+			first ??= cheap[0].planet;
+			// solved tie group by tie group until one can build the base
+			for (let i = 0; i < cheap.length && !best;) {
+				let j = i + 1;
+				while (
+					j < cheap.length &&
+					Math.abs(cheap[j].distance - cheap[i].distance) < EPS
+				)
+					j++;
+				const fits = rankPlanets(
+					result,
+					input,
+					ctx,
+					id,
+					cheap.slice(i, j).map((c) => c.planet)
+				).filter(
+					(f) =>
+						!f.missing.length &&
+						!f.noFarming &&
+						f.area <= maxArea + EPS
+				);
+				fits.sort((a, b) => a.area - b.area);
+				best = fits[0]?.planet;
+				i = j;
+			}
 		}
 		// nothing can build it: the first by COGC and distance
-		best ??= cheap[0]?.planet;
+		best ??= first;
 		if (!best) continue;
 		planetOf[id] = best.planet_natural_id;
 		used.add(best.planet_natural_id);
