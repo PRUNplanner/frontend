@@ -4,7 +4,8 @@
 	"connection_lost": "Connection lost. Reconnecting...",
 	"status": {
 		"connected": "Онлайн",
-		"disconnected": "Офлайн"
+		"disconnected": "Офлайн",
+		"reconnecting": "Reconnecting"
 	},
 	"severity_type": {
 		"LOW": "НИЗКОЕ",
