@@ -93,6 +93,14 @@ export const SupportedLanguages: PSelectOption[] = [
 		value: "de_DE",
 	},
 	{
+		label: "Español",
+		value: "es_ES",
+	},
+	{
+		label: "Français",
+		value: "fr_FR",
+	},
+	{
 		label: "Русский",
 		value: "ru_RU",
 	},
