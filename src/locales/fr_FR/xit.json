@@ -8,7 +8,8 @@
 		"hide_infinite": "Masquer les infinis",
 		"json": "JSON",
 		"include_label": "Inclure {ticker}",
-		"override_label": "Remplacer pour {ticker}"
+		"override_label": "Remplacer pour {ticker}",
+		"configure_on_execution": "Configure on Execution"
 	},
 	"buttons": {
 		"copy_json": "Copier XIT JSON",
