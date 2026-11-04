@@ -8,7 +8,8 @@
 		"hide_infinite": "Unendliche ausblenden",
 		"json": "JSON",
 		"include_label": "{ticker} Einschließen",
-		"override_label": "Überschreiben von {ticker}"
+		"override_label": "Überschreiben von {ticker}",
+		"configure_on_execution": "Configure on Execution"
 	},
 	"buttons": {
 		"copy_json": "XIT JSON kopieren",
