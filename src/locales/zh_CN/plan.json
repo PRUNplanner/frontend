@@ -640,7 +640,8 @@
 				"plan_name": "名称",
 				"plan_name_placeholder": "新@:{'terms.plan'}名称",
 				"empire": "@:terms.empire"
-			}
+			},
+			"copy_name": "{name} (Copy)"
 		},
 		"production": {
 			"form": {
