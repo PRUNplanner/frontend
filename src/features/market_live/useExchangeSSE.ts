@@ -36,6 +36,8 @@ let processingTimeout: number | null = null;
 
 const EVENT_LOG_MAX = 500;
 const MESSAGE_HISTORY_MAX = 25;
+const RETRY_MIN_MS = 5_000;
+const RETRY_MAX_MS = 60_000;
 
 export function useExchangeSSE() {
 	const urlCXSSE = `${config.API_BASE_URL}/data/stream/?channels=cx`;
@@ -43,6 +45,9 @@ export function useExchangeSSE() {
 	const { userAlerts } = storeToRefs(alertsStore);
 
 	let eventSource: EventSource | null = null;
+	// a stream the browser gave up on is reopened after a growing delay
+	let retryTimer: number | null = null;
+	let retryDelay = RETRY_MIN_MS;
 
 	// messages of one frame (16 ms), processed together in arrival order so
 	// the table data recomputes once per frame instead of once per message.
@@ -249,20 +254,31 @@ export function useExchangeSSE() {
 	const connect = () => {
 		// already connected
 		if (eventSource || isConnected.value) return;
+		if (retryTimer !== null) clearTimeout(retryTimer);
+		retryTimer = null;
 
 		messageFailures = 0;
-		eventSource = new EventSource(urlCXSSE);
+		const source = new EventSource(urlCXSSE);
+		eventSource = source;
 
-		eventSource.onopen = () => {
+		source.onopen = () => {
 			isConnected.value = true;
 			connectionError.value = null;
+			retryDelay = RETRY_MIN_MS;
 		};
 
-		eventSource.onerror = () => {
+		source.onerror = () => {
 			connectionError.value = i18n.global.t(
 				"market_live.connection_lost"
 			);
 			isConnected.value = false;
+
+			// the browser reconnects a dropped stream by itself, but gives up
+			// on an error answer (429 past the per-IP stream cap, 503)
+			if (source.readyState !== EventSource.CLOSED) return;
+			eventSource = null;
+			retryTimer = window.setTimeout(connect, retryDelay);
+			retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS);
 		};
 
 		eventSource.onmessage = (event) => {
@@ -302,6 +318,9 @@ export function useExchangeSSE() {
 			eventSource.close();
 			eventSource = null;
 		}
+		if (retryTimer !== null) clearTimeout(retryTimer);
+		retryTimer = null;
+		retryDelay = RETRY_MIN_MS;
 		if (frame !== null) clearTimeout(frame);
 		frame = null;
 		queue = [];
