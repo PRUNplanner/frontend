@@ -93,7 +93,8 @@
 		"menu": {
 			"clone": "Clonar",
 			"share": "Compartir…",
-			"delete": "Eliminar…"
+			"delete": "Eliminar…",
+			"clone_name": "{name} (Clone)"
 		}
 	},
 	"save_bar": {
