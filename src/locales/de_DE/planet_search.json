@@ -7,7 +7,8 @@
 		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
 	},
 	"loading": "Planeten werden geladen…",
-	"load_error": "Die Planeten konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
+	"load_error": "The planets couldn't be loaded.",
+	"load_throttled": "Too many requests, try again in {n} s.",
 	"header": {
 		"search_label": "Planetenname oder ID",
 		"search_placeholder": "Planetenname oder ID, z.B. KI-446 oder Harmonia",
