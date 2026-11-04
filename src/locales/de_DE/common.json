@@ -99,6 +99,7 @@
 		"language": "Sprache",
 		"page_load_failed": "Diese Seite konnte nicht geladen werden. Lade sie neu, um die neueste Version zu erhalten.",
 		"save_failed": "Couldn't save that. Please try again.",
+		"session_ended": "Your session ended. Please log in again.",
 		"load_failed": "Couldn't load that. Please try again.",
 		"delete_failed": "Couldn't delete that. Please try again.",
 		"copy_failed": "Couldn't copy to the clipboard.",
