@@ -4,7 +4,7 @@
 	"form": {
 		"from_level": "Du niveau de QG",
 		"to_level": "Au niveau de QG",
-		"cx_preference": "@:terms.cx Preference",
+		"cx_preference": "Préférence @:terms.cx",
 		"show_locations": "Afficher les emplacements"
 	},
 	"cost": {
@@ -20,7 +20,7 @@
 		"required": "Requis",
 		"cost_unit": "Coût / unité (ȼ)",
 		"cost_total": "Coût total (ȼ)",
-		"storage_locations": "@:terms.storage Locations",
+		"storage_locations": "Emplacements de @:terms.storage",
 		"override_label": "Remplacer le stock pour {ticker}"
 	}
 }
