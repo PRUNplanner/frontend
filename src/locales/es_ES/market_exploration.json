@@ -19,6 +19,8 @@
 	},
 	"chart": {
 		"title": "Gráfico de mercado",
+		"exchange_label": "Exchange",
+		"interval_label": "Interval",
 		"intervals": {
 			"daily": "Diario",
 			"weekly": "Semanal",
