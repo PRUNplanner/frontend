@@ -9,7 +9,7 @@
 		"json": "JSON",
 		"include_label": "{ticker} Einschließen",
 		"override_label": "Überschreiben von {ticker}",
-		"configure_on_execution": "Configure on Execution"
+		"configure_on_execution": "Bei Ausführung konfigurieren"
 	},
 	"buttons": {
 		"copy_json": "XIT JSON kopieren",
