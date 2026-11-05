@@ -31,13 +31,15 @@ Base ROI clasifica todas las formas de gestionar una base: cada recurso en cada 
 
 # Gráfico de beneficios
 
-Sobre la tabla, un gráfico muestra el beneficio diario de los últimos 30 días de cada industria. Cada base cuenta según cuánto de su producto negocia el mercado (media de 7 días), y los muchos planetas de una misma receta de recurso cuentan como uno. Search to drill in:
+Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Cada base cuenta según cuánto de su producto negocia el mercado (media de 7 días), y los muchos planetas de una misma receta de recurso cuentan como uno. Search to drill in:
 
 - una industria (p. ej., «Chemistry») muestra sus edificios;
 - un edificio (p. ej., «CHP») muestra sus productos;
 - un producto (p. ej., «SC») muestra las recetas que lo fabrican.
 
 El gráfico sigue los ajustes y límites de la tabla. Muestra las 7 líneas más negociadas e indica cuántas más hay.
+
+Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3 or 7 days per point) at its top right, like the game's charts. A longer aggregation smooths out daily noise. The choice applies to all charts and is remembered.
 
 # Search and tooltips
 
@@ -46,7 +48,7 @@ El gráfico sigue los ajustes y límites de la tabla. Muestra las 7 líneas más
 
 # Detalles
 
-Despliega una fila para ver dos gráficos de 30 días de ingresos, coste operativo y beneficio diario, y debajo el cálculo completo. También puedes copiar el cálculo como texto o abrir la fila como un plan nuevo con la misma distribución (con sesión iniciada).
+Expand a row to see two charts, then the full math below them. También puedes copiar el cálculo como texto o abrir la fila como un plan nuevo con la misma distribución (con sesión iniciada).
 
-- **Absoluto**: todas las líneas en una misma escala de ȼ, para ver cómo se relacionan.
-- **Cada línea en su propio rango**: cada línea va de 0 (su valor más bajo en los 30 días) a 1 (el más alto), para que las oscilaciones de una línea pequeña se vean junto a las grandes. The labels still show ȼ.
+- **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
+- **Market volume**: how many bases the market carries each day, from the CX traded volume. _Outputs_ is the scarcest output's traded volume ÷ what one base sells per day; _Inputs (bottleneck)_ is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
