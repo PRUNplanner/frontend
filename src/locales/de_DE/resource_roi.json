@@ -52,8 +52,8 @@
 	"filters": {
 		"title": "Filter",
 		"planet": "Planet",
-		"building": "Building",
-		"positive_roi": "Positive ROI",
-		"searched_material": "Searched Material"
+		"building": "Gebäude",
+		"positive_roi": "Positiver ROI",
+		"searched_material": "Gesuchtes Material"
 	}
 }
