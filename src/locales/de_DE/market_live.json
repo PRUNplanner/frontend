@@ -5,7 +5,7 @@
 	"status": {
 		"connected": "Verbunden",
 		"disconnected": "Getrennt",
-		"reconnecting": "Reconnecting"
+		"reconnecting": "Verbinde neu"
 	},
 	"severity_type": {
 		"LOW": "NIEDRIG",
@@ -85,7 +85,7 @@
 			"title_editing": "Alarm bearbeiten",
 			"info": "Alarme werden derzeit nur auf diesem Gerät gespeichert und nicht mit deinem Konto synchronisiert.",
 			"no_alerts": "Keine Alarme gefunden. Erstelle dein erstes Alarm-Signal",
-			"new_alert_name": "New Alert",
+			"new_alert_name": "Neuer Alarm",
 			"buttons": {
 				"create_alert": "Neuen Alarm erstellen",
 				"discard": "@:common.buttons.discard",
