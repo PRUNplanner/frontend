@@ -4,6 +4,7 @@
 	"overview_hide": "Planliste ausblenden",
 	"overview_show": "Planliste einblenden",
 	"views": {
+		"label": "View",
 		"material_io": "Material I/O",
 		"analysis": "Analyse",
 		"production_opportunities": "Produktionschancen"
@@ -40,6 +41,7 @@
 		"expand_row": "Planeten für {ticker} anzeigen",
 		"view_sides": "Produzenten · Verbraucher",
 		"view_net": "Netto pro Planet",
+		"view_label": "Detail view",
 		"surplus": "Überschuss",
 		"needs": "Bedarf",
 		"plan_count": "{count} Plan | {count} Pläne",
@@ -95,6 +97,7 @@
 			"title": "Materialien mit den größten ȼ-Flüssen",
 			"price": "ȼ / Tag",
 			"amount": "Einheiten / Tag",
+			"metric_label": "Metric",
 			"buy": "← du kaufst (netto verbraucht)",
 			"sell": "du verkaufst (netto produziert) →",
 			"caption": "Top {top} von {n} Materialien · klicke auf eine Zeile, um sie in Material I/O zu öffnen",
