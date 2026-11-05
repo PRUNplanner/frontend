@@ -1,14 +1,14 @@
 {
 	"view_title": "Búsqueda de planetas",
 	"title": "Búsqueda de planetas",
-	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"description": "Busca entre todos los planetas de Prosperous Universe por recursos, condiciones, COGC, infraestructura y saltos hasta las bolsas. Gratis, sin necesidad de cuenta.",
 	"intro": {
-		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
-		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+		"lead": "Filtra los {n} planetas de Prosperous Universe por recursos, condiciones, COGC y saltos hasta las bolsas. Gratis, sin necesidad de cuenta.",
+		"lead_any": "Filtra todos los planetas de Prosperous Universe por recursos, condiciones, COGC y saltos hasta las bolsas. Gratis, sin necesidad de cuenta."
 	},
 	"loading": "Cargando planetas…",
-	"load_error": "The planets couldn't be loaded.",
-	"load_throttled": "Too many requests, try again in {n} s.",
+	"load_error": "No se han podido cargar los planetas.",
+	"load_throttled": "Demasiadas peticiones, inténtalo de nuevo en {n} s.",
 	"header": {
 		"search_label": "Planet name or ID",
 		"search_placeholder": "Planet name or ID, e.g. KI-446 or Harmonia",
@@ -31,7 +31,7 @@
 		"rename_label": "Renombrar la búsqueda guardada {n}",
 		"load": "Cargar",
 		"delete": "Eliminar",
-		"more": "Saved searches, copy link, reset"
+		"more": "Búsquedas guardadas, copiar enlace, restablecer"
 	},
 	"filters": {
 		"title": "Filtros",
@@ -114,8 +114,8 @@
 		"exchanges": "Bolsas",
 		"max_jumps": "Saltos máx.",
 		"max_jumps_value": "≤ {n} saltos desde cada elegido",
-		"login_prompt": "Log in to count jumps from your own bases.",
-		"login": "Log in"
+		"login_prompt": "Inicia sesión para contar los saltos desde tus propias bases.",
+		"login": "Iniciar sesión"
 	},
 	"results": {
 		"count": "{n} de {total} planetas",
@@ -125,7 +125,7 @@
 		"chart": "Gráfico",
 		"planet": "Planeta",
 		"fert": "Fert. %",
-		"plots": "Plots",
+		"plots": "Parcelas",
 		"other": "Otros recursos",
 		"extras": "Materiales de construcción adicionales",
 		"cogc_infra": "COGC · Infra",
@@ -143,7 +143,7 @@
 		"sort": "Ordenar por {column}",
 		"sort_hint": "Haz clic para ordenar por esta columna; Mayús+clic para añadirla como criterio de desempate",
 		"loading_more": "Cargando más planetas…",
-		"create_plan_login": "Log in to plan a base on {planet}"
+		"create_plan_login": "Inicia sesión para planificar una base en {planet}"
 	},
 	"sort": {
 		"button": "Ordenar ({n})",
@@ -161,7 +161,7 @@
 	"columns": {
 		"button": "Columnas ({shown}/{total})",
 		"fert": "Fertilidad",
-		"plots": "Plots",
+		"plots": "Parcelas",
 		"other": "Otros recursos",
 		"extras": "Materiales de construcción adicionales",
 		"cogc": "COGC · Infraestructura",
@@ -175,13 +175,13 @@
 		"reset": "Restablecer"
 	},
 	"plots": {
-		"free": "{free} / {total} plots free",
-		"full": "Full",
-		"full_ghost": "Full · ghost sites",
-		"unknown": "plots unknown",
-		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
-		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
-		"as_of": "As of {date}."
+		"free": "{free} / {total} parcelas libres",
+		"full": "Lleno",
+		"full_ghost": "Lleno · sitios fantasma",
+		"unknown": "parcelas desconocidas",
+		"full_tooltip": "Todas las parcelas están ocupadas: ya no se puede colonizar este planeta.",
+		"ghost_tooltip": "Todas las parcelas están ocupadas. Las bases nuevas van a sitios fantasma; {n} hasta ahora.",
+		"as_of": "A fecha de {date}."
 	},
 	"chips": {
 		"name": "Nombre: \"{text}\"",
@@ -230,7 +230,7 @@
 		"infrastructure": "Infraestructura",
 		"cx": "AI1 / CI1 / IC1 / NC1",
 		"jumps": "Saltos a {ref}",
-		"free_workers": "Free {tier} workers"
+		"free_workers": "Trabajadores {tier} libres"
 	},
 	"chart": {
 		"label": "Gráfico de resultados: {y} frente a {x}",
