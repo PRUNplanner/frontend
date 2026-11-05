@@ -127,7 +127,7 @@
 			"potential_batches": "Mögliche Batches",
 			"delta_required": "Delta erforderlich",
 			"missing_material": "fehlende Materialien",
-			"missing": "Missing"
+			"missing": "Fehlend"
 		}
 	},
 	"onboarding": {
@@ -158,5 +158,5 @@
 		"create": "Imperium erstellen",
 		"manage": "Imperien verwalten"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "Unbekannt"
 }
