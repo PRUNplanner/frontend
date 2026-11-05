@@ -18,7 +18,7 @@
 		},
 		"sync_warning": {
 			"title": "Écart détecté :",
-			"body": "@:empire.configuration.sync_warning.title {configured} configured vs. {planned} planned permits. Please synchronize these values using your in-game {hq_buffer} to ensure accurate faction bonus calculations."
+			"body": "@:empire.configuration.sync_warning.title {configured} permis configurés contre {planned} planifiés. Synchronise ces valeurs avec ton {hq_buffer} en jeu pour que les bonus de faction soient calculés correctement."
 		}
 	},
 	"plan_list": {
@@ -127,7 +127,7 @@
 			"potential_batches": "Lots possibles",
 			"delta_required": "Delta requis",
 			"missing_material": "Matériau manquant",
-			"missing": "Missing"
+			"missing": "Manquant"
 		}
 	},
 	"onboarding": {
@@ -158,5 +158,5 @@
 		"create": "Créer un empire",
 		"manage": "Gérer les empires"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "Inconnu"
 }
