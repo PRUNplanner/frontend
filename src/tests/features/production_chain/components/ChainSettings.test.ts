@@ -20,7 +20,6 @@ async function mountSettings() {
 			"onUpdate:rawSource": on("rawSource"),
 			"onUpdate:byproducts": on("byproducts"),
 			"onUpdate:cxUuid": on("cxUuid"),
-			"onUpdate:maxArea": on("maxArea"),
 		},
 		{ pinia: createPinia() }
 	);
@@ -60,20 +59,5 @@ describe("ChainSettings", () => {
 		expect(selector.props("followDefault")).toBe(false);
 		selector.vm.$emit("update:cxUuid", "cx-1");
 		expect(updates.cxUuid).toEqual(["cx-1"]);
-	});
-});
-
-describe("ChainSettings max base size", () => {
-	it("offers 500, 750 and 1,000 area", async () => {
-		const { wrapper, updates } = await mountSettings();
-		const select = wrapper
-			.findAllComponents({ name: "PSelect" })
-			.find((s) => s.attributes("data-testid") === "chain-max-area")!;
-		expect(select.props("value")).toBe(500);
-		expect(
-			(select.props("options") as { value: number }[]).map((o) => o.value)
-		).toEqual([500, 750, 1000]);
-		select.vm.$emit("update:value", 750);
-		expect(updates.maxArea).toEqual([750]);
 	});
 });

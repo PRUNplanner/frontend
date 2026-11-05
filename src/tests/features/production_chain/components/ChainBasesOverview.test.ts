@@ -29,11 +29,12 @@ describe("ChainBasesOverview", () => {
 			wrapper.find(`[data-testid='chain-bases-stat-${k}']`).text();
 		expect(text("count")).toContain("2");
 		expect(text("count")).toContain("overview.with_planet");
-		const area = result.bases.reduce((s, b) => s + b.area, 0);
-		expect(text("area")).toContain(
-			Math.round(area).toLocaleString("en-US")
+		const largest = Math.max(...result.bases.map((b) => b.area));
+		expect(text("largest")).toContain(
+			Math.round(largest).toLocaleString("en-US")
 		);
-		expect(text("area")).toContain("overview.largest");
+		expect(text("largest")).toContain("overview.within");
+		expect(text("permits")).toContain("overview.area_total");
 		expect(text("shipping")).toContain("overview.routes");
 		expect(wrapper.findAll("tbody tr")).toHaveLength(2);
 		expect(
@@ -51,7 +52,7 @@ describe("ChainBasesOverview", () => {
 		};
 		const { wrapper } = await mountOverview(over);
 		expect(
-			wrapper.find("[data-testid='chain-bases-stat-area']").text()
+			wrapper.find("[data-testid='chain-bases-stat-largest']").text()
 		).toContain("overview.over");
 		expect(
 			wrapper

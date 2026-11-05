@@ -88,29 +88,3 @@ describe("ChainTargets", () => {
 		expect(updates.at(-1)![0].perDay).toBe(25);
 	});
 });
-
-describe("ChainTargets fit into bases (AC 5)", () => {
-	beforeAll(seedGameData);
-
-	it("asks for the number of bases and fits", async () => {
-		const { wrapper, component } = await mountComponent(ChainTargets, {
-			targets: [{ ticker: "DW", perDay: 100 }],
-			options,
-		});
-		expect(wrapper.find("[data-testid='chain-fit']").exists()).toBe(false);
-		wrapper
-			.findComponent({ name: "PSegmented" })
-			.vm.$emit("update:value", "fit");
-		await wrapper.vm.$nextTick();
-		const count = wrapper.findComponent({ name: "PInputNumber" });
-		const fit = wrapper
-			.findAllComponents({ name: "PInputNumber" })
-			.find((c) => c.attributes("data-testid") === "chain-fit-count")!;
-		expect(count.exists()).toBe(true);
-		fit.vm.$emit("update:value", 0);
-		fit.vm.$emit("update:value", 3);
-		await wrapper.vm.$nextTick();
-		await wrapper.find("[data-testid='chain-fit']").trigger("click");
-		expect(component.emitted("fit")).toEqual([[3]]);
-	});
-});

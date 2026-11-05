@@ -17,15 +17,7 @@
 		"amount": "{ticker} per day",
 		"remove": "Remove {ticker}",
 		"add": "Add material",
-		"add_first": "Add a material, e.g. RAT",
-		"mode": "How much to produce",
-		"fit": "Fit into bases",
-		"fit_count": "Number of bases",
-		"fit_bases": "base | bases",
-		"fit_apply": "Fit",
-		"fit_hint": "Scales all targets to the largest rate that auto layout puts into this many bases.",
-		"fit_done": "Set the largest rate that fits into {n} base. | Set the largest rate that fits into {n} bases.",
-		"fit_none": "Even 0.01 per day needs more than {n} base. | Even 0.01 per day needs more than {n} bases."
+		"add_first": "Add a material, e.g. RAT"
 	},
 	"settings": {
 		"efficiency": "Efficiency",
@@ -35,9 +27,7 @@
 		"buy": "Buy",
 		"extract": "Extract",
 		"cover": "Cover demand",
-		"sell": "Sell",
-		"max_area": "Max base size",
-		"max_area_option": "{n} area"
+		"sell": "Sell"
 	},
 	"empty": {
 		"title": "What do you want to produce?",
@@ -298,10 +288,11 @@
 		"overview": {
 			"count": "Bases",
 			"with_planet": "{n} of {total} with a planet",
-			"area": "Area",
-			"largest": "largest base {n}",
+			"largest": "Largest base",
+			"within": "area, all within 1,000",
 			"over": "{n} base over 1,000 | {n} bases over 1,000",
-			"buildings": "Buildings",
+			"permits": "Permits",
+			"area_total": "{n} area in all bases",
 			"shipping": "Shipping t / day",
 			"routes": "{n} route | {n} routes",
 			"base": "Base",
@@ -311,6 +302,15 @@
 		"auto_layout": "Auto layout",
 		"auto_layout_title": "Lays the chain out into bases of one expertise up to the max base size (up to 1,000 when an expertise needs more than one base) and picks a planet for each",
 		"auto_layout_done": "Laid out into {n} base. | Laid out into {n} bases. Merge, separate or move pieces to adjust.",
+		"max_area": "max size",
+		"max_area_option": "{n} area",
+		"fit": "Fit into",
+		"fit_count": "Number of bases",
+		"fit_bases": "base | bases",
+		"fit_apply": "Fit",
+		"fit_hint": "Scales all targets to the largest rate that auto layout puts into this many bases.",
+		"fit_done": "Set the largest rate that fits into {n} base. | Set the largest rate that fits into {n} bases.",
+		"fit_none": "Even 0.01 per day needs more than {n} base. | Even 0.01 per day needs more than {n} bases.",
 		"add": "+ Add base",
 		"hint": "Move steps or their pieces with the Base column in Steps. A base runs on one planet.",
 		"create": "Create {n} plan… | Create {n} plans…",

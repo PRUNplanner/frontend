@@ -60,6 +60,27 @@ describe("ChainBases", () => {
 		expect(component.emitted("remove")).toEqual([["A"]]);
 	});
 
+	it("sets the max base size and fits into N bases (AC 5)", async () => {
+		const { wrapper, component } = await mountBases();
+		const select = wrapper
+			.findAllComponents({ name: "PSelect" })
+			.find((s) => s.attributes("data-testid") === "chain-max-area")!;
+		expect(select.props("value")).toBe(500);
+		expect(
+			(select.props("options") as { value: number }[]).map((o) => o.value)
+		).toEqual([500, 750, 1000]);
+		select.vm.$emit("update:value", 750);
+		expect(component.emitted("update:maxArea")).toEqual([[750]]);
+		const count = wrapper
+			.findAllComponents({ name: "PInputNumber" })
+			.find((c) => c.attributes("data-testid") === "chain-fit-count")!;
+		count.vm.$emit("update:value", 0);
+		count.vm.$emit("update:value", 3);
+		await wrapper.vm.$nextTick();
+		await wrapper.find("[data-testid='chain-fit']").trigger("click");
+		expect(component.emitted("fit")).toEqual([[3]]);
+	});
+
 	it("lists shipping per route with jumps (AC 8)", async () => {
 		const { wrapper } = await mountBases();
 		const rows = wrapper.findAll("[data-testid='chain-shipping'] tbody tr");

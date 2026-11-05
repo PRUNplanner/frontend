@@ -226,8 +226,8 @@
 		toast(
 			t(
 				done
-					? "production_chains.targets.fit_done"
-					: "production_chains.targets.fit_none",
+					? "production_chains.bases.fit_done"
+					: "production_chains.bases.fit_none",
 				n
 			)
 		);
@@ -315,17 +315,12 @@
 		</header>
 
 		<div class="flex flex-col gap-3">
-			<ChainTargets
-				v-model:targets="targets"
-				:options="targetOptions"
-				:fitting="layingOut"
-				@fit="onFit" />
+			<ChainTargets v-model:targets="targets" :options="targetOptions" />
 			<ChainSettings
 				v-model:efficiency="efficiency"
 				v-model:raw-source="rawSource"
 				v-model:byproducts="byproducts"
 				v-model:cx-uuid="cxUuid"
-				v-model:max-area="maxArea"
 				:follow-default="!cxFromLink"
 				:empires="empires"
 				:own-empire="ownEmpire"
@@ -392,6 +387,8 @@
 							:ready="createReady"
 							:own="own"
 							:laying-out="layingOut"
+							v-model:max-area="maxArea"
+							@fit="onFit"
 							@auto-layout="onAutoLayout"
 							@merge="onMerge"
 							@separate="onSeparate"

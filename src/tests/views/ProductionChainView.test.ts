@@ -500,15 +500,14 @@ describe("ProductionChainView interactions", () => {
 			expect(lastToast()).toBe("production_chains.bases.separate_done");
 
 			// fit: a second click while one runs is ignored
-			const targets = wrapper.findComponent({ name: "ChainTargets" });
-			targets.vm.$emit("fit", 1);
-			targets.vm.$emit("fit", 1);
+			bases().vm.$emit("fit", 1);
+			bases().vm.$emit("fit", 1);
 			await flushPromises();
-			expect(lastToast()).toBe("production_chains.targets.fit_done");
+			expect(lastToast()).toBe("production_chains.bases.fit_done");
 			expect(lastQuery().t).not.toBe("DW:300");
-			targets.vm.$emit("fit", 0);
+			bases().vm.$emit("fit", 0);
 			await flushPromises();
-			expect(lastToast()).toBe("production_chains.targets.fit_none");
+			expect(lastToast()).toBe("production_chains.bases.fit_none");
 
 			expect(actions()).toEqual(
 				expect.arrayContaining([

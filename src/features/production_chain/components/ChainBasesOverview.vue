@@ -49,31 +49,25 @@
 				}),
 			},
 			{
-				key: "area",
-				value: formatNumber(
-					sum((b) => b.area),
-					0
-				),
+				key: "largest",
+				value: formatNumber(Math.max(0, ...list.map((b) => b.area)), 0),
 				tone: over ? "text-negative" : "",
 				sub: over
 					? t("production_chains.bases.overview.over", over)
-					: t("production_chains.bases.overview.largest", {
-							n: formatNumber(
-								Math.max(0, ...list.map((b) => b.area)),
-								0
-							),
-						}),
+					: t("production_chains.bases.overview.within"),
 			},
 			{
-				key: "buildings",
+				key: "permits",
 				value: formatNumber(
-					sum((b) => b.built),
+					sum((b) => b.permits),
 					0
 				),
-				sub: t(
-					"production_chains.bases.permits",
-					sum((b) => b.permits)
-				),
+				sub: t("production_chains.bases.overview.area_total", {
+					n: formatNumber(
+						sum((b) => b.area),
+						0
+					),
+				}),
 			},
 			{
 				key: "shipping",

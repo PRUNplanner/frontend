@@ -11,28 +11,14 @@
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PButton, PInputNumber, PSegmented, PSelect } from "@/ui";
+	import { PButton, PInputNumber, PSelect } from "@/ui";
 
-	const { options, fitting = false } = defineProps<{
+	const { options } = defineProps<{
 		/** materials that can be produced: with a recipe or a resource */
 		options: PSelectOption[];
-		/** fit into N bases is running */
-		fitting?: boolean;
-	}>();
-
-	const emit = defineEmits<{
-		(e: "fit", bases: number): void;
 	}>();
 
 	const targets = defineModel<IChainTarget[]>("targets", { required: true });
-
-	/** per day, or the largest rate that fits into N bases */
-	const mode = ref<"day" | "fit">("day");
-	const modeOptions = computed(() => [
-		{ value: "day" as const, label: t("production_chains.targets.label") },
-		{ value: "fit" as const, label: t("production_chains.targets.fit") },
-	]);
-	const fitCount = ref(2);
 
 	const NEW_TARGET_PER_DAY = 10;
 
@@ -73,36 +59,8 @@
 
 <template>
 	<div>
-		<div class="flex flex-wrap items-center gap-2 pb-2">
-			<PSegmented
-				v-model:value="mode"
-				:options="modeOptions"
-				:label="t('production_chains.targets.mode')" />
-			<template v-if="mode === 'fit'">
-				<PInputNumber
-					:value="fitCount"
-					:min="1"
-					:max="26"
-					size="sm"
-					class="w-16"
-					:aria-label="t('production_chains.targets.fit_count')"
-					data-testid="chain-fit-count"
-					@update:value="(v) => v && v >= 1 && (fitCount = v)" />
-				<span class="text-xs text-muted">{{
-					$t("production_chains.targets.fit_bases", fitCount)
-				}}</span>
-				<PButton
-					size="sm"
-					:disabled="!targets.length"
-					:loading="fitting"
-					data-testid="chain-fit"
-					@click="emit('fit', fitCount)">
-					{{ $t("production_chains.targets.fit_apply") }}
-				</PButton>
-				<span class="text-xs text-muted">{{
-					$t("production_chains.targets.fit_hint")
-				}}</span>
-			</template>
+		<div class="text-xs uppercase tracking-wide text-muted pb-2">
+			{{ $t("production_chains.targets.label") }}
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
 			<div
