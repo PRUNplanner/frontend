@@ -1,17 +1,17 @@
-# Core Concepts
+# Concepts de base
 
-PRUNplanner consists of three main components that allow you to plan and manage your Prosperous Universe empire:
+PRUNplanner se compose de trois éléments principaux qui te permettent de planifier et de gérer ton empire Prosperous Universe :
 
 ## Plans
 
-Plans are the backbone of what you do in PRUNplanner. They consist of all buildings, productions and bonuses of a base you can put down in Prosperous Universe. You can create new Plans by searching for the planet you would like to create a base for. Also, a Plan should be assigned a CX Exchange preference, as well as to an Empire. Please note, each Plan can be assigned to multiple empires and therefore reused.
+Les plans sont la colonne vertébrale de ce que tu fais dans PRUNplanner. Ils regroupent tous les bâtiments, productions et bonus d'une base que tu peux installer dans Prosperous Universe. Tu peux créer de nouveaux plans en recherchant la planète sur laquelle tu veux créer une base. Un plan doit aussi recevoir une préférence d'échange CX et être assigné à un empire. Note que chaque plan peut être assigné à plusieurs empires et donc réutilisé.
 
-To delete several Plans at once, tick them in the Plan ↔ Empire Assignments table and press "Delete selected…". The box in the table header ticks every Plan the search and filters show, for example all unassigned ones.
+Pour supprimer plusieurs plans à la fois, coche-les dans le tableau Assignations plan ↔ empire et appuie sur « Supprimer la sélection… ». La case de l'en-tête du tableau coche tous les plans affichés par la recherche et les filtres, par exemple tous ceux non assignés.
 
 ## Empires
 
-An Empire is a collection of Plans (e.g. all the bases you currently have settled in Prosperous Universe, or that you would like to settle, all interconnected together). Each empire is like a container that consists of multiple plans. Additionally, a single CX Exchange preference can be assigned to each Empire.
+Un empire est un ensemble de plans (par exemple toutes les bases que tu as actuellement installées dans Prosperous Universe, ou que tu voudrais installer, toutes reliées entre elles). Chaque empire est comme un conteneur qui regroupe plusieurs plans. De plus, une seule préférence d'échange CX peut être assignée à chaque empire.
 
 ## CX
 
-The CX Settings allow you to define market preferences for the pricing of materials. Each CX Exchange can be used in multiple Empires. However, each Empire can only have a single CX Exchange preference assigned to it. This ensures that prices are properly calculated for individual plans that are part of the Empire.
+Les réglages CX te permettent de définir des préférences de marché pour le prix des matériaux. Chaque préférence d'échange CX peut être utilisée dans plusieurs empires. However, each Empire can only have a single CX Exchange preference assigned to it. Cela garantit que les prix sont correctement calculés pour chaque plan faisant partie de l'empire.
