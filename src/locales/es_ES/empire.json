@@ -127,7 +127,7 @@
 			"potential_batches": "Lotes potenciales",
 			"delta_required": "Delta necesario",
 			"missing_material": "Material que falta",
-			"missing": "Missing"
+			"missing": "Falta"
 		}
 	},
 	"onboarding": {
@@ -158,5 +158,5 @@
 		"create": "Crear imperio",
 		"manage": "Gestionar imperios"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "Desconocido"
 }
