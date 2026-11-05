@@ -1,52 +1,52 @@
-Base ROI ranks every way to run one base: each resource on each planet that has it, each farming recipe on each fertile planet and each recipe of every other production building. Every row is a full 500-area base with the building's optimal layout, calculated with the same engine as your plans and priced with the selected CX preference (Universe 30D prices when you are not logged in).
+Base ROI clasifica todas las formas de gestionar una base: cada recurso en cada planeta que lo tiene, cada receta de cultivo en cada planeta fértil y cada receta de todos los demás edificios de producción. Cada fila es una base completa de 500 de área con la distribución óptima del edificio, calculada con el mismo motor que tus planes y valorada con la preferencia de CX seleccionada (precios 30D de Universe si no has iniciado sesión).
 
-**Please note**: All rows assume the COGC and experts set here; recipe rows run on a standard planet.
+**Ten en cuenta**: Todas las filas suponen el COGC y los expertos definidos aquí; las filas de receta se calculan en un planeta estándar.
 
-# Row kinds
+# Tipos de fila
 
-- **Resource**: one resource on one planet, with RIG, EXT or COL and the planet's environment materials. Shows "@ planet (jumps)".
-- **Farming**: one FRM or ORC recipe on one fertile planet, with the planet's fertility in the yield.
-- **Recipe**: one recipe of any other production building, on a standard planet (rocky, normal gravity, pressure and temperature). Use **Try on a planet** in the row's details to see it on a real planet.
+- **Recurso**: un recurso en un planeta, con RIG, EXT o COL y los materiales de entorno del planeta. Muestra «@ planeta (saltos)».
+- **Cultivo**: una receta de FRM u ORC en un planeta fértil, con la fertilidad del planeta en el rendimiento.
+- **Receta**: una receta de cualquier otro edificio de producción, en un planeta estándar (rocoso, con gravedad, presión y temperatura normales). Usa **Probar en un planeta** en los detalles de la fila para verla en un planeta real.
 
-# Metrics
+# Métricas
 
-- **Daily profit**: revenue minus inputs, consumables and degradation (construction of the production buildings ÷ 180), at 5 experts with the ramp, else at the fixed count.
-- **Break-even**: days until the building cost is paid back. With **Ramp from 0** a new base starts without experts: the stages with 0, 1, 2, 3 and 4 experts last 10, 12.5, 57.57, 276.5 and 915.1 days, each divided by the number of production buildings, and revenue and inputs grow with the expert bonus. "never" when the base doesn't make a profit.
-- **Weekly return**: 7 × daily profit ÷ building cost.
-- **Building cost**: construction, plus the options in Settings: buffer stock (buffer days × (inputs + consumables + revenue) ÷ 2) and the HQ upgrade for one more permit (HQ level N − 1).
-- **Daily running cost**: inputs + consumables + degradation. Hidden until you turn it on in Columns: the buffer stock in the building cost already covers the running cost to start with.
-- **Cargo / day**: the larger of the weight and volume the base moves in or out per day; (I) when more comes in, (O) when more goes out.
-- **Market capacity**: how many bases like this the market can take, on both sides. For each output it is the 7-day average traded volume ÷ what the base produces per day, and for each recipe input the traded volume ÷ what the base needs per day. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1, one base produces or needs more than the market trades.
-- **Plots**: free plots on the planet, for planet rows. Sort by it to see the emptiest planets. Recipe rows run on a standard planet, so they show a dash.
-- **Workforce**: the workforce the base needs per tier.
-- **Profit, 30 days**: daily profit with the daily VWAP of each material's exchange over the last 30 days. Days without trades keep the last price. ASK, BID and fixed prices have no history.
-- **⚠**: a material priced from a 7D or 30D VWAP whose bid or ask is more than 30% off that price. The popover lists the daily profit with those prices.
+- **Beneficio diario**: ingresos menos entradas, consumibles y degradación (construcción de los edificios de producción ÷ 180), con 5 expertos si se usa la progresión, si no con el número fijo.
+- **Amortización**: días hasta amortizar el coste de los edificios. Con **Progresivo desde 0** una base nueva empieza sin expertos: las etapas con 0, 1, 2, 3 y 4 expertos duran 10, 12.5, 57.57, 276.5 y 915.1 días, cada una dividida entre el número de edificios de producción, y los ingresos y las entradas crecen con la bonificación de expertos. "never" when the base doesn't make a profit.
+- **Rentabilidad semanal**: 7 × beneficio diario ÷ coste de los edificios.
+- **Coste de los edificios**: construcción, más las opciones de Ajustes: stock de reserva (días de reserva × (entradas + consumibles + ingresos) ÷ 2) y la mejora de la sede para un permiso más (nivel de sede N − 1).
+- **Coste operativo diario**: entradas + consumibles + degradación. Oculto hasta que lo actives en Columnas: el stock de reserva del coste de los edificios ya cubre el coste operativo al principio.
+- **Carga / día**: el mayor entre el peso y el volumen que la base mueve de entrada o de salida al día; (I) cuando entra más, (O) cuando sale más.
+- **Capacidad de mercado**: cuántas bases como esta puede absorber el mercado, por ambos lados. Para cada salida es el volumen negociado medio de 7 días ÷ lo que la base produce al día, y para cada entrada de la receta el volumen negociado ÷ lo que la base necesita al día. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Por debajo de 1, una sola base produce o necesita más de lo que negocia el mercado.
+- **Parcelas**: parcelas libres en el planeta, para las filas de planeta. Ordena por esta columna para ver los planetas más vacíos. Las filas de receta se calculan en un planeta estándar, así que muestran un guion.
+- **Mano de obra**: la mano de obra que necesita la base por nivel.
+- **Beneficio, 30 días**: beneficio diario con el VWAP diario de la bolsa de cada material durante los últimos 30 días. Los días sin operaciones mantienen el último precio. ASK, BID and fixed prices have no history.
+- **⚠**: un material valorado con un VWAP 7D o 30D cuyo bid o ask se desvía más de un 30% de ese precio. La ventana emergente muestra el beneficio diario con esos precios.
 
-# Settings
+# Ajustes
 
-- **Stock buffer**: storage for this many days of cargo; STO or STA are added, and a production building is dropped when the base would no longer fit.
-- **Min market capacity** (next to the search above the table), **Logistics limit** and **Max jumps** hide rows; the line above the table counts the hidden rows per limit. Max jumps counts to the nearest exchange of your CX preference.
-- **Show planets without workers or plots**: off by default, so planet rows are hidden when no new base fits (every plot taken and no ghost sites) or when the latest population report can't fill the base's jobs, counting free workers less the jobs already open. A planet with no population report counts as having no workers. Turn it on to see these rows; the Workforce column shows what is missing. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
-- **Run setup again** opens the first-visit setup with its presets: Rookie (SCB, without weekly return and running cost), Standard (WCB) and Veteran (any ship or no limit).
+- **Búfer de stock**: almacenamiento para esta cantidad de días de carga; se añaden STO o STA, y se quita un edificio de producción cuando la base ya no cabría.
+- **Capacidad de mercado mín.** (junto a la búsqueda sobre la tabla), **Límite logístico** y **Saltos máx.** ocultan filas; la línea sobre la tabla cuenta las filas ocultas por cada límite. Saltos máx. cuenta hasta la bolsa más cercana de tu preferencia de CX.
+- **Mostrar planetas sin trabajadores o parcelas**: desactivado por defecto, así que las filas de planeta se ocultan cuando no cabe ninguna base nueva (todas las parcelas ocupadas y sin sitios fantasma) o cuando el último informe de población no puede cubrir los puestos de la base, contando los trabajadores libres menos los puestos ya vacantes. Un planeta sin informe de población cuenta como sin trabajadores. Actívalo para ver estas filas; la columna Personal muestra lo que falta. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
+- **Volver a ejecutar la configuración** abre la configuración de la primera visita con sus ajustes predefinidos: Novato (SCB, sin rentabilidad semanal ni coste operativo), Estándar (WCB) y Veterano (cualquier nave o sin límite).
 
-# Profit chart
+# Gráfico de beneficios
 
-Above the table, a chart shows the daily profit of the last 30 days for each industry. Each base counts by how much of its product the market trades (7-day average), and the many planets of one resource recipe count as one. Search to drill in:
+Sobre la tabla, un gráfico muestra el beneficio diario de los últimos 30 días de cada industria. Cada base cuenta según cuánto de su producto negocia el mercado (media de 7 días), y los muchos planetas de una misma receta de recurso cuentan como uno. Search to drill in:
 
-- an industry (e.g. "Chemistry") shows its buildings;
-- a building (e.g. "CHP") shows its products;
-- a product (e.g. "SC") shows the recipes that make it.
+- una industria (p. ej., «Chemistry») muestra sus edificios;
+- un edificio (p. ej., «CHP») muestra sus productos;
+- un producto (p. ej., «SC») muestra las recetas que lo fabrican.
 
-The chart follows the table's settings and limits. It shows the 7 most traded lines and says how many more there are.
+El gráfico sigue los ajustes y límites de la tabla. Muestra las 7 líneas más negociadas e indica cuántas más hay.
 
 # Search and tooltips
 
-- The search above the table filters by industry, building or product ticker.
-- Hover a column header for what it means, and a number for the napkin math behind it.
+- La búsqueda sobre la tabla filtra por industria, edificio o ticker de producto.
+- Pasa el ratón por la cabecera de una columna para ver qué significa, y por un número para ver el cálculo rápido que hay detrás.
 
-# Details
+# Detalles
 
-Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. You can also copy the math as text, or open the row as a new plan with the same layout (logged in).
+Despliega una fila para ver dos gráficos de 30 días de ingresos, coste operativo y beneficio diario, y debajo el cálculo completo. También puedes copiar el cálculo como texto o abrir la fila como un plan nuevo con la misma distribución (con sesión iniciada).
 
-- **Absolute**: every line on one ȼ scale, to see how they relate.
-- **Each line in its own range**: every line runs from 0 (its lowest value in the 30 days) to 1 (its highest), so a small line's swings show next to large ones. The labels still show ȼ.
+- **Absoluto**: todas las líneas en una misma escala de ȼ, para ver cómo se relacionan.
+- **Cada línea en su propio rango**: cada línea va de 0 (su valor más bajo en los 30 días) a 1 (el más alto), para que las oscilaciones de una línea pequeña se vean junto a las grandes. The labels still show ȼ.
