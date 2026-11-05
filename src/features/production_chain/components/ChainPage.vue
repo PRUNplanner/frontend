@@ -379,6 +379,7 @@
 					@track="track">
 					<template #bases>
 						<ChainBases
+							v-model:max-area="maxArea"
 							:result="result"
 							:bases="input.bases"
 							:efficiency="input.efficiency"
@@ -387,7 +388,6 @@
 							:ready="createReady"
 							:own="own"
 							:laying-out="layingOut"
-							v-model:max-area="maxArea"
 							@fit="onFit"
 							@auto-layout="onAutoLayout"
 							@merge="onMerge"
