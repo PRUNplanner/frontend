@@ -32,9 +32,9 @@
 			"planet": "Planète",
 			"ticker": "Matériau",
 			"exchange": "Échange",
-			"days": "Days"
+			"days": "Jours"
 		},
-		"days_option": "Last day | Last {n} days",
+		"days_option": "Dernier jour | {n} derniers jours",
 		"planet_placeholder": "ID naturel, p. ex. OT-580b",
 		"empty": {
 			"empire": "Tu n'as pas encore d'empire.",
@@ -124,8 +124,8 @@
 				"description": "Historique quotidien des prix d'un matériau sur un échange."
 			},
 			"market_daily": {
-				"label": "Market history, every material",
-				"description": "Daily prices of every material on one exchange for the last days, up to 31, in one request. Limited to 30 requests per minute."
+				"label": "Historique du marché, tous les matériaux",
+				"description": "Prix quotidiens de tous les matériaux sur un échange pour les derniers jours, jusqu'à 31, en une seule requête. Limité à 30 requêtes par minute."
 			}
 		}
 	},
