@@ -98,11 +98,11 @@
 		},
 		"language": "Idioma",
 		"page_load_failed": "No se pudo cargar esta página. Recarga para obtener la última versión.",
-		"save_failed": "Couldn't save that. Please try again.",
-		"session_ended": "Your session ended. Please log in again.",
-		"load_failed": "Couldn't load that. Please try again.",
-		"delete_failed": "Couldn't delete that. Please try again.",
-		"copy_failed": "Couldn't copy to the clipboard.",
+		"save_failed": "No se ha podido guardar. Inténtalo de nuevo.",
+		"session_ended": "Tu sesión ha terminado. Vuelve a iniciar sesión.",
+		"load_failed": "No se ha podido cargar. Inténtalo de nuevo.",
+		"delete_failed": "No se ha podido eliminar. Inténtalo de nuevo.",
+		"copy_failed": "No se ha podido copiar al portapapeles.",
 		"meter": {
 			"used": "{label} {pct} % usado"
 		},
@@ -139,10 +139,10 @@
 		"home": "Ir a la página de inicio"
 	},
 	"not_implemented": {
-		"title": "Feature Not Yet Implemented",
-		"open_source": "PRUNplanner v2 is Open Source. Check out the {link}.",
-		"repository": "Github repository",
-		"contact": "Get in touch on the {link}.",
-		"discord": "PrUn Community Tools Discord"
+		"title": "Función aún no implementada",
+		"open_source": "PRUNplanner v2 es de código abierto. Echa un vistazo al {link}.",
+		"repository": "repositorio de GitHub",
+		"contact": "Ponte en contacto en el {link}.",
+		"discord": "Discord de PrUn Community Tools"
 	}
 }
