@@ -1,14 +1,14 @@
 {
 	"view_title": "Recherche de planètes",
 	"title": "Recherche de planètes",
-	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"description": "Cherche parmi toutes les planètes de Prosperous Universe par ressources, conditions, COGC, infrastructures et sauts jusqu'aux échanges. Gratuit, sans compte.",
 	"intro": {
-		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
-		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+		"lead": "Filtre les {n} planètes de Prosperous Universe par ressources, conditions, COGC et sauts jusqu'aux échanges. Gratuit, sans compte.",
+		"lead_any": "Filtre toutes les planètes de Prosperous Universe par ressources, conditions, COGC et sauts jusqu'aux échanges. Gratuit, sans compte."
 	},
 	"loading": "Chargement des planètes…",
-	"load_error": "The planets couldn't be loaded.",
-	"load_throttled": "Too many requests, try again in {n} s.",
+	"load_error": "Impossible de charger les planètes.",
+	"load_throttled": "Trop de requêtes, réessaie dans {n} s.",
 	"header": {
 		"search_label": "Planet name or ID",
 		"search_placeholder": "Planet name or ID, e.g. KI-446 or Harmonia",
@@ -31,7 +31,7 @@
 		"rename_label": "Renommer la recherche enregistrée {n}",
 		"load": "Charger",
 		"delete": "Supprimer",
-		"more": "Saved searches, copy link, reset"
+		"more": "Recherches enregistrées, copier le lien, réinitialiser"
 	},
 	"filters": {
 		"title": "Filtres",
@@ -57,7 +57,7 @@
 		"remove_group_label": "Retirer le groupe {n}",
 		"and": "et",
 		"or": "ou",
-		"min": "min",
+		"min": "min.",
 		"per_day": "/jour",
 		"max": "(max. {max})",
 		"min_label": "Extraction quotidienne minimale de {material}",
@@ -95,7 +95,7 @@
 		"title": "Programme COGC actif"
 	},
 	"infrastructure": {
-		"title": "Infrastructure",
+		"title": "Infrastructures",
 		"LM": "Marché local",
 		"COGC": "Chambre de Commerce Globale",
 		"WAR": "Entrepôt",
@@ -114,8 +114,8 @@
 		"exchanges": "Échanges",
 		"max_jumps": "Sauts max.",
 		"max_jumps_value": "≤ {n} sauts depuis chaque choix",
-		"login_prompt": "Log in to count jumps from your own bases.",
-		"login": "Log in"
+		"login_prompt": "Connecte-toi pour compter les sauts depuis tes propres bases.",
+		"login": "Se connecter"
 	},
 	"results": {
 		"count": "{n} planètes sur {total}",
@@ -125,7 +125,7 @@
 		"chart": "Graphique",
 		"planet": "Planète",
 		"fert": "Fert. %",
-		"plots": "Plots",
+		"plots": "Parcelles",
 		"other": "Autres ressources",
 		"extras": "Matériaux de construction supplémentaires",
 		"cogc_infra": "COGC · Infra",
@@ -143,7 +143,7 @@
 		"sort": "Trier par {column}",
 		"sort_hint": "Clique pour trier par cette colonne, Maj+clic pour l'ajouter comme critère de départage",
 		"loading_more": "Chargement d'autres planètes…",
-		"create_plan_login": "Log in to plan a base on {planet}"
+		"create_plan_login": "Connecte-toi pour planifier une base sur {planet}"
 	},
 	"sort": {
 		"button": "Tri ({n})",
@@ -161,10 +161,10 @@
 	"columns": {
 		"button": "Colonnes ({shown}/{total})",
 		"fert": "Fertilité",
-		"plots": "Plots",
+		"plots": "Parcelles",
 		"other": "Autres ressources",
 		"extras": "Matériaux de construction supplémentaires",
-		"cogc": "COGC · Infrastructure",
+		"cogc": "COGC · Infrastructures",
 		"AI1": "Sauts AI1",
 		"CI1": "Sauts CI1",
 		"IC1": "Sauts IC1",
@@ -175,13 +175,13 @@
 		"reset": "Réinitialiser"
 	},
 	"plots": {
-		"free": "{free} / {total} plots free",
-		"full": "Full",
-		"full_ghost": "Full · ghost sites",
-		"unknown": "plots unknown",
-		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
-		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
-		"as_of": "As of {date}."
+		"free": "{free} / {total} parcelles libres",
+		"full": "Complète",
+		"full_ghost": "Complète · sites fantômes",
+		"unknown": "parcelles inconnues",
+		"full_tooltip": "Toutes les parcelles sont prises : cette planète ne peut plus être colonisée.",
+		"ghost_tooltip": "Toutes les parcelles sont prises. Les nouvelles bases vont sur des sites fantômes ; {n} jusqu'ici.",
+		"as_of": "Au {date}."
 	},
 	"chips": {
 		"name": "Nom : « {text} »",
@@ -227,10 +227,10 @@
 		"per_day": "{material} /jour",
 		"other": "Autres ressources",
 		"cogc": "COGC",
-		"infrastructure": "Infrastructure",
+		"infrastructure": "Infrastructures",
 		"cx": "AI1 / CI1 / IC1 / NC1",
 		"jumps": "Sauts vers {ref}",
-		"free_workers": "Free {tier} workers"
+		"free_workers": "Travailleurs {tier} libres"
 	},
 	"chart": {
 		"label": "Graphique des résultats : {y} en fonction de {x}",
