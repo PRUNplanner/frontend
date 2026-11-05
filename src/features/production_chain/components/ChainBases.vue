@@ -6,6 +6,8 @@
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import ChainBaseCard from "@/features/production_chain/components/ChainBaseCard.vue";
+	import ChainBasesOverview from "@/features/production_chain/components/ChainBasesOverview.vue";
+	import ChainBasesActions from "@/features/production_chain/components/ChainBasesActions.vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -40,6 +42,7 @@
 		ChainBaseCOGC,
 		ChainExperts,
 		ChainLux,
+		ChainMaxArea,
 		IChainBase,
 		IChainContext,
 		IChainResult,
@@ -52,6 +55,7 @@
 
 	// UI
 	import { PButton, PTable } from "@/ui";
+	import { AddOutlined } from "@vicons/material";
 
 	const {
 		result,
@@ -61,7 +65,10 @@
 		created,
 		ready,
 		own = NO_OWN,
+		layingOut = false,
 	} = defineProps<{
+		/** auto layout or separate is picking planets */
+		layingOut?: boolean;
 		result: IChainResult;
 		bases: IChainBase[];
 		/** chain efficiency in % */
@@ -74,7 +81,10 @@
 	}>();
 
 	const emit = defineEmits<{
-		(e: "split"): void;
+		(e: "autoLayout"): void;
+		(e: "fit", bases: number): void;
+		(e: "merge", from: string, into: string): void;
+		(e: "separate", id: string): void;
 		(e: "add"): void;
 		(e: "remove", id: string): void;
 		(e: "rename", id: string, name: string): void;
@@ -91,6 +101,16 @@
 		IC1: systemidIC1,
 		NC1: systemidNC1,
 	};
+
+	const maxArea = defineModel<ChainMaxArea>("maxArea", { default: 500 });
+	/** bases with steps that block creating plans */
+	const noPlanet = computed(
+		() => result.bases.filter((b) => b.materials.length && !b.planet).length
+	);
+	const overArea = computed(
+		() =>
+			result.bases.filter((b) => b.materials.length && b.overArea).length
+	);
 
 	const choice = (id: string) => bases.find((b) => b.id === id)!;
 	const planCount = computed(
@@ -195,35 +215,31 @@
 
 <template>
 	<div class="flex flex-col gap-3 p-3" data-testid="chain-bases">
+		<ChainBasesActions
+			v-model:max-area="maxArea"
+			:laying-out="layingOut"
+			:plan-count="planCount"
+			:ready="ready"
+			:no-planet="noPlanet"
+			:over-area="overArea"
+			@auto-layout="emit('autoLayout')"
+			@fit="(n) => emit('fit', n)"
+			@create="emit('create')" />
+		<ChainBasesOverview :result="result" :routes="routes" />
 		<div class="flex flex-wrap items-center gap-2">
-			<PButton
-				size="sm"
-				type="secondary"
-				data-testid="chain-split"
-				@click="emit('split')">
-				{{ $t("production_chains.bases.split") }}
-			</PButton>
+			<span class="text-xs text-muted flex-1 min-w-48">
+				{{ $t("production_chains.bases.hint") }}
+			</span>
 			<PButton
 				size="sm"
 				type="secondary"
 				:disabled="bases.length >= BASE_IDS.length"
 				data-testid="chain-add-base"
 				@click="emit('add')">
+				<template #icon><AddOutlined /></template>
 				{{ $t("production_chains.bases.add") }}
 			</PButton>
-			<span class="text-xs text-muted flex-1 min-w-48">{{
-				$t("production_chains.bases.hint")
-			}}</span>
-			<PButton
-				size="sm"
-				:type="ready ? 'primary' : 'secondary'"
-				:disabled="!planCount"
-				data-testid="chain-bases-create"
-				@click="emit('create')">
-				{{ $t("production_chains.bases.create", planCount) }}
-			</PButton>
 		</div>
-
 		<div
 			v-if="created && created.plans.length"
 			class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
@@ -266,8 +282,11 @@
 				:efficiency="Math.max(efficiency, 1) / 100"
 				:removable="bases.length > 1"
 				:fits="fitsFor(b.id)"
+				:others="bases.filter((o) => o.id !== b.id)"
 				@rename="(name) => emit('rename', b.id, name)"
 				@remove="emit('remove', b.id)"
+				@merge="(into) => emit('merge', b.id, into)"
+				@separate="emit('separate', b.id)"
 				@cogc="(c) => emit('cogc', b.id, c)"
 				@lux="(l) => emit('lux', b.id, l)"
 				@experts="(x) => emit('experts', b.id, x)"

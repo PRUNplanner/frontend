@@ -34,7 +34,9 @@ describe("ChainBases", () => {
 
 	it("forwards the toolbar and card actions", async () => {
 		const { wrapper, component } = await mountBases();
-		await wrapper.find("[data-testid='chain-split']").trigger("click");
+		await wrapper
+			.find("[data-testid='chain-auto-layout']")
+			.trigger("click");
 		await wrapper.find("[data-testid='chain-add-base']").trigger("click");
 		await wrapper
 			.find("[data-testid='chain-bases-create']")
@@ -45,13 +47,38 @@ describe("ChainBases", () => {
 		cards[1].vm.$emit("cogc", "none");
 		cards[0].vm.$emit("planet");
 		cards[0].vm.$emit("remove");
-		expect(component.emitted("split")).toHaveLength(1);
+		cards[0].vm.$emit("merge", "B");
+		cards[1].vm.$emit("separate");
+		expect(component.emitted("autoLayout")).toHaveLength(1);
+		expect(component.emitted("merge")).toEqual([["A", "B"]]);
+		expect(component.emitted("separate")).toEqual([["B"]]);
 		expect(component.emitted("add")).toHaveLength(1);
 		expect(component.emitted("create")).toHaveLength(1);
 		expect(component.emitted("rename")).toEqual([["B", "Kitchen"]]);
 		expect(component.emitted("cogc")).toEqual([["B", "none"]]);
 		expect(component.emitted("planet")).toEqual([["A"]]);
 		expect(component.emitted("remove")).toEqual([["A"]]);
+	});
+
+	it("sets the max base size and fits into N bases (AC 5)", async () => {
+		const { wrapper, component } = await mountBases();
+		const select = wrapper
+			.findAllComponents({ name: "PSelect" })
+			.find((s) => s.attributes("data-testid") === "chain-max-area")!;
+		expect(select.props("value")).toBe(500);
+		expect(
+			(select.props("options") as { value: number }[]).map((o) => o.value)
+		).toEqual([500, 750, 1000]);
+		select.vm.$emit("update:value", 750);
+		expect(component.emitted("update:maxArea")).toEqual([[750]]);
+		const count = wrapper
+			.findAllComponents({ name: "PInputNumber" })
+			.find((c) => c.attributes("data-testid") === "chain-fit-count")!;
+		count.vm.$emit("update:value", 0);
+		count.vm.$emit("update:value", 3);
+		await wrapper.vm.$nextTick();
+		await wrapper.find("[data-testid='chain-fit']").trigger("click");
+		expect(component.emitted("fit")).toEqual([[3]]);
 	});
 
 	it("lists shipping per route with jumps (AC 8)", async () => {

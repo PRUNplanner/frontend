@@ -29,6 +29,7 @@ import type {
 	IChainFootprint,
 	IChainInput,
 	IChainResult,
+	IChainRow,
 } from "@/features/production_chain/engine/chainSolver.types";
 
 /**
@@ -40,10 +41,12 @@ import type {
  */
 
 const EPS = 1e-9;
-export const BASE_IDS = ["A", "B", "C", "D", "E", "F", "G", "H"];
-/** a group of steps this large gets its own base when splitting */
-const SPLIT_MIN_BUILDINGS = 1.5;
-const SPLIT_MAX_BASES = 4;
+/** A–Z: deep chains at 500 area need more than eight */
+export const BASE_IDS = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+
+/** a step's share of its work in a base, 0 when it isn't built there */
+export const pieceOf = (row: IChainRow, id: string): number =>
+	row.shares.find((s) => s.base === id)?.share ?? 0;
 /** created plans queue at most this many orders per recipe */
 const MAX_RECIPE_AMOUNT = 10;
 /** queue time shares may differ from the chain's by this much */
@@ -83,62 +86,6 @@ export function cogcFits(
 			? Number(b[workers as keyof Building]) > 0
 			: b.expertise === program;
 	});
-}
-
-export interface IChainSplit {
-	/** expertise each new base is named after, null for none */
-	expertise: (string | null)[];
-	baseOf: Record<string, string>;
-}
-
-/**
- * Suggests bases by building expertise: groups of 1.5 or more exact
- * buildings (at the chain efficiency) get a base, largest first, at most
- * four; the other steps join the first base
- * @author jplacht
- *
- * @param {IChainResult} result Solved chain
- * @param {IChainContext} ctx Chain context
- * @param {number} efficiency Chain efficiency in %
- * @returns {IChainSplit} Bases and assignments
- */
-export function splitByExpertise(
-	result: IChainResult,
-	ctx: IChainContext,
-	efficiency: number
-): IChainSplit {
-	const eff = Math.max(efficiency, 1) / 100;
-	const groups = new Map<string, { exact: number; tickers: string[] }>();
-	const steps = result.order.filter((t) => result.rows[t].base);
-	for (const t of steps) {
-		const row = result.rows[t];
-		const expertise = row.buildingTicker
-			? ctx.buildings.get(row.buildingTicker)?.expertise
-			: null;
-		if (!expertise) continue;
-		const g = groups.get(expertise) ?? { exact: 0, tickers: [] };
-		g.exact += row.load / eff;
-		g.tickers.push(t);
-		groups.set(expertise, g);
-	}
-
-	const ranked = [...groups].sort((a, b) => b[1].exact - a[1].exact);
-	const kept = ranked
-		.filter(([, g]) => g.exact >= SPLIT_MIN_BUILDINGS - EPS)
-		.slice(0, SPLIT_MAX_BASES);
-	if (!kept.length)
-		return {
-			expertise: [ranked[0]?.[0] ?? null],
-			baseOf: Object.fromEntries(steps.map((t) => [t, BASE_IDS[0]])),
-		};
-
-	const baseOf: Record<string, string> = Object.fromEntries(
-		steps.map((t) => [t, BASE_IDS[0]])
-	);
-	kept.forEach(([, g], i) => {
-		for (const t of g.tickers) baseOf[t] = BASE_IDS[i];
-	});
-	return { expertise: kept.map(([name]) => name), baseOf };
 }
 
 export interface IChainRouteMaterial {
@@ -190,21 +137,24 @@ export function chainShipping(
 		const gross = row.perDay + row.covered + row.have;
 		if (gross <= EPS) return [];
 		const list: [string, number][] = [];
-		if (row.perDay > EPS)
-			list.push([
-				row.source === "buy" ? cx(row.exchange) : row.base!,
-				row.perDay / gross,
-			]);
+		if (row.perDay > EPS) {
+			if (row.source === "buy")
+				list.push([cx(row.exchange), row.perDay / gross]);
+			else
+				for (const s of row.shares)
+					list.push([s.base, (row.perDay / gross) * s.share]);
+		}
 		for (const s of suppliers[t] ?? [])
 			list.push([s.key, s.perDay / gross]);
 		const from = byproduct.get(t)?.fromAmounts ?? {};
 		const total = Object.values(from).reduce((s, q) => s + q, 0);
 		if (row.covered > EPS && total > 0)
 			for (const [p, q] of Object.entries(from))
-				list.push([
-					result.rows[p].base!,
-					((row.covered / gross) * q) / total,
-				]);
+				for (const s of result.rows[p].shares)
+					list.push([
+						s.base,
+						((row.covered / gross) * q * s.share) / total,
+					]);
 		return list;
 	};
 
@@ -216,12 +166,39 @@ export function chainShipping(
 		route.set(ticker, (route.get(ticker) ?? 0) + q);
 		routes.set(key, route);
 	};
+	/**
+	 * ships q of a material from its sources to its sinks (shares each):
+	 * what a base makes and uses stays there, the rest ships pro rata
+	 */
+	const ship = (
+		ticker: string,
+		q: number,
+		sources: [string, number][],
+		sinks: [string, number][]
+	) => {
+		const out = new Map<string, number>();
+		for (const [end, s] of sources) out.set(end, (out.get(end) ?? 0) + s);
+		const into = new Map<string, number>();
+		for (const [end, s] of sinks) into.set(end, (into.get(end) ?? 0) + s);
+		for (const [end, s] of into) {
+			const local = Math.min(s, out.get(end) ?? 0);
+			if (local <= 0) continue;
+			into.set(end, s - local);
+			out.set(end, out.get(end)! - local);
+		}
+		const left = [...out.values()].reduce((s, v) => s + v, 0);
+		if (left <= EPS) return;
+		for (const [from, s] of out)
+			for (const [to, d] of into)
+				add(from, to, ticker, (q * s * d) / left);
+	};
 
 	for (const l of result.links) {
-		const to = result.rows[l.consumer]?.base;
-		if (!to) continue;
-		for (const [from, share] of sourcesOf(l.input))
-			add(from, to, l.input, l.perDay * share);
+		const sinks = (result.rows[l.consumer]?.shares ?? []).map(
+			(s): [string, number] => [s.base, s.share]
+		);
+		if (!sinks.length) continue;
+		ship(l.input, l.perDay, sourcesOf(l.input), sinks);
 	}
 	for (const t of result.order) {
 		const row = result.rows[t];
@@ -233,12 +210,13 @@ export function chainShipping(
 		const total = Object.values(b.fromAmounts).reduce((s, q) => s + q, 0);
 		if (b.sold <= EPS || total <= 0) continue;
 		for (const [p, q] of Object.entries(b.fromAmounts))
-			add(
-				result.rows[p].base!,
-				cx(b.market?.exchange),
-				b.ticker,
-				(b.sold * q) / total
-			);
+			for (const s of result.rows[p].shares)
+				add(
+					s.base,
+					cx(b.market?.exchange),
+					b.ticker,
+					(b.sold * q * s.share) / total
+				);
 	}
 
 	// between bases, from the plans, from the CX, to the CX
@@ -334,7 +312,7 @@ export function rankPlanets(
 	const eff = Math.max(input.efficiency, 1) / 100;
 	const rows = result.order
 		.map((t) => result.rows[t])
-		.filter((r) => r.base === base.id && r.buildingTicker);
+		.filter((r) => r.buildingTicker && pieceOf(r, base.id) > 0);
 	const footprints = new Map<string, IChainFootprint>();
 
 	return planets.map((planet) => {
@@ -345,7 +323,8 @@ export function rankPlanets(
 
 		for (const row of rows) {
 			let ticker = row.buildingTicker!;
-			let work = row.load;
+			const piece = pieceOf(row, base.id);
+			let work = row.load * piece;
 			if (row.source === "extract") {
 				const onPlanet = ctx.extraction
 					?.get(row.ticker)
@@ -356,7 +335,7 @@ export function rankPlanets(
 				const site = onPlanet ?? chainSite(ctx, input, row.ticker);
 				const rate = site ? extractorRate(site) : 0;
 				ticker = site?.buildingTicker ?? ticker;
-				work = rate > 0 ? row.perDay / rate : 0;
+				work = rate > 0 ? (row.perDay * piece) / rate : 0;
 			}
 			const f = planetFactor(ctx, planet, cogc, ticker, setup);
 			if (f <= 0) {
@@ -468,7 +447,7 @@ function planDraft(
 				recipe = {
 					recipeId: row.recipe.recipe_id,
 					timeMs: row.recipe.time_ms,
-					load: row.load,
+					load: row.load * pieceOf(row, base.id),
 				};
 			else if (row.site && !row.notOnPlanet) {
 				const kind = resourceBuildingTicker[row.site.buildingTicker];
@@ -478,7 +457,7 @@ function planDraft(
 						? calculateExtraction(kind, row.site.dailyExtraction)
 								.timeMs
 						: 0,
-					load: row.load,
+					load: row.load * pieceOf(row, base.id),
 				};
 			}
 			if (!recipe) continue;

@@ -60,7 +60,7 @@
 		(e: "planet", ticker: string): void;
 		(e: "buyAll", tickers: string[]): void;
 		(e: "track", action: ProductionChainAction): void;
-		(e: "base", ticker: string, id: string): void;
+		(e: "base", ticker: string, id: string, from?: string): void;
 		(e: "have", ticker: string, value: ChainHave | "off" | undefined): void;
 	}>();
 
@@ -292,7 +292,7 @@
 			@planet="(ticker) => emit('planet', ticker)"
 			@buy-all="buyAll"
 			@clear-filter="filter = null"
-			@base="(ticker, id) => emit('base', ticker, id)"
+			@base="(ticker, id, from) => emit('base', ticker, id, from)"
 			@have="(ticker, v) => emit('have', ticker, v)" />
 		<slot v-else-if="view === 'bases'" name="bases" />
 		<ChainGraph

@@ -168,3 +168,32 @@ describe("productionChain.util edge cases", () => {
 		expect(csv.split("\n")[0]).toBe('"Per ""day""","a,b"');
 	});
 });
+
+describe("buyList with a split step", () => {
+	it("books a split consumer's bought inputs on each piece", () => {
+		const ctx = testContext();
+		const bases = ["A", "B"].map((id) => ({
+			id,
+			name: id,
+			planetId: null,
+			cogc: "auto" as const,
+		}));
+		const result = solveChain(
+			chainInput([["DW", 300]], {
+				bases,
+				baseOf: { DW: { A: 3, B: 3 } },
+				source: { PG: "buy" },
+			}),
+			ctx
+		);
+		const list = buyList(result, ctx.materials, 1);
+		const h2o = (id: string) =>
+			list.groups
+				.find((g) => g.base === id)!
+				.items.find((i) => i.ticker === "H2O")!;
+		expect(Math.abs(h2o("A").units - h2o("B").units)).toBeLessThanOrEqual(
+			1
+		);
+		expect(h2o("A").units).toBeGreaterThan(0);
+	});
+});

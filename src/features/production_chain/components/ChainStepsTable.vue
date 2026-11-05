@@ -48,6 +48,7 @@
 
 	// Engine
 	import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
+	import { buyHint } from "@/features/production_chain/engine/chainAutoLayout";
 
 	const {
 		result,
@@ -75,7 +76,8 @@
 		(e: "planet", ticker: string): void;
 		(e: "buyAll", tickers: string[]): void;
 		(e: "clearFilter"): void;
-		(e: "base", ticker: string, id: string): void;
+		/** from: only the step's piece in that base */
+		(e: "base", ticker: string, id: string, from?: string): void;
 		(e: "have", ticker: string, value: ChainHave | "off" | undefined): void;
 	}>();
 
@@ -592,8 +594,50 @@
 								</span>
 							</td>
 							<td>
+								<div
+									v-if="entry.row.shares.length > 1"
+									class="flex flex-col gap-1"
+									:data-testid="`chain-pieces-${entry.row.ticker}`">
+									<span
+										v-for="s in entry.row.shares"
+										:key="s.base"
+										class="flex items-center gap-1 text-xs">
+										<PSelect
+											:value="s.base"
+											:options="baseOptions"
+											size="sm"
+											class="w-12"
+											:aria-label="
+												t(
+													'production_chains.table.piece_of',
+													{
+														ticker: entry.row
+															.ticker,
+														id: s.base,
+													}
+												)
+											"
+											@update:value="
+												(v) =>
+													v &&
+													v !== s.base &&
+													emit(
+														'base',
+														entry.row.ticker,
+														String(v),
+														s.base
+													)
+											" />
+										<span class="text-muted">{{
+											formatNumber(
+												entry.row.buildings * s.share,
+												1
+											)
+										}}</span>
+									</span>
+								</div>
 								<PSelect
-									v-if="entry.row.base"
+									v-else-if="entry.row.base"
 									:value="entry.row.base"
 									:options="baseOptions"
 									size="sm"
@@ -639,6 +683,17 @@
 										@update:value="
 											(v) => onSource(entry.row, v)
 										" />
+								</span>
+								<span
+									v-if="buyHint(entry.row)"
+									class="ms-1 px-1 rounded-control border border-line text-xs text-warning"
+									:title="
+										t(
+											'production_chains.table.buy_hint_title'
+										)
+									"
+									:data-testid="`chain-buy-hint-${entry.row.ticker}`">
+									{{ $t("production_chains.table.buy_hint") }}
 								</span>
 								<label
 									v-if="
