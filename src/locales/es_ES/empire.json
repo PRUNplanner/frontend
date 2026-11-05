@@ -4,6 +4,7 @@
 	"overview_hide": "Ocultar lista de planes",
 	"overview_show": "Mostrar lista de planes",
 	"views": {
+		"label": "View",
 		"material_io": "E/S de materiales",
 		"analysis": "Análisis",
 		"production_opportunities": "Oportunidades de producción"
@@ -40,6 +41,7 @@
 		"expand_row": "Mostrar planetas de {ticker}",
 		"view_sides": "Productores · Consumidores",
 		"view_net": "Neto por planeta",
+		"view_label": "Detail view",
 		"surplus": "Excedente",
 		"needs": "Necesidades",
 		"plan_count": "{count} plan | {count} planes",
@@ -95,6 +97,7 @@
 			"title": "Materiales que más ȼ mueven",
 			"price": "ȼ / día",
 			"amount": "Unidades / día",
+			"metric_label": "Metric",
 			"buy": "← compras (consumo neto)",
 			"sell": "vendes (producción neta) →",
 			"caption": "Los {top} de {n} materiales · haz clic en una fila para abrirla en E/S de materiales",
