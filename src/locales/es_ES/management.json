@@ -16,7 +16,7 @@
 			"faction": "@:terms.faction",
 			"permits_total": "@:terms.permits_plural totales",
 			"permits_used": "@:terms.permits_plural usados",
-			"empire_placeholder": "max. 100 characters"
+			"empire_placeholder": "máx. 100 caracteres"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -94,7 +94,7 @@
 			"clone": "Clonar",
 			"share": "Compartir…",
 			"delete": "Eliminar…",
-			"clone_name": "{name} (Clone)"
+			"clone_name": "{name} (Clon)"
 		}
 	},
 	"save_bar": {
