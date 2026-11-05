@@ -1,58 +1,58 @@
-# Exchange Preferences
+# Préférences d'échange
 
-An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
+Une préférence d'échange définit les prix qu'utilisent tes plans : quel échange et quelle base de prix, et des prix fixes pour les matériaux que tu obtiens à prix coûtant ou auprès d'un partenaire. Assigne une préférence à un empire dans Gestion ; tous les plans de cet empire l'utilisent alors.
 
-The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
+La page s'ouvre sur l'**Aperçu** : chaque matériau que tes plans achètent ou vendent, le prix retenu et d'où vient ce prix. Déplie une ligne pour voir la cascade complète pour chaque planète. Notes above the table point to rules that need a look.
 
-# How a Price Is Found
+# Comment un prix est déterminé
 
-For every material, PRUNplanner looks for a buy price (for what a plan consumes) and a sell price (for what it produces). It checks these levels in order and takes the first rule that matches:
+Pour chaque matériau, PRUNplanner cherche un prix d'achat (pour ce qu'un plan consomme) et un prix de vente (pour ce qu'il produit). Il vérifie ces niveaux dans l'ordre et prend la première règle qui correspond :
 
-1. **Planet fixed price**: a fixed price set on that planet
-2. **All-planets fixed price**
-3. **Planet exchange**: the exchange rule set on that planet
-4. **All-planets exchange**
-5. **Universe · VWAP 30D**, when no rule above matches
+1. **Prix fixe de la planète** : un prix fixe défini sur cette planète
+2. **Prix fixe de toutes les planètes**
+3. **Échange de la planète** : la règle d'échange définie sur cette planète
+4. **Échange de toutes les planètes**
+5. **Universe · VWAP 30j**, quand aucune règle ci-dessus ne correspond
 
-An all-planets fixed price wins over a planet's exchange rule.
+Un prix fixe de toutes les planètes l'emporte sur la règle d'échange d'une planète.
 
-## Buy, Sell or Both
+## Achat, vente ou les deux
 
-A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs (for example only a buy rule, and the plan sells the material), that level is skipped and the next one is checked, down to Universe · VWAP 30D.
+Une règle peut s'appliquer à l'achat, à la vente ou aux deux. Si un niveau n'a pas de règle pour le côté dont un plan a besoin (par exemple seulement une règle d'achat alors que le plan vend le matériau), ce niveau est ignoré et le suivant est vérifié, jusqu'à Universe · VWAP 30j.
 
-## Exchanges Without a Price
+## Échanges sans prix
 
-When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
+Quand une règle d'échange correspond mais que son échange n'a pas de prix pour un matériau (aucune transaction, aucun Ask ou aucun Bid), le prix est de **0 ȼ**. It does not fall through to the next level. La page affiche ces prix en ambre et les liste dans les notes, pour que tu puisses définir un prix fixe ou choisir un autre échange ou une autre base.
 
-# Price Basis: VWAP, Ask and Bid
+# Base de prix : VWAP, Ask et Bid
 
-PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
+PRUNplanner peut utiliser un prix moyen pondéré par le volume (VWAP) sur 7 ou 30 jours. Le VWAP donne plus de poids aux transactions à fort volume ; il reflète donc là où la plupart des échanges ont eu lieu plutôt que des ordres isolés et extrêmes.
 
-Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+Ask et Bid correspondent au carnet d'ordres du jour : l'offre la moins chère et la demande la plus haute. Ils changent chaque jour et peuvent manquer pour les matériaux peu échangés. Universe n'a que des prix VWAP.
 
-# Presets
+# Préréglages
 
-- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
-- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+- **Moyenne · VWAP 30j** utilise le VWAP 30j de l'échange pour l'achat et la vente.
+- **Échange immédiat · achat à l'Ask, vente au Bid** achète à l'Ask de l'échange et vend à son Bid. Non disponible pour Universe.
 
-Presets work on the scope's exchange, else the all-planets exchange, else NC1.
+Les préréglages s'appliquent à l'échange de la portée, sinon à l'échange de toutes les planètes, sinon à NC1.
 
-# Fixed Prices and COGM
+# Prix fixes et COGM
 
-Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+Les prix fixes conviennent aux matériaux que tu fabriques toi-même et utilises à prix coûtant, ou aux prix convenus avec une corporation ou un partenaire. Laisse un côté vide pour utiliser le prix d'échange.
 
-On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+Sur **Toutes les planètes**, le tableau des prix fixes affiche le prix du marché sans le prix fixe et, pour les matériaux que tes plans fabriquent, le COGM (coût de fabrication) le plus bas parmi les plans qui utilisent la préférence. **Utiliser** fixe le prix d'achat à ce COGM. Dans l'outil COGM d'un plan, **Utiliser comme prix d'achat** fait de même. Une note t'avertit quand un prix d'achat fixe s'écarte de plus de 2 % du COGM.
 
-# Planet Exceptions
+# Exceptions par planète
 
-Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
+La plupart des joueurs utilisent un seul échange principal pour toutes les planètes. Quand une planète a besoin d'autre chose, ouvre-la dans la liste et définis sa propre règle d'échange ou ses propres prix fixes. Ses règles l'emportent sur celles de toutes les planètes sur cette planète, sauf les prix fixes de toutes les planètes, qui l'emportent toujours sur l'échange de la planète.
 
-Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+Les planètes avec des règles enregistrées qu'aucun plan n'utilise plus sont listées sous **Dans aucun plan**. Leurs règles restent enregistrées jusqu'à ce que tu les supprimes.
 
-# Saving
+# Enregistrement
 
-Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+Tes plans n'utilisent les modifications qu'une fois enregistrées. La barre d'enregistrement compte les portées modifiées ; Annuler revient aux règles enregistrées. La page te demande confirmation avant de quitter ou de changer de préférence avec des modifications non enregistrées.
 
-# CSV Import and Export
+# Import et export CSV
 
-**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
+**Exporter en CSV** télécharge toutes les règles de la préférence, modifications non enregistrées comprises. **Importer un CSV** lit un tel fichier et demande confirmation avant de remplacer toutes les règles de la préférence. Un import n'est pas enregistré tant que tu ne l'as pas enregistré.
