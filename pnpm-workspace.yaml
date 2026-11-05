@@ -11,3 +11,8 @@ strictDepBuilds: true
 
 # match pnpm 11+ default: skip versions published less than 24h ago
 minimumReleaseAge: 1440
+
+# security: patched transitive versions (Dependabot alerts)
+overrides:
+    follow-redirects: ^1.16.2
+    minimatch: ^11.0.1
