@@ -25,7 +25,7 @@
 	} from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import { PButton, PSegmented } from "@/ui";
 
 	const view = defineModel<PlanetSearchView>("view", { required: true });
 	const hiddenColumns = defineModel<PlanetSearchColumn[]>("hiddenColumns", {
@@ -81,17 +81,15 @@
 			<!-- one row, one height: view switch, then sort and columns -->
 			<div
 				class="ml-auto flex flex-row flex-wrap items-center gap-x-6 gap-y-2">
-				<PButtonGroup
-					role="group"
-					:aria-label="t('planet_search.results.view_label')">
-					<PButton
-						v-for="v in ['list', 'matrix', 'chart'] as const"
-						:key="v"
-						:pressed="view === v"
-						@click="view = v">
-						{{ t(`planet_search.results.${v}`) }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					v-model:value="view"
+					:options="
+						(['list', 'matrix', 'chart'] as const).map((v) => ({
+							value: v,
+							label: t(`planet_search.results.${v}`),
+						}))
+					"
+					:label="t('planet_search.results.view_label')" />
 				<div class="flex flex-row items-center gap-2">
 					<PlanetSearchSortMenu
 						:sorts="sorts"

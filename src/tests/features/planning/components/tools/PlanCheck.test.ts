@@ -334,8 +334,8 @@ describe("PlanCheck", () => {
 			const wrapper = await mountTool();
 			const [zzz, fe] = wrapper.findAll("tbody tr");
 
-			expect(zzz.find("span").classes()).toContain("bg-black/40");
-			expect(fe.find("span").classes()).toContain(
+			expect(zzz.find("[data-unknown-material]").exists()).toBe(true);
+			expect(fe.find(".material-tile").classes()).toContain(
 				"material-category-metals"
 			);
 			const tip = await hoverTooltip(zzz.find(".ptooltip"));

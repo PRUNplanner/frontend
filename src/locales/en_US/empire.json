@@ -4,6 +4,7 @@
 	"overview_hide": "Hide plan list",
 	"overview_show": "Show plan list",
 	"views": {
+		"label": "View",
 		"material_io": "Material I/O",
 		"analysis": "Analysis",
 		"production_opportunities": "Production Opportunities"
@@ -40,6 +41,7 @@
 		"expand_row": "Show planets for {ticker}",
 		"view_sides": "Producers · Consumers",
 		"view_net": "Net per planet",
+		"view_label": "Detail view",
 		"surplus": "Surplus",
 		"needs": "Needs",
 		"plan_count": "{count} plan | {count} plans",
@@ -95,6 +97,7 @@
 			"title": "Materials moving the most ȼ",
 			"price": "ȼ / day",
 			"amount": "Units / day",
+			"metric_label": "Metric",
 			"buy": "← you buy (net consumed)",
 			"sell": "you sell (net produced) →",
 			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",

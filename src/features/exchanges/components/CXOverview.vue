@@ -33,11 +33,10 @@
 
 	// UI
 	import {
-		PButton,
-		PButtonGroup,
 		PDataTable,
 		PInput,
 		PProgressBar,
+		PSegmented,
 		PTag,
 		PTooltip,
 	} from "@/ui";
@@ -272,19 +271,16 @@
 						class="w-48"
 						:aria-label="$t('exchanges.overview.search')"
 						:placeholder="$t('exchanges.overview.search')" />
-					<PButtonGroup
-						role="group"
+					<PSegmented
+						v-model:value="filter"
 						class="flex-wrap"
-						:aria-label="$t('exchanges.overview.filter_label')">
-						<PButton
-							v-for="f in FILTERS"
-							:key="f"
-							class="min-w-11"
-							:pressed="filter === f"
-							@click="filter = f">
-							{{ $t(`exchanges.overview.filter.${f}`) }}
-						</PButton>
-					</PButtonGroup>
+						:options="
+							FILTERS.map((f) => ({
+								value: f,
+								label: $t(`exchanges.overview.filter.${f}`),
+							}))
+						"
+						:label="$t('exchanges.overview.filter_label')" />
 				</div>
 			</div>
 
@@ -298,21 +294,18 @@
 				<PProgressBar :step="progress[0]" :total="progress[1]" />
 			</div>
 			<template v-else>
-				<PButtonGroup
+				<PSegmented
 					v-if="!isWide"
-					role="group"
+					v-model:value="phoneSide"
 					class="self-start"
-					:aria-label="$t('exchanges.overview.side_label')">
-					<PButton
-						v-for="s in ['BUY', 'SELL'] as const"
-						:key="s"
-						size="sm"
-						class="min-w-11"
-						:pressed="phoneSide === s"
-						@click="phoneSide = s">
-						{{ $t(`exchanges.overview.side.${s}`) }}
-					</PButton>
-				</PButtonGroup>
+					size="sm"
+					:options="
+						(['BUY', 'SELL'] as const).map((s) => ({
+							value: s,
+							label: $t(`exchanges.overview.side.${s}`),
+						}))
+					"
+					:label="$t('exchanges.overview.side_label')" />
 				<PDataTable
 					v-model:expanded-row-keys="expanded"
 					:columns="columns"

@@ -25,7 +25,7 @@
 	import type { IPlanetSearchSort } from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PButtonGroup, PPopover, PSelect } from "@/ui";
+	import { PButton, PPopover, PSegmented, PSelect } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps<{
@@ -149,24 +149,29 @@
 						class="flex-1 min-w-0 truncate font-medium text-white">
 						{{ label(s.key) }}
 					</span>
-					<PButtonGroup
-						role="group"
-						:aria-label="
+					<PSegmented
+						size="sm"
+						:value="s.dir"
+						:options="
+							(['asc', 'desc'] as const).map((d) => ({
+								value: d,
+								label: t(`planet_search.sort.${d}`),
+								title: t(`planet_search.sort.${d}`),
+							}))
+						"
+						:label="
 							t('planet_search.sort.direction', {
 								column: label(s.key),
 							})
-						">
-						<PButton
-							v-for="d in ['asc', 'desc'] as const"
-							:key="d"
-							size="sm"
-							:pressed="s.dir === d"
-							:title="t(`planet_search.sort.${d}`)"
-							:aria-label="t(`planet_search.sort.${d}`)"
-							@click="setDir(i, d)">
-							{{ d === "asc" ? "▲" : "▼" }}
-						</PButton>
-					</PButtonGroup>
+						"
+						@update:value="(d) => setDir(i, d)">
+						<template #option="{ option }">
+							<span aria-hidden="true">
+								{{ option.value === "asc" ? "▲" : "▼" }}
+							</span>
+							<span class="sr-only">{{ option.label }}</span>
+						</template>
+					</PSegmented>
 					<PButton
 						size="sm"
 						type="secondary"

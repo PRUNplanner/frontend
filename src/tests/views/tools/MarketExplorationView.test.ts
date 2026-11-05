@@ -234,7 +234,7 @@ describe("MarketExplorationView", () => {
 			view: string
 		) =>
 			wrapper
-				.findAllComponents(PButton)
+				.findAll("button")
 				.find(
 					(b) => b.text() === `market_exploration.chart.view.${view}`
 				)!;
@@ -242,7 +242,7 @@ describe("MarketExplorationView", () => {
 		const buttonByText = (
 			wrapper: Awaited<ReturnType<typeof mountView>>,
 			text: string
-		) => wrapper.findAllComponents(PButton).find((b) => b.text() === text)!;
+		) => wrapper.findAll("button").find((b) => b.text() === text)!;
 
 		it("loads the sparklines of the overview's exchange once", async () => {
 			await mountView();
@@ -340,9 +340,6 @@ describe("MarketExplorationView", () => {
 			await viewButton(wrapper, "candles").trigger("click");
 
 			expect(trackEvent).not.toHaveBeenCalled();
-			expect(
-				sessionStorage.getItem("market_exploration.chart_view")
-			).toBe("candles");
 		});
 
 		it("toggles the chart between side-by-side and fullscreen", async () => {

@@ -13,7 +13,7 @@
 
 	// UI
 	import PButton from "@/ui/components/PButton.vue";
-	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PSegmented from "@/ui/components/PSegmented.vue";
 	import PNotice from "@/ui/components/PNotice.vue";
 	import { PlusSharp, ClearSharp } from "@vicons/material";
 
@@ -92,15 +92,20 @@
 <template>
 	<div class="pl-6 border-l border-prunplanner my-2 relative">
 		<div class="flex items-center gap-4 mb-4">
-			<PButtonGroup>
-				<PButton
-					v-for="op in ['AND', 'OR'] as const"
-					:key="op"
-					:pressed="group.operator === op"
-					@click="emit('update:group', { ...group, operator: op })">
-					{{ op }}
-				</PButton>
-			</PButtonGroup>
+			<PSegmented
+				:value="group.operator"
+				:options="
+					(['AND', 'OR'] as const).map((op) => ({
+						value: op,
+						label: op,
+					}))
+				"
+				:label="
+					$t('market_live.components.rule_builder.operator_label')
+				"
+				@update:value="
+					(op) => emit('update:group', { ...group, operator: op })
+				" />
 
 			<div class="flex gap-2">
 				<PButton @click="addCondition">

@@ -21,6 +21,7 @@
 	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Components
+	import PlanCheckTile from "@/features/planning/components/tools/PlanCheckTile.vue";
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
 	import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
 	import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
@@ -60,7 +61,7 @@
 	const planningStore = usePlanningStore();
 	const userStore = useUserStore();
 	const { getGameData, createPrices } = usePlanContext();
-	const { materialsMap, getMaterialClass } = useMaterialData();
+	const { materialsMap } = useMaterialData();
 	const { view, pct } = usePlanCheckView();
 
 	// runs only while the tool is open; a new price book per run picks up
@@ -149,9 +150,6 @@
 				? chartZone(Math.abs(value), 60, 200)
 				: "none"
 		];
-
-	const chipClass = (ticker: string) =>
-		materialsMap.value[ticker] ? getMaterialClass(ticker) : "bg-black/40";
 
 	const columns = computed<PDataTableColumn<ISensitivityRow>[]>(() => [
 		{ key: "ticker", title: t("plan.tools.plan_check.columns.material") },
@@ -267,11 +265,7 @@
 					:data="shown"
 					:row-key="rowKey">
 					<template #cell-ticker="{ row }">
-						<span
-							class="inline-block min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-							:class="chipClass(row.ticker)">
-							{{ row.ticker }}
-						</span>
+						<PlanCheckTile :ticker="row.ticker" />
 						<span
 							class="@[640px]:hidden ml-1.5 px-1.5 border border-white/20 rounded-sm text-xs text-muted-strong">
 							{{ t(`plan.tools.plan_check.side.${row.side}`) }}
@@ -422,11 +416,7 @@
 						{{ t("plan.tools.plan_check.means.title") }}
 					</h3>
 					<p class="flex gap-2">
-						<span
-							class="shrink-0 h-fit min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-							:class="chipClass(top.ticker)">
-							{{ top.ticker }}
-						</span>
+						<PlanCheckTile :ticker="top.ticker" />
 						<span>
 							{{
 								t(
@@ -509,13 +499,10 @@
 								}}
 							</dt>
 							<dd class="flex gap-1">
-								<span
+								<PlanCheckTile
 									v-for="r in sensitivity.rows.slice(0, 3)"
 									:key="r.ticker"
-									class="min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-									:class="chipClass(r.ticker)">
-									{{ r.ticker }}
-								</span>
+									:ticker="r.ticker" />
 							</dd>
 						</div>
 					</dl>

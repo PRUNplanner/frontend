@@ -8,7 +8,6 @@
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePlanContext } from "@/features/planning/usePlanContext";
 
 	// Engine
@@ -28,6 +27,7 @@
 	import { formatNumber, formatPayback } from "@/util/numbers";
 
 	// Components
+	import PlanCheckTile from "@/features/planning/components/tools/PlanCheckTile.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import MarketFlagIcon from "@/features/cx/components/MarketFlagIcon.vue";
 	import PInlineBar from "@/ui/charts/PInlineBar.vue";
@@ -60,7 +60,6 @@
 	const planningStore = usePlanningStore();
 	const { getGameData, createPrices } = usePlanContext();
 	const { getExchangeTickerLoaded } = useExchangeData();
-	const { materialsMap, getMaterialClass } = useMaterialData();
 
 	// runs only while the view is open; a new price book per run picks up
 	// CX preference changes
@@ -215,8 +214,6 @@
 			: c.flags.includes("large_share")
 				? "text-warning font-bold"
 				: "";
-	const chipClass = (ticker: string) =>
-		materialsMap.value[ticker] ? getMaterialClass(ticker) : "bg-black/40";
 	const side = (c: IMarketCheck) =>
 		t(`plan.tools.plan_check.side.${c.delta > 0 ? "sell" : "buy"}`);
 	const price = (v: number) =>
@@ -314,11 +311,7 @@
 							</span>
 						</template>
 						<template #cell-material="{ row }">
-							<span
-								class="inline-block min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-								:class="chipClass(row.ticker)">
-								{{ row.ticker }}
-							</span>
+							<PlanCheckTile :ticker="row.ticker" />
 						</template>
 						<template #cell-side="{ row }">
 							<span
@@ -429,11 +422,7 @@
 							c.level ? LEVEL_CARD[c.level] : 'border-white/10'
 						">
 						<div class="flex items-center gap-2">
-							<span
-								class="min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-								:class="chipClass(c.ticker)">
-								{{ c.ticker }}
-							</span>
+							<PlanCheckTile :ticker="c.ticker" />
 							<span
 								class="px-1.5 border border-white/20 rounded-sm text-xs text-muted-strong">
 								{{
@@ -683,11 +672,7 @@
 						{{ t("plan.tools.plan_check.market.means.title") }}
 					</h3>
 					<p v-if="worst" class="flex gap-2">
-						<span
-							class="shrink-0 h-fit min-w-10 px-1 rounded-sm text-xs text-center font-bold"
-							:class="chipClass(worst.ticker)">
-							{{ worst.ticker }}
-						</span>
+						<PlanCheckTile :ticker="worst.ticker" />
 						<span>{{ meaning(worst) }}</span>
 					</p>
 					<p v-else>
