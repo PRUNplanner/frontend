@@ -4,6 +4,7 @@
 	"overview_hide": "Hide plan list",
 	"overview_show": "Show plan list",
 	"views": {
+		"label": "View",
 		"material_io": "물자 입출력",
 		"analysis": "분석",
 		"production_opportunities": "생산 기회"
@@ -40,6 +41,7 @@
 		"expand_row": "{ticker} 산출 행성 보기",
 		"view_sides": "생산 건물 · 소비 건물",
 		"view_net": "행성별 순수량",
+		"view_label": "Detail view",
 		"surplus": "잉여",
 		"needs": "필요량",
 		"plan_count": "플랜 {count}개 | 플랜 {count}개",
@@ -95,6 +97,7 @@
 			"title": "Materials moving the most ȼ",
 			"price": "ȼ / day",
 			"amount": "Units / day",
+			"metric_label": "Metric",
 			"buy": "← you buy (net consumed)",
 			"sell": "you sell (net produced) →",
 			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
