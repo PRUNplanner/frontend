@@ -28,6 +28,15 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 					{ planet_natural_id: "UV-072c", planet_name: "UV-072c" },
 					{ planet_natural_id: "OT-580b", planet_name: "Montem" },
 				];
+			// 100 traded today on every exchange
+			if (name === "GetExplorationData")
+				return [
+					{
+						date_epoch:
+							Math.floor(Date.now() / 86_400_000) * 86_400_000,
+						traded: 100,
+					},
+				];
 			if (name === "CreatePlan") {
 				if (query.failCreate) throw new Error("400");
 				return { uuid: "new-plan" };
@@ -255,29 +264,30 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), {
 			series,
 		});
-		// absolute and scaled side by side, the scaled one 0–1 with the money shown
-		const [absolute, scaled] = wrapper.findAllComponents({
+		await flushPromises();
+		// profit and market volume side by side
+		const [absolute, volume] = wrapper.findAllComponents({
 			name: "PLineChart",
 		});
 		expect(absolute.props("series")).toHaveLength(3);
 		expect(absolute.props("days")).toHaveLength(90);
 		expect(wrapper.text()).toContain("base_roi.detail.history_absolute");
-		expect(wrapper.text()).toContain("base_roi.detail.history_scaled");
-		const abs = absolute.props("series") as {
+		const lines = volume.props("series") as {
+			key: string;
 			values: number[];
-			shown?: number[];
 		}[];
-		const sc = scaled.props("series") as {
-			values: number[];
-			shown?: number[];
-		}[];
-		for (let i = 0; i < 3; i++) {
-			expect(sc[i].shown).toEqual(abs[i].values);
-			for (const v of sc[i].values) {
-				expect(v).toBeGreaterThanOrEqual(0);
-				expect(v).toBeLessThanOrEqual(1);
-			}
-		}
+		// outputs, and the recipe's inputs when it has any
+		expect(lines[0].key).toBe("outputs");
+		expect(lines.map((l) => l.key)).toEqual(
+			priced.recipeInputs.length ? ["outputs", "inputs"] : ["outputs"]
+		);
+		// today: 100 traded per exchange (UNIVERSE sums the 4) ÷ the scarcest output's amount
+		const exchanges = priced.outputs[0].exchange === "UNIVERSE" ? 4 : 1;
+		const outputs =
+			(100 * exchanges) /
+			Math.max(...priced.outputs.map((o) => o.amount));
+		expect(lines[0].values.at(-1)).toBeCloseTo(outputs);
+		expect(lines[0].values[0]).toBe(0);
 		expect(wrapper.text()).toContain("base_roi.detail.history_note");
 
 		const none = await mountDetail(row, vi.fn(), createPinia(), {

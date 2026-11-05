@@ -31,13 +31,15 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 
 # Profit chart
 
-Above the table, a chart shows the daily profit of the last 30 days for each industry. Each base counts by how much of its product the market trades (7-day average), and the many planets of one resource recipe count as one. Search to drill in:
+Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Each base counts by how much of its product the market trades (7-day average), and the many planets of one resource recipe count as one. Search to drill in:
 
 - an industry (e.g. "Chemistry") shows its buildings;
 - a building (e.g. "CHP") shows its products;
 - a product (e.g. "SC") shows the recipes that make it.
 
 The chart follows the table's settings and limits. It shows the 7 most traded lines and says how many more there are.
+
+Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3 or 7 days per point) at its top right, like the game's charts. A longer aggregation smooths out daily noise. The choice applies to all charts and is remembered.
 
 # Search and tooltips
 
@@ -46,7 +48,7 @@ The chart follows the table's settings and limits. It shows the 7 most traded li
 
 # Details
 
-Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. You can also copy the math as text, or open the row as a new plan with the same layout (logged in).
+Expand a row to see two charts, then the full math below them. You can also copy the math as text, or open the row as a new plan with the same layout (logged in).
 
-- **Absolute**: every line on one ȼ scale, to see how they relate.
-- **Each line in its own range**: every line runs from 0 (its lowest value in the 30 days) to 1 (its highest), so a small line's swings show next to large ones. The labels still show ȼ.
+- **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
+- **Market volume**: how many bases the market carries each day, from the CX traded volume. *Outputs* is the scarcest output's traded volume ÷ what one base sells per day; *Inputs (bottleneck)* is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.

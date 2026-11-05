@@ -153,16 +153,20 @@
 		</div>
 
 		<div class="grow px-6 py-3 flex flex-col gap-3">
-			<BaseROISettingsPanel
-				v-model:settings="settings"
-				:exchanges="exchanges"
-				@setup="setupOpen = true" />
-			<!-- charts the table's rows, the search drills in; a skeleton until the prices are in -->
-			<BaseROITrendChart
-				:rows="filtered.rows"
-				:search="search"
-				:series="series"
-				:history-failed="historyFailed" />
+			<!-- side by side on wide screens: the chart fills the space the settings leave -->
+			<div class="grid grid-cols-1 2xl:grid-cols-2 gap-3 items-start">
+				<BaseROISettingsPanel
+					v-model:settings="settings"
+					:exchanges="exchanges"
+					@setup="setupOpen = true" />
+				<!-- charts the table's rows, the search drills in; a skeleton until the prices are in -->
+				<BaseROITrendChart
+					v-model:settings="settings"
+					:rows="filtered.rows"
+					:search="search"
+					:series="series"
+					:history-failed="historyFailed" />
+			</div>
 			<div ref="tableBox" class="relative">
 				<BaseROITable
 					v-model:settings="settings"

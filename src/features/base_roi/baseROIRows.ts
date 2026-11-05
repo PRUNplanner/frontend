@@ -385,6 +385,7 @@ export function toRowInput(
 				traded:
 					exchange(`${m.ticker}.${source.volume}`)?.avg_traded_7d ??
 					0,
+				exchange: source.volume,
 			});
 	}
 
@@ -392,14 +393,15 @@ export function toRowInput(
 	// volume exchange: the input side of the market capacity
 	const recipeInputs: IBaseROIOutput[] = result.productionMaterialIO
 		.filter((m) => m.input > m.output)
-		.map((m) => ({
-			ticker: m.ticker,
-			amount: m.input - m.output,
-			traded:
-				exchange(
-					`${m.ticker}.${ctx.prices.getPriceSource(m.ticker, "BUY").volume}`
-				)?.avg_traded_7d ?? 0,
-		}));
+		.map((m) => {
+			const volume = ctx.prices.getPriceSource(m.ticker, "BUY").volume;
+			return {
+				ticker: m.ticker,
+				amount: m.input - m.output,
+				traded: exchange(`${m.ticker}.${volume}`)?.avg_traded_7d ?? 0,
+				exchange: volume,
+			};
+		});
 
 	// bought for the workforce, at most what the base buys in total
 	const bought = overview.dailyCost;

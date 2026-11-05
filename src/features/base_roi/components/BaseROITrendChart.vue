@@ -8,6 +8,7 @@
 	import { capitalizeString } from "@/util/text";
 	import { matchesSearch } from "@/features/base_roi/baseROIMetrics";
 	import {
+		aggregateDays,
 		historyDays,
 		profitHistory,
 	} from "@/features/base_roi/baseROIHistory";
@@ -18,9 +19,11 @@
 	import { HISTORY_DAYS } from "@/features/base_roi/baseROI.constants";
 
 	// Components
+	import BaseROIChartControls from "@/features/base_roi/components/BaseROIChartControls.vue";
 	import PLineChart from "@/ui/charts/PLineChart.vue";
 
 	// Types & Interfaces
+	import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 	import type {
 		IBaseROIRow,
 		IBaseROISeries,
@@ -39,6 +42,10 @@
 		series: IBaseROISeries | null;
 		historyFailed: boolean;
 	}>();
+	// the chart controls: range and aggregation
+	const settings = defineModel<BaseROISettings>("settings", {
+		required: true,
+	});
 
 	const theme = useChartTheme();
 	const days = historyDays(HISTORY_DAYS);
@@ -97,6 +104,14 @@
 			values: l.values,
 		}))
 	);
+	const chart = computed(() =>
+		aggregateDays(
+			days,
+			chartSeries.value,
+			settings.value.chartRange,
+			settings.value.chartBucket
+		)
+	);
 </script>
 
 <template>
@@ -105,9 +120,12 @@
 		class="flex flex-col gap-1"
 		aria-labelledby="base-roi-trend-title"
 		data-base-roi-trend>
-		<h2 id="base-roi-trend-title" class="text-sm font-bold">
-			{{ title }}
-		</h2>
+		<div class="flex flex-row flex-wrap items-center justify-between gap-2">
+			<h2 id="base-roi-trend-title" class="text-sm font-bold">
+				{{ title }}
+			</h2>
+			<BaseROIChartControls v-model:settings="settings" />
+		</div>
 		<div
 			v-if="!series"
 			aria-busy="true"
@@ -119,7 +137,10 @@
 			{{ t("base_roi.trend.empty") }}
 		</p>
 		<div v-else class="h-80">
-			<PLineChart :days="days" :series="chartSeries" :label="title" />
+			<PLineChart
+				:days="chart.days"
+				:series="chart.series"
+				:label="title" />
 		</div>
 		<p class="text-xs text-muted">
 			{{ t("base_roi.trend.note") }}

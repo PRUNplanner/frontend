@@ -112,12 +112,15 @@
 			hiddenColumns,
 			panelOpen,
 			chartOpen,
+			chartRange: settings.value.chartRange,
+			chartBucket: settings.value.chartBucket,
 		};
 	}
 </script>
 
 <template>
-	<section class="rounded-lg border border-white/10 bg-white/[0.02]">
+	<section
+		class="@container rounded-lg border border-white/10 bg-white/[0.02]">
 		<div class="flex flex-row items-center gap-3 px-3 py-2">
 			<button
 				type="button"
@@ -142,12 +145,41 @@
 			</PButton>
 		</div>
 
+		<!-- what the table lists: always shown, the setting players look for first -->
+		<div
+			class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/10 bg-white/[0.03] px-3 py-2"
+			data-row-kinds>
+			<span class="text-sm font-bold">
+				{{ t("base_roi.settings.row_kinds") }}
+			</span>
+			<PCheckbox
+				:checked="settings.showResources"
+				@update:checked="(v) => set('showResources', !!v)">
+				{{ t("base_roi.settings.resources") }}
+			</PCheckbox>
+			<PCheckbox
+				:checked="settings.showRecipes"
+				@update:checked="(v) => set('showRecipes', !!v)">
+				{{ t("base_roi.settings.recipes") }}
+			</PCheckbox>
+			<PCheckbox
+				:checked="settings.showNegative"
+				@update:checked="(v) => set('showNegative', !!v)">
+				{{ t("base_roi.settings.show_negative") }}
+			</PCheckbox>
+			<PCheckbox
+				:checked="settings.showUnbuildable"
+				@update:checked="(v) => set('showUnbuildable', !!v)">
+				{{ t("base_roi.settings.show_unbuildable") }}
+			</PCheckbox>
+		</div>
+
 		<div
 			v-show="settings.panelOpen"
 			id="base-roi-settings"
 			class="border-t border-white/10">
 			<div
-				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 p-3">
+				class="grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-3 gap-x-6 gap-y-4 p-3">
 				<div class="flex flex-col gap-1.5 min-w-0">
 					<span class="text-xs font-bold uppercase text-muted">
 						{{ t("base_roi.settings.cogc") }}
@@ -301,35 +333,6 @@
 								})
 							}}
 						</span>
-					</div>
-				</div>
-				<div class="flex flex-col gap-1.5 min-w-0">
-					<span class="text-xs font-bold uppercase text-muted">
-						{{ t("base_roi.settings.row_kinds") }}
-					</span>
-					<div class="flex flex-row flex-wrap gap-x-4 gap-y-1">
-						<PCheckbox
-							:checked="settings.showResources"
-							@update:checked="(v) => set('showResources', !!v)">
-							{{ t("base_roi.settings.resources") }}
-						</PCheckbox>
-						<PCheckbox
-							:checked="settings.showRecipes"
-							@update:checked="(v) => set('showRecipes', !!v)">
-							{{ t("base_roi.settings.recipes") }}
-						</PCheckbox>
-						<PCheckbox
-							:checked="settings.showNegative"
-							@update:checked="(v) => set('showNegative', !!v)">
-							{{ t("base_roi.settings.show_negative") }}
-						</PCheckbox>
-						<PCheckbox
-							:checked="settings.showUnbuildable"
-							@update:checked="
-								(v) => set('showUnbuildable', !!v)
-							">
-							{{ t("base_roi.settings.show_unbuildable") }}
-						</PCheckbox>
 					</div>
 				</div>
 			</div>

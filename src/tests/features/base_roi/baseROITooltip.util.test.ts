@@ -27,10 +27,10 @@ function row(metrics: Partial<IBaseROIMetrics> = {}): IBaseROIRow {
 		volumeIn: 5,
 		volumeOut: 2,
 		outputs: [
-			{ ticker: "A", amount: 10, traded: 50 },
-			{ ticker: "B", amount: 10, traded: 5 },
+			{ ticker: "A", amount: 10, traded: 50, exchange: "AI1" },
+			{ ticker: "B", amount: 10, traded: 5, exchange: "AI1" },
 		],
-		recipeInputs: [{ ticker: "C", amount: 20, traded: 4 }],
+		recipeInputs: [{ ticker: "C", amount: 20, traded: 4, exchange: "AI1" }],
 		metrics: {
 			dailyProfit: 450,
 			runningCost: 550,
@@ -195,7 +195,7 @@ describe("baseROITooltip.util", () => {
 		);
 		const none = {
 			...row({ capacitySide: null, capacityTicker: null }),
-			outputs: [{ ticker: "A", amount: 0, traded: 50 }],
+			outputs: [{ ticker: "A", amount: 0, traded: 50, exchange: "AI1" }],
 			recipeInputs: [],
 		} as IBaseROIRow;
 		const lines = cellMath(none, "market_capacity", s(), t);
