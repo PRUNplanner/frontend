@@ -1,10 +1,10 @@
-The Resource Overview tool builds upon the optimal planetary setups developed collaboratively with the ROI Overview. The purpose of these ROI tools is to normalize the profitability of all buildings in the game to the profit per unit of area, as that is the only common shared metric. This is extrapolated out to "profit per 500 area" assuming a full base of these buildings. This allows one to compare the profitability of building A to building B purely on the merits of their recipes. This tool identifies planets where your selected resource is available and calculates its extraction using the required COL, RIG, or EXT. All calculations assume COGC alignment, 5 experts, and the planetary conditions provided, while also considering your chosen CX preference.
+La herramienta Resumen de recursos se basa en las configuraciones planetarias óptimas desarrolladas en colaboración con el Resumen de ROI. El objetivo de estas herramientas de ROI es normalizar la rentabilidad de todos los edificios del juego al beneficio por unidad de área, ya que es la única métrica común compartida. This is extrapolated out to "profit per 500 area" assuming a full base of these buildings. This allows one to compare the profitability of building A to building B purely on the merits of their recipes. Esta herramienta identifica los planetas donde está disponible el recurso seleccionado y calcula su extracción con el COL, RIG o EXT necesario. All calculations assume COGC alignment, 5 experts, and the planetary conditions provided, while also considering your chosen CX preference.
 
-**Please note**: The Resource ROI Overview assumes the COGC being active as "Resource Extraction". Please check with Planet Search if the planet is actually running that program or another one.
+**Ten en cuenta**: El Resumen de ROI de recursos supone que el COGC activo es «Extracción de recursos». Comprueba en Búsqueda de planetas si el planeta ejecuta realmente ese programa u otro.
 
-# Optimal Setups
+# Configuraciones óptimas
 
-Optimal setups were created with a linear model to calculate the optimal number of production buildings and required habitations to maximize the use of a 500-area base.
+Las configuraciones óptimas se crearon con un modelo lineal para calcular el número óptimo de edificios de producción y de habitaciones necesarias para aprovechar al máximo una base de 500 de área.
 
 - **RIG**: 35 RIG, 11 HB1, 1 STO
 - **EXT**: 14 EXT, 8 HB1, 1 HBB, 1 STO
