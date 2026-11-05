@@ -1,11 +1,11 @@
 {
-	"view_title": "Market Live",
-	"title": "Market Live",
+	"view_title": "Mercado en vivo",
+	"title": "Mercado en vivo",
 	"connection_lost": "Conexión perdida. Reconectando...",
 	"status": {
 		"connected": "Conectado",
 		"disconnected": "Desconectado",
-		"reconnecting": "Reconnecting"
+		"reconnecting": "Reconectando"
 	},
 	"severity_type": {
 		"LOW": "BAJA",
@@ -85,7 +85,7 @@
 			"title_editing": "Editar alerta",
 			"info": "Las alertas se guardan por ahora solo en este dispositivo y no se sincronizan con tu cuenta.",
 			"no_alerts": "No se han encontrado alertas. Empieza creando tu primera señal de detección",
-			"new_alert_name": "New Alert",
+			"new_alert_name": "Nueva alerta",
 			"buttons": {
 				"create_alert": "Crear nueva alerta",
 				"discard": "@:common.buttons.discard",
