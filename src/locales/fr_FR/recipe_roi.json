@@ -2,7 +2,7 @@
 	"view_title": "ROI recette",
 	"title": "ROI recette",
 	"calculating": "Calcul du ROI des recettes de bâtiment",
-	"cx_select": "@:terms.cx Preference",
+	"cx_select": "Préférence @:terms.cx",
 	"filters": {
 		"title": "@:terms.filter",
 		"building": "@:terms.buildings",
@@ -14,13 +14,13 @@
 	"table": {
 		"building": "@:terms.buildings",
 		"optimal_setup": "Configuration optimale",
-		"recipe_output": "@:terms.recipes Output",
-		"recipe_input": "@:terms.recipes Input",
+		"recipe_output": "Produit de la @:terms.recipes",
+		"recipe_input": "Intrant de la @:terms.recipes",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Cost (ȼ)",
+		"plan_cost": "Coût du @:terms.plan (ȼ)",
 		"daily_profit": "Bénéfice quotidien (ȼ)",
 		"profit_area": "Bénéfice/Surface (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)"
+		"plan_roi": "ROI du @:terms.plan (j)"
 	}
 }
