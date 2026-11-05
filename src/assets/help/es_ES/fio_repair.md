@@ -1,24 +1,24 @@
 # Due dates
 
-FIO Repair reads each base's production buildings from FIO: their condition and the day they were last repaired, or built if they never were. Habitations, storage and the core module age too, but need no repair materials, so they are left out.
+Reparación FIO lee desde FIO los edificios de producción de cada base: su condición y el día en que se repararon por última vez, o en que se construyeron si nunca se repararon. Las habitaciones, el almacenamiento y el módulo central también envejecen, pero no necesitan materiales de reparación, así que se omiten.
 
-Each building type comes due at a target day:
+Cada tipo de edificio vence en un día objetivo:
 
-- **With a matched plan**, the target is the type's best repair day from that plan's Repair Analysis.
-- **Without a plan**, the target is "Repair every n days" from the settings.
+- **Con un plan asociado**, el objetivo es el mejor día de reparación del tipo según el análisis de reparaciones de ese plan.
+- **Sin plan**, el objetivo es «Reparar cada n días» de los ajustes.
 
-A base comes due with its first building type. "Due soon" marks bases within that many days of their target.
+Una base vence con su primer tipo de edificio. «Próximo» marca las bases que están a esa cantidad de días o menos de su objetivo.
 
-# Matched plans
+# Planes asociados
 
-A plan matches a base when it is on the same planet and at least 80 % of its production buildings match FIO. "Matched" means all of them match, "Likely" at least 80 %. You can pick another plan, or no plan, for a base; the pick is saved in your preferences.
+Un plan se asocia a una base cuando está en el mismo planeta y al menos el 80 % de sus edificios de producción coincide con FIO. «Asociado» significa que coinciden todos, «Probable» al menos el 80 %. Puedes elegir otro plan, o ningún plan, para una base; la elección se guarda en tus preferencias.
 
-# Repair flight
+# Vuelo de reparación
 
-Repairing costs more each day: the bill grows until day 180, when it equals a new building. "Arrives in n days" sizes the bill for the day the ship unloads, and "Use what's already in the base store" takes off what the base already holds.
+Reparar cuesta más cada día: la factura crece hasta el día 180, cuando equivale a un edificio nuevo. «Llega en n días» calcula la factura para el día en que la nave descarga, y «Usar lo que ya hay en el almacén de la base» descuenta lo que la base ya tiene.
 
-**XIT Repair** builds an XIT ACT package with the load. It uses the same XIT origin and "Buy from CX" setting as FIO Burn. Pick the ship when you run it, fly to the base, unload and run BRA.
+**Reparación XIT** crea un paquete XIT ACT con la carga. Usa el mismo origen XIT y el mismo ajuste «Comprar en CX» que Consumo FIO. Elige la nave al ejecutarlo, vuela a la base, descarga y ejecuta BRA.
 
-# Prices
+# Precios
 
-Prices come from your default Exchange Preference, with its empire-level rules only.
+Los precios vienen de tu preferencia de bolsa predeterminada, solo con sus reglas de nivel de imperio.
