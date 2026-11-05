@@ -60,19 +60,19 @@
 			"size": "Ungefähre Größe"
 		},
 		"stores": {
-			"materials": "Materials",
-			"buildings": "Buildings",
-			"recipes": "Recipes",
-			"planets": "Planets",
-			"exchanges": "Exchanges",
-			"plans": "Plans",
-			"empires": "Empires",
-			"cxs": "Exchange Preferences",
-			"shared": "Sharings",
-			"fio_storage_planets": "FIO Storage Planets",
-			"fio_storage_ships": "FIO Storage Ships",
-			"fio_storage_warehouses": "FIO Storage Warehouses",
-			"fio_sites_planets": "FIO Sites Planets"
+			"materials": "Materialien",
+			"buildings": "Gebäude",
+			"recipes": "Rezepte",
+			"planets": "Planeten",
+			"exchanges": "Marktplätze",
+			"plans": "Pläne",
+			"empires": "Imperien",
+			"cxs": "Marktplatz-Präferenzen",
+			"shared": "Freigaben",
+			"fio_storage_planets": "FIO Lager Planeten",
+			"fio_storage_ships": "FIO Lager Schiffe",
+			"fio_storage_warehouses": "FIO Lager Lagerhäuser",
+			"fio_sites_planets": "FIO Basen Planeten"
 		}
 	},
 	"fio_information": {
@@ -104,10 +104,10 @@
 			"color_palette": "Farbpalette",
 			"palette_default": "Standard (grün / rot)",
 			"palette_colorblind": "Farbenblind (blau / orange)",
-			"market_card": "Market card",
-			"market_card_hover": "On hover",
-			"market_card_click": "On click only",
-			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
+			"market_card": "Marktkarte",
+			"market_card_hover": "Beim Darüberfahren",
+			"market_card_click": "Nur beim Klicken",
+			"market_card_help": "Nur beim Klicken: Das Darüberfahren über ein Material zeigt nichts; klicke es an, um Preise zu sehen.",
 			"language_note": "Wir wollen PRUNplanner für alle zugänglich machen. Wenn du das Tool in deiner Muttersprache sehen oder uns helfen möchtest, eine vorhandene Übersetzung zu verbessern, tritt unserem Lokalisierungsprojekt auf {link} bei.",
 			"default_empire": "Standard-Imperium",
 			"default_cx": "Standard CX",
@@ -136,10 +136,10 @@
 			"plan_specific_empty": "Noch kein Plan hat eigene Einstellungen."
 		},
 		"plan_settings": {
-			"include_cm": "Include CM",
-			"visitation_exclusions": "Visitation Material Exclusions",
-			"construction_built": "Construction Cart: Built",
-			"auto_optimize_inactive": "Auto-Optimize Inactive"
+			"include_cm": "CM einbeziehen",
+			"visitation_exclusions": "Ausgeschlossene Materialien bei Besuchen",
+			"construction_built": "Konstruktion: Gebaut",
+			"auto_optimize_inactive": "Inaktive automatisch optimieren"
 		}
 	},
 	"buttons": {
