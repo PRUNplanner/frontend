@@ -48,7 +48,7 @@
 			"title": "Passwort zurücksetzen",
 			"info": "Bitte gib den an deine E-Mail gesendeten Code zusammen mit deinem neuen Passwort sein.",
 			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
-			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+			"error": "Ein Fehler ist aufgetreten. Prüfe deine E-Mail, den Code und das Passwort. Achte darauf, dass dein Passwort sicher ist.",
 			"buttons": {
 				"send": "Passwort zurücksetzen"
 			},
@@ -122,7 +122,7 @@
 			"done": "E-Mail bestätigt"
 		},
 		"email_label": "E-Mail Adresse",
-		"password_label": "Current password",
+		"password_label": "Aktuelles Passwort",
 		"email_placeholder": "du{'@'}beispiel.com",
 		"email_info": "Nur verwendet, um dein Passwort zurückzusetzen. Keine Newsletter, nie geteilt. Du kannst sie jederzeit im Profil ändern oder entfernen.",
 		"email_code_info": "Wir werden einen 8-Zeichen-Code schicken, um zu bestätigen, dass er dir gehört.",
@@ -143,8 +143,8 @@
 			"done": "Fertig"
 		},
 		"errors": {
-			"password_required": "Enter your current password to change your email.",
-			"password_invalid": "That password is not correct.",
+			"password_required": "Gib dein aktuelles Passwort ein, um deine E-Mail zu ändern.",
+			"password_invalid": "Dieses Passwort ist nicht korrekt.",
 			"invalid_email": "Das sieht nicht wie eine E-Mail-Adresse aus.",
 			"invalid": "Dieser Code hat nicht funktioniert. Überprüfe ihn oder sende einen neuen.",
 			"expired": "Dieser Code ist abgelaufen. Sende einen neuen.",
