@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, ref, shallowRef } from "vue";
+	import { computed, onMounted, ref, shallowRef, watch } from "vue";
 	import { useRouter } from "vue-router";
 
 	import { useI18n } from "vue-i18n";
@@ -27,21 +27,25 @@
 		detailText,
 	} from "@/features/base_roi/baseROIDetail.util";
 	import {
+		aggregateDays,
+		capacityHistory,
 		hasHistory,
 		historyDays,
 		profitHistory,
-		scaleToRange,
+		tradedPerDay,
 	} from "@/features/base_roi/baseROIHistory";
 	import { basePlan } from "@/features/base_roi/baseROIRows";
 	import { useChartTheme } from "@/ui/charts/chartTheme";
 
 	// Static
 	import {
+		BASE_ROI_EXCHANGES,
 		HISTORY_DAYS,
 		STANDARD_PLAN_PLANET,
 	} from "@/features/base_roi/baseROI.constants";
 
 	// Components
+	import BaseROIChartControls from "@/features/base_roi/components/BaseROIChartControls.vue";
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PLineChart from "@/ui/charts/PLineChart.vue";
 	import PLayerClose from "@/ui/components/PLayerClose.vue";
@@ -59,15 +63,18 @@
 	// UI
 	import { PButton, PSelect, useToast } from "@/ui";
 
-	const { row, settings, series, tryOnPlanet, cxUuid } = defineProps<{
+	const { row, series, tryOnPlanet, cxUuid } = defineProps<{
 		row: IBaseROIRow;
-		settings: BaseROISettings;
 		series: IBaseROISeries | null;
 		tryOnPlanet: (row: IBaseROIRow, planet: string) => Promise<IBaseROIRow>;
 		/** the CX preference the table prices with */
 		cxUuid: string | undefined;
 	}>();
 	const emit = defineEmits<{ (e: "close"): void }>();
+	// the chart controls write the range and aggregation back
+	const settings = defineModel<BaseROISettings>("settings", {
+		required: true,
+	});
 
 	const router = useRouter();
 	const planningStore = usePlanningStore();
@@ -121,7 +128,9 @@
 	}
 
 	const shown = computed(() => tried.value ?? row);
-	const sections = computed(() => detailSections(shown.value, settings, t));
+	const sections = computed(() =>
+		detailSections(shown.value, settings.value, t)
+	);
 	// 9 (profit history) is the chart on top, 10 (recipe, planet) the header
 	const mathSections = computed(() =>
 		sections.value.filter((s) => s.id <= 8)
@@ -183,7 +192,7 @@
 			r,
 			r.productionBuildings,
 			r.infrastructure,
-			settings
+			settings.value
 		);
 		const planetId = r.planetNaturalId ?? STANDARD_PLAN_PLANET;
 		creating.value = true;
@@ -213,7 +222,9 @@
 	}
 
 	/*
-	 * Section 9: revenue, running cost and profit of the last HISTORY_DAYS days
+	 * Section 9: revenue, running cost and profit of the last HISTORY_DAYS
+	 * days, and next to it the market volume on both sides, in the range
+	 * and aggregation of the chart controls
 	 */
 	const history = computed(() =>
 		series
@@ -226,39 +237,105 @@
 			: null
 	);
 	const chartDays = historyDays(HISTORY_DAYS);
-	const chartSeries = computed<ILineSeries[]>(() =>
-		history.value
-			? [
-					{
-						key: "revenue",
-						label: t("base_roi.detail.history_revenue"),
-						color: theme.value.exchange("AI1"),
-						values: history.value.revenue,
-					},
-					{
-						key: "cost",
-						label: t("base_roi.detail.history_cost"),
-						color: theme.value.negative,
-						values: history.value.cost,
-					},
-					{
-						key: "profit",
-						label: t("base_roi.detail.history_profit"),
-						color: theme.value.positive,
-						values: history.value.profit,
-					},
-				]
-			: []
+	const view = (lines: ILineSeries[]) =>
+		aggregateDays(
+			chartDays,
+			lines,
+			settings.value.chartRange,
+			settings.value.chartBucket
+		);
+	const profitChart = computed(() =>
+		view(
+			history.value
+				? [
+						{
+							key: "revenue",
+							label: t("base_roi.detail.history_revenue"),
+							color: theme.value.exchange("AI1"),
+							values: history.value.revenue,
+						},
+						{
+							key: "cost",
+							label: t("base_roi.detail.history_cost"),
+							color: theme.value.negative,
+							values: history.value.cost,
+						},
+						{
+							key: "profit",
+							label: t("base_roi.detail.history_profit"),
+							color: theme.value.positive,
+							values: history.value.profit,
+						},
+					]
+				: []
+		)
 	);
-	// each line in its own range, 0 its low over the window, 1 its high: a small
-	// line's swings show next to large ones; labels keep the real money
-	const scaledSeries = computed<ILineSeries[]>(() =>
-		chartSeries.value.map((s) => ({
-			...s,
-			values: scaleToRange(s.values as number[]),
-			shown: s.values,
-		}))
+
+	// daily traded volume of every output and recipe input, from the
+	// query cache; null while loading, an empty map when it failed
+	const traded = shallowRef<Map<string, number[]> | null>(null);
+	watch(
+		() =>
+			[...shown.value.outputs, ...shown.value.recipeInputs]
+				.map((m) => `${m.ticker}.${m.exchange}`)
+				.join(","),
+		async (keys) => {
+			traded.value = null;
+			try {
+				const loaded = await Promise.all(
+					keys.split(",").map(async (key) => {
+						const [materialTicker, exchange] = key.split(".");
+						// UNIVERSE has no CXPC of its own: the physical exchanges summed
+						const cxpc = (
+							await Promise.all(
+								(exchange === "UNIVERSE"
+									? BASE_ROI_EXCHANGES
+									: [exchange]
+								).map((exchangeTicker) =>
+									useQuery("GetExplorationData", {
+										exchangeTicker,
+										materialTicker,
+									}).execute()
+								)
+							)
+						).flat();
+						return [key, tradedPerDay(cxpc, chartDays)] as const;
+					})
+				);
+				traded.value = new Map(loaded);
+			} catch {
+				traded.value = new Map();
+			}
+		},
+		{ immediate: true }
 	);
+	const volumeChart = computed(() => {
+		if (!traded.value?.size) return null;
+		const capacity = capacityHistory(
+			shown.value.outputs,
+			shown.value.recipeInputs,
+			traded.value,
+			HISTORY_DAYS
+		);
+		return view([
+			{
+				key: "outputs",
+				label: t("base_roi.detail.volume_outputs"),
+				color: theme.value.exchange("AI1"),
+				values: capacity.outputs,
+			},
+			...(capacity.inputs
+				? [
+						{
+							key: "inputs",
+							label: t("base_roi.detail.volume_inputs"),
+							color: theme.value.warning,
+							values: capacity.inputs,
+						},
+					]
+				: []),
+		]);
+	});
 </script>
 
 <template>
@@ -338,12 +415,16 @@
 
 		<!-- the chart first: what happened beyond today's numbers -->
 		<section :aria-labelledby="`base-roi-${row.key}-history`">
-			<h4
-				:id="`base-roi-${row.key}-history`"
-				class="mb-1 text-xs font-bold uppercase">
-				{{ t("base_roi.detail.s9") }}
-			</h4>
-			<!-- side by side: absolute, then each line in its own 0–1 range -->
+			<div
+				class="mb-1 flex flex-row flex-wrap items-center justify-between gap-2">
+				<h4
+					:id="`base-roi-${row.key}-history`"
+					class="text-xs font-bold uppercase">
+					{{ t("base_roi.detail.s9") }}
+				</h4>
+				<BaseROIChartControls v-model:settings="settings" />
+			</div>
+			<!-- side by side: profit, then the market volume it trades in -->
 			<div v-if="history" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<figure class="flex flex-col gap-1 min-w-0">
 					<figcaption class="text-xs text-muted">
@@ -351,20 +432,30 @@
 					</figcaption>
 					<div class="h-72" data-history-absolute>
 						<PLineChart
-							:days="chartDays"
-							:series="chartSeries"
+							:days="profitChart.days"
+							:series="profitChart.series"
 							:label="t('base_roi.detail.history_absolute')" />
 					</div>
 				</figure>
 				<figure class="flex flex-col gap-1 min-w-0">
 					<figcaption class="text-xs text-muted">
-						{{ t("base_roi.detail.history_scaled") }}
+						{{ t("base_roi.detail.volume_caption") }}
 					</figcaption>
-					<div class="h-72" data-history-scaled>
+					<div class="h-72" data-history-volume>
 						<PLineChart
-							:days="chartDays"
-							:series="scaledSeries"
-							:label="t('base_roi.detail.history_scaled')" />
+							v-if="volumeChart"
+							:days="volumeChart.days"
+							:series="volumeChart.series"
+							:label="t('base_roi.detail.volume_caption')" />
+						<div
+							v-else-if="!traded"
+							aria-busy="true"
+							class="h-full rounded bg-white/5 motion-safe:animate-pulse" />
+						<p
+							v-else
+							class="h-full flex items-center justify-center text-muted">
+							{{ t("base_roi.detail.volume_failed") }}
+						</p>
 					</div>
 				</figure>
 			</div>

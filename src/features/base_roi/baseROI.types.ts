@@ -49,6 +49,8 @@ export interface IBaseROIOutput {
 	amount: number;
 	// 7-day average traded per day on the price source's volume exchange
 	traded: number;
+	// the exchange that volume is from
+	exchange: string;
 }
 
 /** what the engine gives a row, before the settings' add-ons */

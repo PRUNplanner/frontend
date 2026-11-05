@@ -66,7 +66,7 @@ function rowInput(overrides: Partial<IBaseROIRowInput> = {}): IBaseROIRowInput {
 		storageVolume: 6500,
 		expertBonus: 0.284,
 		materials: [],
-		outputs: [{ ticker: "IND", amount: 10, traded: 20 }],
+		outputs: [{ ticker: "IND", amount: 10, traded: 20, exchange: "AI1" }],
 		recipeInputs: [],
 		workforce: [],
 		result: {} as IBaseROIRowInput["result"],
@@ -221,8 +221,8 @@ describe("baseROIMetrics", () => {
 		const m = calculateMetrics(
 			rowInput({
 				outputs: [
-					{ ticker: "A", amount: 10, traded: 50 },
-					{ ticker: "B", amount: 10, traded: 5 },
+					{ ticker: "A", amount: 10, traded: 50, exchange: "AI1" },
+					{ ticker: "B", amount: 10, traded: 5, exchange: "AI1" },
 				],
 			}),
 			defaultBaseROISettings(),
@@ -232,13 +232,15 @@ describe("baseROIMetrics", () => {
 	});
 
 	it("double ended: a recipe input with less traded volume sets it, marked input", () => {
-		const outputs = [{ ticker: "A", amount: 10, traded: 50 }];
+		const outputs = [
+			{ ticker: "A", amount: 10, traded: 50, exchange: "AI1" },
+		];
 		const input = calculateMetrics(
 			rowInput({
 				outputs,
 				recipeInputs: [
-					{ ticker: "X", amount: 20, traded: 4 },
-					{ ticker: "Y", amount: 0, traded: 0 },
+					{ ticker: "X", amount: 20, traded: 4, exchange: "AI1" },
+					{ ticker: "Y", amount: 0, traded: 0, exchange: "AI1" },
 				],
 			}),
 			defaultBaseROISettings(),
@@ -251,7 +253,9 @@ describe("baseROIMetrics", () => {
 		const output = calculateMetrics(
 			rowInput({
 				outputs,
-				recipeInputs: [{ ticker: "X", amount: 1, traded: 100 }],
+				recipeInputs: [
+					{ ticker: "X", amount: 1, traded: 100, exchange: "AI1" },
+				],
 			}),
 			defaultBaseROISettings(),
 			0
@@ -416,7 +420,7 @@ describe("baseROIMetrics", () => {
 		const row = rowInput({
 			building: "EXT",
 			expertise: "RESOURCE_EXTRACTION",
-			outputs: [{ ticker: "GAL", amount: 1, traded: 1 }],
+			outputs: [{ ticker: "GAL", amount: 1, traded: 1, exchange: "AI1" }],
 		});
 		expect(matchesSearch(row, "")).toBe(true);
 		expect(matchesSearch(row, "  ")).toBe(true);
@@ -444,7 +448,11 @@ describe("baseROIMetrics", () => {
 		).toBe(0);
 		expect(
 			calculateMetrics(
-				rowInput({ outputs: [{ ticker: "A", amount: 0, traded: 5 }] }),
+				rowInput({
+					outputs: [
+						{ ticker: "A", amount: 0, traded: 5, exchange: "AI1" },
+					],
+				}),
 				s,
 				0
 			).marketCapacity

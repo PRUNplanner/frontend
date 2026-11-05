@@ -4,6 +4,7 @@ import { flushPromises } from "@vue/test-utils";
 import BaseROITrendChart from "@/features/base_roi/components/BaseROITrendChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
+import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 
 // Types & Interfaces
 import type {
@@ -39,6 +40,7 @@ async function mountChart(props: Record<string, unknown> = {}) {
 		search: "",
 		series,
 		historyFailed: false,
+		settings: defaultBaseROISettings(),
 		...props,
 	});
 	await flushPromises();
@@ -66,6 +68,20 @@ describe("BaseROITrendChart", () => {
 		expect(lines.every((l) => l.label)).toBe(true);
 		expect(chart.props("days")).toHaveLength(90);
 		for (const l of lines) expect(l.values).toHaveLength(90);
+	});
+
+	it("the range and aggregation settings set the points", async () => {
+		const wrapper = await mountChart({
+			settings: {
+				...defaultBaseROISettings(),
+				chartRange: 30,
+				chartBucket: 7,
+			},
+		});
+		const chart = wrapper.findComponent({ name: "PLineChart" });
+		// 30 days in weeks ending today: 4 full weeks and 2 days
+		expect(chart.props("days")).toHaveLength(5);
+		expect(wrapper.find("[data-chart-controls]").exists()).toBe(true);
 	});
 
 	it("the search drills into a building's products", async () => {

@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+// Static
+import {
+	CHART_BUCKETS,
+	CHART_RANGES,
+} from "@/features/base_roi/baseROI.constants";
+
 export const BaseROIShipSchema = z.enum([
 	"TCB",
 	"VSC",
@@ -74,5 +80,14 @@ export const BaseROISettingsSchema = z.object({
 		.catch(() => [...DEFAULT_HIDDEN_COLUMNS]),
 	panelOpen: z.boolean().catch(true),
 	chartOpen: z.boolean().catch(false),
+	// the history charts: days shown and days per point
+	chartRange: z
+		.number()
+		.refine((n) => CHART_RANGES.includes(n))
+		.catch(90),
+	chartBucket: z
+		.number()
+		.refine((n) => CHART_BUCKETS.includes(n))
+		.catch(1),
 });
 export type BaseROISettings = z.infer<typeof BaseROISettingsSchema>;

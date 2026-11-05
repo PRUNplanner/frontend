@@ -4,7 +4,9 @@ import { describe, expect, it } from "vitest";
 import {
 	hasHistory,
 	profitHistory,
-	scaleToRange,
+	aggregateDays,
+	capacityHistory,
+	tradedPerDay,
 } from "@/features/base_roi/baseROIHistory";
 
 // Types & Interfaces
@@ -88,13 +90,78 @@ describe("baseROIHistory (criterion 22)", () => {
 	});
 });
 
-describe("scaleToRange", () => {
-	it("0 at the series' low, 1 at its high, whatever its size", () => {
-		expect(scaleToRange([-85_000, 260_000, 87_500])).toEqual([0, 1, 0.5]);
-		expect(scaleToRange([9_000_000, 9_000_100])).toEqual([0, 1]);
+describe("aggregateDays", () => {
+	const days = [1, 2, 3, 4, 5, 6, 7];
+	const line = (values: (number | null)[]) => ({
+		key: "a",
+		label: "A",
+		color: "#fff",
+		values,
 	});
 
-	it("a flat series sits in the middle", () => {
-		expect(scaleToRange([5, 5, 5])).toEqual([0.5, 0.5, 0.5]);
+	it("keeps the last days, buckets end today, the oldest may be short", () => {
+		const out = aggregateDays(days, [line([9, 1, 2, 3, 4, 5, 6])], 6, 4);
+		expect(out.days).toEqual([2, 4]);
+		expect(out.series[0].values).toEqual([1.5, 4.5]);
+	});
+
+	it("a bucket's mean skips days without a value, null when none", () => {
+		const out = aggregateDays(
+			[1, 2, 3, 4],
+			[line([null, null, 2, null])],
+			4,
+			2
+		);
+		expect(out.series[0].values).toEqual([null, 2]);
+	});
+
+	it("bucket 1 over the whole range changes nothing", () => {
+		const values = [1, 2, 3, 4, 5, 6, 7];
+		const out = aggregateDays(days, [line(values)], 90, 1);
+		expect(out.days).toEqual(days);
+		expect(out.series[0].values).toEqual(values);
+	});
+});
+
+describe("tradedPerDay", () => {
+	it("sums each day's rows, 0 on days without", () => {
+		const day = 86_400_000;
+		expect(
+			tradedPerDay(
+				[
+					{ date_epoch: 2 * day, traded: 5 },
+					{ date_epoch: 2 * day + 3_600_000, traded: 1 },
+					{ date_epoch: 9 * day, traded: 7 },
+				],
+				[day, 2 * day]
+			)
+		).toEqual([0, 6]);
+	});
+});
+
+describe("capacityHistory", () => {
+	const m = (ticker: string, amount: number) => ({
+		ticker,
+		amount,
+		traded: 0,
+		exchange: "AI1",
+	});
+	const traded = new Map([
+		["A.AI1", [100, 10]],
+		["B.AI1", [40, 40]],
+		["C.AI1", [30, 60]],
+	]);
+
+	it("each side: the scarcest material's traded ÷ amount, per day", () => {
+		expect(
+			capacityHistory([m("A", 10)], [m("B", 20), m("C", 10)], traded, 2)
+		).toEqual({ outputs: [10, 1], inputs: [2, 2] });
+	});
+
+	it("no recipe inputs: inputs null; unknown volume counts 0", () => {
+		expect(capacityHistory([m("Z", 1)], [m("X", 0)], traded, 2)).toEqual({
+			outputs: [0, 0],
+			inputs: null,
+		});
 	});
 });

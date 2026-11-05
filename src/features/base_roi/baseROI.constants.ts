@@ -29,6 +29,10 @@ export const EXPERT_STAGE_DAYS = [10, 12.5, 57.57, 276.5, 915.1];
 /** days of price history the big charts show (the backend serves up to 90) */
 export const HISTORY_DAYS = 90;
 
+/** the history charts' time ranges and aggregation sizes, in days */
+export const CHART_RANGES: readonly number[] = [7, 30, 90];
+export const CHART_BUCKETS: readonly number[] = [1, 3, 7];
+
 export const DAY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 21, 28];
 
 /** a bid or ask this far off a VWAP price gives a volatility scenario */

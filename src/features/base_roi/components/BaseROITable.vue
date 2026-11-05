@@ -30,7 +30,6 @@
 	import BaseROITableSkeleton from "@/features/base_roi/components/BaseROITableSkeleton.vue";
 	import BaseROICellMath from "@/features/base_roi/components/BaseROICellMath.vue";
 	import PSparkline from "@/ui/charts/PSparkline.vue";
-	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 	const BaseROIRowDetail = defineAsyncComponent(
 		() => import("@/features/base_roi/components/BaseROIRowDetail.vue")
 	);
@@ -192,10 +191,6 @@
 	// expand button + every column
 	const tableWidth = computed(() =>
 		columns.value.reduce((w, c) => w + WIDTHS[c.key], 48)
-	);
-
-	const maxProfit = computed(() =>
-		Math.max(0, ...rows.map((r) => r.metrics.dailyProfit))
 	);
 
 	const rowKey = (row: IBaseROIRow) => row.key;
@@ -633,26 +628,15 @@
 							:row="row"
 							column="daily_profit"
 							:settings="settings">
-							<div class="flex items-center justify-end gap-2">
-								<PInlineBar
-									class="w-8 shrink-0"
-									tone="positive"
-									:value="
-										Math.max(row.metrics.dailyProfit, 0)
-									"
-									:max="maxProfit" />
-								<span
-									class="font-mono whitespace-nowrap"
-									:class="
-										row.metrics.dailyProfit > 0
-											? ''
-											: 'text-negative'
-									">
-									{{
-										formatNumber(row.metrics.dailyProfit, 0)
-									}}
-								</span>
-							</div>
+							<span
+								class="block text-right font-mono whitespace-nowrap"
+								:class="
+									row.metrics.dailyProfit > 0
+										? ''
+										: 'text-negative'
+								">
+								{{ formatNumber(row.metrics.dailyProfit, 0) }}
+							</span>
 						</BaseROICellMath>
 					</template>
 					<template #cell-break_even="{ row }">
@@ -817,8 +801,8 @@
 
 					<template #expand="{ row }">
 						<BaseROIRowDetail
+							v-model:settings="settings"
 							:row="row"
-							:settings="settings"
 							:series="series"
 							:try-on-planet="tryOnPlanet"
 							:cx-uuid="cxUuid"
