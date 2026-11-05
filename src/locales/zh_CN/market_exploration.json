@@ -19,6 +19,8 @@
 	},
 	"chart": {
 		"title": "市场图表",
+		"exchange_label": "Exchange",
+		"interval_label": "Interval",
 		"intervals": {
 			"daily": "每日",
 			"weekly": "每周",
