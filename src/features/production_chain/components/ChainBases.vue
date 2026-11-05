@@ -6,6 +6,7 @@
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import ChainBaseCard from "@/features/production_chain/components/ChainBaseCard.vue";
+	import ChainBasesOverview from "@/features/production_chain/components/ChainBasesOverview.vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -200,6 +201,7 @@
 
 <template>
 	<div class="flex flex-col gap-3 p-3" data-testid="chain-bases">
+		<ChainBasesOverview :result="result" :routes="routes" />
 		<div class="flex flex-wrap items-center gap-2">
 			<PButton
 				size="sm"

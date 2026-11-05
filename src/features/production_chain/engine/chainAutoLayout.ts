@@ -130,10 +130,10 @@ function packBases(
 			type.built = Math.max(1, Math.ceil(type.exact - 1e-6));
 		return baseFootprint(ctx, [...types.values()]).area;
 	};
-	const fits = (d: IDraft, t: string, n: number) => {
+	const fits = (d: IDraft, t: string, n: number, cap = maxArea) => {
 		const next = new Map(d.counts);
 		next.set(t, (next.get(t) ?? 0) + n);
-		return areaOf(next) <= maxArea + EPS;
+		return areaOf(next) <= cap + EPS;
 	};
 	const put = (d: IDraft, t: string, n: number) =>
 		d.counts.set(t, (d.counts.get(t) ?? 0) + n);
@@ -156,44 +156,57 @@ function packBases(
 		return d;
 	};
 
-	// expertise groups, first fit decreasing over the group's bases
+	// expertise groups, first fit decreasing over the group's bases; a
+	// group the max size splits apart fills bases up to the largest size
+	// instead, one fuller base beats several alike
+	const largest = MAX_AREAS.at(-1)!;
 	const small: IChainRow[] = [];
 	for (const [expertise, g] of ranked) {
 		if (g.exact < GROUP_MIN_BUILDINGS - EPS || !expertise) {
 			small.push(...g.rows);
 			continue;
 		}
-		const own: IDraft[] = [];
-		for (const r of [...g.rows].sort((a, b) => b.buildings - a.buildings)) {
-			let left = builtOf(r);
-			// ponytail: extraction steps stay whole, a piece on another
-			// planet would need that planet's own rate; split them if a
-			// measured chain needs it
-			const least = r.source === "extract" ? left : 1;
-			for (const d of own) {
-				let k = left;
-				while (k >= least && !fits(d, r.ticker, k)) k--;
-				if (k < least) k = 0;
-				if (k > 0) {
+		const packGroup = (cap: number): IDraft[] => {
+			const own: IDraft[] = [];
+			for (const r of [...g.rows].sort(
+				(a, b) => b.buildings - a.buildings
+			)) {
+				let left = builtOf(r);
+				// ponytail: extraction steps stay whole, a piece on another
+				// planet would need that planet's own rate; split them if a
+				// measured chain needs it
+				const least = r.source === "extract" ? left : 1;
+				for (const d of own) {
+					let k = left;
+					while (k >= least && !fits(d, r.ticker, k, cap)) k--;
+					if (k < least) k = 0;
+					if (k > 0) {
+						put(d, r.ticker, k);
+						left -= k;
+					}
+					if (!left) break;
+				}
+				while (left > 0) {
+					// a new base takes at least one building; at the cap the
+					// rest goes over the last one
+					const fresh = open(expertise);
+					const d = fresh ?? own.at(-1) ?? drafts.at(-1);
+					if (!d) break;
+					let k = left;
+					if (fresh) {
+						own.push(fresh);
+						while (k > least && !fits(d, r.ticker, k, cap)) k--;
+					}
 					put(d, r.ticker, k);
 					left -= k;
 				}
-				if (!left) break;
 			}
-			while (left > 0) {
-				// a new base takes at least one building; at the cap the
-				// rest goes over the last one
-				const fresh = open(expertise);
-				const d = fresh ?? own.at(-1) ?? drafts.at(-1);
-				if (!d) break;
-				let k = left;
-				if (fresh) {
-					own.push(fresh);
-					while (k > least && !fits(d, r.ticker, k)) k--;
-				}
-				put(d, r.ticker, k);
-				left -= k;
-			}
+			return own;
+		};
+		const own = packGroup(maxArea);
+		if (own.length > 1 && maxArea < largest) {
+			drafts.splice(drafts.length - own.length);
+			packGroup(largest);
 		}
 	}
 
@@ -396,6 +409,11 @@ export function pickPlanets(
 		}));
 		const wSum = linked.reduce((s, l) => s + l.w, 0);
 		const choice = input.bases.find((b) => b.id === id)!;
+		// a base the layout filled past the max size may stay that size
+		const limit = Math.min(
+			MAX_AREAS.at(-1)!,
+			Math.max(maxArea, areaOf(id))
+		);
 		// cheap keys first: COGC fit (per program), then distance (per
 		// system); planets without a fitting program only when none with
 		// one can build the base
@@ -466,7 +484,7 @@ export function pickPlanets(
 					(f) =>
 						!f.missing.length &&
 						!f.noFarming &&
-						f.area <= maxArea + EPS
+						f.area <= limit + EPS
 				);
 				fits.sort((a, b) => a.area - b.area);
 				best = fits[0]?.planet;
@@ -513,14 +531,80 @@ export function autoLayout(
 	// COGC and experts can push more steps under the hint: buy those too,
 	// dropping bases left without steps
 	const bought = withBuys(placed, ctx);
-	if (bought === placed) return placed;
 	const kept = solveChain(bought, ctx).bases.filter(
 		(b) => b.materials.length
 	);
-	if (!kept.length) return bought;
+	const out = kept.length
+		? {
+				...bought,
+				bases: bought.bases.filter((b) =>
+					kept.some((k) => k.id === b.id)
+				),
+			}
+		: bought;
+	return mergeAlike(out, ctx);
+}
+
+/** the expertise with the most exact buildings in a base */
+export function mainExpertise(result: IChainResult, id: string): string | null {
+	const exact = new Map<string, number>();
+	for (const t of result.buildingTypes)
+		if (t.base === id && t.expertise)
+			exact.set(t.expertise, (exact.get(t.expertise) ?? 0) + t.exact);
+	return [...exact].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+}
+
+/**
+ * Bases of one expertise merged once their planets are known (COGC and
+ * experts shrink them), while the merged base fits the largest base size
+ * and loses no resource or fertility
+ */
+function mergeAlike(input: IChainInput, ctx: IChainContext): IChainInput {
+	const largest = MAX_AREAS.at(-1)!;
+	let result = solveChain(input, ctx);
+	// pairs that didn't fit stay apart until one of them changes
+	const failed = new Set<string>();
+	for (let merged = true; merged;) {
+		merged = false;
+		const used = result.bases.filter((b) => b.materials.length);
+		for (let i = 0; i < used.length && !merged; i++)
+			for (let j = i + 1; j < used.length && !merged; j++) {
+				const [a, b] = [used[i], used[j]];
+				const e = mainExpertise(result, a.id);
+				if (!e || e !== mainExpertise(result, b.id)) continue;
+				if (failed.has(`${a.id}>${b.id}`)) continue;
+				const next = mergeBases(result, input, b.id, a.id);
+				const after = solveChain(next, ctx);
+				const m = after.bases.find((x) => x.id === a.id)!;
+				if (
+					m.area > largest + EPS ||
+					m.notOnPlanet.length >
+						a.notOnPlanet.length + b.notOnPlanet.length ||
+					m.noFarming.length > a.noFarming.length + b.noFarming.length
+				) {
+					failed.add(`${a.id}>${b.id}`);
+					continue;
+				}
+				for (const k of [...failed])
+					if (k.split(">").includes(a.id)) failed.delete(k);
+				[input, result, merged] = [next, after, true];
+			}
+	}
+	// letters without gaps again
+	const id = new Map(input.bases.map((b, i) => [b.id, BASE_IDS[i]]));
 	return {
-		...bought,
-		bases: bought.bases.filter((b) => kept.some((k) => k.id === b.id)),
+		...input,
+		bases: input.bases.map((b) => ({ ...b, id: id.get(b.id)! })),
+		baseOf: Object.fromEntries(
+			Object.entries(input.baseOf).map(([t, s]) => [
+				t,
+				Object.fromEntries(
+					Object.entries(s)
+						.filter(([b]) => id.has(b))
+						.map(([b, n]) => [id.get(b)!, n])
+				),
+			])
+		),
 	};
 }
 
@@ -700,7 +784,7 @@ export function separateBase(
 
 /**
  * The largest rate, all targets scaled alike, whose layout uses at most
- * n bases of the max base size
+ * n bases, none over the largest base size
  * @author jplacht
  *
  * @param {IChainInput} input Chain input
@@ -713,7 +797,6 @@ export function fitBases(
 	ctx: IChainContext,
 	n: number
 ): IChainInput | null {
-	const maxArea = input.maxArea ?? DEFAULT_MAX_AREA;
 	const largest = Math.max(0, ...input.targets.map((t) => t.perDay));
 	if (largest <= 0 || n < 1) return null;
 	const scaled = (s: number): IChainInput => ({
@@ -732,7 +815,7 @@ export function fitBases(
 		const bases = solveChain(laid, ctx).bases.filter(
 			(b) => b.materials.length
 		);
-		return bases.length <= n && bases.every((b) => b.area <= maxArea + EPS);
+		return bases.length <= n && bases.every((b) => !b.overArea);
 	};
 
 	let lo = FIT_PRECISION / largest;

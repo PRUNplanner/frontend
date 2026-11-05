@@ -12,8 +12,10 @@ import {
 	separateBase,
 } from "@/features/production_chain/engine/chainAutoLayout";
 import {
+	BASE_IDS,
 	chainShipping,
 	cogcFits,
+	rankPlanets,
 } from "@/features/production_chain/engine/chainBases";
 import { runningCOGC } from "@/features/production_chain/engine/chainSolver";
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
@@ -82,12 +84,12 @@ function bigExpertises(r: IChainResult, id: string): string[] {
 
 describe("autoLayout (AC 1)", () => {
 	for (const [ticker, perDay] of CHAINS)
-		it(`lays ${ticker} ${perDay}/day into bases of 500 area, one expertise each`, () => {
+		it(`lays ${ticker} ${perDay}/day into bases of at most 1,000 area, one expertise each`, () => {
 			const { result } = laid(ticker, perDay);
 			const bases = used(result);
 			expect(bases.length).toBeGreaterThan(1);
 			for (const b of bases) {
-				expect(b.area).toBeLessThanOrEqual(500);
+				expect(b.area).toBeLessThanOrEqual(1000);
 				expect(bigExpertises(result, b.id).length).toBeLessThanOrEqual(
 					1
 				);
@@ -101,10 +103,72 @@ describe("autoLayout (AC 1)", () => {
 			const at500 = used(laid(ticker, perDay).result).length;
 			for (const max of [750, 1000] as ChainMaxArea[]) {
 				const bases = used(laid(ticker, perDay, max).result);
-				for (const b of bases) expect(b.area).toBeLessThanOrEqual(max);
+				for (const b of bases) expect(b.area).toBeLessThanOrEqual(1000);
 				expect(bases.length).toBeLessThanOrEqual(at500);
 			}
 		});
+
+	for (const [ticker, perDay] of CHAINS)
+		it(`leaves no two ${ticker} ${perDay}/day bases of one expertise that fit into 1,000 together`, () => {
+			const { input, result } = laid(ticker, perDay);
+			const bases = used(result);
+			const main = (id: string) => bigExpertises(result, id)[0];
+			for (const [i, a] of bases.entries())
+				for (const b of bases.slice(i + 1)) {
+					if (!main(a.id) || main(a.id) !== main(b.id)) continue;
+					const m = solveChain(
+						mergeBases(result, input, b.id, a.id),
+						ctx
+					).bases.find((x) => x.id === a.id)!;
+					const lost =
+						m.notOnPlanet.length >
+							a.notOnPlanet.length + b.notOnPlanet.length ||
+						m.noFarming.length >
+							a.noFarming.length + b.noFarming.length;
+					expect(m.area > 1000 || lost).toBe(true);
+				}
+		});
+
+	it("gives a base filled past 500 a planet that builds it", () => {
+		const { input, result } = laid("AIR", 3);
+		const big = used(result).filter((b) => b.area > 500);
+		expect(big.length).toBeGreaterThan(0);
+		for (const b of big) {
+			const ranked = rankPlanets(result, input, ctx, b.id, [
+				...ctx.planets!.values(),
+			]).filter(
+				(f) =>
+					!f.missing.length && !f.noFarming && f.area <= b.area + 1e-6
+			);
+			expect(b.planet).not.toBeNull();
+			expect(b.notOnPlanet).toEqual([]);
+			expect(b.noFarming).toEqual([]);
+			expect(ranked.some((f) => f.planet === b.planet)).toBe(true);
+		}
+	});
+
+	it("fills one base up to 1,000 rather than two alike at 500", () => {
+		const { input, result } = laid("AIR", 3);
+		expect(input.bases.map((b) => b.id)).toEqual(
+			BASE_IDS.slice(0, input.bases.length)
+		);
+		const electronics = result.buildingTypes.filter(
+			(t) => t.expertise === "ELECTRONICS"
+		);
+		const ids = new Set(electronics.map((t) => t.base));
+		expect(ids.size).toBe(1);
+		const base = result.bases.find((b) => ids.has(b.id))!;
+		expect(base.area).toBeGreaterThan(500);
+		expect(base.overArea).toBe(false);
+		expect(used(result)).toHaveLength(input.bases.length);
+		// a group that fits 500 stays at 500 or less
+		for (const b of used(result))
+			if (
+				b.id !== base.id &&
+				bigExpertises(result, b.id)[0] === "METALLURGY"
+			)
+				expect(b.area).toBeLessThanOrEqual(500);
+	});
 
 	it("keeps one base for a chain without buildings", () => {
 		const pending = testContext(false);
@@ -360,7 +424,7 @@ describe("fitBases (AC 5)", () => {
 
 describe("merge and separate (AC 6)", () => {
 	it("merges a base into another, keeping the target's planet", () => {
-		const { input, result } = laid("AIR", 3);
+		const { input, result } = laid("AIR", 10);
 		const [a, b] = input.bases;
 		const merged = mergeBases(result, input, b.id, a.id);
 		expect(merged.bases.map((x) => x.id)).not.toContain(b.id);

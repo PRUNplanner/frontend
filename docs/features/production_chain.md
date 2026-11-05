@@ -68,7 +68,9 @@ thresholds) rather than copying their math.
   2. Expertise groups of ≥ 1.5 buildings, largest first, fill bases first
      fit decreasing up to the max base size (`maxArea`: 500 default, 750,
      1,000; `area=` in the URL), measured with `baseFootprint`; a step
-     that doesn't fit splits by whole buildings.
+     that doesn't fit splits by whole buildings. A group that needs more
+     than one base at that size is packed again up to 1,000 (the largest
+     size), so one fuller base replaces several alike.
   3. Smaller groups join the base they ship the most t/day with (links ×
      weight) where they fit, else a new mixed base.
   4. Experts stay auto. Planets (`pickPlanets`), largest base first: free
