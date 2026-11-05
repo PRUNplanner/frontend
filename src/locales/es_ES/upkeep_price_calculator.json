@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "Calculando precios de materiales de mantenimiento",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
