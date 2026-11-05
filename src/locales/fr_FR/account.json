@@ -48,7 +48,7 @@
 			"title": "Réinitialisez votre mot de passe",
 			"info": "Veuillez entrer le code reçu par e-mail ainsi que votre nouveau mot de passe.",
 			"throttled": "Trop de tentatives. Patiente quelques minutes et réessaie.",
-			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+			"error": "Une erreur s'est produite. Vérifie ton e-mail, le code et le mot de passe. Assure-toi que ton mot de passe est sûr.",
 			"buttons": {
 				"send": "Réinitialisation du mot de passe"
 			},
@@ -122,7 +122,7 @@
 			"done": "E-mail confirmé"
 		},
 		"email_label": "Adresse e-mail",
-		"password_label": "Current password",
+		"password_label": "Mot de passe actuel",
 		"email_placeholder": "toi{'@'}example.com",
 		"email_info": "Sert uniquement à réinitialiser ton mot de passe. Pas de newsletter, jamais partagé. Tu peux le modifier ou le supprimer à tout moment dans Profil.",
 		"email_code_info": "Nous t'enverrons un code à 8 caractères pour confirmer que l'adresse est bien la tienne.",
@@ -143,8 +143,8 @@
 			"done": "Terminé"
 		},
 		"errors": {
-			"password_required": "Enter your current password to change your email.",
-			"password_invalid": "That password is not correct.",
+			"password_required": "Saisis ton mot de passe actuel pour changer ton e-mail.",
+			"password_invalid": "Ce mot de passe est incorrect.",
 			"invalid_email": "Cela ne ressemble pas à une adresse e-mail.",
 			"invalid": "Ce code n'a pas fonctionné. Vérifie-le ou envoie-en un nouveau.",
 			"expired": "Ce code a expiré. Envoies-en un nouveau.",
