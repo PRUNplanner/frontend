@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "Расчет расходов на материалы за содержание",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
