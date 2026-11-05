@@ -1,3 +1,11 @@
+# 2026-11-05 - v. 0.35.1
+
+A stability and cleanup release: faster loading, fewer stale or lost changes, safer handling of account data, and a lot of tidying under the hood.
+
+- **Production Chains auto layout**: chains can now lay themselves out into buildable bases, up to 1,000, with a bases overview and one panel to lay out, fit and create bases [[PR-727]](https://github.com/PRUNplanner/frontend/pull/727)
+- **More languages**: the language selector now lists every Crowdin language, including Spanish and French
+- **Stability**: faster page loads, plan reload and drafts behave as expected, changes made just before closing the page are saved, no FIO key or email kept in browser storage, email changes ask for your password, and steadier live market updates
+
 # 2026-11-01 - v. 0.35.0
 
 The headline of this release is **plan versions**: your plans now keep a history, and unsaved edits survive a reload.
