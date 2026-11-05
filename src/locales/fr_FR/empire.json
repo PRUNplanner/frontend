@@ -4,6 +4,7 @@
 	"overview_hide": "Masquer la liste des plans",
 	"overview_show": "Afficher la liste des plans",
 	"views": {
+		"label": "View",
 		"material_io": "E/S matières",
 		"analysis": "Analyse",
 		"production_opportunities": "Opportunités de production"
@@ -40,6 +41,7 @@
 		"expand_row": "Afficher les planètes pour {ticker}",
 		"view_sides": "Producteurs · Consommateurs",
 		"view_net": "Net par planète",
+		"view_label": "Detail view",
 		"surplus": "Excédent",
 		"needs": "Besoins",
 		"plan_count": "{count} plan | {count} plans",
@@ -95,6 +97,7 @@
 			"title": "Matériaux qui déplacent le plus de ȼ",
 			"price": "ȼ / jour",
 			"amount": "Unités / jour",
+			"metric_label": "Metric",
 			"buy": "← tu achètes (consommation nette)",
 			"sell": "tu vends (production nette) →",
 			"caption": "Top {top} sur {n} matériaux · clique sur une ligne pour l'ouvrir dans E/S matières",
