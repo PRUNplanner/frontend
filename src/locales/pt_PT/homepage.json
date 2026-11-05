@@ -39,7 +39,7 @@
 		"free_value": "Free",
 		"free": "No ads, no paid tier.",
 		"languages_value": "{count} languages",
-		"languages": "Open source, translated by players."
+		"languages": "Open source, translated by players and AI."
 	},
 	"tour": {
 		"pause": "Pause",
