@@ -18,7 +18,7 @@
 	} from "@/features/production_chain/engine/chainCheck.types";
 
 	// UI
-	import { PButton } from "@/ui";
+	import { PSegmented } from "@/ui";
 
 	const { result, nameOf, payback } = defineProps<{
 		result: ICheckResult;
@@ -35,6 +35,17 @@
 
 	const KINDS: CheckKind[] = ["fix", "recipe", "buy", "location", "setup"];
 	const kind = ref<CheckKind | "all">("all");
+
+	const kindOptions = computed(() => [
+		{
+			value: "all" as const,
+			label: `${t("production_chains.check.kind.all")} ${result.findings.length}`,
+		},
+		...KINDS.filter((k) => result.totals.counts[k]).map((k) => ({
+			value: k,
+			label: `${t(`production_chains.check.kind.${k}`)} ${result.totals.counts[k]}`,
+		})),
+	]);
 
 	const baseOf = (f: ICheckFinding): ICheckBase =>
 		result.bases.find((b) => b.id === f.base)!;
@@ -55,30 +66,18 @@
 
 <template>
 	<div class="flex flex-col gap-4 p-3" data-testid="check-findings">
-		<div
-			class="flex flex-wrap gap-2"
-			role="group"
-			:aria-label="t('production_chains.check.tabs.findings')">
-			<PButton
-				size="sm"
-				:pressed="kind === 'all'"
-				data-testid="check-findings-kind-all"
-				@click="kind = 'all'">
-				{{ $t("production_chains.check.kind.all") }}
-				{{ result.findings.length }}
-			</PButton>
-			<template v-for="k in KINDS" :key="k">
-				<PButton
-					v-if="result.totals.counts[k]"
-					size="sm"
-					:pressed="kind === k"
-					:data-testid="`check-findings-kind-${k}`"
-					@click="kind = k">
-					{{ $t(`production_chains.check.kind.${k}`) }}
-					{{ result.totals.counts[k] }}
-				</PButton>
+		<PSegmented
+			v-model:value="kind"
+			class="flex-wrap"
+			size="sm"
+			:options="kindOptions"
+			:label="t('production_chains.check.tabs.findings')">
+			<template #option="{ option }">
+				<span :data-testid="`check-findings-kind-${option.value}`">
+					{{ option.label }}
+				</span>
 			</template>
-		</div>
+		</PSegmented>
 
 		<section
 			v-for="g in groups"

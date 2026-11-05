@@ -38,7 +38,14 @@
 	} from "@/features/planet_search/planetSearch.types";
 
 	// UI
-	import { PButton, PCheckbox, PInput, PInputNumber, PSelect } from "@/ui";
+	import {
+		PButton,
+		PCheckbox,
+		PInput,
+		PInputNumber,
+		PSegmented,
+		PSelect,
+	} from "@/ui";
 
 	const props = defineProps<{
 		facets: IPlanetSearchFacets;
@@ -191,29 +198,21 @@
 				<h3 class="text-base font-bold">
 					{{ t("planet_search.materials.title") }}
 				</h3>
-				<div
-					role="group"
-					:aria-label="t('planet_search.materials.groups_op_label')"
-					class="flex border border-white/20 rounded overflow-hidden">
-					<button
-						v-for="op in ['all', 'any'] as const"
-						:key="op"
-						type="button"
-						:class="[
-							segment,
-							filter.groupsOp === op ? 'bg-blue-800' : '',
-						]"
-						:aria-pressed="filter.groupsOp === op"
-						@click="set({ groupsOp: op })">
-						{{
-							t(
-								op === "all"
-									? "planet_search.materials.all_groups"
-									: "planet_search.materials.any_group"
-							)
-						}}
-					</button>
-				</div>
+				<PSegmented
+					size="sm"
+					:value="filter.groupsOp"
+					:options="[
+						{
+							value: 'all',
+							label: t('planet_search.materials.all_groups'),
+						},
+						{
+							value: 'any',
+							label: t('planet_search.materials.any_group'),
+						},
+					]"
+					:label="t('planet_search.materials.groups_op_label')"
+					@update:value="(op) => set({ groupsOp: op })" />
 			</div>
 
 			<template v-for="(group, gi) in filter.materialGroups" :key="gi">
@@ -238,33 +237,27 @@
 								})
 							}}
 						</span>
-						<div
-							role="group"
-							:aria-label="
+						<PSegmented
+							size="sm"
+							:value="group.op"
+							:options="[
+								{
+									value: 'any',
+									label: t('planet_search.materials.any_of'),
+								},
+								{
+									value: 'all',
+									label: t('planet_search.materials.all_of'),
+								},
+							]"
+							:label="
 								t('planet_search.materials.group_op_label', {
 									n: gi + 1,
 								})
 							"
-							class="flex border border-white/20 rounded overflow-hidden">
-							<button
-								v-for="op in ['any', 'all'] as const"
-								:key="op"
-								type="button"
-								:class="[
-									segment,
-									group.op === op ? 'bg-blue-800' : '',
-								]"
-								:aria-pressed="group.op === op"
-								@click="updateGroup(gi, (g) => ({ ...g, op }))">
-								{{
-									t(
-										op === "any"
-											? "planet_search.materials.any_of"
-											: "planet_search.materials.all_of"
-									)
-								}}
-							</button>
-						</div>
+							@update:value="
+								(op) => updateGroup(gi, (g) => ({ ...g, op }))
+							" />
 						<button
 							type="button"
 							class="touch-target ml-auto px-1 text-muted hover:text-white cursor-pointer min-h-11 lg:min-h-6"
