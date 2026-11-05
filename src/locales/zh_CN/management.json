@@ -93,7 +93,8 @@
 		"menu": {
 			"clone": "复制",
 			"share": "分享…",
-			"delete": "删除…"
+			"delete": "删除…",
+			"clone_name": "{name} (Clone)"
 		}
 	},
 	"save_bar": {

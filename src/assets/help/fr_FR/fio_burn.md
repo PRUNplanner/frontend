@@ -1,12 +1,12 @@
-# Calculations
+# Calculs
 
-Plan calculations are based on the production and storage data of your plans. To get accurate results, you’ll need to have your data synced via FIO. Please note that degradation is not included in these calculations.
+Les calculs des plans reposent sur les données de production et de stockage de tes plans. Pour obtenir des résultats précis, tes données doivent être synchronisées via FIO. Note que la dégradation n'est pas incluse dans ces calculs.
 
-# Thresholds
+# Seuils
 
-PRUNplanner uses color thresholds to highlight important values:
+PRUNplanner utilise des seuils de couleur pour mettre en évidence les valeurs importantes :
 
-- Yellow indicates that a value is approaching a limit or may need attention soon.
-- Red means the threshold has been exceeded and requires immediate attention.
+- Jaune indique qu'une valeur approche d'une limite ou pourrait bientôt demander ton attention.
+- Rouge signifie que le seuil est dépassé et demande une attention immédiate.
 
-These thresholds help you quickly spot potential issues in your production or storage before they become critical.
+Ces seuils t'aident à repérer rapidement les problèmes potentiels de production ou de stockage avant qu'ils ne deviennent critiques.

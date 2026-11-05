@@ -1,7 +1,7 @@
-The **Empire view** gives you a complete overview of your plans and their combined production within an empire. Here, you can also adjust your faction and permits, since both affect your production bonuses. Plans can be assigned to an empire in the **Management view**.
+La **vue Empire** te donne un aperçu complet de tes plans et de leur production combinée au sein d'un empire. Tu peux aussi y ajuster ta faction et tes permis, car les deux influencent tes bonus de production. Les plans s'assignent à un empire dans la **vue Gestion**.
 
-In addition to tracking production, the empire automatically calculates your **daily profit, costs** (including materials, workforce, and degradation), and total **revenue** based on your personal exchange preferences. These figures aren’t just a simple sum of your plans—they use weighted prices that take both production and consumption into account across the entire empire.
+En plus du suivi de la production, l'empire calcule automatiquement ton **bénéfice quotidien, tes coûts** (matériaux, main-d'œuvre et dégradation compris) et tes **recettes** totales selon tes préférences d'échange personnelles. Ces chiffres ne sont pas une simple somme de tes plans : ils utilisent des prix pondérés qui tiennent compte de la production et de la consommation dans tout l'empire.
 
-The **Empire Material I/O** view shows how much of each material your empire produces and where. You can filter consumables in or out, or focus purely on load balancing, comparing production and consumption at a glance.
+La vue **E/S matières de l'empire** montre combien de chaque matériau ton empire produit, et où. Tu peux inclure ou exclure les consommables, ou te concentrer uniquement sur la répartition de charge, en comparant production et consommation d'un coup d'œil.
 
-Finally, the **Empire Analysis** provides charts that break down your profits by plans and materials. You can also explore what your empire net produces or consumes, as well as which materials are produced or consumed exclusively.
+Enfin, l'**Analyse de l'empire** propose des graphiques qui ventilent tes bénéfices par plan et par matériau. Tu peux aussi explorer ce que ton empire produit ou consomme en net, ainsi que les matériaux produits ou consommés exclusivement.

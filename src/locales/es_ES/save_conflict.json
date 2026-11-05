@@ -25,6 +25,35 @@
 	"deleted_option_help": {
 		"save_as_new": "Crea un plan nuevo con tus cambios."
 	},
+	"draft": {
+		"title": "Borrador guardado en otro sitio",
+		"text": "Otra pestaña u otro dispositivo guardó un borrador de este plan después del tuyo. El autoguardado está en pausa hasta que elijas.",
+		"theirs": "En el otro borrador",
+		"mine": "Tus cambios",
+		"option": {
+			"overwrite": "Conservar los míos",
+			"reload": "Cargar el otro borrador",
+			"close": "Decidir más tarde"
+		},
+		"option_help": {
+			"overwrite": "Sustituye el otro borrador por tus cambios.",
+			"reload": "Descarta aquí tus cambios y carga el otro borrador."
+		}
+	},
+	"draft_base": {
+		"title": "Cambios sin guardar sobre una versión anterior",
+		"text": "Dejaste cambios sin guardar en este plan, y se ha vuelto a guardar desde entonces. No cambia nada hasta que elijas.",
+		"mine": "Tus cambios sin guardar",
+		"option": {
+			"overwrite": "Conservar mis cambios",
+			"reload": "Usar la versión guardada",
+			"close": "Decidir más tarde"
+		},
+		"option_help": {
+			"overwrite": "Carga tus cambios sin guardar sobre la versión guardada.",
+			"reload": "Elimina tus cambios sin guardar y conserva la versión guardada."
+		}
+	},
 	"type": {
 		"BUY": "compra",
 		"SELL": "venta",

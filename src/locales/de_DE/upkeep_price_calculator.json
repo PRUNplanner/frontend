@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "Berechne Preise der Infrastruktur Materialien",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",

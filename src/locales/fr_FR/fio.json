@@ -1,15 +1,15 @@
 {
 	"burn": {
-		"view_title": "FIO Burn",
+		"view_title": "Consommation FIO",
 		"title": "FIO Burn :",
 		"fio_last_update": "Mise à jour des données FIO : {last_updated}",
 		"states": {
-			"no_empire_title": "No empire yet",
-			"no_empire": "FIO Burn shows how long the stock of each base in an empire lasts. Create an empire in Management and assign your plans to it.",
+			"no_empire_title": "Pas encore d'empire",
+			"no_empire": "Consommation FIO montre combien de temps dure le stock de chaque base d'un empire. Crée un empire dans Gestion et assigne-lui tes plans.",
 			"create_empire": "@:empire.empty.create",
-			"no_fio_title": "Connect FIO to see your burn",
-			"no_fio": "FIO Burn reads your bases' stock from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile"
+			"no_fio_title": "Connecte FIO pour voir ta consommation",
+			"no_fio": "Consommation FIO lit le stock de tes bases depuis FIO. Configure FIO dans ton {link}, puis reviens ici.",
+			"profile": "Profil"
 		},
 		"form": {
 			"empire": "@:terms.empire",
@@ -116,7 +116,7 @@
 			"columns": {
 				"base": "Base",
 				"buildings": "Bâtiments",
-				"condition": "Condition",
+				"condition": "État",
 				"since": "Depuis la réparation",
 				"next": "Prochaine réparation",
 				"cost": "Réparer maintenant"
@@ -171,7 +171,7 @@
 				"building": "Bâtiment",
 				"target": "Objectif",
 				"since": "Depuis",
-				"condition": "Cond.",
+				"condition": "État",
 				"due": "À échéance",
 				"days": "{n} j"
 			},

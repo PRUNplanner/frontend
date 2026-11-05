@@ -10,14 +10,14 @@
 	"error": "Impossible de charger les données du marché.",
 	"in_short": {
 		"title": "En bref",
-		"index": "CX index",
-		"sector": "Moved most",
-		"pioneer": "Feeding 100 pioneers",
-		"pioneer_value": "{cost} a day",
-		"gap": "Biggest open gap right now",
-		"since": "since {date}",
-		"gap_note": "buy on {low}, sell on {high}",
-		"no_gap": "No open gap of {min} or more right now"
+		"index": "Indice CX",
+		"sector": "Plus forte variation",
+		"pioneer": "Nourrir 100 pionniers",
+		"pioneer_value": "{cost} par jour",
+		"gap": "Plus gros écart ouvert en ce moment",
+		"since": "depuis le {date}",
+		"gap_note": "acheter sur {low}, vendre sur {high}",
+		"no_gap": "Aucun écart ouvert de {min} ou plus en ce moment"
 	},
 	"kpi": {
 		"turnover_7d": "Échangé, 7 derniers jours",
@@ -54,8 +54,8 @@
 		"drivers": "Plus fortes variations",
 		"driver": "{ticker} {delta} ({change})",
 		"chart_label": "Coût {tier} par échange",
-		"in_90_days": "in 90 days",
-		"spark_label": "{tier}, cost over 90 days"
+		"in_90_days": "en 90 jours",
+		"spark_label": "{tier}, coût sur 90 jours"
 	},
 	"treemap": {
 		"title": "Où circule l'argent",
@@ -79,73 +79,73 @@
 		"row": "{price} · {turnover} en 7 jours",
 		"spark_label": "{ticker}, VWAP 7J sur 15 jours",
 		"empty": "Aucun matériau n'a évolué ainsi avec un volume suffisant.",
-		"pages_label": "Movers pages",
+		"pages_label": "Pages des plus fortes variations",
 		"col": {
-			"material": "Material",
-			"vwap_7d": "VWAP 7D",
-			"traded_7d": "Traded, 7 days",
-			"spark": "15 days",
-			"change": "vs 30 days"
+			"material": "Matériau",
+			"vwap_7d": "VWAP 7J",
+			"traded_7d": "Échangé, 7 jours",
+			"spark": "15 jours",
+			"change": "vs 30 jours"
 		},
 		"sort": {
-			"change_pct": "Change vs 30 days",
-			"label": "Material",
-			"vwap_7d": "VWAP 7D",
-			"turnover_7d": "Traded, 7 days"
+			"change_pct": "Variation vs 30 jours",
+			"label": "Matériau",
+			"vwap_7d": "VWAP 7J",
+			"turnover_7d": "Échangé, 7 jours"
 		}
 	},
 	"leaders": {
 		"title": "Ce qui fait tourner l'économie",
-		"caption": "The materials with the most turnover in 30 days. Bar: the last 7 days by exchange.",
+		"caption": "Les matériaux au plus gros chiffre d'affaires sur 30 jours. Barre : les 7 derniers jours par échange.",
 		"share": "{share} du volume",
 		"split_label": "{ticker}, volume sur 7 jours par échange",
-		"pages_label": "Leaders pages"
+		"pages_label": "Pages des leaders"
 	},
 	"gaps": {
-		"title": "Price gaps between exchanges",
+		"title": "Écarts de prix entre échanges",
 		"basis": {
-			"label": "Gap basis",
-			"vwap": "Last 7 days",
-			"books": "Order books now"
+			"label": "Base de l'écart",
+			"vwap": "7 derniers jours",
+			"books": "Carnets d'ordres actuels"
 		},
-		"caption_vwap": "The same material at a different VWAP 7D on two exchanges, with real volume on both. Traded prices lag: Books now says whether you could still buy on one and sell on the other.",
-		"caption_books": "Buy at the best ask on one exchange, sell at the best bid on another, right now. Only the top price, not how much is on offer.",
+		"caption_vwap": "Le même matériau à un VWAP 7J différent sur deux échanges, avec un vrai volume sur les deux. Les prix échangés sont en retard : Carnets actuels indique si tu pourrais encore acheter sur l'un et vendre sur l'autre.",
+		"caption_books": "Acheter au meilleur ask sur un échange, vendre au meilleur bid sur un autre, tout de suite. Seulement le meilleur prix, pas la quantité disponible.",
 		"col": {
-			"material": "Material",
-			"low_vwap": "Cheaper · VWAP 7D",
-			"high_vwap": "Dearer · VWAP 7D",
-			"low_books": "Cheaper · best ask",
-			"high_books": "Dearer · best bid",
-			"gap": "Gap",
-			"now": "Books now"
+			"material": "Matériau",
+			"low_vwap": "Moins cher · VWAP 7J",
+			"high_vwap": "Plus cher · VWAP 7J",
+			"low_books": "Moins cher · meilleur ask",
+			"high_books": "Plus cher · meilleur bid",
+			"gap": "Écart",
+			"now": "Carnets actuels"
 		},
 		"sort": {
-			"gap": "Gap",
-			"label": "Material",
-			"now": "Books now (open first)"
+			"gap": "Écart",
+			"label": "Matériau",
+			"now": "Carnets actuels (ouverts d'abord)"
 		},
 		"ask": "ask {price}",
 		"bid": "bid {price}",
-		"open": "Open {change}",
-		"closed": "Closed",
-		"ask_on": "ask {price} on {exchange}",
-		"no_ask": "no ask on {exchange}",
-		"bid_on": "bid {price} on {exchange}",
-		"no_bid": "no bid on {exchange}",
-		"pages_label": "Price gap pages",
-		"empty": "No material has a gap of {min} or more with enough volume.",
-		"footnote": "Currencies at par · no shipping, fuel or flight time · each exchange needs {units} units and {turnover} traded in 7 days · gaps under {min} and flat materials left out."
+		"open": "Ouvert {change}",
+		"closed": "Fermé",
+		"ask_on": "ask {price} sur {exchange}",
+		"no_ask": "pas d'ask sur {exchange}",
+		"bid_on": "bid {price} sur {exchange}",
+		"no_bid": "pas de bid sur {exchange}",
+		"pages_label": "Pages des écarts de prix",
+		"empty": "Aucun matériau n'a un écart de {min} ou plus avec assez de volume.",
+		"footnote": "Monnaies à parité · sans transport, carburant ni temps de vol · chaque échange doit avoir {units} unités et {turnover} échangés en 7 jours · écarts sous {min} et matériaux à prix fixe exclus."
 	},
 	"list": {
 		"show_all": {
-			"rising": "Show all {count} rising",
-			"falling": "Show all {count} falling",
-			"materials": "Show all {count} materials",
-			"gaps": "Show all {count} gaps"
+			"rising": "Afficher les {count} en hausse",
+			"falling": "Afficher les {count} en baisse",
+			"materials": "Afficher les {count} matériaux",
+			"gaps": "Afficher les {count} écarts"
 		},
-		"show_top": "Show top {count}",
+		"show_top": "Afficher le top {count}",
 		"range": "{from}–{to} of {total}",
-		"sort_by": "Sort by"
+		"sort_by": "Trier par"
 	},
 	"exchanges": {
 		"title": "Les quatre échanges",
@@ -168,14 +168,14 @@
 	"method": {
 		"title": "Comment ces chiffres sont établis",
 		"source": "Source. FIO, le service communautaire alimenté par les clients de jeu des joueurs, via les données de jeu publiques de PRUNplanner. Les prix quotidiens couvrent des journées UTC complètes ; les carnets d'ordres sont actuels.",
-		"turnover": "Turnover is traded quantity × price, summed over AI1, CI1, IC1 and NC1. Each exchange has its own currency (AIC, CIS, ICA, NCC). The same material trades at close to the same price everywhere, so sums treat the currencies at par. Every filled trade counts once, whether a seller filled a bid or a buyer filled an ask. Trades with market makers count too. Orders that aren't filled don't count, and the data doesn't say which side started a trade.",
+		"turnover": "Le chiffre d'affaires est la quantité échangée × le prix, additionnée sur AI1, CI1, IC1 et NC1. Chaque échange a sa propre monnaie (AIC, CIS, ICA, NCC). Un même matériau s'échange à peu près au même prix partout, donc les sommes traitent les monnaies à parité. Chaque transaction exécutée compte une fois, qu'un vendeur ait rempli un bid ou un acheteur un ask. Les transactions avec les teneurs de marché comptent aussi. Les ordres non exécutés ne comptent pas, et les données ne disent pas quel camp a initié une transaction.",
 		"prices": "Les prix sont uniquement le VWAP 7J et le VWAP 30J : volume ÷ unités sur la période, si bien que les jours calmes comptent à peine. Un point du graphique est le VWAP 7J de ce jour.",
 		"index": "Indice. Tous les matériaux ayant un VWAP 7J sur chacun des 90 jours. Poids = part du volume sur 30 jours, plafonnée à 5 % (20 % au sein d'un secteur), le reste étant réparti sur les autres.",
 		"movers": "Les mouvements comparent le VWAP 7J au VWAP 30J, comme la tendance dans Market Exploration. Les 30 jours incluent les 7 derniers, donc les variations paraissent plus faibles que d'une semaine à l'autre.",
-		"gaps": "Price gaps. Last 7 days compares each exchange's VWAP 7D, so a gap there may already be gone; Books now checks the best ask on the cheaper exchange against the best bid on the dearer one. Order books now uses only those top prices, not how much is on offer. Neither counts shipping, fuel or flight time.",
+		"gaps": "Écarts de prix. 7 derniers jours compare le VWAP 7J de chaque échange, donc un écart peut déjà avoir disparu ; Carnets actuels compare le meilleur ask de l'échange le moins cher au meilleur bid du plus cher. Carnets d'ordres actuels n'utilise que ces meilleurs prix, pas la quantité disponible. Aucun des deux ne compte le transport, le carburant ni le temps de vol.",
 		"heavy_day": "Une grosse journée se voit pendant une semaine. Un seul gros échange à un prix inhabituel tire le VWAP 7J tant qu'il reste dans la fenêtre de 7 jours, puis le prix revient à la normale.",
 		"not_included": "Absents ici : marchés locaux, contrats et échanges au sein des corporations. Ils ne passent jamais par les échanges, donc ceci reflète le CX, pas toute l'économie.",
-		"flat": "Flat marks materials whose daily VWAP stays within ±0.3 % of its 30-day median on at least 80 % of trading days, usually because market makers buy or sell them at fixed prices. They count in turnover but are left out of the movers and the price gaps."
+		"flat": "Prix fixe désigne les matériaux dont le VWAP quotidien reste à ±0,3 % de sa médiane sur 30 jours pendant au moins 80 % des jours d'échange, généralement parce que des teneurs de marché les achètent ou les vendent à prix fixe. Ils comptent dans le chiffre d'affaires mais sont exclus des plus fortes variations et des écarts de prix."
 	},
 	"sector": {
 		"consumables": "Consommables",

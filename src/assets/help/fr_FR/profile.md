@@ -1,30 +1,30 @@
-# Browser Storage
+# Stockage du navigateur
 
-To reduce the load on the backend API and improve performance, PRUNplanner stores game data directly in your browser. This allows for faster access and a smoother user experience. The tool also automatically refreshes stored data after a set period to ensure it remains up to date.
+Pour réduire la charge sur l'API du backend et améliorer les performances, PRUNplanner stocke les données du jeu directement dans ton navigateur. This allows for faster access and a smoother user experience. The tool also automatically refreshes stored data after a set period to ensure it remains up to date.
 
-## Storage Categories
+## Catégories de stockage
 
-- **Game Data**
-  This includes mostly static information such as materials, buildings, recipes, planetary data, and exchange details. It is sourced from FIO or, in the case of exchange data, calculated by PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
+- **Données du jeu**
+  Elles comprennent surtout des informations statiques comme les matériaux, les bâtiments, les recettes, les données planétaires et les détails des échanges. Elles proviennent de FIO ou, pour les données d'échange, sont calculées par PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
 
-- **Planning Data**
-  This category contains your personal planning information, including your empires, plans, exchange preferences, and any shared plans.
+- **Données de planification**
+  Cette catégorie contient tes informations de planification personnelles, dont tes empires, tes plans, tes préférences d'échange et les plans partagés.
 
-- **FIO Data**
-  This refers to your in-game personal data, such as storage and site information. To access this, you can link your Prosperous Universe account by providing your username and a FIO API key. PRUNplanner will periodically check for updates and automatically sync the latest data from the backend.
+- **Données FIO**
+  Il s'agit de tes données personnelles en jeu, comme le stockage et les informations sur tes sites. Pour y accéder, tu peux lier ton compte Prosperous Universe en indiquant ton nom d'utilisateur et une clé API FIO. PRUNplanner vérifie régulièrement les mises à jour et synchronise automatiquement les dernières données depuis le backend.
 
 ---
 
-# Preferences
+# Préférences
 
-Preferences allow you to save frequently used settings and configurations, making your planning process more efficient and personalized.
+Les préférences te permettent d'enregistrer les réglages et configurations que tu utilises souvent, pour une planification plus efficace et personnalisée.
 
-For example:
+Par exemple :
 
-- **Default Empire**
-  Your preferred empire is automatically loaded when you access the empire view, saving you from having to select it manually each time.
+- **Empire par défaut**
+  Ton empire préféré est chargé automatiquement quand tu ouvres la vue Empire, ce qui t'évite de le sélectionner à chaque fois.
 
-- **Burn View Thresholds**
-  If you're using PRUNplanner in combination with FIO to monitor your base inventories, you can set red and yellow thresholds for stock levels. These thresholds help you identify when to send resupply ships and are saved in your browser for convenience.
+- **Seuils de la vue Consommation**
+  Si tu utilises PRUNplanner avec FIO pour surveiller les stocks de tes bases, tu peux définir des seuils rouge et jaune pour les niveaux de stock. Ces seuils t'aident à savoir quand envoyer des vaisseaux de réapprovisionnement et sont enregistrés dans ton navigateur pour plus de commodité.
 
-Tool-wide preferences can be managed directly from your profile or adjusted within the relevant views. Plan-specific settings can be modified within each linked plan.
+Les préférences de l'outil se gèrent directement depuis ton profil ou s'ajustent dans les vues concernées. Les réglages propres à un plan se modifient dans chaque plan lié.

@@ -5,48 +5,48 @@
 		"pct_max": "% / Max"
 	},
 	"card": {
-		"label": "{ticker} market",
+		"label": "{ticker}-Markt",
 		"universe_vwap": "Universe VWAP 7D",
-		"vs_30d": "{trend} vs 30D",
-		"pinned": "Pinned",
-		"close": "Close the market card",
+		"vs_30d": "{trend} vs. 30D",
+		"pinned": "Angeheftet",
+		"close": "Marktkarte schließen",
 		"facts": "{weight} t · {volume} m³",
 		"plan": {
-			"plan_buys": "This plan buys",
-			"plan_sells": "This plan sells",
-			"empire_buys": "The empire buys",
-			"empire_sells": "The empire sells",
-			"setup_buys": "This setup buys",
-			"setup_sells": "This setup sells",
-			"per_day": "{amount} / day",
-			"periods": "{d7} in 7 days · {d30} in 30 days",
-			"check": "Market check on your CX",
-			"check_universe": "No CX preference: checked against Universe",
-			"across": "Against each exchange’s daily volume"
+			"plan_buys": "Dieser Plan kauft",
+			"plan_sells": "Dieser Plan verkauft",
+			"empire_buys": "Das Imperium kauft",
+			"empire_sells": "Das Imperium verkauft",
+			"setup_buys": "Dieses Setup kauft",
+			"setup_sells": "Dieses Setup verkauft",
+			"per_day": "{amount} / Tag",
+			"periods": "{d7} in 7 Tagen · {d30} in 30 Tagen",
+			"check": "Markt-Check auf deiner CX",
+			"check_universe": "Keine CX-Präferenz: gegen Universe geprüft",
+			"across": "Gegen das Tagesvolumen jedes Marktplatzes"
 		},
 		"chip": {
-			"fine": "Fine: {share} of {cx}’s daily volume",
-			"watch": "Watch: {share} of {cx}’s daily volume",
-			"too_big": "Too big: {share} of {cx}’s daily volume",
-			"flag_share": "{flag}: {share} of {cx}’s daily volume"
+			"fine": "Passt: {share} des Tagesvolumens von {cx}",
+			"watch": "Beobachten: {share} des Tagesvolumens von {cx}",
+			"too_big": "Zu groß: {share} des Tagesvolumens von {cx}",
+			"flag_share": "{flag}: {share} des Tagesvolumens von {cx}"
 		},
 		"others": {
-			"fine": "Fine on the other exchanges too",
-			"watch": "Elsewhere: watch on {list}",
-			"too_big": "Elsewhere: too big on {list}",
-			"mixed": "Elsewhere: too big on {red}, watch on {amber}"
+			"fine": "Passt auch auf den anderen Marktplätzen",
+			"watch": "Anderswo: beobachten auf {list}",
+			"too_big": "Anderswo: zu groß auf {list}",
+			"mixed": "Anderswo: zu groß auf {red}, beobachten auf {amber}"
 		},
 		"cross": {
-			"fine": "Fine on all four exchanges",
-			"watch": "Watch on {list}",
-			"too_big": "Too big on {list}",
-			"largest": "Largest share: {share} of {cx}’s daily volume",
-			"largest_none": "Largest share: no trades on {cx} in 30 days"
+			"fine": "Passt auf allen vier Marktplätzen",
+			"watch": "Beobachten auf {list}",
+			"too_big": "Zu groß auf {list}",
+			"largest": "Größter Anteil: {share} des Tagesvolumens von {cx}",
+			"largest_none": "Größter Anteil: keine Abschlüsse auf {cx} in 30 Tagen"
 		},
 		"verdict": {
-			"fine": "Fine",
-			"watch": "Watch",
-			"too_big": "Too big"
+			"fine": "Passt",
+			"watch": "Beobachten",
+			"too_big": "Zu groß"
 		},
 		"columns": {
 			"cx": "CX",
@@ -56,102 +56,102 @@
 			"vwap_7d": "VWAP 7D",
 			"vwap_30d": "VWAP 30D",
 			"vwap": "VWAP 7D · 30D",
-			"trend": "7D vs 30D",
-			"history": "30 days",
-			"per_day": "Per day",
+			"trend": "7D vs. 30D",
+			"history": "30 Tage",
+			"per_day": "Pro Tag",
 			"plan": "Plan"
 		},
-		"your_cx": "your CX",
+		"your_cx": "deine CX",
 		"status": {
-			"INACTIVE": "inactive",
-			"STALE": "stale"
+			"INACTIVE": "inaktiv",
+			"STALE": "veraltet"
 		},
-		"no_bids": "no bids",
-		"no_asks": "no asks",
-		"no_trades": "no trades",
-		"shared_scale": "shared scale",
-		"spark_label": "{cx} VWAP over 30 days",
-		"rare": "Rarely traded: {units} units in 30 days on all four exchanges. Prices come from a few single trades.",
+		"no_bids": "keine Bids",
+		"no_asks": "keine Asks",
+		"no_trades": "keine Abschlüsse",
+		"shared_scale": "gemeinsame Skala",
+		"spark_label": "{cx} VWAP über 30 Tage",
+		"rare": "Selten gehandelt: {units} Einheiten in 30 Tagen auf allen vier Marktplätzen. Die Preise stammen aus wenigen einzelnen Abschlüssen.",
 		"summary": {
-			"trend": "Rising on {rising} of 4 exchanges · {trend} weighted by volume",
-			"trend_none": "Rising on {rising} of 4 exchanges · no trades in the last 7 days",
-			"book": "Order books: {offered} offered · {wanted} wanted",
-			"book_label": "Offered {offered} against wanted {wanted}",
+			"trend": "Steigend auf {rising} von 4 Marktplätzen · {trend} nach Volumen gewichtet",
+			"trend_none": "Steigend auf {rising} von 4 Marktplätzen · keine Abschlüsse in den letzten 7 Tagen",
+			"book": "Orderbücher: {offered} angeboten · {wanted} gesucht",
+			"book_label": "Angeboten {offered} gegenüber gesucht {wanted}",
 			"cohesion": {
-				"together": "Exchange prices move together ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
-				"little": "Exchange prices differ a little ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
-				"apart": "Exchange prices differ a lot ({pct} variation) · cheapest {cheapest}, dearest {dearest}"
+				"together": "Marktplatzpreise bewegen sich gemeinsam ({pct} Streuung) · am günstigsten {cheapest}, am teuersten {dearest}",
+				"little": "Marktplatzpreise weichen etwas ab ({pct} Streuung) · am günstigsten {cheapest}, am teuersten {dearest}",
+				"apart": "Marktplatzpreise weichen stark ab ({pct} Streuung) · am günstigsten {cheapest}, am teuersten {dearest}"
 			}
 		},
-		"hint": "Click the ticker to pin · Esc closes",
-		"hint_details": "Click the ticker for Market details · Esc closes",
-		"hint_pinned": "Pinned · Esc or × closes",
-		"hint_click": "Esc closes",
-		"exploration": "Market Exploration ↗",
-		"details": "Market details →"
+		"hint": "Klicke den Ticker zum Anheften · Esc schließt",
+		"hint_details": "Klicke den Ticker für Marktdetails · Esc schließt",
+		"hint_pinned": "Angeheftet · Esc oder × schließt",
+		"hint_click": "Esc schließt",
+		"exploration": "Marktforschung ↗",
+		"details": "Marktdetails →"
 	},
 	"details": {
-		"title": "Market details",
-		"weight": "Weight",
-		"volume": "Volume",
-		"data_of": "Data of {date}",
-		"active": "Active {n} of 4",
-		"same_limits": "Same limits as Plan check: 10 % watch, 50 % too big.",
-		"exchanges": "Exchanges",
+		"title": "Marktdetails",
+		"weight": "Gewicht",
+		"volume": "Volumen",
+		"data_of": "Daten vom {date}",
+		"active": "Aktiv {n} von 4",
+		"same_limits": "Gleiche Grenzen wie im Plan-Check: 10 % beobachten, 50 % zu groß.",
+		"exchanges": "Marktplätze",
 		"views": {
-			"label": "Exchange view",
-			"prices": "Prices",
-			"book": "Order books",
-			"volume": "Volume"
+			"label": "Marktplatzansicht",
+			"prices": "Preise",
+			"book": "Orderbücher",
+			"volume": "Volumen"
 		},
 		"columns": {
 			"spread_pct": "Spread %",
-			"vs_universe": "vs Universe 7D",
-			"offered": "Offered (supply)",
-			"wanted": "Wanted (demand)",
-			"delta": "Δ offered − wanted",
-			"ratio": "Wanted per offered",
-			"split": "Offered · wanted",
-			"traded_7d": "Traded 7D",
-			"traded_30d": "Traded 30D",
-			"share_7d": "Plan of 7D",
-			"share_30d": "Plan of 30D",
-			"verdict": "Verdict"
+			"vs_universe": "vs. Universe 7D",
+			"offered": "Angeboten (Angebot)",
+			"wanted": "Gesucht (Nachfrage)",
+			"delta": "Δ angeboten − gesucht",
+			"ratio": "Gesucht pro angeboten",
+			"split": "Angeboten · gesucht",
+			"traded_7d": "Gehandelt 7D",
+			"traded_30d": "Gehandelt 30D",
+			"share_7d": "Plan von 7D",
+			"share_30d": "Plan von 30D",
+			"verdict": "Bewertung"
 		},
-		"split_label": "{cx}: offered {offered}, wanted {wanted}",
+		"split_label": "{cx}: angeboten {offered}, gesucht {wanted}",
 		"notes": {
-			"prices": "Spread % is the gap between ask and bid, relative to the ask. “vs Universe 7D” compares each exchange with the Universe VWAP of all four.",
-			"book": "Units waiting in each order book right now. Offered = sell orders (what a buyer can take), wanted = buy orders (what a seller can fill).",
-			"volume": "Units traded. Opened from a plan, two more columns show the plan’s share.",
-			"volume_plan": "Plan share = what is bought or sold in the period, against what the exchange traded in it."
+			"prices": "Spread % ist der Abstand zwischen Ask und Bid, relativ zum Ask. „vs. Universe 7D“ vergleicht jeden Marktplatz mit dem Universe-VWAP aller vier.",
+			"book": "Einheiten, die gerade in jedem Orderbuch warten. Angeboten = Verkaufsorders (was ein Käufer nehmen kann), gesucht = Kauforders (was ein Verkäufer bedienen kann).",
+			"volume": "Gehandelte Einheiten. Aus einem Plan geöffnet, zeigen zwei weitere Spalten den Anteil des Plans.",
+			"volume_plan": "Plananteil = was im Zeitraum gekauft oder verkauft wird, gegenüber dem, was der Marktplatz darin gehandelt hat."
 		},
-		"history": "Last 30 days"
+		"history": "Letzte 30 Tage"
 	},
 	"health": {
-		"title": "Market health",
+		"title": "Marktgesundheit",
 		"breadth": {
-			"label": "Breadth",
-			"value": "rising on {rising} of 4 exchanges",
-			"text": "Exchanges whose 7D VWAP is above their 30D VWAP. All of them moving together is a real trend; one alone is often a blip on that exchange."
+			"label": "Breite",
+			"value": "steigend auf {rising} von 4 Marktplätzen",
+			"text": "Marktplätze, deren 7D-VWAP über ihrem 30D-VWAP liegt. Bewegen sich alle gemeinsam, ist es ein echter Trend; einer allein ist oft nur ein Ausreißer auf diesem Marktplatz."
 		},
 		"trend": {
-			"label": "Volume-weighted trend",
-			"value": "7D against 30D VWAP",
-			"text": "Each exchange’s change counted by how much it traded in 7 days, so a big exchange matters more than a quiet one."
+			"label": "Volumengewichteter Trend",
+			"value": "7D gegenüber 30D VWAP",
+			"text": "Die Änderung jedes Marktplatzes zählt nach dem, was er in 7 Tagen gehandelt hat, ein großer Marktplatz zählt also mehr als ein ruhiger."
 		},
 		"balance": {
-			"label": "Order book balance",
-			"value": "wanted per unit offered",
-			"buyers": "More is offered than wanted: good for buyers, sellers compete for few bids.",
-			"sellers": "More is wanted than offered: good for sellers, buyers compete for few offers.",
-			"even": "Offers and bids are about even."
+			"label": "Orderbuch-Gleichgewicht",
+			"value": "gesucht pro angebotener Einheit",
+			"buyers": "Es wird mehr angeboten als gesucht: gut für Käufer, Verkäufer konkurrieren um wenige Bids.",
+			"sellers": "Es wird mehr gesucht als angeboten: gut für Verkäufer, Käufer konkurrieren um wenige Angebote.",
+			"even": "Angebote und Gebote halten sich etwa die Waage."
 		},
 		"cohesion": {
-			"label": "Price cohesion",
-			"together": "prices move together",
-			"little": "prices differ a little",
-			"apart": "prices differ a lot",
-			"text": "How far the four 7D VWAPs spread around their mean. Under 1.5 % they move in lock-step; over 5 % the gaps can pay for shipping between exchanges."
+			"label": "Preiszusammenhalt",
+			"together": "Preise bewegen sich gemeinsam",
+			"little": "Preise weichen etwas ab",
+			"apart": "Preise weichen stark ab",
+			"text": "Wie weit die vier 7D-VWAPs um ihren Mittelwert streuen. Unter 1.5 % bewegen sie sich im Gleichschritt; über 5 % können die Lücken den Versand zwischen Marktplätzen bezahlen."
 		}
 	},
 	"chart": {

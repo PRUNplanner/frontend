@@ -1,13 +1,14 @@
 {
 	"view_title": "Planetensuche",
 	"title": "Planetensuche",
-	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"description": "Durchsuche jeden Planeten von Prosperous Universe nach Ressourcen, Bedingungen, COGC, Infrastruktur und Sprüngen zu den Marktplätzen. Kostenlos, kein Konto nötig.",
 	"intro": {
-		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
-		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+		"lead": "Filtere alle {n} Planeten von Prosperous Universe nach Ressourcen, Bedingungen, COGC und Sprüngen zu den Marktplätzen. Kostenlos, kein Konto nötig.",
+		"lead_any": "Filtere jeden Planeten von Prosperous Universe nach Ressourcen, Bedingungen, COGC und Sprüngen zu den Marktplätzen. Kostenlos, kein Konto nötig."
 	},
 	"loading": "Planeten werden geladen…",
-	"load_error": "Die Planeten konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
+	"load_error": "Die Planeten konnten nicht geladen werden.",
+	"load_throttled": "Zu viele Anfragen, versuche es in {n} s erneut.",
 	"header": {
 		"search_label": "Planetenname oder ID",
 		"search_placeholder": "Planetenname oder ID, z.B. KI-446 oder Harmonia",
@@ -30,7 +31,7 @@
 		"rename_label": "Gespeicherte Suche {n} umbenennen",
 		"load": "Laden",
 		"delete": "Löschen",
-		"more": "Saved searches, copy link, reset"
+		"more": "Gespeicherte Suchen, Link kopieren, zurücksetzen"
 	},
 	"filters": {
 		"title": "Filter",
@@ -113,8 +114,8 @@
 		"exchanges": "Marktplätze",
 		"max_jumps": "Max. Sprünge",
 		"max_jumps_value": "≤ {n} Sprünge von jeder Auswahl",
-		"login_prompt": "Log in to count jumps from your own bases.",
-		"login": "Log in"
+		"login_prompt": "Melde dich an, um Sprünge von deinen eigenen Basen zu zählen.",
+		"login": "Anmelden"
 	},
 	"results": {
 		"count": "{n} von {total} Planeten",
@@ -124,7 +125,7 @@
 		"chart": "Chart",
 		"planet": "Planet",
 		"fert": "Frucht. %",
-		"plots": "Plots",
+		"plots": "Bauplätze",
 		"other": "Andere Ressourcen",
 		"extras": "Zusätzliche Baumaterialien ",
 		"cogc_infra": "COGC · Infra",
@@ -142,7 +143,7 @@
 		"sort": "Sortieren nach {column}",
 		"sort_hint": "Klicken, um nach dieser Spalte zu sortieren, Shift+Klick, um sie als Tiebreaker hinzuzufügen",
 		"loading_more": "Lade mehr Planeten…",
-		"create_plan_login": "Log in to plan a base on {planet}"
+		"create_plan_login": "Melde dich an, um eine Basis auf {planet} zu planen"
 	},
 	"sort": {
 		"button": "Sortieren ({n})",
@@ -160,7 +161,7 @@
 	"columns": {
 		"button": "Spalten ({shown}/{total})",
 		"fert": "Fruchtbarkeit",
-		"plots": "Plots",
+		"plots": "Bauplätze",
 		"other": "Weitere Ressourcen",
 		"extras": "Zusätzliche Baumaterialien ",
 		"cogc": "COGC · Infrastruktur",
@@ -174,13 +175,13 @@
 		"reset": "Zurücksetzen"
 	},
 	"plots": {
-		"free": "{free} / {total} plots free",
-		"full": "Full",
-		"full_ghost": "Full · ghost sites",
-		"unknown": "plots unknown",
-		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
-		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
-		"as_of": "As of {date}."
+		"free": "{free} / {total} Bauplätze frei",
+		"full": "Voll",
+		"full_ghost": "Voll · Geisterplätze",
+		"unknown": "Bauplätze unbekannt",
+		"full_tooltip": "Jeder Bauplatz ist belegt: Dieser Planet kann nicht mehr besiedelt werden.",
+		"ghost_tooltip": "Jeder Bauplatz ist belegt. Neue Basen entstehen auf Geisterplätzen; bisher {n}.",
+		"as_of": "Stand {date}."
 	},
 	"chips": {
 		"name": "Name: \"{text}\"",
@@ -228,7 +229,8 @@
 		"cogc": "COGC",
 		"infrastructure": "Infrastruktur",
 		"cx": "AI1 / CI1 / IC1 / NC1",
-		"jumps": "Sprünge zu {ref}"
+		"jumps": "Sprünge zu {ref}",
+		"free_workers": "Freie {tier}-Arbeiter"
 	},
 	"chart": {
 		"label": "Ergebnis-Chart: {y} gegen {x}",

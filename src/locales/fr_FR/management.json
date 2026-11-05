@@ -12,11 +12,11 @@
 			"content": "Tu es sûr ? Supprimer l'empire ne supprime pas les plans qui lui sont assignés."
 		},
 		"form": {
-			"empire_name": "@:terms.empire Name",
+			"empire_name": "Nom de l'@:terms.empire",
 			"faction": "@:terms.faction",
-			"permits_total": "@:terms.permits_plural Total",
-			"permits_used": "@:terms.permits_plural Used",
-			"empire_placeholder": "max. 100 characters"
+			"permits_total": "@:terms.permits_plural total",
+			"permits_used": "@:terms.permits_plural utilisés",
+			"empire_placeholder": "100 caractères max."
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -39,11 +39,11 @@
 			"content": "Tu es sûr ? Supprimer le CX supprime toutes les préférences."
 		},
 		"form": {
-			"cx_name": "@:terms.cx Name",
+			"cx_name": "Nom du @:terms.cx",
 			"cx_placeholder": "Nom du CX (100 caractères max.)"
 		},
 		"table": {
-			"cx_name": "@:terms.cx Name",
+			"cx_name": "Nom du @:terms.cx",
 			"assigned_to_empire": "Assigné à un empire ?",
 			"nodata_title": "Aucun @:terms.cx disponible.",
 			"nodata_label": "Crée ta première préférence d'échange."
@@ -93,7 +93,8 @@
 		"menu": {
 			"clone": "Cloner",
 			"share": "Partager…",
-			"delete": "Supprimer…"
+			"delete": "Supprimer…",
+			"clone_name": "{name} (clone)"
 		}
 	},
 	"save_bar": {

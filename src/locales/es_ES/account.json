@@ -48,7 +48,7 @@
 			"title": "Restablece tu contraseña",
 			"info": "Introduce el código enviado a tu e-mail, junto con tu nueva contraseña.",
 			"throttled": "Demasiados intentos. Espera unos minutos e inténtalo de nuevo.",
-			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+			"error": "Se ha producido un error. Comprueba tu e-mail, el código y la contraseña. Asegúrate de que tu contraseña sea segura.",
 			"buttons": {
 				"send": "Restablecer contraseña"
 			},
@@ -122,6 +122,7 @@
 			"done": "E-mail confirmado"
 		},
 		"email_label": "Dirección de e-mail",
+		"password_label": "Contraseña actual",
 		"email_placeholder": "tu{'@'}ejemplo.com",
 		"email_info": "Solo se usa para restablecer tu contraseña. Sin newsletters y nunca se comparte. Puedes cambiarlo o quitarlo en cualquier momento en Perfil.",
 		"email_code_info": "Te enviaremos un código de 8 caracteres para confirmar que es tuyo.",
@@ -142,7 +143,8 @@
 			"done": "Hecho"
 		},
 		"errors": {
-			"email_taken": "Esta dirección ya la usa otra cuenta.",
+			"password_required": "Introduce tu contraseña actual para cambiar tu e-mail.",
+			"password_invalid": "Esa contraseña no es correcta.",
 			"invalid_email": "Esto no parece una dirección de e-mail.",
 			"invalid": "Ese código no ha funcionado. Compruébalo o envía uno nuevo.",
 			"expired": "Ese código ha caducado. Envía uno nuevo.",

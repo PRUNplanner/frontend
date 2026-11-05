@@ -25,6 +25,35 @@
 	"deleted_option_help": {
 		"save_as_new": "Erstellt einen neuen Plan mit deinen Änderungen."
 	},
+	"draft": {
+		"title": "Entwurf woanders gespeichert",
+		"text": "Ein anderer Tab oder ein anderes Gerät hat nach dir einen Entwurf dieses Plans gespeichert. Automatisches Speichern ist pausiert, bis du dich entscheidest.",
+		"theirs": "Im anderen Entwurf",
+		"mine": "Deine Änderungen",
+		"option": {
+			"overwrite": "Meine behalten",
+			"reload": "Anderen Entwurf laden",
+			"close": "Später entscheiden"
+		},
+		"option_help": {
+			"overwrite": "Ersetzt den anderen Entwurf durch deine Änderungen.",
+			"reload": "Verwirft deine Änderungen hier und lädt den anderen Entwurf."
+		}
+	},
+	"draft_base": {
+		"title": "Ungespeicherte Änderungen an einer älteren Version",
+		"text": "Du hast ungespeicherte Änderungen an diesem Plan hinterlassen, und er wurde seitdem erneut gespeichert. Nichts ändert sich, bis du dich entscheidest.",
+		"mine": "Deine ungespeicherten Änderungen",
+		"option": {
+			"overwrite": "Meine Änderungen behalten",
+			"reload": "Gespeicherte Version nutzen",
+			"close": "Später entscheiden"
+		},
+		"option_help": {
+			"overwrite": "Lädt deine ungespeicherten Änderungen auf die gespeicherte Version.",
+			"reload": "Löscht deine ungespeicherten Änderungen und behält die gespeicherte Version."
+		}
+	},
 	"type": {
 		"BUY": "Kauf",
 		"SELL": "Verkauf",

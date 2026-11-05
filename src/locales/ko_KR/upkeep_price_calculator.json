@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "유지 자재 가격 계산 중",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",

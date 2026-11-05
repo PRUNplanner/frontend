@@ -1,15 +1,15 @@
-The Upkeep Price Calculator helps you find the most cost-effective materials and buildings to fulfill population upkeep needs (Safety, Health, Comfort, Culture, and Education) on governed planets.
+La Calculadora de precios de mantenimiento te ayuda a encontrar los materiales y edificios más rentables para cubrir las necesidades de mantenimiento de la población (Seguridad, Salud, Comodidad, Cultura y Educación) en los planetas gobernados.
 
-## Material Details
+## Detalles del material
 
-Lists all materials consumed by buildings for the selected need, sorted by cost efficiency.
+Enumera todos los materiales que consumen los edificios para la necesidad seleccionada, ordenados por rentabilidad.
 
-- **Material**: The material consumed by the building.
-- **Building**: The infrastructure building that consumes the material.
-- **ȼ/Need**: Cost per unit of need provided. Lower is better.
-- **CX Price**: Market price based on your exchange preferences.
-- **Qty/Day**: Material consumed per day by the building.
+- **Material**: el material que consume el edificio.
+- **Edificio**: el edificio de infraestructura que consume el material.
+- **ȼ/Necesidad**: coste por unidad de necesidad cubierta. Lower is better.
+- **Precio en CX**: precio de mercado según tus preferencias de bolsa.
+- **Cant./día**: material que consume el edificio al día.
 
-Materials without a market price are shown at the bottom of the list.
+Los materiales sin precio de mercado se muestran al final de la lista.
 
-Buildings providing multiple needs (like EMC for Safety+Health, or WCE for Health+Comfort) are accounted for in the calculations.
+Los edificios que cubren varias necesidades (como EMC para Seguridad+Salud, o WCE para Salud+Comodidad) se tienen en cuenta en los cálculos.

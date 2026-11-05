@@ -25,6 +25,35 @@
 	"deleted_option_help": {
 		"save_as_new": "Crée un nouveau plan avec tes modifications."
 	},
+	"draft": {
+		"title": "Brouillon enregistré ailleurs",
+		"text": "Un autre onglet ou appareil a enregistré un brouillon de ce plan après le tien. L'enregistrement automatique est en pause jusqu'à ce que tu choisisses.",
+		"theirs": "Dans l'autre brouillon",
+		"mine": "Tes modifications",
+		"option": {
+			"overwrite": "Garder les miennes",
+			"reload": "Charger l'autre brouillon",
+			"close": "Décider plus tard"
+		},
+		"option_help": {
+			"overwrite": "Remplace l'autre brouillon par tes modifications.",
+			"reload": "Abandonne tes modifications ici et charge l'autre brouillon."
+		}
+	},
+	"draft_base": {
+		"title": "Modifications non enregistrées sur une ancienne version",
+		"text": "Tu as laissé des modifications non enregistrées sur ce plan, et il a été enregistré à nouveau depuis. Rien ne change tant que tu n'as pas choisi.",
+		"mine": "Tes modifications non enregistrées",
+		"option": {
+			"overwrite": "Garder mes modifications",
+			"reload": "Utiliser la version enregistrée",
+			"close": "Décider plus tard"
+		},
+		"option_help": {
+			"overwrite": "Charge tes modifications non enregistrées par-dessus la version enregistrée.",
+			"reload": "Supprime tes modifications non enregistrées et garde la version enregistrée."
+		}
+	},
 	"type": {
 		"BUY": "achat",
 		"SELL": "vente",

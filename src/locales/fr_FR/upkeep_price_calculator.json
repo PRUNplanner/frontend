@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "Calcul des prix des matériaux d'entretien",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
@@ -19,7 +20,7 @@
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
 				"price_need": "ȼ/besoin",
-				"cx_price": "@:terms.cx Price (ȼ)",
+				"cx_price": "Prix @:terms.cx (ȼ)",
 				"qty_day": "Qté/jour"
 			}
 		}

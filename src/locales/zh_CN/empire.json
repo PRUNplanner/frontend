@@ -4,6 +4,7 @@
 	"overview_hide": "Hide plan list",
 	"overview_show": "Show plan list",
 	"views": {
+		"label": "View",
 		"material_io": "物料输入/输出",
 		"analysis": "分析",
 		"production_opportunities": "生产机会"
@@ -40,6 +41,7 @@
 		"expand_row": "显示与{ticker}关联的行星",
 		"view_sides": "生产端 · 消耗端",
 		"view_net": "每行星净值",
+		"view_label": "Detail view",
 		"surplus": "盈余",
 		"needs": "需求",
 		"plan_count": "{count}份规划",
@@ -95,6 +97,7 @@
 			"title": "Materials moving the most ȼ",
 			"price": "ȼ / day",
 			"amount": "Units / day",
+			"metric_label": "Metric",
 			"buy": "← you buy (net consumed)",
 			"sell": "you sell (net produced) →",
 			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
@@ -157,5 +160,6 @@
 		"text": "帝国将你的基地规划分组并储存你的派系和许可数。",
 		"create": "创建帝国",
 		"manage": "管理帝国"
-	}
+	},
+	"unknown_empire": "Unknown"
 }

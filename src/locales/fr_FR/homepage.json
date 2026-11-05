@@ -5,19 +5,19 @@
 		"sections": "Sections",
 		"how": "Comment ça marche",
 		"market": "Marché",
-		"planet_search": "Planet Search",
+		"planet_search": "Recherche de planètes",
 		"features": "Fonctionnalités",
 		"tools": "Outils",
 		"github": "GitHub",
 		"menu": "Menu",
-		"menu_close": "Close menu",
-		"tools_group": "Tools",
-		"all_tools": "All tools"
+		"menu_close": "Fermer le menu",
+		"tools_group": "Outils",
+		"all_tools": "Tous les outils"
 	},
 	"auth_panel": {
 		"label": "Connecte-toi ou crée un compte",
 		"switch": "Compte",
-		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
+		"plan_context": "Connecte-toi pour démarrer un plan sur {planet} ({id}). Tu y arrives directement. Nouveau ici ? Crée d'abord un compte gratuit, tu reviens ensuite sur {name}."
 	},
 	"hero": {
 		"eyebrow": "Planificateur de bases et d'empire pour Prosperous Universe",
@@ -29,8 +29,8 @@
 		"cta_logged_in": "Ouvre ton empire",
 		"example": "Ouvrir un plan d'exemple",
 		"example_note": "L'exemple ne demande aucun compte. L'inscription prend une minute, jeu ouvert.",
-		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
-		"image_title": "prunplanner.org / plan / Montem iron"
+		"image_alt": "L'éditeur de plan d'une base de fer sur Montem : bénéfice, amortissement, main-d'œuvre et surface dans la barre de résultats, la liste de production avec ses recettes, et les E/S des matériaux",
+		"image_title": "prunplanner.org / plan / Montem fer"
 	},
 	"numbers": {
 		"label": "PRUNplanner en chiffres",
@@ -39,7 +39,7 @@
 		"free_value": "Gratuit",
 		"free": "Sans pub, sans offre payante.",
 		"languages_value": "{count} langues",
-		"languages": "Open source, traduit par les joueurs."
+		"languages": "Open source, translated by players and AI."
 	},
 	"tour": {
 		"pause": "Pause",
@@ -49,27 +49,27 @@
 			"label": "Étapes de la visite du plan",
 			"whole": {
 				"title": "Le plan en entier",
-				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
+				"text": "Une base sur un seul écran : bénéfice, amortissement, main-d'œuvre, surface et stockage en haut, la production au milieu, le flux de matériaux sur le côté, mis à jour à chaque modification."
 			},
 			"buildings": {
 				"title": "Ajoute des bâtiments",
-				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
+				"text": "Choisis les bâtiments et les recettes parmi ce que la planète propose. Chaque bâtiment affiche son efficacité, son bénéfice par jour et sa surface ; chaque recette sa durée, sa part et son COGM."
 			},
 			"workforce": {
 				"title": "Recrute le personnel",
-				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
+				"text": "La main-d'œuvre nécessaire face aux logements fournis, avec l'efficacité qui en résulte ; le volet Base contient les niveaux et les produits de luxe que tu choisis de fournir."
 			},
 			"money": {
 				"title": "Vois l'argent",
-				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
+				"text": "Cette base de fer sur Montem rapporte 21 938,67 par jour et rembourse son coût de construction en 63,56 jours."
 			},
 			"flow": {
 				"title": "Vérifie le flux",
-				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
+				"text": "Les E/S des matériaux listent ce que la base consomme et produit par jour, ce que vaut chaque ligne, et signalent les matériaux qui représentent une grande part de leur marché."
 			},
 			"tabs": {
 				"title": "Va plus loin",
-				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
+				"text": "Construction, approvisionnement, visites, réparation, bénéfice, contrôle du plan et POPR sont à un onglet près."
 			}
 		},
 		"planet_search": {
@@ -99,7 +99,7 @@
 			"label": "Étapes de la visite de l'empire",
 			"totals": {
 				"title": "Un seul résultat",
-				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
+				"text": "Recettes, coûts et bénéfice de toutes les bases réunies : cet empire rapporte 104 290,08 par jour."
 			},
 			"plans": {
 				"title": "Tous les plans côte à côte",
@@ -120,12 +120,12 @@
 		"title": "Où s'installer, ce qui est rentable et quand une base tombe à sec.",
 		"needs_fio": "Nécessite FIO",
 		"planet_search": {
-			"label": "Planet Search",
+			"label": "Recherche de planètes",
 			"title": "Trouve la planète de ta prochaine base.",
 			"lead": "Filtre toutes les planètes de l'univers et démarre un plan à partir du résultat.",
 			"alt": "Planet Search : filtres à gauche, planètes correspondantes avec leurs ressources, leur COGC et leurs infrastructures",
-			"cta": "Try Planet Search",
-			"cta_note": "No account needed."
+			"cta": "Essayer la recherche de planètes",
+			"cta_note": "Aucun compte nécessaire."
 		},
 		"empire": {
 			"label": "Empire",
@@ -134,13 +134,13 @@
 			"alt": "Vue Empire : recettes, coûts et bénéfices, liste des plans et E/S des matériaux de toutes les bases"
 		},
 		"resource_roi": {
-			"label": "Resource ROI",
+			"label": "RSI ressource",
 			"title": "Vois quelle planète est rentabilisée le plus vite.",
 			"lead": "Choisis une ressource et ta préférence d'échange. Chaque planète qui la possède reçoit un plan chiffré : coût du plan, bénéfice quotidien et ROI en jours, à côté du POPR, du COGC, de l'environnement et des infrastructures.",
 			"alt": "Resource ROI pour ALO : planètes classées avec production quotidienne, coût du plan, bénéfice quotidien et ROI en jours"
 		},
 		"fio_burn": {
-			"label": "FIO Burn",
+			"label": "Consommation FIO",
 			"title": "Sache quand une base sera à court.",
 			"lead": "Lie ton compte FIO et Burn compare ton stock réel à ce que chaque plan consomme : jours restants par matériau, seuils que tu fixes et liste de réapprovisionnement par base exportée en actions XIT.",
 			"alt": "FIO Burn : consommation par plan, avec une base dépliée pour montrer consommation, stock et jours restants par matériau"
@@ -213,35 +213,35 @@
 		"lead": "FIO est le service communautaire qui lit tes données en jeu. Lie ton compte et Repair utilise aussi tes vraies bases.",
 		"with_fio": "avec FIO",
 		"market_live": {
-			"label": "Market Live",
+			"label": "Marché en direct",
 			"text": "Prix CX en direct, et alertes selon des règles sur le prix, l'écart et le volume."
 		},
 		"market_exploration": {
-			"label": "Market Exploration",
+			"label": "Exploration du marché",
 			"text": "Historique des prix et des volumes par matériau et par échange."
 		},
 		"recipe_roi": {
-			"label": "Recipe ROI",
+			"label": "RSI recette",
 			"text": "Chaque recette classée selon sa rentabilité aux prix actuels."
 		},
 		"production_chains": {
-			"label": "Production Chains",
+			"label": "Chaînes de production",
 			"text": "Ce qu'il faut pour fabriquer un matériau, jusqu'au bout de la chaîne."
 		},
 		"hq_calculator": {
-			"label": "HQ Calculator",
+			"label": "Calculateur de QG",
 			"text": "Matériaux nécessaires pour le prochain niveau de ton siège social."
 		},
 		"repair": {
-			"label": "Repair",
+			"label": "Réparation",
 			"text": "Quand chacun de tes bâtiments doit être réparé."
 		},
 		"carts": {
-			"label": "Supply and Construction Cart",
+			"label": "Paniers d'approvisionnement et de construction",
 			"text": "Listes de courses par plan, exportables en actions XIT."
 		},
 		"upkeep": {
-			"label": "Upkeep Price Calculator",
+			"label": "Coûts d'entretien",
 			"text": "ȼ par point de besoin pour la sécurité, la santé, le confort, la culture et l'éducation."
 		}
 	},

@@ -5,14 +5,14 @@
 	"calculating": "Calcul du ROI de la ressource pour les planètes.",
 	"searching": "Recherche de @:terms.planet_plural avec « {resource} ». En attente de la réponse du backend",
 	"resource_select": "Sélectionner @:terms.resources",
-	"cx_select": "@:terms.cx Preference",
+	"cx_select": "Préférence @:terms.cx",
 	"button_calculate": "Rechercher et calculer",
 	"table": {
 		"planet": "@:terms.planets",
 		"production": "@:terms.production",
 		"building": "@:terms.buildings",
 		"daily": "Quotidien",
-		"percent_max": "% Max.",
+		"percent_max": "% max.",
 		"popr": "@:terms.popr",
 		"cogc": "@:terms.cogc",
 		"environment": "Environnement",
@@ -20,7 +20,7 @@
 		"cost_profit": "Coût / Bénéfice",
 		"plan_cost": "@:terms.plan @:terms.cost (ȼ)",
 		"daily_profit": "@:terms.profit quotidien (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)",
+		"plan_roi": "ROI du @:terms.plan (j)",
 		"distances": "Distances"
 	},
 	"chart": {
@@ -48,5 +48,12 @@
 		"tooltip_roi": "ROI du plan (j)",
 		"tooltip_profit": "Bénéfice quotidien (ȼ)",
 		"tooltip_jumps": "Sauts vers {cx}"
+	},
+	"filters": {
+		"title": "Filtre",
+		"planet": "Planète",
+		"building": "Bâtiment",
+		"positive_roi": "ROI positif",
+		"searched_material": "Matériau recherché"
 	}
 }

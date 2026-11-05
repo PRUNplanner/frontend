@@ -2,12 +2,12 @@
 	"view_title": "Échanges",
 	"title": "Échanges",
 	"empty": {
-		"title": "No exchange preferences yet",
-		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
-		"create": "Create a preference"
+		"title": "Aucune préférence d'échange pour l'instant",
+		"text": "Une préférence d'échange définit quel échange et quel prix tes plans utilisent pour chaque matériau. Crée la première dans Gestion.",
+		"create": "Créer une préférence"
 	},
 	"labels": {
-		"universe": "Universe",
+		"universe": "Univers",
 		"exchange_basis": "{exchange} · {basis}",
 		"basis": {
 			"vwap_7d": "VWAP 7j",
@@ -178,7 +178,7 @@
 	},
 	"notes": {
 		"open": "Ouvrir",
-		"toggle": "{n} note | {n} notes",
+		"toggle": "{n} remarque | {n} remarques",
 		"use_cogm": "Utiliser le COGM",
 		"side": {
 			"BUY": "acheter",

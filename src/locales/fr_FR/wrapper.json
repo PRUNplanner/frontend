@@ -1,7 +1,7 @@
 {
 	"loading": "Chargement des données...",
 	"retry": "Réessayer",
-	"error": "Error",
+	"error": "Erreur",
 	"gamedata": {
 		"material_data": "Données @:terms.materials",
 		"exchange_data": "Données @:terms.exchanges",
@@ -16,7 +16,7 @@
 		"plan": "Configuration @:terms.plan",
 		"plans_all": "Configuration de tous les @:terms.plans_plural",
 		"planet_data": "Données @:terms.planets '{name}'",
-		"cx": "@:terms.cx Configurations",
+		"cx": "Configurations @:terms.cx",
 		"shared_list": "Configurations @:terms.plans_plural partagés",
 		"empire_plans": "Configurations @:terms.empire @:terms.plans_plural"
 	}

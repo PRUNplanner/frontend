@@ -2,9 +2,9 @@
 	"view_title": "Marktplätze",
 	"title": "Marktplätze",
 	"empty": {
-		"title": "No exchange preferences yet",
-		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
-		"create": "Create a preference"
+		"title": "Noch keine Marktplatz-Präferenzen",
+		"text": "Eine Marktplatz-Präferenz legt fest, welchen Marktplatz und Preis deine Pläne für jedes Material nutzen. Erstelle deine erste in der Verwaltung.",
+		"create": "Präferenz erstellen"
 	},
 	"labels": {
 		"universe": "Universe",

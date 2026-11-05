@@ -133,19 +133,19 @@
 		"bid_on": "Bid {price} auf {exchange}",
 		"no_bid": "Kein Bid auf {exchange}",
 		"pages_label": "Preislücken-Seite",
-		"empty": "No material has a gap of {min} or more with enough volume.",
-		"footnote": "Currencies at par · no shipping, fuel or flight time · each exchange needs {units} units and {turnover} traded in 7 days · gaps under {min} and flat materials left out."
+		"empty": "Kein Material hat eine Lücke von {min} oder mehr bei ausreichendem Volumen.",
+		"footnote": "Währungen zum Nennwert · ohne Versand, Treibstoff oder Flugzeit · jeder Marktplatz braucht {units} Einheiten und {turnover} Umsatz in 7 Tagen · Lücken unter {min} und konstante Materialien ausgenommen."
 	},
 	"list": {
 		"show_all": {
-			"rising": "Show all {count} rising",
-			"falling": "Show all {count} falling",
-			"materials": "Show all {count} materials",
-			"gaps": "Show all {count} gaps"
+			"rising": "Alle {count} steigenden anzeigen",
+			"falling": "Alle {count} fallenden anzeigen",
+			"materials": "Alle {count} Materialien anzeigen",
+			"gaps": "Alle {count} Lücken anzeigen"
 		},
-		"show_top": "Show top {count}",
+		"show_top": "Top {count} anzeigen",
 		"range": "{from}–{to} of {total}",
-		"sort_by": "Sort by"
+		"sort_by": "Sortieren nach"
 	},
 	"exchanges": {
 		"title": "Die vier Marktplätze",
@@ -168,14 +168,14 @@
 	"method": {
 		"title": "Wie diese Zahlen entstehen",
 		"source": "Quelle. FIO, der Community-Dienst, der von den Spiel-Clients der Spieler gespeist wird, über die öffentlichen Spieldaten von PRUNplanner. Tagespreise umfassen volle UTC-Tage; Orderbücher sind aktuell.",
-		"turnover": "Turnover is traded quantity × price, summed over AI1, CI1, IC1 and NC1. Each exchange has its own currency (AIC, CIS, ICA, NCC). The same material trades at close to the same price everywhere, so sums treat the currencies at par. Every filled trade counts once, whether a seller filled a bid or a buyer filled an ask. Trades with market makers count too. Orders that aren't filled don't count, and the data doesn't say which side started a trade.",
+		"turnover": "Umsatz ist gehandelte Menge × Preis, summiert über AI1, CI1, IC1 und NC1. Jeder Marktplatz hat seine eigene Währung (AIC, CIS, ICA, NCC). Dasselbe Material wird überall zu fast demselben Preis gehandelt, daher behandeln die Summen die Währungen zum Nennwert. Jeder ausgeführte Handel zählt einmal, egal ob ein Verkäufer ein Gebot bedient oder ein Käufer ein Angebot angenommen hat. Handel mit Market Makern zählt ebenfalls. Nicht ausgeführte Orders zählen nicht, und die Daten verraten nicht, welche Seite einen Handel ausgelöst hat.",
 		"prices": "Preise sind ausschließlich VWAP 7D und VWAP 30D: Umsatz ÷ Einheiten über den Zeitraum, sodass umsatzschwache Tage kaum zählen. Ein Punkt im Diagramm ist der VWAP 7D an diesem Tag.",
 		"index": "Index. Jedes Material mit einem VWAP 7D an jedem der 90 Tage. Gewicht = Anteil am 30-Tage-Umsatz, begrenzt auf 5 % (20 % innerhalb eines Sektors), der Rest wird auf die übrigen verteilt.",
 		"movers": "Die größten Bewegungen vergleichen VWAP 7D mit VWAP 30D, wie der Trend in der Marktforschung. Die 30 Tage enthalten die letzten 7, daher wirken Änderungen kleiner als im Wochenvergleich.",
-		"gaps": "Price gaps. Last 7 days compares each exchange's VWAP 7D, so a gap there may already be gone; Books now checks the best ask on the cheaper exchange against the best bid on the dearer one. Order books now uses only those top prices, not how much is on offer. Neither counts shipping, fuel or flight time.",
+		"gaps": "Preislücken. Letzte 7 Tage vergleicht den VWAP 7D jedes Marktplatzes, eine Lücke dort kann also schon verschwunden sein; Orderbücher jetzt vergleicht den besten Ask auf dem günstigeren Marktplatz mit dem besten Bid auf dem teureren. Orderbücher jetzt nutzt nur diese Spitzenpreise, nicht wie viel angeboten wird. Keines von beiden berücksichtigt Versand, Treibstoff oder Flugzeit.",
 		"heavy_day": "Ein starker Tag wirkt eine Woche lang. Ein einzelnes großes Geschäft zu einem ungewöhnlichen Preis verzerrt den VWAP 7D, solange es im 7-Tage-Fenster liegt, danach springt der Preis zurück.",
 		"not_included": "Nicht enthalten: lokale Märkte, Verträge und Handel innerhalb von Corporations. Diese laufen nie über die Marktplätze, daher zeigt dies die Handelskammern (CX), nicht die gesamte Wirtschaft.",
-		"flat": "Flat marks materials whose daily VWAP stays within ±0.3 % of its 30-day median on at least 80 % of trading days, usually because market makers buy or sell them at fixed prices. They count in turnover but are left out of the movers and the price gaps."
+		"flat": "Konstant markiert Materialien, deren täglicher VWAP an mindestens 80 % der Handelstage innerhalb von ±0.3 % ihres 30-Tage-Medians bleibt, meist weil Market Maker sie zu festen Preisen kaufen oder verkaufen. Sie zählen zum Umsatz, sind aber von den Bewegungen und den Preislücken ausgenommen."
 	},
 	"sector": {
 		"consumables": "Konsumgüter",

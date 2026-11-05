@@ -2,9 +2,9 @@
 	"view_title": "Bolsas",
 	"title": "Bolsas",
 	"empty": {
-		"title": "No exchange preferences yet",
-		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
-		"create": "Create a preference"
+		"title": "Aún no hay preferencias de bolsa",
+		"text": "Una preferencia de bolsa define qué bolsa y qué precio usan tus planes para cada material. Crea la primera en Gestión.",
+		"create": "Crear una preferencia"
 	},
 	"labels": {
 		"universe": "Universe",
