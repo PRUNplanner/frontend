@@ -6,6 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "正在计算维护物资价格",
+		"need_label": "Need",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
