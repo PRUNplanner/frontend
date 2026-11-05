@@ -5,7 +5,7 @@
 	"status": {
 		"connected": "Connecté",
 		"disconnected": "Déconnecté",
-		"reconnecting": "Reconnecting"
+		"reconnecting": "Reconnexion"
 	},
 	"severity_type": {
 		"LOW": "BAS",
@@ -13,7 +13,7 @@
 		"HIGH": "HAUTE"
 	},
 	"status_type": {
-		"active": "Active",
+		"active": "Actif",
 		"paused": "En pause"
 	},
 	"rule_type": {
@@ -85,7 +85,7 @@
 			"title_editing": "Modifier l'alerte",
 			"info": "Les alertes sont actuellement stockées uniquement sur cet appareil et ne sont pas synchronisées avec ton compte.",
 			"no_alerts": "Aucune alerte trouvée. Commence par créer ton premier signal de détection",
-			"new_alert_name": "New Alert",
+			"new_alert_name": "Nouvelle alerte",
 			"buttons": {
 				"create_alert": "Créer une alerte",
 				"discard": "@:common.buttons.discard",
