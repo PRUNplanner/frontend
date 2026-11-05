@@ -12,79 +12,79 @@
 		"failed_message": "L'enregistrement du plan a échoué. Tes modifications sont conservées, réessaie.",
 		"name_to_create": "Donne un nom à ton plan pour le créer",
 		"name_to_save": "Donne un nom à ton plan pour l'enregistrer",
-		"saved_named": "Saved {time} · {name}",
-		"saved_from": "Saved {time} · from “{name}”",
-		"draft_kept": "Unsaved · draft kept {time}",
-		"draft_from": "Unsaved · draft from {when}",
-		"draft_failed": "Draft not saved",
-		"draft_failed_hint": "Your unsaved changes aren't kept in a draft. Click to try again.",
-		"restored": "Restored “{name}” · unsaved",
-		"viewing": "Viewing “{name}”",
-		"save_named": "Save named",
-		"save_menu": "Save options"
+		"saved_named": "Enregistré {time} · {name}",
+		"saved_from": "Enregistré {time} · depuis « {name} »",
+		"draft_kept": "Non enregistré · brouillon conservé {time}",
+		"draft_from": "Non enregistré · brouillon du {when}",
+		"draft_failed": "Brouillon non enregistré",
+		"draft_failed_hint": "Tes modifications non enregistrées ne sont pas conservées dans un brouillon. Clique pour réessayer.",
+		"restored": "« {name} » restaurée · non enregistré",
+		"viewing": "Consultation de « {name} »",
+		"save_named": "Enregistrer avec un nom",
+		"save_menu": "Options d'enregistrement"
 	},
 	"versions": {
 		"title": "Versions",
-		"named_only": "Named only",
-		"draft_row": "Unsaved changes",
-		"draft_kept": "Draft kept {time}",
-		"draft_none": "Not kept in a draft",
-		"not_in_empires": "not in empires yet",
+		"named_only": "Nommées uniquement",
+		"draft_row": "Modifications non enregistrées",
+		"draft_kept": "Brouillon conservé {time}",
+		"draft_none": "Non conservé dans un brouillon",
+		"not_in_empires": "pas encore dans un empire",
 		"active": "Active",
-		"restored_from": "Restored from “{name}”",
-		"restored": "Restored version",
-		"baseline": "Before version history",
-		"admin": "Changed by support",
-		"footer": "Named versions stay. The last 10 unnamed are kept.",
-		"hidden": "{n} unnamed hidden | {n} unnamed hidden",
-		"empty": "No saved versions yet.",
-		"rename": "Name this version",
-		"rename_label": "Version name",
-		"preview": "Preview this version",
-		"actions": "Actions for “{name}”",
-		"make_active": "Make active",
-		"activate_confirm": "Discard your unsaved changes and make “{name}” active?",
-		"delete": "Delete",
-		"delete_confirm": "Delete “{name}”? This can't be undone.",
-		"gone": "This version no longer exists.",
-		"name_label": "Version name (optional)",
-		"name_hint": "Enter to save · {shortcut}",
-		"name_hint_named": "Kept until you remove the name",
+		"restored_from": "Restaurée depuis « {name} »",
+		"restored": "Version restaurée",
+		"baseline": "Avant l'historique des versions",
+		"admin": "Modifiée par le support",
+		"footer": "Les versions nommées restent. Les 10 dernières sans nom sont conservées.",
+		"hidden": "{n} sans nom masquée | {n} sans nom masquées",
+		"empty": "Aucune version enregistrée pour l'instant.",
+		"rename": "Nommer cette version",
+		"rename_label": "Nom de la version",
+		"preview": "Aperçu de cette version",
+		"actions": "Actions pour « {name} »",
+		"make_active": "Rendre active",
+		"activate_confirm": "Abandonner tes modifications non enregistrées et rendre « {name} » active ?",
+		"delete": "Supprimer",
+		"delete_confirm": "Supprimer « {name} » ? C'est irréversible.",
+		"gone": "Cette version n'existe plus.",
+		"name_label": "Nom de la version (facultatif)",
+		"name_hint": "Entrée pour enregistrer · {shortcut}",
+		"name_hint_named": "Conservée jusqu'à ce que tu retires le nom",
 		"shortcut": "Ctrl+Alt+S",
-		"discard": "Discard changes",
-		"discard_confirm": "Discard your unsaved changes and go back to the saved version?",
-		"discard_failed": "Your changes couldn't be discarded. Try again.",
-		"draft_found": "You have unsaved changes from {when}.",
-		"restore_draft": "Restore",
+		"discard": "Abandonner les modifications",
+		"discard_confirm": "Abandonner tes modifications non enregistrées et revenir à la version enregistrée ?",
+		"discard_failed": "Impossible d'abandonner tes modifications. Réessaie.",
+		"draft_found": "Tu as des modifications non enregistrées du {when}.",
+		"restore_draft": "Restaurer",
 		"when": {
-			"today": "Today {time}",
-			"yesterday": "Yesterday {time}"
+			"today": "Aujourd'hui {time}",
+			"yesterday": "Hier {time}"
 		},
-		"banner": "Viewing “{name}” · {when} · read-only. Nothing changes until you restore it.",
-		"compare": "Compare with current",
-		"hide_compare": "Hide comparison",
-		"compare_title": "“{name}” compared with your current plan",
-		"no_changes": "Same as your current plan.",
-		"restore": "Restore",
-		"open_as_plan": "Open as new plan",
-		"back": "Back to current"
+		"banner": "Consultation de « {name} » · {when} · lecture seule. Rien ne change tant que tu ne la restaures pas.",
+		"compare": "Comparer avec l'actuel",
+		"hide_compare": "Masquer la comparaison",
+		"compare_title": "« {name} » comparée à ton plan actuel",
+		"no_changes": "Identique à ton plan actuel.",
+		"restore": "Restaurer",
+		"open_as_plan": "Ouvrir comme nouveau plan",
+		"back": "Retour à l'actuel"
 	},
 	"history": {
 		"undo": "Annuler",
 		"redo": "Rétablir",
 		"building_removed": "Bâtiment supprimé",
 		"recipe_removed": "Recette supprimée",
-		"undo_key": "Undo (Ctrl+Z)",
-		"redo_key": "Redo (Ctrl+Shift+Z)"
+		"undo_key": "Annuler (Ctrl+Z)",
+		"redo_key": "Rétablir (Ctrl+Shift+Z)"
 	},
 	"actions": {
 		"more": "Plus",
 		"save_as_copy": "Enregistrer une copie…",
 		"share_link": "Partager le lien",
 		"tools": "Outils du plan",
-		"download_csv": "Download Material I/O (CSV)",
-		"reload": "Reload saved version",
-		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost."
+		"download_csv": "Télécharger les E/S des matériaux (CSV)",
+		"reload": "Recharger la version enregistrée",
+		"reload_confirm": "Recharger la version enregistrée ? Tes modifications non enregistrées seront perdues."
 	},
 	"name": {
 		"untitled": "Plan sans nom"
@@ -94,21 +94,21 @@
 		"labels": {
 			"production": "Production",
 			"construction_cart": "Construction",
-			"supply_cart": "Supply",
-			"visitation_frequency": "Visits",
-			"repair_analysis": "Repair",
-			"profit_breakdown": "Profit",
+			"supply_cart": "Approvisionnement",
+			"visitation_frequency": "Visites",
+			"repair_analysis": "Réparation",
+			"profit_breakdown": "Bénéfice",
 			"plan_check": "Contrôle du plan",
 			"popr": "POPR"
 		},
 		"descriptions": {
-			"construction-cart": "What is left to buy for the buildings",
-			"supply-cart": "Consumables for n days, as a list or XIT action",
-			"visitation-frequency": "When storage fills",
-			"repair-analysis": "Best repair interval per building",
-			"profit-breakdown": "Where the daily profit comes from",
-			"plan-check": "Thin markets and profit at real ask and bid",
-			"popr": "Population report"
+			"construction-cart": "Ce qu'il reste à acheter pour les bâtiments",
+			"supply-cart": "Consommables pour n jours, en liste ou en action XIT",
+			"visitation-frequency": "Quand le stockage est plein",
+			"repair-analysis": "Meilleur intervalle de réparation par bâtiment",
+			"profit-breakdown": "D'où vient le bénéfice quotidien",
+			"plan-check": "Marchés étroits et bénéfice aux vrais ask et bid",
+			"popr": "Rapport de population"
 		},
 		"profit_breakdown": {
 			"title": "Répartition des bénéfices",
@@ -149,30 +149,30 @@
 		},
 		"popr": {
 			"title": "Dernier rapport de population",
-			"subtitle": "The planet's workforce from the game's last report, next to what this plan needs",
+			"subtitle": "La main-d'œuvre de la planète selon le dernier rapport du jeu, à côté de ce dont ce plan a besoin",
 			"error": "Erreur lors du chargement du dernier rapport de population. La planète n'a peut-être pas de population.",
-			"empty": "No population report for this planet yet.",
+			"empty": "Pas encore de rapport de population pour cette planète.",
 			"loading": "Chargement du rapport de population",
 			"chart": {
-				"label": "Free workers next to what this plan needs",
-				"legend": "Bar: free workers less the open jobs of other bases · line: what this plan needs",
-				"row": "{tier}: {available} free, plan needs {need}",
-				"value": "{available} free · needs {need}"
+				"label": "Travailleurs libres à côté des besoins de ce plan",
+				"legend": "Barre : travailleurs libres moins les postes ouverts des autres bases · ligne : besoins de ce plan",
+				"row": "{tier} : {available} libres, le plan a besoin de {need}",
+				"value": "{available} libres · besoin {need}"
 			}
 		},
 		"visitation_frequency": {
 			"title": "Fréquence de visite",
 			"storage": {
 				"label": "Stockage",
-				"info": "Your plan involves adding {storages} giving you a total storage capacity of {total_weight} t and {total_volume} m³.",
-				"info_no_storage": "Your plan has a total storage capacity of {total_weight} t and {total_volume} m³.",
+				"info": "Ton plan ajoute {storages}, ce qui te donne une capacité de stockage totale de {total_weight} t et {total_volume} m³.",
+				"info_no_storage": "Ton plan a une capacité de stockage totale de {total_weight} t et {total_volume} m³.",
 				"table": {
 					"weight": "t",
 					"volume": "m³",
 					"import": "@:terms.import",
 					"export": "@:terms.export",
-					"larger_leg": "Larger leg",
-					"larger_leg_tooltip": "The larger of import and export per day, what a ship carries on its fuller leg. Storage fills at this rate.",
+					"larger_leg": "Plus gros trajet",
+					"larger_leg_tooltip": "Le plus grand entre importation et exportation par jour, ce qu'un vaisseau transporte sur son trajet le plus chargé. Le stockage se remplit à ce rythme.",
 					"storage_filled": "Stockage rempli",
 					"filled_unit": "jours"
 				},
@@ -186,8 +186,8 @@
 					"ship_volume": "Navire m³",
 					"visitation_days": "Visite (jours)",
 					"limit": "Limite",
-					"export_frequency": "@:terms.export Frequency",
-					"import_frequency": "@:terms.import Frequency"
+					"export_frequency": "Fréquence d'@:terms.export",
+					"import_frequency": "Fréquence d'@:terms.import"
 				}
 			}
 		},
@@ -195,8 +195,8 @@
 			"title": "Panier de construction",
 			"unplanned_info": "La base a des {buildings} non planifiés (FIO : {fio_updated}). Démolis-les pour que la surface, l'habitation et les matériaux soient exacts.",
 			"sections": {
-				"buildings": "Buildings",
-				"materials": "Materials to buy"
+				"buildings": "Bâtiments",
+				"materials": "Matériaux à acheter"
 			},
 			"table": {
 				"building": "@:terms.buildings",
@@ -226,11 +226,11 @@
 			"title": "Panier d'approvisionnement",
 			"info": {
 				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. Use the {link} tool for more advanced supply cart options.",
-				"link": "FIO Burn",
-				"label": "About the Supply Cart"
+				"link": "Consommation FIO",
+				"label": "À propos du panier d'approvisionnement"
 			},
-			"filter_label": "Supply for",
-			"more_in": "More options in {link}",
+			"filter_label": "Approvisionner pour",
+			"more_in": "Plus d'options dans {link}",
 			"buttons": {
 				"all": "Tous",
 				"workforce": "Main-d'œuvre",
@@ -380,7 +380,7 @@
 			},
 			"table": {
 				"parameters": "Paramètres",
-				"recipe_runtime": "@:terms.recipes Runtime",
+				"recipe_runtime": "Durée de la @:terms.recipes",
 				"percent_day": "% / jour",
 				"efficiency": "Efficacité",
 				"degradation": "Dégradation",
@@ -393,7 +393,7 @@
 				"cost_total_unit": "ȼ total",
 				"workforce": "Main-d'œuvre",
 				"total_cost": "Coût total",
-				"recipe_profit": "@:terms.recipes Profit",
+				"recipe_profit": "Bénéfice de la @:terms.recipes",
 				"cost_split": "Répartition des coûts",
 				"market": "marché {price} · {diff} %"
 			}
@@ -614,7 +614,7 @@
 		"infrastructure": {
 			"auto_optimize_tooltip": "Optimise automatiquement les habitations pour couvrir les besoins en main-d'œuvre à mesure que des bâtiments sont ajoutés.",
 			"amount_label": "Quantité de {infrastructure}",
-			"optimize_failed": "Couldn't find a habitation setup for this workforce."
+			"optimize_failed": "Impossible de trouver une configuration d'habitation pour cette main-d'œuvre."
 		},
 		"experts": {
 			"warning": "Le nombre maximal d'experts sur une base est de 6. Tu as actuellement {expert_number} experts assignés.",
@@ -629,10 +629,10 @@
 				"cost_day": "ȼ / jour",
 				"total_weight": "Δ t",
 				"total_volume": "Δ m³",
-				"share_7d": "7d share",
-				"share_30d": "30d share"
+				"share_7d": "Part 7j",
+				"share_30d": "Part 30j"
 			},
-			"share_note": "Δ as a share of the average daily volume traded on {exchange}, last 7 and 30 days."
+			"share_note": "Δ en part du volume quotidien moyen échangé sur {exchange}, 7 et 30 derniers jours."
 		},
 		"save_as": {
 			"title": "Enregistrer sous",
@@ -641,7 +641,7 @@
 				"plan_name_placeholder": "Nom du nouveau @:terms.plan",
 				"empire": "@:terms.empire"
 			},
-			"copy_name": "{name} (Copy)"
+			"copy_name": "{name} (copie)"
 		},
 		"production": {
 			"form": {
@@ -653,7 +653,7 @@
 		},
 		"production_building": {
 			"no_recipe": "Aucune @:terms.recipes_plural active",
-			"no_recipe_available": "No recipe available for this building",
+			"no_recipe_available": "Aucune recette disponible pour ce bâtiment",
 			"zero_reason": {
 				"FERTILITY": "Planète non fertile",
 				"WORKFORCE": "Aucune main-d'œuvre logée"
@@ -680,172 +680,172 @@
 		}
 	},
 	"header": {
-		"name": "Plan name",
-		"rename": "Rename plan"
+		"name": "Nom du plan",
+		"rename": "Renommer le plan"
 	},
 	"results": {
-		"label": "Plan results",
-		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
-		"payback": "Payback",
-		"build_cost": "ȼ build cost",
-		"profit_per_area": "ȼ profit / area",
+		"label": "Résultats du plan",
+		"profit": "Bénéfice / jour",
+		"revenue_cost": "Recettes {revenue} · coût {cost} dont {degradation} de dégradation",
+		"payback": "Amortissement",
+		"build_cost": "ȼ coût de construction",
+		"profit_per_area": "ȼ bénéfice / surface",
 		"empire_average": "Empire {value}",
-		"area": "Area",
-		"storage": "Storage",
-		"days_to_full": "days to full",
-		"in_out_per_day": "{in} t in · {out} t out / day",
-		"in_out_volume_per_day": "{in} m³ in · {out} m³ out / day",
-		"workforce": "Workforce",
-		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
+		"area": "Surface",
+		"storage": "Stockage",
+		"days_to_full": "jours avant plein",
+		"in_out_per_day": "{in} t entrée · {out} t sortie / jour",
+		"in_out_volume_per_day": "{in} m³ entrée · {out} m³ sortie / jour",
+		"workforce": "Main-d'œuvre",
+		"lowest_efficiency": "Efficacité la plus basse de la main-d'œuvre nécessaire au plan",
 		"tier_short": {
 			"pioneer": "PIO",
-			"settler": "SET",
+			"settler": "COL",
 			"technician": "TEC",
-			"engineer": "ENG",
+			"engineer": "ING",
 			"scientist": "SCI"
 		},
 		"expert_short": {
 			"Agriculture": "Agri",
-			"Chemistry": "Chem",
+			"Chemistry": "Chim",
 			"Construction": "Cons",
-			"Electronics": "Elec",
-			"Food_Industries": "Food",
-			"Fuel_Refining": "Fuel",
-			"Manufacturing": "Manu",
-			"Metallurgy": "Metal",
-			"Resource_Extraction": "Res"
+			"Electronics": "Élec",
+			"Food_Industries": "Alim",
+			"Fuel_Refining": "Carb",
+			"Manufacturing": "Fabr",
+			"Metallurgy": "Métal",
+			"Resource_Extraction": "Ress"
 		}
 	},
 	"base": {
 		"label": "Base",
 		"empire": {
-			"label": "Empire & prices",
-			"calculate_with": "Calculate with empire",
-			"note": "Faction {faction}, permits from the empire. Plan is in {n} empire. | Faction {faction}, permits from the empire. Plan is in {n} empires."
+			"label": "Empire et prix",
+			"calculate_with": "Calculer avec l'empire",
+			"note": "Faction {faction}, permis de l'empire. Le plan est dans {n} empire. | Faction {faction}, permis de l'empire. Le plan est dans {n} empires."
 		},
 		"planet": {
-			"label": "Planet",
-			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
-			"area": "area {n}",
-			"resources": "Resources",
-			"add_extractor": "Add {building} for {ticker}",
-			"insights": "{n} plans on {planet} · what others build here"
+			"label": "Planète",
+			"summary": "COGC {cogc} · {n} permis | COGC {cogc} · {n} permis",
+			"area": "surface {n}",
+			"resources": "Ressources",
+			"add_extractor": "Ajouter {building} pour {ticker}",
+			"insights": "{n} plans sur {planet} · ce que les autres construisent ici"
 		},
 		"workforce": {
-			"label": "Workforce",
+			"label": "Main-d'œuvre",
 			"need_housed": "{need} / {housed}",
-			"efficiency": "Efficiency",
-			"luxuries": "Luxuries",
-			"supply": "Supply {ticker}",
-			"beds_free": "{n} free",
-			"show_not_needed": "Show {tiers} (not needed)",
-			"hide_not_needed": "Hide the workforce not needed"
+			"efficiency": "Efficacité",
+			"luxuries": "Produits de luxe",
+			"supply": "Fournir {ticker}",
+			"beds_free": "{n} libres",
+			"show_not_needed": "Afficher {tiers} (non nécessaire)",
+			"hide_not_needed": "Masquer la main-d'œuvre non nécessaire"
 		},
 		"housing": {
 			"label": "Infrastructure",
 			"auto": "Auto",
-			"cheapest": "Cheapest",
-			"least_area": "Least area"
+			"cheapest": "Le moins cher",
+			"least_area": "Le moins de surface"
 		},
 		"experts": {
 			"label": "Experts",
-			"summary": "{n} placed",
-			"more": "+ {n} more fields",
-			"fewer": "Fewer fields"
+			"summary": "{n} placés",
+			"more": "+ {n} champs de plus",
+			"fewer": "Moins de champs"
 		}
 	},
 	"production": {
-		"counts": "{buildings} buildings · {units} units · {recipes} recipes",
-		"collapse_all": "Collapse all",
-		"expand_all": "Expand all",
-		"empty": "No buildings yet. Add the first with “{select}” above.",
+		"counts": "{buildings} bâtiments · {units} unités · {recipes} recettes",
+		"collapse_all": "Tout réduire",
+		"expand_all": "Tout développer",
+		"empty": "Aucun bâtiment pour l'instant. Ajoute le premier avec « {select} » ci-dessus.",
 		"columns": {
-			"building": "Building",
-			"count": "Count",
+			"building": "Bâtiment",
+			"count": "Nombre",
 			"efficiency": "Eff.",
-			"daily": "ȼ / day",
-			"area": "Area"
+			"daily": "ȼ / jour",
+			"area": "Surface"
 		},
-		"fold": "Show or hide the recipes of {building}",
+		"fold": "Afficher ou masquer les recettes de {building}",
 		"experts": "{n} expert | {n} experts",
-		"delete_building": "Delete {building}, undo with Ctrl+Z",
-		"change_recipe": "Change recipe {recipe}",
-		"recipe": "Recipe",
-		"cogm_label": "COGM: cost of goods manufactured for {recipe}",
-		"cogc_match": "The planet's COGC lifts this expertise",
-		"cogc_no_match": "The planet's COGC doesn't lift this expertise",
-		"delete_recipe": "Delete recipe {recipe}, undo with Ctrl+Z",
-		"add_recipe": "+ Recipe",
-		"card_meta": "ȼ/day · {efficiency} · area {area}",
-		"recipe_daily": "This order's part of the building's ȼ/day"
+		"delete_building": "Supprimer {building}, annuler avec Ctrl+Z",
+		"change_recipe": "Changer la recette {recipe}",
+		"recipe": "Recette",
+		"cogm_label": "COGM : coût des marchandises fabriquées pour {recipe}",
+		"cogc_match": "Le COGC de la planète renforce cette expertise",
+		"cogc_no_match": "Le COGC de la planète ne renforce pas cette expertise",
+		"delete_recipe": "Supprimer la recette {recipe}, annuler avec Ctrl+Z",
+		"add_recipe": "+ Recette",
+		"card_meta": "ȼ/jour · {efficiency} · surface {area}",
+		"recipe_daily": "La part de cet ordre dans les ȼ/jour du bâtiment"
 	},
 	"picker": {
-		"change_title": "Change recipe",
-		"add_title": "Add a recipe to {building} as a new order",
-		"replacing": "replacing {amount} × {ticker}",
-		"close": "Close",
+		"change_title": "Changer de recette",
+		"add_title": "Ajouter une recette à {building} comme nouvel ordre",
+		"replacing": "remplace {amount} × {ticker}",
+		"close": "Fermer",
 		"sort": {
-			"label": "Sort by",
-			"daily": "ȼ / day",
-			"popular": "Popular"
+			"label": "Trier par",
+			"daily": "ȼ / jour",
+			"popular": "Populaires"
 		},
 		"columns": {
-			"makes": "Makes",
-			"from": "From",
-			"runtime": "Runtime",
-			"daily": "ȼ / day",
-			"area": "ȼ / area",
-			"payback": "Payback",
+			"makes": "Produit",
+			"from": "À partir de",
+			"runtime": "Durée",
+			"daily": "ȼ / jour",
+			"area": "ȼ / surface",
+			"payback": "Amortissement",
 			"plans": "Plans"
 		},
-		"dependency": "Your {buildings} turn this {ticker} into {outputs}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
-		"dependency_workforce": "Your workforce uses this {ticker}. Replacing it means buying {amount} {ticker} a day. To keep both, use “+ Recipe”.",
-		"uses_made": "uses {tickers} from the plan",
-		"feeds": "feeds {buildings}",
-		"current": "current recipe",
-		"in_plan": "in plan",
-		"vs_now": "{delta} vs now",
+		"dependency": "Tes {buildings} transforment ce {ticker} en {outputs}. Le remplacer signifie acheter {amount} {ticker} par jour. Pour garder les deux, utilise « + Recette ».",
+		"dependency_workforce": "Ta main-d'œuvre utilise ce {ticker}. Le remplacer signifie acheter {amount} {ticker} par jour. Pour garder les deux, utilise « + Recette ».",
+		"uses_made": "utilise {tickers} du plan",
+		"feeds": "alimente {buildings}",
+		"current": "recette actuelle",
+		"in_plan": "dans le plan",
+		"vs_now": "{delta} vs maintenant",
 		"below_threshold": "< 5 %",
-		"per_building": "ȼ per building and day",
-		"keys": "Click or Enter replaces · Esc closes",
+		"per_building": "ȼ par bâtiment et par jour",
+		"keys": "Clic ou Entrée remplace · Échap ferme",
 		"undo_key": "Ctrl+Z",
-		"replaced": "Replaced {before} with {after}.",
-		"added": "Added {recipe} as a new order.",
-		"keys_add": "Click or Enter adds · Esc closes"
+		"replaced": "{before} remplacé par {after}.",
+		"added": "{recipe} ajoutée comme nouvel ordre.",
+		"keys_add": "Clic ou Entrée ajoute · Échap ferme"
 	},
 	"io": {
 		"source": {
-			"label": "Show materials for",
-			"all": "Whole base",
-			"production": "Production only",
-			"workforce": "Workforce only"
+			"label": "Afficher les matériaux pour",
+			"all": "Toute la base",
+			"production": "Production uniquement",
+			"workforce": "Main-d'œuvre uniquement"
 		},
 		"filter": {
-			"label": "Filter",
-			"all": "All",
-			"exports": "Exports",
-			"imports": "Imports"
+			"label": "Filtre",
+			"all": "Tout",
+			"exports": "Exportations",
+			"imports": "Importations"
 		},
 		"value": {
-			"label": "Value shown"
+			"label": "Valeur affichée"
 		},
-		"exports": "Exports",
-		"imports": "Imports",
-		"degradation": "Degradation",
-		"profit": "Profit / day"
+		"exports": "Exportations",
+		"imports": "Importations",
+		"degradation": "Dégradation",
+		"profit": "Bénéfice / jour"
 	},
 	"layout": {
-		"flags": "{n} market flag | {n} market flags",
+		"flags": "{n} alerte de marché | {n} alertes de marché",
 		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
-		"show_base": "Show base setup",
-		"show_io": "Show Material I/O",
-		"close": "Close",
-		"fold_base": "Fold base setup",
-		"fold_io": "Fold Material I/O",
-		"sections": "Plan sections",
-		"tools": "Tools",
+		"show_base": "Afficher la configuration de la base",
+		"show_io": "Afficher les E/S des matériaux",
+		"close": "Fermer",
+		"fold_base": "Réduire la configuration de la base",
+		"fold_io": "Réduire les E/S des matériaux",
+		"sections": "Sections du plan",
+		"tools": "Outils",
 		"io_short": "I/O",
-		"all_tools": "All tools"
+		"all_tools": "Tous les outils"
 	}
 }
