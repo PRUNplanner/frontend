@@ -50,10 +50,10 @@
 		"tooltip_jumps": "Saltos a {cx}"
 	},
 	"filters": {
-		"title": "Filter",
-		"planet": "Planet",
-		"building": "Building",
-		"positive_roi": "Positive ROI",
-		"searched_material": "Searched Material"
+		"title": "Filtro",
+		"planet": "Planeta",
+		"building": "Edificio",
+		"positive_roi": "ROI positivo",
+		"searched_material": "Material buscado"
 	}
 }
