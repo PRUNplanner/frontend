@@ -13,7 +13,7 @@
 	} from "@/features/empire/util/empireMaterialIO.util";
 
 	// UI
-	import { PButton, PButtonGroup, PValue } from "@/ui";
+	import { PSegmented, PValue } from "@/ui";
 
 	// Types & Interfaces
 	import type {
@@ -95,17 +95,15 @@
 <template>
 	<div
 		class="@container mx-2 my-1 p-4 border border-white/15 rounded-[3px] bg-black/30 flex flex-col gap-4">
-		<PButtonGroup class="self-start">
-			<PButton
-				size="sm"
-				:pressed="view === 'sides'"
-				@click="view = 'sides'">
-				{{ t("empire.material_io.view_sides") }}
-			</PButton>
-			<PButton size="sm" :pressed="view === 'net'" @click="view = 'net'">
-				{{ t("empire.material_io.view_net") }}
-			</PButton>
-		</PButtonGroup>
+		<PSegmented
+			v-model:value="view"
+			class="self-start"
+			size="sm"
+			:options="[
+				{ value: 'sides', label: t('empire.material_io.view_sides') },
+				{ value: 'net', label: t('empire.material_io.view_net') },
+			]"
+			:label="t('empire.material_io.view_label')" />
 
 		<div class="grid grid-cols-1 @min-[640px]:grid-cols-2 gap-x-10 gap-y-6">
 			<template v-if="view === 'sides'">

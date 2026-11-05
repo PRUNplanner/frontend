@@ -11,7 +11,7 @@
 	});
 
 	import HelpTutorial from "@/features/help/components/HelpTutorial.vue";
-	import { VueShowdown } from "vue-showdown";
+	import HelpMarkdown from "@/features/help/components/HelpMarkdown.vue";
 
 	// markdown loader from changelog
 	async function loadMarkdown(): Promise<string> {
@@ -67,10 +67,7 @@
 						v-if="markdownContent != ''"
 						class="flex-1 min-h-0 overflow-auto px-6 pb-8"
 						:class="changelogClass">
-						<VueShowdown
-							:markdown="markdownContent"
-							flavor="github"
-							:options="{ tables: true, emoji: true }" />
+						<HelpMarkdown :markdown="markdownContent" />
 					</div>
 				</div>
 			</aside>

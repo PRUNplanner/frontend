@@ -14,6 +14,7 @@ const plan_A = {
 };
 const plan_B = {
 	uuid: "B",
+	plan_name: "Beta",
 	planet_natural_id: "B",
 };
 
@@ -87,7 +88,7 @@ describe("useFIOBurn", async () => {
 			hasStorage: false,
 			key: "B",
 			minDays: 0,
-			planName: "Unnamed",
+			planName: "Beta",
 			planUuid: "B",
 			planetId: "B",
 		});
@@ -128,7 +129,7 @@ describe("useFIOBurn", async () => {
 		expect(result[0]).toStrictEqual({
 			minDays: 0,
 			burnMaterials: [],
-			planName: "Unnamed",
+			planName: "Beta",
 			planUuid: "B",
 			planetId: "B",
 		});

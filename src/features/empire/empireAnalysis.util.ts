@@ -83,20 +83,23 @@ export function revenueSplitRows(
 
 /**
  * The empire's split, on the KPIs' own numbers (materials traded between
- * plans netted out). Degradation is the plans' sum, the rest of the cost is
- * materials, split into inputs and workforce as the plans split theirs.
+ * plans netted out), built from named parts: materials bought, from the
+ * empire's material i/o, split into inputs and workforce as the plans split
+ * theirs, and the plans' degradation. A new cost part needs its own part.
  * @author jplacht
  *
  * @param {IEmpireCostOverview} overview empire KPIs
+ * @param {IEmpireMaterialIO[]} io combined empire material i/o
  * @param {IEmpirePlanListData[]} plans empire plans
  * @returns {IEmpireSplitParts} ¢ per day
  */
 export function empireSplitParts(
 	overview: IEmpireCostOverview,
+	io: IEmpireMaterialIO[],
 	plans: IEmpirePlanListData[]
 ): IEmpireSplitParts {
 	const sum = sumSplitParts(plans);
-	const materials = Math.max(overview.totalCost - sum.degradation, 0);
+	const materials = io.reduce((s, m) => s - Math.min(m.deltaPrice, 0), 0);
 	const planMaterials = sum.inputs + sum.workforce;
 	const workforce = planMaterials
 		? (materials * sum.workforce) / planMaterials
@@ -105,7 +108,7 @@ export function empireSplitParts(
 		revenue: overview.totalRevenue,
 		inputs: materials - workforce,
 		workforce,
-		degradation: overview.totalCost - materials,
+		degradation: sum.degradation,
 		profit: overview.totalProfit,
 	};
 }

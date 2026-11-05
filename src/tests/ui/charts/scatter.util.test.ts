@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import {
 	niceTicks,
+	logTicks,
 	paretoFrontier,
 	placeLabels,
 } from "@/ui/charts/scatter.util";
@@ -52,6 +53,27 @@ describe("niceTicks", () => {
 		const ticks = niceTicks(3, 3);
 		expect(ticks[0]).toBeLessThan(3);
 		expect(ticks.at(-1)).toBeGreaterThan(3);
+	});
+});
+
+describe("logTicks", () => {
+	it("gives 1, 2, 5 over two powers of ten", () => {
+		expect(logTicks(3, 70)).toEqual([2, 5, 10, 20, 50, 100]);
+	});
+
+	it("gives 1, 3 over more, covering small values", () => {
+		expect(logTicks(0.75, 735)).toEqual([
+			0.3, 1, 3, 10, 30, 100, 300, 1000,
+		]);
+		expect(logTicks(19.66, 38710)).toEqual([
+			10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000,
+		]);
+	});
+
+	it("widens a single value, so the axis has a span", () => {
+		const ticks = logTicks(5, 5);
+		expect(ticks[0]).toBeLessThan(5);
+		expect(ticks.at(-1)).toBeGreaterThan(5);
 	});
 });
 

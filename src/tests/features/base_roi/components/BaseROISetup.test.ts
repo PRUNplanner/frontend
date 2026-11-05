@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
+import { createPinia } from "pinia";
 
 import BaseROISetup from "@/features/base_roi/components/BaseROISetup.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import PModal from "@/ui/components/PModal.vue";
 import PSelect from "@/ui/components/PSelect.vue";
+import { useUserStore } from "@/stores/userStore";
 
 // Types & Interfaces
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
@@ -18,7 +20,13 @@ vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({
 	},
 }));
 
-async function mountSetup(settings = defaultBaseROISettings()) {
+async function mountSetup(
+	settings = defaultBaseROISettings(),
+	loggedIn = true
+) {
+	const pinia = createPinia();
+	if (loggedIn)
+		useUserStore(pinia).$patch({ accessToken: "a", refreshToken: "r" });
 	const updates: BaseROISettings[] = [];
 	const shows: boolean[] = [];
 	const { wrapper } = await mountComponent(
@@ -30,7 +38,7 @@ async function mountSetup(settings = defaultBaseROISettings()) {
 			"onUpdate:settings": (v: BaseROISettings) => updates.push(v),
 			"onUpdate:show": (v: boolean) => shows.push(v),
 		},
-		{ attach: true }
+		{ attach: true, pinia }
 	);
 	await flushPromises();
 	const dialog = () => document.body.querySelector('[role="dialog"]')!;
@@ -46,7 +54,7 @@ async function mountSetup(settings = defaultBaseROISettings()) {
 describe("BaseROISetup (criterion 13)", () => {
 	afterEach(() => (document.body.innerHTML = ""));
 
-	it("Standard (preselected) writes the LCB and Knottly's limits", async () => {
+	it("Standard (preselected) writes the WCB and Knottly's limits", async () => {
 		const { updates, shows, button } = await mountSetup({
 			...defaultBaseROISettings(),
 			ship: "TCB",
@@ -56,14 +64,14 @@ describe("BaseROISetup (criterion 13)", () => {
 		await flushPromises();
 		expect(updates.at(-1)).toMatchObject({
 			logistics: "ship",
-			ship: "LCB",
+			ship: "WCB",
 			minMarketCapacity: 0.7,
-			bufferDays: 9,
+			bufferDays: 10,
 		});
 		expect(shows).toEqual([false]);
 	});
 
-	it("Rookie writes the SCB", async () => {
+	it("Rookie writes the SCB and hides weekly return and running cost", async () => {
 		const { updates, button, preset } = await mountSetup();
 		preset("rookie").click();
 		await flushPromises();
@@ -72,6 +80,7 @@ describe("BaseROISetup (criterion 13)", () => {
 		expect(updates.at(-1)).toMatchObject({
 			ship: "SCB",
 			logistics: "ship",
+			hiddenColumns: ["weekly_return", "running_cost"],
 		});
 	});
 
@@ -112,8 +121,35 @@ describe("BaseROISetup (criterion 13)", () => {
 		await flushPromises();
 		expect(updates.at(-1)).toMatchObject({
 			visitDays: 5,
-			hiddenColumns: ["cargo"],
+			hiddenColumns: ["running_cost", "cargo"],
 		});
+	});
+
+	it("Veteran keeps break-even; switching back to Standard restores its columns", async () => {
+		const { updates, button, preset } = await mountSetup();
+		preset("rookie").click();
+		await flushPromises();
+		preset("veteran").click();
+		await flushPromises();
+		button("base_roi.setup.start").click();
+		await flushPromises();
+		expect(updates.at(-1)!.hiddenColumns).toEqual(["running_cost"]);
+	});
+
+	it("asks for the CX preference only when logged in", async () => {
+		const inside = await mountSetup();
+		expect(
+			inside.wrapper
+				.findComponent({ name: "CXPreferenceSelector" })
+				.exists()
+		).toBe(true);
+		document.body.innerHTML = "";
+		const outside = await mountSetup(defaultBaseROISettings(), false);
+		expect(
+			outside.wrapper
+				.findComponent({ name: "CXPreferenceSelector" })
+				.exists()
+		).toBe(false);
 	});
 
 	it("Skip keeps the settings and stores them", async () => {

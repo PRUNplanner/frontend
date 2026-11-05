@@ -32,7 +32,7 @@
 	// UI
 	import {
 		PButton,
-		PButtonGroup,
+		PSegmented,
 		PForm,
 		PFormItem,
 		PInput,
@@ -178,15 +178,15 @@
 			<PFormItem
 				v-if="formats.length > 1"
 				:label="t('api_keys.builder.format')">
-				<PButtonGroup>
-					<PButton
-						v-for="f in formats"
-						:key="f"
-						:pressed="format === f"
-						@click="format = f">
-						{{ f.toUpperCase() }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					v-model:value="format"
+					:options="
+						formats.map((f) => ({
+							value: f,
+							label: f.toUpperCase(),
+						}))
+					"
+					:label="t('api_keys.builder.format')" />
 			</PFormItem>
 			<template
 				v-for="list in ['empire', 'plan', 'cx'] as const"

@@ -151,12 +151,19 @@ export function resetUser(): void {
 
 /**
  * Identifies the user with the person properties their profile holds
+ *
+ * @param {UserProfile} profile Profile
+ * @param {boolean} [fioEnabled] FIO connected; pass it for a profile restored
+ * from storage, which has no FIO key
  */
-export function identifyUser(profile: UserProfile): void {
+export function identifyUser(
+	profile: UserProfile,
+	fioEnabled: boolean = !!(profile.fio_apikey && profile.prun_username)
+): void {
 	identify(profile.id.toString(), {
 		username: profile.username,
 		prun_username: profile.prun_username,
-		is_fio_enabled: !!(profile.fio_apikey && profile.prun_username),
+		is_fio_enabled: fioEnabled,
 		has_verified_email: profile.is_email_verified,
 	});
 }

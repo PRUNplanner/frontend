@@ -1,7 +1,7 @@
 {
 	"name": "prunplanner_frontend",
 	"private": true,
-	"version": "0.34.1",
+	"version": "0.35.0",
 	"dbVersion": "26.10.17",
 	"type": "module",
 	"packageManager": "pnpm@10.30.3",
@@ -22,6 +22,7 @@
 		"lint": "eslint . && prettier --check .",
 		"lint:fix": "eslint . --fix && prettier --write .",
 		"knip": "knip",
+		"knip:prod": "knip --production",
 		"refresh:systems": "node scripts/refresh-systems.mjs"
 	},
 	"dependencies": {
@@ -36,6 +37,7 @@
 		"chart.js": "^4.6.1",
 		"chartjs-plugin-datalabels": "^2.2.0",
 		"dayjs": "^1.11.23",
+		"dompurify": "^3.4.17",
 		"idb": "^8.0.4",
 		"lightweight-charts": "^5.2.1",
 		"lodash-es": "^4.18.1",

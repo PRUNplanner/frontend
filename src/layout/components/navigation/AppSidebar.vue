@@ -10,7 +10,7 @@
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { isApiError } from "@/lib/apiError";
+	import { reportError } from "@/lib/analytics/useAnalytics";
 	import { useVersionCheck } from "@/lib/useVersionCheck";
 	import { useNavigation } from "@/layout/components/navigation/useNavigation";
 
@@ -74,12 +74,9 @@
 		() => userStore.hasFIO && ["ok", "error"].includes(userStore.fioStatus),
 		(newValue: boolean) => {
 			if (newValue) {
-				// still 404 for an error before any FIO data arrived
-				useQuery("GetFIOStorage")
-					.execute()
-					.catch((err: unknown) => {
-						if (!isApiError(err) || err.status !== 404) throw err;
-					});
+				// still 404 for an error before any FIO data arrived, 401 once a
+				// password change ended the session: API errors aren't reported
+				useQuery("GetFIOStorage").execute().catch(reportError);
 			} else {
 				queryStore.invalidateKey(["gamedata", "fio"], {
 					exact: false,

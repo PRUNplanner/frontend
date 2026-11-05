@@ -16,9 +16,13 @@
 		defineAsyncComponent(
 			() => import("@/layout/components/HomepageHeader.vue")
 		);
-	const AppSidebar = defineAsyncComponent(
-		() => import("@/layout/components/navigation/AppSidebar.vue")
-	);
+	import AppSidebarPlaceholder from "@/layout/components/navigation/AppSidebarPlaceholder.vue";
+	// its box from the first render: the page doesn't shift when it loads
+	const AppSidebar = defineAsyncComponent({
+		loader: () => import("@/layout/components/navigation/AppSidebar.vue"),
+		loadingComponent: AppSidebarPlaceholder,
+		delay: 0,
+	});
 	const MobileNavBar = defineAsyncComponent(
 		() => import("@/layout/components/navigation/MobileNavBar.vue")
 	);
@@ -99,7 +103,8 @@
 
 		// a session restored from storage: analytics knows the user from the
 		// stored profile until the fresh one (loaded below) arrives
-		if (userStore.profile) identifyUser(userStore.profile);
+		if (userStore.profile)
+			identifyUser(userStore.profile, userStore.hasFIO);
 
 		if (userStore.isLoggedIn) {
 			announceRelease(() => router.push("/help#changelog"));

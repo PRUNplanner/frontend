@@ -1,49 +1,37 @@
 # planning_data
 
-**Purpose.** This folder handles the plan lifecycle outside the calculation:
-blank plan creation, save, reload, the COGC mapping and plan diffs.
+**Purpose.** Plan lifecycle outside the calculation: blank plans, create and
+save calls, the COGC mapping and plan diffs.
 
-**Used by.** `PlanView.vue`, `usePlanningDataLoader` and
-`useResourceROIOverview` (`usePlan`); `PlanBase`, `EmpirePlanList` and
-`save_conflict/changeLineText.ts` (`cogcTextMapping`);
-`sharing/sharedPlan.util.ts` and `PlanView` (`diffPlan`).
+**Used by.** `planning` (save, drafts, versions, shared copy),
+`wrapper/usePlanningDataLoader`, `resource_roi_overview`, `sharing`,
+`save_conflict`, `empire` and `PlanView`.
 
 ## Key files
 
-- **`usePlan.ts`**:
-  - `createBlankDefinition(planetNaturalId, cogc)` builds a new `IPlanDefinition` for a planet (no uuid or name until saved).
-  - `mapPlanetToPlanType` translates the planet's COGC program to the
-    plan's `PlanCOGCProgram`.
-  - `createNewPlan` and `saveExistingPlan` go through `useQuery`
-    (`CreatePlan`, `PatchPlan`, then `GetPlan`); `reloadExistingPlan` reads
-    `planningStore.getPlan`. `createNewPlan` returns the uuid
-    and save version (`IPlanSaved`, `undefined` on failure);
-    `saveExistingPlan(uuid, data, baseModifiedAt)`
-    returns that or `{ error: "conflict" | "deleted" | "failed" }`.
-  - `getPlanNamePlanet(uuid)` looks a plan's name and planet up from the
-    store (it lives in `planningStore`, so `usePreferences` uses it there).
-  - `cogcTextMapping` holds display names for COGC programs.
-- **`planDiff.ts`**: `diffPlan(from, to)` lists what changed between two
-  plan versions for the save conflict dialog and a shared plan's change
-  summary, matched by building, hab, expert and workforce type.
-- **`usePlan.types.ts`**: `IPlanDefinition`, the plan
-  as the editor holds it, and the save results (`IPlanSaved`,
-  `IPlanSaveFailed`, `IPlanSaveResult`). The save/create payloads are
-  `PlanCreateData` and `PlanSaveData` (`api/schemas/planningData.schemas.ts`).
-
-## Data
-
-- The save payload is `usePlanCalculation().backendData`.
-- `CreatePlan` and `PatchPlan` invalidate the `["planningdata", "plan"]` and
-  `["planningdata", "empire"]` keys and tell the user's other tabs; the
-  following `GetPlan` updates `planningStore`.
+- `usePlan.ts`: `usePlan()` returns `createBlankDefinition(planet, cogc)`
+  (no uuid or name until saved), `mapPlanetToPlanType` (planet COGC →
+  `PlanCOGCProgram`), `createNewPlan(data)` (`CreatePlan` then `GetPlan`;
+  `IPlanSaved` or `undefined`), `saveExistingPlan(uuid, data,
+  baseModifiedAt?, version?)` (`PatchPlan`; `IPlanSaved` or `{ error:
+  "conflict" | "deleted" | "restored_from" | "failed" }`) and
+  `getPlanNamePlanet`. Module export `cogcTextMapping`: COGC display names.
+- `planDiff.ts`: `diffPlan(from, to)` → change lines (name, permits, COGC,
+  CorpHQ, buildings, infrastructure, experts, workforce) for save conflicts,
+  drafts, version preview and shared-plan summaries.
+- `usePlan.types.ts`: `IPlanDefinition` (the plan as the editor holds it)
+  and the save result types. Payload schemas are in
+  `api/schemas/planningData.schemas.ts`.
 
 ## Gotchas
 
-- `saveExistingPlan` without `baseModifiedAt` saves over any newer version
-  (the conflict dialog's Overwrite). Otherwise pass the version the edit
-  started from, see [save_conflict.md](save_conflict.md).
+- The save payload is `usePlanCalculation().backendData`.
+- `PatchPlan`'s response seeds `planningStore` and the `GetPlan` cache, so
+  there is no refetch after a save (see [data-layer.md](../data-layer.md)).
+- `saveExistingPlan` without `baseModifiedAt` overwrites any newer version
+  (the conflict dialog's Overwrite); otherwise pass the version the edit
+  started from ([save_conflict.md](save_conflict.md)).
 
 ## Tests
 
-`src/tests/features/planning_data/usePlan.test.ts`, `planDiff.test.ts`
+`src/tests/features/planning_data/`.

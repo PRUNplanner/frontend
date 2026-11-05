@@ -1,36 +1,35 @@
 # government
 
-**Purpose.** This folder covers planetary government topics:
-- **POPR** (population reports): the population and needs of a planet;
-- the **upkeep price calculator**, which finds the cheapest materials to
-  meet each population need (safety, health, comfort, culture, education)
-  through the infrastructure buildings (SST, HOS, …).
+**Purpose.** Planetary government topics: POPR (population reports) and the
+upkeep price calculator, which finds the cheapest materials per population
+need (safety, health, comfort, culture, education) through the
+infrastructure buildings.
 
-**Used by.**
-- `views/tools/UpkeepPriceCalculatorView.vue` (`/upkeep-price-calculator`).
-- `PlanetPOPRButton` in the resource ROI table (`ResourceROITable`).
-- `PlanetPOPRTable` and `popr.util.ts` in the plan tool `PlanPOPR`.
+**Used by.** `views/tools/UpkeepPriceCalculatorView.vue`
+(`/upkeep-price-calculator`); `PlanetPOPRButton` in `ResourceROITable`;
+`PlanetPOPRTable` in the plan tool `PlanPOPR`; `popr.util.ts` in `PlanPOPR`,
+base ROI (`baseROIPopulation`) and `PlanetSearchCompare`.
 
 ## Key files
 
-| File | Role |
-| --- | --- |
-| `upkeepCalculations.constants.ts` | `UPKEEP_NEED_TYPES` and `UPKEEP_BUILDINGS`: static building → needs and materials data |
-| `upkeepCalculations.ts` | Pure functions: `calculatePricePerNeed`, `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed`, and `calculateAllNeeds(getPrice)`, which prices every need's materials and sorts them by price per need |
-| `upkeepCalculations.types.ts` | `UpkeepNeedType`, `IUpkeepBuilding`, `IUpkeepMaterialCalculation` |
-| `components/UpkeepPriceCalculator.vue` | Calculator UI. Passes `usePrice(...).getPrice(ticker, "BUY")` into `calculateAllNeeds` and recalculates when the CX changes |
-| `popr.util.ts` | `poprAvailable` (free workers less open jobs, never below 0) and `poprCovers` (whether they cover the plan's need) |
-| `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue` | POPR popup and table; the button and `PlanPOPR` fetch the report with the `GetPlanetLastPOPR` query and pass it to the table |
+- `upkeepCalculations.ts`: pure upkeep math (`calculatePricePerNeed`,
+  `getBuildingsForNeed`, `getBuildingNeedCount`, `calculateMaterialsForNeed`,
+  `calculateAllNeeds(getPrice)` sorted by price per need). Static data in
+  `upkeepCalculations.constants.ts`, types in `.types.ts`.
+- `components/UpkeepPriceCalculator.vue`: UI only; passes
+  `usePrice(...).getPrice(ticker, "BUY")` and recalculates on CX change.
+- `popr.util.ts`: `poprAvailable` (free workers minus open jobs, never below
+  0), `poprCovers` (whether they cover a need).
+- `components/PlanetPOPRButton.vue`, `PlanetPOPRTable.vue`: POPR popup and
+  table; the button and `PlanPOPR` fetch via `GetPlanetLastPOPR`.
 
 ## Gotchas
 
-- **Keep the logic in `upkeepCalculations.ts`.** It is the tested home for
-  upkeep math. The component should only wire prices and UI state.
-- **Multi-need buildings multiply their need** by the number of needs they
+- Keep upkeep logic in `upkeepCalculations.ts` (the tested home); the
+  component only wires prices and UI state.
+- Multi-need buildings multiply their need by the number of needs they
   provide when computing price per need.
 
 ## Tests
 
-`src/tests/features/government/`: `upkeepCalculations.test.ts`,
-`popr.util.test.ts` and `components/` (both POPR components and the
-calculator).
+`src/tests/features/government/` (both utils and `components/`).

@@ -50,9 +50,36 @@ const patchPrefs = async (session: string | undefined, retry = true) => {
 	}
 };
 const syncToBackend = debounce(patchPrefs, 5000);
-// a change made right before leaving (e.g. a dismissed banner) is not lost
+
+// the user API, loaded on a logged in user's first change (the user store
+// has it already), so leaving the page can send without awaiting an import
+let userApi: typeof import("@/features/api/userData.api") | undefined;
+const loadUserApi = () => {
+	if (!userApi)
+		import("@/features/api/userData.api")
+			.then((api) => (userApi = api))
+			.catch(() => {});
+};
+
+// a change made right before leaving (e.g. a dismissed banner) is not
+// lost: axios requests are cancelled on unload, a keepalive fetch isn't
+const sendOnHide = () => {
+	// not loaded yet (left right after the first change): the debounced
+	// path is the best left, and survives if the page is only hidden
+	if (!userApi) return void syncToBackend.flush();
+
+	syncToBackend.cancel();
+	const userStore = useUserStore();
+	if (!userStore.accessToken || !userStore.refreshToken) return;
+
+	const patch = unsyncedPreferences(userStore.preferences);
+	if (Object.keys(patch).length === 0) return;
+
+	userApi.sendPreferencesKeepalive(patch, userStore.accessToken);
+	markPreferencesSynced(patch);
+};
 if (typeof window !== "undefined")
-	window.addEventListener("pagehide", () => syncToBackend.flush());
+	window.addEventListener("pagehide", sendOnHide);
 
 /**
  * Syncs every preference change to the backend, once for the whole app
@@ -66,7 +93,11 @@ export function startPreferenceSync(): WatchHandle {
 	const userStore = useUserStore();
 	return watch(
 		() => userStore.preferences,
-		() => syncToBackend(userStore.refreshToken),
+		() => {
+			// a visitor's preferences stay local, their shell stays light
+			if (userStore.refreshToken) loadUserApi();
+			syncToBackend(userStore.refreshToken);
+		},
 		{ deep: true }
 	);
 }

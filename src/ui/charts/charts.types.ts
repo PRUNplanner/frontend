@@ -107,6 +107,11 @@ export interface ILineSeries {
 	color: string;
 	/** one value per day of the chart, null where there is none */
 	values: (number | null)[];
+	/**
+	 * what the end label and tooltip say when the line plots something
+	 * else, e.g. the real money of a line scaled to 0–1; default `values`
+	 */
+	shown?: (number | null)[];
 }
 
 export interface ILineLabel {

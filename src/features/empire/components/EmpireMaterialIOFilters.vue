@@ -5,13 +5,7 @@
 	const { t } = useI18n();
 
 	// UI
-	import {
-		PButton,
-		PButtonGroup,
-		PSelectMultiple,
-		PForm,
-		PFormItem,
-	} from "@/ui";
+	import { PForm, PFormItem, PSegmented, PSelectMultiple } from "@/ui";
 
 	// Types & Interfaces
 	import type { PSelectOption } from "@/ui/ui.types";
@@ -72,44 +66,53 @@
 		<div class="max-w-full">
 			<PForm>
 				<PFormItem :label="t('empire.filters.display')">
-					<PButtonGroup>
-						<PButton
-							:pressed="!localLoadBalance"
-							@click="localLoadBalance = false">
-							{{ $t("empire.filters.all") }}
-						</PButton>
-						<PButton
-							:pressed="localLoadBalance"
-							@click="localLoadBalance = true">
-							{{ $t("empire.filters.loadbalance") }}
-						</PButton>
-					</PButtonGroup>
+					<PSegmented
+						:value="localLoadBalance ? 'loadbalance' : 'all'"
+						:options="[
+							{ value: 'all', label: t('empire.filters.all') },
+							{
+								value: 'loadbalance',
+								label: t('empire.filters.loadbalance'),
+							},
+						]"
+						:label="t('empire.filters.display')"
+						@update:value="
+							(v) => (localLoadBalance = v === 'loadbalance')
+						" />
 				</PFormItem>
 				<PFormItem :label="t('empire.filters.consumables')">
-					<PButtonGroup>
-						<PButton
-							:pressed="!localHideConsumables"
-							@click="localHideConsumables = false">
-							{{ $t("common.buttons.show") }}
-						</PButton>
-						<PButton
-							:pressed="localHideConsumables"
-							@click="localHideConsumables = true">
-							{{ $t("common.buttons.hide") }}
-						</PButton>
-					</PButtonGroup>
+					<PSegmented
+						:value="localHideConsumables ? 'hide' : 'show'"
+						:options="[
+							{ value: 'show', label: t('common.buttons.show') },
+							{ value: 'hide', label: t('common.buttons.hide') },
+						]"
+						:label="t('empire.filters.consumables')"
+						@update:value="
+							(v) => (localHideConsumables = v === 'hide')
+						" />
 				</PFormItem>
 				<PFormItem
 					v-if="showExpandAll"
 					:label="t('empire.material_io.planets')">
-					<PButtonGroup>
-						<PButton :pressed="!expandAll" @click="summary">
-							{{ $t("empire.material_io.summary") }}
-						</PButton>
-						<PButton :pressed="expandAll" @click="expandAll = true">
-							{{ $t("empire.material_io.expand_all") }}
-						</PButton>
-					</PButtonGroup>
+					<!-- Summary also closes open rows when already picked -->
+					<PSegmented
+						:value="expandAll ? 'expand' : 'summary'"
+						:options="[
+							{
+								value: 'summary',
+								label: t('empire.material_io.summary'),
+							},
+							{
+								value: 'expand',
+								label: t('empire.material_io.expand_all'),
+							},
+						]"
+						:label="t('empire.material_io.planets')"
+						@select="
+							(v) =>
+								v === 'expand' ? (expandAll = true) : summary()
+						" />
 				</PFormItem>
 			</PForm>
 		</div>

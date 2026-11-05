@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { computed, defineAsyncComponent, ref } from "vue";
+	import {
+		computed,
+		defineAsyncComponent,
+		onBeforeUnmount,
+		ref,
+		type Ref,
+	} from "vue";
 
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
@@ -8,6 +14,7 @@
 	import { formatNumber, formatPercent } from "@/util/numbers";
 	import { capitalizeString } from "@/util/text";
 	import { profitHistory } from "@/features/base_roi/baseROIHistory";
+	import { planetPlots } from "@/features/planet_search/planetPlots.util";
 	import { recipeLabel } from "@/features/base_roi/baseROIDetail.util";
 
 	// Static
@@ -18,10 +25,11 @@
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
+	import PlanetPlots from "@/features/planet_search/components/PlanetPlots.vue";
 	import BaseROIColumnsMenu from "@/features/base_roi/components/BaseROIColumnsMenu.vue";
 	import BaseROITableSkeleton from "@/features/base_roi/components/BaseROITableSkeleton.vue";
+	import BaseROICellMath from "@/features/base_roi/components/BaseROICellMath.vue";
 	import PSparkline from "@/ui/charts/PSparkline.vue";
-	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 	const BaseROIRowDetail = defineAsyncComponent(
 		() => import("@/features/base_roi/components/BaseROIRowDetail.vue")
 	);
@@ -31,18 +39,29 @@
 	import type {
 		BaseROIStep,
 		IBaseROIHidden,
+		IBaseROIStaffing,
 		IBaseROIRow,
 		IBaseROISeries,
 	} from "@/features/base_roi/baseROI.types";
-	import type { PDataTableColumn } from "@/ui/ui.types";
+	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PDataTable, PPopover, PProgressBar, PTag } from "@/ui";
-	import { WarningAmberSharp } from "@vicons/material";
+	import {
+		PDataTable,
+		PInput,
+		PPopover,
+		PProgressBar,
+		PSelect,
+		PTag,
+		PTooltip,
+	} from "@/ui";
+	import { SearchSharp, WarningAmberSharp } from "@vicons/material";
 
 	const settings = defineModel<BaseROISettings>("settings", {
 		required: true,
 	});
+	/** filters the rows by industry, building or product, in the page */
+	const search = defineModel<string>("search", { required: true });
 
 	const {
 		rows,
@@ -53,6 +72,8 @@
 		planetRowsPending,
 		series,
 		historyFailed,
+		staffing,
+		populationFailed,
 		active = null,
 		tryOnPlanet,
 		cxUuid,
@@ -66,6 +87,9 @@
 		planetRowsPending: boolean;
 		series: IBaseROISeries | null;
 		historyFailed: boolean;
+		/** checked planet rows by key, empty until the reports are in */
+		staffing: Map<string, IBaseROIStaffing>;
+		populationFailed: boolean;
 		/** row key hovered in the chart */
 		active?: string | null;
 		tryOnPlanet: (row: IBaseROIRow, planet: string) => Promise<IBaseROIRow>;
@@ -78,6 +102,13 @@
 		get: () => settings.value.hiddenColumns,
 		set: (v) => (settings.value = { ...settings.value, hiddenColumns: v }),
 	});
+
+	const capacityOptions = computed<PSelectOption[]>(() =>
+		Array.from({ length: 11 }, (_, i) => ({
+			label: t("base_roi.settings.bases", { n: (i / 10).toFixed(1) }),
+			value: i / 10,
+		}))
+	);
 
 	const atExperts = computed(() =>
 		settings.value.experts === "ramp"
@@ -108,20 +139,32 @@
 		running_cost: by((r) => r.metrics.runningCost),
 		cargo: by((r) => r.metrics.cargo),
 		market_capacity: by((r) => r.metrics.marketCapacity),
+		plots: by((r) => planetPlots(r.plots)?.free ?? -1),
 	};
-	const left = ["expertise", "workforce", "history"];
-	// a fixed layout (the table scrolls in its box): every column its width
+	// a pinned Product column would leave a phone 54 px for the numbers
+	const wideQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(min-width: 640px)")
+			: null;
+	const isPhone: Ref<boolean> = ref(!(wideQuery?.matches ?? true));
+	const onMedia = (e: MediaQueryListEvent) => (isPhone.value = !e.matches);
+	wideQuery?.addEventListener("change", onMedia);
+	onBeforeUnmount(() => wideQuery?.removeEventListener("change", onMedia));
+
+	const left = ["expertise", "plots", "workforce", "history"];
+	// every column its width; wider than the page, the table scrolls sideways
 	const WIDTHS: Record<string, number> = {
-		product: 280,
-		expertise: 210,
+		product: 230,
+		expertise: 170,
 		daily_profit: 150,
-		break_even: 140,
+		break_even: 120,
 		weekly_return: 120,
-		building_cost: 140,
+		building_cost: 130,
 		running_cost: 170,
-		cargo: 110,
-		market_capacity: 140,
-		workforce: 170,
+		cargo: 120,
+		market_capacity: 130,
+		plots: 110,
+		workforce: 140,
 		history: 130,
 	};
 
@@ -129,12 +172,14 @@
 		{
 			key: "product",
 			title: t("base_roi.columns.product"),
+			titleTooltip: t("base_roi.tooltips.product"),
 			width: WIDTHS.product,
 		},
 		...BASE_ROI_COLUMNS.filter((c) => !hiddenColumns.value.includes(c)).map(
 			(c): Column => ({
 				key: c,
 				title: t(`base_roi.columns.${c}`),
+				titleTooltip: t(`base_roi.tooltips.${c}`),
 				align: left.includes(c) ? "left" : "right",
 				width: WIDTHS[c],
 				sorter: sorters[c],
@@ -146,10 +191,6 @@
 	// expand button + every column
 	const tableWidth = computed(() =>
 		columns.value.reduce((w, c) => w + WIDTHS[c.key], 48)
-	);
-
-	const maxProfit = computed(() =>
-		Math.max(0, ...rows.map((r) => r.metrics.dailyProfit))
 	);
 
 	const rowKey = (row: IBaseROIRow) => row.key;
@@ -183,6 +224,8 @@
 			hidden.maxJumps +
 			hidden.logistics +
 			hidden.marketCapacity +
+			hidden.noPlots +
+			hidden.unstaffed +
 			hidden.negative
 	);
 	const showSkeleton = computed(
@@ -211,8 +254,31 @@
 		`@ ${row.planetName ?? row.planetNaturalId} (${
 			row.jumps ?? t("base_roi.table.no_route")
 		})`;
+	// (I) or (O) next to cargo: the direction that moves more, by weight or volume
+	const cargoSide = (row: IBaseROIRow) =>
+		Math.max(row.weightIn, row.volumeIn) >
+		Math.max(row.weightOut, row.volumeOut)
+			? "input"
+			: "output";
+	// the product cell's tooltip: planet rows name their building too
+	const recipeText = (row: IBaseROIRow) =>
+		row.planetNaturalId
+			? `${row.building} · ${recipeLabel(row)}`
+			: recipeLabel(row);
 	const expertise = (row: IBaseROIRow) =>
 		row.expertise ? capitalizeString(row.expertise) : "—";
+	// under the workforce: why this planet can't staff the base
+	const staffingNotes = (row: IBaseROIRow): string[] => {
+		const s = staffing.get(row.key);
+		if (!s) return [];
+		if (!s.hasReport) return [t("base_roi.table.no_population")];
+		return s.gaps.map((g) =>
+			t("base_roi.table.workforce_free", {
+				free: formatNumber(g.available, 0),
+				tier: WORKFORCE_SHORT[g.tier],
+			})
+		);
+	};
 	const workforceText = (row: IBaseROIRow) =>
 		row.workforce
 			.map(
@@ -262,6 +328,28 @@
 								t("base_roi.table.hidden_market", {
 									n: formatNumber(hidden.marketCapacity, 0),
 								}),
+								...(settings.showUnbuildable
+									? []
+									: [
+											t(
+												"base_roi.table.hidden_no_plots",
+												{
+													n: formatNumber(
+														hidden.noPlots,
+														0
+													),
+												}
+											),
+											t(
+												"base_roi.table.hidden_unstaffed",
+												{
+													n: formatNumber(
+														hidden.unstaffed,
+														0
+													),
+												}
+											),
+										]),
 								...(settings.showNegative
 									? []
 									: [
@@ -278,6 +366,12 @@
 							].join(" · ")
 						}}
 					</span>
+				</p>
+				<p
+					v-if="populationFailed"
+					class="text-sm text-warning"
+					role="status">
+					{{ t("base_roi.table.population_failed") }}
 				</p>
 				<p
 					v-if="step === 'error'"
@@ -302,16 +396,43 @@
 						:total="progress.total" />
 				</div>
 			</div>
-			<BaseROIColumnsMenu v-model:hidden-columns="hiddenColumns" />
+		</div>
+		<div class="flex flex-row flex-wrap items-center gap-2">
+			<PInput
+				v-model:value="search"
+				class="w-full sm:w-96"
+				:aria-label="t('base_roi.table.search')"
+				:placeholder="t('base_roi.table.search')">
+				<template #prefix><SearchSharp class="w-4 h-4" /></template>
+			</PInput>
+			<label class="flex flex-row items-center gap-2">
+				<span class="text-sm text-muted whitespace-nowrap">
+					{{ t("base_roi.settings.min_market_capacity") }}
+				</span>
+				<PSelect
+					class="w-32"
+					:aria-label="t('base_roi.settings.min_market_capacity')"
+					:value="settings.minMarketCapacity"
+					:options="capacityOptions"
+					@update:value="
+						(v) =>
+							(settings = {
+								...settings,
+								minMarketCapacity: v as number,
+							})
+					" />
+			</label>
+			<BaseROIColumnsMenu
+				v-model:hidden-columns="hiddenColumns"
+				class="ml-auto" />
 		</div>
 
-		<!-- one box at its final size from the first paint, it scrolls inside -->
-		<div class="h-[70vh] min-h-96 flex flex-col">
+		<!-- part of the page: it grows with its rows, the page scrolls -->
+		<div class="flex flex-col">
 			<BaseROITableSkeleton v-if="showSkeleton" :titles="titles" />
 			<template v-else>
 				<PDataTable
 					v-model:expanded-row-keys="expanded"
-					:class="planetRowsPending ? 'shrink-0 max-h-[60%]' : ''"
 					:columns="columns"
 					:data="rows"
 					:row-key="rowKey"
@@ -326,12 +447,12 @@
 										.join(', ') || row.building,
 							})
 					"
-					fill
 					striped
-					sticky-first
+					:sticky-first="!isPhone"
 					dense
 					:min-width="tableWidth"
-					:page-size="50">
+					:page-size="50"
+					pagination-top>
 					<template #header-daily_profit>
 						<span class="flex flex-col leading-tight">
 							{{ t("base_roi.columns.daily_profit") }}
@@ -358,6 +479,7 @@
 							'running_cost',
 							'cargo',
 							'market_capacity',
+							'plots',
 							'workforce',
 						]"
 						:key="c"
@@ -365,11 +487,6 @@
 						<span class="whitespace-normal">{{
 							t(`base_roi.columns.${c}`)
 						}}</span>
-					</template>
-					<template #header-history>
-						<span :title="t('base_roi.table.history_tooltip')">
-							{{ t("base_roi.columns.history") }}
-						</span>
 					</template>
 
 					<template #cell-product="{ row }">
@@ -383,21 +500,47 @@
 							<div class="flex flex-col min-w-0 flex-1">
 								<span
 									class="flex flex-row items-center gap-1.5 whitespace-nowrap min-w-0">
-									<span
-										v-if="row.planetNaturalId"
-										class="font-bold truncate">
-										{{ planetLine(row) }}
-									</span>
-									<span v-else class="font-bold">{{
-										row.building
-									}}</span>
-									<PTag
-										v-if="row.kind !== 'recipe'"
-										size="sm"
-										:type="kindType[row.kind]"
-										:value="
-											t(`base_roi.table.${row.kind}`)
-										" />
+									<!-- the recipe on hover, not on the tiles (their market card) -->
+									<div class="min-w-0">
+										<PTooltip no-focus placement="top">
+											<template #trigger>
+												<span
+													class="flex flex-row items-center gap-1.5 min-w-0">
+													<span
+														v-if="
+															row.planetNaturalId
+														"
+														class="font-bold truncate">
+														{{ planetLine(row) }}
+													</span>
+													<span
+														v-else
+														class="font-bold">
+														{{ row.building }}
+													</span>
+													<PTag
+														v-if="
+															row.kind !==
+															'recipe'
+														"
+														size="sm"
+														:type="
+															kindType[row.kind]
+														"
+														:value="
+															t(
+																`base_roi.table.${row.kind}`
+															)
+														" />
+												</span>
+											</template>
+											<span
+												data-recipe
+												class="font-mono text-xs">
+												{{ recipeText(row) }}
+											</span>
+										</PTooltip>
+									</div>
 									<PPopover
 										v-if="row.metrics.scenarios.length"
 										placement="bottom-start">
@@ -469,13 +612,6 @@
 										</div>
 									</PPopover>
 								</span>
-								<span class="text-xs text-muted truncate">
-									{{
-										row.planetNaturalId
-											? `${row.building} · `
-											: ""
-									}}{{ recipeLabel(row) }}
-								</span>
 							</div>
 						</div>
 					</template>
@@ -488,14 +624,12 @@
 						</span>
 					</template>
 					<template #cell-daily_profit="{ row }">
-						<div class="flex items-center justify-end gap-2">
-							<PInlineBar
-								class="w-8 shrink-0"
-								tone="positive"
-								:value="Math.max(row.metrics.dailyProfit, 0)"
-								:max="maxProfit" />
+						<BaseROICellMath
+							:row="row"
+							column="daily_profit"
+							:settings="settings">
 							<span
-								class="font-mono whitespace-nowrap"
+								class="block text-right font-mono whitespace-nowrap"
 								:class="
 									row.metrics.dailyProfit > 0
 										? ''
@@ -503,83 +637,149 @@
 								">
 								{{ formatNumber(row.metrics.dailyProfit, 0) }}
 							</span>
-						</div>
+						</BaseROICellMath>
 					</template>
 					<template #cell-break_even="{ row }">
-						<span class="flex flex-col items-end leading-tight">
+						<BaseROICellMath
+							:row="row"
+							column="break_even"
+							:settings="settings">
 							<span class="font-bold font-mono">{{
 								days(row.metrics.breakEven)
 							}}</span>
-							<span
-								v-if="
-									settings.experts === 'ramp' &&
-									Number.isFinite(row.metrics.payback)
-								"
-								class="text-xs text-muted whitespace-nowrap">
-								{{
-									t("base_roi.table.at_five", {
-										days: days(row.metrics.payback),
-									})
-								}}
-							</span>
-						</span>
+						</BaseROICellMath>
 					</template>
 					<template #cell-weekly_return="{ row }">
-						<span class="font-mono whitespace-nowrap">
-							{{
-								formatPercent(row.metrics.weeklyReturn * 100, 1)
-							}}
-						</span>
+						<BaseROICellMath
+							:row="row"
+							column="weekly_return"
+							:settings="settings">
+							<span class="font-mono whitespace-nowrap">
+								{{
+									formatPercent(
+										row.metrics.weeklyReturn * 100,
+										1
+									)
+								}}
+							</span>
+						</BaseROICellMath>
 					</template>
 					<template #cell-building_cost="{ row }">
-						<span class="font-mono">{{
-							formatNumber(row.metrics.buildingCost, 0)
-						}}</span>
+						<BaseROICellMath
+							:row="row"
+							column="building_cost"
+							:settings="settings">
+							<span class="font-mono">{{
+								formatNumber(row.metrics.buildingCost, 0)
+							}}</span>
+						</BaseROICellMath>
 					</template>
 					<template #cell-running_cost="{ row }">
-						<span class="font-mono">{{
-							formatNumber(row.metrics.runningCost, 0)
-						}}</span>
+						<BaseROICellMath
+							:row="row"
+							column="running_cost"
+							:settings="settings">
+							<span class="font-mono">{{
+								formatNumber(row.metrics.runningCost, 0)
+							}}</span>
+						</BaseROICellMath>
 					</template>
 					<template #cell-cargo="{ row }">
-						<span
-							class="flex flex-col items-end leading-tight font-mono whitespace-nowrap">
+						<BaseROICellMath
+							:row="row"
+							column="cargo"
+							:settings="settings">
 							<span
-								>{{
-									formatNumber(
-										Math.max(row.weightIn, row.weightOut),
-										1
-									)
-								}}
-								t</span
-							>
-							<span class="text-xs text-muted">
-								{{
-									formatNumber(
-										Math.max(row.volumeIn, row.volumeOut),
-										1
-									)
-								}}
-								m³
+								class="flex flex-col items-end leading-tight font-mono whitespace-nowrap">
+								<span
+									>{{
+										formatNumber(
+											Math.max(
+												row.weightIn,
+												row.weightOut
+											),
+											1
+										)
+									}}
+									t
+									<abbr
+										class="text-xs text-muted no-underline"
+										:title="
+											t(
+												`base_roi.table.side_${cargoSide(row)}_title`
+											)
+										"
+										>({{
+											t(
+												`base_roi.table.side_${cargoSide(row)}`
+											)
+										}})</abbr
+									></span
+								>
+								<span class="text-xs text-muted">
+									{{
+										formatNumber(
+											Math.max(
+												row.volumeIn,
+												row.volumeOut
+											),
+											1
+										)
+									}}
+									m³
+								</span>
 							</span>
-						</span>
+						</BaseROICellMath>
 					</template>
 					<template #cell-market_capacity="{ row }">
-						<span
-							class="font-mono"
-							:class="
-								row.metrics.marketCapacity < 1
-									? 'text-warning'
-									: ''
-							">
-							{{ formatNumber(row.metrics.marketCapacity, 2) }}
-						</span>
+						<BaseROICellMath
+							:row="row"
+							column="market_capacity"
+							:settings="settings">
+							<span
+								class="font-mono"
+								:class="
+									row.metrics.marketCapacity < 1
+										? 'text-warning'
+										: ''
+								">
+								{{
+									formatNumber(row.metrics.marketCapacity, 2)
+								}}
+								<abbr
+									v-if="row.metrics.capacitySide"
+									class="text-xs text-muted no-underline"
+									:title="
+										t(
+											`base_roi.table.side_${row.metrics.capacitySide}_title`
+										)
+									"
+									>({{
+										t(
+											`base_roi.table.side_${row.metrics.capacitySide}`
+										)
+									}})</abbr
+								>
+							</span>
+						</BaseROICellMath>
+					</template>
+					<template #cell-plots="{ row }">
+						<PlanetPlots
+							v-if="row.planetNaturalId"
+							:planet="row.plots" />
+						<span v-else class="text-muted">—</span>
 					</template>
 					<template #cell-workforce="{ row }">
 						<span
 							class="block truncate text-xs"
 							:title="workforceText(row)">
 							{{ workforceText(row) }}
+						</span>
+						<span
+							v-if="staffingNotes(row).length"
+							class="block truncate text-xs text-warning"
+							:title="staffingNotes(row).join(' · ')">
+							{{ staffingNotes(row).join(" · ") }}
 						</span>
 					</template>
 					<template #cell-history="{ row }">
@@ -601,8 +801,8 @@
 
 					<template #expand="{ row }">
 						<BaseROIRowDetail
+							v-model:settings="settings"
 							:row="row"
-							:settings="settings"
 							:series="series"
 							:try-on-planet="tryOnPlanet"
 							:cx-uuid="cxUuid"
@@ -618,7 +818,6 @@
 				</PDataTable>
 				<BaseROITableSkeleton
 					v-if="planetRowsPending"
-					class="flex-1 min-h-0"
 					:titles="titles"
 					:header="false" />
 			</template>

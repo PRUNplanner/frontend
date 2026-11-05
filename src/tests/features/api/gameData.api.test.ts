@@ -8,6 +8,7 @@ import {
 	callDataBuildings,
 	callDataExchanges,
 	callDataMaterials,
+	callDataMultiplePOPR,
 	callDataMultiplePlanets,
 	callDataPlanet,
 	callDataRecipes,
@@ -290,5 +291,31 @@ describe("GameData API Calls", async () => {
 		expect(result.free_engineer).toBe(latest_popr.free_engineer);
 
 		expect(spyApiServiceGet).toHaveBeenCalled();
+	});
+
+	it("callDataMultiplePOPR", async () => {
+		const reports = [{ ...latest_popr, planet_natural_id: "OT-580b" }];
+		mock.onPost("/data/planets/popr/").reply(200, reports);
+
+		const [report] = await callDataMultiplePOPR(["OT-580b"]);
+
+		expect(report.planet_natural_id).toBe("OT-580b");
+		expect(report.free_engineer).toBe(latest_popr.free_engineer);
+	});
+
+	it("callDataMultiplePOPR: requests at most 200 ids at once", async () => {
+		const spyApiServicePost = vi
+			.spyOn(apiService, "post")
+			.mockResolvedValue([]);
+		spyApiServicePost.mockClear();
+		const ids = Array.from({ length: 201 }, (_, i) => `AB-${i}`);
+
+		await callDataMultiplePOPR(ids);
+
+		expect(spyApiServicePost.mock.calls.map((c) => c[1])).toStrictEqual([
+			ids.slice(0, 200),
+			ids.slice(200),
+		]);
+		spyApiServicePost.mockRestore();
 	});
 });

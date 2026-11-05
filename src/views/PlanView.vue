@@ -98,9 +98,11 @@
 		PModal,
 		PSegmented,
 		PSelect,
+		PTooltip,
 		PValue,
 	} from "@/ui";
 	import {
+		ChangeCircleOutlined,
 		ChevronLeftSharp,
 		ChevronRightSharp,
 		CloseSharp,
@@ -255,6 +257,7 @@
 	const {
 		refIsSaving,
 		refSaveFailed,
+		refFailedName,
 		canSave,
 		save,
 		refShowSaveAsModal,
@@ -265,6 +268,7 @@
 		saveAs,
 		openSaveAsModal,
 		discardChanges,
+		reloadPlan,
 		applySavedPlan,
 		activateVersion,
 		conflict,
@@ -449,6 +453,7 @@
 		saveable: saveable.value,
 		saving: refIsSaving.value,
 		failed: refSaveFailed.value,
+		failedName: refFailedName.value,
 		modified: modified.value,
 		canUndo: canUndo.value,
 		canRedo: canRedo.value,
@@ -467,7 +472,7 @@
 		redo: () => trackedRedo("button"),
 		save: (name: string) => save("button", name),
 		"save-as-copy": openSaveAsModal,
-		discard: () => discardChanges("menu"),
+		discard: discardChanges,
 		"retry-draft": retryDraft,
 		preview: async (versionUuid: string) => {
 			await flushDraft();
@@ -686,6 +691,18 @@
 					v-bind="saveControl"
 					:part="refIsPhone ? 'history' : 'all'"
 					v-on="saveControlEvents" />
+				<PTooltip v-if="isOwnPlan && existing" placement="bottom">
+					<template #trigger>
+						<PButton
+							type="secondary"
+							class="pointer-coarse:h-11 pointer-coarse:min-w-11"
+							:aria-label="t('plan.actions.reload')"
+							@click="reloadPlan">
+							<template #icon><ChangeCircleOutlined /></template>
+						</PButton>
+					</template>
+					{{ t("plan.actions.reload") }}
+				</PTooltip>
 				<template v-if="isOwnPlan && refPlanData.uuid">
 					<PButton type="secondary" @click="refShowShare = true">
 						{{ t("plan.actions.share_link") }}

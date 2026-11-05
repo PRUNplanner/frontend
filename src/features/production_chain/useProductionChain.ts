@@ -20,10 +20,12 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 import { useCXData } from "@/features/cx/useCXData";
 import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 import { useChainPlans } from "@/features/production_chain/useChainPlans";
-import { remoteChange } from "@/lib/crossTab";
+import { usePathfinder } from "@/features/pathfinding/usePathfinder";
+import { remoteChange, tokenUserId } from "@/lib/crossTab";
 import { isSubset } from "@/lib/query_cache/cacheKeys";
 import { batchChanges } from "@/lib/query_cache/queries/planning.queries";
-import { readStorage, writeStorage } from "@/lib/storage";
+import { readStorage, userStorageKey, writeStorage } from "@/lib/storage";
+import { useUserStore } from "@/stores/userStore";
 
 // Engine
 import {
@@ -40,10 +42,14 @@ import {
 	withHave,
 	type IChainHaveSupply,
 } from "@/features/production_chain/engine/chainHave";
+import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
 import {
-	BASE_IDS,
-	splitByExpertise,
-} from "@/features/production_chain/engine/chainBases";
+	autoLayout as layoutChain,
+	fitBases as fitChain,
+	mergeBases,
+	separateBase,
+	type IChainLayoutOptions,
+} from "@/features/production_chain/engine/chainAutoLayout";
 import {
 	decodeChain,
 	DEFAULT_EFFICIENCY,
@@ -69,6 +75,7 @@ import type {
 	IChainHaveOverride,
 } from "@/features/production_chain/productionChain.types";
 import type {
+	ChainBaseShare,
 	ChainHave,
 	ChainSource,
 	IChainBase,
@@ -85,10 +92,18 @@ const RESOURCES: ReadonlySet<string> = new Set(
 	RESOURCE_MATERIAL_OPTIONS.map((o) => o.value)
 );
 
+/** The user's last chain is kept per user: the next user of the browser never sees it */
+function storageKey(): string | undefined {
+	const id = tokenUserId(useUserStore().refreshToken);
+	return id === undefined ? undefined : userStorageKey(STORAGE_KEY, id);
+}
+
 function readStored(): IChainState | null {
+	const key = storageKey();
+	if (!key) return null;
 	try {
 		const parsed = ChainStorageSchema.safeParse(
-			JSON.parse(readStorage(STORAGE_KEY) ?? "null")
+			JSON.parse(readStorage(key) ?? "null")
 		);
 		return parsed.success ? decodeChain(parsed.data) : null;
 	} catch {
@@ -99,8 +114,10 @@ function readStored(): IChainState | null {
 
 /** blocked or full storage: the URL still holds the chain */
 function writeStored(state: IChainState): void {
+	const key = storageKey();
+	if (!key) return;
 	writeStorage(
-		STORAGE_KEY,
+		key,
 		state.input.targets.length ? JSON.stringify(encodeChain(state)) : null
 	);
 }
@@ -130,6 +147,7 @@ export function useProductionChain() {
 	const router = useRouter();
 	const { getGameData, createPrices } = usePlanContext();
 	const { getExchangeTickerLoaded } = useExchangeData();
+	const { getJumpsFrom } = usePathfinder();
 
 	const initial = decodeChain(route.query) ?? readStored();
 	// a CX from a link only counts when it is one of the viewer's
@@ -355,7 +373,7 @@ export function useProductionChain() {
 
 	function setBases(
 		bases: IChainBase[],
-		baseOf: Record<string, string>
+		baseOf: Record<string, ChainBaseShare>
 	): void {
 		input.value = { ...input.value, bases, baseOf };
 	}
@@ -374,26 +392,37 @@ export function useProductionChain() {
 		return id;
 	}
 
-	/** its steps move to the first base */
+	/** its pieces move to the first base, or to the step's other bases */
 	function removeBase(id: string): void {
 		const bases = input.value.bases.filter((b) => b.id !== id);
 		if (!bases.length) return;
-		setBases(
-			bases,
-			Object.fromEntries(
-				Object.entries(input.value.baseOf).filter(([, b]) => b !== id)
-			)
-		);
+		const baseOf: Record<string, ChainBaseShare> = {};
+		for (const [t, share] of Object.entries(input.value.baseOf)) {
+			const rest = Object.entries(share).filter(([b]) => b !== id);
+			if (rest.length) baseOf[t] = Object.fromEntries(rest);
+		}
+		setBases(bases, baseOf);
 		track("base_remove");
 	}
 
-	/** moves a step to a base, "new" to a new one */
-	function moveTo(ticker: string, id: string): void {
+	/**
+	 * moves a step to a base, "new" to a new one; with from, only the
+	 * piece in that base
+	 */
+	function moveTo(ticker: string, id: string, from?: string): void {
 		const target = id === "new" ? addBase() : id;
 		if (!target) return;
+		const own = input.value.baseOf[ticker];
+		let share: ChainBaseShare = { [target]: 1 };
+		if (from && own && Object.keys(own).length > 1 && own[from]) {
+			share = { ...own };
+			share[target] = (share[target] ?? 0) + share[from];
+			delete share[from];
+			if (Object.keys(share).length === 1) share = { [target]: 1 };
+		}
 		setBases(input.value.bases, {
 			...input.value.baseOf,
-			[ticker]: target,
+			[ticker]: share,
 		});
 		track("base_move");
 	}
@@ -414,22 +443,80 @@ export function useProductionChain() {
 		if ("experts" in patch) track("base_experts");
 	}
 
-	/** bases by building expertise; planets are not picked */
-	function split(nameOf: (expertise: string | null) => string): void {
-		const { expertise, baseOf } = splitByExpertise(
+	/** jumps, own bases and the picked empire, for picking planets */
+	async function layoutOptions(
+		nameOf: (expertise: string | null) => string
+	): Promise<IChainLayoutOptions> {
+		await loadIndex();
+		let ownBases = new Set<string>();
+		try {
+			const plans = await useQuery("GetAllPlans").execute();
+			ownBases = new Set(plans.map((p) => p.planet_natural_id));
+		} catch {
+			// without the plan list every free planet counts
+		}
+		return {
+			nameOf,
+			jumps: (a, b) => getJumpsFrom(a).get(b) ?? null,
+			ownBases,
+			empireSystems: ownLoaded.value
+				? [...ownPlanets.value.values()].map((p) => p.system_id)
+				: [],
+		};
+	}
+
+	/** bases a player could build, with planets; the count of bases */
+	async function autoLayout(
+		nameOf: (expertise: string | null) => string
+	): Promise<number> {
+		const opts = await layoutOptions(nameOf);
+		input.value = layoutChain(input.value, ctx.value, opts);
+		track("auto_layout");
+		return input.value.bases.length;
+	}
+
+	/** all pieces of a base join another; false when nothing changed */
+	function merge(from: string, into: string): boolean {
+		const next = mergeBases(result.value, input.value, from, into);
+		if (next === input.value) return false;
+		input.value = next;
+		track("merge_bases");
+		return true;
+	}
+
+	/** a base split by expertise or in half; false when it can't be */
+	async function separate(
+		id: string,
+		nameOf: (expertise: string | null) => string
+	): Promise<boolean> {
+		const opts = await layoutOptions(nameOf);
+		const next = separateBase(
 			result.value,
+			input.value,
 			ctx.value,
-			input.value.efficiency
+			id,
+			opts
 		);
-		setBases(
-			expertise.map((e, i) => ({
-				...firstBase(),
-				id: BASE_IDS[i],
-				name: nameOf(e),
-			})),
-			baseOf
-		);
-		track("split");
+		if (!next) return false;
+		input.value = next;
+		track("separate_base");
+		return true;
+	}
+
+	/**
+	 * the largest rate that fits into n bases, then laid out; false when
+	 * even the smallest rate doesn't
+	 */
+	async function fitBases(
+		n: number,
+		nameOf: (expertise: string | null) => string
+	): Promise<boolean> {
+		const fitted = fitChain(input.value, ctx.value, n);
+		if (!fitted) return false;
+		const opts = await layoutOptions(nameOf);
+		input.value = layoutChain(fitted, ctx.value, opts);
+		track("fit_bases");
+		return true;
 	}
 
 	let ownRun = 0;
@@ -632,7 +719,10 @@ export function useProductionChain() {
 		removeBase,
 		moveTo,
 		updateBase,
-		split,
+		autoLayout,
+		merge,
+		separate,
+		fitBases,
 		created,
 		createPlans,
 		recipeOptions,

@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import EmpireMaterialIOFilters from "@/features/empire/components/EmpireMaterialIOFilters.vue";
-import PButton from "@/ui/components/PButton.vue";
 import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
@@ -35,16 +34,16 @@ async function mountFilters(props: Record<string, unknown> = {}) {
 }
 
 const button = (wrapper: VueWrapper, label: string) => {
-	const found = wrapper
-		.findAllComponents(PButton)
-		.find((b) => b.text() === label);
+	const found = wrapper.findAll("button").find((b) => b.text() === label);
 	expect(found).toBeDefined();
 	return found!;
 };
 
 /** button type per label, the active option is the primary one */
 const types = (wrapper: VueWrapper, ...labels: string[]) =>
-	labels.map((label) => button(wrapper, label).props("pressed"));
+	labels.map(
+		(label) => button(wrapper, label).attributes("aria-pressed") === "true"
+	);
 
 async function click(wrapper: VueWrapper, label: string) {
 	await button(wrapper, label).trigger("click");
@@ -115,9 +114,12 @@ describe("EmpireMaterialIOFilters", () => {
 		const { wrapper } = await mountFilters();
 
 		expect(wrapper.text()).not.toContain("empire.material_io.planets");
-		expect(wrapper.findAllComponents(PButton).map((b) => b.text())).toEqual(
-			[ALL, LOADBALANCE, SHOW, HIDE]
-		);
+		expect(wrapper.findAll("button").map((b) => b.text())).toEqual([
+			ALL,
+			LOADBALANCE,
+			SHOW,
+			HIDE,
+		]);
 	});
 
 	it("marks summary or expand all", async () => {

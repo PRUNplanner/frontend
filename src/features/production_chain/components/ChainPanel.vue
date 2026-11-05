@@ -14,6 +14,7 @@
 		chainCsv,
 		NO_OWN,
 	} from "@/features/production_chain/productionChain.util";
+	import { downloadFile } from "@/util/download";
 
 	// Types & Interfaces
 	import type {
@@ -59,7 +60,7 @@
 		(e: "planet", ticker: string): void;
 		(e: "buyAll", tickers: string[]): void;
 		(e: "track", action: ProductionChainAction): void;
-		(e: "base", ticker: string, id: string): void;
+		(e: "base", ticker: string, id: string, from?: string): void;
 		(e: "have", ticker: string, value: ChainHave | "off" | undefined): void;
 	}>();
 
@@ -136,12 +137,7 @@
 			(s) => t(`production_chains.table.${s}`),
 			t("production_chains.table.nothing")
 		);
-		const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = "production-chain.csv";
-		a.click();
-		URL.revokeObjectURL(url);
+		downloadFile("production-chain.csv", csv, "text/csv");
 		emit("track", "csv");
 	}
 </script>
@@ -296,7 +292,7 @@
 			@planet="(ticker) => emit('planet', ticker)"
 			@buy-all="buyAll"
 			@clear-filter="filter = null"
-			@base="(ticker, id) => emit('base', ticker, id)"
+			@base="(ticker, id, from) => emit('base', ticker, id, from)"
 			@have="(ticker, v) => emit('have', ticker, v)" />
 		<slot v-else-if="view === 'bases'" name="bases" />
 		<ChainGraph

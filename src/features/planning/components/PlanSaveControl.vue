@@ -45,6 +45,8 @@
 			saveable: boolean;
 			saving: boolean;
 			failed: boolean;
+			/** version name of the failed save, sent again by Retry */
+			failedName?: string;
 			modified: boolean;
 			canUndo: boolean;
 			canRedo: boolean;
@@ -59,7 +61,7 @@
 			preview: PlanVersionListItem | null;
 			phone?: boolean;
 		}>(),
-		{ part: "all", phone: false }
+		{ part: "all", phone: false, failedName: "" }
 	);
 
 	const emit = defineEmits<{
@@ -287,7 +289,7 @@
 					:loading="saving"
 					:disabled="!saveable || saving"
 					data-save
-					@click="emit('save', '')">
+					@click="emit('save', failed ? failedName : '')">
 					<template #icon>
 						<ErrorOutlineSharp v-if="failed" />
 						<SaveSharp v-else />

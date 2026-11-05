@@ -199,6 +199,13 @@ describe("useCXImportExport", () => {
 			expect(csv).toContain("EMPIRE;SELL;;MAT;100");
 			expect(csv).toContain("Montem;SELL;AI1_30D;;");
 			expect(csv).toContain("Montem;BUY;;H2O;50");
+			expect(csv).toMatchInlineSnapshot(`
+				"Location;Type;CX;Ticker;Price
+				EMPIRE;BUY;AI1_30D;;
+				Montem;SELL;AI1_30D;;
+				EMPIRE;SELL;;MAT;100
+				Montem;BUY;;H2O;50"
+			`);
 		});
 	});
 });

@@ -1,28 +1,25 @@
 # profile
 
-**Purpose.** This folder holds the sections of the profile page
-(`/profile`).
+**Purpose.** The sections of the profile page (`/profile`).
 
-**Used by.** `views/ProfileView.vue`, which stacks the sections in this
-order: FIO connection (`#fio`, linked from the repair analysis and FIO
-Burn), Account, Preferences, Browser storage.
+**Used by.** `views/ProfileView.vue`: FIO connection (`#fio`, linked from
+repair analysis and FIO Burn), Account, Preferences, Browser storage.
 
 ## Key files
 
 | Component | Does |
 | --- | --- |
-| `ProfileSection.vue` | Layout of one section: title and description on the left, content on the right (stacked on small screens) |
-| `FIOConnection.vue` | FIO status, PrUn username and API key (masked): `PatchUserProfile` with the stored email, then `userStore.performGetProfile()`. The backend checks changed FIO credentials and answers 400 with a code per field (`fio_required`, `fio_invalid_key`, `fio_username_mismatch`), shown under the field; the status line reads `userStore.fioStatus` (the same state drives the nav FIO tag). The setup guide is collapsed unless FIO isn't linked yet |
-| `FIOInformation.vue` | The FIO setup guide inside `FIOConnection` (static, i18n `profile.fio_information.*`) |
-| `ProfileEmail.vue` | Email and the account recovery status (Not set up, Waiting for confirmation with Enter code / Send new code, Ready): `PatchUserProfile` with `{email}` only. `email_taken` shows under the field; a changed address shows a "code sent" notice. Enter code opens `EmailAddDialog` at the code step |
+| `ProfileSection.vue` | Section layout: title/description left, content right |
+| `FIOConnection.vue` | FIO username and API key via `PatchUserProfile`, then `userStore.performGetProfile()`. Backend 400 codes per field (`fio_required`, `fio_invalid_key`, `fio_username_mismatch`) show under the field; status from `userStore.fioStatus` (also drives the nav FIO tag). Embeds the setup guide `FIOInformation.vue`, collapsed once linked |
+| `ProfileEmail.vue` | Email and recovery status; `PatchUserProfile` with `{email}` only, `email_taken` under the field; "Enter code" opens `account`'s `EmailAddDialog` at the code step |
 | `ChangePassword.vue` | Collapsed form, `PatchUserChangePassword` |
-| `UserPreferences.vue` | Edits global preferences through `usePreferences` (saved as they change), grouped into tool, FIO Burn, FIO Repair, planning and privacy; lists the plans with their own settings |
-| `StorageData.vue` | Diagnostics, collapsed: IndexedDB store statistics and the size of `planningStore` |
+| `UserPreferences.vue` | Global preferences via `usePreferences` (saved on change) and the list of plans with own settings |
+| `StorageData.vue` | Collapsed diagnostics: IndexedDB stats, `planningStore` size |
 
-Save buttons are `secondary` until their form has an unsaved change, then
-`primary`, so the page shows at most the primary actions the user started.
+Save buttons stay `secondary` until their form has an unsaved change, then
+turn `primary`.
 
 ## Tests
 
-`src/tests/features/profile/components/` (component tests). Preferences
-logic is covered in `src/tests/features/preferences/`.
+`src/tests/features/profile/components/`; preference logic in
+`src/tests/features/preferences/`.

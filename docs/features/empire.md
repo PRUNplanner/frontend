@@ -1,96 +1,49 @@
 # empire
 
-**Purpose.** This folder holds the components for the empire dashboard
-(`/empire/:empireUuid?`). They aggregate every plan in an empire into a cost
-overview, a plan list, material I/O and production opportunities.
+**Purpose.** The empire dashboard (`/empire/:empireUuid?`): every plan of an
+empire aggregated into cost overview, plan list, analysis charts, material
+I/O and production opportunities.
 
-**Used by.** `views/EmpireView.vue`. The calculation loop is in the view
-itself. See [../planning-engine.md](../planning-engine.md#empires).
+**Used by.** `views/EmpireView.vue`; `useEmpireCalculation` also by
+`views/fio/FIOBurnView.vue`; `useEmpireProfits` by `PlanView` and
+`MobileNavBar`. See [../planning-engine.md](../planning-engine.md#empires).
 
 ## Key files
 
-**Components (`components/`):**
-
-| Component | Shows |
-| --- | --- |
-| `EmpireCostOverview` | Totals across the empire, a revenue split bar (inputs, workforce, degradation, profit) and daily shipping demand (t, m³) |
-| `EmpirePlanList` | Plan list with per-plan results and profit bars on a shared zero line |
-| `EmpireConfiguration` | Faction and permits of an empire, with the permit mismatch hint |
-| `EmpireConfigurationForm` | The name, faction and permit fields, shared by the two above and below |
-| `EmpireOnboarding` | Welcome card shown instead of the dashboard while the selected empire has 0 plans |
-| `EmpireEmpty` | "No empires" state: creates one with the signup defaults and the first CX |
-| `EmpireMaterialIOFiltered` | Material I/O with filters. Hosts the sub-views below. Runs the market check on the empire's net flow (`cx/marketCheck.util`, one price book for the empire's CX without a planet) and filters by its flag chips |
-| `EmpireMaterialIO` | Material I/O table: one line per material, a row expands to its planets. Owns the detail view choice and the open rows ("Expand all" opens every visible row, closing one switches back to "Summary"). Shows a market flag button after a flagged material, with each plan's own share |
-| `EmpireMaterialIOSummaryCell` | "Produced by" / "Consumed by" cell: largest plan, `+N` and a bar with one segment per plan, filled against the row's larger side |
-| `EmpireMaterialIODetail` | Expanded row: "Producers · Consumers" (every plan) or "Net per planet" (surplus, balanced, needs), linking to the plans |
-| `EmpireMaterialIOFilters` | The filter controls, plus "Planets: Summary \| Expand all" on the Material I/O table (session only) |
-| `EmpireAnalysis` | `EmpireRevenueSplit` and `EmpireMaterialButterfly` on top; the older sorted bar charts (`ui/charts/EmpireBarChart.vue`) in a collapsed "More charts" section, its open state kept in localStorage |
-| `EmpireRevenueSplit` | Where each plan's revenue goes: top 10 plans by profit, every loss-making plan, the rest as an inline-expandable "Other" |
-| `EmpireMaterialButterfly` | Top 10 materials by ¢ per day, bought left and sold right (or units per day); a row opens Material I/O filtered to it |
-| `EmpireOpportunities` | Production opportunities |
-
-**Composables and types:**
-- `useEmpireForm(data)` keeps an editable copy of an empire's configuration
-  and saves it with `PatchEmpire`, sending the version it started from. A
-  save over a newer version opens the save conflict dialog
-  (`conflict`, see [save_conflict](save_conflict.md); the lists come from
-  `empireDiff.ts`, `diffEmpire`), a deleted empire sets `remoteNotice`; a
-  newer empire from another tab replaces a clean form, or sets
-  `remoteNotice` if it has edits. `empire.constants.ts` holds the
-  `factionOptions` of its form.
-- `empire.util.ts`: `planResultCacheKey(plan, empire, cx)`, the cache key
-  of an empire-context plan result (`EmpireView`, `useFIORepair`).
-- `useEmpireProfits()`: the plan profits (and profit per area) `EmpireView`
-  last calculated, per empire, for views that never calculate them: the
-  phone plans sheet (`MobileNavBar`) and the plan page's results bar. They
-  count only while the empire's `GetEmpirePlans` entry is cached, so a save
-  drops them.
-- `useProductionOpportunities(empireIO, cxUuid)` works out which recipes
-  could use the empire's surplus materials. It prices them with
-  `usePrice(...).getPrice(…, "SELL")` and loads its data on mount.
-- `util/empireMaterialIO.util.ts` has the pure helpers behind the table:
-  `summarizeSide` (a side sorted by amount, with shares and bar fill),
-  `netPerPlanet` (net per planet, balanced when it rounds to 0.00) and
-  `shortPlanetName`.
-- `util/empireShippingDemand.util.ts`: `calculateEmpireShippingDemand` sums
-  each plan's `calculateVisitation` (its max(import, export) per plan, plus
-  the import and export totals) for the overview's shipping tiles.
-- `empireAnalysis.util.ts`: `revenueSplitRows` (top, losses, rest summed
-  into Other), `splitShares` (parts as % of revenue, or of cost for a loss),
-  `empireSplitParts` (the KPI split on the netted empire totals) and
-  `materialButterfly`. The per-plan parts come from `profitBreakdown` on
-  each plan's engine result in `EmpireView`.
-- `empire.types.ts` holds the frontend-only `IEmpireCostOverview`,
-  `IEmpireShippingDemand`, `IEmpireMaterialIO`, `IEmpirePlanListData` (with
-  its revenue split, `IEmpireSplitParts`) and the analysis shapes
-  (`IEmpireSplitShares`, `IEmpireRevenueSplitRows`, `IEmpireButterflyRow`).
-  The wire shapes (`PlanEmpireElement`, `EmpirePayload` for create/patch,
-  `EmpireMaterialIOState`) are schema-derived in
-  `src/features/api/schemas/empireData.schemas.ts`.
-
-## Data
-
-- `EmpireView` loads data through `WrapperPlanningDataLoader`
-  (`empire-list`, `empire-uuid`) and `WrapperGameDataLoader`.
-- After calculating, the aggregated material I/O goes back to the backend
-  through `PatchEmpireState`.
+- `useEmpireCalculation.ts`: calculates every plan with its empire and CX,
+  one at a time with yields; results cached by `planResultCacheKey`
+  (`empire.util.ts`, also used by `useFIORepair`).
+- `useEmpireProfits.ts`: the profits `EmpireView` last calculated, for views
+  that don't calculate (phone plans sheet, plan results bar). Valid only
+  while the empire's `GetEmpirePlans` entry is cached, so a save drops them.
+- `useEmpireForm.ts`: edits an empire's configuration, saved with
+  `PatchEmpire` and its base version; conflicts per
+  [save_conflict](save_conflict.md) (diff in `empireDiff.ts`).
+- `useProductionOpportunities.ts`: recipes that could use the empire's
+  surplus, priced at SELL.
+- `empireAnalysis.util.ts` (revenue split, butterfly), `util/` (Material I/O
+  and shipping demand helpers), `empire.types.ts` (frontend-only shapes; wire
+  shapes in `api/schemas/empireData.schemas.ts`), `empire.constants.ts`.
+- `components/`: `EmpireCostOverview`, `EmpirePlanList`,
+  `EmpireConfiguration(Form)`, `EmpireOnboarding` (0 plans), `EmpireEmpty`
+  (no empires), `EmpireAnalysis` (+ `EmpireRevenueSplit`,
+  `EmpireMaterialButterfly`), `EmpireOpportunities`, and `EmpireMaterialIO*`
+  (`Filtered` runs the market check on the empire's net flow with one price
+  book for the empire's CX and no planet).
 
 ## Gotchas
 
-- The empire's results depend on both the empire and the CX. See the note in
-  planning-engine.md about cache keys.
-- Components use `defineAsyncComponent`, so keep heavy additions lazy.
-- `EmpireView` checks the onboarding case (`planData` empty) before the
-  calculation progress, so the card stays mounted while a save recalculates.
-- `useEmpireCalculation` runs the calculation (shared with FIO Burn); only
-  its latest run writes: each run uses the plans, empire, CX and empire
-  list it started with, and an older run stops at its next yield (no results, progress or `PatchEmpireState`). The results keep
-  the plan list they were calculated from, so a refresh that changed the
-  plans never mixes old results with new plans.
+- Results depend on empire and CX (cache keys, see planning-engine.md).
+- Only the latest calculation run writes: each run uses the plans, empire,
+  CX and empire list it started with; an older run stops at its next yield
+  (no results, progress or `PatchEmpireState`). Results keep the plan list
+  they came from, so a refresh never mixes old results with new plans.
+- After calculating, `EmpireView` sends the aggregated material I/O with
+  `PatchEmpireState`.
+- `EmpireView` checks onboarding (no plans) before the calculation progress,
+  so the card stays mounted while a save recalculates.
+- Heavy components use `defineAsyncComponent`; keep additions lazy.
 
 ## Tests
 
-`src/tests/features/empire/useProductionOpportunities.test.ts`,
-`useEmpireForm.test.ts`, `useEmpireProfits.test.ts`, `empireDiff.test.ts`,
-`empire.util.test.ts`, `empireAnalysis.util.test.ts`, `util/`, component
-tests in `components/`, and `src/tests/views/EmpireView.test.ts`.
+`src/tests/features/empire/` and `src/tests/views/EmpireView.test.ts`.

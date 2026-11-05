@@ -1,12 +1,15 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import BaseROITable from "@/features/base_roi/components/BaseROITable.vue";
 import BaseROITableSkeleton from "@/features/base_roi/components/BaseROITableSkeleton.vue";
 import PSparkline from "@/ui/charts/PSparkline.vue";
+import PInput from "@/ui/components/PInput.vue";
+import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
+import { recipeLabel } from "@/features/base_roi/baseROIDetail.util";
 
 // Types & Interfaces
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
@@ -33,28 +36,39 @@ const HIDDEN = {
 	maxJumps: 5177,
 	logistics: 293,
 	marketCapacity: 181,
+	noPlots: 0,
+	unstaffed: 0,
 	negative: 287,
 };
 
 async function mountTable(props: Record<string, unknown> = {}) {
-	const { wrapper } = await mountComponent(BaseROITable, {
-		settings: defaultBaseROISettings(),
-		rows,
-		hidden: HIDDEN,
-		step: "done",
-		progress: { current: 0, total: 0 },
-		firstLoad: false,
-		planetRowsPending: false,
-		series: null,
-		historyFailed: false,
-		tryOnPlanet: vi.fn(),
-		...props,
-	});
+	const { wrapper } = await mountComponent(
+		BaseROITable,
+		{
+			settings: defaultBaseROISettings(),
+			rows,
+			hidden: HIDDEN,
+			step: "done",
+			progress: { current: 0, total: 0 },
+			firstLoad: false,
+			planetRowsPending: false,
+			series: null,
+			historyFailed: false,
+			staffing: new Map(),
+			populationFailed: false,
+			tryOnPlanet: vi.fn(),
+			search: "",
+			...props,
+		},
+		{ attach: true }
+	);
 	await flushPromises();
 	return wrapper;
 }
 
 describe("BaseROITable", () => {
+	afterEach(() => (document.body.innerHTML = ""));
+
 	it("shows every row and the hidden count per limit (criterion 10)", async () => {
 		const wrapper = await mountTable();
 		expect(wrapper.findAll("tbody tr[data-row-key]")).toHaveLength(
@@ -76,6 +90,45 @@ describe("BaseROITable", () => {
 			settings: { ...defaultBaseROISettings(), showNegative: true },
 		});
 		expect(wrapper.text()).not.toContain("base_roi.table.hidden_negative");
+	});
+
+	it("pins the Product column, except on a phone", async () => {
+		const pinned = await mountTable();
+		expect(pinned.find(".p-data-table-sticky").exists()).toBe(true);
+
+		vi.stubGlobal("matchMedia", () => ({
+			matches: false,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		}));
+		const phone = await mountTable();
+		expect(phone.find(".p-data-table-sticky").exists()).toBe(false);
+		vi.unstubAllGlobals();
+	});
+
+	it("notes a planet's missing workers and counts the rows they hide", async () => {
+		const [short, none] = rows;
+		const wrapper = await mountTable({
+			hidden: { ...HIDDEN, unstaffed: 12 },
+			staffing: new Map([
+				[
+					short.key,
+					{
+						hasReport: true,
+						gaps: [
+							{ tier: "pioneer", required: 1100, available: 3 },
+						],
+					},
+				],
+				[none.key, { hasReport: false, gaps: [] }],
+			]),
+		});
+		expect(wrapper.text()).toContain("base_roi.table.workforce_free");
+		expect(wrapper.text()).toContain("base_roi.table.no_population");
+		expect(wrapper.text()).toContain("base_roi.table.hidden_unstaffed");
+
+		const failed = await mountTable({ populationFailed: true });
+		expect(failed.text()).toContain("base_roi.table.population_failed");
 	});
 
 	it("has no percentile numbers or tints (criterion 12)", async () => {
@@ -130,6 +183,9 @@ describe("BaseROITable", () => {
 
 		const loaded = await mountTable({ series: { AI1: {} } });
 		expect(loaded.findAllComponents(PSparkline)).toHaveLength(rows.length);
+		// the pocket chart keeps 30 days, whatever the history holds
+		for (const spark of loaded.findAllComponents(PSparkline))
+			expect(spark.props("points")).toHaveLength(30);
 
 		const failed = await mountTable({ historyFailed: true });
 		expect(failed.findAllComponents(PSparkline)).toHaveLength(0);
@@ -220,6 +276,131 @@ describe("BaseROITable", () => {
 		});
 		expect(wrapper.text()).not.toContain("base_roi.table.from_zero");
 		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
+	});
+
+	it("the recipe is a tooltip on the product name, not a line, not on the tiles", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => r.planetNaturalId) ?? rows[0];
+		const recipe = recipeLabel(row);
+		const cell = wrapper.find(
+			`tr[data-row-key="${row.key}"] td[data-col-key="product"]`
+		);
+		expect(cell.text()).not.toContain(recipe);
+		// the tiles keep their own market card: outside the trigger
+		const trigger = cell.find(".ptooltip");
+		expect(trigger.findComponent({ name: "MaterialTile" }).exists()).toBe(
+			false
+		);
+		expect(trigger.attributes("tabindex")).toBeUndefined();
+		await trigger.trigger("mouseenter");
+		await flushPromises();
+		const tip = document.body.querySelector("[data-recipe]")!;
+		expect(tip.textContent).toContain(recipe);
+		if (row.planetNaturalId)
+			expect(tip.textContent).toContain(`${row.building} · `);
+	});
+
+	it("a recipe row's tooltip is its recipe alone", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => !r.planetNaturalId)!;
+		const cell = wrapper.find(
+			`tr[data-row-key="${row.key}"] td[data-col-key="product"] .ptooltip`
+		);
+		await cell.trigger("mouseenter");
+		await flushPromises();
+		expect(
+			document.body.querySelector("[data-recipe]")!.textContent!.trim()
+		).toBe(recipeLabel(row));
+	});
+
+	it("(I) or (O) next to market capacity and cargo", async () => {
+		const wrapper = await mountTable();
+		const row = rows.find((r) => r.metrics.capacitySide)!;
+		const tr = wrapper.find(`tr[data-row-key="${row.key}"]`);
+		const capacity = tr.find('td[data-col-key="market_capacity"] abbr');
+		expect(capacity.text()).toBe(
+			`(base_roi.table.side_${row.metrics.capacitySide})`
+		);
+		const cargo = tr.find('td[data-col-key="cargo"] abbr');
+		const side =
+			Math.max(row.weightIn, row.volumeIn) >
+			Math.max(row.weightOut, row.volumeOut)
+				? "input"
+				: "output";
+		expect(cargo.text()).toBe(`(base_roi.table.side_${side})`);
+		expect(cargo.attributes("title")).toBe(
+			`base_roi.table.side_${side}_title`
+		);
+	});
+
+	it("ramp: one break-even number, no payback line under it", async () => {
+		const wrapper = await mountTable();
+		expect(wrapper.text()).not.toContain("base_roi.table.at_five");
+	});
+
+	it("above the table: the search and the min market capacity", async () => {
+		const searches: string[] = [];
+		const updates: { minMarketCapacity: number }[] = [];
+		const wrapper = await mountTable({
+			"onUpdate:search": (v: string) => searches.push(v),
+			"onUpdate:settings": (v: { minMarketCapacity: number }) =>
+				updates.push(v),
+		});
+		const search = wrapper.findComponent(PInput);
+		expect(search.props("placeholder")).toBe("base_roi.table.search");
+		search.vm.$emit("update:value", "chem");
+		expect(searches).toEqual(["chem"]);
+		const capacity = wrapper
+			.findAllComponents(PSelect)
+			.find(
+				(s) =>
+					s.attributes("aria-label") ===
+					"base_roi.settings.min_market_capacity"
+			)!;
+		capacity.vm.$emit("update:value", 0.3);
+		expect(updates.at(-1)!.minMarketCapacity).toBe(0.3);
+	});
+
+	it("every header explains its column; metric cells show their math, without a tab stop each", async () => {
+		const wrapper = await mountTable();
+		const heads = wrapper.findAll("thead th .ptooltip");
+		// product + the shown columns (running cost hidden by default)
+		expect(heads).toHaveLength(11);
+		await wrapper
+			.find('th[data-col-key="break_even"] .ptooltip')
+			.trigger("mouseenter");
+		await flushPromises();
+		expect(document.body.textContent).toContain(
+			"base_roi.tooltips.break_even"
+		);
+
+		const cells = wrapper.findAll("tbody td .ptooltip");
+		expect(cells.length).toBeGreaterThan(0);
+		for (const c of cells) expect(c.attributes("tabindex")).toBeUndefined();
+		await wrapper
+			.find(
+				'tbody tr[data-row-key] td[data-col-key="daily_profit"] .ptooltip'
+			)
+			.trigger("mouseenter");
+		await flushPromises();
+		expect(document.body.textContent).toContain(
+			"base_roi.tooltips.math.revenue"
+		);
+	});
+
+	it("pagination sits above the table", async () => {
+		const many = Array.from({ length: 60 }, (_, i) => ({
+			...rows[0],
+			key: `r${i}`,
+		}));
+		const wrapper = await mountTable({ rows: many });
+		const nav = wrapper.find("nav.ppagination").element;
+		const table = wrapper.find("table").element;
+		expect(
+			nav.compareDocumentPosition(table) &
+				Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+		expect(wrapper.findAll("nav.ppagination")).toHaveLength(1);
 	});
 
 	it("expands a row into its detail and closes it", async () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { h } from "vue";
+import { h, nextTick, ref } from "vue";
 import { DOMWrapper, flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import { exchangesStore, materialsStore } from "@/database/stores";
@@ -28,8 +28,11 @@ vi.mock("@/database/services/useExchangeData", async (importOriginal) => {
 			return {
 				...api,
 				getMaterialExchangeOverview: (ticker: string) => {
-					overviewCalls(ticker);
-					return api.getMaterialExchangeOverview(ticker);
+					// a test may hand back its own (pending) overview
+					return (
+						overviewCalls(ticker) ??
+						api.getMaterialExchangeOverview(ticker)
+					);
 				},
 			};
 		},
@@ -219,6 +222,9 @@ describe("MaterialTile", () => {
 		expect(trigger(wrapper).attributes("aria-expanded")).toBe("false");
 
 		await openCard(wrapper);
+		// the material, loaded on open
+		await vi.waitFor(() => expect(card().text()).toContain("Iron"));
+		expect(card().text()).toContain("game.material_category.metals");
 		const props = wrapper.findComponent(MaterialMarketCard).props();
 		expect(props).toMatchObject({
 			ticker: "FE",
@@ -283,6 +289,9 @@ describe("MaterialTile", () => {
 			)
 		);
 		expect(drawer().text()).toContain("material_tile.details.title");
+		// the material, loaded on open
+		expect(drawer().text()).toContain("Iron");
+		expect(drawer().text()).toContain("game.material_category.metals");
 		expect(trackEvent).toHaveBeenCalledWith("material:market_drawer_open", {
 			material_ticker: "FE",
 			source: "tile",
@@ -375,6 +384,161 @@ describe("MaterialTile", () => {
 			true
 		);
 		expect(drawer().attributes("aria-labelledby")).toBeDefined();
+	});
+
+	describe("renders once", () => {
+		it.each([
+			["FE", "material-category-metals"],
+			["H2O", "material-category-liquids"],
+			["RAT", "material-category-consumables-basic"],
+			["O", "material-category-gases"],
+		])(
+			"%s in its category colour, with no second patch",
+			async (ticker, cls) => {
+				const getMaterial = vi.spyOn(materialsStore, "get");
+				const updated = vi.fn();
+				const { wrapper } = await mountComponent({
+					render: () =>
+						h(MaterialTile, { ticker, onVnodeUpdated: updated }),
+				});
+				const html = wrapper.html();
+				expect(tile(wrapper).classes()).toContain(cls);
+
+				await flushPromises();
+				expect(updated).not.toHaveBeenCalled();
+				expect(wrapper.html()).toBe(html);
+				// the material loads only when a card opens
+				expect(getMaterial).not.toHaveBeenCalled();
+				getMaterial.mockRestore();
+			}
+		);
+
+		it("an unknown ticker without colour, reported", async () => {
+			vi.mocked(reportError).mockClear();
+			const updated = vi.fn();
+			const { wrapper } = await mountComponent({
+				render: () =>
+					h(MaterialTile, {
+						ticker: "NOPE",
+						onVnodeUpdated: updated,
+					}),
+			});
+			await flushPromises();
+
+			expect(updated).not.toHaveBeenCalled();
+			expect(
+				tile(wrapper)
+					.classes()
+					.some((c) => c.startsWith("material-category-"))
+			).toBe(false);
+			expect(reportError).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe("after a table sorts or filters", () => {
+		const COLOUR: Record<string, string> = {
+			FE: "material-category-metals",
+			H2O: "material-category-liquids",
+			RAT: "material-category-consumables-basic",
+		};
+
+		// index keys patch each tile in place with another ticker, as a table reusing its rows
+		it.each([["index"], ["ticker"]])(
+			"keeps every tile in its own colour, keyed by %s",
+			async (keyBy) => {
+				const tickers = ref(["FE", "H2O", "RAT"]);
+				const { wrapper } = await mountComponent({
+					render: () =>
+						h(
+							"div",
+							tickers.value.map((ticker, i) =>
+								h(MaterialTile, {
+									key: keyBy === "index" ? i : ticker,
+									ticker,
+								})
+							)
+						),
+				});
+				const check = () => {
+					const tiles = wrapper.findAll(".material-tile");
+					expect(tiles.map((t) => t.text())).toEqual(tickers.value);
+					tiles.forEach((t, i) => {
+						const own = COLOUR[tickers.value[i]];
+						expect(
+							t
+								.classes()
+								.filter((c) =>
+									c.startsWith("material-category-")
+								)
+						).toEqual([own]);
+					});
+				};
+				check();
+
+				for (const next of [
+					["RAT", "H2O", "FE"],
+					["RAT", "FE"],
+					["H2O"],
+					["FE", "H2O", "RAT"],
+				]) {
+					tickers.value = next;
+					await nextTick();
+					check();
+				}
+			}
+		);
+
+		it("shows the new ticker's material in a reused tile's card", async () => {
+			const ticker = ref("FE");
+			const { wrapper } = await mountComponent({
+				render: () =>
+					h(MaterialTile, { key: "tile", ticker: ticker.value }),
+			});
+			await openCard(wrapper);
+			await vi.waitFor(() => expect(card().text()).toContain("Iron"));
+
+			ticker.value = "H2O";
+			await nextTick();
+			await flushPromises();
+			expect(card().exists()).toBe(false);
+			expect(tile(wrapper).classes()).toContain(COLOUR.H2O);
+
+			await openCard(wrapper);
+			await vi.waitFor(() => expect(card().text()).toContain("Water"));
+			expect(card().text()).not.toContain("Iron");
+			expect(
+				wrapper.findComponent(MaterialMarketCard).props("ticker")
+			).toBe("H2O");
+		});
+	});
+
+	it("drops an overview that arrives after the tile changed ticker", async () => {
+		// FE's overview waits until released
+		let release = () => {};
+		overviewCalls.mockImplementationOnce(
+			() =>
+				new Promise((resolve) => {
+					release = () => resolve({ ticker: "FE" });
+				})
+		);
+		const ticker = ref("FE");
+		const { wrapper } = await mountComponent({
+			render: () =>
+				h(MaterialTile, { key: "tile", ticker: ticker.value }),
+		});
+		// open, then re-sort before the overview arrives
+		await trigger(wrapper).trigger("focusin");
+		expect(overviewCalls).toHaveBeenLastCalledWith("FE");
+		ticker.value = "H2O";
+		await nextTick();
+		release();
+		await flushPromises();
+
+		// H2O builds its own overview and card
+		await openCard(wrapper);
+		expect(overviewCalls).toHaveBeenLastCalledWith("H2O");
+		await vi.waitFor(() => expect(card().text()).toContain("Water"));
+		expect(card().text()).not.toContain("Iron");
 	});
 
 	it("still shows the ticker of an unknown material", async () => {

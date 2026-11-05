@@ -1,5 +1,14 @@
+import { i18n } from "@/lib/i18n";
+
+// the value is the stored preference and the lookup key; the label is read
+// at render, so it follows the locale
 export const XITSTATIONWAREHOUSES: { label: string; value: string }[] = [
-	{ label: "Configure on Execution", value: "Configure on Execution" },
+	{
+		get label() {
+			return i18n.global.t("xit.form.configure_on_execution");
+		},
+		value: "Configure on Execution",
+	},
 	{ label: "Antares Station", value: "Antares Station Warehouse" },
 	{
 		label: "Arclight Station",

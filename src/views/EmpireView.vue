@@ -80,7 +80,7 @@
 	import PFormItem from "@/ui/components/PFormItem.vue";
 	import PSelect from "@/ui/components/PSelect.vue";
 	import PButton from "@/ui/components/PButton.vue";
-	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PSegmented from "@/ui/components/PSegmented.vue";
 	import { useToast } from "@/ui";
 	import {
 		KeyboardDoubleArrowLeftSharp,
@@ -235,7 +235,7 @@
 		if (selectedEmpire.value) {
 			return selectedEmpire.value.empire_name;
 		}
-		return "Unknown";
+		return t("empire.unknown_empire");
 	});
 
 	/**
@@ -289,7 +289,7 @@
 					return {
 						planetId: plan.planet_natural_id,
 						planUuid: planUuid,
-						planName: plan.plan_name ?? "Unknown Plan Name",
+						planName: plan.plan_name,
 						planCOGC: plan.plan_cogc,
 						materialIO: result.materialio,
 					};
@@ -333,7 +333,11 @@
 	);
 
 	const empireSplit: ComputedRef<IEmpireSplitParts> = computed(() =>
-		empireSplitParts(costOverview.value, planListData.value)
+		empireSplitParts(
+			costOverview.value,
+			combinedEmpireMaterialIO.value,
+			planListData.value
+		)
 	);
 
 	/**
@@ -437,29 +441,25 @@
 							</h1>
 						</div>
 						<div class="gap-3 flex flex-row flex-wrap">
-							<PButtonGroup>
-								<PButton
-									:pressed="mainContent === 'materialio'"
-									@click="() => (mainContent = 'materialio')">
-									{{ $t("empire.views.material_io") }}
-								</PButton>
-								<PButton
-									:pressed="mainContent === 'analysis'"
-									@click="() => (mainContent = 'analysis')">
-									{{ $t("empire.views.analysis") }}
-								</PButton>
-								<PButton
-									:pressed="mainContent === 'opportunities'"
-									@click="
-										() => (mainContent = 'opportunities')
-									">
-									{{
-										$t(
-											"empire.views.production_opportunities"
-										)
-									}}
-								</PButton>
-							</PButtonGroup>
+							<PSegmented
+								v-model:value="mainContent"
+								:options="[
+									{
+										value: 'materialio',
+										label: t('empire.views.material_io'),
+									},
+									{
+										value: 'analysis',
+										label: t('empire.views.analysis'),
+									},
+									{
+										value: 'opportunities',
+										label: t(
+											'empire.views.production_opportunities'
+										),
+									},
+								]"
+								:label="t('empire.views.label')" />
 							<HelpDrawer file-name="empire" />
 						</div>
 					</div>

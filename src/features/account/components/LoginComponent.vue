@@ -57,11 +57,18 @@
 
 		if (result !== "ok") loginError.value = result;
 		else {
-			let urlParams = new URLSearchParams(window.location.search);
+			const redirectTo = new URLSearchParams(window.location.search).get(
+				"redirectTo"
+			);
 
-			// successfull login should redirect back to origin, if present
-			if (urlParams.has("redirectTo") && urlParams.get("redirectTo")) {
-				router.push({ path: urlParams.get("redirectTo")! });
+			// successfull login should redirect back to origin, if present; only
+			// a path on this site, "//host" and "/\host" would leave it
+			if (redirectTo) {
+				router.push({
+					path: /^\/(?![/\\])/.test(redirectTo)
+						? redirectTo
+						: "/empire",
+				});
 			} else if (next) {
 				router.push({ path: next });
 			} else if (

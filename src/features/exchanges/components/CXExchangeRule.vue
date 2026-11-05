@@ -31,7 +31,7 @@
 	import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { PButton, PButtonGroup, PSelect, PTooltip } from "@/ui";
+	import { PButton, PSegmented, PSelect, PTooltip } from "@/ui";
 
 	/*
 	 * The exchange rule of one scope: presets, mode (planet: use the
@@ -97,6 +97,21 @@
 				? { exchange, basis: current?.basis ?? "30D" }
 				: null,
 		});
+	}
+
+	function exchangeOptions(side: Side) {
+		return [
+			...RULE_EXCHANGES.map((exchange) => ({
+				value: exchange as EXCHANGES_TYPE | null,
+				label:
+					exchange === "UNIVERSE"
+						? t("exchanges.labels.universe")
+						: exchange,
+			})),
+			...(side === "both"
+				? []
+				: [{ value: null, label: t("exchanges.rule.not_set") }]),
+		];
 	}
 
 	function setBasis(side: Side, basis: ExchangeBasis): void {
@@ -185,19 +200,18 @@
 			</div>
 		</div>
 
-		<PButtonGroup
-			role="group"
-			:aria-label="$t('exchanges.rule.mode_label')"
-			class="self-start flex-wrap">
-			<PButton
-				v-for="mode in modes"
-				:key="mode"
-				size="sm"
-				:pressed="state.mode === mode"
-				@click="setMode(mode)">
-				{{ $t(`exchanges.rule.mode.${mode}`) }}
-			</PButton>
-		</PButtonGroup>
+		<PSegmented
+			class="self-start flex-wrap"
+			size="sm"
+			:value="state.mode"
+			:options="
+				modes.map((mode) => ({
+					value: mode,
+					label: $t(`exchanges.rule.mode.${mode}`),
+				}))
+			"
+			:label="$t('exchanges.rule.mode_label')"
+			@update:value="setMode" />
 
 		<p v-if="state.mode === 'inherit'" class="text-sm">
 			<span class="text-muted">{{ $t("exchanges.rule.inherited") }}</span>
@@ -211,37 +225,25 @@
 			<span class="w-10 text-muted text-sm">
 				{{ $t(`exchanges.rule.side.${side}`) }}
 			</span>
-			<PButtonGroup
-				role="group"
+			<PSegmented
 				class="flex-wrap"
-				:aria-label="
+				size="sm"
+				:value="state[side]?.exchange ?? null"
+				:options="exchangeOptions(side)"
+				:label="
 					$t('exchanges.rule.exchange_label', {
 						side: $t(`exchanges.rule.side.${side}`),
 					})
-				">
-				<PButton
-					v-for="exchange in RULE_EXCHANGES"
-					:key="exchange"
-					size="sm"
-					:pressed="state[side]?.exchange === exchange"
-					@click="setExchange(side, exchange)">
+				"
+				@update:value="(v) => setExchange(side, v)">
+				<template #option="{ option }">
 					<span
-						class="inline-block size-2 rounded-full mr-1.5"
-						:style="{ background: CX_DOT_COLOR[exchange] }" />
-					{{
-						exchange === "UNIVERSE"
-							? $t("exchanges.labels.universe")
-							: exchange
-					}}
-				</PButton>
-				<PButton
-					v-if="side !== 'both'"
-					size="sm"
-					:pressed="state[side] === null"
-					@click="setExchange(side, null)">
-					{{ $t("exchanges.rule.not_set") }}
-				</PButton>
-			</PButtonGroup>
+						v-if="option.value"
+						class="inline-block size-2 rounded-full"
+						:style="{ background: CX_DOT_COLOR[option.value] }" />
+					{{ option.label }}
+				</template>
+			</PSegmented>
 			<PSelect
 				v-if="state[side]"
 				class="w-32"

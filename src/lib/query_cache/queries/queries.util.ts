@@ -72,7 +72,7 @@ export async function measured<T>(
 }
 
 /**
- * Writes game data into IndexedDB and reloads the in-memory layer, so
+ * Writes game data into IndexedDB and the in-memory layer, so
  * synchronous readers (`getLoaded`) see the new rows. If IndexedDB fails
  * (connection closed, quota exceeded), the rows go into the in-memory layer
  * only, so the query still succeeds with the API data.
@@ -92,7 +92,10 @@ export async function storeAndPreload<
 	const db = useDB(store);
 	try {
 		await store.setMany(data, wipe);
-		await db.preload(true);
+		// the rows just written, no full re-read; an upsert reads the
+		// store once if nothing is loaded yet
+		if (!wipe) await db.preload();
+		db.fill(data, wipe);
 	} catch (err) {
 		onDBError(store.storeName, err);
 		db.fill(data, wipe);

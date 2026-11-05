@@ -17,9 +17,12 @@ const en_US = Object.entries(enModules).reduce(
 	{} as Record<string, unknown>
 );
 
-export const localeLazyLoaders = import.meta.glob("@/locales/**/*.json", {
-	import: "default",
-});
+// en_US is loaded above; listed here too, its files would become chunks of
+// their own that the i18n chunk imports
+export const localeLazyLoaders = import.meta.glob(
+	["@/locales/**/*.json", "!@/locales/en_US/**"],
+	{ import: "default" }
+);
 
 /**
  * Splits off the messages vue-i18n can't compile (e.g. a translated
@@ -90,8 +93,36 @@ export const SupportedLanguages: PSelectOption[] = [
 		value: "de_DE",
 	},
 	{
+		label: "Español",
+		value: "es_ES",
+	},
+	{
+		label: "Français",
+		value: "fr_FR",
+	},
+	{
+		label: "Italiano",
+		value: "it_IT",
+	},
+	{
+		label: "Nederlands",
+		value: "nl_NL",
+	},
+	{
+		label: "Português",
+		value: "pt_PT",
+	},
+	{
 		label: "Русский",
 		value: "ru_RU",
+	},
+	{
+		label: "日本語",
+		value: "ja_JP",
+	},
+	{
+		label: "한국어",
+		value: "ko_KR",
 	},
 	{
 		label: "简体中文",

@@ -69,10 +69,10 @@ describe("User Store", () => {
 		getProfile.mockClear();
 
 		userStore.setToken("access-a", "refresh-a");
-		userStore.intialPreferencesCalled = true;
+		userStore.initialPreferencesCalled = true;
 		userStore.logout();
 
-		expect(userStore.intialPreferencesCalled).toBe(false);
+		expect(userStore.initialPreferencesCalled).toBe(false);
 		userStore.setToken("access-b", "refresh-b");
 		// the API module loads on first use
 		await vi.waitFor(() => expect(getProfile).toHaveBeenCalledTimes(2));
@@ -734,7 +734,7 @@ describe("User Store", () => {
 			vi.mocked(callGetUserPreferences).mockClear();
 
 			await userStore.performLogin("user", "pw");
-			expect(userStore.intialPreferencesCalled).toBe(true);
+			expect(userStore.initialPreferencesCalled).toBe(true);
 			expect(callGetUserPreferences).toHaveBeenCalledTimes(1);
 
 			// a second login in the same session does not ask again
@@ -862,5 +862,104 @@ describe("User Store", () => {
 			expect(error).toHaveBeenCalledWith(expect.any(Error));
 			expect(composer.locale.value).toBe("en_US");
 		});
+	});
+});
+
+describe("User Store: what is persisted", () => {
+	const profile: UserProfile = {
+		id: 1,
+		username: "johndoe",
+		email: "john@example.com",
+		is_email_verified: true,
+		fio_apikey: "secret-fio-key",
+		prun_username: "JOHN",
+		fio_status: "ok",
+		fio_last_refreshed_at: null,
+	};
+
+	const persistedPinia = () => {
+		const pinia = createPinia().use(piniaPluginPersistedstate);
+		createApp({}).use(pinia);
+		setActivePinia(pinia);
+		return pinia;
+	};
+
+	beforeEach(() => {
+		onTestFinished(() => {
+			vi.unstubAllGlobals();
+		});
+		vi.stubGlobal("localStorage", memoryStorage({}));
+	});
+
+	it("stores no FIO key and no email, but whether a key is set", async () => {
+		persistedPinia();
+		const userStore = useUserStore();
+		userStore.profile = { ...profile };
+		await nextTick();
+
+		const stored = localStorage.getItem("prunplanner_user")!;
+		expect(stored).not.toContain("secret-fio-key");
+		expect(stored).not.toContain("john@example.com");
+		expect(JSON.parse(stored).profile).not.toHaveProperty("fio_apikey");
+		expect(JSON.parse(stored).profile).not.toHaveProperty("email");
+		expect(JSON.parse(stored)).toMatchObject({
+			fioKeySet: true,
+			profile: { username: "johndoe", prun_username: "JOHN" },
+		});
+		// the in-memory profile keeps both
+		expect(userStore.profile).toStrictEqual(profile);
+	});
+
+	it("a restored session keeps hasFIO until the profile GET answers", async () => {
+		persistedPinia();
+		useUserStore().profile = { ...profile };
+		await nextTick();
+
+		persistedPinia();
+		const restored = useUserStore();
+		expect(restored.profile?.fio_apikey).toBeUndefined();
+		expect(restored.profile?.email).toBeUndefined();
+		expect(restored.hasFIO).toBe(true);
+
+		restored.profile = { ...profile, fio_apikey: null };
+		expect(restored.hasFIO).toBe(false);
+	});
+
+	it("drops the FIO key and email a session stored before", () => {
+		localStorage.setItem(
+			"prunplanner_user",
+			JSON.stringify({ refreshToken: "r", profile })
+		);
+		persistedPinia();
+		const userStore = useUserStore();
+
+		expect(userStore.profile?.fio_apikey).toBeUndefined();
+		expect(userStore.profile?.email).toBeUndefined();
+		expect(userStore.profile?.username).toBe("johndoe");
+		// it had a key: FIO shows before the profile GET answers
+		expect(userStore.fioKeySet).toBe(true);
+		expect(userStore.hasFIO).toBe(true);
+	});
+
+	it("a session stored before without a FIO key has none", () => {
+		localStorage.setItem(
+			"prunplanner_user",
+			JSON.stringify({
+				refreshToken: "r",
+				profile: { ...profile, fio_apikey: null },
+			})
+		);
+		persistedPinia();
+		expect(useUserStore().fioKeySet).toBe(false);
+	});
+
+	it("logout forgets that a key is set", () => {
+		persistedPinia();
+		const userStore = useUserStore();
+		userStore.profile = { ...profile };
+		expect(userStore.fioKeySet).toBe(true);
+
+		userStore.logout();
+		expect(userStore.fioKeySet).toBe(false);
 	});
 });

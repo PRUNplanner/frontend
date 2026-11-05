@@ -19,7 +19,7 @@
 	} from "@/features/empire/empire.types";
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip } from "@/ui";
+	import { PSegmented, PTooltip } from "@/ui";
 
 	const TOP = 10;
 
@@ -62,18 +62,19 @@
 			<h2 class="text-base font-bold">
 				{{ $t("empire.analysis.butterfly.title") }}
 			</h2>
-			<PButtonGroup>
-				<PButton
-					:pressed="metric === 'price'"
-					@click="metric = 'price'">
-					{{ $t("empire.analysis.butterfly.price") }}
-				</PButton>
-				<PButton
-					:pressed="metric === 'amount'"
-					@click="metric = 'amount'">
-					{{ $t("empire.analysis.butterfly.amount") }}
-				</PButton>
-			</PButtonGroup>
+			<PSegmented
+				v-model:value="metric"
+				:options="[
+					{
+						value: 'price',
+						label: t('empire.analysis.butterfly.price'),
+					},
+					{
+						value: 'amount',
+						label: t('empire.analysis.butterfly.amount'),
+					},
+				]"
+				:label="t('empire.analysis.butterfly.metric_label')" />
 		</div>
 		<div v-if="rows.length === 0" class="text-sm text-muted">
 			{{ $t("empire.analysis.butterfly.empty") }}

@@ -121,7 +121,10 @@ export type ProductionChainAction =
 	| "xit_copy"
 	| "csv"
 	| "link_copy"
-	| "split"
+	| "auto_layout"
+	| "fit_bases"
+	| "merge_bases"
+	| "separate_base"
 	| "base_add"
 	| "base_remove"
 	| "base_move"
@@ -249,7 +252,7 @@ export interface IAnalyticsEventProperties {
 		kind: PlanVersionListItem["kind"];
 	};
 	"plan:draft_restored": { age_minutes: number };
-	"plan:draft_discard": undefined;
+	"plan:reload": { planet_natural_id: string };
 	"plan:discard_changes": undefined;
 	"plan:leave_unsaved": { planet_natural_id: string };
 	"plan:shared_clone": {

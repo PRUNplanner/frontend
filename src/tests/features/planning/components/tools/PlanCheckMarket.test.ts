@@ -198,10 +198,10 @@ describe("PlanCheckMarket", () => {
 		expect(rows[3].check).toBe("plan.tools.plan_check.market.ok");
 
 		const body = wrapper.findAll("tbody tr");
-		expect(body[0].find("span").classes()).toContain(
+		expect(body[0].find(".material-tile").classes()).toContain(
 			"material-category-metals"
 		);
-		expect(body[3].find("span").classes()).toContain("bg-black/40");
+		expect(body[3].find("[data-unknown-material]").exists()).toBe(true);
 		// bigger is red, a large share amber, the rest plain
 		const share = (i: number) =>
 			body[i].find("td[data-col-key=share] span").classes();
@@ -361,7 +361,7 @@ describe("PlanCheckMarket", () => {
 		);
 		expect(fine.classes()).toContain("border-white/10");
 		expect(fine.text()).toContain("plan.tools.plan_check.market.ok");
-		expect(fine.find("span").classes()).toContain("bg-black/40");
+		expect(fine.find("[data-unknown-material]").exists()).toBe(true);
 	});
 
 	// the caption above the table says "all exchanges" once

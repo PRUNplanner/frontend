@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 
 import CXExchangeRule from "@/features/exchanges/components/CXExchangeRule.vue";
-import { PButton, PSelect } from "@/ui";
+import { PSelect } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { CXDataExchangeOption } from "@/features/api/schemas/cxData.schemas";
-import type { VueWrapper } from "@vue/test-utils";
+import type { DOMWrapper } from "@vue/test-utils";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),
@@ -29,7 +29,7 @@ async function mountRule(
 	});
 	const button = (text: string) =>
 		mounted.wrapper
-			.findAllComponents(PButton)
+			.findAll("button")
 			.find((b) => b.text().trim() === text)!;
 	const click = async (text: string) => {
 		await button(text).trigger("click");
@@ -39,7 +39,7 @@ async function mountRule(
 }
 
 const last = (emitted: CXDataExchangeOption[][]) => emitted.at(-1);
-const pressed = (w: VueWrapper) => w.attributes("aria-pressed");
+const pressed = (w: DOMWrapper<Element>) => w.attributes("aria-pressed");
 
 describe("CXExchangeRule", () => {
 	it("applies the presets on the scope's exchange", async () => {
@@ -83,8 +83,10 @@ describe("CXExchangeRule", () => {
 			{ type: "BOTH", exchange: "UNIVERSE_7D" },
 		]);
 		expect(
-			rule.button("exchanges.rule.preset_trade_now").props("disabled")
-		).toBe(true);
+			rule
+				.button("exchanges.rule.preset_trade_now")
+				.attributes("disabled")
+		).toBeDefined();
 	});
 
 	it("offers Universe only the VWAPs and switches Ask to VWAP 30D", async () => {
@@ -118,7 +120,7 @@ describe("CXExchangeRule", () => {
 
 		// "Not set" clears one side only
 		const notSet = rule.wrapper
-			.findAllComponents(PButton)
+			.findAll("button")
 			.filter((b) => b.text().trim() === "exchanges.rule.not_set");
 		await notSet[0].trigger("click");
 		await rule.setProps({});

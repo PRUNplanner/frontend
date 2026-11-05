@@ -142,6 +142,7 @@ export function planetCandidates(
 			planetNaturalId: planet.planet_natural_id,
 			planetName: planet.planet_name,
 			jumps: jumps >= 0 ? jumps : null,
+			plots: planet,
 		});
 
 		for (const resource of planet.resources) {
@@ -384,8 +385,23 @@ export function toRowInput(
 				traded:
 					exchange(`${m.ticker}.${source.volume}`)?.avg_traded_7d ??
 					0,
+				exchange: source.volume,
 			});
 	}
+
+	// what the recipe consumes, with the traded volume of its buy price's
+	// volume exchange: the input side of the market capacity
+	const recipeInputs: IBaseROIOutput[] = result.productionMaterialIO
+		.filter((m) => m.input > m.output)
+		.map((m) => {
+			const volume = ctx.prices.getPriceSource(m.ticker, "BUY").volume;
+			return {
+				ticker: m.ticker,
+				amount: m.input - m.output,
+				traded: exchange(`${m.ticker}.${volume}`)?.avg_traded_7d ?? 0,
+				exchange: volume,
+			};
+		});
 
 	// bought for the workforce, at most what the base buys in total
 	const bought = overview.dailyCost;
@@ -453,6 +469,7 @@ export function toRowInput(
 		expertBonus: calculateExpertBonus(expert),
 		materials,
 		outputs,
+		recipeInputs,
 		workforce: WorkforceTypeSchema.options
 			.map((tier) => ({
 				tier,

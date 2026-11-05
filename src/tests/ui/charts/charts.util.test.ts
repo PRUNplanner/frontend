@@ -10,6 +10,7 @@ import {
 	sparklineLayout,
 	stripLayout,
 	tooltipRows,
+	barChartHeight,
 	topWithOther,
 	waterfallLayout,
 } from "@/ui/charts/charts.util";
@@ -582,11 +583,46 @@ describe("tooltipRows", () => {
 		]);
 	});
 
+	it("says what shown says, in the order of the plotted lines", () => {
+		const scaled = [
+			{
+				key: "a",
+				label: "A",
+				color: "#1",
+				values: [1],
+				shown: [-85_000],
+			},
+			{
+				key: "b",
+				label: "B",
+				color: "#2",
+				values: [0],
+				shown: [9_000_000],
+			},
+			{ key: "c", label: "C", color: "#3", values: [0.5], shown: [null] },
+		];
+		expect(tooltipRows(scaled, 0).map((r) => [r.key, r.value])).toEqual([
+			["a", -85_000],
+			["c", 0.5],
+			["b", 9_000_000],
+		]);
+	});
+
 	it("leaves out series without a value that day", () => {
 		expect(tooltipRows(series, 1)).toEqual([
 			{ key: "NC1", label: "NC1", color: "#4", value: 269.42 },
 			{ key: "CI1", label: "CI1", color: "#2", value: 259.11 },
 			{ key: "AI1", label: "AI1", color: "#1", value: 245.67 },
 		]);
+	});
+});
+
+describe("barChartHeight", () => {
+	it("grows with the bars topWithOther keeps", () => {
+		expect(barChartHeight(0, 10)).toBe("40px");
+		expect(barChartHeight(3, 10)).toBe("124px");
+		expect(barChartHeight(11, 10)).toBe("348px");
+		// 10 kept + "Other"
+		expect(barChartHeight(50, 10)).toBe("348px");
 	});
 });

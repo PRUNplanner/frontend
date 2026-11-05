@@ -3,6 +3,7 @@
 		computed,
 		type Ref,
 		ref,
+		toRef,
 		watchEffect,
 		type ComputedRef,
 		watch,
@@ -28,7 +29,7 @@
 	import { relativeFromDate } from "@/util/date";
 	import { useRunProgress } from "@/util/runProgress";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
-	import { workforceTypeNames } from "@/features/planning/calculations/workforceCalculations";
+	import { workforceTypeNames } from "@/features/planning/engine/workforce";
 
 	// Types & Interfaces
 	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
@@ -67,8 +68,8 @@
 	const { materialsMap } = useMaterialData();
 	const { buildingsMap } = useBuildingData();
 	const { getPrice } = usePrice(
-		ref(props.cxUuid),
-		ref(props.planetNaturalId)
+		toRef(props, "cxUuid"),
+		toRef(props, "planetNaturalId")
 	);
 
 	const {
@@ -378,7 +379,19 @@
 		planetStorageId(props.planetNaturalId)
 	);
 
+	// the price inputs: the CX, its planet and the CX's data. Saving or
+	// reloading a CX replaces its object in the store.
+	function readPriceInputs(): unknown[] {
+		return [
+			props.cxUuid,
+			props.planetNaturalId,
+			props.cxUuid ? planningStore.cxs[props.cxUuid] : undefined,
+		];
+	}
+
 	async function calculateTotal(data: IXITTransferMaterial[]) {
+		// read before the first await, so watchEffect tracks them
+		readPriceInputs();
 		let weight = 0;
 		let volume = 0;
 		let price = 0;
@@ -409,8 +422,8 @@
 	});
 
 	watch(
-		() => xitTransferElementsNeed.value,
-		async (overview) => {
+		() => [xitTransferElementsNeed.value, ...readPriceInputs()] as const,
+		async ([overview]) => {
 			const run = startOverview();
 			const total = await calculateTotal(overview);
 			if (run.isCurrent()) overviewTotalInformation.value = total;

@@ -8,13 +8,13 @@ import {
 	planDrafts,
 	rankPlanets,
 	recipeAmounts,
-	splitByExpertise,
 } from "@/features/production_chain/engine/chainBases";
 
 // Fixtures
 import {
 	chainInput,
 	index,
+	splitByExpertise,
 	testContext,
 } from "@/tests/features/production_chain/chain.fixtures";
 
@@ -47,7 +47,7 @@ function solve(overrides: Partial<IChainInput> = {}) {
 
 /** the chain split by expertise, food on FOOD, farms on FARM with cogc */
 function placed(cogc: IChainBase["cogc"] = "auto") {
-	const split = splitByExpertise(solve().result, ctx, 100);
+	const split = splitByExpertise(solve().result, ctx);
 	const idOf = (e: string) =>
 		String.fromCharCode(65 + split.expertise.indexOf(e));
 	const bases = split.expertise.map((e, i) =>
@@ -98,7 +98,7 @@ describe("bases in the solver", () => {
 	it("gives a workforce program 110 % to buildings with that tier (AC 3, 16)", () => {
 		const { result } = solve({
 			bases: [base("A", FOOD, "SCIENTISTS"), base("B", FOOD, "PIONEERS")],
-			baseOf: { DW: "B" },
+			baseOf: { DW: { B: 1 } },
 		});
 		expect(ctx.buildings.get("FP")!.pioneers).toBeGreaterThan(0);
 		expect(ctx.buildings.get("FP")!.scientists).toBe(0);
@@ -111,7 +111,7 @@ describe("bases in the solver", () => {
 	it("farms follow the fertility and stop without it (AC 3)", () => {
 		const fertile = solve({
 			bases: [base("A", FOOD), base("B", FARM)],
-			baseOf: { GRN: "B" },
+			baseOf: { GRN: { B: 1 } },
 		}).result;
 		expect(fertile.rows.GRN.buildingTicker).toBe("FRM");
 		expect(fertile.rows.GRN.efficiency).toBeCloseTo(
@@ -151,7 +151,7 @@ describe("bases in the solver", () => {
 		const one = solve().result;
 		const two = solve({
 			bases: [base("A"), base("B")],
-			baseOf: { RAT: "B" },
+			baseOf: { RAT: { B: 1 } },
 		}).result;
 		const fp = (r: typeof one, id: string) =>
 			r.buildingTypes.find((b) => b.ticker === "FP" && b.base === id)!;
@@ -196,40 +196,6 @@ describe("bases in the solver", () => {
 			construction: 0,
 		});
 		expect(result.totals.area).toBe(result.bases[0].area);
-	});
-});
-
-describe("splitByExpertise", () => {
-	it("splits DW + RAT + OVE into Food Industries and Agriculture (AC 6)", () => {
-		const { result } = solve();
-		const split = splitByExpertise(result, ctx, 100);
-		// largest first: at Universe prices farming needs a little more
-		expect(split.expertise).toEqual(["AGRICULTURE", "FOOD_INDUSTRIES"]);
-		expect(split.baseOf.GRN).toBe("A");
-		expect(split.baseOf.DW).toBe("B");
-		expect(split.baseOf.RAT).toBe("B");
-		// small groups join the first base
-		expect(split.baseOf.PG).toBe("A");
-		expect(split.baseOf.OVE).toBe("A");
-		expect(split.baseOf.C).toBe("A");
-		// bought rows have no base
-		expect(
-			Object.keys(split.baseOf).every(
-				(t) => result.rows[t].source !== "buy"
-			)
-		).toBe(true);
-	});
-
-	it("keeps one base when no group is large enough", () => {
-		const result = solveChain(chainInput([["DW", 1]]), ctx);
-		expect(splitByExpertise(result, ctx, 100)).toEqual({
-			expertise: ["FOOD_INDUSTRIES"],
-			baseOf: Object.fromEntries(
-				result.order
-					.filter((t) => result.rows[t].source !== "buy")
-					.map((t) => [t, "A"])
-			),
-		});
 	});
 });
 
@@ -301,12 +267,12 @@ describe("chainShipping", () => {
 });
 
 describe("rankPlanets", () => {
-	const split = splitByExpertise(solve().result, ctx, 100);
+	const split = splitByExpertise(solve().result, ctx);
 	const { input, result } = solve({
 		bases: [base("A"), base("B")],
 		baseOf: split.baseOf,
 	});
-	const farmId = split.baseOf.GRN;
+	const farmId = split.idOf.GRN;
 	const planets = index.filter((p) =>
 		[FOOD, FARM].includes(p.planet_natural_id)
 	);
@@ -454,15 +420,12 @@ describe("bases edge cases", () => {
 		expect(empty.rows.DW.base).toBe("A");
 	});
 
-	it("ignores unknown buildings for programs and splits without expertise", () => {
+	it("ignores unknown buildings for programs; a pending step is whole in A", () => {
 		expect(cogcFits(ctx, "FOOD_INDUSTRIES", ["ZZZ"])).toBe(false);
 		// extraction still pending: no building, no expertise
 		const pending = testContext(false);
 		const r = solveChain(chainInput([["H2O", 50]]), pending);
-		expect(splitByExpertise(r, pending, 100)).toEqual({
-			expertise: [null],
-			baseOf: { H2O: "A" },
-		});
+		expect(r.rows.H2O.shares).toEqual([{ base: "A", share: 1 }]);
 	});
 
 	it("ships to a named exchange and weighs unknown materials as 0", () => {
@@ -509,7 +472,7 @@ describe("chainShipping with byproducts", () => {
 		// BE yields SIO as a byproduct, which covers all of the chain's SIO
 		const input = chainInput([["THP", 10]], {
 			bases: [base("A"), base("B")],
-			baseOf: { BE: "B" },
+			baseOf: { BE: { B: 1 } },
 		});
 		const result = solveChain(input, ctx);
 		const sio = result.byproducts.find((b) => b.ticker === "SIO")!;
@@ -544,7 +507,7 @@ describe("Bases with own production", () => {
 	it("ships own production from each supplying plan to the base that uses it (AC 12)", () => {
 		const input = chainInput([["RAT", 100]], {
 			bases: [base("A", FOOD), base("B")],
-			baseOf: { NUT: "B" },
+			baseOf: { NUT: { B: 1 } },
 			have: { GRN: "all", H2O: 2 },
 		});
 		const result = solveChain(input, ctx);
@@ -595,8 +558,6 @@ describe("Bases with own production", () => {
 		// a partly had step is still built for the rest
 		expect(result.rows.NUT.have).toBeCloseTo(2, 6);
 		expect(recipes).toContain(result.rows.NUT.recipe!.recipe_id);
-		expect(splitByExpertise(result, ctx, 100).baseOf).not.toHaveProperty(
-			"GRN"
-		);
+		expect(splitByExpertise(result, ctx).baseOf).not.toHaveProperty("GRN");
 	});
 });

@@ -48,5 +48,11 @@ describe("materialIOCsv", () => {
 		expect(materialIOCsv([rat])).toBe(
 			"ticker,input,output,delta,value,weight,volume\nRAT,0,10,10,500,10,5"
 		);
+		expect(materialIOCsv([rat, io("DW", -2.5, { price: -12.75 })]))
+			.toMatchInlineSnapshot(`
+			"ticker,input,output,delta,value,weight,volume
+			RAT,0,10,10,500,10,5
+			DW,2.5,0,-2.5,-12.75,0,0"
+		`);
 	});
 });

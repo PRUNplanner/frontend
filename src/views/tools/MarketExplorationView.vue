@@ -47,7 +47,7 @@
 		PDataTable,
 		PSelect,
 		PButton,
-		PButtonGroup,
+		PSegmented,
 		PTooltip,
 		PValue,
 	} from "@/ui";
@@ -62,18 +62,12 @@
 		ExchangeRange,
 	} from "@/features/market_exploration/marketExploration.types";
 
-	const exchangeOptions: Ref<PSelectOption[]> = ref(
-		["AI1", "CI1", "IC1", "NC1"].map((e) => {
-			return { label: e, value: e };
-		})
-	);
+	const exchangeOptions = ["AI1", "CI1", "IC1", "NC1"].map((e) => ({
+		label: e,
+		value: e,
+	}));
 
-	const intervalOptions: Ref<PSelectOption[]> = ref(
-		["daily", "weekly", "monthly"].map((e) => ({
-			label: e,
-			value: e,
-		}))
-	);
+	const intervals: CandleInterval[] = ["daily", "weekly", "monthly"];
 
 	const materialOptions = ref<PSelectOption[]>([]);
 
@@ -536,130 +530,92 @@
 									{{ $t("market_exploration.chart.title") }}
 								</h3>
 								<div class="flex flex-row flex-wrap gap-2">
-									<PButtonGroup
-										role="group"
-										:aria-label="
+									<PSegmented
+										:value="chartView"
+										:options="
+											chartViews.map((view) => ({
+												value: view,
+												label: $t(
+													`market_exploration.chart.view.${view}`
+												),
+											}))
+										"
+										:label="
 											$t(
 												'market_exploration.chart.view.label'
 											)
-										">
-										<PButton
-											v-for="view in chartViews"
-											:key="view"
-											:pressed="chartView === view"
-											@click="setChartView(view)">
-											{{
-												$t(
-													`market_exploration.chart.view.${view}`
-												)
-											}}
-										</PButton>
-									</PButtonGroup>
+										"
+										@update:value="setChartView" />
 									<template v-if="chartView === 'exchanges'">
-										<PButtonGroup
-											role="group"
-											:aria-label="
+										<PSegmented
+											v-model:value="exchangeMetric"
+											:options="
+												exchangeMetrics.map(
+													(metric) => ({
+														value: metric,
+														label: $t(
+															`market_exploration.chart.metric.${metric}`
+														),
+													})
+												)
+											"
+											:label="
 												$t(
 													'market_exploration.chart.metric.label'
 												)
-											">
-											<PButton
-												v-for="metric in exchangeMetrics"
-												:key="metric"
-												:pressed="
-													exchangeMetric === metric
-												"
-												@click="
-													exchangeMetric = metric
-												">
-												{{
-													$t(
-														`market_exploration.chart.metric.${metric}`
-													)
-												}}
-											</PButton>
-										</PButtonGroup>
-										<PButtonGroup
-											role="group"
-											:aria-label="
+											" />
+										<PSegmented
+											v-model:value="exchangeRange"
+											:options="
+												exchangeRanges.map((range) => ({
+													value: range,
+													label: $t(
+														`market_exploration.chart.range.${range ?? 'all'}`
+													),
+												}))
+											"
+											:label="
 												$t(
 													'market_exploration.chart.range.label'
 												)
-											">
-											<PButton
-												v-for="range in exchangeRanges"
-												:key="range ?? 'all'"
-												:pressed="
-													exchangeRange === range
-												"
-												@click="exchangeRange = range">
-												{{
-													$t(
-														`market_exploration.chart.range.${range ?? "all"}`
-													)
-												}}
-											</PButton>
-										</PButtonGroup>
+											" />
 									</template>
 									<template v-else>
-										<div
-											class="flex flex-row flex-wrap gap-1">
-											<template
-												v-for="option in exchangeOptions"
-												:key="option.value">
-												<PButton
-													:pressed="
-														option.value ==
-														selectedExchange
-													"
-													@click="
-														() => {
-															if (
-																option.value &&
-																typeof option.value ===
-																	'string'
-															) {
-																selectedExchange =
-																	option.value;
-																fetch();
-															}
-														}
-													">
-													{{ option.label }}
-												</PButton>
-											</template>
-										</div>
-										<div
-											class="flex flex-row flex-wrap gap-1">
-											<template
-												v-for="option in intervalOptions"
-												:key="option.value">
-												<PButton
-													:pressed="
-														option.value ==
-														selectedInterval
-													"
-													@click="
-														() => {
-															if (
-																option.value &&
-																typeof option.value ===
-																	'string'
-															) {
-																selectedInterval =
-																	option.value as CandleInterval;
-																fetch();
-															}
-														}
-													">
-													{{
-														$t(
-															`market_exploration.chart.intervals.${option.label}`
-														)
-													}}
-												</PButton>
-											</template>
-										</div>
+										<PSegmented
+											:value="selectedExchange"
+											:options="exchangeOptions"
+											:label="
+												$t(
+													'market_exploration.chart.exchange_label'
+												)
+											"
+											@update:value="
+												(v) => {
+													selectedExchange = v;
+													fetch();
+												}
+											" />
+										<PSegmented
+											:value="selectedInterval"
+											:options="
+												intervals.map((i) => ({
+													value: i,
+													label: $t(
+														`market_exploration.chart.intervals.${i}`
+													),
+												}))
+											"
+											:label="
+												$t(
+													'market_exploration.chart.interval_label'
+												)
+											"
+											@update:value="
+												(v) => {
+													selectedInterval = v;
+													fetch();
+												}
+											" />
 									</template>
 									<PButton
 										:aria-label="

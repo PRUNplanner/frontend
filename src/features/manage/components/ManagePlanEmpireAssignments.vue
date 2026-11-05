@@ -447,7 +447,9 @@
 		try {
 			await useQuery("ClonePlan", {
 				planUuid: planUuid,
-				cloneName: `${planName} (Clone)`,
+				cloneName: t("management.assignments.menu.clone_name", {
+					name: planName,
+				}),
 			}).execute();
 			await refetch();
 		} catch (err) {

@@ -9,6 +9,7 @@ import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
 import { copyToClipboard } from "@/util/data";
 import { usePlanningStore } from "@/stores/planningStore";
+import { useUserStore } from "@/stores/userStore";
 import { createPinia, type Pinia } from "pinia";
 
 // Types & Interfaces
@@ -26,6 +27,15 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 				return [
 					{ planet_natural_id: "UV-072c", planet_name: "UV-072c" },
 					{ planet_natural_id: "OT-580b", planet_name: "Montem" },
+				];
+			// 100 traded today on every exchange
+			if (name === "GetExplorationData")
+				return [
+					{
+						date_epoch:
+							Math.floor(Date.now() / 86_400_000) * 86_400_000,
+						traded: 100,
+					},
 				];
 			if (name === "CreatePlan") {
 				if (query.failCreate) throw new Error("400");
@@ -69,8 +79,11 @@ async function mountDetail(
 	row: IBaseROIRow,
 	tryOnPlanet = vi.fn(),
 	pinia: Pinia = createPinia(),
-	props: Record<string, unknown> = {}
+	props: Record<string, unknown> = {},
+	loggedIn = true
 ) {
+	if (loggedIn)
+		useUserStore(pinia).$patch({ accessToken: "a", refreshToken: "r" });
 	const closes: unknown[] = [];
 	const { wrapper } = await mountComponent(
 		BaseROIRowDetail,
@@ -92,13 +105,29 @@ async function mountDetail(
 }
 
 describe("BaseROIRowDetail (criteria 16, 26)", () => {
-	it("shows all ten sections with formulas", async () => {
+	it("the profit chart first, the math of sections 1–8 below, recipe and planet in the header", async () => {
 		const { wrapper } = await mountDetail(rows[0]);
 		const sections = wrapper.findAll("section");
-		expect(sections).toHaveLength(10);
-		for (let i = 1; i <= 10; i++)
-			expect(sections[i - 1].text()).toContain(`base_roi.detail.s${i}`);
+		expect(sections).toHaveLength(9);
+		expect(sections[0].text()).toContain("base_roi.detail.s9");
+		for (let i = 1; i <= 8; i++)
+			expect(sections[i].text()).toContain(`base_roi.detail.s${i}`);
 		expect(wrapper.text()).toContain("base_roi.detail.buffer_formula");
+		expect(wrapper.find("h3 + p").text()).toContain(
+			"base_roi.detail.recipe"
+		);
+	});
+
+	it("logged out: no Open as plan", async () => {
+		const { button } = await mountDetail(
+			rows[0],
+			vi.fn(),
+			createPinia(),
+			{},
+			false
+		);
+		expect(button("base_roi.detail.open_plan")).toBeUndefined();
+		expect(button("base_roi.detail.copy")).toBeDefined();
 	});
 
 	it("copies the same numbers as text", async () => {
@@ -213,7 +242,7 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		);
 	});
 
-	it("section 9: the 30-day chart from the series, or the no-history note", async () => {
+	it("section 9: the 90-day charts from the series, or the no-history note", async () => {
 		const row = rows[0];
 		// every material on AI1 with a 7D price: one series per ticker
 		const priced = {
@@ -235,9 +264,30 @@ describe("BaseROIRowDetail (criteria 16, 26)", () => {
 		const { wrapper } = await mountDetail(priced, vi.fn(), createPinia(), {
 			series,
 		});
-		const chart = wrapper.findComponent({ name: "PLineChart" });
-		expect(chart.props("series")).toHaveLength(3);
-		expect(chart.props("days")).toHaveLength(30);
+		await flushPromises();
+		// profit and market volume side by side
+		const [absolute, volume] = wrapper.findAllComponents({
+			name: "PLineChart",
+		});
+		expect(absolute.props("series")).toHaveLength(3);
+		expect(absolute.props("days")).toHaveLength(90);
+		expect(wrapper.text()).toContain("base_roi.detail.history_absolute");
+		const lines = volume.props("series") as {
+			key: string;
+			values: number[];
+		}[];
+		// outputs, and the recipe's inputs when it has any
+		expect(lines[0].key).toBe("outputs");
+		expect(lines.map((l) => l.key)).toEqual(
+			priced.recipeInputs.length ? ["outputs", "inputs"] : ["outputs"]
+		);
+		// today: 100 traded per exchange (UNIVERSE sums the 4) ÷ the scarcest output's amount
+		const exchanges = priced.outputs[0].exchange === "UNIVERSE" ? 4 : 1;
+		const outputs =
+			(100 * exchanges) /
+			Math.max(...priced.outputs.map((o) => o.amount));
+		expect(lines[0].values.at(-1)).toBeCloseTo(outputs);
+		expect(lines[0].values[0]).toBe(0);
 		expect(wrapper.text()).toContain("base_roi.detail.history_note");
 
 		const none = await mountDetail(row, vi.fn(), createPinia(), {

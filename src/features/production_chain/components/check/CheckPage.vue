@@ -32,7 +32,7 @@
 	import type { ICheckFinding } from "@/features/production_chain/engine/chainCheck.types";
 
 	// UI
-	import { PButton, PButtonGroup, PTag, useToast } from "@/ui";
+	import { PButton, PSegmented, PTag, useToast } from "@/ui";
 
 	const toast = useToast();
 	const {
@@ -219,19 +219,24 @@
 				<section class="rounded-panel border border-line min-w-0">
 					<div
 						class="flex flex-wrap items-center gap-3 p-3 border-b border-line">
-						<PButtonGroup
-							:aria-label="
-								t('production_chains.check.tabs.label')
-							">
-							<PButton
-								v-for="v in VIEWS"
-								:key="v"
-								:pressed="view === v"
-								:data-testid="`check-tab-${v}`"
-								@click="view = v">
-								{{ $t(`production_chains.check.tabs.${v}`) }}
-							</PButton>
-						</PButtonGroup>
+						<PSegmented
+							v-model:value="view"
+							:options="
+								VIEWS.map((v) => ({
+									value: v,
+									label: t(
+										`production_chains.check.tabs.${v}`
+									),
+								}))
+							"
+							:label="t('production_chains.check.tabs.label')">
+							<template #option="{ option }">
+								<span
+									:data-testid="`check-tab-${option.value}`">
+									{{ option.label }}
+								</span>
+							</template>
+						</PSegmented>
 						<span class="flex flex-wrap items-center gap-2 text-sm">
 							<PTag v-if="summary.ok" size="sm" type="success">
 								{{

@@ -24,6 +24,7 @@
 	import { usePlanetSearchPrefs } from "@/features/planet_search/usePlanetSearchPrefs";
 	import { useUserStore } from "@/stores/userStore";
 	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
+	import { isApiError } from "@/lib/apiError";
 
 	// Engine & Util
 	import {
@@ -177,7 +178,8 @@
 	 */
 	const index: ShallowRef<PlanetSearchIndexEntry[]> = shallowRef([]);
 	const loading: Ref<boolean> = ref(true);
-	const loadError: Ref<boolean> = ref(false);
+	// why the index didn't load, null while it is fine
+	const loadError: Ref<string | null> = ref(null);
 	const empires: Ref<PlanEmpireElement[]> = ref([]);
 	const empireUuid: Ref<string | undefined> = ref(undefined);
 	const now = Date.now();
@@ -224,7 +226,10 @@
 			filter.value = { ...filter.value, references: refs };
 	}
 
-	onMounted(async () => {
+	/** Loads the index (and the empires); again from the error's Retry */
+	async function loadIndex() {
+		loading.value = true;
+		loadError.value = null;
 		try {
 			const [data, empireList] = await Promise.all([
 				useQuery("GetPlanetSearchIndex").execute(),
@@ -236,12 +241,19 @@
 			// a login during the load has loaded them already (watch below)
 			if (!empires.value.length) empires.value = empireList;
 			resolveEmpire();
-		} catch {
-			loadError.value = true;
+		} catch (error) {
+			// throttled: say how long to wait
+			const wait = isApiError(error) ? error.retryAfter : undefined;
+			loadError.value =
+				wait === undefined
+					? t("planet_search.load_error")
+					: t("planet_search.load_throttled", { n: wait });
 		} finally {
 			loading.value = false;
 		}
-	});
+	}
+
+	onMounted(loadIndex);
 
 	// a visitor logged in from the page: the plan distances appear, the
 	// search stays as it is
@@ -553,11 +565,12 @@
 				<div v-if="loading" class="flex-1 flex justify-center py-12">
 					<PSpin :aria-label="t('planet_search.loading')" />
 				</div>
-				<p
-					v-else-if="loadError"
-					class="flex-1 px-6 py-12 text-negative">
-					{{ t("planet_search.load_error") }}
-				</p>
+				<div v-else-if="loadError" class="flex-1 px-6 py-12">
+					<p class="text-negative" role="alert">{{ loadError }}</p>
+					<PButton class="mt-3" data-retry @click="loadIndex">
+						{{ t("wrapper.retry") }}
+					</PButton>
+				</div>
 
 				<div v-else class="flex-1 min-h-0 flex flex-row">
 					<aside

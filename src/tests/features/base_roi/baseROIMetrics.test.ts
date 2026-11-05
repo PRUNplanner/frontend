@@ -6,6 +6,7 @@ import {
 	calculateMetrics,
 	filterRows,
 	hqStepCost,
+	matchesSearch,
 	rampBreakEven,
 	volatilityScenarios,
 } from "@/features/base_roi/baseROIMetrics";
@@ -65,7 +66,8 @@ function rowInput(overrides: Partial<IBaseROIRowInput> = {}): IBaseROIRowInput {
 		storageVolume: 6500,
 		expertBonus: 0.284,
 		materials: [],
-		outputs: [{ ticker: "IND", amount: 10, traded: 20 }],
+		outputs: [{ ticker: "IND", amount: 10, traded: 20, exchange: "AI1" }],
+		recipeInputs: [],
 		workforce: [],
 		result: {} as IBaseROIRowInput["result"],
 		...overrides,
@@ -93,7 +95,9 @@ describe("baseROIMetrics", () => {
 						inputs: k.inputs,
 						consumables: k.consumables,
 						degradation: k.repair,
-						construction: k.construction,
+						// his total has ships for an 8 h round trip, which
+						// we dropped: they ride on the construction here
+						construction: k.construction + k.expected.shipCost,
 						weightIn: k.maxWeight,
 						volumeIn: k.maxVolume,
 						weightOut: 0,
@@ -104,7 +108,6 @@ describe("baseROIMetrics", () => {
 						...defaultBaseROISettings(),
 						bufferDays: 9,
 						targetPermit: 10,
-						roundTripHours: 8,
 						logistics: "ship",
 						ship: "WCB",
 					},
@@ -113,7 +116,6 @@ describe("baseROIMetrics", () => {
 
 				within(metrics.bufferStock, k.expected.buffer);
 				within(metrics.hqCost, k.expected.hq);
-				within(metrics.shipCost, k.expected.shipCost);
 				within(metrics.buildingCost, k.expected.total);
 				within(metrics.dailyProfit, k.expected.profit);
 				within(metrics.weeklyReturn, k.expected.weekly);
@@ -183,20 +185,25 @@ describe("baseROIMetrics", () => {
 		]);
 	});
 
-	it("ship cost uses the chosen ship, WCB without one", () => {
-		const base = { ...defaultBaseROISettings(), roundTripHours: 24 };
-		const row = rowInput({ weightIn: 1000, volumeIn: 1000 });
-		// LCB 2000/2000: 0.5 ships
-		expect(calculateMetrics(row, base, 0).shipsNeeded).toBe(0.5);
-		// WCB 3000/1000: 1 ship
-		expect(
-			calculateMetrics(row, { ...base, logistics: "none" }, 0).shipsNeeded
-		).toBe(1);
+	it("building cost is construction + buffer + HQ, no ships", () => {
+		const m = calculateMetrics(
+			rowInput({
+				construction: 1000,
+				inputs: 10,
+				consumables: 0,
+				revenue: 30,
+			}),
+			{ ...defaultBaseROISettings(), bufferDays: 2 },
+			500
+		);
+		// buffer 2 × (10 + 0 + 30) ÷ 2 = 40
+		expect(m.buildingCost).toBe(1000 + 40 + 500);
 	});
 
 	it("logistics: cargo × days between visits fits the ship, manual per day", () => {
 		const row = rowInput({ weightIn: 700, volumeIn: 100 });
-		const s = defaultBaseROISettings();
+		// LCB 2000 t: 3 days × 700 t is too much, 2 days fit
+		const s = { ...defaultBaseROISettings(), ship: "LCB" as const };
 		expect(calculateMetrics(row, s, 0).fitsLogistics).toBe(false);
 		expect(
 			calculateMetrics(row, { ...s, visitDays: 2 }, 0).fitsLogistics
@@ -214,14 +221,56 @@ describe("baseROIMetrics", () => {
 		const m = calculateMetrics(
 			rowInput({
 				outputs: [
-					{ ticker: "A", amount: 10, traded: 50 },
-					{ ticker: "B", amount: 10, traded: 5 },
+					{ ticker: "A", amount: 10, traded: 50, exchange: "AI1" },
+					{ ticker: "B", amount: 10, traded: 5, exchange: "AI1" },
 				],
 			}),
 			defaultBaseROISettings(),
 			0
 		);
 		expect(m.marketCapacity).toBe(0.5);
+	});
+
+	it("double ended: a recipe input with less traded volume sets it, marked input", () => {
+		const outputs = [
+			{ ticker: "A", amount: 10, traded: 50, exchange: "AI1" },
+		];
+		const input = calculateMetrics(
+			rowInput({
+				outputs,
+				recipeInputs: [
+					{ ticker: "X", amount: 20, traded: 4, exchange: "AI1" },
+					{ ticker: "Y", amount: 0, traded: 0, exchange: "AI1" },
+				],
+			}),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(input.marketCapacity).toBe(0.2);
+		expect(input.capacitySide).toBe("input");
+		expect(input.capacityTicker).toBe("X");
+
+		const output = calculateMetrics(
+			rowInput({
+				outputs,
+				recipeInputs: [
+					{ ticker: "X", amount: 1, traded: 100, exchange: "AI1" },
+				],
+			}),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(output.capacitySide).toBe("output");
+		expect(output.capacityTicker).toBe("A");
+
+		// no outputs: 0 and no side, as before
+		const none = calculateMetrics(
+			rowInput({ outputs: [], recipeInputs: [] }),
+			defaultBaseROISettings(),
+			0
+		);
+		expect(none.marketCapacity).toBe(0);
+		expect(none.capacitySide).toBeNull();
 	});
 
 	describe("volatility (criterion 11)", () => {
@@ -324,6 +373,8 @@ describe("baseROIMetrics", () => {
 			maxJumps: 1,
 			logistics: 1,
 			marketCapacity: 1,
+			noPlots: 0,
+			unstaffed: 0,
 			negative: 1,
 		});
 		expect(
@@ -334,8 +385,8 @@ describe("baseROIMetrics", () => {
 		).toHaveLength(1);
 	});
 
-	it("row kind, expertise and building filters, not counted as hidden", () => {
-		const s = defaultBaseROISettings();
+	it("row kind filters, not counted as hidden", () => {
+		const s = { ...defaultBaseROISettings(), logistics: "none" as const };
 		const row = (key: string, o: Partial<IBaseROIRow>) =>
 			({
 				...rowInput({ key, ...o }),
@@ -353,14 +404,34 @@ describe("baseROIMetrics", () => {
 			filterRows(rows, [], { ...s, ...f }).rows.map((r) => r.key);
 		expect(shown({ showRecipes: false })).toEqual(["ext"]);
 		expect(shown({ showResources: false })).toEqual(["chp"]);
-		expect(shown({ expertise: "CHEMISTRY" })).toEqual(["chp"]);
-		expect(shown({ building: "EXT" })).toEqual(["ext"]);
-		expect(filterRows(rows, [], { ...s, building: "EXT" }).hidden).toEqual({
+		expect(
+			filterRows(rows, [], { ...s, showRecipes: false }).hidden
+		).toEqual({
 			maxJumps: 0,
 			logistics: 0,
 			marketCapacity: 0,
+			noPlots: 0,
+			unstaffed: 0,
 			negative: 0,
 		});
+	});
+
+	it("search matches industry, building and product, any case", () => {
+		const row = rowInput({
+			building: "EXT",
+			expertise: "RESOURCE_EXTRACTION",
+			outputs: [{ ticker: "GAL", amount: 1, traded: 1, exchange: "AI1" }],
+		});
+		expect(matchesSearch(row, "")).toBe(true);
+		expect(matchesSearch(row, "  ")).toBe(true);
+		expect(matchesSearch(row, "resource extraction")).toBe(true);
+		expect(matchesSearch(row, "RESOURCE_EXT")).toBe(true);
+		expect(matchesSearch(row, "ext")).toBe(true);
+		expect(matchesSearch(row, " gal ")).toBe(true);
+		expect(matchesSearch(row, "chem")).toBe(false);
+		expect(
+			matchesSearch({ ...row, expertise: null, outputs: [] }, "res")
+		).toBe(false);
 	});
 
 	it("edge cases: manual limit met, no outputs, zero output, free base, unknown HQ level", () => {
@@ -377,7 +448,11 @@ describe("baseROIMetrics", () => {
 		).toBe(0);
 		expect(
 			calculateMetrics(
-				rowInput({ outputs: [{ ticker: "A", amount: 0, traded: 5 }] }),
+				rowInput({
+					outputs: [
+						{ ticker: "A", amount: 0, traded: 5, exchange: "AI1" },
+					],
+				}),
 				s,
 				0
 			).marketCapacity

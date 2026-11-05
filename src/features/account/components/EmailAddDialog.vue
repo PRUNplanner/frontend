@@ -52,6 +52,8 @@
 	const email: Ref<string | null> = ref(null);
 	const code: Ref<string | null> = ref(null);
 	const emailError: Ref<string | null> = ref(null);
+	const password: Ref<string | null> = ref(null);
+	const passwordError: Ref<string | null> = ref(null);
 	const codeError: Ref<string | null> = ref(null);
 	const isBusy: Ref<boolean> = ref(false);
 	const codeInput = useTemplateRef<{ focus: () => void }>("codeInput");
@@ -59,6 +61,13 @@
 	const masked = computed(() => maskEmail(userStore.profile?.email ?? ""));
 	const emailValid = computed(() =>
 		isEmailAddress(email.value?.trim() ?? "")
+	);
+	// the stored address skips the request, any other needs the password
+	const needsPassword = computed(
+		() => email.value?.trim() !== userStore.profile?.email
+	);
+	const canSave = computed(
+		() => emailValid.value && (!needsPassword.value || !!password.value)
 	);
 	const codeValid = computed(() => (code.value ?? "").length === 8);
 
@@ -69,7 +78,9 @@
 			step.value = initialStep;
 			email.value = userStore.profile?.email ?? null;
 			code.value = null;
+			password.value = null;
 			emailError.value = null;
+			passwordError.value = null;
 			codeError.value = null;
 		},
 		{ immediate: true }
@@ -85,6 +96,7 @@
 		codeError.value = null;
 	});
 	watch(email, () => (emailError.value = null));
+	watch(password, () => (passwordError.value = null));
 	// after the email step, the next keystrokes are the code
 	watch(step, (current, previous) => {
 		if (current === "code" && previous === "email")
@@ -92,35 +104,50 @@
 	});
 
 	async function saveEmail(): Promise<void> {
-		if (isBusy.value || !emailValid.value) return;
+		if (isBusy.value || !canSave.value) return;
 		const value = email.value!.trim();
 
 		// the address is already on the account, its code is on the way
-		if (value === userStore.profile?.email) {
+		if (!needsPassword.value) {
 			step.value = "code";
 			return;
 		}
 
+		// cleared before the request, so it is gone after a save or a failure
+		const currentPassword = password.value!;
+		password.value = null;
 		isBusy.value = true;
 		try {
-			await useQuery("PatchUserProfile", { email: value }).execute();
+			await useQuery("PatchUserProfile", {
+				email: value,
+				current_password: currentPassword,
+			}).execute();
 			trackEvent("account:email_add", { is_success: true });
 			step.value = "code";
 		} catch (err) {
 			const status = isApiError(err) ? err.status : undefined;
-			const email = isApiError(err)
-				? (err.responseData as { email?: unknown } | undefined)?.email
+			const data = isApiError(err)
+				? (err.responseData as
+						| { email?: unknown; current_password?: unknown }
+						| undefined)
 				: undefined;
-			const field = Array.isArray(email) ? email[0] : undefined;
+			const first = (messages: unknown): unknown =>
+				Array.isArray(messages) ? messages[0] : undefined;
+			const field = first(data?.email);
+			const passwordCode = first(data?.current_password);
 			const reason =
 				status === 429
 					? "throttled"
-					: field === "email_taken"
-						? "email_taken"
+					: passwordCode !== undefined
+						? passwordCode === "password_required"
+							? "password_required"
+							: "password_invalid"
 						: field
 							? "invalid_email"
 							: "unknown";
-			emailError.value = t(`account.email_dialog.errors.${reason}`);
+			const message = t(`account.email_dialog.errors.${reason}`);
+			if (reason.startsWith("password_")) passwordError.value = message;
+			else emailError.value = message;
 			trackEvent("account:email_add", { is_success: false, reason });
 		} finally {
 			isBusy.value = false;
@@ -192,6 +219,17 @@
 						"
 						@keydown.enter.prevent="saveEmail" />
 				</PFormItem>
+				<PFormItem
+					v-if="needsPassword"
+					:label="t('account.email_dialog.password_label')"
+					:error="passwordError ?? undefined">
+					<PInput
+						v-model:value="password"
+						type="password"
+						autocomplete="current-password"
+						class="w-full"
+						@keydown.enter.prevent="saveEmail" />
+				</PFormItem>
 			</PForm>
 			<div class="text-sm text-muted">
 				{{ t("account.email_dialog.email_info") }}
@@ -250,7 +288,7 @@
 				</PButton>
 				<PButton
 					:loading="isBusy"
-					:disabled="!emailValid || isBusy"
+					:disabled="!canSave || isBusy"
 					data-testid="email-dialog-save"
 					@click="saveEmail">
 					{{ t("account.email_dialog.buttons.save") }}

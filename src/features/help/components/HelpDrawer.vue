@@ -19,9 +19,10 @@
 
 	import { PButton, PDrawer, PNotice } from "@/ui";
 	import { reportError } from "@/lib/analytics/useAnalytics";
-	// showdown loads with the first opened drawer, not with every page
-	const VueShowdown = defineAsyncComponent(() =>
-		import("vue-showdown").then((m) => m.VueShowdown)
+	// showdown and its sanitiser load with the first opened drawer, not with
+	// every page
+	const HelpMarkdown = defineAsyncComponent(
+		() => import("@/features/help/components/HelpMarkdown.vue")
 	);
 
 	const showDrawer: Ref<boolean> = ref(false);
@@ -120,10 +121,7 @@
 		:width="drawerWidth"
 		:title="displayDrawerTitle">
 		<div v-if="markdownContent != ''" id="markdown">
-			<VueShowdown
-				:markdown="markdownContent"
-				flavor="github"
-				:options="{ tables: true, emoji: true }" />
+			<HelpMarkdown :markdown="markdownContent" />
 		</div>
 		<PNotice v-else-if="loadFailed" type="error">
 			{{ t("help.load_error", { file_name: fileName }) }}

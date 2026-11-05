@@ -10,6 +10,7 @@ import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import PSelect from "@/ui/components/PSelect.vue";
 import { usePreferences } from "@/features/preferences/usePreferences";
+import empire from "@/locales/en_US/empire.json";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -399,9 +400,14 @@ describe("EmpireView", () => {
 		async function open(
 			empires: object[],
 			plans: object[] = [],
-			props: Record<string, unknown> = {}
+			props: Record<string, unknown> = {},
+			options: Parameters<typeof mountComponent>[2] = {}
 		): Promise<VueWrapper> {
-			const { wrapper } = await mountComponent(EmpireView, props);
+			const { wrapper } = await mountComponent(
+				EmpireView,
+				props,
+				options
+			);
 			await vi.waitFor(() => expect(loader(wrapper).exists()).toBe(true));
 			loader(wrapper).vm.$emit("data:empire:list", empires);
 			if (plans.length)
@@ -506,7 +512,13 @@ describe("EmpireView", () => {
 			patches.length = 0;
 			const unknown = await open(
 				[E1],
-				[{ uuid: "P1", planet_natural_id: "OT-580b" }]
+				[{ uuid: "P1", planet_natural_id: "OT-580b" }],
+				{},
+				{
+					messages: {
+						empire: { unknown_empire: empire.unknown_empire },
+					},
+				}
 			);
 			expect(unknown.find("h1").text()).toBe("Unknown");
 			// no empire to store a state or profits for
@@ -517,6 +529,17 @@ describe("EmpireView", () => {
 			expect(
 				unknown.findComponent({ name: "EmpireConfiguration" }).exists()
 			).toBe(false);
+
+			const german = await open(
+				[E1],
+				[{ uuid: "P1", planet_natural_id: "OT-580b" }],
+				{},
+				{
+					locale: "de_DE",
+					messages: { empire: { unknown_empire: "Unbekannt" } },
+				}
+			);
+			expect(german.find("h1").text()).toBe("Unbekannt");
 		});
 
 		it("a plan's material sold at a loss is taken off the cost", async () => {

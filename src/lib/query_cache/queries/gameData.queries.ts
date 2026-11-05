@@ -44,6 +44,7 @@ import {
 	callDataRecipes,
 	callExplorationData,
 	callMarketSummary,
+	callDataMultiplePOPR,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
 import { callAnalyticsPlanetInsights } from "@/features/api/analyticsData.api";
@@ -61,6 +62,7 @@ import type {
 	Planet,
 	PlanetSearchAdvancedPayload,
 	PlanetSearchIndexEntry,
+	PlanetPopulationReport,
 	PopulationReport,
 } from "@/features/api/schemas/gameData.schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
@@ -308,6 +310,20 @@ export const gameDataQueries = {
 			}),
 		expireTime: planetsExpireTime,
 	}),
+	GetMultiplePlanetPOPR: defineQuery({
+		key: (params) => [
+			"gamedata",
+			"planet",
+			"popr",
+			"multiple",
+			params.planetNaturalIds,
+		],
+		fetchFn: (params: {
+			planetNaturalIds: string[];
+		}): Promise<PlanetPopulationReport[]> =>
+			callDataMultiplePOPR(params.planetNaturalIds),
+		expireTime: planetsExpireTime,
+	}),
 	GetExplorationData: defineQuery({
 		key: (params) => [
 			"gamedata",
@@ -368,11 +384,8 @@ export const gameDataQueries = {
 	}),
 	GetFIOStorage: defineQuery({
 		key: () => ["gamedata", "fio", "storage"],
-		fetchFn: async (): Promise<FIOStorage> => {
-			const data = await callDataFIOStorage();
-			usePlanningStore().setFIOStorageData(data);
-			return data;
-		},
+		fetchFn: (): Promise<FIOStorage> => callDataFIOStorage(),
+		onData: (data) => usePlanningStore().setFIOStorageData(data),
 		autoRefetch: true,
 		expireTime: staleMinutes(5),
 	}),

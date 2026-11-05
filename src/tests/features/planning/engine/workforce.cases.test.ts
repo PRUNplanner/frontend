@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 // Composables
-import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
+import {
+	calculateSatisfaction,
+	calculateSingleWorkforceConsumption,
+	calculateWorkforceConsumption,
+} from "@/features/planning/engine/workforce";
 
 describe("Planning: Workforce Calculations", async () => {
 	describe("calculateSatisfaction", async () => {
@@ -59,8 +63,6 @@ describe("Planning: Workforce Calculations", async () => {
 		it.each(satisfactionCases)(
 			"Test $description",
 			async ({ capacity, required, lux1, lux2, expected }) => {
-				const { calculateSatisfaction } = useWorkforceCalculation();
-
 				expect(
 					calculateSatisfaction(capacity, required, lux1, lux2)
 				).toBe(expected);
@@ -215,9 +217,6 @@ describe("Planning: Workforce Calculations", async () => {
 		it.each(consumptionCases)(
 			"Test $description",
 			async ({ workforce, expected }) => {
-				const { calculateSingleWorkforceConsumption } =
-					useWorkforceCalculation();
-
 				expect(
 					// @ts-expect-error test mock data
 					calculateSingleWorkforceConsumption(workforce)
@@ -228,8 +227,6 @@ describe("Planning: Workforce Calculations", async () => {
 
 	describe("calculateWorkforceConsumption", async () => {
 		it("Full workforce record", async () => {
-			const { calculateWorkforceConsumption } = useWorkforceCalculation();
-
 			const testData = {
 				pioneer: {
 					name: "pioneer",

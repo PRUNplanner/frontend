@@ -81,7 +81,7 @@
 					: {
 							series: s,
 							index,
-							text: `${s.label} ${endValue(s.values[index]!)}`,
+							text: `${s.label} ${endValue((s.shown ?? s.values)[index] ?? s.values[index]!)}`,
 						};
 			})
 			.filter((e) => e !== null)

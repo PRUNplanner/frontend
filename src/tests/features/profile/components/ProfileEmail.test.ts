@@ -59,6 +59,8 @@ async function mountEmail(stored: UserProfile | undefined) {
 }
 
 const input = (wrapper: VueWrapper) => wrapper.find<HTMLInputElement>("input");
+const passwordInput = (wrapper: VueWrapper) =>
+	wrapper.find<HTMLInputElement>("input[type=password]");
 const tag = (wrapper: VueWrapper) =>
 	wrapper.find("[data-testid=email-recovery]");
 const enterCode = (wrapper: VueWrapper) =>
@@ -152,48 +154,101 @@ describe("ProfileEmail", () => {
 		expect(document.body.textContent).not.toContain(CODE_STEP);
 	});
 
-	it("patches the email alone and says a code was sent", async () => {
+	it("asks for the password only when the email changes", async () => {
+		const { wrapper } = await mountEmail(profile());
+		expect(passwordInput(wrapper).exists()).toBe(false);
+		// unchanged: nothing to save
+		expect(saveButton(wrapper).props("disabled")).toBe(true);
+
+		await input(wrapper).setValue("new@example.com");
+		expect(passwordInput(wrapper).attributes("autocomplete")).toBe(
+			"current-password"
+		);
+		expect(saveButton(wrapper).props("disabled")).toBe(true);
+
+		await save(wrapper);
+		expect(mock.history.patch).toHaveLength(0);
+	});
+
+	it("patches the email with the password and says a code was sent", async () => {
 		mock.onPatch(PROFILE_URL).reply(200, profile());
 		const { wrapper } = await mountEmail(profile());
 		await input(wrapper).setValue("new@example.com");
+		await passwordInput(wrapper).setValue("secret");
 
 		expect(saveButton(wrapper).props("type")).toBe("primary");
 		await save(wrapper);
 
 		expect(JSON.parse(mock.history.patch[0].data)).toEqual({
 			email: "new@example.com",
+			current_password: "secret",
 		});
+		expect(passwordInput(wrapper).element.value).toBe("");
 		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
 			true
 		);
 	});
 
-	it("sends a cleared email as null, without the code notice", async () => {
-		mock.onPatch(PROFILE_URL).reply(200, profile({ email: null }));
+	it.each([
+		[
+			"adds",
+			profile({ email: null }),
+			"new@example.com",
+			"new@example.com",
+		],
+		["clears", profile(), "", null],
+	])(
+		"%s the email with the password, without the code notice for a clear",
+		async (_, stored, typed, sent) => {
+			mock.onPatch(PROFILE_URL).reply(200, profile({ email: sent }));
+			const { wrapper } = await mountEmail(stored);
+			await input(wrapper).setValue(typed);
+			await passwordInput(wrapper).setValue("secret");
+
+			await save(wrapper);
+
+			expect(JSON.parse(mock.history.patch[0].data)).toEqual({
+				email: sent,
+				current_password: "secret",
+			});
+			expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
+				!!sent
+			);
+		}
+	);
+
+	it.each(["password_required", "password_invalid"])(
+		"shows %s on the password field and keeps the email",
+		async (code) => {
+			mock.onPatch(PROFILE_URL).reply(400, { current_password: [code] });
+			vi.spyOn(console, "error").mockImplementation(() => {});
+			const { wrapper } = await mountEmail(profile());
+			await input(wrapper).setValue("new@example.com");
+			await passwordInput(wrapper).setValue("wrong");
+
+			await save(wrapper);
+
+			expect(wrapper.text()).toContain(
+				`account.email_dialog.errors.${code}`
+			);
+			expect(passwordInput(wrapper).attributes("aria-invalid")).toBe(
+				"true"
+			);
+			expect(passwordInput(wrapper).element.value).toBe("");
+			expect(input(wrapper).element.value).toBe("new@example.com");
+			expect(wrapper.find("[role=alert]").exists()).toBe(false);
+			expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
+				false
+			);
+		}
+	);
+
+	it("sends nothing for an unchanged email", async () => {
 		const { wrapper } = await mountEmail(profile());
-		await input(wrapper).setValue("");
 
 		await save(wrapper);
 
-		expect(JSON.parse(mock.history.patch[0].data)).toEqual({ email: null });
-		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
-			false
-		);
-	});
-
-	it("shows an address used by another account under the field", async () => {
-		mock.onPatch(PROFILE_URL).reply(400, { email: ["email_taken"] });
-		vi.spyOn(console, "error").mockImplementation(() => {});
-		const { wrapper } = await mountEmail(profile());
-		await input(wrapper).setValue("taken@example.com");
-
-		await save(wrapper);
-
-		expect(wrapper.text()).toContain("profile.change_profile.email_taken");
-		expect(wrapper.find("[role=alert]").exists()).toBe(false);
-		expect(wrapper.find("[data-testid=email-code-sent]").exists()).toBe(
-			false
-		);
+		expect(mock.history.patch).toHaveLength(0);
 	});
 
 	it("shows any other email field error as the invalid text", async () => {
@@ -203,6 +258,7 @@ describe("ProfileEmail", () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountEmail(profile());
 		await input(wrapper).setValue("x@y");
+		await passwordInput(wrapper).setValue("secret");
 
 		await save(wrapper);
 
@@ -210,6 +266,25 @@ describe("ProfileEmail", () => {
 			"account.email_dialog.errors.invalid_email"
 		);
 		expect(wrapper.text()).not.toContain("Enter a valid email address.");
+	});
+
+	it("shows a password error of a hidden field as a failure", async () => {
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const { wrapper } = await mountEmail(profile());
+		await input(wrapper).setValue("new@example.com");
+		await passwordInput(wrapper).setValue("secret");
+		// the profile arrives with that address meanwhile: no password field
+		mock.onPatch(PROFILE_URL).reply(() => {
+			useUserStore().profile = profile({ email: "new@example.com" });
+			return [400, { current_password: ["password_required"] }];
+		});
+
+		await save(wrapper);
+
+		expect(passwordInput(wrapper).exists()).toBe(false);
+		expect(wrapper.find("[role=alert]").text()).toBe(
+			"profile.change_profile.fio_errors.unknown"
+		);
 	});
 
 	it("follows later changes of the stored email", async () => {
@@ -230,6 +305,7 @@ describe("ProfileEmail", () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		const { wrapper } = await mountEmail(profile());
 		await input(wrapper).setValue("not-an-email");
+		await passwordInput(wrapper).setValue("secret");
 
 		await save(wrapper);
 
@@ -238,6 +314,7 @@ describe("ProfileEmail", () => {
 
 		mock.resetHandlers();
 		mock.onPatch(PROFILE_URL).reply(200, profile());
+		await passwordInput(wrapper).setValue("secret");
 		await save(wrapper);
 		expect(wrapper.find("[role=alert]").exists()).toBe(false);
 	});

@@ -4,15 +4,22 @@
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
+	// Stores
+	import { useUserStore } from "@/stores/userStore";
+
 	// Composables
 	import { useBaseROI } from "@/features/base_roi/useBaseROI";
 	import { useBaseROISettings } from "@/features/base_roi/useBaseROISettings";
+
+	// Util
+	import { matchesSearch } from "@/features/base_roi/baseROIMetrics";
 
 	// Components
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import BaseROISettingsPanel from "@/features/base_roi/components/BaseROISettingsPanel.vue";
 	import BaseROITable from "@/features/base_roi/components/BaseROITable.vue";
+	import BaseROITrendChart from "@/features/base_roi/components/BaseROITrendChart.vue";
 	const BaseROISetup = defineAsyncComponent(
 		() => import("@/features/base_roi/components/BaseROISetup.vue")
 	);
@@ -39,7 +46,6 @@
 		calculate,
 		tryOnPlanet,
 		preferenceExchanges,
-		rows,
 		filtered,
 		step,
 		progress,
@@ -47,6 +53,8 @@
 		firstLoad,
 		series,
 		historyFailed,
+		staffing,
+		populationFailed,
 	} = useBaseROI(settings, cxUuid);
 
 	// first visit: the setup asks before anything is stored
@@ -72,24 +80,17 @@
 		{ immediate: true }
 	);
 
-	const expertiseOptions = computed(() =>
-		[...new Set(rows.value.map((r) => r.expertise ?? ""))]
-			.filter(Boolean)
-			.sort()
+	// the search above the table: not a limit, so not counted as hidden
+	const search = ref("");
+	const shown = computed(() =>
+		search.value.trim()
+			? filtered.value.rows.filter((r) => matchesSearch(r, search.value))
+			: filtered.value.rows
 	);
-	const buildingOptions = computed(() =>
-		[
-			...new Set(
-				rows.value
-					.filter(
-						(r) =>
-							!settings.value.expertise ||
-							r.expertise === settings.value.expertise
-					)
-					.map((r) => r.building)
-			),
-		].sort()
-	);
+
+	// logged out: no CX preferences, prices from Universe 30D
+	const userStore = useUserStore();
+
 	const exchanges = computed(() => {
 		void cxUuid.value;
 		return ready ? preferenceExchanges() : [];
@@ -99,10 +100,10 @@
 		get: () => settings.value.chartOpen,
 		set: (v) => (settings.value = { ...settings.value, chartOpen: v }),
 	});
-	const hasRows = computed(() => filtered.value.rows.length > 0);
+	const hasRows = computed(() => shown.value.length > 0);
 	const active = ref<string | null>(null);
 
-	// a dot hovered in the chart brings its row into view in the table box
+	// a dot hovered in the chart scrolls the page to its row
 	const tableBox = ref<HTMLElement | null>(null);
 	watch(active, (key) => {
 		if (!key) return;
@@ -120,17 +121,26 @@
 				{{ t("base_roi.title") }}
 			</h1>
 			<div class="flex flex-row flex-wrap items-center gap-3">
-				<span class="text-muted">{{ t("base_roi.cx_select") }}</span>
-				<!-- its options are read once: mounted after the CX list loaded -->
-				<CXPreferenceSelector
-					v-if="ready"
-					v-model:cx-uuid="cxUuid"
-					class="w-56 max-w-full"
-					:aria-label="t('base_roi.cx_select')" />
-				<span
-					v-else
-					aria-hidden="true"
-					class="block h-8 w-56 max-w-full rounded bg-white/5 motion-safe:animate-pulse" />
+				<template v-if="userStore.isLoggedIn">
+					<span class="text-muted">{{
+						t("base_roi.cx_select")
+					}}</span>
+					<!-- its options are read once: mounted after the CX list loaded -->
+					<CXPreferenceSelector
+						v-if="ready"
+						v-model:cx-uuid="cxUuid"
+						class="w-56 max-w-full"
+						:aria-label="t('base_roi.cx_select')" />
+					<span
+						v-else
+						aria-hidden="true"
+						class="block h-8 w-56 max-w-full rounded bg-white/5 motion-safe:animate-pulse" />
+				</template>
+				<!-- logged out: no CX preferences to choose from -->
+				<span v-else data-universe-prices class="text-muted">
+					{{ t("base_roi.universe_prices") }} ·
+					{{ t("base_roi.universe_prices_hint") }}
+				</span>
 				<HelpDrawer file-name="tools_base_roi" />
 				<PButton
 					:pressed="chartOpen && hasRows"
@@ -143,16 +153,25 @@
 		</div>
 
 		<div class="grow px-6 py-3 flex flex-col gap-3">
-			<BaseROISettingsPanel
-				v-model:settings="settings"
-				:expertise-options="expertiseOptions"
-				:building-options="buildingOptions"
-				:exchanges="exchanges"
-				@setup="setupOpen = true" />
+			<!-- side by side on wide screens: the chart fills the space the settings leave -->
+			<div class="grid grid-cols-1 2xl:grid-cols-2 gap-3 items-start">
+				<BaseROISettingsPanel
+					v-model:settings="settings"
+					:exchanges="exchanges"
+					@setup="setupOpen = true" />
+				<!-- charts the table's rows, the search drills in; a skeleton until the prices are in -->
+				<BaseROITrendChart
+					v-model:settings="settings"
+					:rows="filtered.rows"
+					:search="search"
+					:series="series"
+					:history-failed="historyFailed" />
+			</div>
 			<div ref="tableBox" class="relative">
 				<BaseROITable
 					v-model:settings="settings"
-					:rows="filtered.rows"
+					v-model:search="search"
+					:rows="shown"
 					:hidden="filtered.hidden"
 					:step="ready ? step : 'game'"
 					:progress="progress"
@@ -160,6 +179,8 @@
 					:planet-rows-pending="planetRowsPending"
 					:series="series"
 					:history-failed="historyFailed"
+					:staffing="staffing"
+					:population-failed="populationFailed"
 					:active="active"
 					:try-on-planet="tryOnPlanet"
 					:cx-uuid="cxUuid" />
@@ -177,7 +198,7 @@
 			v-if="chartOpen && hasRows"
 			v-model:show="chartOpen"
 			v-model:active="active"
-			:rows="filtered.rows" />
+			:rows="shown" />
 		<BaseROISetup
 			v-if="setupOpen && ready"
 			v-model:show="setupOpen"

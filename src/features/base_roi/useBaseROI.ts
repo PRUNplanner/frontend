@@ -25,11 +25,13 @@ import {
 	filterRows,
 	hqStepCost,
 } from "@/features/base_roi/baseROIMetrics";
+import { baseStaffing } from "@/features/base_roi/baseROIPopulation";
 import { getExchangeCodeKey } from "@/features/cx/priceBook";
 
 // Static
 import {
 	BASE_ROI_EXCHANGES,
+	HISTORY_DAYS,
 	CHUNK_SIZE,
 	STANDARD_PLANET,
 } from "@/features/base_roi/baseROI.constants";
@@ -42,13 +44,17 @@ import type {
 	IBaseROIRow,
 	IBaseROIRowInput,
 	IBaseROISeries,
+	IBaseROIStaffing,
 } from "@/features/base_roi/baseROI.types";
 import type {
 	IGameData,
 	IPlanContext,
 } from "@/features/planning/engine/engine.types";
 import { type IRun, useRunProgress } from "@/util/runProgress";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
+	Planet,
+	PopulationReport,
+} from "@/features/api/schemas/gameData.schemas";
 
 type EngineSettings = Pick<
 	BaseROISettings,
@@ -94,6 +100,8 @@ export function useBaseROI(
 
 	const series = shallowRef<IBaseROISeries | null>(null);
 	const historyFailed = ref(false);
+	const population = shallowRef<Map<string, PopulationReport> | null>(null);
+	const populationFailed = ref(false);
 
 	// planets fetched on this page, never fetched twice
 	const planets = new Map<string, Planet>();
@@ -146,8 +154,25 @@ export function useBaseROI(
 		}));
 	});
 
+	// checked rows by key: empty until the reports are in, or if they failed
+	const staffing = computed(() => {
+		const map = new Map<string, IBaseROIStaffing>();
+		const reports = population.value;
+		if (!reports) return map;
+		for (const row of rows.value)
+			if (row.planetNaturalId)
+				map.set(
+					row.key,
+					baseStaffing(
+						row.workforce,
+						reports.get(row.planetNaturalId)
+					)
+				);
+		return map;
+	});
+
 	const filtered = computed(() =>
-		filterRows(rows.value, beyond.value, settings.value)
+		filterRows(rows.value, beyond.value, settings.value, staffing.value)
 	);
 
 	/** fetches the planets the rows need and hasn't fetched yet */
@@ -364,21 +389,16 @@ export function useBaseROI(
 			);
 		trackEvent("tool:use", { tool_name: "base_roi" });
 		void loadHistory(run);
+		void loadPopulation(run);
 		return true;
 	}
 
-	/** daily VWAP of the last 30 days for every exchange a price uses */
+	/** daily VWAP of the last HISTORY_DAYS days for every exchange a price uses */
 	async function loadHistory(run: IRun): Promise<void> {
 		const exchanges = new Set<string>();
 		for (const row of inputs.value)
 			for (const m of row.materials)
-				if (
-					m.source.exchange &&
-					(BASE_ROI_EXCHANGES as readonly string[]).includes(
-						m.source.exchange
-					)
-				)
-					exchanges.add(m.source.exchange);
+				if (m.source.exchange) exchanges.add(m.source.exchange);
 
 		historyFailed.value = false;
 		try {
@@ -387,7 +407,7 @@ export function useBaseROI(
 					[...exchanges].map((exchange) =>
 						useQuery("GetCXSparklines", {
 							exchange,
-							days: 30,
+							days: HISTORY_DAYS,
 							metric: "vwap_daily",
 						}).execute()
 					)
@@ -399,6 +419,29 @@ export function useBaseROI(
 			);
 		} catch {
 			if (run.isCurrent()) historyFailed.value = true;
+		}
+	}
+
+	/** the latest population report of every planet row */
+	async function loadPopulation(run: IRun): Promise<void> {
+		const planetNaturalIds = [
+			...new Set(inputs.value.flatMap((r) => r.planetNaturalId ?? [])),
+		];
+
+		population.value = null;
+		populationFailed.value = false;
+		try {
+			const [reports] = await measured("base-roi:population", () =>
+				useQuery("GetMultiplePlanetPOPR", {
+					planetNaturalIds,
+				}).execute()
+			);
+			if (!run.isCurrent()) return;
+			population.value = new Map(
+				reports.map((r) => [r.planet_natural_id, r])
+			);
+		} catch {
+			if (run.isCurrent()) populationFailed.value = true;
 		}
 	}
 
@@ -458,5 +501,7 @@ export function useBaseROI(
 		firstLoad,
 		series,
 		historyFailed,
+		staffing,
+		populationFailed,
 	};
 }

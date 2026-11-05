@@ -19,6 +19,7 @@ import { callPatchCX } from "@/features/api/cxData.api";
 import {
 	callGetPlan,
 	callGetPlanVersions,
+	callGetPlanlist,
 	callSavePlan,
 } from "@/features/api/planData.api";
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
@@ -36,6 +37,7 @@ vi.mock("@/features/api/planData.api", () => ({
 		modified_at: "v2",
 	})),
 	callGetPlan: vi.fn(async (uuid: string) => ({ uuid, plan_name: "P" })),
+	callGetPlanlist: vi.fn(),
 	callCreatePlan: vi.fn(async () => ({ uuid: "new", modified_at: "v1" })),
 	callDeletePlan: vi.fn(async () => true),
 	callClonePlan: vi.fn(async () => ({ uuid: "clone" })),
@@ -380,6 +382,22 @@ describe("PatchPlan uses its answer", () => {
 			await useQueryStore().execute("GetPlan", { planUuid: "plan-a" })
 		).toBe(saved);
 		expect(callGetPlan).not.toHaveBeenCalled();
+	});
+
+	it("a plan list in flight during the save doesn't overwrite it", async () => {
+		const old = seedPlan("P");
+		let answer!: (plans: Plan[]) => void;
+		vi.mocked(callGetPlanlist).mockReturnValueOnce(
+			new Promise((resolve) => (answer = resolve))
+		);
+		vi.mocked(callGetPlanlist).mockResolvedValue([]);
+		const list = useQueryStore().execute("GetAllPlans", undefined);
+
+		const saved = await save();
+		answer([{ ...old, empires: [] }]);
+		await list;
+
+		expect(usePlanningStore().plans["plan-a"]).toStrictEqual(saved);
 	});
 
 	it("no rename: plan list and empire plan lists, not the empire list", async () => {

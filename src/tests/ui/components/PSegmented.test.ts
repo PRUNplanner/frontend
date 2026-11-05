@@ -37,7 +37,7 @@ describe("PSegmented", () => {
 				value: "exchange",
 				options: OPTIONS,
 				label: "Index view",
-				"onUpdate:value": (v: string | number) => {
+				"onUpdate:value": (v: string | number | null) => {
 					void wrapper.setProps({ value: v });
 				},
 			},
@@ -53,6 +53,8 @@ describe("PSegmented", () => {
 		const props = { value: "exchange", options: OPTIONS, label: "x" };
 		const md = mount(PSegmented, { props });
 		expect(md.classes()).toContain("inline-flex");
+		// stays content wide in a flex column, which would stretch it
+		expect(md.classes()).toContain("w-fit");
 		expect(md.find("button").classes()).toContain("h-7");
 
 		const sm = mount(PSegmented, { props: { ...props, size: "sm" } });
@@ -68,19 +70,19 @@ describe("PSegmented", () => {
 			props: { ...props, block: "phone" },
 		});
 		expect(phone.classes()).toEqual(
-			expect.arrayContaining(["w-full", "sm:inline-flex", "sm:w-auto"])
+			expect.arrayContaining(["w-full", "sm:inline-flex", "sm:w-fit"])
 		);
 		expect(phone.find("button").classes()).toContain("sm:flex-none");
 	});
 
 	it("a disabled option can't be picked", async () => {
-		const picked: (string | number)[] = [];
+		const picked: (string | number | null)[] = [];
 		const wrapper = mount(PSegmented, {
 			props: {
 				value: "exchange",
 				options: [OPTIONS[0], { ...OPTIONS[1], disabled: true }],
 				label: "Index view",
-				"onUpdate:value": (v: string | number) => picked.push(v),
+				"onUpdate:value": (v: string | number | null) => picked.push(v),
 			},
 		});
 		const [enabled, disabled] = wrapper.findAll("button");
@@ -88,5 +90,36 @@ describe("PSegmented", () => {
 		expect(disabled.attributes("disabled")).toBeDefined();
 		await disabled.trigger("click");
 		expect(picked).toEqual([]);
+	});
+
+	it("the option slot renders rich content, title and a null option", async () => {
+		const wrapper = mount(PSegmented, {
+			props: {
+				value: null,
+				options: [
+					{ value: "NC1", label: "NC1", title: "Moria" },
+					{ value: null, label: "Not set" },
+				],
+				label: "Exchange",
+			},
+			slots: {
+				option: `<template #option="{ option }"><i>{{ option.label }}!</i></template>`,
+			},
+		});
+		const [nc1, none] = wrapper.findAll("button");
+		expect(nc1.find("i").text()).toBe("NC1!");
+		expect(nc1.attributes("title")).toBe("Moria");
+		expect(none.attributes("aria-pressed")).toBe("true");
+		await nc1.trigger("click");
+		expect(wrapper.emitted("update:value")).toEqual([["NC1"]]);
+	});
+
+	it("select fires on every click, also on the picked option", async () => {
+		const wrapper = mount(PSegmented, {
+			props: { value: "exchange", options: OPTIONS, label: "x" },
+		});
+		await wrapper.findAll("button")[0].trigger("click");
+		expect(wrapper.emitted("select")).toEqual([["exchange"]]);
+		expect(wrapper.emitted("update:value")).toBeUndefined();
 	});
 });

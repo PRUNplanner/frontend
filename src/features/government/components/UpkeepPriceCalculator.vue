@@ -36,13 +36,7 @@
 	} from "@/features/government/upkeepCalculations.types";
 
 	// UI
-	import {
-		PProgressBar,
-		PButton,
-		PButtonGroup,
-		PDataTable,
-		useToast,
-	} from "@/ui";
+	import { PDataTable, PProgressBar, PSegmented, useToast } from "@/ui";
 	import type { PDataTableColumn } from "@/ui/ui.types";
 
 	const props = defineProps({
@@ -157,19 +151,17 @@
 	<div v-else>
 		<!-- Need Type Selection -->
 		<div class="mb-4">
-			<PButtonGroup>
-				<PButton
-					v-for="needType in needTypes"
-					:key="needType"
-					:pressed="selectedNeedType === needType"
-					@click="selectedNeedType = needType">
-					{{
-						$t(
+			<PSegmented
+				v-model:value="selectedNeedType"
+				:options="
+					needTypes.map((needType) => ({
+						value: needType,
+						label: $t(
 							`upkeep_price_calculator.calculator.needs.${needType}`
-						)
-					}}
-				</PButton>
-			</PButtonGroup>
+						),
+					}))
+				"
+				:label="$t('upkeep_price_calculator.calculator.need_label')" />
 		</div>
 
 		<!-- Material Details Section -->

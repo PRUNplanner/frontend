@@ -4,79 +4,66 @@
 
 | Path | What lives there |
 | --- | --- |
-| `main.ts` | Bootstrap (see below) |
+| `main.ts` | Bootstrap (below) |
 | `AppProvider.vue` | `App` plus the kit's `PConfirmHost` and `PToastHost` (with `VersionUpdateNotice`), and the site-wide `useHead` ([seo.md](seo.md)) |
-| `App.vue` | Shell. Shows the navigation when logged in (`layout/components/navigation/`: `AppSidebar` from `md`, collapsing to `SidebarRail`, and `MobileNavBar` with its sheets below) and `HomepageHeader` otherwise (with the login / registration panel), then `<main>` with `<Suspense><RouterView/></Suspense>` and `AppFooter` (not on the homepage, which has its own footer). Also the analytics consent: `AnalyticsConsentDialog` when logged in, `AnalyticsConsentBanner` for visitors |
+| `App.vue` | Shell: navigation (`layout/components/navigation/`) when logged in, `HomepageHeader` otherwise, then `<Suspense><RouterView/></Suspense>` and `AppFooter`; analytics consent dialog/banner |
 | `prerender.ts` | Server entry of the build-time prerender of `/` ([seo.md](seo.md)) |
 | `router/` | Flat route table (`index.ts`); typed meta in `router.d.ts` |
-| `views/` | Route pages (`*View.vue`), plus `views/fio/`, `views/tools/` and `views/dev/` (the kit page) |
-| `features/<name>/` | Feature code: composables, components and types. See [features/](features/README.md) |
+| `views/` | Route pages (`*View.vue`), plus `fio/`, `tools/` and `dev/` (the kit page) |
+| `features/<name>/` | Feature code, see [features/](features/README.md) |
 | `stores/` | Global Pinia stores: `userStore`, `planningStore`, `userAlertsStore` |
-| `lib/` | Infrastructure: `apiService.ts`, `config.ts`, `query_cache/`, `i18n/`, `analytics/`, `seo/`, `crossTab.ts`, `chunkReload.ts`, `debugMode.ts`, `useVersionCheck.ts` |
-| `database/` | IndexedDB game-data cache (`idb`): `schema.ts`, `stores.ts`, `composables/`, `services/` |
-| `ui/` | In-house component kit (`P*` components, barrel `ui/index.ts`) and `ui/charts/` |
+| `lib/` | Infrastructure: `apiService.ts`, `config.ts`, `query_cache/`, `i18n/`, `analytics/`, `seo/`, `perf/`, `crossTab.ts`, `chunkReload.ts`, `debugMode.ts`, `useVersionCheck.ts` |
+| `database/` | IndexedDB game-data cache (`idb`), see [data-layer.md](data-layer.md) §4 |
+| `ui/` | In-house component kit (`P*`, barrel `ui/index.ts`) and `ui/charts/` |
 | `layout/` | Navigation, header, footer, progress indicators |
 | `locales/<locale>/*.json` | i18n messages, one file per namespace |
-| `assets/help/<locale>/*.md` | Help drawer pages. `assets/help/changelog.md` is the changelog |
+| `assets/help/<locale>/*.md` | Help drawer pages; `assets/help/changelog.md` is the changelog |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
-| `util/` | Small pure helpers: `data.ts` (clone/redact), `numbers.ts`, `date.ts`, `text.ts`, `planetName.ts`, `axiosSetup.ts` |
+| `util/` | Small pure helpers (`data.ts` clone/redact, `numbers.ts`, `date.ts`, `planetName.ts`, …) and `axiosSetup.ts` (auth interceptors) |
 | `tests/` | Vitest suites mirroring `src/`, plus `test_data/` fixtures |
-| `globals.d.ts`, `vite-env.d.ts` | Build-time globals (`__APP_VERSION__`, `__INDEXEDDB_VERSION__`, `window.__APP_CONFIG__`) and `VITE_*` env types |
+| `globals.d.ts`, `vite-env.d.ts` | Build-time globals (`__APP_VERSION__`, `__BUILD_ID__`, `__INDEXEDDB_VERSION__`, `window.__APP_CONFIG__`) and `VITE_*` env types |
 
 ## Bootstrap (`src/main.ts`)
 
-`main.ts` runs these steps in order:
-
 1. Import the fonts and the CSS.
-2. `createApp(AppProvider)`, or `createSSRApp` over the prerendered landing
-   page, which it then hydrates ([seo.md](seo.md)).
-3. Install the router, then `registerChunkReload` (`lib/chunkReload.ts`,
-   reloads once when a deploy removed a lazy chunk) and `registerCrossTab`
-   (`lib/crossTab.ts`, keeps the browser's tabs in step).
-4. Install Pinia with `pinia-plugin-persistedstate`, then
-   `startPreferenceSync()` (`features/preferences/usePreferences.ts`).
-5. `await userStore.initLocale(...)`. This uses top-level await.
-6. Install i18n.
-7. Install unhead.
-8. Mount the app (`prepareMount` / `mountApp` in `lib/seo/prerenderMount.ts`,
-    not awaited: lazy chunks import from `main.ts`, which has to finish
-    evaluating first).
+2. `createSSRApp(AppProvider)` over the prerendered landing page
+   (hydrated, [seo.md](seo.md)), else `createApp`. `app.config.errorHandler`
+   is `trackVueError`.
+3. Router, then `registerChunkReload` (reloads once when a deploy removed a
+   lazy chunk) and `registerCrossTab` ([data-layer.md](data-layer.md) §6).
+4. Pinia with `pinia-plugin-persistedstate`, then `startPreferenceSync()`.
+5. i18n, then unhead.
+6. `userStore.initLocale()` → `prepareMount()` → `mountApp()`
+   (`lib/seo/prerenderMount.ts`). This chain is **not awaited**: lazy chunks
+   import from `main.ts`, which must finish evaluating first.
 
-vue-showdown (markdown) isn't installed globally: `HelpView` and
-`HelpDrawer` import `VueShowdown` themselves, the drawer lazily.
-
-The auth interceptors (`axiosSetup()`) register with the API service when
-it is created, so a visitor's first page doesn't load axios
-([data-layer.md](data-layer.md)).
+vue-showdown isn't installed globally: `HelpView` and `HelpDrawer` render
+through `HelpMarkdown`, which sanitises (docs/security.md). The auth interceptors register when `apiService`
+is created, so a visitor's first page doesn't load axios.
 
 ## Routing (`src/router/index.ts`)
 
-- Every route is lazy: `component: () => import("@/views/...")`. Views that
-  take URL params use `props: true`.
-- `meta.requiresAuth` sends logged-out users to `/` with
-  `?redirectTo=<path>`.
-- A logged-in user who hits `/` is redirected to `/empire`.
-- `meta.indexable` marks the pages search engines may index (`/`,
-  `/search`, `/imprint-tos`, `/market`): they get a canonical URL and are
-  in the sitemap; every other route gets `noindex` (`AppProvider`, see
-  [seo.md](seo.md)). An unknown path renders `NotFoundView`.
-- `/dev/kit` (`views/dev/KitView.vue`) exists only on the dev server and in
-  builds with `VITE_KIT_PAGE=true`.
-- A `beforeEach` guard turns `?debug=calc|off` on any route into
-  `lib/debugMode.ts` switches and drops the key from the URL.
-- Views set their title with `useHead({ title })`; `AppProvider`'s
-  `titleTemplate` adds "· PRUNplanner".
-- **Adding a page:**
-  1. Create `views/XView.vue`.
-  2. Add the route in `router/index.ts`.
-  3. Add the navigation entry in `layout/components/navigation/useNavigation.ts`
-     (sidebar, rail and phone sheets all read it).
-  4. Add a locale namespace if the page needs new strings.
+- Every route is lazy (`component: () => import(...)`); views that take URL
+  params use `props: true`.
+- `meta.requiresAuth` sends logged-out users to `/?redirectTo=<path>`; a
+  logged-in user on `/` goes to `/empire`.
+- `meta.indexable` marks the pages search engines may index; all others get
+  `noindex` ([seo.md](seo.md)). Unknown paths render `NotFoundView`.
+- `/dev/kit` exists only on the dev server and in builds with
+  `VITE_KIT_PAGE=true`.
+- `?debug=calc|off` on any route toggles `lib/debugMode.ts` and is dropped
+  from the URL.
+- `afterEach` records the page view and registers `route_name` on later
+  analytics events and client error reports.
+- Views set their title with `useHead({ title })`; `AppProvider` appends
+  "· PRUNplanner".
+- **Adding a page:** create `views/XView.vue`, add the route, add the nav
+  entry in `layout/components/navigation/useNavigation.ts` (sidebar, rail
+  and phone sheets all read it), and a locale namespace if needed.
 
 ## The view pattern
 
-Views are thin. A typical view (`EmpireView.vue`, `PlanLoadView.vue`) looks
-like this:
+Views are thin (`EmpireView.vue`, `PlanLoadView.vue`):
 
 ```
 <WrapperPlanningDataLoader …>                 ← plans / empires / CX from backend
@@ -84,58 +71,35 @@ like this:
     <FeatureComponent … />                    ← rendered once data is ready
 ```
 
-The wrappers (`src/features/wrapper/`) run their loading steps through the
-query cache and show progress: the step checklist appears only when loading
-takes longer than 400 ms (`useDelay`), errors show at once, and
-`RenderingProgress` waits 400 ms too, so cached pages open without a loading
-screen. They emit `data:*` events and render their
-slot inside `<Suspense>` once every step has finished, so views can `await`
-data in `<script setup>`. Composables themselves are synchronous (see
-AGENTS.md). Heavy children are loaded with `defineAsyncComponent`.
+The wrappers (`src/features/wrapper/`, see
+[features/wrapper.md](features/wrapper.md)) run their steps through the
+query cache, emit `data:*` events and render their slot inside
+`<Suspense>` once every step has finished, so views may `await` in
+`<script setup>`. The step checklist (and `RenderingProgress`) appears only
+after 400 ms (`useDelay`), so cached pages open without a loading screen;
+errors show at once.
 
-`PlanLoadView` loads the data and then renders `PlanView`, which is the
-actual plan editor. The same pair serves `/plan/:planetNaturalId/:planUuid?`
-and `/shared/:sharedPlanUuid`, which edits a working copy that is never
-saved over the shared plan. An owner opening their own share link is sent
-to `/plan/…` instead.
+`PlanLoadView` loads data, then renders the editor `PlanView`. The pair
+serves `/plan/:planetNaturalId/:planUuid?` and `/shared/:sharedPlanUuid`
+(a working copy that never saves over the shared plan; an owner opening
+their own share link is sent to `/plan/…`).
 
 ## Build & tooling notes
 
-- **Alias.** `@` → `src/`, defined in `tsconfig.app.json`, `vite.config.ts`
-  and `vitest.config.ts`.
-- **Imports.** Nothing is auto-imported: every file imports what it uses.
-- **Build-time globals.**
-  - `__INDEXEDDB_VERSION__` is derived from `dbVersion` in `package.json`
-    (not the app `version`). Bumping it wipes and rebuilds the IndexedDB
-    stores.
-  - In tests it is `Date.now()`.
-- **Runtime config.**
-  - `src/lib/config.ts` reads `VITE_*` env vars, listed in the README.
-  - PostHog (`lib/analytics/`) is loaded only after the user consents
-    (`useAnalyticsConsent`, asked once by `AnalyticsConsentDialog` or, for
-    visitors, `AnalyticsConsentBanner`; changed in Profile or through
-    `AnalyticsFooterLink`); without consent nothing is stored or sent.
-  - Component errors reach PostHog through `app.config.errorHandler`
-    (`trackVueError`, set in `main.ts`); `router.afterEach` registers
-    `route_name` on every event and exception.
-  - The PostHog key comes from `window.__APP_CONFIG__`, injected at deploy
-    time through `env.js`, written by `docker-compose.yaml` or by the
-    Cloudflare Pages build command (set in the dashboard, with `POSTHOG_KEY`
-    as an environment variable):
-    `pnpm run build && echo "window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' };" > dist/env.js`.
-- **Deploy.**
-  - Production runs the Docker image (`Dockerfile`, `dist/` served by
-    `spa-to-http`) on Hetzner.
-  - Cloudflare Pages builds the pull request previews, configured in its
-    dashboard. With no top-level `404.html` it falls back to `index.html`
-    (SPA); headers are in `public/_headers`.
-  - `pnpm build` also prerenders `/` into `dist/index.html`
-    ([seo.md](seo.md)).
-  - On Pages builds (`CF_PAGES`) `vite.config.ts` skips the `.gz`/`.br`
-    files (Pages compresses itself, only `spa-to-http` serves them) and the
-    sourcemaps.
-  - The `buildVersion` plugin in `vite.config.ts` writes `dist/version.json`
-    with the build ID (the commit from `BUILD_REVISION`, or
-    `CF_PAGES_COMMIT_SHA` on Pages, else the build time) that is also baked
-    into the bundle as `__BUILD_ID__`; `lib/useVersionCheck.ts` compares the
-    two.
+- **Alias** `@` → `src/` in `tsconfig.app.json`, `vite.config.ts` and
+  `vitest.config.ts`.
+- **`__INDEXEDDB_VERSION__`** is derived from `dbVersion` in `package.json`
+  (not the app `version`). Bumping it wipes and rebuilds the IndexedDB
+  stores. In tests it is `Date.now()`.
+- **Runtime config.** `lib/config.ts` reads the `VITE_*` env vars (listed in
+  the README). The PostHog key comes from `window.__APP_CONFIG__`, set by an
+  `/env.js` the deploy writes (see `docker-compose.yaml`); PostHog loads
+  only after consent ([analytics.md](analytics.md)).
+- **Deploy.** The Docker image serves `dist/` with `spa-to-http`; Cloudflare
+  Pages builds PR previews (headers in `public/_headers`). On Pages
+  (`CF_PAGES`) `vite.config.ts` skips the `.gz`/`.br` files and sourcemaps.
+  `pnpm build` also prerenders `/` ([seo.md](seo.md)).
+- **Version check.** The `buildVersion` plugin writes `dist/version.json`
+  with the build ID (`BUILD_REVISION`, else `CF_PAGES_COMMIT_SHA`, else the
+  build time), also baked in as `__BUILD_ID__`; `lib/useVersionCheck.ts`
+  compares the two to show the update notice.

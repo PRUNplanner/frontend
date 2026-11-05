@@ -1,62 +1,39 @@
 # homepage
 
-**Purpose.** The pieces of the logged-out landing page (`views/HomepageView.vue`):
-the guided tours over a screenshot, the counts and links the page shows,
-and the landing-only button and form styles.
+**Purpose.** Pieces of the logged-out landing page: guided screenshot tours,
+the "Market today" section, counts and links, landing-only styles.
 
-**Used by.** `views/HomepageView.vue`; the styles also by
-`layout/components/HomepageHeader.vue` and the account forms in its panel;
-`lib/seo/checkLanding.ts` checks the prerender against the example plan
-and GitHub links.
+**Used by.** `views/HomepageView.vue`; the styles also by `HomepageHeader`
+and the account forms; `lib/seo/checkLanding.ts` checks the prerender
+against the example plan and GitHub links.
 
 ## Key files
 
-- `components/HomepageTour.vue`: a screenshot in a 16:10 viewport
-  (`HomepageTourViewport.vue`) that zooms and pans to one region per step,
-  outlined in lime, the rest dimmed. `layout="strip"` puts the steps as a
-  row under the image (the hero), `"list"` beside it, with the card's text
-  in the default slot (`reverse`: image left). Steps are `<button
-  aria-pressed>`; a click jumps there and restarts the timer. It advances
-  every `interval` ms only while it is on screen (IntersectionObserver), the
-  tab is visible and it is playing; with `prefers-reduced-motion: reduce` it
-  starts paused. A clicked step sends `landing:tour_step`, an
-  automatic advance sends nothing. Tailwind only, no scoped CSS: the
-  prerendered page has no chunk CSS before the app loads.
-- `components/HomepageMarketToday.vue`: the "Market today" section (lead
-  sentence, CX index with 7 / 30 / 90 d chips, top 5 movers, eight sector
-  cards) from `GetMarketSummary` (through `market_report`'s
-  `useMarketReport`) and the UNIVERSE pioneer `GetCXSparklines` call of
-  `/market`'s workforce chart, so `/market` loads neither again.
-  It is an async chunk: `HomepageView` mounts it through `useInView` once the
-  section comes near after a scroll; until then, in the prerender and while
-  it loads, `HomepageMarketSkeleton.vue` holds its final size (the shared
-  `market*` size classes in `homepage.constants.ts`; both use
-  `HomepageMarketSectorsHeader.vue`). The title and the CTA
-  are in the view, so a failed summary leaves just those. Events:
-  `landing:market_click`.
-- `homepageTour.util.ts`: `tourTransform` (translate and scale, clamped so
-  no empty edge shows) and `tourHighlight` (the outline's box, its width
-  divided by the zoom).
-- `homepage.constants.ts`: the player and plan counts (updated by hand),
-  the example plan UUID, the GitHub and Crowdin links, the landing button
-  and form classes, and the three tours' step tables.
+- `components/HomepageTour.vue` (+ `HomepageTourViewport.vue`,
+  `homepageTour.util.ts`): zooms and pans a screenshot to one outlined
+  region per step. Auto-advances only while on screen, tab visible and
+  playing; starts paused with `prefers-reduced-motion`. Only a clicked step
+  sends `landing:tour_step`.
+- `components/HomepageMarketToday.vue`: CX index, movers and sectors from
+  `market_report`'s `useMarketReport` plus the same Universe
+  `GetCXSparklines` call as `/market` (shared cache). Async, mounted via
+  `useInView`; `HomepageMarketSkeleton.vue` holds its final size until then
+  (shared `market*` classes). Title and CTA live in the view, so a failed
+  summary leaves just those.
+- `homepage.constants.ts`: player/plan counts (updated by hand), example plan,
+  GitHub/Crowdin links, landing classes, tour steps.
 
 ## Gotchas
 
-- The tour boxes are measured on the screenshots in
-  `public/images/homepage/`. Retaking a shot means re-measuring its boxes;
-  `homepageTour.util.test.ts` checks that every box fits its viewport.
-- The hero image has 640 and 1280 px variants (`plan-640.webp`,
-  `plan-1280.webp`) for `srcset`; `index.html` preloads it with the same
-  `srcset` and `sizes` (a test checks). Every image is lazy, the hero too, so
-  the prerendered page fetches nothing where `index.html` hides it; the
-  tours below the hero render their image once within 400 px of the
-  viewport.
-- The language count on the page is `SupportedLanguages.length`.
+- Tour components use Tailwind only, no scoped CSS: the prerendered page has
+  no chunk CSS before the app loads.
+- Tour boxes are measured on the screenshots in `public/images/homepage/`;
+  retaking a shot means re-measuring (`homepageTour.util.test.ts` checks
+  every box fits).
+- The hero has 640/1280 px variants; `index.html` preloads it with the same
+  `srcset`/`sizes` (tested). All images are lazy; tours below the hero
+  render their image within 400 px of the viewport.
 
 ## Tests
 
-`src/tests/features/homepage/`: the tour math and framing, the tour's
-timer, pause, reduced motion, visibility and events, and the "Market today"
-section (`components/HomepageMarketToday.test.ts`). The page is in
-`src/tests/views/HomepageView.test.ts`.
+`src/tests/features/homepage/`; page in `src/tests/views/HomepageView.test.ts`.

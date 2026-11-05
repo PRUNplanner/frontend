@@ -90,6 +90,7 @@ async function setup(options: { enabled?: boolean; base?: string } = {}) {
 	const state = ref(plan(1));
 	const saved = ref(JSON.stringify(plan(1)));
 	const enabled = ref(options.enabled ?? true);
+	const base = ref(options.base ?? "b0");
 	const snapshot = () => JSON.stringify(state.value);
 	const ask = vi.fn();
 	const applyDraft = vi.fn((d: PlanDraft) => {
@@ -109,7 +110,7 @@ async function setup(options: { enabled?: boolean; base?: string } = {}) {
 						planet_natural_id: "KW-020c",
 						empire_uuid: "e-1",
 					}) as PlanCreateData,
-				base: () => options.base ?? "b0",
+				base: () => base.value,
 				applyDraft,
 				conflict: { ask } as unknown as ReturnType<
 					typeof useSaveConflict
@@ -128,7 +129,17 @@ async function setup(options: { enabled?: boolean; base?: string } = {}) {
 		}
 	}
 
-	return { result, wrapper, state, saved, enabled, ask, applyDraft, edit };
+	return {
+		result,
+		wrapper,
+		state,
+		saved,
+		enabled,
+		base,
+		ask,
+		applyDraft,
+		edit,
+	};
 }
 
 describe("usePlanDraft", () => {
@@ -707,7 +718,7 @@ describe("usePlanDraft", () => {
 		expect(calls("SavePlanDraft")).toHaveLength(1);
 	});
 
-	it("applies a draft of the same save on load, refreshing the plan first", async () => {
+	it("offers a draft of the same save on load, refreshing the plan first, and applies it on restore", async () => {
 		const s = await setup();
 		answers.GetPlanDraft = () => draftOf(5, U1);
 		const refresh = vi.fn(async () => {});
@@ -715,12 +726,66 @@ describe("usePlanDraft", () => {
 
 		expect(refresh).toHaveBeenCalled();
 		expect(loaded).toEqual(draftOf(5, U1));
-		expect(s.applyDraft).toHaveBeenCalled();
+		// the saved version shows until restored
+		expect(s.applyDraft).not.toHaveBeenCalled();
+		expect(s.result.draftResumed.value).toBe(false);
+
+		expect(s.result.restore()).toBe(true);
+		expect(s.applyDraft).toHaveBeenCalledWith(draftOf(5, U1));
 		expect(s.result.draftResumed.value).toBe(true);
 		// applying schedules no write
 		vi.advanceTimersByTime(DRAFT_DEBOUNCE_MS);
 		await flushPromises();
 		expect(calls("SavePlanDraft")).toHaveLength(0);
+		// offered once
+		expect(s.result.restore()).toBe(false);
+	});
+
+	it("writes over the offered draft on the first edit, without asking", async () => {
+		const s = await setup();
+		answers.GetPlanDraft = () => draftOf(5, U1);
+		await s.result.load(async () => {});
+		await s.edit(2);
+
+		expect(calls("SavePlanDraft")[0][1].data).toMatchObject({
+			draft_updated_at: U1,
+		});
+		expect(s.ask).not.toHaveBeenCalled();
+		// the edit's draft replaced it
+		expect(s.result.restore()).toBe(false);
+		expect(s.applyDraft).not.toHaveBeenCalled();
+	});
+
+	it("keeps the offered draft through a preview and back", async () => {
+		const s = await setup();
+		answers.GetPlanDraft = () => draftOf(5, U1);
+		await s.result.load(async () => {});
+
+		// a preview shows a version and pauses autosave
+		s.enabled.value = false;
+		s.state.value = plan(3);
+		await flushPromises();
+		expect(s.result.restore()).toBe(false);
+		// back to the saved state
+		s.state.value = plan(1);
+		s.enabled.value = true;
+		await flushPromises();
+		vi.advanceTimersByTime(DRAFT_DEBOUNCE_MS);
+		await flushPromises();
+
+		expect(calls("DeletePlanDraft")).toHaveLength(0);
+		expect(s.result.restore()).toBe(true);
+		expect(s.applyDraft).toHaveBeenCalledWith(draftOf(5, U1));
+	});
+
+	it("no longer restores the offered draft once another save moved the base", async () => {
+		const s = await setup();
+		answers.GetPlanDraft = () => draftOf(5, U1);
+		await s.result.load(async () => {});
+		s.base.value = "b1";
+
+		expect(s.result.restore()).toBe(false);
+		expect(s.applyDraft).not.toHaveBeenCalled();
 	});
 
 	it("drops a draft equal to the saved plan on load, without asking", async () => {

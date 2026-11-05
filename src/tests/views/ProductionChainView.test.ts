@@ -15,6 +15,8 @@ import ProductionChainView from "@/views/tools/ProductionChainView.vue";
 import ChainSettings from "@/features/production_chain/components/ChainSettings.vue";
 import { toasts } from "@/ui/useToast";
 import { usePlanningStore } from "@/stores/planningStore";
+import { useUserStore } from "@/stores/userStore";
+import { jwt } from "@/tests/jwt";
 import cxList from "@/tests/test_data/api_data_cx_list.json";
 import { mountComponent } from "@/tests/mountComponent";
 import {
@@ -82,6 +84,13 @@ vi.mock("vue-router", async (original) => ({
 
 const STORAGE_KEY = "prunplanner_production_chain";
 
+/** a pinia with a logged-in user: the last chain is stored per user */
+function piniaAs(userId: number) {
+	const pinia = createPinia();
+	useUserStore(pinia).refreshToken = jwt(userId);
+	return pinia;
+}
+
 /** the mocked queries: no empires, the planet index for the rest */
 const byName =
 	(answers: Record<string, () => Promise<unknown>>) => (name: string) =>
@@ -146,14 +155,22 @@ describe("ProductionChainView", () => {
 
 	it("writes changes to the URL and the browser, and tracks them", async () => {
 		nav.route.query = { t: "DW:100" };
-		const { wrapper } = await mountComponent(ProductionChainView);
+		const { wrapper } = await mountComponent(
+			ProductionChainView,
+			{},
+			{
+				pinia: piniaAs(1),
+			}
+		);
 		await wrapper
 			.find("button[aria-label='production_chains.targets.more']")
 			.trigger("click");
 		await flushPromises();
 		const query = nav.replace.mock.calls.at(-1)![0].query;
 		expect(query.t).toBe("DW:110");
-		expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).t).toBe("DW:110");
+		expect(JSON.parse(localStorage.getItem(`${STORAGE_KEY}:1`)!).t).toBe(
+			"DW:110"
+		);
 
 		// 1 s after the last change
 		vi.advanceTimersByTime(900);
@@ -172,11 +189,43 @@ describe("ProductionChainView", () => {
 	});
 
 	it("opens the last chain from the browser without a link", async () => {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify({ t: "OVE:50" }));
-		const { wrapper } = await mountComponent(ProductionChainView);
+		localStorage.setItem(
+			`${STORAGE_KEY}:1`,
+			JSON.stringify({ t: "OVE:50" })
+		);
+		const { wrapper } = await mountComponent(
+			ProductionChainView,
+			{},
+			{
+				pinia: piniaAs(1),
+			}
+		);
 		expect(wrapper.find("[data-testid='chain-row-OVE']").exists()).toBe(
 			true
 		);
+	});
+
+	it("keeps the last chain per user, the one from before goes to the first", async () => {
+		const hasOVE = async (userId: number) => {
+			const { wrapper } = await mountComponent(
+				ProductionChainView,
+				{},
+				{
+					pinia: piniaAs(userId),
+				}
+			);
+			const found = wrapper
+				.find("[data-testid='chain-row-OVE']")
+				.exists();
+			wrapper.unmount();
+			return found;
+		};
+		localStorage.setItem(STORAGE_KEY, JSON.stringify({ t: "OVE:50" }));
+
+		expect(await hasOVE(1)).toBe(true);
+		expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+		expect(await hasOVE(2)).toBe(false);
+		expect(await hasOVE(1)).toBe(true);
 	});
 
 	it("loads the planet index only when something extracts (AC 6)", async () => {
@@ -410,33 +459,135 @@ describe("ProductionChainView interactions", () => {
 			await settle();
 		}
 
-		it("splits, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
-			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
+		it("moves pieces, merges, separates and fits, kept in the URL (AC 5, 6)", async () => {
+			nav.route.query = {
+				t: "DW:300",
+				src: "PG:buy",
+				bases: "A:::auto,B:::auto",
+				base: "DW:A3.B3",
+			};
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
 			const { wrapper } = await mountComponent(ProductionChainView);
 			await openBases(wrapper);
-			await wrapper.find("[data-testid='chain-split']").trigger("click");
-			await flushPromises();
-			expect(lastQuery().bases).toBe(
-				"A:game.expertise.AGRICULTURE::auto,B:game.expertise.FOOD_INDUSTRIES::auto"
-			);
-			expect(lastQuery().base).toContain("DW:B");
+			const panel = wrapper.findComponent({ name: "ChainPanel" });
+			const bases = () => wrapper.findComponent({ name: "ChainBases" });
+			const lastToast = () => toasts.value.at(-1)?.text;
 
+			// one piece of a split step moves; a whole step moves whole
+			panel.vm.$emit("base", "DW", "A", "B");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:A");
+			panel.vm.$emit("base", "DW", "B", "A");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:B");
+
+			// merging into itself changes nothing; B into A leaves A
+			bases().vm.$emit("merge", "A", "A");
+			await flushPromises();
+			expect(lastQuery().bases).toContain("B:");
+			bases().vm.$emit("merge", "B", "A");
+			await flushPromises();
+			expect(lastQuery().bases).toBe("A:::auto");
+			expect(lastToast()).toBe("production_chains.bases.merge_done");
+
+			// one expertise: halved into a new base with a planet
+			bases().vm.$emit("separate", "A");
+			await flushPromises();
+			expect(lastQuery().bases.split(",")).toHaveLength(2);
+			expect(lastQuery().base).toMatch(/^DW:A\d+\.B\d+$/);
+			expect(lastToast()).toBe("production_chains.bases.separate_done");
+
+			// fit: a second click while one runs is ignored
+			bases().vm.$emit("fit", 1);
+			bases().vm.$emit("fit", 1);
+			await flushPromises();
+			expect(lastToast()).toBe("production_chains.bases.fit_done");
+			expect(lastQuery().t).not.toBe("DW:300");
+			bases().vm.$emit("fit", 0);
+			await flushPromises();
+			expect(lastToast()).toBe("production_chains.bases.fit_none");
+
+			expect(actions()).toEqual(
+				expect.arrayContaining([
+					"base_move",
+					"merge_bases",
+					"separate_base",
+					"fit_bases",
+				])
+			);
+		});
+
+		it("moves one of three pieces and can't separate a single building", async () => {
+			nav.route.query = {
+				t: "DW:300",
+				src: "PG:buy",
+				bases: "A:::auto,B:::auto,C:::auto",
+				base: "DW:A2.B2.C2",
+			};
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			wrapper
+				.findComponent({ name: "ChainPanel" })
+				.vm.$emit("base", "DW", "A", "B");
+			await flushPromises();
+			expect(lastQuery().base).toBe("DW:A4.C2");
+
+			nav.route.query = { t: "DW:5", src: "PG:buy" };
+			const small = await mountComponent(ProductionChainView);
+			await openBases(small.wrapper);
+			small.wrapper
+				.findComponent({ name: "ChainBases" })
+				.vm.$emit("separate", "A");
+			await flushPromises();
+			expect(toasts.value.at(-1)?.text).toBe(
+				"production_chains.bases.separate_none"
+			);
+		});
+
+		it("lays out, moves and removes bases, kept in the URL (AC 6, 14)", async () => {
+			nav.route.query = { t: "DW:100,RAT:100,OVE:50" };
+			execute.mockImplementation((name: string) =>
+				Promise.resolve(name === "GetAllPlans" ? [] : index)
+			);
+			const { wrapper } = await mountComponent(ProductionChainView);
+			await openBases(wrapper);
+			await wrapper
+				.find("[data-testid='chain-auto-layout']")
+				.trigger("click");
+			await flushPromises();
+			const laid: string[] = lastQuery().bases.split(",");
+			expect(laid.length).toBeGreaterThan(1);
+			expect(lastQuery().bases).toContain(
+				"game.expertise.FOOD_INDUSTRIES"
+			);
+			// every base got a planet
+			expect(
+				laid.every((b) => /^[A-Z]:[^:]*:[A-Z]{2}-\d{3}[a-z]:/.test(b))
+			).toBe(true);
+			expect(lastQuery().base).toMatch(/DW:[A-Z]/);
+
+			const next = String.fromCharCode(65 + laid.length);
 			wrapper
 				.findComponent({ name: "ChainPanel" })
 				.vm.$emit("base", "DW", "new");
 			await flushPromises();
-			expect(lastQuery().base).toContain("DW:C");
-			expect(lastQuery().bases).toContain("C:::auto");
+			expect(lastQuery().base).toContain(`DW:${next}`);
+			expect(lastQuery().bases).toContain(`${next}:::auto`);
 
 			wrapper
 				.findComponent({ name: "ChainBases" })
-				.vm.$emit("remove", "C");
+				.vm.$emit("remove", next);
 			await flushPromises();
-			expect(lastQuery().bases).not.toContain("C:");
+			expect(lastQuery().bases).not.toContain(`${next}:`);
 			// its steps go back to the first base
 			expect(lastQuery().base).not.toContain("DW:");
 			expect(actions()).toEqual([
-				"split",
+				"auto_layout",
 				"base_add",
 				"base_move",
 				"base_remove",
@@ -589,10 +740,10 @@ describe("ProductionChainView interactions", () => {
 			await flushPromises();
 			expect(lastQuery().bases).toBe("A::PG-899b:AGRICULTURE");
 
-			// eight bases at most; moving to a new one is then a no-op
-			for (let i = 0; i < 8; i++) bases().vm.$emit("add");
+			// 26 bases at most; moving to a new one is then a no-op
+			for (let i = 0; i < 26; i++) bases().vm.$emit("add");
 			await flushPromises();
-			expect(lastQuery().bases.split(",")).toHaveLength(8);
+			expect(lastQuery().bases.split(",")).toHaveLength(26);
 			const panel = wrapper.findComponent({ name: "ChainPanel" });
 			panel.vm.$emit("base", "DW", "new");
 			panel.vm.$emit("base", "RAT", "B");

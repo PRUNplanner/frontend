@@ -451,6 +451,54 @@ describe("crossTab", () => {
 			expect(userStore.profile).toBe(adopted);
 		});
 
+		it("same user: keeps its email and FIO key, which storage doesn't hold", () => {
+			userStore.setToken("access", jwt(7));
+			userStore.profile = {
+				...profile,
+				email: "a@b.co",
+				fio_apikey: "key",
+				prun_username: "PRUN",
+			};
+			const { email: _e, fio_apikey: _k, ...stored } = profile;
+
+			onUserStorage(
+				storageEvent(null, {
+					accessToken: userStore.accessToken,
+					refreshToken: jwt(7),
+					profile: {
+						...stored,
+						username: "renamed",
+						prun_username: "PRUN",
+					},
+					fioKeySet: true,
+				}),
+				router
+			);
+			expect(userStore.profile).toMatchObject({
+				username: "renamed",
+				email: "a@b.co",
+				fio_apikey: "key",
+			});
+			expect(userStore.hasFIO).toBe(true);
+
+			// the other tab removed the key
+			onUserStorage(
+				storageEvent(null, {
+					accessToken: userStore.accessToken,
+					refreshToken: jwt(7),
+					profile: {
+						...stored,
+						username: "renamed",
+						prun_username: "PRUN",
+					},
+					fioKeySet: false,
+				}),
+				router
+			);
+			expect(userStore.profile?.fio_apikey).toBeNull();
+			expect(userStore.fioKeySet).toBe(false);
+		});
+
 		it("keeps its own unsent preference when storage already holds it", () => {
 			userStore.setToken("access", jwt(7));
 			userStore.setPreference("burnDaysYellow", 15);

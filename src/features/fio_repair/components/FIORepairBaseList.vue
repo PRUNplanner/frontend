@@ -18,7 +18,7 @@
 	} from "@/features/fio_repair/fioRepair.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import { PSegmented } from "@/ui";
 
 	/**
 	 * Every base with its buildings, lowest condition, days since repair,
@@ -109,20 +109,27 @@
 					· {{ $t("fio.repair.list.hint") }}
 				</span>
 			</h2>
-			<PButtonGroup
-				role="group"
-				:aria-label="$t('fio.repair.list.filter')">
-				<PButton
-					v-for="f in filters"
-					:key="f.key"
-					size="sm"
-					:pressed="filter === f.key"
-					:data-testid="`fio-repair-filter-${f.key}`"
-					@click="filter = f.key">
-					{{ $t(`fio.repair.list.filters.${f.key}`) }}
-					<span class="opacity-70 tabular-nums">{{ f.n }}</span>
-				</PButton>
-			</PButtonGroup>
+			<PSegmented
+				v-model:value="filter"
+				size="sm"
+				:options="
+					filters.map((f) => ({
+						value: f.key,
+						label: $t(`fio.repair.list.filters.${f.key}`),
+					}))
+				"
+				:label="$t('fio.repair.list.filter')">
+				<template #option="{ option }">
+					<span
+						class="inline-flex gap-1.5"
+						:data-testid="`fio-repair-filter-${option.value}`">
+						{{ option.label }}
+						<span class="opacity-70 tabular-nums">
+							{{ filters.find((f) => f.key === option.value)?.n }}
+						</span>
+					</span>
+				</template>
+			</PSegmented>
 		</div>
 		<div class="overflow-x-auto">
 			<div class="min-w-[760px]">

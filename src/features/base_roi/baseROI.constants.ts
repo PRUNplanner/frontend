@@ -20,17 +20,18 @@ export const SHIPS: Record<BaseROIShip, { weight: number; volume: number }> = {
 	HCB: { weight: 5000, volume: 5000 },
 };
 
-/** ships are not traded on the CX: one price for every ship in v1 */
-export const SHIP_PRICE = 800_000;
-
-/** ship of the ship cost when logistics is manual or none */
-export const SHIP_COST_FALLBACK: BaseROIShip = "WCB";
-
 /**
  * Days with 0, 1, 2, 3 and 4 experts, each divided by the number of
  * production buildings: the length of each stage, not a running total
  */
 export const EXPERT_STAGE_DAYS = [10, 12.5, 57.57, 276.5, 915.1];
+
+/** days of price history the big charts show (the backend serves up to 90) */
+export const HISTORY_DAYS = 90;
+
+/** the history charts' time ranges and aggregation sizes, in days */
+export const CHART_RANGES: readonly number[] = [7, 30, 90];
+export const CHART_BUCKETS: readonly number[] = [1, 3, 7];
 
 export const DAY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 21, 28];
 
@@ -90,32 +91,42 @@ export const BASE_ROI_COLUMNS: BaseROIColumn[] = [
 	"running_cost",
 	"cargo",
 	"market_capacity",
+	"plots",
 	"workforce",
 	"history",
 ];
 
-/** what each setup preset writes; Veteran's ship comes from the dialog */
-export const SETUP_PRESETS: Record<BaseROIPreset, Partial<BaseROISettings>> = {
+/**
+ * What each setup preset writes; Veteran's ship comes from the dialog.
+ * Rookies see fewer columns: no weekly return, no running cost.
+ */
+export const SETUP_PRESETS: Record<
+	BaseROIPreset,
+	Partial<BaseROISettings> & { hiddenColumns: BaseROIColumn[] }
+> = {
 	rookie: {
 		logistics: "ship",
 		ship: "SCB",
 		minMarketCapacity: 0.7,
-		bufferDays: 9,
+		bufferDays: 10,
+		hiddenColumns: ["weekly_return", "running_cost"],
 	},
 	standard: {
 		logistics: "ship",
-		ship: "LCB",
+		ship: "WCB",
 		minMarketCapacity: 0.7,
-		bufferDays: 9,
+		bufferDays: 10,
+		hiddenColumns: ["running_cost"],
 	},
 	veteran: {
 		logistics: "none",
 		minMarketCapacity: 0,
-		bufferDays: 9,
+		bufferDays: 10,
+		hiddenColumns: ["running_cost"],
 	},
 };
 
-/** exchanges with price history and a system to count jumps to */
+/** physical exchanges: a system to count jumps to */
 export const BASE_ROI_EXCHANGES = ["AI1", "CI1", "IC1", "NC1"] as const;
 
 /** the game's short workforce names, as on its population reports */

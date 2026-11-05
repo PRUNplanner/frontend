@@ -131,6 +131,10 @@ export function usePlanSave(
 
 	const refIsSaving: Ref<boolean> = ref(false);
 	const refSaveFailed: Ref<boolean> = ref(false);
+	// the version name of the failed save, so a retry sends it again
+	const refFailedName: Ref<string> = ref("");
+	// the page is gone: an answer arriving later shows nothing
+	let unmounted: boolean = false;
 
 	// Keyboard and button: saving needs an own, changed, idle plan
 	const canSave: ComputedRef<boolean> = computed(
@@ -169,10 +173,17 @@ export function usePlanSave(
 		conflict,
 	});
 
-	function saveFailed(): void {
-		// keep modified state, the status offers a retry
+	/**
+	 * Keeps the modified state, the status offers a retry
+	 *
+	 * @param {string} [message] The backend's reason (e.g. the version cap),
+	 * else the generic message
+	 */
+	function saveFailed(message?: string): void {
 		refSaveFailed.value = true;
-		toast(t("plan.save_status.failed_message"), { type: "error" });
+		toast(message ?? t("plan.save_status.failed_message"), {
+			type: "error",
+		});
 	}
 
 	/**
@@ -203,6 +214,7 @@ export function usePlanSave(
 			// plan exists, trigger a save
 			if (existing.value) {
 				const versionName: string = name.trim();
+				refFailedName.value = versionName;
 				const restoredFrom = preview.refRestoredFrom.value;
 				// after the draft writes queued before it
 				const saved = await draft.withSave(async (seen) => {
@@ -231,6 +243,8 @@ export function usePlanSave(
 				});
 				if ("error" in saved) {
 					const kind = saved.error;
+					if (kind === "version_cap")
+						return saveFailed(saved.message);
 					if (kind === "failed" || kind === "restored_from")
 						return saveFailed();
 					// after the save settled, the dialog waits on the user
@@ -240,6 +254,8 @@ export function usePlanSave(
 
 				refBaseModifiedAt.value = saved.modifiedAt;
 				markSaved(sent);
+				refFailedName.value = "";
+				draftToast?.destroy();
 				preview.clearRestore();
 				trackEvent("plan:save", {
 					planet_natural_id: planetNaturalId,
@@ -343,7 +359,9 @@ export function usePlanSave(
 
 	function openSaveAsModal(): void {
 		// Pre-fill with current plan name + " (Copy)"
-		refSaveAsName.value = planName.value ? `${planName.value} (Copy)` : "";
+		refSaveAsName.value = planName.value
+			? t("plan.components.save_as.copy_name", { name: planName.value })
+			: "";
 		// Pre-fill with current empire
 		refSaveAsEmpireUuid.value = empire.uuid.value;
 		refShowSaveAsModal.value = true;
@@ -362,16 +380,10 @@ export function usePlanSave(
 	 * Drops the unsaved edits and their draft, back to the saved state.
 	 * The editor reverts only once the draft is gone: another tab's draft
 	 * opens the conflict dialog and the edits stay.
-	 *
-	 * @param {"menu" | "toast"} [from] The save menu, or the notice of a
-	 * restored draft
 	 */
-	async function discardChanges(
-		from: "menu" | "toast" = "menu"
-	): Promise<void> {
+	async function discardChanges(): Promise<void> {
 		if (!modified.value) return;
 		if (
-			from === "menu" &&
 			!(await confirm({
 				title: t("plan.versions.discard"),
 				content: t("plan.versions.discard_confirm"),
@@ -393,8 +405,31 @@ export function usePlanSave(
 		refSaveFailed.value = false;
 		preview.clearRestore();
 		markSaved(savedSnapshot());
-		if (from === "toast") trackEvent("plan:draft_discard");
-		else trackEvent("plan:discard_changes");
+		trackEvent("plan:discard_changes");
+	}
+
+	/**
+	 * The Reload button: the plan as saved in the backend, unsaved edits
+	 * (after a confirm) and the draft are dropped
+	 */
+	async function reloadPlan(): Promise<void> {
+		const unsaved: boolean = preview.previewing.value
+			? preview.stashModified.value
+			: modified.value;
+		if (
+			unsaved &&
+			!(await confirm({
+				title: t("plan.actions.reload"),
+				content: t("plan.actions.reload_confirm"),
+				positiveText: t("plan.actions.reload"),
+				negativeText: t("common.buttons.cancel"),
+			}))
+		)
+			return;
+
+		if (!(await reloadSavedPlan())) return;
+		preview.clearRestore();
+		trackEvent("plan:reload", { planet_natural_id: planetNaturalId });
 	}
 
 	/**
@@ -404,6 +439,7 @@ export function usePlanSave(
 	 */
 	function applySavedPlan(plan: IPlanDefinition): void {
 		preview.cancel();
+		draftToast?.destroy();
 		refPlanData.value = inertClone(plan);
 		refBaseModifiedAt.value = plan.modified_at;
 		refSaveFailed.value = false;
@@ -530,16 +566,20 @@ export function usePlanSave(
 
 	/**
 	 * Drops the edits for the saved plan, a failed load keeps them
+	 *
+	 * @returns {Promise<boolean>} Reloaded
 	 */
-	async function reloadSavedPlan(): Promise<void> {
+	async function reloadSavedPlan(): Promise<boolean> {
 		try {
 			const plan: Plan = await fetchSavedPlan();
 			// the edits are dropped, so is their draft
 			await draft.drop();
 			applySavedPlan(plan);
+			return true;
 		} catch (err) {
 			reportError(err);
 			toast(t("common.ui.load_failed"), { type: "error" });
+			return false;
 		}
 	}
 
@@ -646,9 +686,10 @@ export function usePlanSave(
 	);
 
 	/*
-	 * Opening the plan: its unsaved edits from an earlier visit come back
-	 * from the draft. With a draft the plan is refetched first: GetPlan
-	 * never expires and a long-lived tab would compare an old save.
+	 * Opening the plan shows it as saved; unsaved edits from an earlier
+	 * visit are offered back from the draft until the first edit. With a
+	 * draft the plan is refetched first: GetPlan never expires and a
+	 * long-lived tab would compare an old save.
 	 */
 	let draftToast: PToastHandle | undefined;
 
@@ -665,31 +706,44 @@ export function usePlanSave(
 	async function resumeDraft(): Promise<void> {
 		if (!refPlanData.value.uuid || !draftPossible.value) return;
 
-		const restored: PlanDraft | null = await draft.load(refreshSavedPlan);
-		if (!restored) return;
+		const offered: PlanDraft | null = await draft.load(refreshSavedPlan);
+		// left the plan meanwhile: the offer belongs to it
+		if (!offered || unmounted) return;
 
-		trackEvent("plan:draft_restored", {
-			age_minutes: Math.floor(
-				(Date.now() - Date.parse(restored.updated_at)) / 60_000
-			),
-		});
 		draftToast = toast(
-			t("plan.versions.draft_restored", {
-				when: formatWhen(restored.updated_at, t),
+			t("plan.versions.draft_found", {
+				when: formatWhen(offered.updated_at, t),
 			}),
 			{
-				duration: 15_000,
+				duration: 0,
+				closable: true,
 				action: {
-					label: t("plan.versions.discard"),
-					onClick: () => discardChanges("toast"),
+					label: t("plan.versions.restore_draft"),
+					onClick: () => {
+						draftToast?.destroy();
+						if (!draft.restore()) return;
+						trackEvent("plan:draft_restored", {
+							age_minutes: Math.floor(
+								(Date.now() - Date.parse(offered.updated_at)) /
+									60_000
+							),
+						});
+					},
 				},
 			}
 		);
 	}
 
+	// the first edit writes over the offered draft; a preview closes the
+	// notice too, the draft stays for the next visit
+	watch([modified, preview.previewing], ([m, p]) => {
+		if (m || p) draftToast?.destroy();
+	});
+
 	onMounted(() => void resumeDraft());
 
 	onUnmounted(() => {
+		unmounted = true;
 		flushPlanEdits();
 		// toasts belong to the app, don't let one outlive its plan
 		remoteToast?.destroy();
@@ -699,6 +753,7 @@ export function usePlanSave(
 	return {
 		refIsSaving,
 		refSaveFailed,
+		refFailedName,
 		canSave,
 		save,
 		refShowSaveAsModal,
@@ -709,6 +764,7 @@ export function usePlanSave(
 		saveAs,
 		openSaveAsModal,
 		discardChanges,
+		reloadPlan,
 		applySavedPlan,
 		activateVersion,
 		conflict,

@@ -17,7 +17,7 @@ import type {
 	IPlanSaveVersion,
 } from "@/features/planning_data/usePlan.types";
 import { getSaveError } from "@/features/save_conflict/saveConflict.util";
-import { isApiError } from "@/lib/apiError";
+import { apiFieldMessage, isApiError } from "@/lib/apiError";
 import { reportError } from "@/lib/analytics/useAnalytics";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
@@ -231,6 +231,10 @@ export function usePlan() {
 					?.restored_from !== undefined
 			)
 				return { error: "restored_from" };
+			// the plan has the most named versions: the user's to resolve
+			const capMessage = apiFieldMessage(err, "version_name");
+			if (capMessage)
+				return { error: "version_cap", message: capMessage };
 			reportError(err);
 			return { error: getSaveError(err) ?? "failed" };
 		}

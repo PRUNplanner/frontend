@@ -1,5 +1,6 @@
 // Util
 import { formatNumber, formatPercent } from "@/util/numbers";
+import { toCsv } from "@/util/download";
 
 // Types & Interfaces
 import type { Material, Recipe } from "@/features/api/schemas/gameData.schemas";
@@ -90,10 +91,12 @@ export function buyList(
 	// what each base's steps take of a bought material
 	const uses = new Map<string, Map<string, number>>();
 	for (const l of result.links) {
-		const base = result.rows[l.consumer]?.base;
-		if (result.rows[l.input]?.source !== "buy" || !base) continue;
+		const pieces = result.rows[l.consumer]?.shares ?? [];
+		if (result.rows[l.input]?.source !== "buy" || !pieces.length) continue;
 		const byBase = uses.get(l.input) ?? new Map<string, number>();
-		byBase.set(base, (byBase.get(base) ?? 0) + l.perDay);
+		// a split step's pieces each buy their share
+		for (const s of pieces)
+			byBase.set(s.base, (byBase.get(s.base) ?? 0) + l.perDay * s.share);
 		uses.set(l.input, byBase);
 	}
 
@@ -147,11 +150,6 @@ export function buyList(
 	};
 }
 
-const csvCell = (v: string | number) => {
-	const s = String(v);
-	return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
-
 /**
  * The steps as CSV, one row per material in chain order
  * @author jplacht
@@ -168,26 +166,22 @@ export function chainCsv(
 	sourceLabel: (source: string) => string,
 	nothing: string
 ): string {
-	const lines = [header.map(csvCell).join(",")];
+	const lines: (string | number)[][] = [header];
 	for (let k = result.order.length - 1; k >= 0; k--) {
 		const row = result.rows[result.order[k]];
-		lines.push(
-			[
-				row.ticker,
-				row.perDay.toFixed(4),
-				sourceLabel(row.source),
-				row.recipe ? recipeLabel(row.recipe, nothing) : "",
-				row.buildingTicker ?? "",
-				row.buildings.toFixed(4),
-				row.unitCost.toFixed(2),
-				row.price.toFixed(2),
-				row.have.toFixed(4),
-			]
-				.map(csvCell)
-				.join(",")
-		);
+		lines.push([
+			row.ticker,
+			row.perDay.toFixed(4),
+			sourceLabel(row.source),
+			row.recipe ? recipeLabel(row.recipe, nothing) : "",
+			row.buildingTicker ?? "",
+			row.buildings.toFixed(4),
+			row.unitCost.toFixed(2),
+			row.price.toFixed(2),
+			row.have.toFixed(4),
+		]);
 	}
-	return lines.join("\n");
+	return toCsv(lines);
 }
 
 const WORKFORCE_PROGRAMS: PlanCOGCProgram[] = [

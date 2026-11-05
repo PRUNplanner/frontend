@@ -7,7 +7,6 @@
 		computed,
 		type ComputedRef,
 		defineAsyncComponent,
-		onMounted,
 		ref,
 		type Ref,
 		watch,
@@ -84,7 +83,15 @@
 	const hoverCard = ref<InstanceType<typeof PHoverCard> | null>(null);
 
 	const material = ref<Material | null>(null);
-	const categoryCssClass = ref<string>("");
+	// synchronous, so a tile renders once; follows the ticker when a table reuses the tile
+	const categoryCssClass: ComputedRef<string> = computed(() => {
+		try {
+			return getMaterialClass(props.ticker);
+		} catch (err) {
+			reportError(err);
+			return "";
+		}
+	});
 
 	const indicatorPercentage: ComputedRef<number> = computed(() => {
 		if (props.amount && props.max) {
@@ -118,19 +125,38 @@
 		return style;
 	});
 
-	// the overview is built on the first open, not for every tile on a page
-	async function loadOverview(): Promise<void> {
-		if (refExchangeOverview.value) return;
+	// the material is loaded on the first open, not for every tile on a page
+	async function loadMaterial(): Promise<void> {
+		if (material.value) return;
+		const ticker = props.ticker;
 		try {
-			refExchangeOverview.value = await getMaterialExchangeOverview(
-				props.ticker
-			);
-		} catch {
-			refExchangeOverview.value = undefined;
+			const loaded = await getMaterial(ticker);
+			// the tile may show another ticker by now
+			if (ticker === props.ticker) material.value = loaded;
+		} catch (err) {
+			reportError(err);
 		}
 	}
 
-	function openDrawer(source: "tile" | "card"): void {
+	// the overview is built on the first open, not for every tile on a page
+	async function loadOverview(): Promise<void> {
+		if (refExchangeOverview.value) return;
+		const ticker = props.ticker;
+		try {
+			const overview = await getMaterialExchangeOverview(ticker);
+			if (ticker === props.ticker) refExchangeOverview.value = overview;
+		} catch {
+			// no overview: the card keeps its spinner, the next open retries
+		}
+	}
+
+	function onOpen(): void {
+		loadMaterial();
+		loadOverview();
+	}
+
+	async function openDrawer(source: "tile" | "card"): Promise<void> {
+		await loadMaterial();
 		if (!material.value) return;
 		hoverCard.value?.hide();
 		loadOverview();
@@ -163,14 +189,16 @@
 	// the drawer returns focus to the tile: that opens no card
 	watch(refShowDrawer, (value) => !value && hoverCard.value?.ignoreFocus());
 
-	onMounted(async () => {
-		try {
-			material.value = await getMaterial(props.ticker);
-			categoryCssClass.value = getMaterialClass(props.ticker);
-		} catch (err) {
-			reportError(err);
+	// a table reusing the tile for another row: drop the old ticker's data
+	watch(
+		() => props.ticker,
+		() => {
+			hoverCard.value?.hide();
+			refShowDrawer.value = false;
+			material.value = null;
+			refExchangeOverview.value = undefined;
 		}
-	});
+	);
 </script>
 
 <template>
@@ -193,11 +221,11 @@
 				:placement="popoverPlacement"
 				:width="CARD_WIDTH"
 				:options="{ trigger: marketCardTrigger }"
-				@open="loadOverview"
+				@open="onOpen"
 				@pin="onPin">
 				<template #trigger>
 					<div
-						class="flex justify-center items-center"
+						class="flex h-full justify-center items-center"
 						:class="{ 'px-2': !!amount }">
 						<div v-if="amount" class="pr-1">
 							{{ formatNumber(amount, 2, true) }}x

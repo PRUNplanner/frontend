@@ -45,7 +45,7 @@ describe("PlanetSearchSortMenu", () => {
 
 		// one ▲/▼ pair per key, then the remove buttons
 		body<HTMLButtonElement>(
-			'button[aria-label="planet_search.sort.asc"]'
+			'button[title="planet_search.sort.asc"]'
 		)[1].click();
 		expect(menu.emitted("sort")![0]).toEqual([
 			[

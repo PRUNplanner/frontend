@@ -2,243 +2,108 @@
 
 ## Component kit (`src/ui/`)
 
-Build UI from the in-house `P*` components first. The barrel is
-`src/ui/index.ts`:
-
-```ts
-import { PButton, PForm, PFormItem, PSelect, PInputNumber, PTooltip } from "@/ui";
-```
-
-The kit contains `PButton`, `PButtonGroup`, `PCheckbox`, `PDataTable`,
-`PDrawer`, `PDropdown`, `PForm`, `PFormItem`, `PFormSeparator`, `PHoverCard`, `PIcon`,
-`PInput`, `PInputNumber`, `PModal`, `PNotice`, `PPopover`, `PProgressBar`, `PSegmented`, `PSelect`,
-`PSelectMultiple`, `PSpin`, `PTable`, `PTag`, `PToast` (through
-`useToast()`, see "Toasts" below), `PTooltip` and `PValue`, plus
-`useConfirm()` (see "Overlays" below). `PConfirmHost` and `PToastHost`
-are exported for `AppProvider.vue` only. `PPagination` and `PSelectElement`
-are internal to `PDataTable` and the selects; `PLayerClose` (the X of
-modals and drawers) is imported by path, not from the barrel.
+Build UI from the `P*` components, exported by `src/ui/index.ts`
+(`import { PButton, PSelect } from "@/ui"`; see the [hard rules](../AGENTS.md#hard-rules)
+for when to import by path). `PConfirmHost` and `PToastHost` are for
+`AppProvider.vue` only; `PPagination`, `PSelectElement`, `PToast` and
+`PLayerClose` are internal. Props are documented in each component's
+`defineProps`.
 
 - **Kit page:** `/dev/kit` (`views/dev/KitView.vue`) shows every component
-  in every size, type and state. It exists in `pnpm dev` and in builds with
-  `VITE_KIT_PAGE=true` (the e2e stack), not in production. Add new
-  components and states there.
-- **Shared props:** `size` (`"sm" | "md"`) and `type` for the colour
-  (`primary`, `success`, `error`, `warning`, `secondary`; buttons also
-  `ghost`). Both types are in `ui/ui.types.ts`.
-- **Sizes:** every control (`PButton`, `PInput`, `PInputNumber`,
-  `PSelect`, `PSelectMultiple`, `PCheckbox`) takes `size`: `md` is 28 px
-  tall, `sm` 24 px (checkbox boxes 16 / 14 px), side by side on the kit
-  page. `PCheckbox` also takes `indeterminate` (a dash, for "select all"
-  over some rows).
-- **Touch:** every kit target is at least 24 × 24 px, and 44 × 44 px on a
-  touch screen (`pointer: coarse`). Small controls get an invisible hit
-  area from the `touch-target` utility (`style.css`, a centred `::after`);
-  put it on any raw `<button>` smaller than that too, and don't clip it
-  with `overflow-hidden` around the control (`PForm` rows only clip
-  sideways, and not at all on touch screens). A tag's remove button sits inside the tag, so it is
-  visibly 44 px on touch screens instead; `PInputNumber`'s steppers are
-  mouse-only and hidden there (the field opens the numeric keypad).
-  Known limits: in a table row a target is as tall as the row, and
-  buttons closer than about 20 px to each other share the space between
-  them, because a hit area never covers a neighbouring control. Text fields and select triggers
-  can't take a tap through a pseudo element, so they are 44 px tall there
-  (`pointer-coarse:h-11` on inputs, `pointer-coarse:min-h-11` on select
-  triggers). Desktop sizes don't change. The UI audit
-  counts what's left as `smallTargetsTouch`.
-- **Unknown props fail `pnpm tsc`** (`checkUnknownProps` and
-  `checkUnknownEvents` in `tsconfig.typecheck.json`). `class`, `style`,
-  `id`, `title`, `role`, `aria-*` and `data-*` fall through to a
-  component's root (allowlisted in `ui/ui.types.ts`); anything else needs a
-  declared prop or emit.
-- **Field states:** `status` (`"error"` or `"warning"`) on `PInput`,
-  `PInputNumber`, `PSelect` and `PSelectMultiple` draws an inset ring in
-  `negative` / `warning`; `error` also sets `aria-invalid`. In a form, give
-  the `PFormItem` an `error` instead: it shows the message under the field,
-  puts the control in the error state and links the message (and the
-  `#info` slot) with `aria-describedby`.
-- **Notices:** a message in the page is a `<PNotice type="error">`
-  (`info`, `warning` or `error`, default `info`), with an optional
-  `#action` slot for one button and an optional `icon` (a component) in
-  place of the type's. Errors are `role="alert"`, the others
-  `role="status"`. Don't hand-style red or amber boxes.
-- **Toggles:** a button that shows a selection or an on/off state takes
-  `:pressed="…"` instead of switching `type`: it sets `aria-pressed` and is
-  `primary` while pressed, its `type` (default `secondary`) when not. Keep
-  `type` only where the colour means something else (a failed save).
-- **Segmented control:** `<PSegmented v-model:value="view" :options label>`
-  switches between a few views of one thing: a `role="group"` named by
-  `label`, one `aria-pressed` button per option in a sunken track, `size`
-  24 / 28 px, `block` fills the width (`block="phone"` below `sm` only),
-  an option with `disabled: true` can't be picked.
-  Used on `/market`, Production Chains and parts of the plan page; the
-  remaining `PButton pressed` groups move to it page by page. A single on/off toggle stays `PButton pressed`.
-- **Tags:** `<PTag closable @close="…">` adds a remove button named
-  "Remove {value}", so tags (and `PSelectMultiple` chips) can be removed
-  by keyboard.
-- **Inputs:** `PInput` has a `#prefix` slot (e.g. a search icon).
-  `PSelectMultiple` takes a `placeholder`; both selects only show the
-  clear button with `clearable`.
-- **Select options** use `PSelectOption` (`{ label, value, badge?, children? }`). `badge` is shown on the right and not searched; arrow keys and Enter move through group children, not group headers.
-- **Forms:** `<PForm as-form @submit="…">` renders a real `<form>`, so Enter
-  in an input submits. Give its button `html-type="submit"` and no `@click`.
-  `PButton` defaults to `type="button"` and never submits on its own.
-- **Accessibility:** every control needs a name.
-  - Inside a `PFormItem`, `PInput`, `PInputNumber`, `PCheckbox` and
-    `PSelect*` are labelled by it automatically (`label[for]` /
-    `aria-labelledby`).
-  - Elsewhere pass `aria-label` (an i18n string with context, e.g.
-    "Amount of {building}"); `PCheckbox` can also take its label as slot text.
-  - Icon-only `PButton`s need `aria-label`; the dev build warns without it.
-  - Auth fields set `autocomplete` (`username`, `current-password`,
-    `new-password`); the kit default is `off`.
-  - Keyboard: `PInputNumber` steps with ↑/↓ (its +/- are mouse-only and
-    hidden on touch screens);
-    `PSelect` opens with Enter, Space or ↓ and closes with Esc. The select
-    is a `combobox` controlling a `listbox` of `option`s (groups are
-    `group`s), with `aria-activedescendant` on whatever has focus; opening a
-    searchable one moves focus into its search, and Esc (and Enter on a
-    single select) returns it to the combobox.
-  - One focus ring for all controls (`:focus-visible`, `--color-focus` in
-    `style.css`); don't add `outline-none`. Clickable things are `<button>`
-    or `<a>`, never a `div` with `@click`.
-  - Paginated tables use `PDataTable`'s `:page-size="50"`; its
-    `PPagination` pages are real buttons with `aria-current`.
-  - `src/tests/ui/components/a11y.test.ts` runs axe-core on the kit.
-- **Numbers:** `formatNumber` / `formatAmount` (`util/numbers.ts`) show "—"
-  for ∞ or NaN; payback periods use `formatPayback` ("never" when negative
-  or infinite), and `humanizeTimeMs` shows "never" for an infinite runtime.
-- **Signed values:** show a profit, delta or other good/bad number with
-  `<PValue :value="x" />`. It prints the sign (`+1.00` / `-1.00`) and colours
-  by it (zero stays neutral), so it reads without colour. `arrow` adds ▲/▼.
-- **Styling:** the Tailwind class sets for each component live in
-  `ui/styles.ts`. Change the look there, not per usage.
-- **Data tables:** `PDataTable`, see "Tables" below. Examples:
-  `features/market_live/components/CXPointTable.vue` and
-  `features/resource_roi_overview/components/ResourceROITable.vue`.
-- **Overlays and the rest:**
-  - **Overlays:** modals, drawers, confirms, popovers and menus come from
-    the kit.
-    - `<PModal v-model:show="x" :title="…" :width="480">` with an `#action`
-      slot for the footer; `width` is px or any CSS width (default the full
-      width), and 16 px of the mask stay visible on each side.
-    - `<PDrawer v-model:show="x" :title="…" :width="600">`, with
-      `placement` (`left`, `right`, or `bottom` for a full-width sheet
-      with a grab handle, at most 85vh), `bodyClass` and a `#header` slot.
-    - Confirms: `if (await useConfirm()({ title, content, positiveText,
-      negativeText })) …`; the one `PConfirmHost` sits in `AppProvider.vue`.
-    - Both layers teleport to `body`, set `inert` on `#app` and lock the page
-      scroll. Focus moves in and returns to the opener, Tab stays inside, and
-      Esc closes the top layer (an open `PSelect` list first). `PSelect` lists
-      and `PTooltip`s stack above them; every z-index comes from
-      `ui/zIndex.ts`.
-    - `<PPopover>` with a `#trigger` slot: `trigger` `click` (toggles) or
-      `manual` (`v-model:show`), `placement`, `panelClass` (added to the
-      panel look, replaces the default `p-3` padding), `anchor` (an element
-      to position at instead of the trigger) and `arrow`. Emits
-      `clickoutside`.
-    - `<PDropdown :options @select>`: `{ key, label, icon?, hint?, danger? }`
-      or `{ type: "divider" }`, `trigger` `click`, `hover` or `manual`, and
-      `anchor`. A `role="menu"`: ↓ on the trigger opens it, ↑/↓/Home/End
-      move, Enter or Space picks, Esc closes and returns focus.
-    - `<PTooltip>` with a `#trigger` slot shows its default slot on hover,
-      on keyboard focus inside the trigger and on a tap; Esc, focus leaving
-      and a tap elsewhere close it. A tap on a button, link or checkbox
-      inside the trigger runs that control and shows no tooltip, so give
-      such a control its own name. The panel is `role="tooltip"` and, while
-      it's open, the trigger's first focusable element gets
-      `aria-describedby` (closed tooltips add nothing to the page); a trigger
-      with nothing focusable becomes a tab stop itself (`disabled` turns
-      all of it off). Charts with their own SVG tooltips use the same rules
-      through `useTooltipTrigger` (`ui/useTooltipTrigger.ts`).
-    - `<PHoverCard :label placement width>` with a `#trigger` slot is a
-      card of content next to its trigger, not a tooltip (the material
-      market card). Hover intent (`ui/useHoverCard.ts`, timing and
-      `trigger` as `options`; `trigger: "click"` opens nothing on hover or
-      focus and leaves opening to the caller): it opens after the pointer rests 300 ms,
-      swaps to another trigger of the group in 80 ms while one is open,
-      stays open on the card (a safe area bridges the gap) and closes
-      300 ms after leaving both. Keyboard focus opens it at once. It never
-      opens while scrolling (150 ms), with a button down or text selected,
-      while another card of the group is pinned, or while a modal, drawer
-      or menu is open that doesn't hold the trigger (`layerOver`); inside a
-      drawer it opens above it (`aboveLayers`), and that drawer's Tab trap
-      leaves focus in the card alone. Esc closes it and blocks it until the
-      pointer or focus leaves the trigger. The trigger is a `role="button"`
-      tab stop with `aria-expanded` and `aria-controls`; Enter or Space
-      clicks it, and a card that click pinned takes the focus (closing it
-      returns focus to the trigger). The card is a labelled `role="region"`,
-      no `aria-describedby`. A click is the caller's: the exposed
-      `togglePin` (emits `pin`), `openSheet` (a `PDrawer placement="bottom"`
-      on touch or below 560 px, `wantsSheet()`) or its own action. Emits
-      `open`, so content can load on the first open. Placed on the wanted
-      side if `width` fits there, else on the roomier one; never wider than
-      that side nor taller than the window. The default slot gets
-      `{ pinned, sheet, narrow, close }`, `narrow` when less than `width`
-      fits. Use `PTooltip` for short descriptions.
-    - Popovers and menus are non-modal layers on the same stack: Esc closes
-      the topmost, no inert, scroll lock or focus trap. A click outside
-      closes them, except on the trigger, inside or in a layer opened from
-      inside. `PSelect` lists are layers too (`useSelectList`), so picking
-      in a select inside a popover keeps the popover open.
-  - **Toasts:** `const toast = useToast()` from `@/ui`, then
-    `toast(text, { type: "error" })`,
-    `toast(text, { action: { label, onClick } })` or
-    `toast(text, { duration: 0, closable: true })`. `duration` defaults to
-    6 s, 0 keeps it, hover pauses it. It returns a handle, `.destroy()`
-    closes it early. The one `PToastHost` in `AppProvider.vue` shows them
-    bottom-right above layers; outside components import `toast` from
-    `@/ui/useToast`.
-  - **Icons:** `@vicons/material`, wrapped in `PIcon`:
-    `<PIcon><CheckSharp /></PIcon>`.
-  - **Charts:** `src/ui/charts/*.vue` wrap chart.js (`vue-chartjs`,
-    datalabels) and `lightweight-charts` (candlesticks). Reuse or extend
-    these rather than wiring chart.js in a feature. Ranked values (top N
-    plus "Other") use `EmpireBarChart.vue`; a small used-of-total bar
-    beside a number (area, housing) is `PMeter.vue` (plain CSS, no chart.js),
-    a decorative value-of-max bar in a table cell `PInlineBar.vue`.
-    An x/y scatter with a best trade-off line, placed labels and a tooltip
-    slot is `PScatter.vue` (plain SVG; `paretoFrontier`, `placeLabels` and
-    `niceTicks` in `scatter.util.ts`; `yBetter="low"` for e.g. jumps,
-    `xZero=false` to fit X to the data). Lines over days (one per series,
-    direct end labels, a crosshair tooltip sorted by value, an optional
-    volume panel) are `PLineChart.vue`; a 24 px high trend line in a
-    table cell is `PSparkline.vue` (100 px wide, its own y-scale; `domain`,
-    `color` and `width` for a shared scale in exchange colours) (both plain SVG; `lineLabelLayout`,
-    `tooltipRows` and `sparklineLayout` in `charts.util.ts`).
-    A 100 % bar of parts (optionally hatched where e.g. revenue doesn't
-    cover cost) with a tooltip slot is `PStackedBar.vue`; a signed bar from a
-    shared zero line (own extents left and right, optional value text and a
-    `#center` slot) is `PDivergingBar.vue`. Both are plain CSS.
-    Days of runway against red / yellow thresholds are `PRunwayBar.vue`
-    (one bar) and `PStripPlot.vue` (one dot per value, tooltip slot); a
-    profit waterfall is `PWaterfall.vue` (tooltip slot);
-    `MarketExplorationChart.vue` is the candlestick chart.
-    Colours come only from `useChartTheme()` (`chartTheme.ts`): polarity,
-    warning, muted, ink, grid, axis, tooltip surface, the fixed exchange colours
-    (`exchange("AI1")`, tokens `--color-cx-*` in `style.css`) and the four
-    cost parts. It follows the colour-blind preference without a reload, so
-    keep chart options in a `computed`. chart.js tooltips and axes spread
-    `chartTooltip(theme)` and `chartScale(theme)` from `charts.util.ts`. No
-    hex literals in `src/ui/charts/*.vue` (a test checks). The chart series
-    (building blocks, visual rules) is indexed in the workspace spec
-    `specs/2026-10-13-charts.md`.
-  - **Material chips:** `features/material_tile/components/MaterialTile.vue`
-    is the standard way to show a material ticker. It is colour-coded by
-    category and has a market card (`PHoverCard`) and a market drawer.
+  and state; it exists in `pnpm dev` and builds with `VITE_KIT_PAGE=true`.
+  Add new components and states there.
+- **Styling** lives in `ui/styles.ts` (Tailwind class sets per component);
+  change the look there, not per usage. Shared types (`SizeKey` `sm`/`md`
+  = 24/28 px, `ColorKey`, `PSelectOption`, `PDataTableColumn`, …) are in
+  `ui/ui.types.ts`.
+- **Unknown props fail `pnpm tsc`** (`checkUnknownProps` /
+  `checkUnknownEvents` in `tsconfig.typecheck.json`). Only `class`,
+  `style`, `id`, `title`, `role`, `aria-*` and `data-*` fall through
+  (`AllowedComponentProps` in `ui.types.ts`).
+- **Buttons:** `PButton` defaults to `type="primary"` and `html-type="button"`
+  (never submits on its own). A selection or on/off button takes
+  `:pressed` (sets `aria-pressed`, primary while pressed) instead of
+  switching `type`. One choice of a few options (views, filters, modes,
+  a metric or range) is `PSegmented` (`label` names the group, the
+  `option` slot adds a dot or count), never a `PButtonGroup` of pressed
+  buttons.
+- **Forms:** `<PForm as-form @submit>` renders a real `<form>` (Enter
+  submits); its button gets `html-type="submit"` and no `@click`. Give a
+  `PFormItem` an `error` to show the message, set the field's error state
+  and link it with `aria-describedby`. Outside a form, fields take
+  `status` (`error`, `warning`).
+- **Notices:** `<PNotice type="info|warning|error">`, never hand-styled
+  red or amber boxes.
+- **Signed values:** `<PValue :value>` prints the sign and colours by it
+  (zero neutral), so it reads without colour.
+- **Numbers:** `formatNumber` / `formatAmount` / `formatPayback`
+  (`util/numbers.ts`) and `humanizeTimeMs` (`util/date.ts`) show "—" or
+  "never" for ∞ / NaN / negative paybacks.
+- **Icons:** `@vicons/material` inside `PIcon`.
+- **Material tickers:** `features/material_tile/components/MaterialTile.vue`
+  (category colour, market card and drawer).
+
+### Overlays
+
+`PModal`, `PDrawer` (`placement="bottom"` is a sheet), `useConfirm()`,
+`PPopover`, `PDropdown`, `PTooltip`, `PHoverCard` and `useToast()`.
+
+- Modals and drawers (`useOverlayLayer`) teleport to `body`, set `inert`
+  on `#app`, lock scroll, trap Tab and return focus to the opener.
+  Popovers, menus and select lists (`useSelectList`) are non-modal layers
+  on the same stack: Esc closes the topmost, a click outside closes them
+  except inside a layer opened from them. Z-indexes come from
+  `ui/zIndex.ts` only.
+- `PTooltip` is for short descriptions: it opens on hover, focus and tap,
+  sets `aria-describedby` only while open, and makes a trigger without a
+  focusable child a tab stop (`noFocus` opts out for many triggers in a
+  row). SVG charts reuse this through `useTooltipTrigger`.
+- `PHoverCard` (`useHoverCard`) is a card of content next to a trigger with
+  hover intent, pinning and a bottom sheet on touch; the slot gets
+  `{ pinned, sheet, narrow, close }`.
+- `const toast = useToast(); toast(text, { type, action, duration,
+  closable })` (6 s default, 0 keeps it) returns a handle with `.destroy()`.
+  Outside components import `toast` from `@/ui/useToast`.
+
+### Accessibility
+
+`src/tests/ui/components/a11y.test.ts` runs axe-core on the kit.
+
+- Every control needs a name. Inside a `PFormItem`, fields are labelled
+  automatically; elsewhere pass an i18n `aria-label` with context
+  ("Amount of {building}"). Icon-only `PButton`s need `aria-label` (dev
+  build warns). `PTag closable` names its button "Remove {value}".
+- Clickable things are `<button>` or `<a>`, never a `div` with `@click`.
+  One focus ring (`:focus-visible`, `--color-focus`); no `outline-none`.
+- Auth fields set `autocomplete` (`username`, `current-password`,
+  `new-password`); the kit default is off.
+- **Touch targets:** at least 24 × 24 px, 44 × 44 px under
+  `pointer: coarse`. Small controls get the `touch-target` utility
+  (`style.css`, an invisible `::after`); add it to any raw small `<button>`
+  and don't clip it with `overflow-hidden`. Text fields and select triggers
+  grow to 44 px instead (`pointer-coarse:h-11` / `min-h-11`), and
+  `PInputNumber` hides its steppers there.
+
+### Charts (`src/ui/charts/`)
+
+Reuse or extend these rather than wiring chart.js in a feature: chart.js
+wrappers (`EmpireBarChart`, via `vue-chartjs`), `MarketExplorationChart`
+(`lightweight-charts` candlesticks), and plain SVG/CSS `P*` charts
+(`PLineChart`, `PSparkline`, `PScatter`, `PStackedBar`, `PDivergingBar`,
+`PWaterfall`, `PRunwayBar`, `PStripPlot`, `PMeter`, `PInlineBar`). Layout
+helpers are in `charts.util.ts` and `scatter.util.ts`.
+
+- Colours come only from `useChartTheme()` (`chartTheme.ts`), which follows
+  the colour-blind palette live, so keep chart options in a `computed`.
+  chart.js options spread `chartTooltip(theme)` / `chartScale(theme)`.
+- No hex literals in `src/ui/charts/*.vue` (`chartTheme.test.ts`).
 
 ## Tables
 
-Data tables are `PDataTable`; `PTable` is a plain styled `<table>` for small
-static ones. `PDataTable` takes a typed `columns` array instead of child
-column components:
-
-```ts
-const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
-	{ key: "ticker", title: t("…ticker"), sorter: true },
-	{ key: "delta", title: t("…delta"), align: "right", sorter: true },
-]);
-```
+`PDataTable` for data tables (typed `columns`, `cell-<key>` /
+`header-<key>` slots), `PTable` for small static ones. Examples:
+`features/market_live/components/CXPointTable.vue`,
+`features/planning/components/PlanMaterialIO.vue`.
 
 ```vue
 <PDataTable :columns="columns" :data="rows" :row-key="(r) => r.ticker" striped>
@@ -246,97 +111,46 @@ const columns = computed<PDataTableColumn<IMaterialIO>[]>(() => [
 </PDataTable>
 ```
 
-- **Cells** render `row[key]`, or the `cell-<key>` slot (`{ row, index }`).
-  `header-<key>` replaces a title. Cells carry `data-col-key`, rows
-  `data-row-key`.
-- **Sorting:** `sorter: true` compares `row[key]` (numbers, strings, empty
-  values first when ascending); pass a function to compare otherwise, e.g.
-  by the name shown instead of an id. A header click cycles descend →
-  ascend → none; the header is a button with `aria-sort`, so it sorts by
-  keyboard. `defaultSortOrder` sorts on mount. A parent that cuts or pages
-  the rows before the table owns the sort with `v-model:sort`
-  (`{ key, order }`) and sorts the whole list with `sortRows`
-  (`ui/dataTableSort.ts`), the table's own comparison.
-- **Columns:** `width`, `minWidth` (keeps a column from being squeezed; the
-  table scrolls sideways instead), `children` for grouped headers,
-  `titleColSpan` to let one title span the next columns. On the table,
-  `stickyFirst` pins the first column (and expand button) while it scrolls
-  sideways, `dense` narrows the cell padding.
-- **Rows:** `rowClick` makes rows clickable and keyboard-operable (Enter,
-  Space), `rowClass` adds classes. The `expand` slot adds an expand button
-  per row (`expandLabel` names it) and `v-model:expanded-row-keys`.
-- **Slots** `summary` (a full-width footer row) and `empty`. `pageSize`
-  paginates with `PPagination`. `popover` switches to the colours used
-  inside a popover.
-- **Width and height:** `minWidth` on the table (e.g. `:min-width="960"`)
-  makes it scroll sideways in its box instead of squeezing columns.
-  `maxHeight` limits the body; the header comes on top. A table with
-  `maxHeight` or `fill` uses fixed layout, so columns share the width.
-- **Long lists:** `virtual` (with `fill` or `maxHeight`) renders only the
-  rows in view, measuring their heights as they render. Use it for tables of
-  hundreds of rows (CX live, Market Exploration, Production Opportunities).
+- **Sorting:** `sorter: true` or a compare function; the header is a
+  button with `aria-sort`. A parent that pages or cuts rows before the table
+  owns the sort via `v-model:sort` and `sortRows` (`ui/dataTableSort.ts`).
+- **Size:** `minWidth` scrolls sideways instead of squeezing; `maxHeight` or
+  `fill` (inside a `flex-1 min-h-0` parent) gives a sticky header and fixed
+  layout; `virtual` (needs one of them) for hundreds of rows; `pageSize`
+  paginates.
 
-Every numeric column follows one pattern, so numbers line up and compare
-across the app:
+Numeric columns, everywhere:
 
-- **Right-aligned, header too.** On a `PDataTable` column set
-  `align: "right"` (the header follows unless `titleAlign` says otherwise).
-  In `PTable` put `class="numeric"` on the `th` and `td`. Text columns stay
-  left.
-- **One precision per column.** Render `formatNumber(v, decimals)` with the
-  same `decimals` for every row (no `optionalDecimals`), `formatAmount(v)`
-  for counts, or `<PValue :value="v" />` for signed values. "—" and "never"
-  are the only non-numbers in a numeric cell.
-- **Units in the header, not the cell.** Put ȼ, %, d, t, m³ into the en_US
-  header string (`"Daily Profit (ȼ)"`, `"ȼ / day"`, `"Spread %"`); the cell
-  holds just the number. `formatPayback(days, false)` drops its " d".
-- **Long tables keep their header.** A table that can outgrow the viewport
-  gets a sticky header: `max-height="calc(100dvh - …)"` (the body scrolls
-  under the header, which comes on top of that height), or `fill` inside a
-  `flex-1 min-h-0` wrapper of known height (`CXPointTable`,
-  `EmpireMaterialIO`). Leave room for sticky bars above it, such as the plan
-  results bar. Paginated tables (`:page-size="50"`) don't need it.
-
-Examples: `features/planning/components/PlanMaterialIO.vue`,
-`features/roi_overview/components/ROIOverviewTable.vue`.
+- **Right-aligned, header too:** `align: "right"`; in `PTable`,
+  `class="numeric"` on `th` and `td`.
+- **One precision per column:** the same `formatNumber(v, decimals)` for
+  every row (no `optionalDecimals`), `formatAmount` for counts, `PValue` for
+  signed values. "—" and "never" are the only non-numbers.
+- **Units in the header** (`"Daily Profit (ȼ)"`), not the cell;
+  `formatPayback(days, false)` drops its " d".
+- **Long tables keep their header** (`maxHeight` or `fill`, leaving room for
+  sticky bars above); paginated tables don't need it.
 
 ## Styling
 
-- **Tailwind v4** via `@tailwindcss/vite`.
-  - `src/assets/css/style.css` imports the legacy `tailwind.config.js` with
-    `@config` and adds a small `@theme`.
-  - Material category colours are in `assets/css/materials.css`.
-- **Semantic colours** are CSS variables in the `@theme` of `style.css`:
-  `positive`, `negative`, `warning`, `muted` (secondary text, instead of
-  `text-white/40`–`/50`) and `muted-strong`. All pass 4.5:1 on every app
-  surface. The colour-blind preference sets `data-palette="colorblind"` on
-  `<html>`, which swaps `positive`/`negative` to blue/orange, so use the
-  tokens, never raw green/red/orange (`kitTokens.test.ts` fails on
-  them). Text is at least `text-xs` (12 px).
-- **Kit tokens** (same file), one value per meaning; the kit has no hex or
-  rgb literals (same test):
-  - `surface` (every floating panel, modal and drawer), `surface-sunken`
-    (table header);
-  - `line` / `line-strong` (borders), `hover` (row, option and menu item
-    under the pointer), `selected` (keyboard highlight, sorted column);
-  - `ink` / `ink-strong` (body and heading text), `primary` (primary
-    button), `link` (links, active sort and page);
-  - `rounded-control` (4 px: buttons, inputs, selects, tags, checkboxes),
-    `rounded-panel` (6 px: popovers, menus, lists, tooltips, toasts, modals,
-    tables) and `shadow-panel`.
-  - Floating panels share `panelConfig.panel` (`ui/styles.ts`).
-  - Buttons: `error` is filled `negative` with dark text, `warning` amber;
-    both follow the colour-blind palette.
-- **Fonts:** Roboto and Roboto Mono are self-hosted via `@fontsource`
-  (`main.ts`). Use `font-mono` only for tickers, ids and code.
-- **Other custom colours:** `pp-primary`, `pp-secondary`,
-  `pp-card-header`, `prunplanner` (brand lime), `background`, `dark-gray`,
-  `row`, `row-alternate` and `table-border` (`tailwind.config.js`). The older `gray-dark`, `pp-border` and `link-primary`
-  are aliases of `surface`, `line` and `link`; use the token names in new
-  code.
-- **Custom variants:** `child:`, `child-hover:` and `not-first:`.
-- **The app is dark-only.**
-- Prefer utility classes in templates. `<style>` blocks are rare.
+- **Tailwind v4** (`@tailwindcss/vite`). `src/assets/css/style.css` loads the
+  legacy `tailwind.config.js` with `@config` and holds the `@theme` tokens;
+  material colours are in `assets/css/materials.css`. The app is dark-only.
+- **Semantic colours:** `positive`, `negative`, `warning`, `muted`,
+  `muted-strong` (AA on every surface). `data-palette="colorblind"` on
+  `<html>` swaps them, so never use raw green/red/orange
+  (`src/tests/ui/kitTokens.test.ts` fails on them, and on hex/rgb in the
+  kit). Text is at least `text-xs`.
+- **Kit tokens:** `surface`, `surface-sunken`, `line`, `line-strong`,
+  `hover`, `selected`, `ink`, `ink-strong`, `primary`, `link`,
+  `rounded-control`, `rounded-panel`, `shadow-panel`; floating panels share
+  `panelConfig.panel` (`ui/styles.ts`). `gray-dark`, `pp-border` and
+  `link-primary` in `tailwind.config.js` are legacy aliases; use the
+  tokens.
+- **Fonts:** Roboto / Roboto Mono via `@fontsource` (`main.ts`); `font-mono`
+  only for tickers, ids and code.
+- **Custom variants:** `child:`, `child-hover:`, `not-first:`.
+- Utility classes in templates; `<style>` blocks are rare.
 
 ## Layout & hierarchy
 
@@ -344,115 +158,79 @@ Generated UI gives every element the same weight. Decide what matters
 on each view and make the rest quieter.
 
 - **One primary action per view.** Only the main action (Save, Create,
-  Search) uses `type="primary"`. Other actions are `secondary`, a
-  text/ghost button (`type="ghost"`), or go into a "More" menu
-  (`PDropdown` with an icon, a label, and a hint on anything that loses
-  data). `PButton` defaults to `primary`, so always set `type` on
-  non-primary buttons.
-- **Every number once per view.** Don't show the same KPI in a status
-  bar, a card and a table. A sticky summary (the plan results bar) is the
-  exception, as long as the body doesn't repeat it as a KPI.
-- **Big type for values, small for labels.** Labels are `text-muted`,
-  values bold and `tabular-nums`, and the value users compare is the
-  largest thing in its group.
-- **Tabs for switching views, buttons for doing things.** A row of
-  toggles that shows one panel at a time is a tab strip (underline,
-  `aria-pressed`), not a row of buttons.
-- **Advanced options start collapsed** in forms and modals; show the
-  2–3 fields most people need.
+  Search) uses `type="primary"`. Others are `secondary`, `ghost`, or go into
+  a "More" menu (`PDropdown` with icons, and a hint on anything that loses
+  data). `PButton` defaults to `primary`, so always set `type` on the rest.
+- **Every number once per view.** No KPI repeated in a status bar, a card
+  and a table. A sticky summary (the plan results bar) is the exception if
+  the body doesn't repeat it as a KPI.
+- **Big type for values, small for labels.** Labels `text-muted`, values
+  bold and `tabular-nums`; the value users compare is the largest thing in
+  its group.
+- **Tabs for switching views, buttons for doing things.** A row of toggles
+  that shows one panel at a time is a tab strip (underline, `aria-pressed`)
+  or `PSegmented`, not a row of buttons.
+- **Advanced options start collapsed** in forms and modals; show the 2–3
+  fields most people need.
 - **Colour carries meaning, not decoration.** No gradients, glows or
-  coloured card borders for decoration; material colours and semantic
-  tokens only.
-- **One spacing and type scale.** Tailwind steps only (no `text-[13px]`,
-  `p-[7px]`); page padding `px-6`, section gaps `gap-6`, inside cards
-  `gap-3`.
-- **Icons:** `@vicons/material` through `PIcon`, never emoji, and never
-  an icon next to every label; use them where they speed up scanning.
-- **Copy is plain and specific.** Say what the thing does, in game terms,
-  with a number if there is one. Avoid "effortlessly", "seamless",
-  "powerful", "unlock", "supercharge", "stay ahead" and anything a
-  generic SaaS page could say.
+  decorative coloured borders; material colours and semantic tokens only.
+- **One spacing and type scale.** Tailwind steps only (no `text-[13px]`);
+  page padding `px-6`, section gaps `gap-6`, inside cards `gap-3`.
+- **Icons** where they speed up scanning, never emoji, not next to every
+  label.
+- **Plain, specific copy** in game terms, with a number if there is one. No
+  "effortlessly", "seamless", "powerful", "unlock", "supercharge" or other
+  generic SaaS phrasing.
 
 Example: the plan editor header (`views/PlanView.vue`, `PlanMoreMenu`,
 `PlanToolTabs`).
 
 ## SFC conventions
 
-```vue
-<script setup lang="ts">
-	import { computed, ref } from "vue";
-	import { useI18n } from "vue-i18n";
-	const { t } = useI18n();
+Beyond the layout and formatting in [AGENTS.md](../AGENTS.md):
 
-	// Composables
-	// Components
-	// Types & Interfaces
-	// UI
-	import { PButton } from "@/ui";
-</script>
-
-<template>…</template>
-```
-
-- **Formatting.** Prettier formats with `vueIndentScriptAndStyle: true`, so
-  the script body is indented one tab.
-- **Props.** New code uses type-based `defineProps<T>()` and `defineModel`
-  for v-model (not a `computed` that emits `update:x`). The object syntax
-  with `PropType` still appears in older files; a file a change touches is
-  converted.
-- **Page titles.** Set them with `useHead` from `@unhead/vue`:
-  `` useHead({ title: `${t("…")} | PRUNplanner` }) ``.
-- **Lint rules.** `vue/no-unused-properties` warns. Prettier decides where
-  attributes wrap.
+- New code uses type-based `defineProps<T>()` and `defineModel` (not a
+  `computed` emitting `update:x`); convert older `PropType` props in files
+  you touch.
+- Page titles: `` useHead({ title: `${t("…")} | PRUNplanner` }) `` from
+  `@unhead/vue`.
+- `vue/no-unused-properties` warns.
 
 ## i18n (`src/lib/i18n/index.ts`)
 
-- **Library.** vue-i18n with the composition API (`legacy: false`) and
-  `globalInjection`. Use `t()` from `useI18n()` in scripts and `$t()` in
-  templates.
-- **Namespaces.** Each JSON file in `src/locales/<locale>/` is a top-level
-  namespace, so `locales/en_US/plan.json` → `t("plan.tools.labels.popr")`.
-  A new file is picked up automatically through `import.meta.glob`.
-- **Loading.** `en_US` loads eagerly and is also the fallback. Other
-  locales load lazily in `userStore.setLocale`, which drops messages
-  vue-i18n can't compile (`dropInvalidMessages`) so they fall back to
-  English instead of throwing in a production build. A literal `@` in a
-  message is written `{'@'}`.
-- **Language picker.** Only the entries in `SupportedLanguages` show up
-  there. The rest are commented out until their translations are complete.
-- **`keymode`.** This pseudo-locale renders the raw keys, which helps you
-  find where a string comes from.
-- **Outside components** (composables, the query repository), use
-  `i18n.global` from `@/lib/i18n`.
-
-Debug tooling is English only by decision: the `/debug` page,
-`features/planning/components/debug/` and `lib/debugMode.ts` hard-code
-their text and toasts.
-
-**Browser page translation** (Chrome's "Translate this page") replaces
-the text nodes Vue rendered with its own `<font>` elements (#700):
-
-- Text that changes and needs no translation (figures, tickers, building
-  names) gets `translate="no"`, or the translator's copy stays on screen
-  while Vue updates the original. `PValue` and `MaterialTile` set it
-  themselves. Labels, headings and help text stay translatable.
-- Keep text out of a fragment's edges: write `<span v-if>` instead of a
-  `<template v-if>` that starts or ends with text, and don't put text right
-  next to a `v-for` list or another fragment. An `<i18n-t>` slot sits
-  between the message's text, so a `v-for` list there gets a wrapping
-  `<span>`. The translator takes Vue's empty fragment markers with it, and
-  removing the fragment then crashes the patch.
-  `translationSafeTemplates.test.ts` checks every template.
+- vue-i18n, composition API, `globalInjection`: `t()` from `useI18n()` in
+  scripts, `$t()` in templates, `i18n.global` outside components.
+- Each JSON file in `src/locales/<locale>/` is a namespace:
+  `locales/en_US/plan.json` → `t("plan.tools.labels.popr")`; new files are
+  picked up by `import.meta.glob`.
+- `en_US` loads eagerly and is the fallback. Other locales load lazily in
+  `userStore.setLocale`, which drops messages vue-i18n can't compile
+  (`dropInvalidMessages`). Write a literal `@` as `{'@'}`.
+- The language picker lists only `SupportedLanguages`. The `keymode`
+  pseudo-locale renders raw keys, to find where a string comes from.
 
 ### Adding or changing text
 
-1. Add the key to `src/locales/en_US/<namespace>.json`. Only edit `en_US`.
+1. Add the key to `src/locales/en_US/<namespace>.json` only; Crowdin
+   (`crowdin.yml`) syncs the other locales. Missing keys fall back to
+   English.
 2. Use it through `t("namespace.path.key")`.
-3. Leave the other locales alone. Crowdin (`crowdin.yml`) syncs them from
-   `en_US` and opens its own PRs. Missing keys fall back to English.
 
-Help drawer pages follow the same rule. Write them in
-`src/assets/help/en_US/<name>.md` and render them with
-`<HelpDrawer file-name="<name>" />` (see
-[features/help.md](features/help.md)). The changelog is
-`src/assets/help/changelog.md` and is not translated.
+Help pages: `src/assets/help/en_US/<name>.md`, rendered with
+`<HelpDrawer file-name="<name>" />` (see [features/help.md](features/help.md)).
+`src/assets/help/changelog.md` is not translated. Debug tooling is English
+only ([hard rules](../AGENTS.md#hard-rules)).
+
+### Browser page translation
+
+Translators (e.g. Chrome's) replace Vue's text nodes with their own
+elements:
+
+- Changing text that needs no translation (figures, tickers) gets
+  `translate="no"` (`PValue` and `MaterialTile` set it), or the stale copy
+  stays on screen.
+- Keep text off a fragment's edges: `<span v-if>` instead of a
+  `<template v-if>` that starts or ends with text, no text right next to a
+  `v-for` or another fragment, and wrap a `v-for` inside an `<i18n-t>` slot
+  in a `<span>`. Otherwise removing the fragment crashes the patch.
+  `src/tests/ui/translationSafeTemplates.test.ts` checks every template.

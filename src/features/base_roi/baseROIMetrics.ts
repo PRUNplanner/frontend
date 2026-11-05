@@ -3,10 +3,10 @@ import { calculateExpertBonus } from "@/features/planning/engine/efficiency";
 
 // Static
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";
+import { isStaffed } from "@/features/base_roi/baseROIPopulation";
+import { planetPlots } from "@/features/planet_search/planetPlots.util";
 import {
 	EXPERT_STAGE_DAYS,
-	SHIP_COST_FALLBACK,
-	SHIP_PRICE,
 	SHIPS,
 	VOLATILITY_MAX_COMBINATIONS,
 	VOLATILITY_THRESHOLD,
@@ -23,6 +23,7 @@ import type {
 	IBaseROIRowInput,
 	IBaseROIScenario,
 	IBaseROIScenarioPrice,
+	IBaseROIStaffing,
 	IBaseROIStage,
 } from "@/features/base_roi/baseROI.types";
 
@@ -30,8 +31,8 @@ import type {
  * # Base ROI metrics
  *
  * Pure functions over one base's daily money and cargo (from the plan
- * engine) and the settings' add-ons: building cost with buffer stock, HQ
- * and ships, break-even with the expert ramp, weekly return, logistics,
+ * engine) and the settings' add-ons: building cost with buffer stock and
+ * HQ, break-even with the expert ramp, weekly return, logistics,
  * market capacity and volatility scenarios.
  */
 
@@ -40,7 +41,6 @@ type MetricsSettings = Pick<
 	| "experts"
 	| "bufferDays"
 	| "targetPermit"
-	| "roundTripHours"
 	| "logistics"
 	| "ship"
 	| "visitDays"
@@ -76,22 +76,6 @@ export function bufferStock(
 	revenue: number
 ): number {
 	return (days * (inputs + consumables + revenue)) / 2;
-}
-
-/**
- * Ships a base keeps busy: the larger of weight and volume per day over
- * the ship's capacity, times the round trip in days
- */
-export function shipsNeeded(
-	weight: number,
-	volume: number,
-	ship: { weight: number; volume: number },
-	roundTripHours: number
-): number {
-	return (
-		Math.max(weight / ship.weight, volume / ship.volume) *
-		(roundTripHours / 24)
-	);
 }
 
 /**
@@ -246,16 +230,7 @@ export function calculateMetrics(
 		row.consumables,
 		row.revenue
 	);
-	const ship =
-		SHIPS[
-			settings.logistics === "ship" ? settings.ship : SHIP_COST_FALLBACK
-		];
-	const ships =
-		settings.roundTripHours > 0
-			? shipsNeeded(weight, volume, ship, settings.roundTripHours)
-			: 0;
-	const shipCost = ships * SHIP_PRICE;
-	const buildingCost = row.construction + buffer + hqCost + shipCost;
+	const buildingCost = row.construction + buffer + hqCost;
 
 	let breakEven: number;
 	let timeline: IBaseROIStage[] = [];
@@ -270,21 +245,33 @@ export function calculateMetrics(
 	} else breakEven = fixedPayback;
 
 	let fitsLogistics = true;
-	if (settings.logistics === "ship")
+	if (settings.logistics === "ship") {
+		const ship = SHIPS[settings.ship];
 		fitsLogistics =
 			weight * settings.visitDays <= ship.weight &&
 			volume * settings.visitDays <= ship.volume;
-	else if (settings.logistics === "manual")
+	} else if (settings.logistics === "manual")
 		fitsLogistics =
 			weight <= settings.manualWeight && volume <= settings.manualVolume;
 
-	const marketCapacity = row.outputs.length
-		? Math.min(
-				...row.outputs.map((o) =>
-					o.amount > 0 ? o.traded / o.amount : Infinity
-				)
-			)
-		: 0;
+	// double ended: the lowest traded ÷ amount per day of any output or
+	// recipe input, the side whose market runs out first
+	let marketCapacity = row.outputs.length ? Infinity : 0;
+	let capacitySide: IBaseROIMetrics["capacitySide"] = null;
+	let capacityTicker: string | null = null;
+	if (row.outputs.length)
+		for (const [side, list] of [
+			["output", row.outputs],
+			["input", row.recipeInputs],
+		] as const)
+			for (const m of list) {
+				const capacity = m.amount > 0 ? m.traded / m.amount : Infinity;
+				if (capacity < marketCapacity) {
+					marketCapacity = capacity;
+					capacitySide = side;
+					capacityTicker = m.ticker;
+				}
+			}
 
 	return {
 		dailyProfit,
@@ -292,8 +279,6 @@ export function calculateMetrics(
 		buildingCost,
 		bufferStock: buffer,
 		hqCost,
-		shipCost,
-		shipsNeeded: ships,
 		breakEven,
 		payback: fixedPayback,
 		timeline,
@@ -301,51 +286,74 @@ export function calculateMetrics(
 		cargo,
 		fitsLogistics,
 		marketCapacity,
+		capacitySide,
+		capacityTicker,
 		scenarios: volatilityScenarios(row.materials, dailyProfit),
 	};
 }
+
+const unstaffed = (s: IBaseROIStaffing | undefined): boolean =>
+	s !== undefined && !isStaffed(s);
 
 type RowFilter = Pick<
 	BaseROISettings,
 	| "showResources"
 	| "showRecipes"
 	| "showNegative"
-	| "expertise"
-	| "building"
+	| "showUnbuildable"
 	| "minMarketCapacity"
 >;
 
-/** the row kind and building filters, not counted as hidden */
+/** the row kind filters, not counted as hidden */
 export function matchesFilters(
-	row: Pick<IBaseROICandidate, "kind" | "building" | "expertise">,
+	row: Pick<IBaseROICandidate, "kind">,
 	filter: RowFilter
 ): boolean {
-	if (row.kind === "recipe" ? !filter.showRecipes : !filter.showResources)
-		return false;
-	if (filter.expertise && row.expertise !== filter.expertise) return false;
-	if (filter.building && row.building !== filter.building) return false;
-	return true;
+	return row.kind === "recipe" ? filter.showRecipes : filter.showResources;
+}
+
+/**
+ * The search above the table: industry (expertise, as stored or as
+ * shown, "resource extraction"), building or product ticker, any case
+ */
+export function matchesSearch(
+	row: Pick<IBaseROIRow, "expertise" | "building" | "outputs">,
+	query: string
+): boolean {
+	const q = query.trim().toLowerCase();
+	if (!q) return true;
+	return [
+		row.expertise ?? "",
+		(row.expertise ?? "").replaceAll("_", " "),
+		row.building,
+		...row.outputs.map((o) => o.ticker),
+	].some((s) => s.toLowerCase().includes(q));
 }
 
 /**
  * The rows the table shows and how many each limit hides, every row
  * counted once at its first limit: max jumps, logistics, market capacity,
- * then negative profit while "Show negative" is off
+ * full planets and planets short of workers (while "Show planets without
+ * workers or plots" is off), then negative profit while "Show negative" is off
  *
  * @param {IBaseROIRow[]} rows Calculated rows
  * @param {Pick<IBaseROICandidate, "kind" | "building" | "expertise">[]} beyondJumps Planet rows beyond max jumps, never calculated
  * @param {RowFilter} filter Settings
+ * @param {Map<string, IBaseROIStaffing>} [staffing] Checked rows by key, the rest are not limited
  * @returns {{ rows: IBaseROIRow[]; hidden: IBaseROIHidden }} Shown rows, sorted by break-even, and hidden counts
  */
 export function filterRows(
 	rows: IBaseROIRow[],
 	beyondJumps: Pick<IBaseROICandidate, "kind" | "building" | "expertise">[],
-	filter: RowFilter
+	filter: RowFilter,
+	staffing: Map<string, IBaseROIStaffing> = new Map()
 ): { rows: IBaseROIRow[]; hidden: IBaseROIHidden } {
 	const hidden: IBaseROIHidden = {
 		maxJumps: beyondJumps.filter((c) => matchesFilters(c, filter)).length,
 		logistics: 0,
 		marketCapacity: 0,
+		noPlots: 0,
+		unstaffed: 0,
 		negative: 0,
 	};
 	const shown: IBaseROIRow[] = [];
@@ -355,6 +363,10 @@ export function filterRows(
 		if (!row.metrics.fitsLogistics) hidden.logistics++;
 		else if (row.metrics.marketCapacity < filter.minMarketCapacity)
 			hidden.marketCapacity++;
+		else if (!filter.showUnbuildable && planetPlots(row.plots)?.blocked)
+			hidden.noPlots++;
+		else if (!filter.showUnbuildable && unstaffed(staffing.get(row.key)))
+			hidden.unstaffed++;
 		else if (!filter.showNegative && row.metrics.dailyProfit <= 0)
 			hidden.negative++;
 		else shown.push(row);

@@ -17,28 +17,26 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 	});
 	afterEach(() => vi.unstubAllGlobals());
 
-	it("starts with Knottly's defaults and the LCB, nothing stored", () => {
+	it("starts with Knottly's defaults, the WCB and running cost hidden, nothing stored", () => {
 		const { settings, hasStored } = useBaseROISettings();
 		expect(hasStored.value).toBe(false);
 		expect(settings.value).toMatchObject({
 			cogc: "matching",
 			experts: "ramp",
-			bufferDays: 9,
+			bufferDays: 10,
 			minMarketCapacity: 0.7,
 			logistics: "ship",
-			ship: "LCB",
+			ship: "WCB",
 			visitDays: 3,
 			manualWeight: 600,
 			manualVolume: 200,
 			targetPermit: 0,
-			roundTripHours: 0,
 			maxJumps: 7,
 			showResources: true,
 			showRecipes: true,
 			showNegative: false,
-			expertise: "",
-			building: "",
-			hiddenColumns: [],
+			showUnbuildable: false,
+			hiddenColumns: ["running_cost"],
 		});
 	});
 
@@ -66,8 +64,8 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 			JSON.stringify({ bufferDays: 13, ship: "XXX", maxJumps: 4 })
 		);
 		const { settings } = useBaseROISettings();
-		expect(settings.value.bufferDays).toBe(9);
-		expect(settings.value.ship).toBe("LCB");
+		expect(settings.value.bufferDays).toBe(10);
+		expect(settings.value.ship).toBe("WCB");
 		expect(settings.value.maxJumps).toBe(4);
 	});
 

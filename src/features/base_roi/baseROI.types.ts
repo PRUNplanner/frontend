@@ -1,4 +1,5 @@
 // Types & Interfaces
+import type { IPlanetPlotFields } from "@/features/planet_search/planetPlots.util";
 import type { IPriceSource } from "@/features/cx/priceBook";
 import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
 import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
@@ -28,6 +29,8 @@ export interface IBaseROICandidate {
 	planetNaturalId: string | null;
 	planetName: string | null;
 	jumps: number | null;
+	// planet rows only: free plots as far as the backend knows them
+	plots?: IPlanetPlotFields;
 }
 
 /** a material the base buys (amount < 0) or sells (amount > 0) per day */
@@ -46,6 +49,8 @@ export interface IBaseROIOutput {
 	amount: number;
 	// 7-day average traded per day on the price source's volume exchange
 	traded: number;
+	// the exchange that volume is from
+	exchange: string;
 }
 
 /** what the engine gives a row, before the settings' add-ons */
@@ -80,6 +85,8 @@ export interface IBaseROIRowInput extends IBaseROICandidate {
 	expertBonus: number;
 	materials: IBaseROIMaterial[];
 	outputs: IBaseROIOutput[];
+	// what the recipe consumes per day (not the workforce), traded like outputs
+	recipeInputs: IBaseROIOutput[];
 	workforce: { tier: WorkforceType; required: number }[];
 	result: IPlanResult;
 }
@@ -112,8 +119,6 @@ export interface IBaseROIMetrics {
 	buildingCost: number;
 	bufferStock: number;
 	hqCost: number;
-	shipCost: number;
-	shipsNeeded: number;
 	// days, Infinity = never
 	breakEven: number;
 	// payback at 5 experts (ramp), else the break-even
@@ -123,6 +128,9 @@ export interface IBaseROIMetrics {
 	cargo: number;
 	fitsLogistics: boolean;
 	marketCapacity: number;
+	// the material that sets the market capacity, and on which side
+	capacitySide: "input" | "output" | null;
+	capacityTicker: string | null;
 	scenarios: IBaseROIScenario[];
 }
 
@@ -130,10 +138,19 @@ export interface IBaseROIRow extends IBaseROIRowInput {
 	metrics: IBaseROIMetrics;
 }
 
+/** whether a planet's free workers fill a base's jobs */
+export interface IBaseROIStaffing {
+	hasReport: boolean;
+	// the tiers it can't fill
+	gaps: { tier: WorkforceType; required: number; available: number }[];
+}
+
 export interface IBaseROIHidden {
 	maxJumps: number;
 	logistics: number;
 	marketCapacity: number;
+	noPlots: number;
+	unstaffed: number;
 	negative: number;
 }
 

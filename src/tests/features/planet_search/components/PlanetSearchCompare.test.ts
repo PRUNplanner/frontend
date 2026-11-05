@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import type { VueWrapper } from "@vue/test-utils";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PlanetSearchCompare from "@/features/planet_search/components/PlanetSearchCompare.vue";
 import { mountComponent } from "@/tests/mountComponent";
@@ -9,7 +9,10 @@ import planet_search from "@/locales/en_US/planet_search.json";
 import game from "@/locales/en_US/game.json";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type {
+	PlanetPopulationReport,
+	PlanetSearchIndexEntry,
+} from "@/features/api/schemas/gameData.schemas";
 import type {
 	PlanetSearchFilter,
 	PlanetSearchReference,
@@ -18,6 +21,18 @@ import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch
 
 // test data
 import fixture from "@/tests/test_data/api_data_planet_search_index.json";
+import popr from "@/tests/test_data/api_data_popr_latest.json";
+
+const { execute, useQuery } = vi.hoisted(() => {
+	const execute = vi.fn();
+	return { execute, useQuery: vi.fn(() => ({ execute })) };
+});
+vi.mock("@/lib/query_cache/useQuery", () => ({ useQuery }));
+
+const report = (
+	planet_natural_id: string,
+	overrides: Partial<PlanetPopulationReport> = {}
+): PlanetPopulationReport => ({ ...popr, planet_natural_id, ...overrides });
 
 const index = fixture as PlanetSearchIndexEntry[];
 function planet(
@@ -116,6 +131,12 @@ const rank = (style: string | undefined) => {
 };
 
 describe("PlanetSearchCompare", () => {
+	beforeEach(() => {
+		useQuery.mockClear();
+		execute.mockReset();
+		execute.mockResolvedValue([]);
+	});
+
 	it("names each pinned planet in the title, the chips and the columns", async () => {
 		const { compare } = await mountCompare([tarvos, gc, pg]);
 
@@ -159,6 +180,11 @@ describe("PlanetSearchCompare", () => {
 			],
 			COGC: ["Electronics", "—", "Metallurgy"],
 			Infrastructure: ["LM, COGC, WAR, ADM", "—", "LM, COGC, WAR, ADM"],
+			"Free Pioneer workers": ["—", "—", "—"],
+			"Free Settler workers": ["—", "—", "—"],
+			"Free Technician workers": ["—", "—", "—"],
+			"Free Engineer workers": ["—", "—", "—"],
+			"Free Scientist workers": ["—", "—", "—"],
 			"AI1 / CI1 / IC1 / NC1": [
 				"1 / — / — / 3",
 				"2 / — / — / 5",
@@ -291,5 +317,84 @@ describe("PlanetSearchCompare", () => {
 		await toggle.trigger("click");
 		expect(toggle.attributes("aria-expanded")).toBe("true");
 		expect(compare.find("table").exists()).toBe(true);
+	});
+
+	describe("free workers", () => {
+		it("shows the free workers less the open jobs, — without a report", async () => {
+			execute.mockResolvedValue([
+				report("UV-351e", {
+					free_pioneer: 1000,
+					open_jobs_pioneer: 300,
+				}),
+				report("GC-231a", {
+					free_pioneer: 200,
+					open_jobs_pioneer: 500,
+				}),
+			]);
+
+			const { compare } = await mountCompare([tarvos, gc, pg]);
+			await flushPromises();
+
+			expect(useQuery).toHaveBeenCalledExactlyOnceWith(
+				"GetMultiplePlanetPOPR",
+				{ planetNaturalIds: ["UV-351e", "GC-231a", "PG-027b"] }
+			);
+			expect(table(compare)["Free Pioneer workers"]).toEqual([
+				"700",
+				"0",
+				"—",
+			]);
+			expect(
+				row(compare, "Free Pioneer workers")
+					.findAll("td")
+					.map((td) => rank(td.attributes("style")))
+			).toEqual([100, 40, 0]);
+		});
+
+		it("fetches only when the pins change", async () => {
+			const { setProps } = await mountCompare([tarvos, gc]);
+			await setProps({ planets: [tarvos, gc] });
+			expect(useQuery).toHaveBeenCalledTimes(1);
+
+			await setProps({ planets: [gc] });
+			expect(useQuery).toHaveBeenLastCalledWith("GetMultiplePlanetPOPR", {
+				planetNaturalIds: ["GC-231a"],
+			});
+			expect(useQuery).toHaveBeenCalledTimes(2);
+		});
+
+		it("fetches nothing without pins", async () => {
+			await mountCompare([]);
+
+			expect(useQuery).not.toHaveBeenCalled();
+		});
+
+		it("keeps the table when the reports fail", async () => {
+			execute.mockRejectedValue(new Error("nope"));
+
+			const { compare } = await mountCompare([tarvos, gc]);
+			await flushPromises();
+
+			expect(table(compare)["Free Pioneer workers"]).toEqual(["—", "—"]);
+			expect(table(compare).COGC).toEqual(["Electronics", "—"]);
+		});
+
+		it("drops a response for pins that have changed since", async () => {
+			let answerFirst = (_: PlanetPopulationReport[]) => {};
+			execute.mockReturnValueOnce(
+				new Promise((resolve) => (answerFirst = resolve))
+			);
+			execute.mockResolvedValueOnce([
+				report("GC-231a", { free_pioneer: 200, open_jobs_pioneer: 0 }),
+			]);
+
+			const { compare, setProps } = await mountCompare([tarvos]);
+			await setProps({ planets: [gc] });
+			await flushPromises();
+			answerFirst([report("GC-231a", { free_pioneer: 1 })]);
+			await flushPromises();
+
+			expect(table(compare)["Free Pioneer workers"]).toEqual(["200"]);
+		});
 	});
 });

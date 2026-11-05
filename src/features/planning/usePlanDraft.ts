@@ -91,6 +91,8 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 	// was closed (not asked again in this plan view)
 	let foreign: string | null = null;
 	let dismissed: string | null = null;
+	// the draft found when the plan opened, until restored or written over
+	let offered: PlanDraft | null = null;
 	// a keepalive write went out, its answer (updated_at) never arrives
 	let flushed: boolean = false;
 	// the keepalive write in flight, settled with its answer
@@ -148,6 +150,7 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 		flushed = false;
 		draftSavedAt.value = null;
 		draftResumed.value = false;
+		offered = null;
 	}
 
 	/**
@@ -164,6 +167,8 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 		sent = index === -1 ? [] : sent.slice(index + 1);
 		flushed &&= sent.length > 0;
 		draftSavedAt.value = new Date(updatedAt);
+		// written over: the offered draft is gone
+		offered = null;
 	}
 
 	function adopt(draft: PlanDraft): void {
@@ -415,6 +420,9 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 		disarm();
 		if (!options.enabled() || refStopped.value) return;
 		if (!modified.value) {
+			// the offered draft stays until written over (e.g. a preview and
+			// back)
+			if (offered) return;
 			// undone back to the saved state; a keepalive draft is ours too
 			if (seen !== null || flushed) void enqueue(() => remove("undo"));
 			else forget();
@@ -505,12 +513,13 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 	});
 
 	/**
-	 * When the plan opens: a draft of the same save is applied as unsaved
-	 * edits, one of an older save asks first. With a draft the plan is
-	 * refreshed before comparing, a long-lived tab may show an older save.
+	 * When the plan opens: the saved version shows, a draft of the same save
+	 * is only offered (`restore`) and the next write replaces it; one of an
+	 * older save asks first. With a draft the plan is refreshed before
+	 * comparing, a long-lived tab may show an older save.
 	 *
 	 * @param {() => Promise<void>} refresh Loads the saved plan
-	 * @returns {Promise<PlanDraft | null>} The applied draft
+	 * @returns {Promise<PlanDraft | null>} The offered draft
 	 */
 	async function load(
 		refresh: () => Promise<void>
@@ -537,9 +546,8 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 			return null;
 		}
 		if (draft.base_modified_at === options.base()) {
-			adopt(draft);
-			draftResumed.value = true;
-			options.applyDraft(draft);
+			seen = draft.updated_at;
+			offered = draft;
 			return draft;
 		}
 
@@ -548,6 +556,24 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 		foreign = draft.updated_at;
 		await ask(draft, "draft_base");
 		return null;
+	}
+
+	/**
+	 * Applies the draft offered when the plan opened as unsaved edits, if
+	 * nothing was written over it since. In a preview it waits; after
+	 * another save it belongs to an older one and is no longer offered.
+	 *
+	 * @returns {boolean} Applied
+	 */
+	function restore(): boolean {
+		if (!options.enabled()) return false;
+		const draft: PlanDraft | null = offered;
+		offered = null;
+		if (!draft || draft.base_modified_at !== options.base()) return false;
+		adopt(draft);
+		draftResumed.value = true;
+		options.applyDraft(draft);
+		return true;
 	}
 
 	/**
@@ -658,6 +684,7 @@ export function usePlanDraft(options: IPlanDraftOptions) {
 		draftPending,
 		draftFailed,
 		load,
+		restore,
 		withSave,
 		saved,
 		discard,

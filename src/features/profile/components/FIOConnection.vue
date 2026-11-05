@@ -108,7 +108,6 @@
 			await useQuery("PatchUserProfile", {
 				fio_apikey: fioApiKey,
 				prun_username: localFIO.prun_username ?? null,
-				email: userStore.profile?.email ?? null,
 			}).execute();
 
 			if (userHasFIO && !userHadFIO) trackEvent("account:fio_link");

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, onTestFinished, vi } from "vitest";
-import { createApp } from "vue";
+import { createApp, nextTick } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
@@ -124,22 +124,6 @@ describe("Planning Store", async () => {
 			planningStore.deleteShared(sharedPlanUuid);
 			expect(Object.keys(planningStore.shared).length).toBe(2);
 		});
-
-		describe("getPlan", async () => {
-			it("plan uuid already fetched", async () => {
-				// @ts-expect-error mock data
-				planningStore.plans[etherwindUuid] = plan_etherwind;
-
-				const result = await planningStore.getPlan(etherwindUuid);
-				expect(result.uuid).toBe(etherwindUuid);
-			});
-
-			it("fetch non existing plan", async () => {
-				await expect(() =>
-					planningStore.getPlan("foo")
-				).rejects.toThrowError();
-			});
-		});
 	});
 
 	it("$reset", async () => {
@@ -240,5 +224,32 @@ describe("Persistence", () => {
 
 		expect(store.fio_storage_planets).toStrictEqual({});
 		expect(store.fio_storage_timestamp).toBeNull();
+	});
+
+	it("stores the same string as JSON.stringify on the reactive state", async () => {
+		onTestFinished(() => {
+			vi.unstubAllGlobals();
+		});
+		const storage = memoryStorage();
+		vi.stubGlobal("localStorage", storage);
+		const pinia = createPinia().use(piniaPluginPersistedstate);
+		createApp({}).use(pinia);
+		setActivePinia(pinia);
+		const store = usePlanningStore();
+
+		// @ts-expect-error mock data
+		store.setPlan(plan_etherwind);
+		store.setEmpires(empire_list as PlanEmpireElement[]);
+		// @ts-expect-error mock data
+		store.setCXs(cx_list);
+		// @ts-expect-error mock data
+		store.setSharedList(shared_list);
+		await nextTick();
+
+		// the plugin's default serializer, as on main
+		const { plans, empires, cxs, shared } = store.$state;
+		expect(storage.getItem("prunplanner_planning")).toBe(
+			JSON.stringify({ plans, empires, cxs, shared })
+		);
 	});
 });

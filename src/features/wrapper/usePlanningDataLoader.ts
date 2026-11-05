@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 // Stores & Repository
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { useUserStore } from "@/stores/userStore";
 import { isApiError } from "@/lib/apiError";
 
 // Composables
@@ -56,11 +57,30 @@ export function usePlanningDataLoader(
 	const knowsEmpire = (list: PlanEmpireElement[], empireUuid: string) =>
 		list.some((e) => e.uuid === empireUuid);
 	const queryStore = useQueryStore();
+	const userStore = useUserStore();
 	const done: Ref<boolean> = ref(false);
 	// mount to all data loaded, a performance measure for the lab runs
 	const loadStart = performance.now();
 
 	const { createBlankDefinition } = usePlan();
+
+	/*
+		A step's latest request. Each load starts a new one, a reset drops
+		it: an earlier request's answer then changes nothing (not reactive,
+		so starting one doesn't re-run the orchestrator)
+	*/
+	const latest = new Map<StepState<unknown>, symbol>();
+	function begin(s: StepState<unknown>): () => boolean {
+		const request = Symbol();
+		latest.set(s, request);
+		return () => latest.get(s) === request;
+	}
+	function reset(s: StepState<unknown>): void {
+		latest.delete(s);
+		s.triggered = false;
+		s.data = null;
+		s.loading = false;
+	}
 
 	// reset on change
 	watch(
@@ -78,8 +98,7 @@ export function usePlanningDataLoader(
 
 			// per step reset
 			if (newEmpire !== oldEmpire) {
-				steps.empirePlans.triggered = false;
-				steps.empirePlans.data = null;
+				reset(steps.empirePlans);
 
 				// an empire the loaded list doesn't know (just created):
 				// reload the list, its plans wait for it
@@ -88,28 +107,18 @@ export function usePlanningDataLoader(
 					newEmpire &&
 					empireList.data &&
 					!knowsEmpire(empireList.data, newEmpire)
-				) {
-					empireList.triggered = false;
-					empireList.data = null;
-				}
+				)
+					reset(empireList);
 			}
 
-			if (newPlan !== oldPlan) {
-				steps.plan.triggered = false;
-				steps.plan.data = null;
-			}
+			if (newPlan !== oldPlan) reset(steps.plan);
 
 			// another share: its plan, and the planet it brings, load again
-			if (newShared && newShared !== oldShared) {
-				steps.sharedPlan.triggered = false;
-				steps.sharedPlan.data = null;
-			}
+			if (newShared && newShared !== oldShared) reset(steps.sharedPlan);
 
 			// another planet (or share): don't keep the old planet's data
-			if (newPlanet !== oldPlanet || newShared !== oldShared) {
-				steps.planet.triggered = false;
-				steps.planet.data = null;
-			}
+			if (newPlanet !== oldPlanet || newShared !== oldShared)
+				reset(steps.planet);
 		}
 	);
 
@@ -188,7 +197,8 @@ export function usePlanningDataLoader(
 		}),
 		cx: step({
 			name: t("wrapper.planning_data.cx"),
-			enabled: () => !!props.loadCX,
+			// CX preferences are an account's: logged out, a page prices without them
+			enabled: () => !!props.loadCX && userStore.isLoggedIn,
 			load: () => queryStore.execute("GetAllCX", undefined),
 			refreshKey: () => ["planningdata", "cx"],
 			onSuccess: (d: CX[], refreshed?: boolean) => {
@@ -246,17 +256,20 @@ export function usePlanningDataLoader(
 				s.triggered = true;
 				s.loading = true;
 				s.error = null;
+				const isCurrent = begin(s);
 				s.cfg
 					.load()
 					.then((d) => {
+						if (!isCurrent()) return;
 						s.data = d;
 						s.cfg.onSuccess(d);
 					})
 					.catch((e) => {
+						if (!isCurrent()) return;
 						s.error = e instanceof Error ? e : new Error(String(e));
 					})
 					.finally(() => {
-						s.loading = false;
+						if (isCurrent()) s.loading = false;
 					});
 			}
 		});
@@ -278,9 +291,11 @@ export function usePlanningDataLoader(
 			)
 				return;
 
+			const isCurrent = begin(s);
 			s.cfg
 				.load()
 				.then((d) => {
+					if (!isCurrent()) return;
 					s.data = d;
 					s.cfg.onSuccess(d, true);
 					emits("refreshed");

@@ -289,6 +289,7 @@ export const useQueryStore = defineStore("prunplanner_query_store", () => {
 
 				const result = await definition.fetchFn(params);
 
+				if (isCurrent()) definition.onData?.(result);
 				if (shouldCache && isCurrent()) {
 					updateState(keyHash, {
 						data: result,
@@ -350,30 +351,28 @@ export const useQueryStore = defineStore("prunplanner_query_store", () => {
 	 *
 	 * @async
 	 * @param {JSONValue} key Query Key
-	 * @param {{ exact?: boolean; forceRefetch?: boolean; skipRefetch?: boolean }} [options={
-	 * 			exact: true,
-	 * 			forceRefetch: false,
-	 * 			skipRefetch: false,
-	 * 		}] Options, by default will check for exact matches and doesn't force refresh
+	 * @param {{ exact?: boolean; forceRefetch?: boolean; skipRefetch?: boolean }} [options={}]
+	 * Options, each defaulting on its own: exact match (exact: true), refetch
+	 * only autoRefetch queries (forceRefetch: false, skipRefetch: false)
 	 * @returns {Promise<void>}
 	 */
 	async function invalidateKey(
 		key: JSONValue,
-		options: {
+		{
+			exact = true,
+			forceRefetch = false,
+			skipRefetch = false,
+		}: {
 			exact?: boolean;
 			forceRefetch?: boolean;
 			skipRefetch?: boolean;
-		} = {
-			exact: true,
-			forceRefetch: false,
-			skipRefetch: false,
-		}
+		} = {}
 	): Promise<void> {
 		const keyHash: string = toCacheKey(key);
 
 		const toRefetch: IQueryState<unknown, unknown>[] = [];
 
-		if (options.exact) {
+		if (exact) {
 			const existingEntry = cacheState[keyHash];
 			if (existingEntry) {
 				toRefetch.push(existingEntry);
@@ -403,10 +402,12 @@ export const useQueryStore = defineStore("prunplanner_query_store", () => {
 			// refetch can be forced from invalidate options or set
 			// in the query definition itself
 			if (
-				!options.skipRefetch &&
-				(options.forceRefetch || getQueryDefinition(name)?.autoRefetch)
+				!skipRefetch &&
+				(forceRefetch || getQueryDefinition(name)?.autoRefetch)
 			) {
-				execute(name, entry.params as QueryParams<QueryName>);
+				execute(name, entry.params as QueryParams<QueryName>).catch(
+					reportError
+				);
 			}
 		});
 	}

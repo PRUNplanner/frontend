@@ -526,7 +526,7 @@ describe("checkEmpire", () => {
 		expect(b.planetId).toBe(FARM_PLANET);
 		expect(b.cogc).toBe("none");
 		expect(b.lux).toBe("none");
-		const target = input.bases.find((x) => x.id === input.baseOf.GRN)!;
+		const target = input.bases.find((x) => x.id in input.baseOf.GRN)!;
 		expect(target.planetId).toBe(move.option.planet.planet_natural_id);
 		expect(input.recipeId.RAT).toBe(RAT);
 		expect(input.source.H2O).toBe("extract");
@@ -644,7 +644,7 @@ describe("checkEmpire edges", () => {
 		)!;
 		expect(p.option.own).toBe("B");
 		const input = tryInPlanner(picked, p)!;
-		const target = input.bases.find((b) => b.id === input.baseOf.GRN)!;
+		const target = input.bases.find((b) => b.id in input.baseOf.GRN)!;
 		expect(target.name).toBe("Plan B");
 		// a new base joins the chain's bases
 		const fresh = move.options.find((o) => !o.own)!;
@@ -655,7 +655,7 @@ describe("checkEmpire edges", () => {
 			(x): x is ICheckLocationFinding => x.kind === "location"
 		)!;
 		const planned = tryInPlanner(moved, m)!;
-		const added = planned.bases.find((b) => b.id === planned.baseOf.GRN)!;
+		const added = planned.bases.find((b) => b.id in planned.baseOf.GRN)!;
 		expect(added.planetId).toBe(fresh.planet.planet_natural_id);
 		expect(added.cogc).toBe("auto");
 		const buy = {

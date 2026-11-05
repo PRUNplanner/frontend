@@ -14,11 +14,19 @@ const i18n = createI18n({ legacy: false, locale: "en_US", messages: {} });
 const panel = () => document.body.querySelector<HTMLElement>("[role=tooltip]");
 const shown = () => panel()?.textContent === "Help";
 
-function mountTooltip(trigger: () => ReturnType<typeof h>, disabled = false) {
+function mountTooltip(
+	trigger: () => ReturnType<typeof h>,
+	disabled = false,
+	noFocus = false
+) {
 	return mount(
 		{
 			render: () =>
-				h(PTooltip, { disabled }, { trigger, default: () => "Help" }),
+				h(
+					PTooltip,
+					{ disabled, noFocus },
+					{ trigger, default: () => "Help" }
+				),
 		},
 		{ attachTo: document.body }
 	);
@@ -41,6 +49,14 @@ describe("PTooltip", () => {
 		await flushPromises();
 		expect(shown()).toBe(false);
 		vi.useRealTimers();
+	});
+
+	it("noFocus: hover still opens it, no tab stop of its own", async () => {
+		const wrapper = mountTooltip(() => h("span", "1,234"), false, true);
+		const trigger = wrapper.find(".ptooltip");
+		expect(trigger.attributes("tabindex")).toBeUndefined();
+		await trigger.trigger("mouseenter");
+		expect(shown()).toBe(true);
 	});
 
 	it("opens on keyboard focus, closes on blur and is announced", async () => {

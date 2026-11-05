@@ -1,55 +1,53 @@
 # base_roi
 
-**Purpose.** Base ROI ranks every way to run one base: each resource on
-each planet that has it (resource rows), each farming recipe on each
-fertile planet (farming rows) and each recipe of every other production
-building on a standard planet (recipe rows). Every row uses the static
-layout of `roi_overview/assets/optimalProduction.ts`, the plan engine and
-the selected CX preference, plus Knottly's metrics: break-even with experts
-arriving over time, a stock buffer, HQ and ship add-ons, logistics and
-market-capacity limits, volatility scenarios and a 30-day profit history.
+**Purpose.** Ranks every way to run one base by break-even: resources per
+planet, farming recipes per fertile planet, and every other production
+recipe on a standard planet. Rows use the static layouts of
+`roi_overview/assets/optimalProduction.ts`, the plan engine and the selected
+CX, plus expert ramp, stock buffer, HQ add-on, logistics and market limits,
+volatility scenarios and a 90-day profit history.
 
-**Used by.** `views/tools/BaseROIView.vue` (`/base-roi`, login required).
-Test phase: no nav entry, homepage card or help-index link yet; the route
-opens by URL.
+**Used by.** `views/tools/BaseROIView.vue` (`/base-roi`, test phase: no nav
+entry). No login needed: logged out, prices are Universe 30D and "Open as
+plan" is hidden.
 
 ## Key files
 
-| File | Role |
-| --- | --- |
-| `baseROIRows.ts` | Pure. `recipeCandidates`, `planetCandidates` (from the planet search index, split by max jumps), `basePlan`, `calculateBase` (the engine pass; with a buffer it adds STO/STA and drops production buildings while the area is exceeded, refitting habs with `optimizeHabs`) and `toRowInput` (daily money split into revenue, inputs, consumables, degradation; cargo; materials with their `IPriceSource`; outputs with traded volume; workforce) |
-| `baseROIMetrics.ts` | Pure. Building cost (construction + buffer stock + HQ step + ships), `rampBreakEven`, weekly return, logistics fit, market capacity, `volatilityScenarios`, `filterRows` with the hidden count per limit |
-| `baseROIHistory.ts` | Pure. Revenue, running cost and profit per day from the row's daily amounts and `GetCXSparklines` daily VWAP, no engine pass |
-| `baseROIDetail.util.ts` | The row detail's ten sections as data, shared by the view and "Copy as text" |
-| `useBaseROI.ts` | Orchestration: recipe rows first, the index and planets (fetched once per page: fertile ones with `PostPlanetSearch`, the rest with `GetMultiplePlanets`), planet rows merged once, 50-row chunks with `scheduler.yield()`, a newer run stops the older one, `performance.measure` (`base-roi:*`), one `tool:use` per finished run, the price history, `tryOnPlanet` |
-| `useBaseROISettings.ts`, `baseROI.schemas.ts` | Settings in localStorage (`prunplanner_base_roi`), each field falls back to its default on its own |
-| `baseROI.constants.ts` | Ships, `SHIP_PRICE`, `EXPERT_STAGE_DAYS`, presets, columns, `STANDARD_PLANET` |
-| `components/BaseROIPage.vue` | The page: header, settings panel, table box (the data loaders overlay it only while loading), chart drawer, setup dialog |
-| `components/BaseROITable.vue`, `BaseROITableSkeleton.vue`, `BaseROIColumnsMenu.vue`, `BaseROISettingsPanel.vue`, `BaseROISetup.vue`, `BaseROIRowDetail.vue`, `BaseROIChartDrawer.vue` | UI |
-
-## How it works
-
-1. Settings the engine reads (COGC, experts, buffer, max jumps) and the CX
-   preference recalculate the rows; every other setting only recomputes
-   metrics and filters (`rows`, `filtered` computeds), no engine pass.
-2. With the expert ramp the engine runs at 5 experts; `rampBreakEven`
-   scales revenue and inputs per stage by `(1 + bonus_k) / (1 + bonus_5)`.
-3. Max jumps counts to the nearest exchange the CX preference prices from
-   (all four without a preference). Planets beyond it are counted, never
-   fetched.
+- `useBaseROI.ts`: orchestration. Recipe rows first, then planets (fertile
+  via `PostPlanetSearch`, others via `GetMultiplePlanets`, once per page) in
+  `CHUNK_SIZE` chunks with yields (`util/runProgress`); a newer run cancels
+  the older. `performance.measure("base-roi:*")`, one `tool:use` per run,
+  `tryOnPlanet`.
+- Pure modules: `baseROIRows.ts` (candidates, engine pass, buffer adds
+  STO/STA and drops buildings while over area), `baseROIMetrics.ts` (costs,
+  `rampBreakEven`, limits, `filterRows`), `baseROIHistory.ts`,
+  `baseROIPopulation.ts` (`baseStaffing` from `GetMultiplePlanetPOPR`; a
+  missing report limits nothing), `baseROITrend.ts` (trend chart, at most 7
+  lines), `baseROIDetail.util.ts` (row detail sections, also "Copy as text"),
+  `baseROITooltip.util.ts` (cell math).
+- `useBaseROISettings.ts` + `baseROI.schemas.ts`: localStorage
+  `prunplanner_base_roi`, each field falls back to its default on its own.
+- `baseROI.constants.ts`: ships, `EXPERT_STAGE_DAYS`, `HISTORY_DAYS`,
+  presets, columns, `STANDARD_PLANET`.
+- `components/BaseROIPage.vue` and its parts.
 
 ## Gotchas
 
-- **Recipe rows run on `STANDARD_PLANET`** (rocky, normal environment), so
-  their construction includes MCG like Recipe ROI on Montem; "Try on a
-  planet" in the row detail recalculates one recipe row on a real planet.
-- **Keep the engine the source of truth**: building cost and daily profit
-  with buffer off, add-ons off, matching COGC and 5 fixed experts equal
-  Recipe ROI and Resource ROI (`baseROIRows.test.ts`).
+- Only engine settings (COGC, experts, buffer, max jumps) and the CX trigger
+  an engine pass; the rest only recompute metrics and filters.
+- The engine runs at 5 experts; `rampBreakEven` scales revenue minus inputs
+  per stage by `(1 + bonus_k) / (1 + bonus_5)` over
+  `EXPERT_STAGE_DAYS[k] / production buildings` days.
+- Max jumps counts to the nearest exchange of the CX (all four without one);
+  planets beyond are counted, never fetched.
+- Recipe rows run on `STANDARD_PLANET` (no real planet, so construction
+  includes MCG like Recipe ROI); "Try on a planet" recalculates one row on a
+  real planet.
+- The engine is the source of truth: with buffer/add-ons off, matching COGC
+  and 5 experts, building cost and daily profit equal Recipe ROI and
+  Resource ROI (`baseROIRows.test.ts`).
 
 ## Tests
 
-`src/tests/features/base_roi/`: `baseROIMetrics.test.ts` (with three rows
-of Knottly's AI1 file in `knottly_ai1_rows.json`), `baseROIRows.test.ts`,
-`baseROIHistory.test.ts`, `useBaseROISettings.test.ts`, `components/*.test.ts`,
-and the bench `baseROI.bench.ts` (B10).
+`src/tests/features/base_roi/` (per module and `components/`; fixtures incl.
+a reference spreadsheet's rows), bench `baseROI.bench.ts`.
