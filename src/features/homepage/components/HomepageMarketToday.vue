@@ -47,8 +47,7 @@
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 
 	// UI
-	import PButton from "@/ui/components/PButton.vue";
-	import PButtonGroup from "@/ui/components/PButtonGroup.vue";
+	import PSegmented from "@/ui/components/PSegmented.vue";
 
 	// "Market today" on the landing page: mounted once the section comes
 	// near, from the same queries as /market, which then loads nothing again
@@ -219,18 +218,17 @@
 					<h3 class="m-0 text-[20px] font-bold text-white">
 						{{ t("homepage.market.movers.title") }}
 					</h3>
-					<PButtonGroup
-						role="group"
-						:aria-label="t('market_report.movers.direction_label')">
-						<PButton
-							v-for="d in DIRECTIONS"
-							:key="d"
-							size="sm"
-							:pressed="direction === d"
-							@click="setDirection(d)">
-							{{ t(`market_report.movers.${d}`) }}
-						</PButton>
-					</PButtonGroup>
+					<PSegmented
+						size="sm"
+						:value="direction"
+						:options="
+							DIRECTIONS.map((d) => ({
+								value: d,
+								label: t(`market_report.movers.${d}`),
+							}))
+						"
+						:label="t('market_report.movers.direction_label')"
+						@update:value="setDirection" />
 				</div>
 				<MarketMovers
 					:summary="summary"

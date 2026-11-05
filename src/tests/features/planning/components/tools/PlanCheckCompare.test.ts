@@ -723,12 +723,12 @@ describe("PlanCheckCompare", () => {
 			it("gives a known material its category colour, others a neutral chip", async () => {
 				const { wrapper } = await mountCompare();
 
-				expect(items(wrapper)[0].find("span").classes()).toContain(
-					"material-category-metals"
-				);
-				expect(items(wrapper)[2].find("span").classes()).toContain(
-					"bg-black/40"
-				);
+				expect(
+					items(wrapper)[0].find(".material-tile").classes()
+				).toContain("material-category-metals");
+				expect(
+					items(wrapper)[2].find("[data-unknown-material]").exists()
+				).toBe(true);
 			});
 
 			it("shows a material's value in both plans in its tooltip", async () => {

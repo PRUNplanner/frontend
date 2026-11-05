@@ -225,7 +225,7 @@
 				@pin="onPin">
 				<template #trigger>
 					<div
-						class="flex justify-center items-center"
+						class="flex h-full justify-center items-center"
 						:class="{ 'px-2': !!amount }">
 						<div v-if="amount" class="pr-1">
 							{{ formatNumber(amount, 2, true) }}x

@@ -23,8 +23,10 @@ for when to import by path). `PConfirmHost` and `PToastHost` are for
 - **Buttons:** `PButton` defaults to `type="primary"` and `html-type="button"`
   (never submits on its own). A selection or on/off button takes
   `:pressed` (sets `aria-pressed`, primary while pressed) instead of
-  switching `type`. A choice between a few views of one thing is
-  `PSegmented` (`label` names the group).
+  switching `type`. One choice of a few options (views, filters, modes,
+  a metric or range) is `PSegmented` (`label` names the group, the
+  `option` slot adds a dot or count), never a `PButtonGroup` of pressed
+  buttons.
 - **Forms:** `<PForm as-form @submit>` renders a real `<form>` (Enter
   submits); its button gets `html-type="submit"` and no `@click`. Give a
   `PFormItem` an `error` to show the message, set the field's error state

@@ -30,7 +30,7 @@
 	} from "@/features/material_tile/materialMarket.types";
 
 	// UI
-	import { PButton, PButtonGroup } from "@/ui";
+	import { PSegmented } from "@/ui";
 
 	/*
 	 * Market details, the drawer behind the market card: the material, the
@@ -205,18 +205,16 @@
 				<h3 class="grow font-bold text-base text-ink-strong">
 					{{ $t("material_tile.details.history") }}
 				</h3>
-				<PButtonGroup
-					role="group"
-					:aria-label="$t('material_tile.chart.metric.label')">
-					<PButton
-						v-for="metric in chartMetrics"
-						:key="metric"
-						size="sm"
-						:pressed="chartMetric === metric"
-						@click="chartMetric = metric">
-						{{ $t(`material_tile.chart.metric.${metric}`) }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					v-model:value="chartMetric"
+					size="sm"
+					:options="
+						chartMetrics.map((metric) => ({
+							value: metric,
+							label: $t(`material_tile.chart.metric.${metric}`),
+						}))
+					"
+					:label="$t('material_tile.chart.metric.label')" />
 			</div>
 			<MaterialDataChart
 				:material-ticker="ticker"

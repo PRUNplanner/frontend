@@ -43,9 +43,7 @@ async function mountGroup(group: RuleGroupType = tree()) {
 
 /** header button of a group, top level first */
 async function click(group: VueWrapper, text: string) {
-	const button = group
-		.findAllComponents(PButton)
-		.find((b) => b.text() === text);
+	const button = group.findAll("button").find((b) => b.text() === text);
 	expect(button).toBeDefined();
 	await button!.trigger("click");
 	await flushPromises();
@@ -71,9 +69,11 @@ describe("RuleGroup", () => {
 
 		const types = (group: VueWrapper) =>
 			group
-				.findAllComponents(PButton)
-				.filter((b) => ["AND", "OR"].includes(b.text()))
-				.map((b) => [b.text(), b.props("pressed")]);
+				.findAll("button[aria-pressed]")
+				.map((b) => [
+					b.text(),
+					b.attributes("aria-pressed") === "true",
+				]);
 		expect(types(wrapper.findAllComponents(RuleGroup).at(1)!)).toEqual([
 			["AND", false],
 			["OR", true],

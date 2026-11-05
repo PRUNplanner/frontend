@@ -40,6 +40,7 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
+	import PlanCheckTile from "@/features/planning/components/tools/PlanCheckTile.vue";
 	import PDivergingBar from "@/ui/charts/PDivergingBar.vue";
 	import MarketFlagIcon from "@/features/cx/components/MarketFlagIcon.vue";
 
@@ -82,7 +83,7 @@
 	const { getGameData, createPrices, loadGameData } = usePlanContext();
 	const { findEmpireCXUuid } = useCXData();
 	const { getExchangeTickerLoaded } = useExchangeData();
-	const { materialsMap, getMaterialClass } = useMaterialData();
+	const { materialsMap } = useMaterialData();
 
 	/*
 	 * Plans and picker
@@ -481,8 +482,6 @@
 	const signed = (v: number) => (v > 0 ? "+" : "") + compactNumber(v);
 	const valueClass = (v: number) =>
 		v > 0 ? "text-positive" : "text-negative";
-	const chipClass = (ticker: string) =>
-		materialsMap.value[ticker] ? getMaterialClass(ticker) : "bg-black/40";
 </script>
 
 <template>
@@ -722,10 +721,9 @@
 									<template #trigger>
 										<div
 											class="flex items-center gap-2 min-h-11 @[640px]:min-h-7">
-											<span
-												class="shrink-0 w-12 px-1 rounded-sm text-xs text-center font-bold"
-												:class="chipClass(c.ticker)">
-												{{ c.ticker }}
+											<span class="shrink-0 w-12">
+												<PlanCheckTile
+													:ticker="c.ticker" />
 											</span>
 											<PDivergingBar
 												class="flex-1"

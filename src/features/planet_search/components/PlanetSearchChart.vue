@@ -43,7 +43,7 @@
 	import type { IScatterPoint } from "@/ui/charts/scatter.types";
 
 	// UI
-	import { PButton, PButtonGroup, PSelect } from "@/ui";
+	import { PSegmented, PSelect } from "@/ui";
 
 	const props = defineProps<{
 		/** results, sorted */
@@ -265,18 +265,16 @@
 				<span class="text-muted">
 					{{ t("planet_search.chart.colour_by") }}
 				</span>
-				<PButtonGroup
-					role="group"
-					:aria-label="t('planet_search.chart.colour_by')">
-					<PButton
-						v-for="c in ['frontier', 'cogc'] as const"
-						:key="c"
-						size="sm"
-						:pressed="colourBy === c"
-						@click="colourBy = c">
-						{{ t(`planet_search.chart.colour_${c}`) }}
-					</PButton>
-				</PButtonGroup>
+				<PSegmented
+					v-model:value="colourBy"
+					size="sm"
+					:options="
+						(['frontier', 'cogc'] as const).map((c) => ({
+							value: c,
+							label: t(`planet_search.chart.colour_${c}`),
+						}))
+					"
+					:label="t('planet_search.chart.colour_by')" />
 			</div>
 		</div>
 

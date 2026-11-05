@@ -201,7 +201,8 @@ describe("FIORepairOverview", () => {
 		expect(
 			wrapper
 				.find("[data-testid=fio-repair-filter-overdue]")
-				.attributes("aria-pressed")
+				.element.closest("button")
+				?.getAttribute("aria-pressed")
 		).toBe("true");
 	});
 

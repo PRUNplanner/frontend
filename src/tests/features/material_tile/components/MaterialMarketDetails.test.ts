@@ -4,7 +4,6 @@ import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import MaterialMarketDetails from "@/features/material_tile/components/MaterialMarketDetails.vue";
 import MaterialDataChart from "@/features/market_exploration/components/MaterialDataChart.vue";
-import { PButton } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 import { makeOverview } from "@/tests/features/material_tile/marketOverview";
 
@@ -229,7 +228,7 @@ describe("MaterialMarketDetails", () => {
 	it("switches the chart value", async () => {
 		const wrapper = await mountDetails();
 		const buttons = wrapper
-			.findAllComponents(PButton)
+			.findAll("button")
 			.filter((b) => b.text().startsWith("material_tile.chart.metric."));
 
 		expect(buttons.map((b) => b.text())).toEqual([
