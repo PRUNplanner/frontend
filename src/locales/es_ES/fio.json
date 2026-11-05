@@ -4,12 +4,12 @@
 		"title": "Consumo FIO:",
 		"fio_last_update": "Actualización de datos FIO: {last_updated}",
 		"states": {
-			"no_empire_title": "No empire yet",
-			"no_empire": "FIO Burn shows how long the stock of each base in an empire lasts. Create an empire in Management and assign your plans to it.",
+			"no_empire_title": "Aún no hay imperio",
+			"no_empire": "Consumo FIO muestra cuánto dura el stock de cada base de un imperio. Crea un imperio en Gestión y asígnale tus planes.",
 			"create_empire": "@:empire.empty.create",
-			"no_fio_title": "Connect FIO to see your burn",
-			"no_fio": "FIO Burn reads your bases' stock from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile"
+			"no_fio_title": "Conecta FIO para ver tu consumo",
+			"no_fio": "Consumo FIO lee el stock de tus bases desde FIO. Configura FIO en tu {link} y vuelve aquí.",
+			"profile": "Perfil"
 		},
 		"form": {
 			"empire": "@:terms.empire",
