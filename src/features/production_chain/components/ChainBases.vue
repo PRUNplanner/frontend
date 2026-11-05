@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ref } from "vue";
+	import { computed } from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -7,6 +7,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import ChainBaseCard from "@/features/production_chain/components/ChainBaseCard.vue";
 	import ChainBasesOverview from "@/features/production_chain/components/ChainBasesOverview.vue";
+	import ChainBasesActions from "@/features/production_chain/components/ChainBasesActions.vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -21,7 +22,6 @@
 		chainShipping,
 		cogcFits,
 	} from "@/features/production_chain/engine/chainBases";
-	import { MAX_AREAS } from "@/features/production_chain/engine/chainAutoLayout";
 	import {
 		OWN_SUPPLIER,
 		unusedSurplus,
@@ -54,7 +54,8 @@
 	import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 
 	// UI
-	import { PButton, PInputNumber, PSelect, PTable } from "@/ui";
+	import { PButton, PTable } from "@/ui";
+	import { AddOutlined } from "@vicons/material";
 
 	const {
 		result,
@@ -102,13 +103,14 @@
 	};
 
 	const maxArea = defineModel<ChainMaxArea>("maxArea", { default: 500 });
-	const areaOptions = MAX_AREAS.map((a) => ({
-		value: a,
-		label: t("production_chains.bases.max_area_option", {
-			n: formatNumber(a, 0),
-		}),
-	}));
-	const fitCount = ref(2);
+	/** bases with steps that block creating plans */
+	const noPlanet = computed(
+		() => result.bases.filter((b) => b.materials.length && !b.planet).length
+	);
+	const overArea = computed(
+		() =>
+			result.bases.filter((b) => b.materials.length && b.overArea).length
+	);
 
 	const choice = (id: string) => bases.find((b) => b.id === id)!;
 	const planCount = computed(
@@ -213,81 +215,31 @@
 
 <template>
 	<div class="flex flex-col gap-3 p-3" data-testid="chain-bases">
+		<ChainBasesActions
+			v-model:max-area="maxArea"
+			:laying-out="layingOut"
+			:plan-count="planCount"
+			:ready="ready"
+			:no-planet="noPlanet"
+			:over-area="overArea"
+			@auto-layout="emit('autoLayout')"
+			@fit="(n) => emit('fit', n)"
+			@create="emit('create')" />
 		<ChainBasesOverview :result="result" :routes="routes" />
-		<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-			<div class="flex items-center gap-2">
-				<PButton
-					size="sm"
-					type="secondary"
-					data-testid="chain-auto-layout"
-					:loading="layingOut"
-					:title="t('production_chains.bases.auto_layout_title')"
-					@click="emit('autoLayout')">
-					{{ $t("production_chains.bases.auto_layout") }}
-				</PButton>
-				<span class="text-xs text-muted">
-					{{ $t("production_chains.bases.max_area") }}
-				</span>
-				<PSelect
-					:value="maxArea"
-					:options="areaOptions"
-					size="sm"
-					class="w-28"
-					:aria-label="t('production_chains.bases.max_area')"
-					data-testid="chain-max-area"
-					@update:value="
-						(v) => v && (maxArea = Number(v) as ChainMaxArea)
-					" />
-			</div>
-			<div
-				class="flex items-center gap-2"
-				:title="t('production_chains.bases.fit_hint')">
-				<span class="text-xs text-muted">
-					{{ $t("production_chains.bases.fit") }}
-				</span>
-				<PInputNumber
-					:value="fitCount"
-					:min="1"
-					:max="BASE_IDS.length"
-					size="sm"
-					class="w-16"
-					:aria-label="t('production_chains.bases.fit_count')"
-					data-testid="chain-fit-count"
-					@update:value="(v) => v && v >= 1 && (fitCount = v)" />
-				<span class="text-xs text-muted">
-					{{ $t("production_chains.bases.fit_bases", fitCount) }}
-				</span>
-				<PButton
-					size="sm"
-					type="secondary"
-					:loading="layingOut"
-					data-testid="chain-fit"
-					@click="emit('fit', fitCount)">
-					{{ $t("production_chains.bases.fit_apply") }}
-				</PButton>
-			</div>
+		<div class="flex flex-wrap items-center gap-2">
+			<span class="text-xs text-muted flex-1 min-w-48">
+				{{ $t("production_chains.bases.hint") }}
+			</span>
 			<PButton
 				size="sm"
 				type="secondary"
 				:disabled="bases.length >= BASE_IDS.length"
 				data-testid="chain-add-base"
 				@click="emit('add')">
+				<template #icon><AddOutlined /></template>
 				{{ $t("production_chains.bases.add") }}
 			</PButton>
-			<PButton
-				size="sm"
-				class="ml-auto"
-				:type="ready ? 'primary' : 'secondary'"
-				:disabled="!planCount"
-				data-testid="chain-bases-create"
-				@click="emit('create')">
-				{{ $t("production_chains.bases.create", planCount) }}
-			</PButton>
 		</div>
-		<p class="text-xs text-muted -mt-1">
-			{{ $t("production_chains.bases.hint") }}
-		</p>
-
 		<div
 			v-if="created && created.plans.length"
 			class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
