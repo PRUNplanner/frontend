@@ -50,5 +50,7 @@ export interface IPlanViewContext {
 		active: Ref<boolean>;
 		// whether an element shows all it can hide (tiers, fields, buttons)
 		showAll: (el: ElementId) => boolean;
+		// whether an element shows as a table instead of cards
+		table: (el: ElementId) => boolean;
 	};
 }

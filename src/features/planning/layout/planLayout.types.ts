@@ -45,6 +45,8 @@ export interface GridLayout {
 	items: GridItem[];
 	// elements that show all they can hide (tiers, fields, buttons)
 	open?: ElementId[];
+	// elements shown as a table instead of cards
+	table?: ElementId[];
 }
 
 /** Where an item lands, in px from its region's top left */

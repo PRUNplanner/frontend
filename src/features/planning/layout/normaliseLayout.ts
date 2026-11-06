@@ -19,6 +19,7 @@ import {
 	ELEMENTS,
 	isElementId,
 	OPENABLE,
+	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
 
 const HEIGHT_MODES: HeightMode[] = ["fit", "cap", "fixed"];
@@ -70,7 +71,7 @@ const height = (v: unknown): number => {
  * and duplicate elements, keeps Production, clamps columns, widths and
  * heights to the limits, makes `active` one of the item's tabs and
  * renumbers `y` in reading order; keeps the elements shown everything
- * open that can be. Elements missing from it count as hidden,
+ * open or as a table that can be. Elements missing from it count as hidden,
  * except Production, which is added at the bottom. Normalising twice
  * changes nothing.
  * @author jplacht
@@ -138,7 +139,16 @@ export function normaliseLayout(input: unknown): GridLayout {
 			});
 
 	const open = normaliseFolded(raw.open).filter((e) => OPENABLE.includes(e));
-	return { cols, gap, items: renumber(items), ...(open.length && { open }) };
+	const table = normaliseFolded(raw.table).filter((e) =>
+		TABLE_VIEW.includes(e)
+	);
+	return {
+		cols,
+		gap,
+		items: renumber(items),
+		...(open.length && { open }),
+		...(table.length && { table }),
+	};
 }
 
 /**
@@ -165,4 +175,5 @@ export const cloneLayout = (layout: GridLayout): GridLayout => ({
 	gap: layout.gap,
 	items: layout.items.map((i) => ({ ...i, els: [...i.els] })),
 	...(layout.open && { open: [...layout.open] }),
+	...(layout.table && { table: [...layout.table] }),
 });

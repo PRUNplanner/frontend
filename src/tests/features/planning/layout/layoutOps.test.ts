@@ -430,6 +430,23 @@ describe("layoutOps", () => {
 				).toBe("nothing");
 		});
 
+		it("shows an element as a table or as cards", () => {
+			const g = today();
+			const tbl = ops.setView(g, "workforce", "table", ctx());
+			expect(tbl.layout.table).toEqual(["workforce"]);
+			expect(ann(tbl)).toBe("view_table");
+			// already so, or an element without a table: nothing
+			expect(
+				ann(ops.setView(tbl.layout, "workforce", "table", ctx()))
+			).toBe("nothing");
+			expect(ann(ops.setView(g, "experts", "table", ctx()))).toBe(
+				"nothing"
+			);
+			const cards = ops.setView(tbl.layout, "workforce", "cards", ctx());
+			expect(cards.layout.table).toBeUndefined();
+			expect(ann(cards)).toBe("view_cards");
+		});
+
 		it("opens an element that hides parts, and closes it again", () => {
 			const g = today();
 			const on = ops.toggleOpen(g, "workforce", ctx());

@@ -934,6 +934,31 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe("Gap 8 px");
 		});
 
+		it("shows Workforce as a table from its menu, undoably, saved with the layout", async () => {
+			const m = await mountEditor();
+			expect(option(m, "workforce", "view:cards")).toMatchObject({
+				label: "Cards",
+				checked: true,
+			});
+			expect(option(m, "workforce", "view:table")).toMatchObject({
+				checked: false,
+			});
+			// only where a table exists
+			expect(option(m, "planet", "view:table")).toBeUndefined();
+			await pick(m, "workforce", "view:table");
+			const layout = () =>
+				m.wrapper
+					.findComponent({ name: "PlanGrid" })
+					.props("layout") as GridLayout;
+			expect(layout().table).toEqual(["workforce"]);
+			expect(option(m, "workforce", "view:table")).toMatchObject({
+				checked: true,
+			});
+			expect(announce(m)).toBe("Workforce shown as a table");
+			await button(m, "[data-save]").trigger("click");
+			expect(m.pref.layout.value.table).toEqual(["workforce"]);
+		});
+
 		it("opens an element that hides parts, undoably, and saves it with the layout", async () => {
 			const m = await mountEditor();
 			const toggle = (id: string) =>

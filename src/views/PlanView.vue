@@ -496,6 +496,7 @@
 			// the layout's choice; customising, the editor's draft (it
 			// provides its own)
 			showAll: (el: ElementId) => !!grid.layout.value.open?.includes(el),
+			table: (el: ElementId) => !!grid.layout.value.table?.includes(el),
 		},
 	});
 

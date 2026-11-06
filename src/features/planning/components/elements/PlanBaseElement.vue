@@ -173,6 +173,7 @@
 			:workforce-data="result.workforce"
 			:planet-natural-id="planet.planet_natural_id"
 			:show-all="layoutEditing.showAll(section)"
+			:table="layoutEditing.table(section)"
 			@update:lux="handleUpdateWorkforceLux" />
 
 		<PlanInfrastructure

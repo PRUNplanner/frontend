@@ -104,6 +104,8 @@ export const OPENABLE: readonly ElementId[] = [
 	"housing",
 	"experts",
 ];
+/** Elements that can show as a table instead of cards */
+export const TABLE_VIEW: readonly ElementId[] = ["workforce"];
 
 export const isElementId = (id: unknown): id is ElementId =>
 	typeof id === "string" && Object.hasOwn(ELEMENTS, id);

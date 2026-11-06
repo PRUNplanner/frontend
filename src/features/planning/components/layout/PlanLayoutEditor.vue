@@ -126,13 +126,15 @@
 		phone,
 	} = editor;
 
-	// the elements show everything open as the draft says, here only
+	// the elements show everything open and as tables as the draft says,
+	// here only
 	const planView = usePlanView();
 	providePlanView({
 		...planView,
 		layoutEditing: {
 			...planView.layoutEditing,
 			showAll: (el: ElementId) => !!draft.value.open?.includes(el),
+			table: (el: ElementId) => !!draft.value.table?.includes(el),
 		},
 	});
 

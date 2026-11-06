@@ -328,8 +328,53 @@ describe("PlanWorkforce", () => {
 
 	it("puts tiers side by side when wider, not taller", async () => {
 		const { wrapper } = await mountWorkforce();
-		expect(wrapper.find("div").classes()).toContain(
+		expect(wrapper.find("[data-cards]").classes()).toContain(
 			"grid-cols-[repeat(auto-fill,minmax(min(240px,100%),1fr))]"
 		);
+	});
+
+	describe("as a table", () => {
+		it("has a row per used tier: need, housed, free, luxuries, efficiency", async () => {
+			const { wrapper } = await mountWorkforce({ table: true });
+			expect(wrapper.find("[data-cards]").exists()).toBe(false);
+			const table = wrapper.find("[data-table]");
+			expect(table.findAll("th").map((h) => h.text())).toEqual([
+				"Tier",
+				"Need / housed",
+				"Free",
+				"Luxuries",
+				"Efficiency %",
+			]);
+			const trs = table.findAll("tbody tr");
+			expect(trs).toHaveLength(3);
+			const cells = trs[1].findAll("td").map((c) => c.text());
+			// settler: 250 needed, 200 housed, 50 short, REP off, KOM on
+			expect(cells[0]).toBe("Game.workforce Type.settler");
+			expect(cells[1]).toContain("250");
+			expect(cells[1]).toContain("200");
+			expect(cells[2]).toBe("-50");
+			expect(trs[1].find("[data-short='true']").exists()).toBe(true);
+			expect(cells[4]).toBe("50.00");
+			expect(trs[1].findAllComponents(PMeter)).toHaveLength(1);
+		});
+
+		it("switches luxuries and keeps the unneeded tiers behind the toggle", async () => {
+			const { wrapper, component } = await mountWorkforce({
+				table: true,
+			});
+			const lux = wrapper
+				.findAll("[data-table] tbody tr")[0]
+				.findAll("button");
+			expect(lux.map((b) => b.attributes("aria-pressed"))).toEqual([
+				"true",
+				"false",
+			]);
+			await lux[1].trigger("click");
+			expect(component.emitted("update:lux")).toEqual([
+				["pioneer", "lux2", true],
+			]);
+			await unneededToggle(wrapper).trigger("click");
+			expect(wrapper.findAll("[data-table] tbody tr")).toHaveLength(5);
+		});
 	});
 });

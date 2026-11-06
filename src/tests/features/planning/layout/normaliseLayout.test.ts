@@ -144,6 +144,10 @@ describe("normaliseLayout", () => {
 		});
 		expect(out.open).toEqual(["workforce", "experts"]);
 		expect(
+			normaliseLayout({ items: [prod], table: ["workforce", "planet"] })
+				.table
+		).toEqual(["workforce"]);
+		expect(
 			normaliseLayout({ items: [prod], open: "x" })
 		).not.toHaveProperty("open");
 		expect(normaliseLayout(out)).toEqual(out);

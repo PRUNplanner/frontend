@@ -115,6 +115,7 @@ export function planViewContext(o: IContextOptions = {}): IPlanViewContext {
 		layoutEditing: {
 			active: ref(!!o.showAll),
 			showAll: () => !!o.showAll,
+			table: () => false,
 		},
 	};
 }

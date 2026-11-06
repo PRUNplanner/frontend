@@ -32,6 +32,7 @@ import {
 	ELEMENTS,
 	minHeightOf,
 	minWidthOf,
+	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
 import { packLayout } from "@/features/planning/layout/packLayout";
 import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
@@ -464,9 +465,24 @@ export function usePlanLayoutEditor(
 			{
 				key: "pin",
 				label: t("plan.layout.keep_in_view"),
+				hint: t("plan.layout.keep_in_view_hint"),
 				checked: it.pin,
 			},
 			{ type: "divider" },
+			// cards or a table, for the tab shown
+			...(TABLE_VIEW.includes(it.active)
+				? ([
+						{ type: "group", label: t("plan.layout.show_as") },
+						...(["cards", "table"] as const).map((v) => ({
+							key: `view:${v}`,
+							label: t(`plan.layout.view_${v}`),
+							checked:
+								!!g.table?.includes(it.active) ===
+								(v === "table"),
+						})),
+						{ type: "divider" },
+					] as PDropdownOption[])
+				: []),
 			{ type: "group", label: t("plan.layout.move") },
 			{ key: "up", label: t("plan.layout.up") },
 			{ key: "down", label: t("plan.layout.down") },
@@ -560,6 +576,16 @@ export function usePlanLayoutEditor(
 		else if (key === "taller") stepHeight(id, 1, "menu");
 		else if (key === "shorter") stepHeight(id, -1, "menu");
 		else if (key === "pin") togglePin(id);
+		else if (key.startsWith("view:"))
+			apply(
+				ops.setView(
+					draft.value,
+					it.active,
+					key.slice(5) as "cards" | "table",
+					ctx()
+				),
+				id
+			);
 		else if (key === "up") moveY(id, -1, "menu");
 		else if (key === "down") moveY(id, 1, "menu");
 		else if (key === "left") moveX(id, -1, "menu");

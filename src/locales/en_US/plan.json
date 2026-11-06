@@ -736,7 +736,14 @@
 			"supply": "Supply {ticker}",
 			"beds_free": "{n} free",
 			"show_not_needed": "Show {tiers} (not needed)",
-			"hide_not_needed": "Hide the workforce not needed"
+			"hide_not_needed": "Hide the workforce not needed",
+			"table": {
+				"tier": "Tier",
+				"need_housed": "Need / housed",
+				"free": "Free",
+				"luxuries": "Luxuries",
+				"efficiency": "Efficiency %"
+			}
 		},
 		"housing": {
 			"label": "Infrastructure",
@@ -880,7 +887,7 @@
 		},
 		"where": {
 			"page": "On the page",
-			"band": "Kept in view",
+			"band": "Pinned to top",
 			"tab": "A tab of {name}",
 			"hidden": "Hidden"
 		},
@@ -907,13 +914,13 @@
 		"content_open_named": "{name}: everything open",
 		"hint": "Drag a title bar to move, an edge to resize; on a title bar arrows move, Shift+arrows resize, Enter opens the menu.",
 		"auto_note": "{n} item is rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is. | {n} items are rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is.",
-		"band_note": "The items kept in view are taller than 40 % of the window: they stay in view at that height and scroll inside.",
+		"band_note": "The parts pinned to top are taller than 40 % of the window: they stay at that height and scroll inside.",
 		"phone_note": "Phone preview: every item stacked in order, small ones two per row. View only.",
 		"handle": "Move {name}. Arrows move, Shift+arrows resize, Enter opens the menu.",
 		"item_menu": "{name}: layout menu",
 		"size_auto": "auto {n}/{cols} (yours {w})",
 		"size_moved": "auto {n}/{cols}",
-		"size_in_view": "in view",
+		"size_in_view": "pinned",
 		"size_scrolls": "scrolls",
 		"size_cap": "≤ {h} px",
 		"size_px": "{h} px",
@@ -935,7 +942,8 @@
 		"height_fixed": "Fixed {h} px",
 		"taller": "Taller, +40 px",
 		"shorter": "Shorter, −40 px",
-		"keep_in_view": "Keep in view while scrolling",
+		"keep_in_view": "Pin to top",
+		"keep_in_view_hint": "Stays at the top while you scroll the rest",
 		"move": "Move",
 		"up": "Up",
 		"down": "Down",
@@ -946,6 +954,9 @@
 		"make_tab_more": "Make it a tab of …",
 		"tabs_more": "Tabs ({n}) …",
 		"menu_back": "Back",
+		"show_as": "Show as",
+		"view_cards": "Cards",
+		"view_table": "Table",
 		"take_out": "Take {name} out",
 		"split": "Split all into separate items",
 		"hide": "Hide",
@@ -971,7 +982,7 @@
 			"up": "{item} moved up",
 			"down": "{item} moved down",
 			"moved": "{item} moved · column {n}",
-			"moved_band": "{item} moved · column {n} · kept in view",
+			"moved_band": "{item} moved · column {n} · pinned to top",
 			"width": "{item}: {n} of {cols} columns wide",
 			"width_min": "{item}: {n} of {cols} columns wide (its minimum at this width)",
 			"full_width": "{item}: full width",
@@ -979,7 +990,7 @@
 			"height_cap": "{item}: fits its content up to {h} px, scrolls beyond",
 			"height_fixed": "{item}: fixed at {h} px; taller content scrolls",
 			"height_min": "{item}: {h} px (its minimum)",
-			"pinned": "{item} stays in view while scrolling",
+			"pinned": "{item} pinned to top",
 			"unpinned": "{item} scrolls with the page again",
 			"tab": "{el} is now a tab of {item}",
 			"taken_out": "{el} is its own item now",
@@ -991,6 +1002,8 @@
 			"tab_shown": "{el} shown",
 			"open": "{el} shows everything",
 			"closed": "{el} shows only what it needs",
+			"view_table": "{el} shown as a table",
+			"view_cards": "{el} shown as cards",
 			"reset": "Reset to Today's",
 			"undone": "Undone"
 		}

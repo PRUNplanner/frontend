@@ -21,6 +21,7 @@ import {
 	minColsOf,
 	minHeightOf,
 	OPENABLE,
+	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
 import {
 	cloneLayout,
@@ -542,6 +543,22 @@ export const toggleOpen = (
 	g.open = on ? [...open, el] : open.filter((e) => e !== el);
 	if (!g.open.length) delete g.open;
 	return done(g, on ? "open" : "closed", { el: ctx.label(el) });
+};
+
+/** Cards or a table, for an element that can be shown as one */
+export const setView = (
+	layout: GridLayout,
+	el: ElementId,
+	view: "cards" | "table",
+	ctx: ILayoutOpsContext
+): ILayoutChange => {
+	const g = settle(layout, ctx);
+	const table = g.table ?? [];
+	if (!TABLE_VIEW.includes(el) || table.includes(el) === (view === "table"))
+		return done(g, "nothing");
+	g.table = view === "table" ? [...table, el] : table.filter((e) => e !== el);
+	if (!g.table.length) delete g.table;
+	return done(g, `view_${view}`, { el: ctx.label(el) });
 };
 
 /** The tab an item shows */
