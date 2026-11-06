@@ -36,6 +36,8 @@ export interface GridItem {
 	h: number;
 	// kept in view: packed in the sticky band at the top
 	pin: boolean;
+	// follows while scrolling, in its columns, with the parts below it
+	follow?: boolean;
 }
 
 /** The player's grid */
@@ -47,6 +49,12 @@ export interface GridLayout {
 	open?: ElementId[];
 	// elements shown as a table instead of cards
 	table?: ElementId[];
+}
+
+/** How a part follows while scrolling: px below its stack's head, px it may slide */
+export interface IFollow {
+	offset: number;
+	slide: number;
 }
 
 /** Where an item lands, in px from its region's top left */

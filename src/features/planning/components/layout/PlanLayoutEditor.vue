@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import {
+		type Component,
 		computed,
 		onBeforeUnmount,
 		onMounted,
@@ -36,7 +37,6 @@
 		COLS_MIN,
 		GAPS,
 	} from "@/features/planning/layout/planLayout.constants";
-	import { OPENABLE } from "@/features/planning/layout/elements";
 
 	// Components
 	import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
@@ -48,6 +48,9 @@
 		AddSharp,
 		DragIndicatorSharp,
 		MoreHorizSharp,
+		MoveDownSharp,
+		PushPinSharp,
+		TableRowsSharp,
 		UnfoldMoreSharp,
 		RemoveSharp,
 		UndoSharp,
@@ -178,7 +181,26 @@
 		return Math.round(w * p.page.colWidth + (w - 1) * draft.value.gap);
 	};
 
-	/** "7/12 · ≤ 480 px · in view · scrolls", or "auto 5/12 (yours 3)" */
+	/** What is set on an item, shown as icons after its size */
+	function states(it: GridItem): { key: string; icon: Component }[] {
+		const g = draft.value;
+		return [
+			{ key: "pinned", icon: PushPinSharp, on: it.pin },
+			{ key: "follows", icon: MoveDownSharp, on: !!it.follow },
+			{
+				key: "open",
+				icon: UnfoldMoreSharp,
+				on: !!g.open?.includes(it.active),
+			},
+			{
+				key: "table",
+				icon: TableRowsSharp,
+				on: !!g.table?.includes(it.active),
+			},
+		].filter((s) => s.on);
+	}
+
+	/** "7/12 · ≤ 480 px · scrolls", or "auto 5/12 (yours 3)" */
 	function sizeLabel(it: GridItem, pos: IPackedItem | undefined): string {
 		const cols = draft.value.cols;
 		const parts = [
@@ -191,7 +213,6 @@
 		if (it.hm === "cap") parts.push(t("plan.layout.size_cap", { h: it.h }));
 		if (it.hm === "fixed")
 			parts.push(t("plan.layout.size_px", { h: it.h }));
-		if (it.pin) parts.push(t("plan.layout.size_in_view"));
 		if (pos?.scroll) parts.push(t("plan.layout.size_scrolls"));
 		return parts.join(" · ");
 	}
@@ -510,37 +531,34 @@
 						</template>
 						<template #actions="{ item }">
 							<template v-if="!phone">
+								<!-- the size, then what is set: icons, not words -->
 								<span
 									:id="`size-${item.id}`"
-									class="min-w-0 truncate text-xs text-muted"
-									data-size>
-									{{ sizeLabel(item, pack?.items[item.id]) }}
-								</span>
-								<PButton
-									v-if="OPENABLE.includes(item.active)"
-									size="sm"
-									type="ghost"
-									class="shrink-0"
-									:pressed="
-										!!draft.open?.includes(item.active)
-									"
-									:aria-label="
-										t('plan.layout.content_open_named', {
-											name: editor.label(item.active),
-										})
-									"
-									:title="t('plan.layout.content_open')"
-									data-content-toggle
-									@click="editor.toggleOpen(item.active)">
-									<template #icon
-										><UnfoldMoreSharp
-									/></template>
-									<!-- the words only where the title keeps room -->
-									<span
-										class="hidden @min-[24rem]/item:inline">
-										{{ t("plan.layout.content_open") }}
+									class="flex items-center gap-1.5 min-w-0 text-xs text-muted">
+									<span class="truncate" data-size>
+										{{
+											sizeLabel(
+												item,
+												pack?.items[item.id]
+											)
+										}}
 									</span>
-								</PButton>
+									<PIcon
+										v-for="st in states(item)"
+										:key="st.key"
+										:size="14"
+										role="img"
+										class="shrink-0"
+										:aria-label="
+											t(`plan.layout.state.${st.key}`)
+										"
+										:title="
+											t(`plan.layout.state.${st.key}`)
+										"
+										:data-state="st.key">
+										<component :is="st.icon" />
+									</PIcon>
+								</span>
 								<PDropdown
 									:show="refMenu === item.id"
 									:options="editor.menuOptions(item.id)"

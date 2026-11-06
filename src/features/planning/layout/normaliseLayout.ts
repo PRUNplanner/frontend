@@ -120,6 +120,8 @@ export function normaliseLayout(input: unknown): GridLayout {
 			hm,
 			h: height(it.h),
 			pin: it.pin === true,
+			// pinned parts are in the band: following means nothing there
+			...(it.follow === true && it.pin !== true && { follow: true }),
 		});
 	}
 

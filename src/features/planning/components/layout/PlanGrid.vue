@@ -22,7 +22,10 @@
 		packLayout,
 		isFolded,
 	} from "@/features/planning/layout/packLayout";
-	import { gridMeasureKey } from "@/features/planning/layout/planGrid.util";
+	import {
+		followStacks,
+		gridMeasureKey,
+	} from "@/features/planning/layout/planGrid.util";
 	import { BAND_STICKY_SHARE } from "@/features/planning/layout/planLayout.constants";
 
 	// Components
@@ -176,6 +179,23 @@
 		() => sticky.value && pack.value.band.height > bandMax.value
 	);
 
+	// parts that follow while scrolling stick just below the band (or the
+	// window's top); never while customising
+	const follows = computed(() =>
+		editing ? new Map() : followStacks(page.value, pack.value, layout.gap)
+	);
+	const followTop = computed(
+		() =>
+			(band.value.length && sticky.value
+				? (capped.value ? bandMax.value : pack.value.band.height) +
+					layout.gap
+				: 0) + layout.gap
+	);
+	const followOf = (id: string) => {
+		const f = follows.value.get(id);
+		return f ? { top: followTop.value + f.offset, slide: f.slide } : null;
+	};
+
 	// a tab picked on the page, while the item still has it (a layout
 	// switched or saved since may have moved it elsewhere)
 	const shownTab = (it: GridItem): ElementId =>
@@ -247,6 +267,7 @@
 				:active="shownTab(it)"
 				:folded="isFolded(it, foldedSet)"
 				:editing="editing"
+				:follow="followOf(it.id)"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"
 				@tab="(el: ElementId) => emit('tab', it.id, el)">
 				<template #lead><slot name="lead" :item="it" /></template>

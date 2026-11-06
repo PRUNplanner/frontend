@@ -153,6 +153,21 @@ describe("normaliseLayout", () => {
 		expect(normaliseLayout(out)).toEqual(out);
 	});
 
+	it("keeps `follow` only when true and not pinned", () => {
+		const out = normaliseLayout({
+			items: [
+				{ ...prod, follow: true },
+				{ ...prod, id: "b", els: ["planet"], follow: true, pin: true },
+				{ ...prod, id: "c", els: ["experts"], follow: "yes" },
+			],
+		});
+		const follow = (el: string) =>
+			out.items.find((i) => i.els[0] === el)!.follow;
+		expect(follow("production")).toBe(true);
+		expect(follow("planet")).toBeUndefined();
+		expect(follow("experts")).toBeUndefined();
+	});
+
 	it("keeps at most 40 element ids", () => {
 		// the registry has fewer, so all of them survive
 		const items = presetLayout("today").items;

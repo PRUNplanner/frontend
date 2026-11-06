@@ -32,6 +32,7 @@ import {
 	ELEMENTS,
 	minHeightOf,
 	minWidthOf,
+	OPENABLE,
 	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
 import { packLayout } from "@/features/planning/layout/packLayout";
@@ -468,18 +469,38 @@ export function usePlanLayoutEditor(
 				hint: t("plan.layout.keep_in_view_hint"),
 				checked: it.pin,
 			},
+			{
+				key: "follow",
+				label: t("plan.layout.follow"),
+				hint: t("plan.layout.follow_hint"),
+				checked: !!it.follow,
+			},
 			{ type: "divider" },
-			// cards or a table, for the tab shown
-			...(TABLE_VIEW.includes(it.active)
+			// how the tab shown displays: cards or a table, everything open
+			...(TABLE_VIEW.includes(it.active) || OPENABLE.includes(it.active)
 				? ([
-						{ type: "group", label: t("plan.layout.show_as") },
-						...(["cards", "table"] as const).map((v) => ({
-							key: `view:${v}`,
-							label: t(`plan.layout.view_${v}`),
-							checked:
-								!!g.table?.includes(it.active) ===
-								(v === "table"),
-						})),
+						{ type: "group", label: t("plan.layout.display") },
+						...(TABLE_VIEW.includes(it.active)
+							? (["cards", "table"] as const).map((v) => ({
+									key: `view:${v}`,
+									label: t(`plan.layout.view_${v}`),
+									checked:
+										!!g.table?.includes(it.active) ===
+										(v === "table"),
+								}))
+							: []),
+						...(OPENABLE.includes(it.active)
+							? [
+									{
+										key: "open",
+										label: t("plan.layout.content_open"),
+										hint: t(
+											"plan.layout.content_open_hint"
+										),
+										checked: !!g.open?.includes(it.active),
+									},
+								]
+							: []),
 						{ type: "divider" },
 					] as PDropdownOption[])
 				: []),
@@ -576,6 +597,9 @@ export function usePlanLayoutEditor(
 		else if (key === "taller") stepHeight(id, 1, "menu");
 		else if (key === "shorter") stepHeight(id, -1, "menu");
 		else if (key === "pin") togglePin(id);
+		else if (key === "follow")
+			apply(ops.toggleFollow(draft.value, id, ctx()), id);
+		else if (key === "open") toggleOpen(it.active);
 		else if (key.startsWith("view:"))
 			apply(
 				ops.setView(

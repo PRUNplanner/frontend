@@ -937,7 +937,7 @@ describe("PlanLayoutEditor", () => {
 		it("shows Workforce as a table from its menu, undoably, saved with the layout", async () => {
 			const m = await mountEditor();
 			expect(option(m, "workforce", "view:cards")).toMatchObject({
-				label: "Cards",
+				label: "As cards",
 				checked: true,
 			});
 			expect(option(m, "workforce", "view:table")).toMatchObject({
@@ -959,36 +959,73 @@ describe("PlanLayoutEditor", () => {
 			expect(m.pref.layout.value.table).toEqual(["workforce"]);
 		});
 
-		it("opens an element that hides parts, undoably, and saves it with the layout", async () => {
+		it("opens an element that hides parts from its menu, undoably, saved with the layout", async () => {
 			const m = await mountEditor();
-			const toggle = (id: string) =>
-				m.wrapper.find(`[data-item="i-${id}"] [data-content-toggle]`);
 			const layout = () =>
 				m.wrapper
 					.findComponent({ name: "PlanGrid" })
 					.props("layout") as GridLayout;
-			expect(toggle("production").exists()).toBe(false);
+			const state = (id: string, k: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-state="${k}"]`);
+			expect(option(m, "production", "open")).toBeUndefined();
 			// as on the page until switched
-			expect(toggle("workforce").attributes("aria-pressed")).toBe(
-				"false"
-			);
-			expect(toggle("workforce").attributes("aria-label")).toBe(
-				"Workforce: everything open"
-			);
-			await toggle("workforce").trigger("click");
-			await flushPromises();
+			expect(option(m, "workforce", "open")).toMatchObject({
+				label: "Everything open",
+				hint: "Every tier, field and button, also on the page",
+				checked: false,
+			});
+			expect(state("workforce", "open").exists()).toBe(false);
+			await pick(m, "workforce", "open");
 			expect(layout().open).toEqual(["workforce"]);
-			expect(toggle("workforce").attributes("aria-pressed")).toBe("true");
-			expect(toggle("experts").attributes("aria-pressed")).toBe("false");
+			expect(option(m, "workforce", "open")).toMatchObject({
+				checked: true,
+			});
+			expect(option(m, "experts", "open")).toMatchObject({
+				checked: false,
+			});
+			// shown as an icon on the title row, named for screen readers
+			expect(state("workforce", "open").attributes("aria-label")).toBe(
+				"Everything open"
+			);
 			expect(announce(m)).toBe("Workforce shows everything");
 			// a change like any other: quiet, undoable
 			expect(mocks.toast).not.toHaveBeenCalled();
 			await button(m, "[data-undo]").trigger("click");
 			expect(layout().open).toBeUndefined();
 
-			await toggle("workforce").trigger("click");
+			await pick(m, "workforce", "open");
 			await button(m, "[data-save]").trigger("click");
 			expect(m.pref.layout.value.open).toEqual(["workforce"]);
+		});
+
+		it("shows what is set as icons: pinned, following, as a table", async () => {
+			const m = await mountEditor();
+			const state = (id: string, k: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-state="${k}"]`);
+			// the results tiles are pinned in Today's; the words are gone
+			expect(state("kpi-profit", "pinned").attributes("title")).toBe(
+				"Pinned to top"
+			);
+			expect(size(m, "kpi-profit")).not.toContain("pinned");
+			expect(option(m, "material-io", "follow")).toMatchObject({
+				label: "Follow while scrolling",
+				checked: false,
+			});
+			await pick(m, "material-io", "follow");
+			expect(draft(m, "material-io").follow).toBe(true);
+			expect(state("material-io", "follows").exists()).toBe(true);
+			expect(announce(m)).toBe("Material I/O follows while scrolling");
+			await pick(m, "workforce", "view:table");
+			expect(state("workforce", "table").exists()).toBe(true);
+			// pinning ends following, following unpins
+			await pick(m, "material-io", "pin");
+			expect(draft(m, "material-io")).toMatchObject({ pin: true });
+			expect(draft(m, "material-io").follow).toBeUndefined();
+			await pick(m, "material-io", "follow");
+			expect(draft(m, "material-io")).toMatchObject({
+				pin: false,
+				follow: true,
+			});
 		});
 
 		it("notes items rearranged at a narrow preview, and a phone preview", async () => {

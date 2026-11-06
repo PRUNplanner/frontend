@@ -213,6 +213,7 @@ export const moveTo = (
 		it.x = Math.max(0, Math.min(g.cols - it.w, Math.round(to.x)));
 		it.y = dropOrder(g, it, to.y, to.band, ctx);
 		it.pin = to.band;
+		if (to.band) delete it.follow;
 		return done(g, to.band ? "moved_band" : "moved", {
 			item: ctx.title(it.els),
 			n: it.x + 1,
@@ -326,9 +327,34 @@ export const togglePin = (
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
 		it.pin = !it.pin;
+		// in the band it stays put anyway
+		if (it.pin) delete it.follow;
 		// to the end of the band, or the top of the page
 		it.y = it.pin ? END : -1;
 		return done(g, it.pin ? "pinned" : "unpinned", {
+			item: ctx.title(it.els),
+		});
+	});
+
+/**
+ * Follows while scrolling (in its columns, with the parts below it) or
+ * stays in place; a pinned part comes back to the page to follow
+ */
+export const toggleFollow = (
+	layout: GridLayout,
+	id: string,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		if (it.follow) delete it.follow;
+		else {
+			it.follow = true;
+			if (it.pin) {
+				it.pin = false;
+				it.y = -1;
+			}
+		}
+		return done(g, it.follow ? "followed" : "unfollowed", {
 			item: ctx.title(it.els),
 		});
 	});

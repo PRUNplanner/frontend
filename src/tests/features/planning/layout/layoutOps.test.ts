@@ -430,6 +430,40 @@ describe("layoutOps", () => {
 				).toBe("nothing");
 		});
 
+		it("follows while scrolling, and never together with pinned", () => {
+			const g = today();
+			const on = ops.toggleFollow(g, "i-material-io", ctx());
+			expect(item(on.layout, "material-io").follow).toBe(true);
+			expect(ann(on)).toBe("followed");
+			const off = ops.toggleFollow(on.layout, "i-material-io", ctx());
+			expect(item(off.layout, "material-io").follow).toBeUndefined();
+			expect(ann(off)).toBe("unfollowed");
+			// a pinned results tile comes back to the page to follow
+			const tile = ops.toggleFollow(g, "i-kpi-profit", ctx());
+			expect(item(tile.layout, "kpi-profit")).toMatchObject({
+				pin: false,
+				follow: true,
+			});
+			// pinning, or a drop into the band, ends following
+			expect(
+				item(
+					ops.togglePin(on.layout, "i-material-io", ctx()).layout,
+					"material-io"
+				).follow
+			).toBeUndefined();
+			expect(
+				item(
+					ops.moveTo(
+						on.layout,
+						"i-material-io",
+						{ x: 0, y: 0, band: true },
+						ctx()
+					).layout,
+					"material-io"
+				).follow
+			).toBeUndefined();
+		});
+
 		it("shows an element as a table or as cards", () => {
 			const g = today();
 			const tbl = ops.setView(g, "workforce", "table", ctx());

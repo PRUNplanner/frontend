@@ -553,9 +553,10 @@ describe("PlanView", () => {
 			const showAll = () =>
 				wrapper.findComponent(PlanWorkforce).props("showAll");
 			expect(showAll()).toBe(false);
-			await wrapper
-				.find("[data-item='i-workforce'] [data-content-toggle]")
-				.trigger("click");
+			wrapper
+				.find("[data-item='i-workforce']")
+				.findComponent({ name: "PDropdown" })
+				.vm.$emit("select", "open");
 			await flushPromises();
 			expect(showAll()).toBe(true);
 			await wrapper.find("[data-save]").trigger("click");
