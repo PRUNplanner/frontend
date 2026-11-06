@@ -7,7 +7,7 @@
 		"lead_any": "Filtere jeden Planeten von Prosperous Universe nach Ressourcen, Bedingungen, COGC und Sprüngen zu den Marktplätzen. Kostenlos, kein Konto nötig."
 	},
 	"loading": "Planeten werden geladen…",
-	"load_error": "Die Planeten konnten nicht geladen werden.",
+	"load_error": "Die Planeten konnten nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen.",
 	"load_throttled": "Zu viele Anfragen, versuche es in {n} s erneut.",
 	"header": {
 		"search_label": "Planetenname oder ID",

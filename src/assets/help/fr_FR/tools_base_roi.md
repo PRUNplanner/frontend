@@ -11,7 +11,7 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 # Metrics
 
 - **Bénéfice quotidien** : recettes moins intrants, consommables et dégradation (construction des bâtiments de production ÷ 180), à 5 experts avec la montée progressive, sinon au nombre fixe.
-- Indicateurs Avec **Progression depuis 0**, une nouvelle base démarre sans experts : les paliers à 0, 1, 2, 3 et 4 experts durent 10, 12.5, 57.57, 276.5 et 915.1 jours, chacun divisé par le nombre de bâtiments de production, et les recettes et intrants augmentent avec le bonus des experts. « jamais » quand la base ne fait pas de bénéfice.
+- **Absolu** : toutes les lignes sur une même échelle en ȼ, pour voir leurs rapports. Indicateurs Avec **Progression depuis 0**, une nouvelle base démarre sans experts : les paliers à 0, 1, 2, 3 et 4 experts durent 10, 12.5, 57.57, 276.5 et 915.1 jours, chacun divisé par le nombre de bâtiments de production, et les recettes et intrants augmentent avec le bonus des experts. « jamais » quand la base ne fait pas de bénéfice.
 - **Rendement hebdomadaire** : 7 × bénéfice quotidien ÷ coût des bâtiments.
 - **Coût des bâtiments** : la construction, plus les options des Réglages : le stock tampon (jours de tampon × (intrants + consommables + recettes) ÷ 2) et l'amélioration du QG pour un permis de plus (niveau de QG N − 1).
 - **Coût de fonctionnement quotidien** : intrants + consommables + dégradation. Masqué jusqu'à ce que tu l'actives dans Colonnes : le stock tampon inclus dans le coût des bâtiments couvre déjà le coût de fonctionnement au départ.
@@ -26,12 +26,12 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 
 - **Stock tampon** : du stockage pour ce nombre de jours de cargaison ; des STO ou STA sont ajoutés, et un bâtiment de production est retiré quand la base ne tiendrait plus.
 - **Capacité du marché min.** (à côté de la recherche au-dessus du tableau), **Limite logistique** et **Sauts max.** masquent des lignes ; la ligne au-dessus du tableau compte les lignes masquées par limite. Sauts max. compte jusqu'à l'échange le plus proche de ta préférence CX.
-- **Afficher les planètes sans travailleurs ni parcelles** : désactivé par défaut, donc les lignes de planète sont masquées quand aucune nouvelle base ne tient (toutes les parcelles prises et aucun site fantôme) ou quand le dernier rapport de population ne peut pas pourvoir les emplois de la base, en comptant les travailleurs libres moins les emplois déjà ouverts. Une planète sans rapport de population compte comme n'ayant aucun travailleur. Active-le pour voir ces lignes ; la colonne Main-d'œuvre montre ce qui manque. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
+- **Afficher les planètes sans travailleurs ni parcelles** : désactivé par défaut, donc les lignes de planète sont masquées quand aucune nouvelle base ne tient (toutes les parcelles prises et aucun site fantôme) ou quand le dernier rapport de population ne peut pas pourvoir les emplois de la base, en comptant les travailleurs libres moins les emplois déjà ouverts. Une planète sans rapport de population compte comme n'ayant aucun travailleur. Active-le pour voir ces lignes ; la colonne Main-d'œuvre montre ce qui manque. Recipe rows are not checked. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
 - **Relancer la configuration** ouvre la configuration de la première visite avec ses préréglages : Débutant (SCB, sans rendement hebdomadaire ni coût de fonctionnement), Standard (WCB) et Vétéran (n'importe quel vaisseau ou aucune limite).
 
 # Graphique des bénéfices
 
-Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Chaque base compte selon la quantité de son produit que le marché échange (moyenne sur 7 jours), et les nombreuses planètes d'une même recette de ressource comptent comme une seule. Search to drill in:
+Au-dessus du tableau, un graphique montre le bénéfice quotidien des 30 derniers jours pour chaque industrie. Chaque base compte selon la quantité de son produit que le marché échange (moyenne sur 7 jours), et les nombreuses planètes d'une même recette de ressource comptent comme une seule. Search to drill in:
 
 - une industrie (par ex. « Chemistry ») affiche ses bâtiments ;
 - un bâtiment (par ex. « CHP ») affiche ses produits ;
@@ -48,7 +48,7 @@ Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3
 
 # Détails
 
-Expand a row to see two charts, then the full math below them. Tu peux aussi copier le calcul sous forme de texte, ou ouvrir la ligne comme nouveau plan avec la même disposition (connecté).
+Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. Tu peux aussi copier le calcul sous forme de texte, ou ouvrir la ligne comme nouveau plan avec la même disposition (connecté).
 
 - **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
 - **Market volume**: how many bases the market carries each day, from the CX traded volume. _Outputs_ is the scarcest output's traded volume ÷ what one base sells per day; _Inputs (bottleneck)_ is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.

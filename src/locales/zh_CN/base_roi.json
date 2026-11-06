@@ -115,10 +115,10 @@
 		"days": "{n}D"
 	},
 	"trend": {
-		"title_industry": "Daily profit by industry",
-		"title_building": "Daily profit of the buildings in {focus}",
-		"title_product": "Daily profit of the products of {focus}",
-		"title_recipe": "Daily profit of the recipes for {focus}",
+		"title_industry": "Daily profit by industry, last 90 days",
+		"title_building": "Daily profit of the buildings in {focus}, last 90 days",
+		"title_product": "Daily profit of the products of {focus}, last 90 days",
+		"title_recipe": "Daily profit of the recipes for {focus}, last 90 days",
 		"note": "Volume-weighted: each base counts by its product's 7-day traded volume, planet rows of one recipe count once. Search an industry, building or product to drill in.",
 		"more": "{n} more not shown (least traded)",
 		"no_industry": "No industry",
@@ -252,7 +252,7 @@
 		"never": "Never pays off",
 		"payback_five": "Payback at 5 experts",
 		"payback_fixed": "Building cost ÷ daily profit",
-		"history_note": "Daily VWAP of each material's exchange. Volume: CX traded per day ÷ what one base sells or buys per day, the scarcest material on each side.",
+		"history_note": "Daily VWAP of each material's exchange, last 90 days",
 		"history_absolute": "Absolute: ȼ per day, one scale for all lines",
 		"volume_caption": "Market volume, in bases per day",
 		"volume_outputs": "Outputs",
