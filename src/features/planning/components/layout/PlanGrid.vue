@@ -29,9 +29,10 @@
 	import PlanGridItem from "@/features/planning/components/layout/PlanGridItem.vue";
 
 	/**
-	 * The plan page's grid: the kept-in-view band (sticky, at most 40 % of
-	 * the window high; taller, it scrolls inside) above the page, every item
-	 * placed by packLayout from its measured content
+	 * The plan page's grid: the kept-in-view band (sticky over the page, cut
+	 * where it would cover more than 40 % of the window and the page needs
+	 * the room; then it scrolls inside) above the page, every item placed by
+	 * packLayout from its measured content
 	 *
 	 * @author jplacht
 	 */
@@ -158,11 +159,22 @@
 	);
 	const band = computed(() => layout.items.filter((i) => i.pin));
 	const page = computed(() => layout.items.filter((i) => !i.pin));
-	// a band taller than 40 % of the window is cut there and scrolls inside
+	// the band stays in view over the page; with nothing on the page it
+	// is the page
+	const sticky = computed(() => page.value.length > 0);
+	// a band taller than 40 % of the window, or than the room a short page
+	// leaves, is cut there and scrolls inside: never blank space below it
 	const bandMax = computed(() =>
-		Math.floor(viewportHeight.value * BAND_STICKY_SHARE)
+		Math.floor(
+			Math.max(
+				viewportHeight.value * BAND_STICKY_SHARE,
+				viewportHeight.value - pack.value.page.height - layout.gap
+			)
+		)
 	);
-	const capped = computed(() => pack.value.band.height > bandMax.value);
+	const capped = computed(
+		() => sticky.value && pack.value.band.height > bandMax.value
+	);
 
 	// a tab picked on the page, while the item still has it (a layout
 	// switched or saved since may have moved it elsewhere)
@@ -179,7 +191,8 @@
 		data-plan-grid>
 		<div
 			v-if="band.length"
-			class="sticky top-0 z-900 bg-(--app-bg)"
+			class="z-900 bg-(--app-bg)"
+			:class="sticky ? 'sticky top-0' : ''"
 			:style="{ paddingBottom: `${layout.gap}px` }"
 			data-region="band"
 			:data-capped="capped || undefined">

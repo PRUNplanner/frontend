@@ -108,6 +108,31 @@ describe("PlanGrid", () => {
 		expect(scroll().classes()).toContain("overflow-y-auto");
 	});
 
+	it("never cuts the band where the page leaves room, nor when it is the page", async () => {
+		vi.stubGlobal("innerHeight", 1000);
+		// everything kept in view: the band is the page, whole, not sticky
+		const all = presetLayout("today");
+		all.items = all.items.map((i) => ({ ...i, pin: true }));
+		const { wrapper, setProps } = await mountGrid({ layout: all });
+		const band = () => wrapper.find("[data-region='band']");
+		expect(band().classes()).not.toContain("sticky");
+		expect(band().attributes("data-capped")).toBeUndefined();
+
+		// one short part left on the page (180 px): the band may take the
+		// rest of the window, 1000 − 180 − 16 px
+		const one = presetLayout("today");
+		one.items = one.items.map((i) => ({
+			...i,
+			pin: i.id !== "i-material-io-totals",
+		}));
+		await setProps({ layout: one });
+		expect(band().classes()).toContain("sticky");
+		expect(band().attributes("data-capped")).toBe("true");
+		expect(
+			wrapper.find("[data-band-scroll]").attributes("style")
+		).toContain("max-height: 804px");
+	});
+
 	it("has no band without items kept in view", async () => {
 		const layout = presetLayout("today");
 		layout.items = layout.items.filter((i) => !i.pin);
