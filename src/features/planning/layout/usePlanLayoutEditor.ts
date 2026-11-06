@@ -55,10 +55,15 @@ export interface IEditorGrid {
 	gridWidth: number;
 }
 
-/** A move in progress: an item, or an element from the Elements panel */
+/**
+ * A move in progress: an item, a tab out of its group, or an element from
+ * the Elements panel
+ */
 export interface IEditorDrag {
 	id: string | null;
 	el: ElementId;
+	// the group a tab is dragged out of
+	from: string | null;
 	x: number;
 	w: number;
 	// where the box follows the pointer, grid px
@@ -88,14 +93,12 @@ export interface IEditorResize {
  * @author jplacht
  *
  * @param {ReturnType<typeof usePlanLayoutPreference>} pref The player's layout
- * @param {{ loggedIn: () => boolean; folded: () => ElementId[]; grid: () => IEditorGrid | null; zoom: () => number; root: () => HTMLElement | null; close: () => void }} env Its surroundings
+ * @param {{ loggedIn: () => boolean; grid: () => IEditorGrid | null; zoom: () => number; root: () => HTMLElement | null; close: () => void }} env Its surroundings
  */
 export function usePlanLayoutEditor(
 	pref: ReturnType<typeof usePlanLayoutPreference>,
 	env: {
 		loggedIn: () => boolean;
-		// the folds the grid shows: none with Everything open
-		folded: () => ElementId[];
 		grid: () => IEditorGrid | null;
 		zoom: () => number;
 		root: () => HTMLElement | null;
@@ -540,6 +543,7 @@ export function usePlanLayoutEditor(
 		off: { x: number; y: number };
 		id: string | null;
 		el: ElementId;
+		from: string | null;
 	} | null = null;
 	let rs: {
 		id: string;
@@ -592,14 +596,23 @@ export function usePlanLayoutEditor(
 	}
 	onBeforeUnmount(stopListening);
 
-	/** Press on an item's title bar, or on an element in the Elements panel */
+	/**
+	 * Press on an item's title bar, a tab, or an element in the Elements
+	 * panel: a placed element moves its item, a tab after the first leaves
+	 * its group
+	 */
 	function startMove(
 		e: PointerEvent,
 		from: { id: string } | { el: ElementId }
 	): void {
 		if (phone.value || e.button !== 0) return;
-		const id = "id" in from ? from.id : null;
 		const el = "el" in from ? from.el : itemOf(from.id)!.els[0];
+		const placed =
+			"el" in from
+				? draft.value.items.find((i) => i.els.includes(el))
+				: undefined;
+		const tabOf = placed && placed.els[0] !== el ? placed.id : null;
+		const id = "id" in from ? from.id : tabOf ? null : (placed?.id ?? null);
 		// where on the item it was taken; one from Elements by its corner
 		let off = { x: 20, y: 16 };
 		const p = id ? grid().pack.items[id] : undefined;
@@ -607,7 +620,15 @@ export function usePlanLayoutEditor(
 			const q = gridPoint(e, p.region);
 			off = { x: q.x - p.left, y: q.y - p.top };
 		}
-		press = { x: e.clientX, y: e.clientY, started: false, off, id, el };
+		press = {
+			x: e.clientX,
+			y: e.clientY,
+			started: false,
+			off,
+			id,
+			el,
+			from: tabOf,
+		};
 		listen();
 	}
 
@@ -672,7 +693,12 @@ export function usePlanLayoutEditor(
 		const head = hit
 			?.closest?.("[data-item-head]")
 			?.getAttribute("data-item-head");
-		if (head && head !== press0.id && (!cur || cur.els.length === 1))
+		if (
+			head &&
+			head !== press0.id &&
+			head !== press0.from &&
+			(!cur || cur.els.length === 1)
+		)
 			tabTo = head;
 		const q = gridPoint(e, region);
 		const g = draft.value;
@@ -703,6 +729,7 @@ export function usePlanLayoutEditor(
 		drag.value = {
 			id: press0.id,
 			el: press0.el,
+			from: press0.from,
 			x,
 			w,
 			left: q.x - press0.off.x,
@@ -775,12 +802,14 @@ export function usePlanLayoutEditor(
 		if (!p?.started || !d) return;
 		const g = draft.value;
 		if (d.tabTo) {
-			const change = ops.makeTab(
-				g,
-				d.id ? { item: d.id } : { el: d.el },
-				d.tabTo,
-				ctx()
-			);
+			const change = d.from
+				? ops.takeOutTo(g, d.from, d.el, { tab: d.tabTo }, ctx())
+				: ops.makeTab(
+						g,
+						d.id ? { item: d.id } : { el: d.el },
+						d.tabTo,
+						ctx()
+					);
 			if (apply(change, d.tabTo)) trackMove(d.el, "drag", "tabs");
 			return;
 		}
@@ -791,7 +820,9 @@ export function usePlanLayoutEditor(
 		};
 		const change = d.id
 			? ops.moveTo(g, d.id, to, ctx())
-			: ops.addAt(g, d.el, to, ctx());
+			: d.from
+				? ops.takeOutTo(g, d.from, d.el, to, ctx())
+				: ops.addAt(g, d.el, to, ctx());
 		if (
 			apply(
 				change,
@@ -854,15 +885,13 @@ export function usePlanLayoutEditor(
 		};
 		const g = d.id
 			? ops.moveTo(draft.value, d.id, to, ctx()).layout
-			: ops.addAt(draft.value, d.el, to, ctx()).layout;
+			: d.from
+				? ops.takeOutTo(draft.value, d.from, d.el, to, ctx()).layout
+				: ops.addAt(draft.value, d.el, to, ctx()).layout;
 		const it = g.items.find((i) => i.els.includes(d.el))!;
 		const { gridWidth, content } = grid();
-		return packLayout(
-			visibleLayout(g, env.loggedIn()),
-			gridWidth,
-			content,
-			env.folded()
-		).items[it.id];
+		return packLayout(visibleLayout(g, env.loggedIn()), gridWidth, content)
+			.items[it.id];
 	});
 
 	/*

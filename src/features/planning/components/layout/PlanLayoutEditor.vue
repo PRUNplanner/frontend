@@ -20,6 +20,7 @@
 
 	// Types & Interfaces
 	import type {
+		ElementId,
 		GridItem,
 		IPackedItem,
 	} from "@/features/planning/layout/planLayout.types";
@@ -31,25 +32,29 @@
 		COLS_MIN,
 		GAPS,
 	} from "@/features/planning/layout/planLayout.constants";
+	import { OPENABLE } from "@/features/planning/layout/elements";
 
 	// Components
 	import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
 	import PlanLayoutElementsPanel from "@/features/planning/components/layout/PlanLayoutElementsPanel.vue";
 
 	// UI
-	import { PButton, PDropdown, PSegmented } from "@/ui";
+	import { PButton, PDropdown, PIcon, PSegmented } from "@/ui";
 	import {
 		AddSharp,
+		DragIndicatorSharp,
 		MoreHorizSharp,
+		UnfoldMoreSharp,
 		RemoveSharp,
 		UndoSharp,
 	} from "@vicons/material";
 
 	/**
 	 * Customise mode: the page's real content (not clickable) on the grid,
-	 * each item with a handle (drag; arrows move, Shift+arrows resize, Enter
-	 * opens its ⋯ menu), a right edge, a bottom edge and a corner; the
-	 * Elements panel beside it; the page scaled to fit, never covered
+	 * each item's title row draggable, with a grip (arrows move,
+	 * Shift+arrows resize, Enter opens its ⋯ menu), its size, its ⋯ menu and
+	 * tabs that switch or drag out; a right edge, a bottom edge and a corner;
+	 * the Elements panel beside it; the page scaled to fit, never covered
 	 *
 	 * @author jplacht
 	 */
@@ -57,8 +62,29 @@
 		pref: ReturnType<typeof usePlanLayoutPreference>;
 		loggedIn: boolean;
 	}>();
-	// everything open (all tiers, fields and buttons) or as on the page
-	const showAll = defineModel<boolean>("showAll", { default: true });
+	// elements shown as on the page; the rest show all they can hide
+	// (tiers, fields, buttons)
+	const asOnPage = defineModel<ElementId[]>("asOnPage", {
+		default: () => [],
+	});
+	function toggleOpen(el: ElementId): void {
+		asOnPage.value = asOnPage.value.includes(el)
+			? asOnPage.value.filter((e) => e !== el)
+			: [...asOnPage.value, el];
+	}
+
+	// a press on a title row: a tab drags out of its group, the rest of the
+	// row moves the item; its buttons stay buttons
+	function onGridPointerDown(e: PointerEvent): void {
+		const target = e.target as HTMLElement;
+		const head = target.closest<HTMLElement>("[data-item-head]");
+		if (!head) return;
+		const tab = target.closest<HTMLElement>("[data-tab]");
+		if (tab && head.contains(tab))
+			return editor.startMove(e, { el: tab.dataset.tab as ElementId });
+		if (target.closest("button, a, input, select")) return;
+		editor.startMove(e, { id: head.dataset.itemHead! });
+	}
 	const emit = defineEmits<{ (e: "close"): void }>();
 
 	const root = useTemplateRef<HTMLElement>("root");
@@ -84,7 +110,6 @@
 
 	const editor = usePlanLayoutEditor(pref, {
 		loggedIn: () => loggedIn,
-		folded: () => (showAll.value ? [] : pref.folded.value),
 		grid: () => gridRef.value,
 		zoom: () => zoom.value,
 		root: () => root.value,
@@ -129,14 +154,6 @@
 		}))
 	);
 	const gapOptions = GAPS.map((g) => ({ value: g, label: String(g) }));
-	const contentOptions = computed(() => [
-		{ value: "open", label: t("plan.layout.content_open") },
-		{ value: "page", label: t("plan.layout.content_page") },
-	]);
-	const contentMode = computed({
-		get: () => (showAll.value ? "open" : "page"),
-		set: (v: string) => (showAll.value = v === "open"),
-	});
 
 	const pack = computed(() => gridRef.value?.pack);
 	const autoCount = computed(
@@ -286,7 +303,7 @@
 			</div>
 		</div>
 
-		<!-- the grid: columns, gap, what the elements show -->
+		<!-- the grid: columns, gap -->
 		<div
 			class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3 text-sm"
 			data-grid-bar>
@@ -330,16 +347,6 @@
 					:label="t('plan.layout.gap')"
 					@update:value="(g: number) => editor.setGap(g)" />
 			</div>
-			<div class="flex items-center gap-2">
-				<span class="text-muted-strong">
-					{{ t("plan.layout.content") }}
-				</span>
-				<PSegmented
-					v-model:value="contentMode"
-					size="sm"
-					:options="contentOptions"
-					:label="t('plan.layout.content')" />
-			</div>
 			<span class="text-xs text-muted">{{ t("plan.layout.hint") }}</span>
 			<p
 				v-if="autoCount && !phone"
@@ -363,11 +370,14 @@
 
 		<div class="flex items-start gap-4">
 			<div ref="stage" class="flex-1 min-w-0 overflow-hidden">
-				<div :style="{ zoom }" class="select-none">
+				<div
+					:style="{ zoom }"
+					class="select-none"
+					@pointerdown="onGridPointerDown">
 					<PlanGrid
 						ref="grid"
 						:layout="shown"
-						:folded="showAll ? [] : pref.folded.value"
+						:folded="[]"
 						:width="gridWidth"
 						editing
 						@tab="editor.setTab">
@@ -470,6 +480,94 @@
 							</template>
 						</template>
 
+						<!-- the grip: drag, or arrows and Enter -->
+						<template #lead="{ item }">
+							<span
+								v-if="!phone"
+								role="button"
+								tabindex="0"
+								class="flex items-center justify-center shrink-0 w-6 h-8 pointer-coarse:w-9 pointer-coarse:h-11 rounded-control text-muted hover:text-ink-strong outline-none focus-visible:ring-2 focus-visible:ring-link"
+								:aria-label="
+									t('plan.layout.handle', {
+										name: editor.title(item.els),
+									})
+								"
+								:aria-describedby="`size-${item.id}`"
+								:data-handle="item.id"
+								@keydown="
+									(e: KeyboardEvent) =>
+										editor.onHandleKey(e, item.id)
+								">
+								<PIcon :size="16"><DragIndicatorSharp /></PIcon>
+							</span>
+						</template>
+						<template #actions="{ item }">
+							<template v-if="!phone">
+								<span
+									:id="`size-${item.id}`"
+									class="min-w-0 truncate text-xs text-muted"
+									data-size>
+									{{ sizeLabel(item, pack?.items[item.id]) }}
+								</span>
+								<PButton
+									v-if="OPENABLE.includes(item.active)"
+									size="sm"
+									type="ghost"
+									class="shrink-0"
+									:pressed="!asOnPage.includes(item.active)"
+									:aria-label="
+										t('plan.layout.content_open_named', {
+											name: editor.label(item.active),
+										})
+									"
+									:title="t('plan.layout.content_open')"
+									data-content-toggle
+									@click="toggleOpen(item.active)">
+									<template #icon
+										><UnfoldMoreSharp
+									/></template>
+									<!-- the words only where the title keeps room -->
+									<span
+										class="hidden @min-[24rem]/item:inline">
+										{{ t("plan.layout.content_open") }}
+									</span>
+								</PButton>
+								<PDropdown
+									:show="refMenu === item.id"
+									:options="editor.menuOptions(item.id)"
+									placement="bottom-end"
+									@update:show="
+										(v: boolean) =>
+											(refMenu = v
+												? item.id
+												: refMenu === item.id
+													? null
+													: refMenu)
+									"
+									@select="
+										(key: string) =>
+											editor.onMenu(item.id, key)
+									">
+									<PButton
+										size="sm"
+										type="ghost"
+										class="shrink-0 pointer-coarse:size-11"
+										:aria-label="
+											t('plan.layout.item_menu', {
+												name: editor.title(item.els),
+											})
+										"
+										data-item-menu>
+										<template #icon
+											><MoreHorizSharp
+										/></template>
+									</PButton>
+								</PDropdown>
+							</template>
+						</template>
+
+						<!-- edges and corner: a thin line on hover, a grip in
+							the corner; the hit areas stay 22 px (36 on touch) -->
 						<template #item="{ item }">
 							<div
 								v-if="!phone"
@@ -481,98 +579,55 @@
 									drag?.id === item.id ? 'opacity-40' : '',
 								]">
 								<div
-									class="pointer-events-auto absolute top-9 pointer-coarse:top-11 right-0 bottom-0 w-[22px] pointer-coarse:w-9 cursor-ew-resize hover:bg-link/20 touch-none"
+									class="group pointer-events-auto absolute top-10 pointer-coarse:top-11 right-0 bottom-0 w-[22px] pointer-coarse:w-9 cursor-ew-resize touch-none"
 									data-edge="w"
 									@pointerdown="
 										(e: PointerEvent) =>
 											editor.startResize(e, item.id, 'w')
-									" />
+									">
+									<span
+										class="absolute right-0.5 top-2 bottom-6 w-0.5 rounded-full bg-link opacity-0 group-hover:opacity-100" />
+								</div>
 								<div
-									class="pointer-events-auto absolute left-0 right-0 bottom-0 h-[22px] pointer-coarse:h-9 cursor-ns-resize hover:bg-link/20 touch-none"
+									class="group pointer-events-auto absolute left-0 right-0 bottom-0 h-[22px] pointer-coarse:h-9 cursor-ns-resize touch-none"
 									data-edge="h"
 									@pointerdown="
 										(e: PointerEvent) =>
 											editor.startResize(e, item.id, 'h')
-									" />
+									">
+									<span
+										class="absolute bottom-0.5 left-2 right-6 h-0.5 rounded-full bg-link opacity-0 group-hover:opacity-100" />
+								</div>
 								<div
-									class="pointer-events-auto absolute right-0 bottom-0 size-[22px] pointer-coarse:size-9 cursor-nwse-resize bg-link/30 rounded-tl rounded-br touch-none"
+									class="pointer-events-auto absolute right-0 bottom-0 flex items-end justify-end size-[22px] pointer-coarse:size-9 p-1 cursor-nwse-resize touch-none text-muted hover:text-link"
 									data-edge="wh"
 									@pointerdown="
 										(e: PointerEvent) =>
 											editor.startResize(e, item.id, 'wh')
-									" />
+									">
+									<svg
+										viewBox="0 0 10 10"
+										class="size-2.5"
+										aria-hidden="true">
+										<path
+											d="M9 1 1 9M9 5 5 9"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											stroke-linecap="round" />
+									</svg>
+								</div>
+								<!-- a drop here makes the dragged element a tab -->
 								<div
-									role="button"
-									tabindex="0"
-									class="pointer-events-auto absolute inset-x-0 top-0 flex items-center gap-2 min-h-9 pointer-coarse:min-h-11 pl-2 pr-10 pointer-coarse:pr-12 rounded-t bg-surface/95 border-b border-line cursor-grab touch-none outline-none focus-visible:ring-2 focus-visible:ring-link focus-visible:ring-inset"
-									:aria-label="
-										t('plan.layout.handle', {
+									v-if="drag?.tabTo === item.id"
+									class="absolute inset-x-0 top-0 flex items-center justify-center h-10 pointer-coarse:h-11 px-2 rounded-t bg-surface ring-2 ring-inset ring-link text-sm font-medium text-link truncate"
+									data-tab-target>
+									{{
+										t("plan.layout.drop_tab_target", {
+											el: editor.label(drag.el),
 											name: editor.title(item.els),
 										})
-									"
-									:aria-describedby="`size-${item.id}`"
-									:data-handle="item.id"
-									:data-item-head="item.id"
-									@pointerdown="
-										(e: PointerEvent) =>
-											editor.startMove(e, { id: item.id })
-									"
-									@keydown="
-										(e: KeyboardEvent) =>
-											editor.onHandleKey(e, item.id)
-									">
-									<span
-										class="min-w-0 truncate text-sm font-medium text-white">
-										{{ editor.title(item.els) }}
-									</span>
-									<span
-										:id="`size-${item.id}`"
-										class="min-w-0 truncate text-xs text-muted"
-										data-size>
-										{{
-											sizeLabel(
-												item,
-												pack?.items[item.id]
-											)
-										}}
-									</span>
-								</div>
-								<!-- beside the handle, not in it: no button inside a button -->
-								<div
-									class="pointer-events-auto absolute top-0 right-0 flex items-center min-h-9 pointer-coarse:min-h-11 pr-1">
-									<PDropdown
-										:show="refMenu === item.id"
-										:options="editor.menuOptions(item.id)"
-										placement="bottom-end"
-										@update:show="
-											(v: boolean) =>
-												(refMenu = v
-													? item.id
-													: refMenu === item.id
-														? null
-														: refMenu)
-										"
-										@select="
-											(key: string) =>
-												editor.onMenu(item.id, key)
-										">
-										<PButton
-											size="sm"
-											type="ghost"
-											class="pointer-coarse:size-11"
-											:aria-label="
-												t('plan.layout.item_menu', {
-													name: editor.title(
-														item.els
-													),
-												})
-											"
-											data-item-menu>
-											<template #icon
-												><MoreHorizSharp
-											/></template>
-										</PButton>
-									</PDropdown>
+									}}
 								</div>
 							</div>
 						</template>

@@ -41,19 +41,22 @@ describe("PlanLayoutElementsPanel", () => {
 		expect(wrapper.find("[data-element-row='popr']").exists()).toBe(false);
 	});
 
-	it("shows a placed element, adds or drags a hidden one", async () => {
+	it("shows a placed element, adds a hidden one, drags either", async () => {
 		const { wrapper, component } = await mountPanel();
 		const row = (el: string) => wrapper.find(`[data-element-row="${el}"]`);
 		expect(row("planet").attributes("data-placed")).toBe("true");
-		expect(row("planet").find("[data-drag]").exists()).toBe(false);
 
 		await row("planet").find("button").trigger("click");
 		await row("experts").find("button").trigger("click");
 		await row("supply-cart").find("[data-drag]").trigger("pointerdown");
+		await row("planet").find("[data-drag]").trigger("pointerdown");
 
 		expect(component.emitted("show")).toEqual([["planet"]]);
 		expect(component.emitted("add")).toEqual([["experts"]]);
-		expect(component.emitted("drag")![0][1]).toBe("supply-cart");
+		expect(component.emitted("drag")!.map((d) => d[1])).toEqual([
+			"supply-cart",
+			"planet",
+		]);
 		expect(row("experts").find("button").attributes("aria-label")).toBe(
 			"Add Experts"
 		);

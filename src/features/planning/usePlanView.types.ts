@@ -48,7 +48,7 @@ export interface IPlanViewContext {
 	focusElement: (id: ElementId) => void;
 	layoutEditing: {
 		active: Ref<boolean>;
-		// show all an element can hide (tiers, fields, buttons)
-		showAll: ComputedRef<boolean>;
+		// whether an element shows all it can hide (tiers, fields, buttons)
+		showAll: (el: ElementId) => boolean;
 	};
 }

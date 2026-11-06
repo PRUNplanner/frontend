@@ -20,8 +20,9 @@
 
 	/**
 	 * Customise mode's Elements panel, beside the page: every element with
-	 * where it is; a hidden one is added (to the bottom) or dragged onto
-	 * the page, a placed one shown
+	 * where it is and a grip: dragged onto the page it places a hidden one
+	 * or moves a placed one (a tab out of its group); a hidden one is also
+	 * added (to the bottom), a placed one shown
 	 *
 	 * @author jplacht
 	 */
@@ -82,8 +83,7 @@
 					:data-element-row="row.el"
 					:data-placed="row.placed || undefined">
 					<span
-						v-if="!row.placed"
-						class="flex items-center justify-center size-6 text-muted cursor-grab touch-none"
+						class="flex items-center justify-center size-6 text-muted hover:text-ink-strong cursor-grab touch-none"
 						:title="t('plan.layout.drag_onto_page')"
 						data-drag
 						@pointerdown="
@@ -91,7 +91,6 @@
 						">
 						<PIcon :size="16"><DragIndicatorSharp /></PIcon>
 					</span>
-					<span v-else class="size-6" />
 					<span class="flex-1 min-w-0">
 						<span class="block text-ink-strong truncate">
 							{{ t(ELEMENTS[row.el].label) }}

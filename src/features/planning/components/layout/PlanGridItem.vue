@@ -36,7 +36,8 @@
 
 	/**
 	 * One box of the plan grid: a title row with its tabs and the fold
-	 * chevron (not on a results tile), and the element's body, which
+	 * chevron (not on a results tile; customising, every item has one and
+	 * the editor's controls sit in it), and the element's body, which
 	 * scrolls when the box is lower than its content
 	 *
 	 * @author jplacht
@@ -105,7 +106,7 @@
 		landmarks, and two share a name (the Workforce part and tile) -->
 	<div
 		role="group"
-		class="absolute top-0 left-0 flex flex-col rounded border border-line bg-(--app-bg) outline-none focus-visible:ring-2 focus-visible:ring-link"
+		class="@container/item absolute top-0 left-0 flex flex-col rounded border border-line bg-(--app-bg) outline-none focus-visible:ring-2 focus-visible:ring-link"
 		:style="{
 			transform: `translate(${pos.left}px, ${pos.top}px)`,
 			width: `${pos.width}px`,
@@ -116,11 +117,18 @@
 		:data-item="item.id"
 		:data-folded="folded || undefined"
 		:data-auto="pos.auto || undefined">
+		<!-- customising, every item has one (a results tile too): the editor
+			puts its grip, size and menu here, the tabs stay clickable -->
 		<div
-			v-if="!kpi"
+			v-if="!kpi || editing"
 			ref="head"
-			class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pl-3 pr-1"
-			:class="folded ? 'flex-1' : 'border-b border-line'">
+			class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pr-1"
+			:class="[
+				folded ? 'flex-1' : 'border-b border-line',
+				editing ? 'pl-1 cursor-grab touch-none' : 'pl-3',
+			]"
+			:data-item-head="editing ? item.id : undefined">
+			<slot name="lead" />
 			<PlanToolTabs
 				v-if="item.els.length > 1 && !folded"
 				class="flex-1 min-w-0"
@@ -128,13 +136,17 @@
 				:active="active"
 				:label="t('plan.layout.tabs_of', { name: label(item.els[0]) })"
 				@toggle="(el: ElementId) => emit('tab', el)" />
-			<h2 v-else class="flex-1 min-w-0 truncate font-bold text-white">
+			<h2
+				v-else
+				class="flex-1 min-w-0 truncate font-bold text-white"
+				:class="editing ? 'text-sm' : ''">
 				{{ label(item.els.length > 1 ? active : item.els[0]) }}
 			</h2>
 			<slot name="actions" />
 			<!-- the fold chevron at the right end: down to unfold, up to
 				fold, as an accordion reads -->
 			<button
+				v-if="!kpi && !editing"
 				type="button"
 				class="flex items-center justify-center shrink-0 size-8 pointer-coarse:size-11 rounded-control text-muted-strong hover:bg-hover hover:text-ink-strong cursor-pointer"
 				:aria-expanded="folded ? 'false' : 'true'"

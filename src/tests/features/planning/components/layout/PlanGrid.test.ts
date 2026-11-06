@@ -239,6 +239,27 @@ describe("PlanGrid", () => {
 		).toBe(true);
 	});
 
+	it("gives every item a title row while customising, without the fold", async () => {
+		const { wrapper } = await mountComponent(
+			PlanGrid,
+			{
+				layout: presetLayout("today"),
+				folded: [],
+				width: 1440,
+				editing: true,
+			},
+			{ setup: provideContext(planViewContext()) }
+		);
+		const kpi = box(wrapper, "i-kpi-profit");
+		expect(kpi.find("[data-item-head='i-kpi-profit']").exists()).toBe(true);
+		expect(wrapper.find("[data-fold]").exists()).toBe(false);
+		expect(
+			box(wrapper, "i-production")
+				.find("[data-tab='supply-cart']")
+				.exists()
+		).toBe(true);
+	});
+
 	it("scrolls only a box lower than its content, clips nothing else", async () => {
 		// every title row and content 500 px: 1,002 px of content per item
 		const height = vi

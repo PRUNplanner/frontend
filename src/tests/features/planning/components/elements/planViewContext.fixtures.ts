@@ -114,7 +114,7 @@ export function planViewContext(o: IContextOptions = {}): IPlanViewContext {
 		focusElement: vi.fn(),
 		layoutEditing: {
 			active: ref(!!o.showAll),
-			showAll: computed(() => !!o.showAll),
+			showAll: () => !!o.showAll,
 		},
 	};
 }

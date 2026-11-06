@@ -172,7 +172,7 @@
 			:disabled="readOnly"
 			:workforce-data="result.workforce"
 			:planet-natural-id="planet.planet_natural_id"
-			:show-all="layoutEditing.showAll.value"
+			:show-all="layoutEditing.showAll(section)"
 			@update:lux="handleUpdateWorkforceLux" />
 
 		<PlanInfrastructure
@@ -181,7 +181,7 @@
 			:infrastructure-data="result.infrastructure"
 			:auto-optimize-habs="autoOptimizeHabs"
 			:planet-natural-id="planet.planet_natural_id"
-			:show-all="layoutEditing.showAll.value"
+			:show-all="layoutEditing.showAll(section)"
 			@update:infrastructure="handleUpdateInfrastructure"
 			@update:auto-optimize-habs="setAutoOptimizeHabs"
 			@optimize-habs="(goal) => edits.applyOptimizeHabs(goal, true)" />
@@ -192,7 +192,7 @@
 			:expert-data="result.experts"
 			:buildings="productionBuildings"
 			:planet-natural-id="planet.planet_natural_id"
-			:show-all="layoutEditing.showAll.value"
+			:show-all="layoutEditing.showAll(section)"
 			@update:expert="handleUpdateExpert" />
 	</div>
 </template>

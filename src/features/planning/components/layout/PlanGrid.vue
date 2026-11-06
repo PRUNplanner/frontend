@@ -59,6 +59,9 @@
 	defineSlots<{
 		// the editor's handles over an item
 		item(props: { item: GridItem }): unknown;
+		// the editor's grip before an item's title, its size and menu after
+		lead(props: { item: GridItem }): unknown;
+		actions(props: { item: GridItem }): unknown;
 		// the editor's guides and drop boxes in a region
 		region(props: { region: "band" | "page"; pack: IPackResult }): unknown;
 	}>();
@@ -195,6 +198,10 @@
 					:editing="editing"
 					@fold="(v: boolean) => emit('fold', it.els[0], v)"
 					@tab="(el: ElementId) => emit('tab', it.id, el)">
+					<template #lead><slot name="lead" :item="it" /></template>
+					<template #actions
+						><slot name="actions" :item="it"
+					/></template>
 					<template #overlay
 						><slot name="item" :item="it"
 					/></template>
@@ -217,6 +224,8 @@
 				:editing="editing"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"
 				@tab="(el: ElementId) => emit('tab', it.id, el)">
+				<template #lead><slot name="lead" :item="it" /></template>
+				<template #actions><slot name="actions" :item="it" /></template>
 				<template #overlay><slot name="item" :item="it" /></template>
 			</PlanGridItem>
 		</div>

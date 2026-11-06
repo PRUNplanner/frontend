@@ -399,6 +399,27 @@ export const takeOut = (
 		return done(g, "taken_out", { el: ctx.label(el) });
 	});
 
+/**
+ * A tab dragged out of its group: its own item where it drops, or a tab
+ * of another item
+ */
+export const takeOutTo = (
+	layout: GridLayout,
+	id: string,
+	el: ElementId,
+	to: { x: number; y: number; band: boolean } | { tab: string },
+	ctx: ILayoutOpsContext
+): ILayoutChange => {
+	const out = takeOut(layout, id, el, ctx);
+	const it = out.layout.items.find(
+		(i) => i.els.length === 1 && i.els[0] === el
+	);
+	if (!it || ("tab" in to && to.tab === id)) return done(layout, "nothing");
+	return "tab" in to
+		? makeTab(out.layout, { item: it.id }, to.tab, ctx)
+		: moveTo(out.layout, it.id, to, ctx);
+};
+
 /** Every tab its own item */
 export const split = (
 	layout: GridLayout,

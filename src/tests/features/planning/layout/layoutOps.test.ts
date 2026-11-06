@@ -386,6 +386,50 @@ describe("layoutOps", () => {
 			);
 		});
 
+		it("drags a tab out to a spot, or onto another item as a tab", () => {
+			const g = today();
+			const c = ops.takeOutTo(
+				g,
+				"i-production",
+				"supply-cart",
+				{ x: 4, y: 0, band: false },
+				packed(g)
+			);
+			expect(item(c.layout, "supply-cart")).toMatchObject({
+				els: ["supply-cart"],
+				x: 4,
+			});
+			expect(item(c.layout, "production").els).not.toContain(
+				"supply-cart"
+			);
+			expect(ann(c)).toBe("moved");
+
+			const t = ops.takeOutTo(
+				g,
+				"i-production",
+				"supply-cart",
+				{ tab: "i-planet" },
+				ctx()
+			);
+			expect(item(t.layout, "planet").els).toEqual([
+				"planet",
+				"supply-cart",
+			]);
+			expect(item(t.layout, "production").els).not.toContain(
+				"supply-cart"
+			);
+			expect(ann(t)).toBe("tab");
+
+			// back onto its own group, or the group's first tab: nothing
+			for (const [el, to] of [
+				["supply-cart", { tab: "i-production" }],
+				["production", { x: 0, y: 0, band: false }],
+			] as const)
+				expect(
+					ann(ops.takeOutTo(g, "i-production", el, to, ctx()))
+				).toBe("nothing");
+		});
+
 		it("moves the shown tab when it is taken out", () => {
 			const g = ops.setActive(
 				today(),

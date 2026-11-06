@@ -29,6 +29,7 @@
 	import type { IPlanViewProps } from "@/features/planning/planView.types";
 	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 	import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
+	import type { ElementId } from "@/features/planning/layout/planLayout.types";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -341,9 +342,10 @@
 	// The layout: a preset or Custom Layout, kept for this tab
 	const layoutPref = usePlanLayoutPreference();
 	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
-	// customise mode, and whether its elements show all they can hide
+	// customise mode, and the elements it shows as on the page (the rest
+	// show all they can hide)
 	const refEditingLayout: Ref<boolean> = ref(false);
-	const refShowAll: Ref<boolean> = ref(true);
+	const refAsOnPage: Ref<ElementId[]> = ref([]);
 	const refEditor = useTemplateRef<{ undo: (how: "keys") => void }>("editor");
 
 	function pickLayout(choice: LayoutChoice): void {
@@ -493,7 +495,8 @@
 		focusElement: grid.focusElement,
 		layoutEditing: {
 			active: refEditingLayout,
-			showAll: computed(() => refEditingLayout.value && refShowAll.value),
+			showAll: (el: ElementId) =>
+				refEditingLayout.value && !refAsOnPage.value.includes(el),
 		},
 	});
 
@@ -653,7 +656,7 @@
 			<PlanLayoutEditor
 				v-if="refEditingLayout"
 				ref="editor"
-				v-model:show-all="refShowAll"
+				v-model:as-on-page="refAsOnPage"
 				:pref="layoutPref"
 				:logged-in="userStore.isLoggedIn"
 				@close="refEditingLayout = false" />

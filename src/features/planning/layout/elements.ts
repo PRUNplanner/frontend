@@ -98,6 +98,13 @@ export const ELEMENTS: Record<ElementId, IElementMeta> = {
 
 export const ELEMENT_IDS = Object.keys(ELEMENTS) as ElementId[];
 
+/** Elements that hide parts (tiers, fields, buttons) customising can open */
+export const OPENABLE: readonly ElementId[] = [
+	"workforce",
+	"housing",
+	"experts",
+];
+
 export const isElementId = (id: unknown): id is ElementId =>
 	typeof id === "string" && Object.hasOwn(ELEMENTS, id);
 

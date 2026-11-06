@@ -64,7 +64,7 @@ async function mountEditor(
 	const pref = usePlanLayoutPreference(memoryStore(o.stored ?? null));
 	const mounted = await mountComponent(
 		PlanLayoutEditor,
-		{ pref, loggedIn: o.loggedIn ?? true, showAll: true },
+		{ pref, loggedIn: o.loggedIn ?? true },
 		{
 			messages: { plan, common },
 			attach: true,
@@ -79,7 +79,7 @@ type Mounted = Awaited<ReturnType<typeof mountEditor>>;
 const handle = (m: Mounted, id: string) =>
 	m.wrapper.find(`[data-handle="i-${id}"]`);
 const size = (m: Mounted, id: string) =>
-	handle(m, id).find("[data-size]").text();
+	m.wrapper.find(`[data-item="i-${id}"] [data-size]`).text();
 const announce = (m: Mounted) => m.wrapper.find("[data-announce]").text();
 const draft = (m: Mounted, id: string) =>
 	(
@@ -548,6 +548,78 @@ describe("PlanLayoutEditor", () => {
 			expect(draft(m, "planet").els).toEqual(["planet", "experts"]);
 		});
 
+		it("drags a tab out of its group, or onto another title bar", async () => {
+			const m = await mountEditor();
+			const tab = (el: string) =>
+				m.wrapper.find(`[data-item="i-production"] [data-tab="${el}"]`);
+			// a press without a move is a click: the tab shows
+			await pointerdown(tab("supply-cart"), 100, 100);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await tab("supply-cart").trigger("click");
+			await flushPromises();
+			expect(draft(m, "production").active).toBe("supply-cart");
+			expect(draft(m, "production").els).toContain("supply-cart");
+
+			// dragged onto the page: its own item, where it drops
+			await dragBy(tab("supply-cart"), -STEP * 4, 40);
+			expect(draft(m, "production").els).not.toContain("supply-cart");
+			const out = (
+				m.wrapper
+					.findComponent({ name: "PlanGrid" })
+					.props("layout") as GridLayout
+			).items.find((i) => i.els[0] === "supply-cart")!;
+			expect(out.els).toEqual(["supply-cart"]);
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
+				element: "supply-cart",
+				how: "drag",
+				to: "page",
+			});
+
+			// onto another title bar: a tab there, the drop target says so
+			hitAt(
+				m.wrapper.find("[data-item='i-planet'] [data-item-head]")
+					.element
+			);
+			await pointerdown(tab("repair-analysis"), 100, 100);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 140, clientY: 140 })
+			);
+			await flushPromises();
+			expect(
+				m.wrapper
+					.find("[data-item='i-planet'] [data-tab-target]")
+					.text()
+			).toBe("Drop to add Repair as a tab to Planet");
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "planet").els).toEqual([
+				"planet",
+				"repair-analysis",
+			]);
+			expect(draft(m, "production").els).not.toContain("repair-analysis");
+		});
+
+		it("moves a placed element dragged from Elements; the first tab moves its group", async () => {
+			const m = await mountEditor();
+			const x0 = draft(m, "material-io").x;
+			await dragBy(
+				m.wrapper.find("[data-element-row='material-io'] [data-drag]"),
+				-STEP * 2,
+				0
+			);
+			expect(draft(m, "material-io").x).not.toBe(x0);
+			await dragBy(
+				m.wrapper.find(
+					"[data-item='i-production'] [data-tab='production']"
+				),
+				0,
+				0,
+				{ target: handle(m, "planet").element }
+			);
+			// the group's own tab can't join another: nothing changes
+			expect(draft(m, "planet").els).toEqual(["planet"]);
+		});
+
 		it("snaps a bottom edge to the same height as an item in its columns", async () => {
 			const m = await mountEditor();
 			// Planet below Empire: fixed 184, then 5 × 40 taller: 384 px
@@ -847,15 +919,26 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe("Gap 8 px");
 		});
 
-		it("switches what the elements show", async () => {
+		it("switches what an element shows, on the elements that hide parts", async () => {
 			const m = await mountEditor();
-			const content = m.wrapper
-				.findAllComponents({ name: "PSegmented" })
-				.find((s) => s.props("label") === "Content")!;
-			expect(content.props("value")).toBe("open");
-			content.vm.$emit("update:value", "page");
-			await flushPromises();
-			expect(m.component.emitted("update:showAll")).toEqual([[false]]);
+			const toggle = (id: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-content-toggle]`);
+			expect(toggle("production").exists()).toBe(false);
+			expect(toggle("workforce").attributes("aria-pressed")).toBe("true");
+			expect(toggle("workforce").attributes("aria-label")).toBe(
+				"Workforce: everything open while customising"
+			);
+			await toggle("workforce").trigger("click");
+			expect(m.component.emitted("update:asOnPage")).toEqual([
+				[["workforce"]],
+			]);
+			await m.setProps({ asOnPage: ["workforce"] });
+			expect(toggle("workforce").attributes("aria-pressed")).toBe(
+				"false"
+			);
+			expect(toggle("experts").attributes("aria-pressed")).toBe("true");
+			await toggle("workforce").trigger("click");
+			expect(m.component.emitted("update:asOnPage")![1]).toEqual([[]]);
 		});
 
 		it("notes items rearranged at a narrow preview, and a phone preview", async () => {
