@@ -11,6 +11,7 @@ import { createI18n } from "vue-i18n";
 
 import PDropdown from "@/ui/components/PDropdown.vue";
 import PModal from "@/ui/components/PModal.vue";
+import PPopover from "@/ui/components/PPopover.vue";
 import type { PDropdownOption } from "@/ui/ui.types";
 
 enableAutoUnmount(afterEach);
@@ -317,5 +318,145 @@ describe("PDropdown items with a state", () => {
 		key("Enter");
 		await flushPromises();
 		expect(onSelect).toHaveBeenCalledWith("wider");
+	});
+});
+
+describe("PDropdown rows of buttons", () => {
+	const ROWS: PDropdownOption[] = [
+		{
+			type: "buttons",
+			label: "Width · 3 of 12 columns",
+			buttons: [
+				{ key: "narrower", label: "Narrower", text: "−" },
+				{
+					key: "wider",
+					label: "Wider",
+					text: "+",
+					disabled: true,
+					hint: "Reaches the right edge",
+				},
+			],
+		},
+		{
+			type: "buttons",
+			label: "Height",
+			buttons: [
+				{
+					key: "fit",
+					label: "Fit content",
+					text: "Fit",
+					checked: true,
+				},
+				{
+					key: "cap",
+					label: "At most 480 px",
+					text: "≤ 480",
+					checked: false,
+				},
+			],
+		},
+		{ key: "pin", label: "Pin to top", tip: "Stays at the top" },
+	];
+	const button = (k: string) => body().find<HTMLElement>(`[data-key="${k}"]`);
+
+	it("groups each row, names its buttons and shows the hovered one's reason", async () => {
+		const { show } = mountDropdown({ options: ROWS });
+		show.value = true;
+		await flushPromises();
+
+		const rows = body().findAll("[role=group]");
+		expect(rows.map((r) => r.attributes("aria-label"))).toEqual([
+			"Width · 3 of 12 columns",
+			"Height",
+		]);
+		expect(button("wider").attributes()).toMatchObject({
+			role: "menuitem",
+			"aria-disabled": "true",
+			"aria-label": "Wider. Reaches the right edge",
+		});
+		expect(button("fit").attributes()).toMatchObject({
+			role: "menuitemradio",
+			"aria-checked": "true",
+		});
+		expect(rows[0].text()).toContain("Width · 3 of 12 columns");
+		await button("wider").trigger("mouseenter");
+		expect(rows[0].text()).toContain("Reaches the right edge");
+		await button("narrower").trigger("mouseenter");
+		expect(rows[0].text()).toContain("Narrower");
+		// the plain item's explanation is a tooltip, not a second line
+		expect(body().find("[role=menuitem][title]").attributes("title")).toBe(
+			"Stays at the top"
+		);
+	});
+
+	it("a button picks and keeps the menu open; an item closes it", async () => {
+		const { show, onSelect } = mountDropdown({ options: ROWS });
+		show.value = true;
+		await flushPromises();
+
+		await button("narrower").trigger("click");
+		await button("wider").trigger("click");
+		expect(onSelect.mock.calls).toEqual([["narrower"]]);
+		expect(show.value).toBe(true);
+
+		// the arrows go through the buttons, then the items: the fourth is ≤ 480
+		key("ArrowRight");
+		key("ArrowRight");
+		key("ArrowRight");
+		key("ArrowRight");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenLastCalledWith("cap");
+		expect(show.value).toBe(true);
+		key("ArrowLeft");
+		key("End");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenLastCalledWith("pin");
+		expect(show.value).toBe(false);
+	});
+});
+
+describe("PDropdown near the window's edge", () => {
+	afterEach(() => vi.restoreAllMocks());
+
+	async function openAt(top: number, height: number) {
+		vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(
+			height
+		);
+		const m = mountDropdown({ placement: "bottom-end" });
+		vi.spyOn(m.trigger().element, "getBoundingClientRect").mockReturnValue(
+			new DOMRect(0, top, 40, 30)
+		);
+		m.show.value = true;
+		await flushPromises();
+		return m;
+	}
+	const placed = (m: ReturnType<typeof mountDropdown>) =>
+		m.wrapper.findComponent(PPopover).props("placement");
+
+	it("opens downward when it fits", async () => {
+		const m = await openAt(100, 300);
+		expect(placed(m)).toBe("bottom-end");
+		expect(menu().attributes("style")).toBeUndefined();
+	});
+
+	it("opens upward when only the room above fits it", async () => {
+		// 768 px window: 24 px below the button, 686 above
+		const m = await openAt(700, 300);
+		expect(placed(m)).toBe("top-end");
+		expect(menu().attributes("style")).toBeUndefined();
+
+		// closed, it starts from the asked side again
+		m.show.value = false;
+		await flushPromises();
+		expect(placed(m)).toBe("bottom-end");
+	});
+
+	it("fitting neither side, takes the larger one and scrolls inside", async () => {
+		// 424 px below, 286 above
+		const m = await openAt(300, 600);
+		expect(placed(m)).toBe("bottom-end");
+		expect(menu().attributes("style")).toContain("max-height: 424px");
 	});
 });

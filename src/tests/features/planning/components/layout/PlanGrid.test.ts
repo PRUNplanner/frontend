@@ -235,6 +235,35 @@ describe("PlanGrid", () => {
 		).toBe("none");
 	});
 
+	it("shows the tabs of results tiles made into tabs, not a lone tile's title", async () => {
+		// Payback, Profit / day and Area as one item, as a player saved it
+		const today = presetLayout("today");
+		const grouped = ["kpi-profit", "kpi-area"];
+		const layout: GridLayout = {
+			...today,
+			items: today.items
+				.filter((i) => !grouped.includes(i.els[0]))
+				.map((i) =>
+					i.els[0] === "kpi-payback"
+						? {
+								...i,
+								els: ["kpi-payback", ...grouped] as ElementId[],
+							}
+						: i
+				),
+		};
+		const { wrapper } = await mountGrid({ layout });
+		const group = box(wrapper, "i-kpi-payback");
+		expect(
+			group.findAll("[data-tab]").map((t) => t.attributes("data-tab"))
+		).toEqual(["kpi-payback", "kpi-profit", "kpi-area"]);
+		// no fold on results tiles, tabs or not
+		expect(group.find("[data-fold]").exists()).toBe(false);
+		const lone = box(wrapper, "i-kpi-storage");
+		expect(lone.find("h2").exists()).toBe(false);
+		expect(lone.findComponent(PlanToolTabs).exists()).toBe(false);
+	});
+
 	it("shows the stored tab when the one picked left the item", async () => {
 		// Supply picked on Today's, then Wide, where Production has no Supply
 		const { wrapper, setProps } = await mountGrid({

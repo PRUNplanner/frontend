@@ -21,7 +21,7 @@ import common from "@/locales/en_US/common.json";
 import type { LayoutStore } from "@/features/planning/layout/layoutStore";
 import type { StoredLayout } from "@/features/planning/layout/planLayout.schemas";
 import type { GridLayout } from "@/features/planning/layout/planLayout.types";
-import type { PDropdownOption } from "@/ui/ui.types";
+import type { PDropdownButton, PDropdownOption } from "@/ui/ui.types";
 
 vi.mock("@/features/planning/layout/elementComponents", () => ({
 	elementView: (id: string) => ({
@@ -93,11 +93,13 @@ const key = async (m: Mounted, id: string, k: string, shift = false) => {
 };
 const menuOf = (m: Mounted, id: string) =>
 	m.wrapper.find(`[data-item="i-${id}"]`).findComponent(PDropdown);
-/** An item of an item's ⋯ menu, by its key */
+/** An item of an item's ⋯ menu, or a button of one of its rows, by key */
 const option = (m: Mounted, id: string, k: string) =>
-	(menuOf(m, id).props("options") as PDropdownOption[]).find(
-		(o) => "key" in o && o.key === k
-	);
+	(menuOf(m, id).props("options") as PDropdownOption[])
+		.flatMap<PDropdownOption | PDropdownButton>((o) =>
+			"buttons" in o ? o.buttons : [o]
+		)
+		.find((o) => "key" in o && o.key === k);
 const pick = async (m: Mounted, id: string, k: string) => {
 	menuOf(m, id).vm.$emit("select", k);
 	await flushPromises();
@@ -265,6 +267,30 @@ describe("PlanLayoutEditor", () => {
 	});
 
 	describe("the ⋯ menu", () => {
+		it("stays open after a step from its rows, closes after an item", async () => {
+			const m = await mountEditor();
+			menuOf(m, "experts").vm.$emit("update:show", true);
+			await flushPromises();
+			await pick(m, "experts", "hm-cap");
+			expect(draft(m, "experts").hm).toBe("cap");
+			// taller than its content: fixed
+			await pick(m, "experts", "taller");
+			expect(draft(m, "experts").hm).toBe("fixed");
+			expect(menuOf(m, "experts").props("show")).toBe(true);
+			// the steps are rows of buttons, not a line each
+			const rows = (
+				menuOf(m, "experts").props("options") as PDropdownOption[]
+			).filter((o) => "type" in o && o.type === "buttons");
+			expect(rows.map((r) => "label" in r && r.label)).toEqual([
+				"Width · 2 of 12 columns",
+				expect.stringContaining("Height · fixed"),
+				"Move",
+			]);
+
+			await pick(m, "experts", "pin");
+			expect(menuOf(m, "experts").props("show")).toBe(false);
+		});
+
 		it("says why an item can't be made narrower, wider or moved", async () => {
 			const m = await mountEditor();
 			const byKey = (k: string) => option(m, "production", k);
@@ -971,7 +997,7 @@ describe("PlanLayoutEditor", () => {
 			// as on the page until switched
 			expect(option(m, "workforce", "open")).toMatchObject({
 				label: "Everything open",
-				hint: "Every tier, field and button, also on the page",
+				tip: "Every tier, field and button, also on the page",
 				checked: false,
 			});
 			expect(state("workforce", "open").exists()).toBe(false);

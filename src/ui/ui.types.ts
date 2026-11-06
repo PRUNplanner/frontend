@@ -56,10 +56,32 @@ export type PDropdownOption =
 			disabled?: boolean;
 			/** an on/off item, shown with a check when on */
 			checked?: boolean;
+			/** shown on hover only (a native tooltip), unlike the hint */
+			tip?: string;
 	  }
 	| { type: "divider" }
 	/** a heading over the items below it */
-	| { type: "group"; label: string };
+	| { type: "group"; label: string }
+	/**
+	 * A heading with a row of small buttons under it, for steps (−, +,
+	 * arrows); picking one keeps the menu open. The heading shows the hovered
+	 * button's label, or its hint when it has one.
+	 */
+	| { type: "buttons"; label: string; buttons: PDropdownButton[] };
+
+export interface PDropdownButton {
+	key: string;
+	/** its name, for screen readers and on hover */
+	label: string;
+	/** an icon, or `text` when no icon says it */
+	icon?: Component;
+	text?: string;
+	/** why it can't be picked */
+	hint?: string;
+	disabled?: boolean;
+	/** one of a set, shown as picked */
+	checked?: boolean;
+}
 
 export interface PTooltipConfig {
 	trigger: string;

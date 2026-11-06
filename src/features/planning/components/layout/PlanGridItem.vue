@@ -140,10 +140,10 @@
 			:data-item="item.id"
 			:data-folded="folded || undefined"
 			:data-auto="pos.auto || undefined">
-			<!-- customising, every item has one (a results tile too): the editor
+			<!-- every item but a lone results tile; customising, that too: the editor
 			puts its grip, size and menu here, the tabs stay clickable -->
 			<div
-				v-if="!kpi || editing"
+				v-if="!kpi || editing || item.els.length > 1"
 				ref="head"
 				class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pr-1"
 				:class="[

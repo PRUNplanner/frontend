@@ -11,6 +11,15 @@ import { useI18n } from "vue-i18n";
 // Composables
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { useConfirm, useToast } from "@/ui";
+import {
+	AddSharp,
+	ArrowBackSharp,
+	ArrowDownwardSharp,
+	ArrowForwardSharp,
+	ArrowUpwardSharp,
+	RemoveSharp,
+	SyncAltSharp,
+} from "@vicons/material";
 
 // Types & Interfaces
 import type {
@@ -171,6 +180,7 @@ export function usePlanLayoutEditor(
 				?.focus({ preventScroll: true })
 		);
 	}
+	let menuStays = false;
 	function apply(
 		change: ILayoutChange,
 		focus?: string,
@@ -199,8 +209,11 @@ export function usePlanLayoutEditor(
 				},
 				duration: 5000,
 			});
-		refMenu.value = null;
-		focusHandle(focus);
+		// a step from a row of the ⋯ menu keeps it open, and the focus in it
+		if (!menuStays) {
+			refMenu.value = null;
+			focusHandle(focus);
+		}
 		return true;
 	}
 
@@ -392,87 +405,93 @@ export function usePlanLayoutEditor(
 			mh,
 			it.h || ops.snapHeight(Math.min(p?.content || 400, 480), mh)
 		);
+		// steps as rows of small buttons: the menu stays open for the next one
 		const opts: PDropdownOption[] = [
 			{
-				type: "group",
+				type: "buttons",
 				label: t("plan.layout.menu_width", { n: it.w, cols: g.cols }),
+				buttons: [
+					{
+						key: "narrower",
+						label: t("plan.layout.narrower"),
+						icon: RemoveSharp,
+						disabled: it.w <= mc,
+						hint:
+							it.w <= mc
+								? t("plan.layout.why.min_width", {
+										name,
+										px: minWidthOf(it),
+										n: mc,
+										cols: g.cols,
+									})
+								: undefined,
+					},
+					{
+						key: "wider",
+						label: t("plan.layout.wider"),
+						icon: AddSharp,
+						disabled: it.x + it.w >= g.cols,
+						hint:
+							it.x + it.w >= g.cols
+								? t("plan.layout.why.right_edge")
+								: undefined,
+					},
+					{
+						key: "full",
+						label: t("plan.layout.full_width"),
+						icon: SyncAltSharp,
+						disabled: it.w === g.cols,
+						hint:
+							it.w === g.cols
+								? t("plan.layout.why.full_width")
+								: undefined,
+					},
+				],
 			},
 			{
-				key: "narrower",
-				label: t("plan.layout.narrower"),
-				disabled: it.w <= mc,
-				hint:
-					it.w <= mc
-						? t("plan.layout.why.min_width", {
-								name,
-								px: minWidthOf(it),
-								n: mc,
-								cols: g.cols,
-							})
-						: undefined,
-			},
-			{
-				key: "wider",
-				label: t("plan.layout.wider"),
-				disabled: it.x + it.w >= g.cols,
-				hint:
-					it.x + it.w >= g.cols
-						? t("plan.layout.why.right_edge")
-						: undefined,
-			},
-			{
-				key: "full",
-				label: t("plan.layout.full_width"),
-				disabled: it.w === g.cols,
-				hint:
-					it.w === g.cols
-						? t("plan.layout.why.full_width")
-						: undefined,
-			},
-			{ type: "divider" },
-			{
-				type: "group",
+				type: "buttons",
 				label:
 					it.hm === "fit"
 						? t("plan.layout.menu_height_fit", { h: hNow })
 						: t(`plan.layout.menu_height_${it.hm}`, { h: it.h }),
-			},
-			{
-				key: "hm-fit",
-				label: t("plan.layout.height_fit"),
-				checked: it.hm === "fit",
-			},
-			{
-				key: "hm-cap",
-				label: t("plan.layout.height_cap", { h: capH }),
-				checked: it.hm === "cap",
-			},
-			{
-				key: "hm-fixed",
-				label: t("plan.layout.height_fixed", { h: capH }),
-				checked: it.hm === "fixed",
-			},
-			{ key: "taller", label: t("plan.layout.taller") },
-			{
-				key: "shorter",
-				label: t("plan.layout.shorter"),
-				disabled: hNow <= mh,
-				hint:
-					hNow <= mh
-						? t("plan.layout.why.min_height", { name, px: mh })
-						: undefined,
+				buttons: [
+					...(["fit", "cap", "fixed"] as const).map((hm) => ({
+						key: `hm-${hm}`,
+						label: t(`plan.layout.height_${hm}`, { h: capH }),
+						text: t(`plan.layout.height_${hm}_short`, { h: capH }),
+						checked: it.hm === hm,
+					})),
+					{
+						key: "shorter",
+						label: t("plan.layout.shorter"),
+						icon: RemoveSharp,
+						disabled: hNow <= mh,
+						hint:
+							hNow <= mh
+								? t("plan.layout.why.min_height", {
+										name,
+										px: mh,
+									})
+								: undefined,
+					},
+					{
+						key: "taller",
+						label: t("plan.layout.taller"),
+						icon: AddSharp,
+					},
+				],
 			},
 			{ type: "divider" },
 			{
 				key: "pin",
 				label: t("plan.layout.keep_in_view"),
-				hint: t("plan.layout.keep_in_view_hint"),
+				tip: t("plan.layout.keep_in_view_hint"),
 				checked: it.pin,
 			},
 			{
 				key: "follow",
 				label: t("plan.layout.follow"),
-				hint: t("plan.layout.follow_hint"),
+				tip: t("plan.layout.follow_hint"),
 				checked: !!it.follow,
 			},
 			{ type: "divider" },
@@ -494,9 +513,7 @@ export function usePlanLayoutEditor(
 									{
 										key: "open",
 										label: t("plan.layout.content_open"),
-										hint: t(
-											"plan.layout.content_open_hint"
-										),
+										tip: t("plan.layout.content_open_hint"),
 										checked: !!g.open?.includes(it.active),
 									},
 								]
@@ -504,23 +521,41 @@ export function usePlanLayoutEditor(
 						{ type: "divider" },
 					] as PDropdownOption[])
 				: []),
-			{ type: "group", label: t("plan.layout.move") },
-			{ key: "up", label: t("plan.layout.up") },
-			{ key: "down", label: t("plan.layout.down") },
 			{
-				key: "left",
-				label: t("plan.layout.left"),
-				disabled: it.x === 0,
-				hint: it.x === 0 ? t("plan.layout.why.left_edge") : undefined,
-			},
-			{
-				key: "right",
-				label: t("plan.layout.right"),
-				disabled: it.x + it.w >= g.cols,
-				hint:
-					it.x + it.w >= g.cols
-						? t("plan.layout.why.right_edge")
-						: undefined,
+				type: "buttons",
+				label: t("plan.layout.move"),
+				buttons: [
+					{
+						key: "left",
+						label: t("plan.layout.left"),
+						icon: ArrowBackSharp,
+						disabled: it.x === 0,
+						hint:
+							it.x === 0
+								? t("plan.layout.why.left_edge")
+								: undefined,
+					},
+					{
+						key: "up",
+						label: t("plan.layout.up"),
+						icon: ArrowUpwardSharp,
+					},
+					{
+						key: "down",
+						label: t("plan.layout.down"),
+						icon: ArrowDownwardSharp,
+					},
+					{
+						key: "right",
+						label: t("plan.layout.right"),
+						icon: ArrowForwardSharp,
+						disabled: it.x + it.w >= g.cols,
+						hint:
+							it.x + it.w >= g.cols
+								? t("plan.layout.why.right_edge")
+								: undefined,
+					},
+				],
 			},
 			{ type: "divider" },
 		];
@@ -581,7 +616,31 @@ export function usePlanLayoutEditor(
 		return opts;
 	}
 
+	// the ⋯ menu's rows of buttons: steps, after which the menu stays open
+	const MENU_STEPS = new Set([
+		"narrower",
+		"wider",
+		"full",
+		"hm-fit",
+		"hm-cap",
+		"hm-fixed",
+		"shorter",
+		"taller",
+		"left",
+		"up",
+		"down",
+		"right",
+	]);
 	function onMenu(id: string, key: string): void {
+		menuStays = MENU_STEPS.has(key);
+		try {
+			menuChange(id, key);
+		} finally {
+			menuStays = false;
+		}
+	}
+
+	function menuChange(id: string, key: string): void {
 		const it = itemOf(id)!;
 		// a page switch keeps the menu open
 		if (key.startsWith("page:")) {
