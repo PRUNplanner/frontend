@@ -52,8 +52,14 @@ export type PDropdownOption =
 			hint?: string;
 			/** destructive action, shown in the negative colour */
 			danger?: boolean;
+			/** can't be picked; say why in the hint */
+			disabled?: boolean;
+			/** an on/off item, shown with a check when on */
+			checked?: boolean;
 	  }
-	| { type: "divider" };
+	| { type: "divider" }
+	/** a heading over the items below it */
+	| { type: "group"; label: string };
 
 export interface PTooltipConfig {
 	trigger: string;

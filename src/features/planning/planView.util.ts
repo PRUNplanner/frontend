@@ -18,33 +18,6 @@ export type BaseSection =
 export type ResultTile =
 	"profit" | "payback" | "area" | "storage" | "workforce";
 
-// tools wide enough to need Material I/O's room too
-const WIDE_TOOLS: PlanTool[] = [
-	"repair-analysis",
-	"profit-breakdown",
-	"plan-check",
-];
-
-/**
- * Which side panes fold: Base always (the CSS keeps that to 81–100rem of
- * page width, where Production would get too narrow next to both panes),
- * Material I/O for the wide tools
- *
- * @author jplacht
- *
- * @param {PlanTool | null} tool Open tool, null for the production list
- * @returns {{ base: boolean; io: boolean }} Folded panes
- */
-export function foldedPanes(tool: PlanTool | null): {
-	base: boolean;
-	io: boolean;
-} {
-	return {
-		base: true,
-		io: tool !== null && WIDE_TOOLS.includes(tool),
-	};
-}
-
 /**
  * Exported and imported value per day of Material I/O rows
  *

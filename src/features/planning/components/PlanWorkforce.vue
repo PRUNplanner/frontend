@@ -35,6 +35,11 @@
 			type: String,
 			required: true,
 		},
+		// while customising the layout: every tier, no toggle
+		showAll: {
+			type: Boolean,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -57,7 +62,7 @@
 	}
 	const used: ComputedRef<IWorkforceElement[]> = computed(() =>
 		Object.values(props.workforceData).filter(
-			(w) => refShowAll.value || w.required > 0
+			(w) => props.showAll || refShowAll.value || w.required > 0
 		)
 	);
 	const unused: ComputedRef<string> = computed(() =>
@@ -95,8 +100,10 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-3 tabular-nums">
-		<div v-for="workforce in used" :key="workforce.name">
+	<!-- wider: tiers side by side, not taller -->
+	<div
+		class="grid grid-cols-[repeat(auto-fill,minmax(min(240px,100%),1fr))] gap-x-6 gap-y-3 tabular-nums">
+		<div v-for="workforce in used" :key="workforce.name" data-tier>
 			<div class="flex items-baseline justify-between gap-2 text-sm">
 				<span class="text-ink-strong">
 					{{
@@ -166,9 +173,9 @@
 			</div>
 		</div>
 		<button
-			v-if="unused"
+			v-if="unused && !showAll"
 			type="button"
-			class="self-start min-h-6 text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
+			class="col-span-full justify-self-start min-h-6 text-left text-xs text-link hover:underline cursor-pointer pointer-coarse:min-h-11"
 			:aria-expanded="refShowAll ? 'true' : 'false'"
 			data-unneeded-toggle
 			@click="toggleUnneeded">

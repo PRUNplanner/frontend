@@ -266,3 +266,56 @@ describe("PDropdown", () => {
 		anchor.remove();
 	});
 });
+
+describe("PDropdown items with a state", () => {
+	const STATEFUL: PDropdownOption[] = [
+		{ type: "group", label: "Width" },
+		{
+			key: "narrower",
+			label: "Narrower",
+			disabled: true,
+			hint: "At its minimum",
+		},
+		{ key: "wider", label: "Wider" },
+		{ key: "pin", label: "Keep in view", checked: true },
+		{ key: "fit", label: "Fit content", checked: false },
+	];
+
+	it("heads a group, checks an on/off item and says why one is disabled", async () => {
+		const { show } = mountDropdown({ options: STATEFUL });
+		show.value = true;
+		await flushPromises();
+
+		expect(menu().find("[role=presentation]").text()).toBe("Width");
+		const all = body().findAll("[role=menuitem], [role=menuitemcheckbox]");
+		expect(all.map((i) => i.attributes("role"))).toEqual([
+			"menuitem",
+			"menuitem",
+			"menuitemcheckbox",
+			"menuitemcheckbox",
+		]);
+		expect(all[0].attributes("aria-disabled")).toBe("true");
+		expect(all[0].text()).toContain("At its minimum");
+		expect(all[2].attributes("aria-checked")).toBe("true");
+		expect(all[2].find("svg").exists()).toBe(true);
+		expect(all[3].attributes("aria-checked")).toBe("false");
+	});
+
+	it("keeps a disabled item from being picked, by click or key", async () => {
+		const { show, onSelect } = mountDropdown({ options: STATEFUL });
+		show.value = true;
+		await flushPromises();
+
+		await body().find("[aria-disabled=true]").trigger("click");
+		key("ArrowDown");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).not.toHaveBeenCalled();
+		expect(show.value).toBe(true);
+
+		key("ArrowDown");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenCalledWith("wider");
+	});
+});

@@ -1,9 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
-import { h } from "vue";
-import type { VueWrapper } from "@vue/test-utils";
+import { h, type Ref } from "vue";
+import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
-import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
+import PlanKpiElement from "@/features/planning/components/elements/PlanKpiElement.vue";
+import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import {
+	planViewContext,
+	provideContext,
+} from "@/tests/features/planning/components/elements/planViewContext.fixtures";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	building,
@@ -58,7 +64,7 @@ function translated(wrapper: VueWrapper): unknown[] {
 
 describe("plan editor under page translation", () => {
 	// a building deleted, a recipe picked or undone can drop a workforce tier
-	it("drops a workforce tier from the results bar", async () => {
+	it("drops a workforce tier from the results tile", async () => {
 		const workforce = {
 			pioneer: wf("pioneer", { required: 100, capacity: 100 }),
 			settler: wf("settler", { required: 50, capacity: 60 }),
@@ -66,47 +72,31 @@ describe("plan editor under page translation", () => {
 			engineer: wf("engineer"),
 			scientist: wf("scientist"),
 		};
-		const { wrapper, setProps } = await mountComponent(
-			PlanResultsBar,
-			{
-				overview: {
-					dailyCost: 0,
-					dailyProfit: 0,
-					totalConstructionCost: 0,
-					dailyDegradationCost: 0,
-					profit: 0,
-					roi: 0,
-				},
-				area: {
-					permits: 1,
-					areaUsed: 0,
-					areaTotal: 500,
-					areaLeft: 500,
-				},
-				visitation: {
-					storageFilled: 0,
-					dailyWeightImport: 0,
-					dailyWeightExport: 0,
-					dailyVolumeImport: 0,
-					dailyVolumeExport: 0,
-					dailyWeight: 0,
-					dailyVolume: 0,
-				},
+		const context = planViewContext({
+			result: {
+				...structuredClone(planEmptyResult),
 				workforce,
 				experts: experts(),
-				revenue: 0,
-				cost: 0,
 			},
-			{ messages: { plan } }
+		});
+		const { wrapper } = await mountComponent(
+			PlanKpiElement,
+			{ tile: "workforce" },
+			{ messages: { plan }, setup: provideContext(context) }
 		);
 		const errors = translated(wrapper);
 
-		await setProps({
+		// the fixture's result is a plain ref
+		const result = context.calculation
+			.result as unknown as Ref<IPlanResult>;
+		result.value = {
+			...result.value,
 			workforce: {
 				...workforce,
 				settler: wf("settler", { capacity: 60 }),
 			},
-		});
+		};
+		await flushPromises();
 
 		expect(errors).toEqual([]);
 		expect(wrapper.find("[data-workforce-tiers]").text()).toBe(

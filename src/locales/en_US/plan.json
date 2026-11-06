@@ -81,7 +81,6 @@
 		"more": "More",
 		"save_as_copy": "Save as copy…",
 		"share_link": "Share link",
-		"tools": "Plan tools",
 		"download_csv": "Download Material I/O (CSV)",
 		"reload": "Reload saved version",
 		"reload_confirm": "Reload the saved version? Your unsaved changes will be lost."
@@ -684,9 +683,8 @@
 		"rename": "Rename plan"
 	},
 	"results": {
-		"label": "Plan results",
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue\u00a0{revenue} · cost\u00a0{cost} incl.\u00a0{degradation}\u00a0degradation",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
 		"payback": "Payback",
 		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
@@ -694,8 +692,8 @@
 		"area": "Area",
 		"storage": "Storage",
 		"days_to_full": "days to full",
-		"in_out_per_day": "{in}\u00a0t in · {out}\u00a0t out\u00a0/\u00a0day",
-		"in_out_volume_per_day": "{in}\u00a0m³ in · {out}\u00a0m³ out\u00a0/\u00a0day",
+		"in_out_per_day": "{in} t in · {out} t out / day",
+		"in_out_volume_per_day": "{in} m³ in · {out} m³ out / day",
 		"workforce": "Workforce",
 		"lowest_efficiency": "Lowest efficiency of the workforce the plan needs",
 		"tier_short": {
@@ -718,7 +716,6 @@
 		}
 	},
 	"base": {
-		"label": "Base",
 		"empire": {
 			"label": "Empire & prices",
 			"calculate_with": "Calculate with empire",
@@ -726,7 +723,6 @@
 		},
 		"planet": {
 			"label": "Planet",
-			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
 			"area": "area {n}",
 			"resources": "Resources",
 			"add_extractor": "Add {building} for {ticker}",
@@ -750,7 +746,6 @@
 		},
 		"experts": {
 			"label": "Experts",
-			"summary": "{n} placed",
 			"more": "+ {n} more fields",
 			"fewer": "Fewer fields"
 		}
@@ -837,15 +832,162 @@
 	},
 	"layout": {
 		"flags": "{n} market flag | {n} market flags",
-		"base_strip": "COGC {cogc} · {n} expert | COGC {cogc} · {n} experts",
-		"show_base": "Show base setup",
-		"show_io": "Show Material I/O",
-		"close": "Close",
-		"fold_base": "Fold base setup",
-		"fold_io": "Fold Material I/O",
-		"sections": "Plan sections",
-		"tools": "Tools",
-		"io_short": "I/O",
-		"all_tools": "All tools"
+		"menu": "Layout",
+		"presets": {
+			"today": {
+				"name": "Today's",
+				"description": "Results on top · Base · Production with tools · Material I/O"
+			},
+			"wide": {
+				"name": "Wide",
+				"description": "Supply and Plan check next to Production"
+			},
+			"stacked": {
+				"name": "Stacked",
+				"description": "Base parts side by side, Production full width below"
+			},
+			"custom": {
+				"name": "Custom Layout",
+				"description": "Your own arrangement, used for all your plans"
+			}
+		},
+		"customise_from": "Customise, starting from {name}…",
+		"customise_custom": "Customise Custom Layout…",
+		"material_io_totals": "Material I/O totals",
+		"kpis": {
+			"profit": "Profit / day",
+			"payback": "Payback",
+			"workforce": "Workforce %",
+			"area": "Area",
+			"storage": "Storage"
+		},
+		"fold": "Fold {name}",
+		"unfold": "Unfold {name}",
+		"tabs_of": "Tabs of {name}",
+		"item_title": "{name} + {n} tab | {name} + {n} tabs",
+		"starting_from": "starting from {name}",
+		"shown_at": "Shown at {n} %",
+		"preview": "Preview width",
+		"preview_full": "Full",
+		"preview_phone": "Phone",
+		"elements": "Elements",
+		"elements_hint": "Drag a hidden element onto the page, or add it at the bottom.",
+		"groups": {
+			"base": "Base",
+			"production": "Production & tools",
+			"results": "Material I/O",
+			"kpis": "Results"
+		},
+		"where": {
+			"page": "On the page",
+			"band": "Kept in view",
+			"tab": "A tab of {name}",
+			"hidden": "Hidden"
+		},
+		"show": "Show",
+		"show_named": "Show {name}",
+		"add": "Add",
+		"add_named": "Add {name}",
+		"drag_onto_page": "Drag onto the page",
+		"undo": "Undo",
+		"reset": "Reset to Today's",
+		"save": "Save",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"replace_question": "This replaces your current Custom Layout.",
+		"replace": "Replace Custom Layout",
+		"keep_editing": "Keep editing",
+		"leave_title": "Discard your layout changes?",
+		"leave_content": "Your changes to the layout are not saved yet.",
+		"leave_discard": "Discard changes",
+		"columns": "Columns",
+		"fewer_columns": "Fewer columns",
+		"more_columns": "More columns",
+		"gap": "Gap",
+		"content": "Content",
+		"content_open": "Everything open",
+		"content_page": "As on the page",
+		"hint": "Drag a title bar to move, an edge to resize; on a title bar arrows move, Shift+arrows resize, Enter opens the menu.",
+		"auto_note": "{n} item is rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is. | {n} items are rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is.",
+		"band_note": "The items kept in view are taller than 40 % of the window, so they scroll with the page.",
+		"phone_note": "Phone preview: every item stacked in order, small ones two per row. View only.",
+		"handle": "Move {name}. Arrows move, Shift+arrows resize, Enter opens the menu.",
+		"item_menu": "{name}: layout menu",
+		"size_auto": "auto {n}/{cols} (yours {w})",
+		"size_moved": "auto {n}/{cols}",
+		"size_in_view": "in view",
+		"size_scrolls": "scrolls",
+		"size_cap": "≤ {h} px",
+		"size_px": "{h} px",
+		"badge_cols": "{n} of {cols} columns",
+		"badge_scrolls": "{h} px · content {content} px, scrolls",
+		"badge_min": "(minimum)",
+		"lands_here": "Lands here",
+		"drop_as_tab": "{name} as a tab here",
+		"menu_width": "Width · {n} of {cols} columns",
+		"menu_height_fit": "Height · fits its content, {h} px now",
+		"menu_height_cap": "Height · at most {h} px",
+		"menu_height_fixed": "Height · fixed {h} px",
+		"narrower": "Narrower",
+		"wider": "Wider",
+		"full_width": "Full width",
+		"height_fit": "Fit content",
+		"height_cap": "Fit content, at most {h} px",
+		"height_fixed": "Fixed {h} px",
+		"taller": "Taller, +40 px",
+		"shorter": "Shorter, −40 px",
+		"keep_in_view": "Keep in view while scrolling",
+		"move": "Move",
+		"up": "Up",
+		"down": "Down",
+		"left": "Left one column",
+		"right": "Right one column",
+		"tabs": "Tabs",
+		"make_tab": "Make it a tab of",
+		"take_out": "Take {name} out",
+		"split": "Split all into separate items",
+		"hide": "Hide",
+		"hide_tab": "Hide {name}",
+		"why": {
+			"min_width": "{name} needs at least {px} px: {n} of {cols} columns at this width",
+			"min_height": "{name} needs at least {px} px",
+			"right_edge": "Reaches the right edge; move it left first",
+			"left_edge": "Already at the left edge",
+			"full_width": "Already full width",
+			"first_tab": "The first tab stays; take the others out",
+			"required": "Production always stays on the page"
+		},
+		"snap": {
+			"bottom": "Bottom of {name}",
+			"height": "Same height as {name} · {h} px",
+			"content": "Fits its content",
+			"top": "Lines up with the top of {name}"
+		},
+		"announce": {
+			"nothing": "Nothing changed",
+			"column": "{item}: column {n}",
+			"up": "{item} moved up",
+			"down": "{item} moved down",
+			"moved": "{item} moved · column {n}",
+			"moved_band": "{item} moved · column {n} · kept in view",
+			"width": "{item}: {n} of {cols} columns wide",
+			"width_min": "{item}: {n} of {cols} columns wide (its minimum at this width)",
+			"full_width": "{item}: full width",
+			"height_fit": "{item}: fits its content",
+			"height_cap": "{item}: fits its content up to {h} px, scrolls beyond",
+			"height_fixed": "{item}: fixed at {h} px; taller content scrolls",
+			"height_min": "{item}: {h} px (its minimum)",
+			"pinned": "{item} stays in view while scrolling",
+			"unpinned": "{item} scrolls with the page again",
+			"tab": "{el} is now a tab of {item}",
+			"taken_out": "{el} is its own item now",
+			"split": "{el} and its tabs are separate items now",
+			"hidden": "{el} hidden. It stays in Elements.",
+			"added": "{el} added",
+			"cols": "{n} columns; items kept their share of the width",
+			"gap": "Gap {n} px",
+			"tab_shown": "{el} shown",
+			"reset": "Reset to Today's",
+			"undone": "Undone"
+		}
 	}
 }

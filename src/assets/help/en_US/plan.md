@@ -1,12 +1,23 @@
 **Layout**
 
-The plan view reads from left to right: **Base** (set up), **Production** (build) and **Material I/O** (result). The results bar above them stays in view and shows profit per day, payback, profit per area, area and storage.
+The plan page is a grid of parts: Base's empire and prices, planet, workforce, infrastructure and experts; Production with the tools (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) as its tabs; Material I/O and its totals; and the five results (profit per day, payback, workforce, area with profit per area, storage). Each part uses the room it gets: wider, it shows more side by side instead of growing taller (experts two or three per line, workforce tiers next to each other). The layout is the same for all your plans.
 
-- **Base** holds the empire and prices, the planet (COGC program, permits, Corp HQ, planet resources), workforce with its luxuries, housing and experts. Each section folds; its summary line shows the setting at a glance.
-- **Tools** (Construction, Supply, Visits, Repair, Profit, Plan check, POPR) open in place of the production list. While a tool is open, Base folds to a strip at the left, and for Repair, Profit and Plan check Material I/O folds too. Click a strip to show the pane again; it stays open until you fold it.
-- On narrower screens (below 1360 px with the collapsed sidebar, 1544 px with the full one) Base opens from the "Base" button next to the tabs; on a tablet Material I/O opens from its button at the end of the tabs too. On a phone the tabs under the results switch between Production, Base, Material I/O and Tools, recipes are picked in a sheet from the bottom, and the save status with Save sits above the navigation bar.
+- **Layout menu** (in the header): **Today's** (results on top, Base on the left, Production with its tools, Material I/O on the right), **Wide** (Supply and Plan check next to Production) and **Stacked** (Base's parts side by side, Production full width below). Once you saved one, **Custom Layout** is there too. Presets never change; customising one starts from a copy.
+- **Customise**: pick "Customise, starting from …". The page shows its real content, not clickable, with a handle on each part's title bar.
+  - **Moving**: drag a title bar; a dashed box shows where it lands. Its top lines up with a part beside it (a yellow line says which). Drop it on another part's title bar to make it a tab there, or into the band at the top to keep it in view.
+  - **Sizing**: drag the right edge (width in columns), the bottom edge (height) or the corner. A badge shows the size; the bottom edge snaps to the bottom of a part beside it, to the height of another part and to its own content. Hold **Alt** to place freely. Parts never get smaller than they need (Production at least 540 px wide).
+  - **Height**: *Fit content* grows with the content; *Fit content, at most N px* shrinks and scrolls inside; *Fixed N px* keeps its height and scrolls. Dragging the bottom edge above the content makes it fixed, below it makes it "at most"; Taller and Shorter (40 px) do the same.
+  - **Keep in view while scrolling** puts a part into the band at the top, which sticks while you scroll as long as it takes at most 40 % of the window; a taller band scrolls with the page.
+  - **Tabs**: drag a part onto another's title bar, or pick that part under "Make it a tab of" in its ⋯ menu; the menu also takes a tab out again or splits all of them.
+  - **The ⋯ menu** of each part does everything a drag does: width, height, keep in view, move, tabs and hide. When something isn't possible it says why. On a title bar the arrow keys move a part, **Shift**+arrows resize it and **Enter** opens the menu.
+  - **Elements** (beside the page) lists every part and where it is; add a hidden one at the bottom, drag it onto the page, or **Show** one (switches to its tab and highlights it).
+  - **Columns** (4–24) and **gap**, the preview width (Full, 1600, 1440, 1280, 1024, Phone) and **Content**: *Everything open* shows all a part can hide (every workforce tier, every expert field, the habitation buttons), *As on the page* shows it as you left it.
+  - **Undo** (button, the message after each change, or Ctrl/⌘+Z), **Reset to Today's**, **Cancel** (asks when there are changes) and **Save**. Saving a preset's copy over your Custom Layout asks first.
+- **Folding**: the chevron on a part's title bar folds it to its title. Two or more folded parts side by side with open ones stack into a short column, and the open parts in that row take their room. Folded parts stay folded, whichever layout you use. A results tile or a "Plan check →" link opens and unfolds the part it points to; a hidden one opens in a dialog.
+- **Smaller screens**: when a part would be narrower than it needs, the parts are rearranged at that width (marked "auto" while customising); your layout stays as it is. On a phone every part is stacked in order, small ones two per row; layouts can be switched there, customising is for wider screens. Recipes are picked in a sheet from the bottom, and the save status with Save sits above the navigation bar.
+- For now the layout and what is folded are kept for this browser tab: they survive a reload and are gone in a new tab.
 
-**Results bar**
+**Results**
 
 - **Profit / day**: the value of the plan's output minus inputs, workforce consumables and building degradation, with revenue and cost below it. Construction includes the core module.
 - **Payback**: the build cost of the plan divided by its profit per day.

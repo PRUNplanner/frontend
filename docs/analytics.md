@@ -112,7 +112,7 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | change summary copied |
 | `plan:share_create` | | |
 | `plan:share_delete` | | |
-| `plan:tool_toggle` | `panel` (panel key, e.g. `construction-cart`) | a tool panel opened |
+| `plan:tool_toggle` | `panel` (panel key, e.g. `construction-cart`) | a tab of a plan grid item shown |
 | `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | |
 | `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (on a price change only) | Plan check view or price change switched |
 | `plan:plancheck_compare` | `same_planet` | Plan check compared with another plan |
@@ -123,11 +123,16 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:recipe_picker_open` | `mode` (`change`, `add`) | the pick itself is a `plan:edit` |
 | `plan:recipe_picker_undo` | | Undo after a picked recipe |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | |
-| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane folded or unfolded by hand |
-| `plan:overlay_open` | `panel` (`base`, `io`) | pane opened as an overlay on narrow pages |
-| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile clicked |
+| `plan:panel_fold` | `panel` (the item's first element id, e.g. `planet`), `folded` | a plan grid item folded or unfolded |
+| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results tile clicked |
 | `plan:workforce_unneeded_toggle` | `is_shown` | unneeded workforce tiers shown / hidden |
-| `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | phone switched section |
+| `plan:layout_preset` | `preset` (`today`, `wide`, `stacked`, `custom`) | a layout picked in the Layout menu |
+| `plan:layout_customise_open` | `from` (`preset`, `custom`) | customise mode opened |
+| `plan:layout_save` | `items`, `tabs`, `kept_in_view`, `hidden`, `cols`, `gap`, `replaced`, `store` (`session`) | Custom Layout saved |
+| `plan:layout_cancel` | `changes` | customise mode left without saving |
+| `plan:layout_item_move` | `element`, `how` (`drag`, `menu`, `keys`), `to` (`page`, `band`, `tabs`, `hidden`) | an item moved, made a tab or hidden |
+| `plan:layout_item_resize` | `element`, `how` (`drag`, `menu`, `keys`), `what` (`width`, `height`), `snapped` (`bottom`, `height`, `content`, null) | an item resized |
+| `plan:layout_undo` | `how` (`toast`, `button`, `keys`) | a layout change undone while customising |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | any of the three switched |
 | `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | typical-setup card shown, once per plan view |

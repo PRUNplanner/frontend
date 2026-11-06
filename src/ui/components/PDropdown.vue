@@ -16,8 +16,9 @@
 	// UI
 	import PIcon from "@/ui/components/PIcon.vue";
 	import PPopover from "@/ui/components/PPopover.vue";
+	import { CheckSharp } from "@vicons/material";
 
-	type Item = Exclude<PDropdownOption, { type: "divider" }>;
+	type Item = Exclude<PDropdownOption, { type: string }>;
 
 	const show = defineModel<boolean>("show", { default: false });
 
@@ -47,8 +48,9 @@
 	const items: ComputedRef<Item[]> = computed(() =>
 		options.filter((o): o is Item => !("type" in o))
 	);
+	// an icon or a check: the column for them
 	const withIcon: ComputedRef<boolean> = computed(() =>
-		items.value.some((i) => i.icon)
+		items.value.some((i) => i.icon || i.checked !== undefined)
 	);
 
 	let focusMenu = true;
@@ -70,9 +72,11 @@
 		focusMenu = true;
 	});
 
-	function select(key: string): void {
+	function select(item: Item): void {
+		// a disabled item says why in its hint and stays open
+		if (item.disabled) return;
 		show.value = false;
-		emit("select", key);
+		emit("select", item.key);
 	}
 
 	function onTriggerKeydown(e: KeyboardEvent): void {
@@ -98,7 +102,7 @@
 		} else if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
 			const item = items.value[active.value];
-			if (item) select(item.key);
+			if (item) select(item);
 		} else if (e.key === "Tab") show.value = false;
 	}
 
@@ -149,7 +153,7 @@
 			ref="menu"
 			role="menu"
 			tabindex="-1"
-			class="py-1 outline-none"
+			class="py-1 max-h-[calc(100dvh-2rem)] overflow-y-auto outline-none"
 			:aria-activedescendant="active >= 0 ? `${id}-${active}` : undefined"
 			@keydown="onMenuKeydown"
 			@mousedown.prevent
@@ -160,33 +164,57 @@
 			">
 			<template v-for="(o, i) in options" :key="'type' in o ? i : o.key">
 				<div
-					v-if="'type' in o"
+					v-if="'type' in o && o.type === 'divider'"
 					role="separator"
 					class="h-px my-1 bg-line-strong" />
 				<div
+					v-else-if="'type' in o"
+					role="presentation"
+					class="px-3.5 pt-2 pb-1 text-xs font-medium text-muted-strong whitespace-nowrap">
+					{{ o.label }}
+				</div>
+				<div
 					v-else
 					:id="`${id}-${items.indexOf(o)}`"
-					role="menuitem"
-					class="touch-target flex cursor-pointer leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-control"
+					:role="
+						o.checked === undefined
+							? 'menuitem'
+							: 'menuitemcheckbox'
+					"
+					:aria-checked="
+						o.checked === undefined ? undefined : o.checked
+					"
+					:aria-disabled="o.disabled || undefined"
+					class="touch-target flex leading-[34px] before:absolute before:inset-y-0 before:inset-x-1 before:rounded-control"
 					:class="[
 						o.hint ? '' : 'h-[34px]',
-						o.danger ? 'text-negative' : 'text-ink',
+						o.disabled
+							? 'text-muted cursor-default'
+							: o.danger
+								? 'text-negative cursor-pointer'
+								: 'text-ink cursor-pointer',
 						active === items.indexOf(o) ? 'before:bg-hover' : '',
 					]"
 					@mouseenter="active = items.indexOf(o)"
-					@click="select(o.key)">
+					@click="select(o)">
 					<span
 						class="relative flex justify-center shrink-0"
 						:class="withIcon ? 'w-9' : 'w-3.5'">
 						<span v-if="o.icon" class="flex items-center h-[34px]">
 							<PIcon><component :is="o.icon" /></PIcon>
 						</span>
+						<span
+							v-else-if="o.checked"
+							class="flex items-center h-[34px]"
+							aria-hidden="true">
+							<PIcon><CheckSharp /></PIcon>
+						</span>
 					</span>
 					<span
 						v-if="o.hint"
 						class="relative flex-1 flex flex-col pb-2">
 						<span class="whitespace-nowrap">{{ o.label }}</span>
-						<span class="text-xs leading-4 text-muted">
+						<span class="max-w-72 text-xs leading-4 text-muted">
 							{{ o.hint }}
 						</span>
 					</span>

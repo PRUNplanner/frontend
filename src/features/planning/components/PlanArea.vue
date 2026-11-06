@@ -40,7 +40,8 @@
 </script>
 
 <template>
-	<div class="flex items-center justify-between gap-3 text-sm tabular-nums">
+	<div
+		class="flex items-center justify-between gap-3 text-sm tabular-nums @max-[319px]:flex-col @max-[319px]:items-start">
 		<span>
 			{{ t("plan.components.area.permits") }}
 			<span class="text-xs text-muted">

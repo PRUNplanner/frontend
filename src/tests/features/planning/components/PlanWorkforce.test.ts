@@ -319,4 +319,17 @@ describe("PlanWorkforce", () => {
 			).toEqual(Array(6).fill(disabled));
 		}
 	);
+
+	it("shows every tier while customising (showAll), without the toggle", async () => {
+		const { wrapper } = await mountWorkforce({ showAll: true });
+		expect(names(wrapper)).toHaveLength(5);
+		expect(wrapper.find("[data-unneeded-toggle]").exists()).toBe(false);
+	});
+
+	it("puts tiers side by side when wider, not taller", async () => {
+		const { wrapper } = await mountWorkforce();
+		expect(wrapper.find("div").classes()).toContain(
+			"grid-cols-[repeat(auto-fill,minmax(min(240px,100%),1fr))]"
+		);
+	});
 });

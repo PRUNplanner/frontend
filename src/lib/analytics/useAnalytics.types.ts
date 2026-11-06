@@ -1,4 +1,9 @@
 import type { ResultTile } from "@/features/planning/planView.util";
+import type { ElementId } from "@/features/planning/layout/planLayout.types";
+import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
+
+// how a layout change was made: dragged, from the ⋯ menu or the keyboard
+type LayoutHow = "drag" | "menu" | "keys";
 import type { HomepageTourName } from "@/features/homepage/homepageTour.types";
 import type {
 	NavArea,
@@ -286,13 +291,38 @@ export interface IAnalyticsEventProperties {
 	};
 	"plan:recipe_picker_open": { mode: "change" | "add" };
 	"plan:recipe_picker_undo": undefined;
-	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
-	"plan:overlay_open": { panel: "base" | "io" };
-	// a results bar tile clicked, opening where its figure comes from
+	// an item of the plan grid folded or unfolded, by its first element
+	"plan:panel_fold": { panel: ElementId; folded: boolean };
+	// a results tile clicked, opening where its figure comes from
 	"plan:result_tile_open": { tile: ResultTile };
 	// the tiers the plan needs no workers of shown or hidden in Base
 	"plan:workforce_unneeded_toggle": { is_shown: boolean };
-	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
+	// the plan layout picked from the Layout menu
+	"plan:layout_preset": { preset: LayoutChoice };
+	"plan:layout_customise_open": { from: "preset" | "custom" };
+	"plan:layout_save": {
+		items: number;
+		tabs: number;
+		kept_in_view: number;
+		hidden: number;
+		cols: number;
+		gap: number;
+		replaced: boolean;
+		store: "session";
+	};
+	"plan:layout_cancel": { changes: number };
+	"plan:layout_item_move": {
+		element: ElementId;
+		how: LayoutHow;
+		to: "page" | "band" | "tabs" | "hidden";
+	};
+	"plan:layout_item_resize": {
+		element: ElementId;
+		how: LayoutHow;
+		what: "width" | "height";
+		snapped: "bottom" | "height" | "content" | null;
+	};
+	"plan:layout_undo": { how: "toast" | "button" | "keys" };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";
 		filter: "all" | "exports" | "imports";

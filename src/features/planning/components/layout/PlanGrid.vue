@@ -1,0 +1,224 @@
+<script setup lang="ts">
+	import {
+		computed,
+		onBeforeUnmount,
+		onMounted,
+		provide,
+		ref,
+		shallowRef,
+		useTemplateRef,
+	} from "vue";
+
+	// Types & Interfaces
+	import type {
+		ElementId,
+		GridItem,
+		GridLayout,
+		IPackResult,
+	} from "@/features/planning/layout/planLayout.types";
+
+	// Util
+	import {
+		packLayout,
+		isFolded,
+	} from "@/features/planning/layout/packLayout";
+	import { gridMeasureKey } from "@/features/planning/layout/planGrid.util";
+	import { BAND_STICKY_SHARE } from "@/features/planning/layout/planLayout.constants";
+
+	// Components
+	import PlanGridItem from "@/features/planning/components/layout/PlanGridItem.vue";
+
+	/**
+	 * The plan page's grid: the kept-in-view band (sticky while it is at
+	 * most 40 % of the window high) above the page, every item placed by
+	 * packLayout from its measured content
+	 *
+	 * @author jplacht
+	 */
+	const {
+		layout,
+		folded,
+		tabs = {},
+		width = undefined,
+		editing = false,
+	} = defineProps<{
+		layout: GridLayout;
+		folded: ElementId[];
+		// the tab each item shows, when it isn't the stored one
+		tabs?: Record<string, ElementId>;
+		// a preview width instead of the page's
+		width?: number;
+		editing?: boolean;
+	}>();
+
+	const emit = defineEmits<{
+		(e: "fold", el: ElementId, value: boolean): void;
+		(e: "tab", item: string, el: ElementId): void;
+	}>();
+
+	defineSlots<{
+		// the editor's handles over an item
+		item(props: { item: GridItem }): unknown;
+		// the editor's guides and drop boxes in a region
+		region(props: { region: "band" | "page"; pack: IPackResult }): unknown;
+	}>();
+
+	/*
+	 * Measuring: the grid's width, and each item's natural content height,
+	 * from one ResizeObserver; updates land once per animation frame
+	 */
+	const root = useTemplateRef<HTMLElement>("root");
+	const pageWidth = ref(0);
+	const content = shallowRef<Record<string, number>>({});
+	const viewportHeight = ref(
+		typeof window === "undefined" ? 900 : window.innerHeight
+	);
+
+	const owners = new Map<Element, string>();
+	const parts = new Map<string, HTMLElement[]>();
+	let dirty = new Set<string>();
+	let frame = 0;
+
+	function flush(): void {
+		frame = 0;
+		const next = { ...content.value };
+		let changed = false;
+		for (const id of dirty) {
+			const els = parts.get(id);
+			if (!els) continue;
+			const h = els.reduce((s, e) => s + e.offsetHeight, 0);
+			// folded or hidden: keep the last height
+			if (h <= 0) continue;
+			const total = Math.ceil(h + 2);
+			if (Math.abs((next[id] ?? 0) - total) > 1) {
+				next[id] = total;
+				changed = true;
+			}
+		}
+		dirty = new Set();
+		if (root.value) pageWidth.value = root.value.clientWidth;
+		if (changed) content.value = next;
+	}
+	function schedule(): void {
+		if (!frame) frame = requestAnimationFrame(flush);
+	}
+
+	const observer =
+		typeof ResizeObserver === "undefined"
+			? undefined
+			: new ResizeObserver((entries) => {
+					for (const e of entries) {
+						const id = owners.get(e.target);
+						if (id) dirty.add(id);
+					}
+					schedule();
+				});
+
+	provide(gridMeasureKey, (id, els) => {
+		parts.set(id, els);
+		for (const el of els) {
+			owners.set(el, id);
+			observer?.observe(el);
+		}
+		dirty.add(id);
+		schedule();
+		return () => {
+			for (const el of els) {
+				owners.delete(el);
+				observer?.unobserve(el);
+			}
+			if (parts.get(id) === els) parts.delete(id);
+		};
+	});
+
+	const onResize = () => {
+		viewportHeight.value = window.innerHeight;
+		schedule();
+	};
+	onMounted(() => {
+		if (root.value) {
+			pageWidth.value = root.value.clientWidth;
+			observer?.observe(root.value);
+		}
+		window.addEventListener("resize", onResize);
+	});
+	onBeforeUnmount(() => {
+		observer?.disconnect();
+		window.removeEventListener("resize", onResize);
+		if (frame) cancelAnimationFrame(frame);
+	});
+
+	const gridWidth = computed(() => width ?? (pageWidth.value || 1280));
+	const foldedSet = computed(() => new Set(folded));
+	const pack = computed(() =>
+		packLayout(layout, gridWidth.value, content.value, folded)
+	);
+	const band = computed(() => layout.items.filter((i) => i.pin));
+	const page = computed(() => layout.items.filter((i) => !i.pin));
+	// a band taller than 40 % of the window scrolls with the page
+	const sticky = computed(
+		() => pack.value.band.height <= viewportHeight.value * BAND_STICKY_SHARE
+	);
+
+	// a tab picked on the page, while the item still has it (a layout
+	// switched or saved since may have moved it elsewhere)
+	const shownTab = (it: GridItem): ElementId =>
+		tabs[it.id] && it.els.includes(tabs[it.id]) ? tabs[it.id] : it.active;
+
+	defineExpose({ pack, gridWidth, sticky, content });
+</script>
+
+<template>
+	<div
+		ref="root"
+		:style="width ? { width: `${width}px` } : undefined"
+		data-plan-grid>
+		<div
+			v-if="band.length"
+			class="z-900 bg-(--app-bg)"
+			:class="sticky ? 'sticky top-0' : ''"
+			:style="{ paddingBottom: `${layout.gap}px` }"
+			data-region="band"
+			:data-sticky="sticky || undefined">
+			<div
+				class="relative"
+				:style="{ height: `${pack.band.height}px` }"
+				data-grid="band">
+				<slot name="region" region="band" :pack="pack" />
+				<PlanGridItem
+					v-for="it in band"
+					:key="it.id"
+					:item="it"
+					:pos="pack.items[it.id]"
+					:active="shownTab(it)"
+					:folded="isFolded(it, foldedSet)"
+					:editing="editing"
+					@fold="(v: boolean) => emit('fold', it.els[0], v)"
+					@tab="(el: ElementId) => emit('tab', it.id, el)">
+					<template #overlay
+						><slot name="item" :item="it"
+					/></template>
+				</PlanGridItem>
+			</div>
+		</div>
+		<div
+			class="relative"
+			:style="{ height: `${pack.page.height}px` }"
+			data-region="page"
+			data-grid="page">
+			<slot name="region" region="page" :pack="pack" />
+			<PlanGridItem
+				v-for="it in page"
+				:key="it.id"
+				:item="it"
+				:pos="pack.items[it.id]"
+				:active="shownTab(it)"
+				:folded="isFolded(it, foldedSet)"
+				:editing="editing"
+				@fold="(v: boolean) => emit('fold', it.els[0], v)"
+				@tab="(el: ElementId) => emit('tab', it.id, el)">
+				<template #overlay><slot name="item" :item="it" /></template>
+			</PlanGridItem>
+		</div>
+	</div>
+</template>

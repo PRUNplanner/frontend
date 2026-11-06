@@ -25,8 +25,9 @@ the folder layout and the editor.
 | `usePlanSave.ts` | Save, Make active, Save as, discard, Reload saved (`reloadPlan`), save conflicts, other tabs' changes, leave guard; owns the save version (`modified_at`) |
 | `usePlanDraft.ts` | Backend autosave draft: debounced PUT, keepalive flush on page hide, DELETE on undo-to-saved, discard or reload; a draft found on open is only offered (`restore`), the next write replaces it; one write queue per tab shared with saves; another tab's draft (409) stops autosaving and asks |
 | `usePlanVersions.ts`, `usePlanVersionPreview.ts`, `planVersions.util.ts` | Saved versions and the read-only preview of an older one |
-| `usePlanEdits.ts`, `usePlanSharedCopy.ts`, `usePlanLayout.ts`, `usePlanIO.ts`, `usePlanShortcuts.ts`, `usePlanCheckView.ts` | Page composables: edit feedback (undo toasts, starter setup, hab auto-optimise), shared-plan working copy, tool tabs and pane folding, Material I/O pane, keyboard shortcuts, Plan check view |
-| `planView.util.ts` / `.types.ts`, `recipePicker.util.ts` | `PlanTool` keys, `foldedPanes`, Material I/O totals/CSV, page types; recipe picker ordering |
+| `usePlanEdits.ts`, `usePlanSharedCopy.ts`, `usePlanIO.ts`, `usePlanShortcuts.ts`, `usePlanCheckView.ts`, `usePlanView.ts` | Page composables: edit feedback (undo toasts, starter setup, hab auto-optimise), shared-plan working copy, Material I/O, keyboard shortcuts, Plan check view; `providePlanView` / `usePlanView` hand the page's state to the elements |
+| `layout/*.ts` | The plan grid, pure and Vue-free except the `use*` files: element registry with minimum sizes (`elements.ts`), presets, `normaliseLayout`, `packLayout` (skyline packing, kept-in-view band, automatic reflow, phone stacking), `layoutOps` (every customise change, with its announcement), `snapping`, the tab's `sessionLayoutStore` (`planLayout.schemas.ts`), `usePlanLayoutPreference`, `usePlanGrid` (tabs, folding, `focusElement`), `usePlanLayoutEditor` (customise mode) |
+| `planView.util.ts` / `.types.ts`, `recipePicker.util.ts` | `PlanTool` keys, Material I/O totals/CSV, page types; recipe picker ordering |
 | `useMaterialIOUtil.ts` | Material I/O enrichment; also combines empire I/O |
 | `calculations/*.ts` | Infrastructure, extraction, hab LP optimisation (the `.types.ts` there are engine types) |
 | `util/whatIf.util.ts`, `util/profitBreakdown.util.ts` | Plan check maths; profit waterfall |
@@ -36,12 +37,17 @@ the folder layout and the editor.
 
 - `PlanView.vue` is a thin page: it owns the plan ref, empire, CX and
   `usePlanCalculation`, and composes the `usePlan*` composables above.
-- Panes: sticky `PlanResultsBar`, then `PlanBase` (`PlanConfiguration`,
-  `PlanBonuses`, `PlanArea`, `PlanWorkforce`, `PlanInfrastructure`,
-  `PlanExperts`), `PlanProduction` (→ `PlanProductionBuilding` →
-  `PlanProductionRecipe`, inline `PlanRecipePicker`) and `PlanMaterialIO`.
-  `PlanToolTabs` swaps a tool in place of `PlanProduction`; tools load inside
-  `Suspense` with `PlanToolFallback`.
+- The page is a grid (`components/layout/PlanGrid.vue`, `PlanGridItem.vue`)
+  of elements (`components/elements/`): `PlanKpiElement` (one results
+  tile), `PlanBaseElement` (`PlanConfiguration`, `PlanBonuses` + `PlanArea`,
+  `PlanWorkforce`, `PlanInfrastructure` or `PlanExperts`),
+  `PlanProductionElement` (`PlanProduction` → `PlanProductionBuilding` →
+  `PlanProductionRecipe`, inline `PlanRecipePicker`), `PlanToolElement` (a
+  tool, loaded inside `Suspense` with `PlanToolFallback`),
+  `PlanMaterialIOElement` and `PlanMaterialIOTotalsElement`. Elements take
+  no props: they read `usePlanView()`, and lay out for their own width with
+  container queries. A tab group uses `PlanToolTabs`. `PlanLayoutMenu` picks
+  the layout, `PlanLayoutEditor` (+ `PlanLayoutElementsPanel`) customises it.
 - Header: `PlanSaveControl` (undo, redo, save status → `PlanVersionsPopover`,
   Save → `PlanSavePopover`), `PlanMoreMenu` (CSV, Debug),
   `PlanVersionPreviewBanner`.
@@ -58,9 +64,9 @@ the folder layout and the editor.
 
 ## Gotchas
 
-- **Panels don't compute anything.** They receive `result` slices as props
-  and emit events; `PlanView` routes them to `handle*`. Components never
-  write into `result`.
+- **Elements don't compute anything.** They read `result` slices from
+  `usePlanView()` and call its `handle*`. Components never write into
+  `result`.
 - **Put new math in `engine/`** as exported plain functions with tests in
   `src/tests/features/planning/engine/`.
 - **`disabled` means read-only**: panels hide edit-only controls (add
@@ -68,7 +74,7 @@ the folder layout and the editor.
   inputs stay, disabled.
 - **A shared plan is the viewer's working copy**, never saved over the
   owner's ([sharing.md](sharing.md)). Optional props compare it with the
-  shared version (`compare` on `PlanResultsBar`, `changes` on
+  shared version (`SharedPlanDeltas` above the grid, `changes` on
   `PlanProduction`).
 - **One recipe picker at a time** (`PlanProduction` holds which); a pick
   commits at once with an Undo status line; read-only plans don't open it.
