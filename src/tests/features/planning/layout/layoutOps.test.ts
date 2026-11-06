@@ -430,6 +430,21 @@ describe("layoutOps", () => {
 				).toBe("nothing");
 		});
 
+		it("opens an element that hides parts, and closes it again", () => {
+			const g = today();
+			const on = ops.toggleOpen(g, "workforce", ctx());
+			expect(on.layout.open).toEqual(["workforce"]);
+			expect(ann(on)).toBe("open");
+			const off = ops.toggleOpen(on.layout, "workforce", ctx());
+			expect(off.layout.open).toBeUndefined();
+			expect(ann(off)).toBe("closed");
+			expect(ann(ops.toggleOpen(g, "production", ctx()))).toBe("nothing");
+			// kept by the other ops
+			expect(
+				ops.moveX(on.layout, "i-planet", 1, ctx()).layout.open
+			).toEqual(["workforce"]);
+		});
+
 		it("moves the shown tab when it is taken out", () => {
 			const g = ops.setActive(
 				today(),

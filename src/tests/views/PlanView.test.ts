@@ -440,8 +440,9 @@ describe("PlanView", () => {
 				"i-kpi-area",
 				"i-kpi-storage",
 			]);
-			// a short band sticks while scrolling
-			expect(band.attributes("data-sticky")).toBe("true");
+			// a short band sticks while scrolling, whole
+			expect(band.classes()).toContain("sticky");
+			expect(band.attributes("data-capped")).toBeUndefined();
 			for (const id of [
 				"empire",
 				"planet",
@@ -543,14 +544,24 @@ describe("PlanView", () => {
 					from: "preset",
 				}
 			);
-			// every tier while customising
-			expect(wrapper.findComponent(PlanWorkforce).props("showAll")).toBe(
-				true
-			);
 			// not offered twice
 			expect(
 				wrapper.findComponent(PlanLayoutMenu).props("canCustomise")
 			).toBe(false);
+			// Everything open is the layout's: off, switched on while
+			// customising, kept on the page once saved
+			const showAll = () =>
+				wrapper.findComponent(PlanWorkforce).props("showAll");
+			expect(showAll()).toBe(false);
+			await wrapper
+				.find("[data-item='i-workforce'] [data-content-toggle]")
+				.trigger("click");
+			await flushPromises();
+			expect(showAll()).toBe(true);
+			await wrapper.find("[data-save]").trigger("click");
+			await flushPromises();
+			expect(wrapper.find("[data-layout-editor]").exists()).toBe(false);
+			expect(showAll()).toBe(true);
 		});
 	});
 

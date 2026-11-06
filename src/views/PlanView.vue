@@ -342,10 +342,8 @@
 	// The layout: a preset or Custom Layout, kept for this tab
 	const layoutPref = usePlanLayoutPreference();
 	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
-	// customise mode, and the elements it shows as on the page (the rest
-	// show all they can hide)
+	// customise mode
 	const refEditingLayout: Ref<boolean> = ref(false);
-	const refAsOnPage: Ref<ElementId[]> = ref([]);
 	const refEditor = useTemplateRef<{ undo: (how: "keys") => void }>("editor");
 
 	function pickLayout(choice: LayoutChoice): void {
@@ -495,8 +493,9 @@
 		focusElement: grid.focusElement,
 		layoutEditing: {
 			active: refEditingLayout,
-			showAll: (el: ElementId) =>
-				refEditingLayout.value && !refAsOnPage.value.includes(el),
+			// the layout's choice; customising, the editor's draft (it
+			// provides its own)
+			showAll: (el: ElementId) => !!grid.layout.value.open?.includes(el),
 		},
 	});
 
@@ -656,7 +655,6 @@
 			<PlanLayoutEditor
 				v-if="refEditingLayout"
 				ref="editor"
-				v-model:as-on-page="refAsOnPage"
 				:pref="layoutPref"
 				:logged-in="userStore.isLoggedIn"
 				@close="refEditingLayout = false" />

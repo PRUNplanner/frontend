@@ -43,6 +43,8 @@ export interface GridLayout {
 	cols: number;
 	gap: number;
 	items: GridItem[];
+	// elements that show all they can hide (tiers, fields, buttons)
+	open?: ElementId[];
 }
 
 /** Where an item lands, in px from its region's top left */

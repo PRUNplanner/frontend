@@ -137,6 +137,18 @@ describe("normaliseLayout", () => {
 		expect(out.items[0].pin).toBe(false);
 	});
 
+	it("keeps the elements shown everything open that can be, once", () => {
+		const out = normaliseLayout({
+			items: [prod],
+			open: ["workforce", "workforce", "production", "nope", "experts"],
+		});
+		expect(out.open).toEqual(["workforce", "experts"]);
+		expect(
+			normaliseLayout({ items: [prod], open: "x" })
+		).not.toHaveProperty("open");
+		expect(normaliseLayout(out)).toEqual(out);
+	});
+
 	it("keeps at most 40 element ids", () => {
 		// the registry has fewer, so all of them survive
 		const items = presetLayout("today").items;

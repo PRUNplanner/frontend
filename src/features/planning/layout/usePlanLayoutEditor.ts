@@ -44,6 +44,8 @@ export const PREVIEW_WIDTHS = [0, 1600, 1440, 1280, 1024, 390] as const;
 export const PHONE_PREVIEW = 390;
 // a pointer moves this far before a press becomes a drag
 const DRAG_START = 6;
+// changes that get a toast with Undo (their announcement keys)
+const TOASTED = new Set(["hidden", "tab", "taken_out", "split", "reset"]);
 
 type How = "drag" | "menu" | "keys";
 type Region = "band" | "page";
@@ -119,6 +121,13 @@ export function usePlanLayoutEditor(
 	const refConfirmReplace: Ref<boolean> = ref(false);
 	const refAnnounce: Ref<string> = ref("");
 	const refMenu: Ref<string | null> = ref(null);
+	// the ⋯ menu's page, while its menu is open
+	const refMenuPage: Ref<"tabs" | null> = ref(null);
+	/** Opens an item's ⋯ menu on its first page, or closes it (null) */
+	function setMenu(id: string | null): void {
+		if (id && id !== refMenu.value) refMenuPage.value = null;
+		refMenu.value = id;
+	}
 	const refFlash: Ref<string | null> = ref(null);
 	const drag = shallowRef<IEditorDrag | null>(null);
 	const resize = shallowRef<IEditorResize | null>(null);
@@ -177,13 +186,17 @@ export function usePlanLayoutEditor(
 			.join(" · ");
 		announce(text);
 		lastToast?.destroy();
-		lastToast = toast(text, {
-			action: {
-				label: t("plan.layout.undo"),
-				onClick: () => undo("toast"),
-			},
-			duration: 10000,
-		});
+		lastToast = undefined;
+		// a toast only when an element leaves the page or its group; the
+		// rest shows on the grid, and Undo is in the bar
+		if (TOASTED.has(change.announcement.key.split(".").pop()!))
+			lastToast = toast(text, {
+				action: {
+					label: t("plan.layout.undo"),
+					onClick: () => undo("toast"),
+				},
+				duration: 5000,
+			});
 		refMenu.value = null;
 		focusHandle(focus);
 		return true;
@@ -304,6 +317,9 @@ export function usePlanLayoutEditor(
 	function setGap(gap: number): void {
 		apply(ops.setGap(draft.value, gap, ctx()));
 	}
+	function toggleOpen(el: ElementId): void {
+		apply(ops.toggleOpen(draft.value, el, ctx()));
+	}
 	function setTab(id: string, el: ElementId): void {
 		// switching a tab is no change worth an undo, but it is saved
 		colsFrom = null;
@@ -342,7 +358,7 @@ export function usePlanLayoutEditor(
 		const it = itemOf(id)!;
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
-			refMenu.value = id;
+			setMenu(id);
 			return;
 		}
 		if (phone.value || !e.key.startsWith("Arrow")) return;
@@ -471,6 +487,38 @@ export function usePlanLayoutEditor(
 			},
 			{ type: "divider" },
 		];
+		// tabs on a page of their own: a group's list, or every item to join
+		if (refMenuPage.value === "tabs" && refMenu.value === id)
+			return tabPage(it);
+		opts.push({
+			key: "page:tabs",
+			label:
+				it.els.length > 1
+					? t("plan.layout.tabs_more", { n: it.els.length })
+					: t("plan.layout.make_tab_more"),
+		});
+		opts.push({ type: "divider" });
+		const hideEl = it.els.length > 1 ? it.active : it.els[0];
+		const blocked = ops.hideBlocked(hideEl);
+		opts.push({
+			key: "hide",
+			label:
+				it.els.length > 1
+					? t("plan.layout.hide_tab", { name: label(hideEl) })
+					: t("plan.layout.hide"),
+			disabled: !!blocked,
+			hint: blocked ? t(blocked) : undefined,
+		});
+		return opts;
+	}
+
+	/** The ⋯ menu's tabs page: Back, then take out and split, or join */
+	function tabPage(it: GridItem): PDropdownOption[] {
+		const g = draft.value;
+		const opts: PDropdownOption[] = [
+			{ key: "page:main", label: t("plan.layout.menu_back") },
+			{ type: "divider" },
+		];
 		if (it.els.length > 1) {
 			opts.push({ type: "group", label: t("plan.layout.tabs") });
 			for (const el of it.els)
@@ -493,23 +541,17 @@ export function usePlanLayoutEditor(
 					label: title(o.els),
 				});
 		}
-		opts.push({ type: "divider" });
-		const hideEl = it.els.length > 1 ? it.active : it.els[0];
-		const blocked = ops.hideBlocked(hideEl);
-		opts.push({
-			key: "hide",
-			label:
-				it.els.length > 1
-					? t("plan.layout.hide_tab", { name: label(hideEl) })
-					: t("plan.layout.hide"),
-			disabled: !!blocked,
-			hint: blocked ? t(blocked) : undefined,
-		});
 		return opts;
 	}
 
 	function onMenu(id: string, key: string): void {
 		const it = itemOf(id)!;
+		// a page switch keeps the menu open
+		if (key.startsWith("page:")) {
+			refMenuPage.value = key === "page:tabs" ? "tabs" : null;
+			refMenu.value = id;
+			return;
+		}
 		if (key === "narrower") setWidth(id, it.w - 1, "menu");
 		else if (key === "wider") setWidth(id, it.w + 1, "menu");
 		else if (key === "full") fullWidth(id);
@@ -979,10 +1021,12 @@ export function usePlanLayoutEditor(
 		setCols,
 		setGap,
 		setTab,
+		toggleOpen,
 		reset,
 		onHandleKey,
 		menuOptions,
 		onMenu,
+		setMenu,
 		startMove,
 		startResize,
 		snapText,

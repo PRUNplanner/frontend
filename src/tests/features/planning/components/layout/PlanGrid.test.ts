@@ -88,24 +88,24 @@ describe("PlanGrid", () => {
 		}
 	});
 
-	it("keeps the band in view while it takes at most 40 % of the window", async () => {
+	it("keeps the band in view, cut at 40 % of the window and scrolling inside", async () => {
 		vi.stubGlobal("innerHeight", 1000);
 		// unmeasured items are 180 px: one row of results tiles
 		const { wrapper } = await mountGrid();
-		expect(
-			wrapper.find("[data-region='band']").attributes("data-sticky")
-		).toBe("true");
-		expect(wrapper.find("[data-region='band']").classes()).toContain(
-			"sticky"
-		);
+		const band = () => wrapper.find("[data-region='band']");
+		const scroll = () => wrapper.find("[data-band-scroll]");
+		expect(band().classes()).toContain("sticky");
+		expect(band().attributes("data-capped")).toBeUndefined();
+		expect(scroll().attributes("style")).toBeUndefined();
 
-		// a short window: the band scrolls with the page
+		// a short window: still in view, cut at 160 px, scrolling inside
 		vi.stubGlobal("innerHeight", 400);
 		window.dispatchEvent(new Event("resize"));
 		await flushPromises();
-		expect(
-			wrapper.find("[data-region='band']").attributes("data-sticky")
-		).toBeUndefined();
+		expect(band().classes()).toContain("sticky");
+		expect(band().attributes("data-capped")).toBe("true");
+		expect(scroll().attributes("style")).toContain("max-height: 160px");
+		expect(scroll().classes()).toContain("overflow-y-auto");
 	});
 
 	it("has no band without items kept in view", async () => {

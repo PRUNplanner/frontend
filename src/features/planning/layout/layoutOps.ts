@@ -20,6 +20,7 @@ import {
 	ELEMENTS,
 	minColsOf,
 	minHeightOf,
+	OPENABLE,
 } from "@/features/planning/layout/elements";
 import {
 	cloneLayout,
@@ -526,6 +527,21 @@ export const setGap = (
 	const g = settle(layout, ctx);
 	g.gap = gap;
 	return done(g, "gap", { n: gap });
+};
+
+/** Everything open (all tiers, fields, buttons) or as usual, for an element */
+export const toggleOpen = (
+	layout: GridLayout,
+	el: ElementId,
+	ctx: ILayoutOpsContext
+): ILayoutChange => {
+	const g = settle(layout, ctx);
+	if (!OPENABLE.includes(el)) return done(g, "nothing");
+	const open = g.open ?? [];
+	const on = !open.includes(el);
+	g.open = on ? [...open, el] : open.filter((e) => e !== el);
+	if (!g.open.length) delete g.open;
+	return done(g, on ? "open" : "closed", { el: ctx.label(el) });
 };
 
 /** The tab an item shows */

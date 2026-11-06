@@ -14,6 +14,7 @@ export const PHONE_WIDTH = 760;
 export const UNMEASURED_HEIGHT = 180;
 // height of a folded item: its title row (44 px on touch) and its border
 export const FOLDED_HEIGHT = 46;
-// the band is sticky only up to this share of the viewport
+// the band takes at most this share of the viewport; taller, it scrolls
+// inside
 export const BAND_STICKY_SHARE = 0.4;
 export const STORAGE_KEY = "prunplanner:planLayout:v1";

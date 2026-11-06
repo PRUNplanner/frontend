@@ -124,7 +124,8 @@
 			ref="head"
 			class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pr-1"
 			:class="[
-				folded ? 'flex-1' : 'border-b border-line',
+				// folded or open, the row stays put: no jump of the title
+				folded ? 'border-b border-transparent' : 'border-b border-line',
 				editing ? 'pl-1 cursor-grab touch-none' : 'pl-3',
 			]"
 			:data-item-head="editing ? item.id : undefined">

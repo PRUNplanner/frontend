@@ -29,9 +29,9 @@
 	import PlanGridItem from "@/features/planning/components/layout/PlanGridItem.vue";
 
 	/**
-	 * The plan page's grid: the kept-in-view band (sticky while it is at
-	 * most 40 % of the window high) above the page, every item placed by
-	 * packLayout from its measured content
+	 * The plan page's grid: the kept-in-view band (sticky, at most 40 % of
+	 * the window high; taller, it scrolls inside) above the page, every item
+	 * placed by packLayout from its measured content
 	 *
 	 * @author jplacht
 	 */
@@ -158,17 +158,18 @@
 	);
 	const band = computed(() => layout.items.filter((i) => i.pin));
 	const page = computed(() => layout.items.filter((i) => !i.pin));
-	// a band taller than 40 % of the window scrolls with the page
-	const sticky = computed(
-		() => pack.value.band.height <= viewportHeight.value * BAND_STICKY_SHARE
+	// a band taller than 40 % of the window is cut there and scrolls inside
+	const bandMax = computed(() =>
+		Math.floor(viewportHeight.value * BAND_STICKY_SHARE)
 	);
+	const capped = computed(() => pack.value.band.height > bandMax.value);
 
 	// a tab picked on the page, while the item still has it (a layout
 	// switched or saved since may have moved it elsewhere)
 	const shownTab = (it: GridItem): ElementId =>
 		tabs[it.id] && it.els.includes(tabs[it.id]) ? tabs[it.id] : it.active;
 
-	defineExpose({ pack, gridWidth, sticky, content });
+	defineExpose({ pack, gridWidth, capped, content });
 </script>
 
 <template>
@@ -178,34 +179,45 @@
 		data-plan-grid>
 		<div
 			v-if="band.length"
-			class="z-900 bg-(--app-bg)"
-			:class="sticky ? 'sticky top-0' : ''"
+			class="sticky top-0 z-900 bg-(--app-bg)"
 			:style="{ paddingBottom: `${layout.gap}px` }"
 			data-region="band"
-			:data-sticky="sticky || undefined">
+			:data-capped="capped || undefined">
+			<!-- cut: scrolls inside, fading out at the bottom -->
 			<div
-				class="relative"
-				:style="{ height: `${pack.band.height}px` }"
-				data-grid="band">
-				<slot name="region" region="band" :pack="pack" />
-				<PlanGridItem
-					v-for="it in band"
-					:key="it.id"
-					:item="it"
-					:pos="pack.items[it.id]"
-					:active="shownTab(it)"
-					:folded="isFolded(it, foldedSet)"
-					:editing="editing"
-					@fold="(v: boolean) => emit('fold', it.els[0], v)"
-					@tab="(el: ElementId) => emit('tab', it.id, el)">
-					<template #lead><slot name="lead" :item="it" /></template>
-					<template #actions
-						><slot name="actions" :item="it"
-					/></template>
-					<template #overlay
-						><slot name="item" :item="it"
-					/></template>
-				</PlanGridItem>
+				:class="
+					capped
+						? 'overflow-y-auto overscroll-contain [mask-image:linear-gradient(to_bottom,#000_calc(100%-1.5rem),transparent)]'
+						: ''
+				"
+				:style="capped ? { maxHeight: `${bandMax}px` } : undefined"
+				data-band-scroll>
+				<div
+					class="relative"
+					:style="{ height: `${pack.band.height}px` }"
+					data-grid="band">
+					<slot name="region" region="band" :pack="pack" />
+					<PlanGridItem
+						v-for="it in band"
+						:key="it.id"
+						:item="it"
+						:pos="pack.items[it.id]"
+						:active="shownTab(it)"
+						:folded="isFolded(it, foldedSet)"
+						:editing="editing"
+						@fold="(v: boolean) => emit('fold', it.els[0], v)"
+						@tab="(el: ElementId) => emit('tab', it.id, el)">
+						<template #lead
+							><slot name="lead" :item="it"
+						/></template>
+						<template #actions
+							><slot name="actions" :item="it"
+						/></template>
+						<template #overlay
+							><slot name="item" :item="it"
+						/></template>
+					</PlanGridItem>
+				</div>
 			</div>
 		</div>
 		<div

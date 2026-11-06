@@ -193,10 +193,8 @@ describe("PlanLayoutEditor", () => {
 			await key(m, "material-io", "ArrowLeft");
 			expect(draft(m, "material-io").x).toBe(8);
 			expect(announce(m)).toBe("Material I/O: column 9");
-			expect(mocks.toast).toHaveBeenLastCalledWith(
-				"Material I/O: column 9",
-				expect.objectContaining({ duration: 10000 })
-			);
+			// a move shows on the grid: no toast
+			expect(mocks.toast).not.toHaveBeenCalled();
 			expect(document.activeElement).toBe(
 				handle(m, "material-io").element
 			);
@@ -279,12 +277,21 @@ describe("PlanLayoutEditor", () => {
 				disabled: true,
 				hint: "Production always stays on the page",
 			});
+			expect(byKey("hm-fit")).toMatchObject({ checked: true });
+			expect(byKey("pin")).toMatchObject({ checked: false });
+			// tabs are a page of their own, opened from one entry
+			expect(byKey("page:tabs")).toMatchObject({ label: "Tabs (8) …" });
+			expect(byKey("out:supply-cart")).toBeUndefined();
+			await pick(m, "production", "page:tabs");
+			expect(menuOf(m, "production").props("show")).toBe(true);
+			expect(byKey("page:main")).toMatchObject({ label: "Back" });
+			expect(byKey("narrower")).toBeUndefined();
 			expect(byKey("out:production")).toMatchObject({
 				disabled: true,
 				hint: "The first tab stays; take the others out",
 			});
-			expect(byKey("hm-fit")).toMatchObject({ checked: true });
-			expect(byKey("pin")).toMatchObject({ checked: false });
+			await pick(m, "production", "page:main");
+			expect(byKey("narrower")).toBeDefined();
 
 			const ioKey = (k: string) => option(m, "material-io", k);
 			expect(ioKey("wider")).toMatchObject({
@@ -292,11 +299,19 @@ describe("PlanLayoutEditor", () => {
 				hint: "Reaches the right edge; move it left first",
 			});
 			expect(ioKey("right")).toMatchObject({ disabled: true });
-			// the menu's way to make a tab: each other item
+			// the menu's way to make a tab: each other item, on its page
+			expect(ioKey("page:tabs")).toMatchObject({
+				label: "Make it a tab of …",
+			});
+			await pick(m, "material-io", "page:tabs");
 			expect(ioKey("tab:i-production")).toMatchObject({
 				label: "Production + 7 tabs",
 			});
 			expect(ioKey("tab:i-material-io")).toBeUndefined();
+			// a menu opens on its first page again
+			menuOf(m, "material-io").vm.$emit("update:show", false);
+			await flushPromises();
+			expect(ioKey("tab:i-production")).toBeUndefined();
 
 			const eKey = (k: string) => option(m, "empire", k);
 			expect(eKey("narrower")).toMatchObject({
@@ -919,26 +934,36 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe("Gap 8 px");
 		});
 
-		it("switches what an element shows, on the elements that hide parts", async () => {
+		it("opens an element that hides parts, undoably, and saves it with the layout", async () => {
 			const m = await mountEditor();
 			const toggle = (id: string) =>
 				m.wrapper.find(`[data-item="i-${id}"] [data-content-toggle]`);
+			const layout = () =>
+				m.wrapper
+					.findComponent({ name: "PlanGrid" })
+					.props("layout") as GridLayout;
 			expect(toggle("production").exists()).toBe(false);
-			expect(toggle("workforce").attributes("aria-pressed")).toBe("true");
-			expect(toggle("workforce").attributes("aria-label")).toBe(
-				"Workforce: everything open while customising"
-			);
-			await toggle("workforce").trigger("click");
-			expect(m.component.emitted("update:asOnPage")).toEqual([
-				[["workforce"]],
-			]);
-			await m.setProps({ asOnPage: ["workforce"] });
+			// as on the page until switched
 			expect(toggle("workforce").attributes("aria-pressed")).toBe(
 				"false"
 			);
-			expect(toggle("experts").attributes("aria-pressed")).toBe("true");
+			expect(toggle("workforce").attributes("aria-label")).toBe(
+				"Workforce: everything open"
+			);
 			await toggle("workforce").trigger("click");
-			expect(m.component.emitted("update:asOnPage")![1]).toEqual([[]]);
+			await flushPromises();
+			expect(layout().open).toEqual(["workforce"]);
+			expect(toggle("workforce").attributes("aria-pressed")).toBe("true");
+			expect(toggle("experts").attributes("aria-pressed")).toBe("false");
+			expect(announce(m)).toBe("Workforce shows everything");
+			// a change like any other: quiet, undoable
+			expect(mocks.toast).not.toHaveBeenCalled();
+			await button(m, "[data-undo]").trigger("click");
+			expect(layout().open).toBeUndefined();
+
+			await toggle("workforce").trigger("click");
+			await button(m, "[data-save]").trigger("click");
+			expect(m.pref.layout.value.open).toEqual(["workforce"]);
 		});
 
 		it("notes items rearranged at a narrow preview, and a phone preview", async () => {
@@ -1109,10 +1134,15 @@ describe("PlanLayoutEditor", () => {
 			await key(m, "material-io", "ArrowLeft");
 			await button(m, "[data-undo]").trigger("click");
 			expect(draft(m, "material-io").x).toBe(8);
-			const [, options] = mocks.toast.mock.calls[0];
+			// an element leaving the page gets a toast with Undo
+			await pick(m, "experts", "hide");
+			expect(mocks.toast).toHaveBeenCalledTimes(1);
+			const [text, options] = mocks.toast.mock.calls[0];
+			expect(text).toBe("Experts hidden. It stays in Elements.");
+			expect(options.duration).toBe(5000);
 			options.action.onClick();
 			await flushPromises();
-			expect(draft(m, "material-io").x).toBe(9);
+			expect(draft(m, "experts").els).toEqual(["experts"]);
 			expect(trackEvent).toHaveBeenCalledWith("plan:layout_undo", {
 				how: "toast",
 			});

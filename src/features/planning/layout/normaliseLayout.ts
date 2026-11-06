@@ -15,7 +15,11 @@ import {
 	H_MIN,
 	MAX_ELEMENTS,
 } from "@/features/planning/layout/planLayout.constants";
-import { ELEMENTS, isElementId } from "@/features/planning/layout/elements";
+import {
+	ELEMENTS,
+	isElementId,
+	OPENABLE,
+} from "@/features/planning/layout/elements";
 
 const HEIGHT_MODES: HeightMode[] = ["fit", "cap", "fixed"];
 
@@ -65,7 +69,8 @@ const height = (v: unknown): number => {
  * A layout as the grid can use it, from whatever was stored: drops unknown
  * and duplicate elements, keeps Production, clamps columns, widths and
  * heights to the limits, makes `active` one of the item's tabs and
- * renumbers `y` in reading order. Elements missing from it count as hidden,
+ * renumbers `y` in reading order; keeps the elements shown everything
+ * open that can be. Elements missing from it count as hidden,
  * except Production, which is added at the bottom. Normalising twice
  * changes nothing.
  * @author jplacht
@@ -132,7 +137,8 @@ export function normaliseLayout(input: unknown): GridLayout {
 				pin: false,
 			});
 
-	return { cols, gap, items: renumber(items) };
+	const open = normaliseFolded(raw.open).filter((e) => OPENABLE.includes(e));
+	return { cols, gap, items: renumber(items), ...(open.length && { open }) };
 }
 
 /**
@@ -158,4 +164,5 @@ export const cloneLayout = (layout: GridLayout): GridLayout => ({
 	cols: layout.cols,
 	gap: layout.gap,
 	items: layout.items.map((i) => ({ ...i, els: [...i.els] })),
+	...(layout.open && { open: [...layout.open] }),
 });

@@ -12,6 +12,10 @@
 
 	// Composables
 	import {
+		providePlanView,
+		usePlanView,
+	} from "@/features/planning/usePlanView";
+	import {
 		PHONE_PREVIEW,
 		PREVIEW_WIDTHS,
 		usePlanLayoutEditor,
@@ -62,16 +66,6 @@
 		pref: ReturnType<typeof usePlanLayoutPreference>;
 		loggedIn: boolean;
 	}>();
-	// elements shown as on the page; the rest show all they can hide
-	// (tiers, fields, buttons)
-	const asOnPage = defineModel<ElementId[]>("asOnPage", {
-		default: () => [],
-	});
-	function toggleOpen(el: ElementId): void {
-		asOnPage.value = asOnPage.value.includes(el)
-			? asOnPage.value.filter((e) => e !== el)
-			: [...asOnPage.value, el];
-	}
 
 	// a press on a title row: a tab drags out of its group, the rest of the
 	// row moves the item; its buttons stay buttons
@@ -132,6 +126,16 @@
 		phone,
 	} = editor;
 
+	// the elements show everything open as the draft says, here only
+	const planView = usePlanView();
+	providePlanView({
+		...planView,
+		layoutEditing: {
+			...planView.layoutEditing,
+			showAll: (el: ElementId) => !!draft.value.open?.includes(el),
+		},
+	});
+
 	const gridWidth = computed(
 		() => refPreview.value || rootWidth.value || 1280
 	);
@@ -160,8 +164,9 @@
 		() =>
 			Object.values(pack.value?.items ?? {}).filter((p) => p.auto).length
 	);
-	const sticky = computed(
-		() => (gridRef.value as unknown as { sticky?: boolean })?.sticky ?? true
+	const capped = computed(
+		() =>
+			(gridRef.value as unknown as { capped?: boolean })?.capped ?? false
 	);
 
 	// px of an item w columns wide, at this grid
@@ -355,7 +360,7 @@
 				{{ t("plan.layout.auto_note", { n: autoCount }, autoCount) }}
 			</p>
 			<p
-				v-if="!sticky"
+				v-if="capped"
 				class="basis-full text-xs text-warning"
 				data-band-note>
 				{{ t("plan.layout.band_note") }}
@@ -514,7 +519,9 @@
 									size="sm"
 									type="ghost"
 									class="shrink-0"
-									:pressed="!asOnPage.includes(item.active)"
+									:pressed="
+										!!draft.open?.includes(item.active)
+									"
 									:aria-label="
 										t('plan.layout.content_open_named', {
 											name: editor.label(item.active),
@@ -522,7 +529,7 @@
 									"
 									:title="t('plan.layout.content_open')"
 									data-content-toggle
-									@click="toggleOpen(item.active)">
+									@click="editor.toggleOpen(item.active)">
 									<template #icon
 										><UnfoldMoreSharp
 									/></template>
@@ -538,11 +545,13 @@
 									placement="bottom-end"
 									@update:show="
 										(v: boolean) =>
-											(refMenu = v
-												? item.id
-												: refMenu === item.id
-													? null
-													: refMenu)
+											editor.setMenu(
+												v
+													? item.id
+													: refMenu === item.id
+														? null
+														: refMenu
+											)
 									"
 									@select="
 										(key: string) =>

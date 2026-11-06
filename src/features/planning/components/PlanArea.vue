@@ -41,10 +41,11 @@
 
 <template>
 	<div
-		class="flex items-center justify-between gap-3 text-sm tabular-nums @max-[319px]:flex-col @max-[319px]:items-start">
-		<span>
+		class="flex items-center justify-between gap-3 text-sm tabular-nums @max-[199px]:flex-col @max-[199px]:items-start">
+		<!-- the area goes under Permits where the row is tight -->
+		<span class="flex flex-wrap items-baseline gap-x-1 min-w-0">
 			{{ t("plan.components.area.permits") }}
-			<span class="text-xs text-muted">
+			<span class="text-xs text-muted whitespace-nowrap">
 				·
 				{{ t("plan.base.planet.area", { n: areaData.areaTotal }) }}
 			</span>
@@ -57,6 +58,6 @@
 			size="sm"
 			:min="1"
 			:max="3"
-			class="w-28" />
+			class="w-28 shrink-0" />
 	</div>
 </template>
