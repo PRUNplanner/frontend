@@ -11,7 +11,7 @@ Basis-ROI bewertet jede Möglichkeit, eine Basis zu betreiben: jede Ressource au
 # Metrics
 
 - **Täglicher Profit**: Umsatz minus Inputs, Konsumgüter und Abnutzung (Konstruktion der Produktionsgebäude ÷ 180), bei 5 Experten mit dem Aufbau, sonst bei der festen Anzahl.
-- Fahre über eine Spaltenüberschrift, um zu sehen, was sie bedeutet, und über eine Zahl für die Überschlagsrechnung dahinter. Mit **Aufbau ab 0** startet eine neue Basis ohne Experten: Die Phasen mit 0, 1, 2, 3 und 4 Experten dauern 10, 12.5, 57.57, 276.5 und 915.1 Tage, jeweils geteilt durch die Anzahl der Produktionsgebäude, und Umsatz und Inputs wachsen mit dem Expertenbonus. "nie", wenn die Basis keinen Profit macht.
+- **Absolut**: jede Linie auf einer ȼ-Skala, um zu sehen, wie sie zueinander stehen. Mit **Aufbau ab 0** startet eine neue Basis ohne Experten: Die Phasen mit 0, 1, 2, 3 und 4 Experten dauern 10, 12.5, 57.57, 276.5 und 915.1 Tage, jeweils geteilt durch die Anzahl der Produktionsgebäude, und Umsatz und Inputs wachsen mit dem Expertenbonus. "nie", wenn die Basis keinen Profit macht.
 - **Wochenrendite**: 7 × täglicher Profit ÷ Baukosten.
 - **Baukosten**: Konstruktion, plus die Optionen in den Einstellungen: Pufferbestand (Puffertage × (Inputs + Konsumgüter + Umsatz) ÷ 2) und das HQ-Upgrade für eine weitere Genehmigung (HQ-Stufe N − 1).
 - **Tägliche Betriebskosten**: Inputs + Konsumgüter + Abnutzung. Ausgeblendet, bis du sie unter Spalten einschaltest: Der Pufferbestand in den Baukosten deckt die Betriebskosten zu Beginn bereits ab.
@@ -31,7 +31,7 @@ Basis-ROI bewertet jede Möglichkeit, eine Basis zu betreiben: jede Ressource au
 
 # Profit-Chart
 
-Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Jede Basis zählt danach, wie viel von ihrem Produkt der Markt handelt (7-Tage-Durchschnitt), und die vielen Planeten eines Ressourcenrezepts zählen als eins. Search to drill in:
+Über der Tabelle zeigt ein Chart den täglichen Profit der letzten 30 Tage für jede Branche. Jede Basis zählt danach, wie viel von ihrem Produkt der Markt handelt (7-Tage-Durchschnitt), und die vielen Planeten eines Ressourcenrezepts zählen als eins. Search to drill in:
 
 - eine Branche (z. B. "Chemistry") zeigt ihre Gebäude;
 - ein Gebäude (z. B. "CHP") zeigt seine Produkte;
@@ -48,7 +48,7 @@ Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3
 
 # Details
 
-Expand a row to see two charts, then the full math below them. Du kannst die Rechnung auch als Text kopieren oder die Zeile als neuen Plan mit demselben Layout öffnen (angemeldet).
+Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. Du kannst die Rechnung auch als Text kopieren oder die Zeile als neuen Plan mit demselben Layout öffnen (angemeldet).
 
 - **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
 - **Market volume**: how many bases the market carries each day, from the CX traded volume. _Outputs_ is the scarcest output's traded volume ÷ what one base sells per day; _Inputs (bottleneck)_ is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
