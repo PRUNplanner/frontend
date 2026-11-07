@@ -878,7 +878,7 @@
 		"preview_full": "Full",
 		"preview_phone": "Phone",
 		"elements": "Elements",
-		"elements_hint": "Drag an element onto the page to place or move it, or add a hidden one at the bottom.",
+		"elements_hint": "Drag an element onto the page to place or move it, or add a hidden one at the bottom. Drop a part from the page here to hide it.",
 		"groups": {
 			"base": "Base",
 			"production": "Production & tools",
@@ -935,6 +935,8 @@
 		"badge_cols": "{n} of {cols} columns",
 		"badge_scrolls": "{h} px · content {content} px, scrolls",
 		"badge_min": "(minimum)",
+		"badge_neighbour": "{name} at its minimum",
+		"drop_hide": "Drop to hide {name}",
 		"lands_here": "Lands here",
 		"drop_as_tab": "{name} as a tab here",
 		"drop_tab_target": "Drop to add {el} as a tab to {name}",
@@ -971,6 +973,7 @@
 		"split": "Split all into separate items",
 		"hide": "Hide",
 		"hide_tab": "Hide {name}",
+		"hide_named": "Hide {name}",
 		"why": {
 			"min_width": "{name} needs at least {px} px: {n} of {cols} columns at this width",
 			"min_height": "{name} needs at least {px} px",
@@ -978,6 +981,7 @@
 			"left_edge": "Already at the left edge",
 			"full_width": "Already full width",
 			"first_tab": "The first tab stays; take the others out",
+			"neighbour_min": "{name} beside it is at its minimum width",
 			"required": "Production always stays on the page"
 		},
 		"snap": {
@@ -995,6 +999,7 @@
 			"moved_band": "{item} moved · column {n} · pinned to top",
 			"width": "{item}: {n} of {cols} columns wide",
 			"width_min": "{item}: {n} of {cols} columns wide (its minimum at this width)",
+			"width_neighbour": "{item}: {n} of {cols} columns wide; {name} beside it is at its minimum",
 			"full_width": "{item}: full width",
 			"height_fit": "{item}: fits its content",
 			"height_cap": "{item}: fits its content up to {h} px, scrolls beyond",

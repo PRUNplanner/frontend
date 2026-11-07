@@ -58,7 +58,9 @@ const DRAG_START = 6;
 // changes that get a toast with Undo (their announcement keys)
 const TOASTED = new Set(["hidden", "tab", "taken_out", "split", "reset"]);
 
-type How = "drag" | "menu" | "keys";
+type How = "drag" | "menu" | "keys" | "button";
+/** An edge that resizes: right (w), bottom (h), the corner (wh), left (l) */
+type Edge = "w" | "h" | "wh" | "l";
 type Region = "band" | "page";
 
 /** What the editor reads of its grid */
@@ -86,17 +88,23 @@ export interface IEditorDrag {
 	snap: ISnap | null;
 	// dropped on this item's title bar: a tab there
 	tabTo: string | null;
+	// over the Elements panel: a drop hides it
+	hide: boolean;
 }
 
 /** A resize in progress */
 export interface IEditorResize {
 	id: string;
-	kind: "w" | "h" | "wh";
+	kind: Edge;
 	w: number;
 	h: number;
+	// px the left side moved out (left edge)
+	shift: number;
 	snap: ISnap | null;
 	atMin: boolean;
 	wMin: boolean;
+	// the part beside it whose minimum stopped the edge
+	by: string | null;
 }
 
 /**
@@ -312,10 +320,34 @@ export function usePlanLayoutEditor(
 			(g, c) => ops.split(g, id, c),
 			(it) => trackMove(it.els[0], "menu", "page")
 		);
-	function hide(id: string, el: ElementId): void {
+	function hide(id: string, el: ElementId, how: How = "menu"): void {
 		if (apply(ops.hide(draft.value, id, el, ctx())))
-			trackMove(el, "menu", "hidden");
+			trackMove(el, how, "hidden");
 	}
+	/** What hiding an item hides: its tab on view, or its one element; null when that stays */
+	function hideTarget(it: GridItem): ElementId | null {
+		const el = it.els.length > 1 ? it.active : it.els[0];
+		return ops.hideBlocked(el) ? null : el;
+	}
+	/** The hide button on a title bar */
+	function hideNow(id: string): void {
+		const el = hideTarget(itemOf(id)!);
+		if (el) hide(id, el, "button");
+	}
+	/** Over Elements: what a drop there hides, or why it can't */
+	const hideDrop = computed(() => {
+		const d = drag.value;
+		if (!d?.hide) return null;
+		const it = d.id ? itemOf(d.id) : undefined;
+		const els = it ? it.els : [d.el];
+		const blocked = els.map((el) => ops.hideBlocked(el)).find(Boolean);
+		return blocked
+			? { blocked: true, text: t(blocked) }
+			: {
+					blocked: false,
+					text: t("plan.layout.drop_hide", { name: title(els) }),
+				};
+	});
 	function add(el: ElementId): void {
 		if (apply(ops.add(draft.value, el, ctx()))) {
 			trackMove(el, "menu", "page");
@@ -400,6 +432,7 @@ export function usePlanLayoutEditor(
 		const name = title(it.els);
 		const mc = minCols(it);
 		const mh = minHeightOf(it);
+		const room = ops.edgeRoom(g, id, "right", ctx());
 		const hNow = it.hm === "fit" ? Math.round(p?.height ?? 0) : it.h;
 		const capH = Math.max(
 			mh,
@@ -430,11 +463,15 @@ export function usePlanLayoutEditor(
 						key: "wider",
 						label: t("plan.layout.wider"),
 						icon: AddSharp,
-						disabled: it.x + it.w >= g.cols,
+						disabled: it.x + it.w >= room.edge,
 						hint:
 							it.x + it.w >= g.cols
 								? t("plan.layout.why.right_edge")
-								: undefined,
+								: room.by && it.x + it.w >= room.edge
+									? t("plan.layout.why.neighbour_min", {
+											name: title(room.by.els),
+										})
+									: undefined,
 					},
 					{
 						key: "full",
@@ -698,7 +735,7 @@ export function usePlanLayoutEditor(
 	} | null = null;
 	let rs: {
 		id: string;
-		kind: "w" | "h" | "wh";
+		kind: Edge;
 		x: number;
 		y: number;
 		w0: number;
@@ -706,6 +743,9 @@ export function usePlanLayoutEditor(
 		x0: number;
 		minW: number;
 		minH: number;
+		// the widest it gets before a part beside it is at its minimum
+		maxW: number;
+		by: string | null;
 	} | null = null;
 
 	// while customising the grid is there, a region only with its items
@@ -783,17 +823,15 @@ export function usePlanLayoutEditor(
 		listen();
 	}
 
-	/** Press on an item's right edge (w), bottom edge (h) or corner (wh) */
-	function startResize(
-		e: PointerEvent,
-		id: string,
-		kind: "w" | "h" | "wh"
-	): void {
+	/** Press on an item's edge or corner */
+	function startResize(e: PointerEvent, id: string, kind: Edge): void {
 		if (phone.value || e.button !== 0) return;
 		const p = grid().pack.items[id];
 		const it = itemOf(id)!;
 		e.stopPropagation();
 		e.preventDefault();
+		const side = kind === "l" ? "left" : "right";
+		const room = ops.edgeRoom(draft.value, id, side, ctx());
 		rs = {
 			id,
 			kind,
@@ -804,15 +842,22 @@ export function usePlanLayoutEditor(
 			x0: p.x,
 			minW: minCols(it),
 			minH: minHeightOf(it),
+			maxW: Math.max(
+				p.w,
+				side === "right" ? room.edge - it.x : it.x + it.w - room.edge
+			),
+			by: room.by ? title(room.by.els) : null,
 		};
 		resize.value = {
 			id,
 			kind,
 			w: p.w,
 			h: p.height,
+			shift: 0,
 			snap: null,
 			atMin: false,
 			wMin: false,
+			by: null,
 		};
 		refMenu.value = null;
 		listen();
@@ -839,6 +884,10 @@ export function usePlanLayoutEditor(
 			drag.value?.region ?? (cur ? regionOf(cur) : "page");
 		let tabTo: string | null = null;
 		const hit = document.elementFromPoint?.(e.clientX, e.clientY) ?? null;
+		// a part of the page dropped on Elements is hidden
+		const hide =
+			!!(press0.id || press0.from) &&
+			!!hit?.closest?.("[data-elements-panel]");
 		const rg = hit?.closest?.("[data-region]")?.getAttribute("data-region");
 		if (rg === "band" || rg === "page") region = rg;
 		const head = hit
@@ -887,7 +936,8 @@ export function usePlanLayoutEditor(
 			top,
 			region,
 			snap,
-			tabTo,
+			tabTo: hide ? null : tabTo,
+			hide,
 		};
 	}
 
@@ -899,17 +949,15 @@ export function usePlanLayoutEditor(
 		const dx = (e.clientX - r.x) / z;
 		const dy = (e.clientY - r.y) / z;
 		const step = pack.page.colWidth + g.gap;
-		const w =
+		const want =
 			r.kind === "h"
 				? r.w0
-				: Math.max(
-						r.minW,
-						Math.min(g.cols - r.x0, r.w0 + Math.round(dx / step))
-					);
+				: r.w0 + Math.round((r.kind === "l" ? -dx : dx) / step);
+		const w = Math.max(r.minW, Math.min(r.maxW, want));
 		let h = r.h0;
 		let snap: ISnap | null = null;
 		let atMin = false;
-		if (r.kind !== "w") {
+		if (r.kind === "h" || r.kind === "wh") {
 			const raw = Math.max(r.minH, r.h0 + dy);
 			h = ops.snapHeight(raw, r.minH);
 			atMin = h === r.minH;
@@ -926,9 +974,11 @@ export function usePlanLayoutEditor(
 			kind: r.kind,
 			w,
 			h,
+			shift: r.kind === "l" ? (w - r.w0) * step : 0,
 			snap,
 			atMin: atMin && !snap,
 			wMin: r.kind !== "h" && w === r.minW,
+			by: want > w && w === r.maxW ? r.by : null,
 		};
 	}
 
@@ -952,6 +1002,13 @@ export function usePlanLayoutEditor(
 		drag.value = null;
 		if (!p?.started || !d) return;
 		const g = draft.value;
+		if (d.hide) {
+			const change = d.id
+				? ops.hideItem(g, d.id, ctx())
+				: ops.hide(g, d.from!, d.el, ctx());
+			if (apply(change)) trackMove(d.el, "drag", "hidden");
+			return;
+		}
 		if (d.tabTo) {
 			const change = d.from
 				? ops.takeOutTo(g, d.from, d.el, { tab: d.tabTo }, ctx())
@@ -999,8 +1056,13 @@ export function usePlanLayoutEditor(
 		// a resize snaps to bottoms, heights and content, never to tops
 		const snapped = (z.snap?.kind ?? null) as SnapKind | null;
 		// the width only when it was dragged: the packed one may be "auto"
+		const it = itemOf(r.id)!;
 		const widened =
-			z.w === r.w0 ? null : ops.setWidth(draft.value, r.id, z.w, ctx());
+			z.w === r.w0
+				? null
+				: r.kind === "l"
+					? ops.setLeft(draft.value, r.id, it.x + it.w - z.w, ctx())
+					: ops.setWidth(draft.value, r.id, z.w, ctx());
 		const change =
 			z.h === r.h0
 				? widened!
@@ -1028,7 +1090,7 @@ export function usePlanLayoutEditor(
 	/** Where a dragged item would land, as the packing puts it */
 	const landing = computed(() => {
 		const d = drag.value;
-		if (!d || d.tabTo) return null;
+		if (!d || d.tabTo || d.hide) return null;
 		const to = {
 			x: d.x,
 			y: d.snap ? d.snap.value : d.top,
@@ -1138,6 +1200,9 @@ export function usePlanLayoutEditor(
 		setMenu,
 		startMove,
 		startResize,
+		hideNow,
+		hideTarget,
+		hideDrop,
 		snapText,
 		save,
 		requestCancel,

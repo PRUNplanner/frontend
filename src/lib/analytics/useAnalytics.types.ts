@@ -3,7 +3,7 @@ import type { ElementId } from "@/features/planning/layout/planLayout.types";
 import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
 
 // how a layout change was made: dragged, from the ⋯ menu or the keyboard
-type LayoutHow = "drag" | "menu" | "keys";
+type LayoutHow = "drag" | "menu" | "keys" | "button";
 import type { HomepageTourName } from "@/features/homepage/homepageTour.types";
 import type {
 	NavArea,

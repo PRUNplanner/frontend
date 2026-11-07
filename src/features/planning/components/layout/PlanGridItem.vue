@@ -121,13 +121,17 @@
 		"
 		:data-follow="follow ? item.id : undefined">
 		<!-- a group, not a landmark: twenty of them would crowd the page's
-		landmarks, and two share a name (the Workforce part and tile) -->
+		landmarks, and two share a name (the Workforce part and tile);
+		customising, parts slide to where a change puts them -->
 		<div
 			role="group"
 			class="@container/item flex flex-col rounded border border-line bg-(--app-bg) outline-none focus-visible:ring-2 focus-visible:ring-link"
-			:class="
-				follow ? 'sticky pointer-events-auto' : 'absolute top-0 left-0'
-			"
+			:class="[
+				follow ? 'sticky pointer-events-auto' : 'absolute top-0 left-0',
+				editing
+					? 'motion-safe:transition-[transform,width,height] motion-safe:duration-150 ease-out'
+					: '',
+			]"
 			:style="{
 				...(follow
 					? { top: `${follow.top}px` }

@@ -138,8 +138,8 @@ describe("layoutOps", () => {
 	describe("width", () => {
 		it("sets the width, never below the minimum at this width", () => {
 			const g = today();
-			const c = ops.setWidth(g, "i-production", 9, packed(g));
-			expect(item(c.layout, "production").w).toBe(9);
+			const c = ops.setWidth(g, "i-production", 6, packed(g));
+			expect(item(c.layout, "production").w).toBe(6);
 			// 540 px at 1440: 5 columns of 12
 			const min = ops.setWidth(g, "i-production", 2, packed(g));
 			expect(item(min.layout, "production").w).toBe(5);
@@ -167,6 +167,87 @@ describe("layoutOps", () => {
 			const io = item(c.layout, "material-io");
 			expect(io.x + io.w).toBeLessThanOrEqual(12);
 			expect(io.w).toBe(ops.minCols(io, g, { width: 800 }));
+		});
+
+		// Production 2–7, Material I/O and its totals 7–12, Base 0–2
+		const roomy = () => {
+			const g = today();
+			item(g, "production").w = 5;
+			for (const el of ["material-io", "material-io-totals"] as const)
+				Object.assign(item(g, el), { x: 7, w: 5 });
+			return g;
+		};
+
+		it("takes columns from the parts beside it, stopping at their minimum", () => {
+			const g = roomy();
+			const c = ops.setWidth(g, "i-production", 6, packed(g));
+			expect(item(c.layout, "production")).toMatchObject({ x: 2, w: 6 });
+			// both are beside it, and nothing moves below
+			expect(item(c.layout, "material-io")).toMatchObject({ x: 8, w: 4 });
+			expect(item(c.layout, "material-io-totals")).toMatchObject({
+				x: 8,
+				w: 4,
+			});
+			expect(ann(c)).toBe("width");
+			// Material I/O needs 3 columns: Production stops at 7
+			const far = ops.setWidth(g, "i-production", 10, packed(g));
+			expect(item(far.layout, "production").w).toBe(7);
+			expect(item(far.layout, "material-io")).toMatchObject({
+				x: 9,
+				w: 3,
+			});
+			expect(ann(far)).toBe("width_neighbour");
+			expect(far.announcement.params).toMatchObject({
+				n: 7,
+				name: "material-io",
+			});
+			expect(
+				ops.edgeRoom(g, "i-production", "right", packed(g))
+			).toMatchObject({ edge: 9, by: { id: "i-material-io" } });
+			// with nothing beside it, to the grid's edge
+			expect(
+				ops.edgeRoom(g, "i-material-io", "right", packed(g))
+			).toEqual({ edge: 12, by: null });
+			expect(ops.edgeRoom(g, "nope", "left", packed(g))).toEqual({
+				edge: 0,
+				by: null,
+			});
+		});
+
+		it("never squeezes without knowing where things are", () => {
+			const g = roomy();
+			const c = ops.setWidth(g, "i-production", 6, ctx());
+			expect(item(c.layout, "material-io")).toMatchObject({ x: 7, w: 5 });
+		});
+
+		it("moves the left edge, the right one stays", () => {
+			const g = roomy();
+			// Base's parts are at their minimum of 2 columns
+			const blocked = ops.setLeft(g, "i-production", 0, packed(g));
+			expect(item(blocked.layout, "production")).toMatchObject({
+				x: 2,
+				w: 5,
+			});
+			expect(ann(blocked)).toBe("width_neighbour");
+			const h = today();
+			for (const el of ["empire", "planet"] as const) item(h, el).w = 3;
+			Object.assign(item(h, "production"), { x: 3, w: 6 });
+			const c = ops.setLeft(h, "i-production", 2, packed(h));
+			expect(item(c.layout, "production")).toMatchObject({ x: 2, w: 7 });
+			expect(item(c.layout, "empire").w).toBe(2);
+			expect(item(c.layout, "planet").w).toBe(2);
+			// narrower from the left: never below its 5 columns
+			const min = ops.setLeft(
+				c.layout,
+				"i-production",
+				6,
+				packed(c.layout)
+			);
+			expect(item(min.layout, "production")).toMatchObject({
+				x: 4,
+				w: 5,
+			});
+			expect(ann(min)).toBe("width_min");
 		});
 
 		it("goes full width", () => {
@@ -548,6 +629,23 @@ describe("layoutOps", () => {
 			expect(ops.hideBlocked("empire")).toBeNull();
 		});
 
+		it("hides a whole item with its tabs, unless one of them stays", () => {
+			const g = ops.makeTab(
+				today(),
+				{ item: "i-planet" },
+				"i-empire",
+				ctx()
+			).layout;
+			const c = ops.hideItem(g, "i-empire", ctx());
+			expect(
+				c.layout.items.some((i) =>
+					i.els.some((e) => e === "empire" || e === "planet")
+				)
+			).toBe(false);
+			expect(c.announcement.params).toEqual({ el: "empire+planet" });
+			expect(ann(ops.hideItem(g, "i-production", ctx()))).toBe("nothing");
+		});
+
 		it("moves the shown tab when it is hidden", () => {
 			const g = ops.setActive(
 				today(),
@@ -753,6 +851,8 @@ describe("layoutOps", () => {
 							c
 						),
 					() => ops.setWidth(g, it.id, int(rnd, 0, 30), c),
+					() => ops.setLeft(g, it.id, int(rnd, -2, 26), c),
+					() => ops.hideItem(g, it.id, c),
 					() => ops.fullWidth(g, it.id, c),
 					() =>
 						ops.setHeightMode(
@@ -829,6 +929,7 @@ describe("layoutOps", () => {
 				ops.moveX(g, it.id, 1, c),
 				ops.moveY(g, it.id, 1, c),
 				ops.setWidth(g, it.id, it.w + 1, c),
+				ops.setLeft(g, it.id, it.x - 1, c),
 				ops.stepHeight(g, it.id, 1, c),
 				ops.togglePin(g, it.id, c),
 				ops.split(g, it.id, c),

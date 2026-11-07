@@ -432,6 +432,33 @@ describe("PlanLayoutEditor", () => {
 			});
 		});
 
+		it("hides with one click on a title bar, the shown tab of a group", async () => {
+			const m = await mountEditor();
+			const hideBtn = (id: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-item-hide]`);
+			// Production always stays
+			expect(hideBtn("production").exists()).toBe(false);
+			expect(hideBtn("experts").attributes("aria-label")).toBe(
+				"Hide Experts"
+			);
+			await hideBtn("experts").trigger("click");
+			await flushPromises();
+			expect(draft(m, "experts")).toBeUndefined();
+			expect(announce(m)).toBe("Experts hidden. It stays in Elements.");
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
+				element: "experts",
+				how: "button",
+				to: "hidden",
+			});
+			m.wrapper
+				.findComponent({ name: "PlanGrid" })
+				.vm.$emit("tab", "i-production", "popr");
+			await flushPromises();
+			await hideBtn("production").trigger("click");
+			await flushPromises();
+			expect(draft(m, "production").els).not.toContain("popr");
+		});
+
 		it("hides the shown tab of a group", async () => {
 			const m = await mountEditor();
 			expect(option(m, "production", "hide")).toMatchObject({
@@ -732,6 +759,92 @@ describe("PlanLayoutEditor", () => {
 				how: "drag",
 				what: "width",
 				snapped: null,
+			});
+		});
+
+		it("takes columns from the part beside it, from either edge, down to its minimum", async () => {
+			const m = await mountEditor();
+			// Empire wider: Production beside it gives up a column
+			await dragBy(
+				m.wrapper.find("[data-item='i-empire'] [data-edge='w']"),
+				STEP,
+				0
+			);
+			expect(draft(m, "empire").w).toBe(3);
+			expect(draft(m, "production")).toMatchObject({ x: 3, w: 6 });
+			// Production's left edge takes it back
+			await dragBy(
+				m.wrapper.find("[data-item='i-production'] [data-edge='l']"),
+				-STEP,
+				0
+			);
+			expect(draft(m, "production")).toMatchObject({ x: 2, w: 7 });
+			expect(draft(m, "empire").w).toBe(2);
+			// further, Base's parts are at their minimum: it stops and says so
+			const edge = m.wrapper.find(
+				"[data-item='i-production'] [data-edge='l']"
+			);
+			hitAt(null);
+			await pointerdown(edge, 300, 100, 0);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", {
+					clientX: 300 - 2 * STEP,
+					clientY: 100,
+				})
+			);
+			await flushPromises();
+			// a side edge changes no height: the badge has none
+			expect(m.wrapper.find("[data-resize-badge]").text()).toMatch(
+				/^7 of 12 columns · \d+ px · Empire & prices at its minimum$/
+			);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "production")).toMatchObject({ x: 2, w: 7 });
+			// the menu's + says why too: Material I/O is at its 3 columns
+			expect(option(m, "production", "wider")).toMatchObject({
+				disabled: true,
+				hint: "Material I/O beside it is at its minimum width",
+			});
+			expect(option(m, "empire", "wider")).toMatchObject({
+				disabled: false,
+			});
+		});
+
+		it("hides a part dropped on Elements, never Production", async () => {
+			const m = await mountEditor();
+			const panel = document.querySelector("[data-elements-panel]");
+			const press = async (id: string) => {
+				hitAt(panel);
+				await pointerdown(handle(m, id), 100, 100, 0);
+				window.dispatchEvent(
+					new MouseEvent("pointermove", {
+						clientX: 140,
+						clientY: 140,
+					})
+				);
+				await flushPromises();
+			};
+			await press("production");
+			expect(m.wrapper.find("[data-drop-hide]").text()).toBe(
+				"Production always stays on the page"
+			);
+			expect(m.wrapper.find("[data-landing]").exists()).toBe(false);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "production")).toBeDefined();
+
+			await press("experts");
+			expect(m.wrapper.find("[data-drop-hide]").text()).toBe(
+				"Drop to hide Experts"
+			);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "experts")).toBeUndefined();
+			expect(m.wrapper.find("[data-drop-hide]").exists()).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
+				element: "experts",
+				how: "drag",
+				to: "hidden",
 			});
 		});
 

@@ -54,13 +54,15 @@
 		UnfoldMoreSharp,
 		RemoveSharp,
 		UndoSharp,
+		VisibilityOffSharp,
 	} from "@vicons/material";
 
 	/**
 	 * Customise mode: the page's real content (not clickable) on the grid,
 	 * each item's title row draggable, with a grip (arrows move,
-	 * Shift+arrows resize, Enter opens its ⋯ menu), its size, its ⋯ menu and
-	 * tabs that switch or drag out; a right edge, a bottom edge and a corner;
+	 * Shift+arrows resize, Enter opens its ⋯ menu), its size, a hide button, its ⋯
+	 * menu and tabs that switch or drag out; both side edges, the bottom edge
+	 * and a corner;
 	 * the Elements panel beside it; the page scaled to fit, never covered
 	 *
 	 * @author jplacht
@@ -126,6 +128,7 @@
 		drag,
 		resize,
 		landing,
+		hideDrop,
 		phone,
 	} = editor;
 
@@ -225,7 +228,7 @@
 			t("plan.layout.badge_cols", { n: r.w, cols: draft.value.cols }),
 			t("plan.layout.size_px", { h: widthPx(r.w) }),
 		];
-		if (r.kind !== "w")
+		if (r.kind === "h" || r.kind === "wh")
 			parts.push(
 				p.content > r.h + 1
 					? t("plan.layout.badge_scrolls", {
@@ -235,6 +238,7 @@
 					: t("plan.layout.size_px", { h: r.h })
 			);
 		if (r.atMin || r.wMin) parts.push(t("plan.layout.badge_min"));
+		if (r.by) parts.push(t("plan.layout.badge_neighbour", { name: r.by }));
 		return parts.join(" · ");
 	});
 
@@ -469,7 +473,7 @@
 								<div
 									class="absolute z-30 rounded border-2 border-link pointer-events-none"
 									:style="{
-										transform: `translate(${p.items[resize.id].left}px, ${p.items[resize.id].top}px)`,
+										transform: `translate(${p.items[resize.id].left - resize.shift}px, ${p.items[resize.id].top}px)`,
 										width: `${widthPx(resize.w)}px`,
 										height: `${resize.h}px`,
 									}"
@@ -559,6 +563,31 @@
 										<component :is="st.icon" />
 									</PIcon>
 								</span>
+								<PButton
+									v-if="editor.hideTarget(item)"
+									size="sm"
+									type="ghost"
+									class="shrink-0 pointer-coarse:size-11"
+									:aria-label="
+										t('plan.layout.hide_named', {
+											name: editor.label(
+												editor.hideTarget(item)!
+											),
+										})
+									"
+									:title="
+										t('plan.layout.hide_named', {
+											name: editor.label(
+												editor.hideTarget(item)!
+											),
+										})
+									"
+									data-item-hide
+									@click="editor.hideNow(item.id)">
+									<template #icon
+										><VisibilityOffSharp
+									/></template>
+								</PButton>
 								<PDropdown
 									:show="refMenu === item.id"
 									:options="editor.menuOptions(item.id)"
@@ -618,6 +647,16 @@
 										class="absolute right-0.5 top-2 bottom-6 w-0.5 rounded-full bg-link opacity-0 group-hover:opacity-100" />
 								</div>
 								<div
+									class="group pointer-events-auto absolute top-10 pointer-coarse:top-11 left-0 bottom-[22px] pointer-coarse:bottom-9 w-[22px] pointer-coarse:w-9 cursor-ew-resize touch-none"
+									data-edge="l"
+									@pointerdown="
+										(e: PointerEvent) =>
+											editor.startResize(e, item.id, 'l')
+									">
+									<span
+										class="absolute left-0.5 top-2 bottom-2 w-0.5 rounded-full bg-link opacity-0 group-hover:opacity-100" />
+								</div>
+								<div
 									class="group pointer-events-auto absolute left-0 right-0 bottom-0 h-[22px] pointer-coarse:h-9 cursor-ns-resize touch-none"
 									data-edge="h"
 									@pointerdown="
@@ -668,6 +707,7 @@
 				:layout="draft"
 				:logged-in="loggedIn"
 				:where="editor.where"
+				:drop="hideDrop"
 				@add="editor.add"
 				@show="editor.show"
 				@drag="(e: PointerEvent, el) => editor.startMove(e, { el })" />

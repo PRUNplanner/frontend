@@ -22,14 +22,22 @@
 	 * Customise mode's Elements panel, beside the page: every element with
 	 * where it is and a grip: dragged onto the page it places a hidden one
 	 * or moves a placed one (a tab out of its group); a hidden one is also
-	 * added (to the bottom), a placed one shown
+	 * added (to the bottom), a placed one shown. A part of the page dropped
+	 * on it is hidden; while one is over it, it says so (or why it can't)
 	 *
 	 * @author jplacht
 	 */
-	const { layout, loggedIn, where } = defineProps<{
+	const {
+		layout,
+		loggedIn,
+		where,
+		drop = null,
+	} = defineProps<{
 		layout: GridLayout;
 		loggedIn: boolean;
 		where: (el: ElementId) => string;
+		// a part of the page over it: what a drop hides, or why not
+		drop?: { blocked: boolean; text: string } | null;
 	}>();
 
 	const emit = defineEmits<{
@@ -63,7 +71,21 @@
 	<aside
 		:aria-label="t('plan.layout.elements')"
 		class="sticky top-16 shrink-0 w-72 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded border border-line bg-surface text-sm"
+		:class="
+			drop
+				? drop.blocked
+					? 'ring-2 ring-negative'
+					: 'ring-2 ring-link'
+				: ''
+		"
 		data-elements-panel>
+		<div
+			v-if="drop"
+			class="sticky top-0 z-10 px-3 py-2 bg-surface border-b border-line font-medium"
+			:class="drop.blocked ? 'text-negative' : 'text-link'"
+			data-drop-hide>
+			{{ drop.text }}
+		</div>
 		<h2 class="px-3 pt-3 pb-1 font-bold text-white">
 			{{ t("plan.layout.elements") }}
 		</h2>

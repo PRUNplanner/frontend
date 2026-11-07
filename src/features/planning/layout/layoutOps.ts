@@ -220,23 +220,132 @@ export const moveTo = (
 		});
 	});
 
-/** Width in columns, never below the minimum at this width */
+type Side = "left" | "right";
+
+/**
+ * Parts beside an item towards one side on the last packing: in its
+ * region and next to it somewhere from its top to its bottom. A
+ * rearranged region has none: its parts don't sit where the layout says.
+ */
+function besideOf(
+	g: GridLayout,
+	it: GridItem,
+	side: Side,
+	ctx: ILayoutOpsContext
+): GridItem[] {
+	const pos = ctx.pack?.items;
+	const p = pos?.[it.id];
+	if (!pos || !p || rearranged(ctx).has(p.region)) return [];
+	return g.items.filter((o) => {
+		const q = pos[o.id];
+		return (
+			o !== it &&
+			!!q &&
+			q.region === p.region &&
+			q.top < p.top + p.height &&
+			p.top < q.top + q.height &&
+			(side === "right" ? o.x >= it.x + it.w : o.x + o.w <= it.x)
+		);
+	});
+}
+
+/**
+ * How far an edge of an item can go: the column of the grid's edge, or
+ * where a part beside it reaches its minimum width (`by`)
+ */
+export function edgeRoom(
+	layout: GridLayout,
+	id: string,
+	side: Side,
+	ctx: ILayoutOpsContext
+): { edge: number; by: GridItem | null } {
+	let edge = side === "right" ? layout.cols : 0;
+	let by: GridItem | null = null;
+	const it = layout.items.find((i) => i.id === id);
+	for (const o of it ? besideOf(layout, it, side, ctx) : []) {
+		const m = minCols(o, layout, ctx);
+		const lim = side === "right" ? o.x + o.w - m : o.x + m;
+		if (side === "right" ? lim < edge : lim > edge) {
+			edge = lim;
+			by = o;
+		}
+	}
+	return { edge, by };
+}
+
+/**
+ * Moves the right or the left edge to column `to`: never below the
+ * minimum at this width, never past the grid's edge. Parts beside it give
+ * up the columns it takes, down to their own minimum; there it stops.
+ */
+function setEdge(
+	layout: GridLayout,
+	id: string,
+	side: Side,
+	to: number,
+	ctx: ILayoutOpsContext
+): ILayoutChange {
+	return edit(layout, id, ctx, (it, g) => {
+		const min = minCols(it, g, ctx);
+		const room = edgeRoom(g, id, side, ctx);
+		const beside = besideOf(g, it, side, ctx);
+		const right = it.x + it.w;
+		const want = side === "right" ? to - it.x : right - to;
+		if (side === "right") {
+			const end = Math.min(to, Math.max(room.edge, right));
+			it.w = Math.min(g.cols, Math.max(min, end - it.x));
+			it.x = Math.min(it.x, g.cols - it.w);
+		} else {
+			const start = Math.max(to, Math.min(room.edge, it.x));
+			it.x = Math.max(0, Math.min(start, right - min));
+			it.w = Math.min(g.cols - it.x, Math.max(min, right - it.x));
+		}
+		// the parts beside give up the columns it took
+		for (const o of beside)
+			if (side === "right") {
+				const from = it.x + it.w;
+				const end = o.x + o.w;
+				if (o.x < from && end - from >= 1) {
+					o.x = from;
+					o.w = end - from;
+				}
+			} else if (o.x + o.w > it.x && it.x - o.x >= 1) o.w = it.x - o.x;
+		const params = { item: ctx.title(it.els), n: it.w, cols: g.cols };
+		if (want > it.w && room.by)
+			return done(g, "width_neighbour", {
+				...params,
+				name: ctx.title(room.by.els),
+			});
+		return done(
+			g,
+			it.w === min && want < min ? "width_min" : "width",
+			params
+		);
+	});
+}
+
+/** Width in columns from the right edge (see setEdge) */
 export const setWidth = (
 	layout: GridLayout,
 	id: string,
 	w: number,
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
-	edit(layout, id, ctx, (it, g) => {
-		const min = minCols(it, g, ctx);
-		it.w = Math.min(g.cols, Math.max(min, Math.min(g.cols - it.x, w)));
-		it.x = Math.min(it.x, g.cols - it.w);
-		return done(g, it.w === min && w < min ? "width_min" : "width", {
-			item: ctx.title(it.els),
-			n: it.w,
-			cols: g.cols,
-		});
-	});
+	setEdge(
+		layout,
+		id,
+		"right",
+		(layout.items.find((i) => i.id === id)?.x ?? 0) + w,
+		ctx
+	);
+
+/** The left edge to column `x`, the right one stays (see setEdge) */
+export const setLeft = (
+	layout: GridLayout,
+	id: string,
+	x: number,
+	ctx: ILayoutOpsContext
+): ILayoutChange => setEdge(layout, id, "left", x, ctx);
 
 /** Full width */
 export const fullWidth = (
@@ -481,6 +590,18 @@ export const hide = (
 			if (it.active === el) it.active = it.els[0];
 		}
 		return done(g, "hidden", { el: ctx.label(el) });
+	});
+
+/** Hides an item with all its tabs, unless one of them always stays */
+export const hideItem = (
+	layout: GridLayout,
+	id: string,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		if (it.els.some((el) => hideBlocked(el))) return done(g, "nothing");
+		g.items = g.items.filter((i) => i !== it);
+		return done(g, "hidden", { el: ctx.title(it.els) });
 	});
 
 /** Adds an element that isn't on the page, at the bottom */
