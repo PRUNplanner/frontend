@@ -286,16 +286,12 @@
 	});
 
 	function isDeficitHabitationBuilding(ticker: string): boolean {
-		const building = buildingsMap.value[ticker];
-		if (!building?.habitations) return false;
+		const habitations = buildingsMap.value[ticker]?.habitations;
+		if (!habitations) return false;
 
 		return deficitWorkforceTypes.value.some(
 			(workforceType) =>
-				(building.habitations?.[
-					`${workforceType}s` as keyof NonNullable<
-						Building["habitations"]
-					>
-				] ?? 0) > 0
+				habitations[`${workforceType}s` as keyof typeof habitations] > 0
 		);
 	}
 
@@ -312,18 +308,6 @@
 
 		return r;
 	});
-
-	const xitTransferElements: ComputedRef<IXITTransferMaterial[]> = computed(
-		() =>
-			Object.values(totalMaterialsSorted.value)
-				.map((e) => ({
-					ticker: e.ticker,
-					value: e.amount,
-				}))
-				.sort((a, b) =>
-					a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
-				)
-	);
 
 	const totalMaterialsSorted: ComputedRef<
 		{
@@ -416,7 +400,7 @@
 	watchEffect(() => {
 		const run = startTotal();
 		// the sync part of calculateTotal reads the dependencies
-		void calculateTotal(xitTransferElements.value).then((total) => {
+		void calculateTotal(xitTransferElementsOverview.value).then((total) => {
 			if (run.isCurrent()) totalInformation.value = total;
 		});
 	});
@@ -668,7 +652,7 @@
 								v-for="mat in uniqueMaterials"
 								:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
 								class="text-center font-bold">
-								{{ formatAmount(totalMaterials[mat] ?? 0) }}
+								{{ formatAmount(totalMaterials[mat]) }}
 							</td>
 						</tr>
 					</tbody>

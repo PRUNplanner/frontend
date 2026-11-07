@@ -83,9 +83,7 @@
 	const root = useTemplateRef<HTMLElement>("root");
 	const pageWidth = ref(0);
 	const content = shallowRef<Record<string, number>>({});
-	const viewportHeight = ref(
-		typeof window === "undefined" ? 900 : window.innerHeight
-	);
+	const viewportHeight = ref(window.innerHeight);
 
 	const owners = new Map<Element, string>();
 	const parts = new Map<string, HTMLElement[]>();
@@ -149,10 +147,9 @@
 		schedule();
 	};
 	onMounted(() => {
-		if (root.value) {
-			pageWidth.value = root.value.clientWidth;
-			observer?.observe(root.value);
-		}
+		// the root always renders
+		pageWidth.value = root.value!.clientWidth;
+		observer?.observe(root.value!);
 		window.addEventListener("resize", onResize);
 	});
 	onBeforeUnmount(() => {

@@ -454,7 +454,7 @@ describe("PlanGrid", () => {
 	});
 
 	it("gives every item a title row while customising, without the fold", async () => {
-		const { wrapper, component } = await mountComponent(
+		const { wrapper } = await mountComponent(
 			PlanGrid,
 			{
 				layout: presetLayout("standard"),
@@ -490,5 +490,96 @@ describe("PlanGrid", () => {
 			box(wrapper, "i-empire").find("[data-body]").classes()
 		).toContain("overflow-visible");
 		height.mockRestore();
+	});
+
+	describe("parts that follow while scrolling", () => {
+		// Material I/O follows, Totals below it inside its columns: one stack
+		const following = (pinned = true): GridLayout => {
+			const g = presetLayout("standard");
+			g.items = g.items
+				.filter((i) => pinned || !i.pin)
+				.map((i) =>
+					i.id === "i-material-io" ? { ...i, follow: true } : i
+				);
+			return g;
+		};
+		const top = (
+			wrapper: Awaited<ReturnType<typeof mountGrid>>["wrapper"],
+			id: string
+		) => (box(wrapper, id).element as HTMLElement).style.top;
+
+		it("sticks the stack just below the band", async () => {
+			vi.stubGlobal("innerHeight", 1000);
+			const { wrapper } = await mountGrid({ layout: following() });
+			expect(
+				wrapper
+					.findAll("[data-follow]")
+					.map((f) => f.attributes("data-follow"))
+			).toEqual(["i-material-io", "i-material-io-totals"]);
+			expect(box(wrapper, "i-material-io").classes()).toContain("sticky");
+			// band 180 px + its gap, then the page's gap; Totals 200 + 16 px lower
+			expect(top(wrapper, "i-material-io")).toBe("212px");
+			expect(top(wrapper, "i-material-io-totals")).toBe("428px");
+			// the rest stays put
+			expect(box(wrapper, "i-production").classes()).not.toContain(
+				"sticky"
+			);
+		});
+
+		it("sticks below a cut band where it is cut", async () => {
+			vi.stubGlobal("innerHeight", 400);
+			const { wrapper } = await mountGrid({ layout: following() });
+			// cut at 160 px
+			expect(top(wrapper, "i-material-io")).toBe("192px");
+		});
+
+		it("sticks at the window's top without a band", async () => {
+			const { wrapper } = await mountGrid({ layout: following(false) });
+			expect(top(wrapper, "i-material-io")).toBe("16px");
+		});
+	});
+
+	it("still lays out without a ResizeObserver, at the unmeasured height", async () => {
+		vi.stubGlobal("ResizeObserver", undefined);
+		const { wrapper } = await mountGrid();
+		expect(box(wrapper, "i-empire").attributes("style")).toContain(
+			"height: 180px"
+		);
+	});
+
+	it("measures the parts still there when one left before the frame", async () => {
+		const frames: FrameRequestCallback[] = [];
+		vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+			frames.push(cb);
+			return 1;
+		});
+		const height = vi
+			.spyOn(HTMLElement.prototype, "offsetHeight", "get")
+			.mockReturnValue(300);
+		const layout = presetLayout("standard");
+		const { wrapper, setProps } = await mountGrid({ layout });
+		// Planet removed while its measuring waits for the frame
+		await setProps({
+			layout: {
+				...layout,
+				items: layout.items.filter((i) => i.id !== "i-planet"),
+			},
+		});
+		expect(box(wrapper, "i-planet").exists()).toBe(false);
+		frames.splice(0).forEach((cb) => cb(0));
+		await flushPromises();
+		expect(box(wrapper, "i-empire").attributes("style")).toContain(
+			"height: 602px"
+		);
+		height.mockRestore();
+	});
+
+	it("drops a waiting measurement when it unmounts", async () => {
+		const { wrapper } = await mountGrid();
+		window.dispatchEvent(new Event("resize"));
+		wrapper.unmount();
+		expect(cancelAnimationFrame).toHaveBeenCalledWith(1);
+		// the frame that still runs finds no grid and does nothing
+		await flushPromises();
 	});
 });

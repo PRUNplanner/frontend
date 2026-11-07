@@ -197,6 +197,13 @@ describe("PlanLayoutEditor", () => {
 		).toBe(1440);
 	});
 
+	it("measures the page once where there is no ResizeObserver", async () => {
+		vi.stubGlobal("ResizeObserver", undefined);
+		stageWidth = 1152;
+		const m = await mountEditor();
+		expect(m.wrapper.find("[data-zoom]").text()).toBe("Shown at 80 %");
+	});
+
 	describe("keyboard on a handle", () => {
 		it("moves with arrows, announces it and keeps the focus", async () => {
 			const m = await mountEditor();
@@ -260,6 +267,14 @@ describe("PlanLayoutEditor", () => {
 			expect(draft(m, "material-io").x).toBe(9);
 			expect(announce(m)).toBe("Undone");
 			expect(await savedCounts(m)).toMatchObject({ undo_count: 1 });
+		});
+
+		it("says nothing when there is nothing to undo", async () => {
+			const m = await mountEditor();
+			(m.component.vm as unknown as { undo: () => void }).undo();
+			await flushPromises();
+			expect(announce(m)).toBe("");
+			expect(await savedCounts(m)).toMatchObject({ undo_count: 0 });
 		});
 	});
 
@@ -471,6 +486,40 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			await pick(m, "production", "hide");
 			expect(draft(m, "production").els).not.toContain("popr");
+		});
+
+		it("changes nothing for a step it can't take", async () => {
+			const m = await mountEditor();
+			const layout = () =>
+				m.wrapper
+					.findComponent({ name: "PlanGrid" })
+					.props("layout") as GridLayout;
+			// Workforce shows two parts: Experts beside it
+			await pick(m, "experts", "page:tabs");
+			await pick(m, "experts", "beside:i-workforce");
+			const before = cloneLayout(layout());
+			const said = announce(m);
+			for (const [id, k] of [
+				// Production always stays
+				["production", "hide"],
+				// a group of 8 tabs makes no tab of another
+				["production", "tab:i-planet"],
+				["planet", "below:i-workforce"],
+				// nothing is shown with Planet
+				["planet", "share:+"],
+				["planet", "side:beside"],
+				// already at the left edge
+				["empire", "left"],
+				// a key the menu doesn't know
+				["planet", "nonsense"],
+			])
+				await pick(m, id, k);
+			expect(cloneLayout(layout())).toEqual(before);
+			expect(announce(m)).toBe(said);
+			expect(await savedCounts(m)).toMatchObject({
+				change_count: 1,
+				menu_count: 1,
+			});
 		});
 	});
 
@@ -752,6 +801,29 @@ describe("PlanLayoutEditor", () => {
 					.find("[data-item='i-workforce'] [data-item-hide]")
 					.attributes("aria-label")
 			).toBe("Hide Workforce & Experts");
+
+			// dragged onto its title bar: only a tab there
+			hitAt(
+				m.wrapper.find("[data-item='i-workforce'] [data-item-head]")
+					.element
+			);
+			await pointerdown(handle(m, "planet"), 100, 100);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 140, clientY: 140 })
+			);
+			await flushPromises();
+			expect(
+				m.wrapper
+					.find("[data-item='i-workforce'] [data-tab-target]")
+					.text()
+			).toBe("Drop to add Planet as a tab to Workforce & Experts");
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "workforce").els).toEqual([
+				"workforce",
+				"experts",
+				"planet",
+			]);
 		});
 
 		it("moves a placed element dragged from Elements; the first tab moves its group", async () => {
@@ -925,6 +997,87 @@ describe("PlanLayoutEditor", () => {
 				hidden_count: 1,
 				hidden_elements: ["experts"],
 			});
+		});
+
+		it("hides a tab or a part shown with another dropped on Elements, never Production", async () => {
+			const m = await mountEditor();
+			const panel = document.querySelector("[data-elements-panel]");
+			const press = async (el: DOMWrapper<Element>) => {
+				hitAt(panel);
+				await pointerdown(el, 100, 100, 0);
+				window.dispatchEvent(
+					new MouseEvent("pointermove", {
+						clientX: 140,
+						clientY: 140,
+					})
+				);
+				await flushPromises();
+			};
+			const drop = async () => {
+				window.dispatchEvent(new MouseEvent("pointerup"));
+				await flushPromises();
+			};
+			const tab = (id: string, el: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-tab="${el}"]`);
+			const dropText = () => m.wrapper.find("[data-drop-hide]").text();
+
+			// a tab out of its group
+			await press(tab("production", "supply-cart"));
+			expect(dropText()).toBe("Drop to hide Supply");
+			await drop();
+			expect(draft(m, "production").els).not.toContain("supply-cart");
+
+			// a part shown with another, from Elements: that part only
+			await pick(m, "material-io-totals", "below:i-material-io");
+			await press(
+				m.wrapper.find(
+					"[data-element-row='material-io-totals'] [data-drag]"
+				)
+			);
+			expect(dropText()).toBe("Drop to hide Material I/O totals");
+			await drop();
+			expect(draft(m, "material-io").els).toEqual(["material-io"]);
+
+			// Production, a tab of Planet now, stays
+			await pick(m, "production", "split");
+			await pick(m, "production", "tab:i-planet");
+			await press(tab("planet", "production"));
+			expect(dropText()).toBe("Production always stays on the page");
+			await drop();
+			expect(draft(m, "planet").els).toEqual(["planet", "production"]);
+		});
+
+		it("drops a tab out of its group on the right of a title bar beside the tab shown there", async () => {
+			const m = await mountEditor();
+			const head = m.wrapper.find(
+				"[data-item='i-planet'] [data-item-head]"
+			).element;
+			// a title bar 300 px wide from x 0: its right third from 200
+			vi.spyOn(head, "getBoundingClientRect").mockReturnValue({
+				left: 0,
+				width: 300,
+			} as DOMRect);
+			hitAt(head);
+			await pointerdown(
+				m.wrapper.find(
+					"[data-item='i-production'] [data-tab='repair-analysis']"
+				),
+				100,
+				100
+			);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 250, clientY: 140 })
+			);
+			await flushPromises();
+			expect(m.wrapper.find("[data-ghost]").text()).toBe(
+				"Repair beside Planet"
+			);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "planet").join).toEqual({
+				"repair-analysis": "beside",
+			});
+			expect(draft(m, "production").els).not.toContain("repair-analysis");
 		});
 
 		it("shows the outline, its badge and the snap line while resizing", async () => {
@@ -1306,6 +1459,43 @@ describe("PlanLayoutEditor", () => {
 			).toContain("A tab of Production");
 		});
 
+		it("shows a tab already on view, and keeps the newest highlight", async () => {
+			const m = await mountEditor();
+			const ring = (id: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] .ring-warning`).exists();
+			const show = (el: string) =>
+				m.wrapper
+					.find(`[data-element-row='${el}'] button`)
+					.trigger("click");
+			vi.useFakeTimers();
+			await show("planet");
+			expect(draft(m, "planet").active).toBe("planet");
+			expect(ring("planet")).toBe(true);
+			vi.advanceTimersByTime(1000);
+			await show("experts");
+			expect(ring("planet")).toBe(false);
+			// Planet's highlight runs out without ending Experts'
+			vi.advanceTimersByTime(500);
+			await flushPromises();
+			expect(ring("experts")).toBe(true);
+			vi.advanceTimersByTime(1000);
+			await flushPromises();
+			expect(ring("experts")).toBe(false);
+			vi.useRealTimers();
+		});
+
+		it("adds nothing that is on the page already", async () => {
+			const m = await mountEditor();
+			m.wrapper
+				.findComponent({ name: "PlanLayoutElementsPanel" })
+				.vm.$emit("add", "planet");
+			await flushPromises();
+			expect(announce(m)).toBe("");
+			expect(
+				button(m, "[data-undo]").attributes("disabled")
+			).toBeDefined();
+		});
+
 		it("toggles the panel", async () => {
 			const m = await mountEditor();
 			await button(m, "[data-elements-toggle]").trigger("click");
@@ -1422,8 +1612,21 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe(
 				"Material I/O is 704 px high, Material I/O totals below it"
 			);
+			// dragged again to the same height: nothing more
+			await dragBy(
+				m.wrapper.find("[data-split='material-io-totals']"),
+				0,
+				400,
+				{ target: null }
+			);
+			expect(draft(m, "material-io").joinSize).toEqual({
+				"material-io-totals": 704,
+			});
 			await pick(m, "material-io", "share:auto");
 			expect(draft(m, "material-io")).not.toHaveProperty("joinSize");
+			const said = announce(m);
+			await pick(m, "material-io", "share:auto");
+			expect(announce(m)).toBe(said);
 			await pick(m, "material-io", "share:+");
 			expect(await savedCounts(m)).toMatchObject({
 				drag_count: 1,
@@ -1582,6 +1785,18 @@ describe("PlanLayoutEditor", () => {
 					change_count: 1,
 				})
 			);
+		});
+
+		it("leaves Esc to an open menu", async () => {
+			const m = await mountEditor();
+			await key(m, "material-io", "ArrowLeft");
+			await key(m, "planet", "Enter");
+			await m.wrapper
+				.find("[data-layout-editor]")
+				.trigger("keydown", { key: "Escape" });
+			await flushPromises();
+			expect(mocks.confirm).not.toHaveBeenCalled();
+			expect(m.component.emitted("close")).toBeUndefined();
 		});
 
 		it("undoes with the button and the toast, resets to Standard", async () => {

@@ -329,28 +329,25 @@ export function usePlanLayoutEditor(
 	function hideTarget(it: GridItem): ElementId | null {
 		return ops.hideTabBlocked(it, it.active) ? null : it.active;
 	}
-	/** The hide button on a title bar */
+	/** The hide button on a title bar (shown only when its tab can go) */
 	function hideNow(id: string): void {
-		const el = hideTarget(itemOf(id)!);
-		if (el) hide(id, el, "button");
+		hide(id, itemOf(id)!.active, "button");
 	}
 	/** Over Elements: what a drop there hides, or why it can't */
 	const hideDrop = computed(() => {
 		const d = drag.value;
 		if (!d?.hide) return null;
-		// a whole item, or a tab (or an element shown with another) out of one
-		const it = d.id ? itemOf(d.id) : undefined;
-		const from = d.from ? itemOf(d.from) : undefined;
-		const blocked = it
+		// a whole item, or a tab (or an element shown with another) out of
+		// one: only those drop on Elements
+		const it = itemOf(d.id ?? d.from!)!;
+		const blocked = d.id
 			? it.els.map((el) => ops.hideBlocked(el)).find(Boolean)
-			: from
-				? ops.hideTabBlocked(from, d.el)
-				: ops.hideBlocked(d.el);
-		const name = it
+			: ops.hideTabBlocked(it, d.el);
+		const name = d.id
 			? title(it)
-			: from && !from.join?.[d.el]
-				? tabLabel(from, d.el)
-				: label(d.el);
+			: it.join?.[d.el]
+				? label(d.el)
+				: tabLabel(it, d.el);
 		return blocked
 			? { blocked: true, text: t(blocked) }
 			: { blocked: false, text: t("plan.layout.drop_hide", { name }) };
@@ -366,7 +363,9 @@ export function usePlanLayoutEditor(
 	let colsFrom: GridLayout | null = null;
 	function setCols(n: number): void {
 		const from = colsFrom ?? draft.value;
-		if (apply(ops.setCols(from, n, ctx()))) colsFrom = from;
+		// a column change always changes the layout
+		apply(ops.setCols(from, n, ctx()));
+		colsFrom = from;
 	}
 	function setGap(gap: number): void {
 		apply(ops.setGap(draft.value, gap, ctx()));

@@ -18,6 +18,7 @@ import {
 	empires,
 	errors,
 	lastTitle,
+	lastToast,
 	mocks,
 	mountView,
 	newPlan,
@@ -170,6 +171,30 @@ describe("PlanView", () => {
 					.find("button[aria-label='plan.history.undo']")
 					.attributes("disabled")
 			).toBeDefined();
+		});
+
+		it("renames once when the field loses the focus right after Enter", async () => {
+			const { wrapper } = await mountView();
+			await wrapper
+				.find("button[aria-label='plan.header.rename']")
+				.trigger("click");
+			const input = wrapper.find("input[aria-label='plan.header.name']");
+			await input.setValue("That one");
+
+			input.element.dispatchEvent(
+				new KeyboardEvent("keydown", { key: "Enter", bubbles: true })
+			);
+			input.element.dispatchEvent(
+				new FocusEvent("focusout", { bubbles: true })
+			);
+			await flushPromises();
+			expect(wrapper.find("h1").text()).toBe("That one");
+
+			// one rename: one undo brings the old name back
+			await wrapper
+				.find("button[aria-label='plan.history.undo']")
+				.trigger("click");
+			expect(wrapper.find("h1").text()).toBe("EW COF RAT DW C");
 		});
 
 		it("does not start a shared plan's copy in rename mode", async () => {
@@ -624,6 +649,25 @@ describe("PlanView", () => {
 			await flushPromises();
 			expect(wrapper.find("[data-layout-editor]").exists()).toBe(false);
 			expect(showAll()).toBe(true);
+		});
+
+		it("tracks customising the Custom Layout in use as such", async () => {
+			sessionStorage.setItem(
+				"prunplanner:planLayout:v1",
+				JSON.stringify({
+					v: 1,
+					preset: "custom",
+					custom: stackedLayout(),
+					folded: [],
+				})
+			);
+			const { wrapper } = await mountView();
+			wrapper.findComponent(PlanLayoutMenu).vm.$emit("customise");
+			await flushPromises();
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_customise_open",
+				{ from: "custom" }
+			);
 		});
 	});
 
@@ -1829,6 +1873,68 @@ describe("PlanView", () => {
 				expect.objectContaining({ named: true, from: "preview" })
 			);
 		});
+
+		it("makes a version active from the list, reloading a list gone stale", async () => {
+			const { plan, listItem, active } = previewFixture();
+			respond({
+				GetPlan: () => plan,
+				GetPlanVersions: () => [active, listItem],
+				// pruned or deleted in another tab
+				ActivatePlanVersion: () => {
+					throw Object.assign(new Error("404"), { status: 404 });
+				},
+			});
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+			const loads = queryCalls("GetPlanVersions").length;
+
+			// not in the list: nothing to activate
+			await emitFrom(wrapper, PlanSaveControl, "activate", "gone-uuid");
+			expect(queryCalls("ActivatePlanVersion")).toEqual([]);
+
+			await emitFrom(wrapper, PlanSaveControl, "activate", listItem.uuid);
+			expect(queryCalls("ActivatePlanVersion")[0][1]).toMatchObject({
+				versionUuid: listItem.uuid,
+			});
+			expect(lastToast()).toEqual([
+				"plan.versions.gone",
+				{ type: "error" },
+			]);
+			expect(queryCalls("GetPlanVersions")).toHaveLength(loads + 1);
+		});
+
+		it("deletes a version not previewed, the edits stay", async () => {
+			const { plan, listItem, active } = previewFixture();
+			respond({
+				GetPlan: () => plan,
+				GetPlanVersions: () => [active, listItem],
+				DeletePlanVersion: () => undefined,
+			});
+			mocks.confirm.mockResolvedValue(true);
+			const { wrapper } = await mountView(
+				{ planData: plan },
+				{ login: true }
+			);
+			await emitFrom(
+				wrapper,
+				PlanProduction,
+				"update:building:amount",
+				0,
+				5
+			);
+
+			await emitFrom(wrapper, PlanSaveControl, "delete", "gone-uuid");
+			expect(queryCalls("DeletePlanVersion")).toEqual([]);
+
+			await emitFrom(wrapper, PlanSaveControl, "delete", listItem.uuid);
+			expect(queryCalls("DeletePlanVersion")).toHaveLength(1);
+			const control = wrapper.findComponent(PlanSaveControl);
+			expect(control.props("versions")).toEqual([active]);
+			expect(control.props("modified")).toBe(true);
+			expect(buildingAmounts(wrapper).EXT).toBe(5);
+		});
 	});
 
 	it("opens the sharing of a saved plan and closes it again", async () => {
@@ -1944,6 +2050,46 @@ describe("PlanView", () => {
 				true
 			);
 			expect(bar.find("[data-save]").exists()).toBe(true);
+		});
+
+		it("shows the bar for a new plan while it saves, after it failed and once edited", async () => {
+			let fail: (err: unknown) => void = () => {};
+			respond({
+				CreatePlan: () =>
+					new Promise((_, reject) => {
+						fail = reject;
+					}),
+			});
+			vi.spyOn(console, "error").mockImplementation(() => {});
+			const { wrapper } = await mountView(
+				{ planData: { ...draftPlan(), plan_name: "Mine" } },
+				{ login: true }
+			);
+			const bar = () => wrapper.find("[data-phone-save]");
+			// nothing to save yet
+			expect(bar().exists()).toBe(false);
+
+			// Save from the header's control
+			wrapper.findComponent(PlanSaveControl).vm.$emit("save");
+			await flushPromises();
+			expect(bar().exists()).toBe(true);
+
+			fail(new Error("offline"));
+			await flushPromises();
+			expect(bar().findComponent(PlanSaveControl).props("failed")).toBe(
+				true
+			);
+
+			await emitFrom(
+				wrapper,
+				PlanProduction,
+				"update:building:amount",
+				0,
+				5
+			);
+			expect(bar().findComponent(PlanSaveControl).props("modified")).toBe(
+				true
+			);
 		});
 	});
 });
