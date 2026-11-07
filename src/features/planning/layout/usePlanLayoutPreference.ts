@@ -38,9 +38,7 @@ export function usePlanLayoutPreference(
 	const layout: ComputedRef<GridLayout> = computed(() =>
 		choice.value === "custom" && custom.value
 			? custom.value
-			: presetLayout(
-					choice.value === "custom" ? "standard" : choice.value
-				)
+			: presetLayout("standard")
 	);
 
 	function persist(): void {

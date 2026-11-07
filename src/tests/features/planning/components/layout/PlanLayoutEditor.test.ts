@@ -1431,6 +1431,78 @@ describe("PlanLayoutEditor", () => {
 			});
 		});
 
+		it("sizes two beside each other in columns; Esc and a cancel put the line back", async () => {
+			// Material I/O and its totals beside each other, all 12 columns
+			const custom = cloneLayout(presetLayout("standard"));
+			custom.items = custom.items.filter(
+				(i) => i.els[0] !== "material-io-totals"
+			);
+			const io = custom.items.find((i) => i.els[0] === "material-io")!;
+			Object.assign(io, {
+				els: ["material-io", "material-io-totals"],
+				join: { "material-io-totals": "beside" },
+				x: 0,
+				w: 12,
+				y: 99,
+			});
+			const m = await mountEditor({
+				stored: { v: 1, preset: "custom", custom, folded: [] },
+			});
+			const cols = () =>
+				draft(m, "material-io").joinSize?.["material-io-totals"];
+			await pick(m, "material-io", "page:tabs");
+			expect(option(m, "material-io", "share:auto")).toMatchObject({
+				checked: true,
+			});
+			await pick(m, "material-io", "share:+");
+			const n = cols()!;
+			expect(n).toBeGreaterThan(0);
+			await pick(m, "material-io", "share:-");
+			expect(cols()).toBe(n - 1);
+			await pick(m, "material-io", "share:auto");
+			expect(cols()).toBeUndefined();
+
+			const line = m.wrapper.find("[data-split='material-io-totals']");
+			// only the main button presses the line
+			await pointerdown(line, 100, 100, 2);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 100 + 2 * STEP })
+			);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(cols()).toBeUndefined();
+			// a press without a move changes nothing
+			await pointerdown(line, 100, 100);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(cols()).toBeUndefined();
+
+			// Esc mid-drag, then a cancel mid-drag: the line stays where it was
+			for (const stop of [
+				() =>
+					window.dispatchEvent(
+						new KeyboardEvent("keydown", { key: "Escape" })
+					),
+				() => window.dispatchEvent(new MouseEvent("pointercancel")),
+			]) {
+				await pointerdown(line, 100, 100);
+				window.dispatchEvent(
+					new MouseEvent("pointermove", { clientX: 100 - 2 * STEP })
+				);
+				await flushPromises();
+				expect(cols()).toBeDefined();
+				stop();
+				await flushPromises();
+				expect(cols()).toBeUndefined();
+				window.dispatchEvent(new MouseEvent("pointerup"));
+				await flushPromises();
+				expect(cols()).toBeUndefined();
+			}
+
+			await dragBy(line, -2 * STEP, 0, { target: null });
+			expect(cols()).toBeGreaterThan(0);
+		});
+
 		it("asks before replacing an existing Custom Layout", async () => {
 			const custom = wideLayout();
 			const m = await mountEditor({

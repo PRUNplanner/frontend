@@ -1133,8 +1133,7 @@ export function usePlanLayoutEditor(
 			} else {
 				const now =
 					it.joinSize?.[el] ??
-					Math.round((hostBox(id, host)?.height ?? 0) / env.zoom()) ??
-					0;
+					Math.round((hostBox(id, host)?.height ?? 0) / env.zoom());
 				value = ops.snapHeight(
 					Math.max(now, ELEMENTS[host].minH) + dir * H_STEP,
 					Math.max(H_MIN, ELEMENTS[host].minH)

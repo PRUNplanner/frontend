@@ -609,6 +609,17 @@ describe("PlanView", () => {
 				.vm.$emit("select", "open:workforce");
 			await flushPromises();
 			expect(showAll()).toBe(true);
+			// while customising, Ctrl/Cmd+Z undoes the layout change
+			expect(press({ key: "z", ctrlKey: true }).defaultPrevented).toBe(
+				true
+			);
+			await flushPromises();
+			expect(showAll()).toBe(false);
+			wrapper
+				.find("[data-item='i-workforce']")
+				.findComponent({ name: "PDropdown" })
+				.vm.$emit("select", "open:workforce");
+			await flushPromises();
 			await wrapper.find("[data-save]").trigger("click");
 			await flushPromises();
 			expect(wrapper.find("[data-layout-editor]").exists()).toBe(false);
