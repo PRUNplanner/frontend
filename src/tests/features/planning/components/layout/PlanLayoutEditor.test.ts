@@ -1428,8 +1428,9 @@ describe("PlanLayoutEditor", () => {
 		it("notes what narrower screens rearrange", async () => {
 			const m = await mountEditor();
 			expect(m.wrapper.find("[data-auto-note]").exists()).toBe(false);
+			// a count per width, each width that rearranges something
 			expect(m.wrapper.find("[data-narrower-note]").text()).toMatch(
-				/^On narrower screens \d+ items? (is|are) rearranged/
+				/^Rearranged automatically on narrower screens, to keep their minimum width: \d+ items? at (1280|1024) px(, \d+ items? at 1024 px)?\.$/
 			);
 		});
 

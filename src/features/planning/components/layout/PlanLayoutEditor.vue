@@ -430,10 +430,16 @@
 				{{ t("plan.layout.band_note") }}
 			</p>
 			<p
-				v-if="narrower"
+				v-if="narrower.length"
 				class="basis-full text-xs text-muted"
 				data-narrower-note>
-				{{ t("plan.layout.narrower_note", { n: narrower }, narrower) }}
+				{{
+					t("plan.layout.narrower_note", {
+						list: narrower
+							.map((r) => t("plan.layout.narrower_at", r, r.n))
+							.join(", "),
+					})
+				}}
 			</p>
 			<p
 				v-if="phoneAuto"
@@ -781,7 +787,7 @@
 			<PlanLayoutElementsPanel
 				v-if="refPanel"
 				:layout="draft"
-				:fresh="pref.added.value"
+				:fresh="startFrom ? [] : pref.added.value"
 				:logged-in="loggedIn"
 				:where="editor.where"
 				:drop="hideDrop"

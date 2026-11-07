@@ -75,6 +75,12 @@ export interface ICustomLayout {
 	known?: ElementId[];
 }
 
+/** Both arrangements of Custom Layout as edited; no Phone one is the automatic one */
+export interface IArrangements {
+	wide: GridLayout;
+	phone: GridLayout | null;
+}
+
 /** Folded parts, per arrangement */
 export type FoldedByArrangement = Record<Arrangement, ElementId[]>;
 

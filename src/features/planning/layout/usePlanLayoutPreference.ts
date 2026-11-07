@@ -6,6 +6,7 @@ import type {
 	ElementId,
 	FoldedByArrangement,
 	GridLayout,
+	IArrangements,
 	ICustomLayout,
 } from "@/features/planning/layout/planLayout.types";
 import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
@@ -97,10 +98,7 @@ export function usePlanLayoutPreference(
 	}
 
 	/** Saves Custom Layout (Wide, and Phone or none) and uses it */
-	function saveCustom(next: {
-		wide: GridLayout;
-		phone: GridLayout | null;
-	}): void {
+	function saveCustom(next: IArrangements): void {
 		custom.value = {
 			wide: normaliseLayout(next.wide),
 			...(next.phone && { phone: normaliseLayout(next.phone, "phone") }),

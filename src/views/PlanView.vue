@@ -707,7 +707,11 @@
 				:folded="layoutPref.folded.value"
 				:tabs="grid.tabs"
 				:summaries="foldSummaries"
-				:fresh="layoutPref.added.value"
+				:fresh="
+					layoutPref.choice.value === 'custom'
+						? layoutPref.added.value
+						: []
+				"
 				@fold="grid.fold"
 				@tab="grid.showTab"
 				@phone="

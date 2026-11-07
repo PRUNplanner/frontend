@@ -28,6 +28,7 @@ import type {
 	GridItem,
 	GridLayout,
 	HeightMode,
+	IArrangements,
 	JoinSide,
 	ILayoutChange,
 	IPackResult,
@@ -85,13 +86,8 @@ type How = "drag" | "menu" | "keys" | "button";
 type Edge = "w" | "h" | "wh" | "l";
 type Region = "band" | "page";
 
-/** Both arrangements being edited; no Phone one is the automatic one */
-interface IDrafts {
-	wide: GridLayout;
-	phone: GridLayout | null;
-}
 /** An undo step: both arrangements, and the one it was made in */
-interface IHistoryEntry extends IDrafts {
+interface IHistoryEntry extends IArrangements {
 	arrangement: Arrangement;
 }
 
@@ -171,7 +167,7 @@ export function usePlanLayoutEditor(
 	// customising a preset starts from a copy of it
 	const startFrom = startChoice === "custom" ? null : startChoice;
 	const startPhone = startFrom === null ? pref.custom.value?.phone : null;
-	const drafts: Ref<IDrafts> = ref({
+	const drafts: Ref<IArrangements> = ref({
 		wide: cloneLayout(pref.wide.value),
 		phone: startPhone ? cloneLayout(startPhone) : null,
 	});
@@ -478,19 +474,21 @@ export function usePlanLayoutEditor(
 	);
 
 	/**
-	 * Parts of Wide that narrower screens than the one edited on rearrange
-	 * (they take their minimum width there), for a note in the grid bar
+	 * How many parts of Wide each narrower screen than the one edited on
+	 * rearranges (they take their minimum width there), for a note in the
+	 * grid bar; widths that rearrange nothing are left out
 	 */
-	const narrower = computed(() => {
-		if (phone.value) return 0;
+	const narrower = computed<{ w: number; n: number }[]>(() => {
+		if (phone.value) return [];
 		const width = env.grid()?.gridWidth ?? 0;
 		const g = visibleLayout(drafts.value.wide, env.loggedIn());
-		const moved = new Set<string>();
-		for (const w of NARROWER.filter((n) => n < width)) {
-			const items = packLayout(g, w).items;
-			for (const id in items) if (items[id].auto) moved.add(id);
-		}
-		return moved.size;
+		return NARROWER.filter((w) => w < width)
+			.map((w) => ({
+				w,
+				n: Object.values(packLayout(g, w).items).filter((p) => p.auto)
+					.length,
+			}))
+			.filter((r) => r.n > 0);
 	});
 
 	/** Shows an element: switches its tab, scrolls to it, highlights it */
@@ -1141,7 +1139,7 @@ export function usePlanLayoutEditor(
 		side: JoinSide;
 		before: GridLayout;
 		// both arrangements when pressed, put back by Esc
-		state: IDrafts;
+		state: IArrangements;
 		x: number;
 		y: number;
 		// the first part's width (beside) or height (below) when pressed

@@ -662,6 +662,29 @@ describe("PlanView", () => {
 			).toBe(false);
 		});
 
+		it("tags nothing New while the page shows Standard", async () => {
+			const { custom } = presetWithout("experts");
+			sessionStorage.setItem(
+				"prunplanner:planLayout:v1",
+				JSON.stringify({
+					v: 1,
+					preset: "standard",
+					custom: {
+						wide: custom,
+						known: ELEMENT_IDS.filter((e) => e !== "experts"),
+					},
+					folded: [],
+				})
+			);
+			const { wrapper } = await mountView();
+			// the toast is about Custom Layout; Standard's parts aren't new
+			expect(mocks.toast).toHaveBeenCalledWith(
+				"plan.layout.new_toast",
+				expect.anything()
+			);
+			expect(wrapper.find("[data-fresh]").exists()).toBe(false);
+		});
+
 		it("opens customise mode and tracks it", async () => {
 			const { wrapper } = await mountView();
 			wrapper.findComponent(PlanLayoutMenu).vm.$emit("customise");

@@ -15,7 +15,7 @@
 	import { ELEMENT_IDS, ELEMENTS } from "@/features/planning/layout/elements";
 
 	// UI
-	import { PButton, PIcon } from "@/ui";
+	import { PButton, PIcon, PTag } from "@/ui";
 	import { DragIndicatorSharp } from "@vicons/material";
 
 	/**
@@ -121,12 +121,12 @@
 							<span class="text-ink-strong truncate">
 								{{ t(ELEMENTS[row.el].label) }}
 							</span>
-							<span
+							<PTag
 								v-if="fresh.includes(row.el)"
-								class="shrink-0 px-1.5 rounded bg-link/15 text-xs font-medium text-link"
-								data-fresh>
-								{{ t("plan.layout.new_tag") }}
-							</span>
+								size="sm"
+								class="shrink-0"
+								:value="t('plan.layout.new_tag')"
+								data-fresh />
 						</span>
 						<span class="block text-xs text-muted truncate">
 							{{ where(row.el) }}

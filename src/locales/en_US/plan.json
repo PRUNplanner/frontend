@@ -1058,6 +1058,7 @@
 		"phone_auto": "Automatic: Wide as a phone shows it, every item stacked in order, small ones two per row. Change anything to arrange Phone yourself.",
 		"phone_own": "Your own phone arrangement: changes to Wide no longer show here.",
 		"back_to_auto": "Back to automatic",
-		"narrower_note": "On narrower screens {n} item is rearranged automatically to keep its minimum width. | On narrower screens {n} items are rearranged automatically to keep their minimum width."
+		"narrower_note": "Rearranged automatically on narrower screens, to keep their minimum width: {list}.",
+		"narrower_at": "{n} item at {w} px | {n} items at {w} px"
 	}
 }

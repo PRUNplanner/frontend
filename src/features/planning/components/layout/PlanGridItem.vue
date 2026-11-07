@@ -37,7 +37,7 @@
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
 
 	// UI
-	import { PIcon } from "@/ui";
+	import { PIcon, PTag } from "@/ui";
 	import { ExpandMoreSharp } from "@vicons/material";
 
 	/**
@@ -250,12 +250,12 @@
 					]">
 					{{ tabLabel(active) }}
 				</h2>
-				<span
+				<PTag
 					v-if="fresh"
-					class="shrink-0 px-1.5 rounded bg-link/15 text-xs font-medium text-link"
-					data-fresh>
-					{{ t("plan.layout.new_tag") }}
-				</span>
+					size="sm"
+					class="shrink-0"
+					:value="t('plan.layout.new_tag')"
+					data-fresh />
 				<!-- folded, where the part stands: "COGC Metallurgy · 3 permits" -->
 				<span
 					v-if="folded && summary"
