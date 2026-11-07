@@ -60,6 +60,24 @@ export interface GridLayout {
 	table?: ElementId[];
 }
 
+/** Which arrangement of Custom Layout is on screen: wide screens or a phone */
+export type Arrangement = "wide" | "phone";
+
+/**
+ * The player's one Custom Layout: an arrangement for wide screens and,
+ * when they made one, for phones (without it a phone stacks Wide), and the
+ * elements it has seen (not set: LAUNCH_ELEMENTS); an element of the
+ * catalogue it hasn't seen is new and joins it at the bottom
+ */
+export interface ICustomLayout {
+	wide: GridLayout;
+	phone?: GridLayout;
+	known?: ElementId[];
+}
+
+/** Folded parts, per arrangement */
+export type FoldedByArrangement = Record<Arrangement, ElementId[]>;
+
 /** How a part follows while scrolling: px below its stack's head, px it may slide */
 export interface IFollow {
 	offset: number;

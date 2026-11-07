@@ -32,9 +32,12 @@
 		loggedIn,
 		where,
 		drop = null,
+		fresh = [],
 	} = defineProps<{
 		layout: GridLayout;
 		loggedIn: boolean;
+		// elements new to Custom Layout this session, tagged New
+		fresh?: ElementId[];
 		where: (el: ElementId) => string;
 		// a part of the page over it: what a drop hides, or why not
 		drop?: { blocked: boolean; text: string } | null;
@@ -114,8 +117,16 @@
 						<PIcon :size="16"><DragIndicatorSharp /></PIcon>
 					</span>
 					<span class="flex-1 min-w-0">
-						<span class="block text-ink-strong truncate">
-							{{ t(ELEMENTS[row.el].label) }}
+						<span class="flex items-center gap-1.5 min-w-0">
+							<span class="text-ink-strong truncate">
+								{{ t(ELEMENTS[row.el].label) }}
+							</span>
+							<span
+								v-if="fresh.includes(row.el)"
+								class="shrink-0 px-1.5 rounded bg-link/15 text-xs font-medium text-link"
+								data-fresh>
+								{{ t("plan.layout.new_tag") }}
+							</span>
 						</span>
 						<span class="block text-xs text-muted truncate">
 							{{ where(row.el) }}

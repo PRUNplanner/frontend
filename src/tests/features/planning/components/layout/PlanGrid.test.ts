@@ -200,7 +200,45 @@ describe("PlanGrid", () => {
 		expect(box(wrapper, "i-production").attributes("style")).toContain(
 			"width: 700px"
 		);
+		// and says so: the phone arrangement is the one to show
+		expect(wrapper.emitted("phone")).toEqual([[true]]);
 		width.mockRestore();
+	});
+
+	it("says a wide page is no phone, and nothing at a set width", async () => {
+		const width = vi
+			.spyOn(HTMLElement.prototype, "clientWidth", "get")
+			.mockReturnValue(1200);
+		const { wrapper } = await mountComponent(
+			PlanGrid,
+			{ layout: stackedLayout(), folded: [] },
+			{ setup: provideContext(planViewContext()) }
+		);
+		await flushPromises();
+		expect(wrapper.emitted("phone")).toEqual([[false]]);
+		const fixed = await mountGrid({ width: 390 });
+		await flushPromises();
+		expect(fixed.wrapper.emitted("phone")).toBeUndefined();
+		width.mockRestore();
+	});
+
+	it("tags parts new to Custom Layout", async () => {
+		const { wrapper } = await mountComponent(
+			PlanGrid,
+			{
+				layout: presetLayout("standard"),
+				folded: [],
+				width: 1440,
+				fresh: ["experts"],
+			},
+			{ setup: provideContext(planViewContext()) }
+		);
+		expect(box(wrapper, "i-experts").find("[data-fresh]").exists()).toBe(
+			true
+		);
+		expect(box(wrapper, "i-planet").find("[data-fresh]").exists()).toBe(
+			false
+		);
 	});
 
 	it("folds an item to its title row and emits it", async () => {

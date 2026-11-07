@@ -325,6 +325,8 @@ export interface IAnalyticsEventProperties {
 		gap_px: number;
 		// saved over an existing Custom Layout
 		is_replacing: boolean;
+		// Phone arranged by hand, not automatic
+		has_phone_layout: boolean;
 		store: "session";
 	};
 	"plan:layout_cancel": ILayoutSessionProperties;

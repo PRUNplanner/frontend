@@ -7,6 +7,7 @@
 		ref,
 		shallowRef,
 		useTemplateRef,
+		watch,
 	} from "vue";
 
 	// Types & Interfaces
@@ -26,7 +27,10 @@
 		followStacks,
 		gridMeasureKey,
 	} from "@/features/planning/layout/planGrid.util";
-	import { BAND_STICKY_SHARE } from "@/features/planning/layout/planLayout.constants";
+	import {
+		BAND_STICKY_SHARE,
+		PHONE_WIDTH,
+	} from "@/features/planning/layout/planLayout.constants";
 	import { hostOf, tabEls } from "@/features/planning/layout/tabs";
 
 	// Components
@@ -45,6 +49,7 @@
 		folded,
 		tabs = {},
 		summaries = {},
+		fresh = [],
 		width = undefined,
 		editing = false,
 	} = defineProps<{
@@ -54,6 +59,8 @@
 		tabs?: Record<string, ElementId>;
 		// what a folded part says after its title, per element
 		summaries?: Partial<Record<ElementId, string>>;
+		// elements new to the layout this session: tagged "New"
+		fresh?: ElementId[];
 		// a preview width instead of the page's
 		width?: number;
 		editing?: boolean;
@@ -64,6 +71,9 @@
 		(e: "tab", item: string, el: ElementId): void;
 		// customising: the line between a tab's two pressed
 		(e: "split", item: string, el: ElementId, ev: PointerEvent): void;
+		// the page's grid is a phone's (below 760 px) or not: which
+		// arrangement it shows
+		(e: "phone", value: boolean): void;
 	}>();
 
 	defineSlots<{
@@ -159,6 +169,15 @@
 	});
 
 	const gridWidth = computed(() => width ?? (pageWidth.value || 1280));
+	// the page's own grid (not a preview) tells which arrangement fits it
+	watch(
+		() =>
+			width || !pageWidth.value ? null : pageWidth.value < PHONE_WIDTH,
+		(phone) => phone !== null && emit("phone", phone),
+		{ immediate: true }
+	);
+	const isFresh = (it: GridItem): boolean =>
+		it.els.some((e) => fresh.includes(e));
 	const foldedSet = computed(() => new Set(folded));
 	const pack = computed(() =>
 		packLayout(layout, gridWidth.value, content.value, folded)
@@ -249,6 +268,7 @@
 						:active="shownTab(it)"
 						:folded="isFolded(it, foldedSet)"
 						:summary="summaryOf(it)"
+						:fresh="isFresh(it)"
 						:editing="editing"
 						:gap="layout.gap"
 						@fold="(v: boolean) => emit('fold', it.els[0], v)"
@@ -284,6 +304,7 @@
 				:active="shownTab(it)"
 				:folded="isFolded(it, foldedSet)"
 				:summary="summaryOf(it)"
+				:fresh="isFresh(it)"
 				:editing="editing"
 				:gap="layout.gap"
 				:follow="followOf(it.id)"

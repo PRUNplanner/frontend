@@ -256,6 +256,17 @@ describe("PlanConstructionCart", () => {
 		expect(materialSums(wrapper)).toEqual(["14", "14", "100"]);
 	});
 
+	it("wraps its two tables by their content, never a 50/50 split", async () => {
+		const { wrapper } = await mountCart();
+		const box = wrapper.find("[data-construction-tables]");
+		expect(box.classes()).toEqual(
+			expect.arrayContaining(["flex", "flex-wrap"])
+		);
+		expect(box.classes().some((c) => c.includes("grid-cols"))).toBe(false);
+		for (const part of box.findAll(":scope > *"))
+			expect(part.classes()).toContain("flex-[1_1_max-content]");
+	});
+
 	it("sums price, weight and volume of all materials", async () => {
 		const { wrapper } = await mountCart();
 

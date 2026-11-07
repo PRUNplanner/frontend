@@ -17,8 +17,6 @@
 		usePlanView,
 	} from "@/features/planning/usePlanView";
 	import {
-		PHONE_PREVIEW,
-		PREVIEW_WIDTHS,
 		usePlanLayoutEditor,
 		type IEditorGrid,
 	} from "@/features/planning/layout/usePlanLayoutEditor";
@@ -36,6 +34,7 @@
 		COLS_MAX,
 		COLS_MIN,
 		GAPS,
+		PHONE_EDIT_WIDTH,
 	} from "@/features/planning/layout/planLayout.constants";
 
 	// Components
@@ -43,7 +42,7 @@
 	import PlanLayoutElementsPanel from "@/features/planning/components/layout/PlanLayoutElementsPanel.vue";
 
 	// UI
-	import { PButton, PDropdown, PIcon, PSegmented } from "@/ui";
+	import { PButton, PCheckbox, PDropdown, PIcon, PSegmented } from "@/ui";
 	import {
 		AddSharp,
 		DragIndicatorSharp,
@@ -119,7 +118,7 @@
 		shown,
 		history,
 		startFrom,
-		refPreview,
+		refArrangement,
 		refPanel,
 		refConfirmReplace,
 		refAnnounce,
@@ -130,6 +129,9 @@
 		landing,
 		hideDrop,
 		phone,
+		phoneAuto,
+		unusedCount,
+		narrower,
 	} = editor;
 
 	// the dragged box: its name, or what a drop on a title bar does
@@ -160,8 +162,9 @@
 		},
 	});
 
-	const gridWidth = computed(
-		() => refPreview.value || rootWidth.value || 1280
+	// Phone is edited at a phone's width, Wide at the page's
+	const gridWidth = computed(() =>
+		phone.value ? PHONE_EDIT_WIDTH : rootWidth.value || 1280
 	);
 	// shown scaled to fit beside the panel, never wider than it is
 	const zoom = computed(() =>
@@ -170,15 +173,10 @@
 			: 1
 	);
 
-	const previewOptions = computed(() =>
-		PREVIEW_WIDTHS.map((w) => ({
-			value: w,
-			label:
-				w === 0
-					? t("plan.layout.preview_full")
-					: w === PHONE_PREVIEW
-						? t("plan.layout.preview_phone")
-						: String(w),
+	const arrangementOptions = computed(() =>
+		(["wide", "phone"] as const).map((a) => ({
+			value: a,
+			label: t(`plan.layout.arrangement.${a}`),
 		}))
 	);
 	const gapOptions = GAPS.map((g) => ({ value: g, label: String(g) }));
@@ -268,8 +266,13 @@
 </script>
 
 <template>
-	<div ref="root" class="relative" data-layout-editor @keydown.esc="onEsc">
-		<!-- the bar: name, preview width, Elements, Undo, Reset, Cancel, Save -->
+	<div
+		ref="root"
+		class="relative"
+		data-layout-editor
+		:data-tinted="pref.tinted.value || undefined"
+		@keydown.esc="onEsc">
+		<!-- the bar: name, Wide / Phone, Elements, Undo, Reset, Cancel, Save -->
 		<div
 			class="sticky top-0 z-1001 flex flex-wrap items-center gap-x-3 gap-y-2 mb-2 px-3 py-2 rounded border border-line bg-surface"
 			data-editor-bar>
@@ -298,16 +301,22 @@
 			</div>
 			<span class="flex-1" />
 			<PSegmented
-				v-model:value="refPreview"
+				:value="refArrangement"
 				size="sm"
-				:options="previewOptions"
-				:label="t('plan.layout.preview')" />
+				:options="arrangementOptions"
+				:label="t('plan.layout.arrangement.label')"
+				data-arrangement
+				@update:value="editor.setArrangement" />
 			<PButton
 				size="sm"
 				:pressed="refPanel"
 				data-elements-toggle
 				@click="refPanel = !refPanel">
-				{{ t("plan.layout.elements") }}
+				{{
+					unusedCount
+						? t("plan.layout.elements_count", { n: unusedCount })
+						: t("plan.layout.elements")
+				}}
 			</PButton>
 			<PButton
 				size="sm"
@@ -356,6 +365,7 @@
 			class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3 text-sm"
 			data-grid-bar>
 			<div
+				v-if="!phone"
 				class="flex items-center gap-1"
 				role="group"
 				:aria-label="t('plan.layout.columns')">
@@ -395,6 +405,18 @@
 					:label="t('plan.layout.gap')"
 					@update:value="(g: number) => editor.setGap(g)" />
 			</div>
+			<label
+				class="flex items-center gap-2"
+				:title="t('plan.layout.tint.description')"
+				data-tint>
+				<PCheckbox
+					:checked="pref.tinted.value"
+					size="sm"
+					@update:checked="(v?: boolean) => editor.setTinted(!!v)" />
+				<span class="text-muted-strong">{{
+					t("plan.layout.tint.name")
+				}}</span>
+			</label>
 			<span class="text-xs text-muted">{{ t("plan.layout.hint") }}</span>
 			<p
 				v-if="autoCount && !phone"
@@ -409,10 +431,29 @@
 				{{ t("plan.layout.band_note") }}
 			</p>
 			<p
-				v-if="phone"
+				v-if="narrower"
+				class="basis-full text-xs text-muted"
+				data-narrower-note>
+				{{ t("plan.layout.narrower_note", { n: narrower }, narrower) }}
+			</p>
+			<p
+				v-if="phoneAuto"
 				class="basis-full text-xs text-muted"
 				data-phone-note>
-				{{ t("plan.layout.phone_note") }}
+				{{ t("plan.layout.phone_auto") }}
+			</p>
+			<p
+				v-else-if="phone"
+				class="basis-full flex flex-wrap items-center gap-2 text-xs text-muted"
+				data-phone-note>
+				{{ t("plan.layout.phone_own") }}
+				<PButton
+					size="sm"
+					type="ghost"
+					data-back-to-auto
+					@click="editor.backToAuto">
+					{{ t("plan.layout.back_to_auto") }}
+				</PButton>
 			</p>
 		</div>
 
@@ -536,7 +577,6 @@
 						<!-- the grip: drag, or arrows and Enter -->
 						<template #lead="{ item }">
 							<span
-								v-if="!phone"
 								role="button"
 								tabindex="0"
 								class="flex items-center justify-center shrink-0 w-6 h-8 pointer-coarse:w-9 pointer-coarse:h-11 rounded-control text-muted hover:text-ink-strong outline-none focus-visible:ring-2 focus-visible:ring-link"
@@ -555,103 +595,92 @@
 							</span>
 						</template>
 						<template #actions="{ item }">
-							<template v-if="!phone">
-								<!-- the size, then what is set: icons, not words -->
-								<span
-									:id="`size-${item.id}`"
-									class="flex items-center gap-1.5 min-w-0 text-xs text-muted">
-									<span class="truncate" data-size>
-										{{
-											sizeLabel(
-												item,
-												pack?.items[item.id]
-											)
-										}}
-									</span>
-									<PIcon
-										v-for="st in states(item)"
-										:key="st.key"
-										:size="14"
-										role="img"
-										class="shrink-0"
-										:aria-label="
-											t(`plan.layout.state.${st.key}`)
-										"
-										:title="
-											t(`plan.layout.state.${st.key}`)
-										"
-										:data-state="st.key">
-										<component :is="st.icon" />
-									</PIcon>
+							<!-- the size, then what is set: icons, not words -->
+							<span
+								:id="`size-${item.id}`"
+								class="flex items-center gap-1.5 min-w-0 text-xs text-muted">
+								<span class="truncate" data-size>
+									{{ sizeLabel(item, pack?.items[item.id]) }}
 								</span>
+								<PIcon
+									v-for="st in states(item)"
+									:key="st.key"
+									:size="14"
+									role="img"
+									class="shrink-0"
+									:aria-label="
+										t(`plan.layout.state.${st.key}`)
+									"
+									:title="t(`plan.layout.state.${st.key}`)"
+									:data-state="st.key">
+									<component :is="st.icon" />
+								</PIcon>
+							</span>
+							<PButton
+								v-if="editor.hideTarget(item)"
+								size="sm"
+								type="ghost"
+								class="shrink-0 pointer-coarse:size-11"
+								:aria-label="
+									t('plan.layout.hide_named', {
+										name: editor.tabLabel(
+											item,
+											editor.hideTarget(item)!
+										),
+									})
+								"
+								:title="
+									t('plan.layout.hide_named', {
+										name: editor.tabLabel(
+											item,
+											editor.hideTarget(item)!
+										),
+									})
+								"
+								data-item-hide
+								@click="editor.hideNow(item.id)">
+								<template #icon
+									><VisibilityOffSharp
+								/></template>
+							</PButton>
+							<PDropdown
+								:show="refMenu === item.id"
+								:options="editor.menuOptions(item.id)"
+								placement="bottom-end"
+								@update:show="
+									(v: boolean) =>
+										editor.setMenu(
+											v
+												? item.id
+												: refMenu === item.id
+													? null
+													: refMenu
+										)
+								"
+								@select="
+									(key: string) => editor.onMenu(item.id, key)
+								">
 								<PButton
-									v-if="editor.hideTarget(item)"
 									size="sm"
 									type="ghost"
 									class="shrink-0 pointer-coarse:size-11"
 									:aria-label="
-										t('plan.layout.hide_named', {
-											name: editor.tabLabel(
-												item,
-												editor.hideTarget(item)!
-											),
+										t('plan.layout.item_menu', {
+											name: editor.title(item),
 										})
 									"
-									:title="
-										t('plan.layout.hide_named', {
-											name: editor.tabLabel(
-												item,
-												editor.hideTarget(item)!
-											),
-										})
-									"
-									data-item-hide
-									@click="editor.hideNow(item.id)">
+									data-item-menu>
 									<template #icon
-										><VisibilityOffSharp
+										><MoreHorizSharp
 									/></template>
 								</PButton>
-								<PDropdown
-									:show="refMenu === item.id"
-									:options="editor.menuOptions(item.id)"
-									placement="bottom-end"
-									@update:show="
-										(v: boolean) =>
-											editor.setMenu(
-												v
-													? item.id
-													: refMenu === item.id
-														? null
-														: refMenu
-											)
-									"
-									@select="
-										(key: string) =>
-											editor.onMenu(item.id, key)
-									">
-									<PButton
-										size="sm"
-										type="ghost"
-										class="shrink-0 pointer-coarse:size-11"
-										:aria-label="
-											t('plan.layout.item_menu', {
-												name: editor.title(item),
-											})
-										"
-										data-item-menu>
-										<template #icon
-											><MoreHorizSharp
-										/></template>
-									</PButton>
-								</PDropdown>
-							</template>
+							</PDropdown>
 						</template>
 
 						<!-- edges and corner: a thin line on hover, a grip in
 							the corner; the hit areas stay 22 px (36 on touch) -->
 						<template #item="{ item }">
 							<div
-								v-if="!phone"
 								class="absolute inset-0 z-10 pointer-events-none rounded"
 								:class="[
 									refFlash === item.id
@@ -753,6 +782,7 @@
 			<PlanLayoutElementsPanel
 				v-if="refPanel"
 				:layout="draft"
+				:fresh="pref.added.value"
 				:logged-in="loggedIn"
 				:where="editor.where"
 				:drop="hideDrop"

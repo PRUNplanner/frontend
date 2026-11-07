@@ -23,6 +23,7 @@ import {
 
 // Types & Interfaces
 import type {
+	Arrangement,
 	ElementId,
 	GridItem,
 	GridLayout,
@@ -47,6 +48,7 @@ import {
 } from "@/features/planning/layout/elements";
 import { packLayout } from "@/features/planning/layout/packLayout";
 import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
+import { phoneFromWide } from "@/features/planning/layout/phoneLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { snapHeightTo, snapTopTo } from "@/features/planning/layout/snapping";
 import { visibleLayout } from "@/features/planning/layout/usePlanGrid";
@@ -63,9 +65,8 @@ import {
 	tabsOf,
 } from "@/features/planning/layout/tabs";
 
-/** Preview widths of the editor; 0 is the page's own, 390 a phone */
-export const PREVIEW_WIDTHS = [0, 1600, 1440, 1280, 1024, 390] as const;
-export const PHONE_PREVIEW = 390;
+/** Narrower screens the Wide arrangement is checked at, in grid px */
+const NARROWER = [1280, 1024] as const;
 // a pointer moves this far before a press becomes a drag
 const DRAG_START = 6;
 // changes that get a toast with Undo (their announcement keys)
@@ -83,6 +84,16 @@ type How = "drag" | "menu" | "keys" | "button";
 /** An edge that resizes: right (w), bottom (h), the corner (wh), left (l) */
 type Edge = "w" | "h" | "wh" | "l";
 type Region = "band" | "page";
+
+/** Both arrangements being edited; no Phone one is the automatic one */
+interface IDrafts {
+	wide: GridLayout;
+	phone: GridLayout | null;
+}
+/** An undo step: both arrangements, and the one it was made in */
+interface IHistoryEntry extends IDrafts {
+	arrangement: Arrangement;
+}
 
 /** What the editor reads of its grid */
 export interface IEditorGrid {
@@ -159,9 +170,14 @@ export function usePlanLayoutEditor(
 	const startChoice = pref.choice.value;
 	// customising a preset starts from a copy of it
 	const startFrom = startChoice === "custom" ? null : startChoice;
-	const draft: Ref<GridLayout> = ref(cloneLayout(pref.layout.value));
-	const history: Ref<GridLayout[]> = ref([]);
-	const refPreview: Ref<number> = ref(0);
+	const startPhone = startFrom === null ? pref.custom.value?.phone : null;
+	const drafts: Ref<IDrafts> = ref({
+		wide: cloneLayout(pref.wide.value),
+		phone: startPhone ? cloneLayout(startPhone) : null,
+	});
+	const history: Ref<IHistoryEntry[]> = ref([]);
+	// edited on a wide screen: Phone shows at a phone's width
+	const refArrangement: Ref<Arrangement> = ref("wide");
 	const refPanel: Ref<boolean> = ref(true);
 	const refConfirmReplace: Ref<boolean> = ref(false);
 	const refAnnounce: Ref<string> = ref("");
@@ -177,7 +193,23 @@ export function usePlanLayoutEditor(
 	const drag = shallowRef<IEditorDrag | null>(null);
 	const resize = shallowRef<IEditorResize | null>(null);
 
-	const phone = computed(() => refPreview.value === PHONE_PREVIEW);
+	const phone = computed(() => refArrangement.value === "phone");
+	// the automatic phone arrangement: Wide as a phone shows it
+	const autoPhone = computed(() => phoneFromWide(drafts.value.wide));
+	/** Phone shown and not arranged yet: the first change arranges it */
+	const phoneAuto = computed(() => phone.value && !drafts.value.phone);
+	/** The arrangement on screen; a change to it lands in its draft */
+	const draft = computed<GridLayout>({
+		get: () =>
+			phone.value
+				? (drafts.value.phone ?? autoPhone.value)
+				: drafts.value.wide,
+		set: (v) => {
+			drafts.value = phone.value
+				? { ...drafts.value, phone: v }
+				: { ...drafts.value, wide: v };
+		},
+	});
 	const shown = computed(() => visibleLayout(draft.value, env.loggedIn()));
 
 	const label = (el: ElementId): string => t(ELEMENTS[el].label);
@@ -235,7 +267,7 @@ export function usePlanLayoutEditor(
 	): boolean {
 		if (change.announcement.key.endsWith(".nothing")) return false;
 		colsFrom = null;
-		history.value = [...history.value, draft.value];
+		remember();
 		draft.value = change.layout;
 		const text = [
 			t(change.announcement.key, change.announcement.params),
@@ -264,13 +296,23 @@ export function usePlanLayoutEditor(
 		return true;
 	}
 
+	/** Keeps both arrangements as they are now, for Undo */
+	function remember(): void {
+		history.value = [
+			...history.value,
+			{ ...drafts.value, arrangement: refArrangement.value },
+		];
+	}
+
 	let undos = 0;
 	function undo(): void {
 		const prev = history.value.at(-1);
 		if (!prev) return;
 		history.value = history.value.slice(0, -1);
 		colsFrom = null;
-		draft.value = prev;
+		// back in the arrangement the change was made in
+		drafts.value = { wide: prev.wide, phone: prev.phone };
+		refArrangement.value = prev.arrangement;
 		lastToast?.destroy();
 		announce(t("plan.layout.announce.undone"));
 		undos++;
@@ -362,6 +404,8 @@ export function usePlanLayoutEditor(
 	// never drifts an item wider step by step
 	let colsFrom: GridLayout | null = null;
 	function setCols(n: number): void {
+		// the phone arrangement has its two columns
+		if (phone.value) return;
 		const from = colsFrom ?? draft.value;
 		// a column change always changes the layout
 		apply(ops.setCols(from, n, ctx()));
@@ -376,14 +420,78 @@ export function usePlanLayoutEditor(
 	function setTab(id: string, el: ElementId): void {
 		// switching a tab is no change worth an undo, but it is saved
 		colsFrom = null;
-		draft.value = ops.setActive(draft.value, id, el, ctx()).layout;
+		// the automatic phone arrangement shows Wide's tabs
+		if (phoneAuto.value)
+			drafts.value = {
+				...drafts.value,
+				wide: ops.setActive(drafts.value.wide, id, el, ctx()).layout,
+			};
+		else draft.value = ops.setActive(draft.value, id, el, ctx()).layout;
 	}
+	/** Standard again: its Wide, and the automatic phone arrangement */
 	function reset(): void {
-		apply({
-			layout: presetLayout("standard"),
-			announcement: { key: "plan.layout.announce.reset", params: {} },
-		});
+		if (
+			apply({
+				layout: presetLayout("standard"),
+				announcement: { key: "plan.layout.announce.reset", params: {} },
+			})
+		)
+			drafts.value = { wide: presetLayout("standard"), phone: null };
 	}
+
+	/** Shows the Wide or the Phone arrangement */
+	function setArrangement(next: Arrangement): void {
+		if (next === refArrangement.value) return;
+		colsFrom = null;
+		refMenu.value = null;
+		refArrangement.value = next;
+		announce(t(`plan.layout.arrangement.${next}_shown`));
+	}
+
+	/**
+	 * Tinted parts on or off: kept at once, for both arrangements and
+	 * either layout, not part of the draft (Cancel keeps it)
+	 */
+	function setTinted(value: boolean): void {
+		pref.setTinted(value);
+		trackEvent("plan:layout_tint_toggle", { is_active: value });
+	}
+
+	/** Phone follows Wide again (undoable) */
+	function backToAuto(): void {
+		if (!drafts.value.phone) return;
+		colsFrom = null;
+		remember();
+		drafts.value = { ...drafts.value, phone: null };
+		announce(t("plan.layout.announce.phone_auto"));
+		count("button");
+	}
+
+	/** Elements not placed in the arrangement on screen, for the Elements button */
+	const unusedCount = computed(
+		() =>
+			ELEMENT_IDS.filter(
+				(e) =>
+					(env.loggedIn() || !ELEMENTS[e].loggedIn) &&
+					!draft.value.items.some((i) => i.els.includes(e))
+			).length
+	);
+
+	/**
+	 * Parts of Wide that narrower screens than the one edited on rearrange
+	 * (they take their minimum width there), for a note in the grid bar
+	 */
+	const narrower = computed(() => {
+		if (phone.value) return 0;
+		const width = env.grid()?.gridWidth ?? 0;
+		const g = visibleLayout(drafts.value.wide, env.loggedIn());
+		const moved = new Set<string>();
+		for (const w of NARROWER.filter((n) => n < width)) {
+			const items = packLayout(g, w).items;
+			for (const id in items) if (items[id].auto) moved.add(id);
+		}
+		return moved.size;
+	});
 
 	/** Shows an element: switches its tab, scrolls to it, highlights it */
 	function show(el: ElementId): void {
@@ -414,7 +522,7 @@ export function usePlanLayoutEditor(
 			setMenu(id);
 			return;
 		}
-		if (phone.value || !e.key.startsWith("Arrow")) return;
+		if (!e.key.startsWith("Arrow")) return;
 		e.preventDefault();
 		if (e.shiftKey) {
 			if (e.key === "ArrowLeft") setWidth(id, it.w - 1, "keys");
@@ -924,7 +1032,7 @@ export function usePlanLayoutEditor(
 		e.stopPropagation();
 		press = null;
 		rs = null;
-		if (sp) draft.value = sp.before;
+		if (sp) drafts.value = sp.state;
 		sp = null;
 		drag.value = null;
 		resize.value = null;
@@ -955,7 +1063,7 @@ export function usePlanLayoutEditor(
 		e: PointerEvent,
 		from: { id: string } | { el: ElementId }
 	): void {
-		if (phone.value || e.button !== 0) return;
+		if (e.button !== 0) return;
 		const el = "el" in from ? from.el : itemOf(from.id)!.els[0];
 		const placed =
 			"el" in from
@@ -984,7 +1092,7 @@ export function usePlanLayoutEditor(
 
 	/** Press on an item's edge or corner */
 	function startResize(e: PointerEvent, id: string, kind: Edge): void {
-		if (phone.value || e.button !== 0) return;
+		if (e.button !== 0) return;
 		const p = grid().pack.items[id];
 		const it = itemOf(id)!;
 		e.stopPropagation();
@@ -1032,6 +1140,8 @@ export function usePlanLayoutEditor(
 		el: ElementId;
 		side: JoinSide;
 		before: GridLayout;
+		// both arrangements when pressed, put back by Esc
+		state: IDrafts;
 		x: number;
 		y: number;
 		// the first part's width (beside) or height (below) when pressed
@@ -1053,7 +1163,7 @@ export function usePlanLayoutEditor(
 	function startSplit(id: string, el: ElementId, e: PointerEvent): void {
 		const it = itemOf(id);
 		const side = it?.join?.[el];
-		if (phone.value || e.button !== 0 || !it || !side) return;
+		if (e.button !== 0 || !it || !side) return;
 		e.stopPropagation();
 		e.preventDefault();
 		const box = hostBox(id, hostOf(it, el));
@@ -1062,6 +1172,7 @@ export function usePlanLayoutEditor(
 			el,
 			side,
 			before: draft.value,
+			state: drafts.value,
 			x: e.clientX,
 			y: e.clientY,
 			px0:
@@ -1112,7 +1223,7 @@ export function usePlanLayoutEditor(
 	function splitUp(): void {
 		const s = sp!;
 		sp = null;
-		draft.value = s.before;
+		drafts.value = s.state;
 		if (s.value === null) return;
 		if (apply(ops.setJoinSize(s.before, s.id, s.el, s.value, ctx()), s.id))
 			count("drag");
@@ -1397,7 +1508,7 @@ export function usePlanLayoutEditor(
 		stopListening();
 		press = null;
 		rs = null;
-		if (sp) draft.value = sp.before;
+		if (sp) drafts.value = sp.state;
 		sp = null;
 		drag.value = null;
 		resize.value = null;
@@ -1434,8 +1545,8 @@ export function usePlanLayoutEditor(
 			announce(t("plan.layout.replace_question"));
 			return;
 		}
-		const g = draft.value;
-		pref.saveCustom(g);
+		const { wide: g, phone: ph } = drafts.value;
+		pref.saveCustom({ wide: g, phone: ph });
 		const hidden = ELEMENT_IDS.filter(
 			(e) => !g.items.some((i) => i.els.includes(e))
 		);
@@ -1450,6 +1561,7 @@ export function usePlanLayoutEditor(
 			column_count: g.cols,
 			gap_px: g.gap,
 			is_replacing: replaced,
+			has_phone_layout: !!ph,
 			store: "session",
 			...summary(),
 		});
@@ -1498,7 +1610,7 @@ export function usePlanLayoutEditor(
 		shown,
 		history,
 		startFrom,
-		refPreview,
+		refArrangement,
 		refPanel,
 		refConfirmReplace,
 		refAnnounce,
@@ -1508,6 +1620,9 @@ export function usePlanLayoutEditor(
 		resize,
 		landing,
 		phone,
+		phoneAuto,
+		unusedCount,
+		narrower,
 		title,
 		tabLabel,
 		label,
@@ -1521,6 +1636,9 @@ export function usePlanLayoutEditor(
 		setTab,
 		toggleOpen,
 		reset,
+		setArrangement,
+		backToAuto,
+		setTinted,
 		onHandleKey,
 		menuOptions,
 		onMenu,

@@ -11,6 +11,7 @@ import type {
 // Util
 import {
 	FOLDED_HEIGHT,
+	PHONE_COLS,
 	PHONE_WIDTH,
 	UNMEASURED_HEIGHT,
 } from "@/features/planning/layout/planLayout.constants";
@@ -156,9 +157,10 @@ function stackFoldedRows(
  * minimum at this width, every item gets at least its minimum columns and
  * takes the highest free spot closest to its own column ("auto"), also in
  * free space above parts placed before. Below
- * the phone width all stack full width in order, items whose minimum fits
- * half the width two per row (a lone one full width). Then folded parts
- * of a row stack (above).
+ * the phone width a wide layout stacks full width in order, items whose
+ * minimum fits half the width two per row (a lone one full width); the
+ * phone arrangement (two columns) is placed like any grid. Then folded
+ * parts of a row stack (above).
  */
 function packRegion(
 	items: GridItem[],
@@ -171,7 +173,9 @@ function packRegion(
 ): IPackedRegion {
 	const { cols, gap } = layout;
 	const colWidth = (width - (cols - 1) * gap) / cols;
-	const phone = width < PHONE_WIDTH;
+	// a phone stacks a wide layout; the phone arrangement (two columns) is
+	// placed as the player arranged it
+	const phone = width < PHONE_WIDTH && cols > PHONE_COLS;
 	const half = Math.max(1, Math.floor(cols / 2));
 	const sky: number[] = new Array(cols).fill(0);
 	const skyAt = (x: number, w: number): number =>

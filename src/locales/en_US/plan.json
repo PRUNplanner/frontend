@@ -868,9 +868,6 @@
 		"item_title": "{name} + {n} tab | {name} + {n} tabs",
 		"starting_from": "starting from {name}",
 		"shown_at": "Shown at {n} %",
-		"preview": "Preview width",
-		"preview_full": "Full",
-		"preview_phone": "Phone",
 		"elements": "Elements",
 		"elements_hint": "Drag an element onto the page to place or move it, or add a hidden one at the bottom. Drop a part from the page here to hide it.",
 		"groups": {
@@ -921,7 +918,6 @@
 		"hint": "Drag a title bar to move, an edge to resize; on a title bar arrows move, Shift+arrows resize, Enter opens the menu.",
 		"auto_note": "{n} item is rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is. | {n} items are rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is.",
 		"band_note": "The parts pinned to top are taller than 40 % of the window: they stay at that height and scroll inside.",
-		"phone_note": "Phone preview: every item stacked in order, small ones two per row. View only.",
 		"handle": "Move {name}. Arrows move, Shift+arrows resize, Enter opens the menu.",
 		"item_menu": "{name}: layout menu",
 		"size_auto": "auto {n}/{cols} (yours {w})",
@@ -1046,7 +1042,22 @@
 			"view_table": "{el} shown as a table",
 			"view_cards": "{el} shown as cards",
 			"reset": "Reset to Standard",
-			"undone": "Undone"
-		}
+			"undone": "Undone",
+			"phone_auto": "Phone follows Wide again"
+		},
+		"new_tag": "New",
+		"new_toast": "New in your Custom Layout: {names}, at the bottom. Move or hide it while customising. | New in your Custom Layout: {names}, at the bottom. Move or hide them while customising.",
+		"elements_count": "Elements · {n}",
+		"arrangement": {
+			"label": "Arrangement",
+			"wide": "Wide",
+			"phone": "Phone",
+			"wide_shown": "Wide arrangement: for tablets and wider screens",
+			"phone_shown": "Phone arrangement: two columns, at a phone’s width"
+		},
+		"phone_auto": "Automatic: Wide as a phone shows it, every item stacked in order, small ones two per row. Change anything to arrange Phone yourself.",
+		"phone_own": "Your own phone arrangement: changes to Wide no longer show here.",
+		"back_to_auto": "Back to automatic",
+		"narrower_note": "On narrower screens {n} item is rearranged automatically to keep its minimum width. | On narrower screens {n} items are rearranged automatically to keep their minimum width."
 	}
 }

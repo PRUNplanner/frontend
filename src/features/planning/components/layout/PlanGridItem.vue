@@ -56,6 +56,7 @@
 		editing = false,
 		follow = null,
 		summary = "",
+		fresh = false,
 		gap = 16,
 	} = defineProps<{
 		item: GridItem;
@@ -67,6 +68,8 @@
 		follow?: { top: number; slide: number } | null;
 		// what the part says after its title while folded
 		summary?: string;
+		// new to the layout this session: tagged "New" after its title
+		fresh?: boolean;
 		// the grid's gap: a pair beside each other splits where columns meet
 		gap?: number;
 	}>();
@@ -247,6 +250,12 @@
 					]">
 					{{ tabLabel(active) }}
 				</h2>
+				<span
+					v-if="fresh"
+					class="shrink-0 px-1.5 rounded bg-link/15 text-xs font-medium text-link"
+					data-fresh>
+					{{ t("plan.layout.new_tag") }}
+				</span>
 				<!-- folded, where the part stands: "COGC Metallurgy · 3 permits" -->
 				<span
 					v-if="folded && summary"

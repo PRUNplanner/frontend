@@ -462,11 +462,14 @@
 			</div>
 		</div>
 
-		<!-- the two tables side by side from 900 px of its own width -->
+		<!-- the two tables side by side only where both fit at their own
+		width (a wrapping row, no fixed split; owner, 2026-11-07: the materials
+		table scrolled in its half); alone, a table scrolls inside -->
 		<div
-			class="grid grid-cols-1 gap-3 @min-[900px]:grid-cols-2 @min-[900px]:gap-6 items-start">
+			class="flex flex-wrap gap-x-6 gap-y-3 items-start"
+			data-construction-tables>
 			<!-- Buildings: built and to build, and what each needs -->
-			<section class="flex flex-col gap-2">
+			<section class="flex flex-col gap-2 flex-[1_1_max-content] min-w-0">
 				<h3 class="font-medium text-ink-strong">
 					{{ $t("plan.tools.construction_cart.sections.buildings") }}
 				</h3>
@@ -694,7 +697,7 @@
 			</section>
 
 			<!-- Materials: what is left to buy after stock and overrides -->
-			<section class="flex flex-col gap-2">
+			<section class="flex flex-col gap-2 flex-[1_1_max-content] min-w-0">
 				<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
 					<h3 class="font-medium text-ink-strong">
 						{{

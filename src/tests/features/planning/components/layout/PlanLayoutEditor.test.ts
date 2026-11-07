@@ -14,7 +14,7 @@ import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayou
 import { presetLayout } from "@/features/planning/layout/presets";
 import { wideLayout } from "@/tests/features/planning/layout/layout.fixtures";
 import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
-import { ELEMENTS } from "@/features/planning/layout/elements";
+import { ELEMENT_IDS, ELEMENTS } from "@/features/planning/layout/elements";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import plan from "@/locales/en_US/plan.json";
 import common from "@/locales/en_US/common.json";
@@ -45,15 +45,21 @@ vi.mock("@/lib/analytics/useAnalytics", async (original) => ({
 // the page is 1440 px wide; the stage beside the Elements panel too,
 // unless a test narrows it
 let stageWidth = 1440;
+let pageWidth = 1440;
 beforeEach(() => {
 	stageWidth = 1440;
+	pageWidth = 1440;
 	mocks.toast.mockReturnValue({ destroy: vi.fn() });
 	vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockImplementation(
 		function (this: HTMLElement) {
-			return this.hasAttribute("data-layout-editor") ? 1440 : stageWidth;
+			return this.hasAttribute("data-layout-editor")
+				? pageWidth
+				: stageWidth;
 		}
 	);
 });
+
+const none = { wide: [], phone: [] };
 
 const memoryStore = (initial: StoredLayout | null = null): LayoutStore => {
 	let value = initial;
@@ -173,7 +179,7 @@ function hitAt(el: Element | null): void {
 const STEP = (1440 + 16) / 12;
 
 describe("PlanLayoutEditor", () => {
-	it("shows the bar: name, where it started, the preview widths", async () => {
+	it("shows the bar: name, where it started, Wide and Phone", async () => {
 		const m = await mountEditor();
 		const bar = m.wrapper.find("[data-editor-bar]");
 		expect(bar.text()).toContain("Custom Layout");
@@ -184,7 +190,7 @@ describe("PlanLayoutEditor", () => {
 				.findComponent({ name: "PSegmented" })
 				.props("options")
 				.map((o: { label: string }) => o.label)
-		).toEqual(["Full", "1600", "1440", "1280", "1024", "Phone"]);
+		).toEqual(["Wide", "Phone"]);
 		expect(button(m, "[data-undo]").attributes("disabled")).toBeDefined();
 	});
 
@@ -633,7 +639,7 @@ describe("PlanLayoutEditor", () => {
 			expect(draft(m, "material-io").x).toBe(9);
 		});
 
-		it("resizes only with the main button, and not on a phone preview", async () => {
+		it("resizes only with the main button", async () => {
 			const m = await mountEditor();
 			const edge = m.wrapper.find(
 				"[data-item='i-empire'] [data-edge='w']"
@@ -1155,12 +1161,9 @@ describe("PlanLayoutEditor", () => {
 		});
 
 		it("keeps the stored width when only the height is dragged at an 'auto' width", async () => {
+			pageWidth = 1024;
+			stageWidth = 1024;
 			const m = await mountEditor();
-			const preview = m.wrapper
-				.findAllComponents({ name: "PSegmented" })
-				.find((s) => s.props("label") === "Preview width")!;
-			preview.vm.$emit("update:value", 1024);
-			await flushPromises();
 			// Empire is rearranged wider at 1024
 			expect(size(m, "empire")).toMatch(/^auto 3\/12 \(yours 2\)/);
 			await dragBy(
@@ -1405,26 +1408,196 @@ describe("PlanLayoutEditor", () => {
 			});
 		});
 
-		it("notes items rearranged at a narrow preview, and a phone preview", async () => {
+		it("notes items rearranged at a narrow page", async () => {
+			pageWidth = 1024;
+			stageWidth = 1024;
 			const m = await mountEditor();
-			const preview = m.wrapper
-				.findAllComponents({ name: "PSegmented" })
-				.find((s) => s.props("label") === "Preview width")!;
-			preview.vm.$emit("update:value", 1024);
-			await flushPromises();
 			expect(m.wrapper.find("[data-auto-note]").text()).toMatch(
 				/items? (is|are) rearranged automatically/
 			);
 			expect(size(m, "material-io")).toMatch(/^auto \d+\/12 \(yours 3\)/);
+			// nothing narrower checked below 1024
+			expect(m.wrapper.find("[data-narrower-note]").exists()).toBe(false);
+		});
 
-			preview.vm.$emit("update:value", 390);
+		it("notes what narrower screens rearrange", async () => {
+			const m = await mountEditor();
+			expect(m.wrapper.find("[data-auto-note]").exists()).toBe(false);
+			expect(m.wrapper.find("[data-narrower-note]").text()).toMatch(
+				/^On narrower screens \d+ items? (is|are) rearranged/
+			);
+		});
+
+		it("turns Tinted parts on at once, kept by Cancel too", async () => {
+			const m = await mountEditor();
+			const root = m.wrapper.find("[data-layout-editor]");
+			expect(root.attributes("data-tinted")).toBeUndefined();
+			await m.wrapper
+				.find("[data-tint]")
+				.findComponent({ name: "PCheckbox" })
+				.vm.$emit("update:checked", true);
 			await flushPromises();
-			expect(m.wrapper.find("[data-phone-note]").exists()).toBe(true);
-			expect(m.wrapper.find("[data-handle]").exists()).toBe(false);
+			expect(m.pref.tinted.value).toBe(true);
+			expect(root.attributes("data-tinted")).toBe("true");
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_tint_toggle", {
+				is_active: true,
+			});
+			// no change to the layout: Cancel leaves at once, still tinted
+			await button(m, "[data-cancel]").trigger("click");
+			await flushPromises();
+			expect(mocks.confirm).not.toHaveBeenCalled();
+			expect(m.pref.tinted.value).toBe(true);
+			expect(m.pref.choice.value).toBe("standard");
+		});
+	});
+
+	describe("Wide and Phone", () => {
+		const toPhone = async (m: Mounted) => {
+			m.wrapper
+				.find("[data-arrangement]")
+				.findComponent({ name: "PSegmented" })
+				.vm.$emit("update:value", "phone");
+			await flushPromises();
+		};
+		const grid = (m: Mounted) =>
+			m.wrapper.findComponent({ name: "PlanGrid" });
+
+		it("shows Phone at a phone's width, two columns, automatic at first", async () => {
+			const m = await mountEditor();
+			await toPhone(m);
+			expect(grid(m).props("width")).toBe(390);
+			expect((grid(m).props("layout") as GridLayout).cols).toBe(2);
+			expect(m.wrapper.find("[data-phone-note]").text()).toMatch(
+				/^Automatic/
+			);
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(false);
+			// no columns to set; the parts can be moved and sized
+			expect(m.wrapper.find("[data-cols]").exists()).toBe(false);
+			expect(m.wrapper.find("[data-narrower-note]").exists()).toBe(false);
+			expect(handle(m, "empire").exists()).toBe(true);
+			expect(announce(m)).toMatch(/^Phone arrangement/);
+		});
+
+		it("arranges Phone on the first change, keeps Wide, goes back to automatic", async () => {
+			const m = await mountEditor();
+			const wideEmpire = { ...draft(m, "empire") };
+			await toPhone(m);
+			await key(m, "empire", "ArrowDown");
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(true);
+			const phoneEmpire = { ...draft(m, "empire") };
+			// Wide unchanged
+			m.wrapper
+				.find("[data-arrangement]")
+				.findComponent({ name: "PSegmented" })
+				.vm.$emit("update:value", "wide");
+			await flushPromises();
+			expect(draft(m, "empire")).toEqual(wideEmpire);
+			await toPhone(m);
+			expect(draft(m, "empire")).toEqual(phoneEmpire);
+
+			await button(m, "[data-back-to-auto]").trigger("click");
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(false);
+			expect(announce(m)).toBe("Phone follows Wide again");
+			// undoable
+			await button(m, "[data-undo]").trigger("click");
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(true);
+		});
+
+		it("undoes a Phone change from Wide, back in Phone", async () => {
+			const m = await mountEditor();
+			await toPhone(m);
+			await key(m, "empire", "ArrowDown");
+			m.wrapper
+				.find("[data-arrangement]")
+				.findComponent({ name: "PSegmented" })
+				.vm.$emit("update:value", "wide");
+			await flushPromises();
+			await button(m, "[data-undo]").trigger("click");
+			expect(grid(m).props("width")).toBe(390);
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(false);
+		});
+
+		it("saves both arrangements; Reset makes Phone automatic again", async () => {
+			const m = await mountEditor();
+			await toPhone(m);
+			await key(m, "empire", "ArrowDown");
+			const counts = await savedCounts(m);
+			expect(counts).toMatchObject({ has_phone_layout: true });
+			expect(m.pref.custom.value?.phone?.cols).toBe(2);
+
+			const again = await mountEditor({
+				stored: {
+					v: 1,
+					preset: "custom",
+					custom: m.pref.custom.value,
+					folded: none,
+				},
+			});
+			await toPhone(again);
+			expect(again.wrapper.find("[data-back-to-auto]").exists()).toBe(
+				true
+			);
+			await button(again, "[data-reset]").trigger("click");
+			expect(again.wrapper.find("[data-back-to-auto]").exists()).toBe(
+				false
+			);
+			expect(await savedCounts(again)).toMatchObject({
+				has_phone_layout: false,
+			});
+			expect(again.pref.custom.value?.phone).toBeUndefined();
+		});
+
+		it("starts Phone automatic when customising Standard", async () => {
+			const m = await mountEditor({
+				stored: {
+					v: 1,
+					preset: "standard",
+					custom: {
+						wide: wideLayout(),
+						phone: { ...wideLayout(), cols: 2 },
+					},
+					folded: none,
+				},
+			});
+			await toPhone(m);
+			expect(m.wrapper.find("[data-back-to-auto]").exists()).toBe(false);
 		});
 	});
 
 	describe("Elements", () => {
+		it("counts the elements not placed on its button", async () => {
+			const m = await mountEditor();
+			expect(button(m, "[data-elements-toggle]").text()).toBe("Elements");
+			await pick(m, "experts", "hide");
+			expect(button(m, "[data-elements-toggle]").text()).toBe(
+				"Elements · 1"
+			);
+		});
+
+		it("tags elements new to Custom Layout", async () => {
+			const m = await mountEditor({
+				stored: {
+					v: 1,
+					preset: "custom",
+					custom: {
+						wide: presetLayout("standard"),
+						known: ELEMENT_IDS.filter((e) => e !== "experts"),
+					},
+					folded: none,
+				},
+			});
+			expect(
+				m.wrapper
+					.find("[data-element-row='experts'] [data-fresh]")
+					.text()
+			).toBe("New");
+			expect(
+				m.wrapper
+					.find("[data-element-row='planet'] [data-fresh]")
+					.exists()
+			).toBe(false);
+		});
+
 		it("adds a hidden element at the bottom and shows a placed one", async () => {
 			const m = await mountEditor();
 			await pick(m, "experts", "hide");
@@ -1512,7 +1685,7 @@ describe("PlanLayoutEditor", () => {
 			await button(m, "[data-save]").trigger("click");
 			expect(m.pref.choice.value).toBe("custom");
 			expect(
-				m.pref.custom.value!.items.find(
+				m.pref.custom.value!.wide.items.find(
 					(i) => i.id === "i-material-io"
 				)!.x
 			).toBe(8);
@@ -1528,6 +1701,7 @@ describe("PlanLayoutEditor", () => {
 				column_count: 12,
 				gap_px: 16,
 				is_replacing: false,
+				has_phone_layout: false,
 				store: "session",
 				change_count: 1,
 				drag_count: 0,
@@ -1649,7 +1823,12 @@ describe("PlanLayoutEditor", () => {
 				y: 99,
 			});
 			const m = await mountEditor({
-				stored: { v: 1, preset: "custom", custom, folded: [] },
+				stored: {
+					v: 1,
+					preset: "custom",
+					custom: { wide: custom },
+					folded: none,
+				},
 			});
 			const cols = () =>
 				draft(m, "material-io").joinSize?.["material-io-totals"];
@@ -1709,7 +1888,12 @@ describe("PlanLayoutEditor", () => {
 		it("asks before replacing an existing Custom Layout", async () => {
 			const custom = wideLayout();
 			const m = await mountEditor({
-				stored: { v: 1, preset: "standard", custom, folded: [] },
+				stored: {
+					v: 1,
+					preset: "standard",
+					custom: { wide: custom },
+					folded: none,
+				},
 			});
 			await button(m, "[data-save]").trigger("click");
 			expect(m.wrapper.find("[data-replace]").exists()).toBe(true);
@@ -1729,7 +1913,10 @@ describe("PlanLayoutEditor", () => {
 				.findAll("button")[1]
 				.trigger("click");
 			void replace;
-			expect(m.pref.custom.value).toEqual(presetLayout("standard"));
+			expect(m.pref.custom.value).toEqual({
+				wide: presetLayout("standard"),
+				known: ELEMENT_IDS,
+			});
 			expect(trackEvent).toHaveBeenCalledWith(
 				"plan:layout_save",
 				expect.objectContaining({ is_replacing: true })
@@ -1741,8 +1928,8 @@ describe("PlanLayoutEditor", () => {
 				stored: {
 					v: 1,
 					preset: "custom",
-					custom: wideLayout(),
-					folded: [],
+					custom: { wide: wideLayout() },
+					folded: none,
 				},
 			});
 			expect(m.wrapper.find("[data-editor-bar]").text()).not.toContain(

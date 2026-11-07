@@ -2,8 +2,8 @@ import { z } from "zod";
 
 // Util
 import {
-	normaliseFolded,
-	normaliseLayout,
+	normaliseCustom,
+	normaliseFoldedBy,
 } from "@/features/planning/layout/normaliseLayout";
 
 /** Which layout the plan page uses: a preset, or the one Custom Layout */
@@ -12,8 +12,10 @@ export type LayoutChoice = z.infer<typeof LayoutChoiceSchema>;
 
 /**
  * The layout as stored (the tab's sessionStorage here, the account's
- * preferences from plan-layouts-03): the grid is checked item by item and
- * fixed up by normaliseLayout, so one bad item never loses the rest
+ * preferences from plan-layouts-03): each grid is checked item by item and
+ * fixed up by normaliseLayout, so one bad item never loses the rest. Custom
+ * Layout has a Wide and maybe a Phone arrangement, folded parts are kept
+ * per arrangement; the shape before that (one grid, one list) reads as Wide.
  */
 export const StoredLayoutSchema = z
 	.object({
@@ -30,8 +32,8 @@ export const StoredLayoutSchema = z
 		custom:
 			s.custom === null || s.custom === undefined
 				? null
-				: normaliseLayout(s.custom),
-		folded: normaliseFolded(s.folded),
+				: normaliseCustom(s.custom),
+		folded: normaliseFoldedBy(s.folded),
 		...(s.tinted ? { tinted: true as const } : {}),
 	}));
 export type StoredLayout = z.output<typeof StoredLayoutSchema>;

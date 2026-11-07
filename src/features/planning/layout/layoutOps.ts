@@ -391,9 +391,12 @@ export const setHeightMode = (
 	});
 
 /**
- * Height in px, the way a drag of the bottom edge sets it: taller than the
- * content keeps the space ("fixed"), shorter scrolls ("at most"); snapped
- * to the content it fits again
+ * Height in px, the way a drag of the bottom edge, a snap or a step sets
+ * it: the part keeps exactly that height ("fixed"), whatever its content
+ * on the page; one set to "at most" in the menu stays "at most" with the
+ * new limit; snapped to its own content it fits again. (Owner, 2026-11-07:
+ * "at most" from a drag came out shorter on the page, where the content
+ * was shorter.)
  */
 export const setHeight = (
 	layout: GridLayout,
@@ -408,10 +411,8 @@ export const setHeight = (
 			? Math.min(H_MAX, Math.max(min, Math.round(h)))
 			: snapHeight(h, min);
 		it.h = v;
-		const content = contentHeight(it, ctx);
 		if (snapped === "content") it.hm = "fit";
-		else if (v > content + 4) it.hm = "fixed";
-		else it.hm = "cap";
+		else if (it.hm !== "cap") it.hm = "fixed";
 		return done(
 			g,
 			it.hm === "fit"

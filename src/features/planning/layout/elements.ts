@@ -101,6 +101,35 @@ export const ELEMENTS: Record<ElementId, IElementMeta> = {
 
 export const ELEMENT_IDS = Object.keys(ELEMENTS) as ElementId[];
 
+/**
+ * The elements there were when Custom Layout got `known` (2026-11-07): a
+ * stored layout without `known` has seen all of these, so none of them is
+ * new to it. Never add to this list: an element added later is new to
+ * every custom layout and joins it at the bottom.
+ */
+export const LAUNCH_ELEMENTS: readonly ElementId[] = [
+	"empire",
+	"planet",
+	"workforce",
+	"housing",
+	"experts",
+	"production",
+	"construction-cart",
+	"supply-cart",
+	"visitation-frequency",
+	"repair-analysis",
+	"profit-breakdown",
+	"plan-check",
+	"popr",
+	"material-io",
+	"material-io-totals",
+	"kpi-profit",
+	"kpi-payback",
+	"kpi-workforce",
+	"kpi-area",
+	"kpi-storage",
+];
+
 /** Elements that hide parts (tiers, fields, buttons) customising can open */
 export const OPENABLE: readonly ElementId[] = [
 	"workforce",

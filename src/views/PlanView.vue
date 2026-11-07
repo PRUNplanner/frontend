@@ -53,6 +53,7 @@
 	import { providePlanView } from "@/features/planning/usePlanView";
 	import { usePlanFoldSummaries } from "@/features/planning/usePlanFoldSummaries";
 	import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
+	import { PHONE_WIDTH } from "@/features/planning/layout/planLayout.constants";
 	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
@@ -106,6 +107,7 @@
 		PModal,
 		PSelect,
 		PTooltip,
+		useToast,
 	} from "@/ui";
 	import { ChangeCircleOutlined, EditSharp } from "@vicons/material";
 
@@ -341,9 +343,32 @@
 		props
 	);
 
-	// The layout: a preset or Custom Layout, kept for this tab
-	const layoutPref = usePlanLayoutPreference();
+	// The layout: a preset or Custom Layout, kept for this tab; Custom
+	// Layout's phone arrangement below 760 px of grid (the grid tells, this
+	// is the first guess: the page's padding is 2 × 16 px below 768, 2 × 24
+	// above)
+	const layoutPref = usePlanLayoutPreference(
+		undefined,
+		window.innerWidth - (window.innerWidth < 768 ? 32 : 48) < PHONE_WIDTH
+			? "phone"
+			: "wide"
+	);
 	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
+	// an element new to Custom Layout joined it at the bottom: say so once
+	const toast = useToast();
+	if (layoutPref.added.value.length)
+		toast(
+			t(
+				"plan.layout.new_toast",
+				{
+					names: layoutPref.added.value
+						.map((e) => t(ELEMENTS[e].label))
+						.join(", "),
+				},
+				layoutPref.added.value.length
+			),
+			{ duration: 10000, closable: true }
+		);
 	// who uses Custom Layout and Tinted parts: person properties, kept as
 	// they change (unchanged values are not resent)
 	watch(
@@ -359,10 +384,6 @@
 	function pickLayout(choice: LayoutChoice): void {
 		layoutPref.pick(choice);
 		trackEvent("plan:layout_preset", { preset: choice });
-	}
-	function setTint(value: boolean): void {
-		layoutPref.setTinted(value);
-		trackEvent("plan:layout_tint_toggle", { is_active: value });
 	}
 	function startCustomise(): void {
 		refEditingLayout.value = true;
@@ -642,9 +663,7 @@
 					:choice="layoutPref.choice.value"
 					:has-custom="!!layoutPref.custom.value"
 					:can-customise="!refIsPhone && !refEditingLayout"
-					:tinted="layoutPref.tinted.value"
 					@pick="pickLayout"
-					@tint="setTint"
 					@customise="startCustomise" />
 				<PlanMoreMenu
 					:debug="calcDebug"
@@ -673,7 +692,9 @@
 		<!-- every part of the plan as the player's layout places it -->
 		<div
 			class="px-6 max-md:px-4 pt-1"
-			:data-tinted="layoutPref.tinted.value || undefined">
+			:data-tinted="
+				(!refEditingLayout && layoutPref.tinted.value) || undefined
+			">
 			<PlanLayoutEditor
 				v-if="refEditingLayout"
 				ref="editor"
@@ -686,8 +707,13 @@
 				:folded="layoutPref.folded.value"
 				:tabs="grid.tabs"
 				:summaries="foldSummaries"
+				:fresh="layoutPref.added.value"
 				@fold="grid.fold"
-				@tab="grid.showTab" />
+				@tab="grid.showTab"
+				@phone="
+					(v: boolean) =>
+						(layoutPref.arrangement.value = v ? 'phone' : 'wide')
+				" />
 		</div>
 		<!-- a hidden element, opened from a results tile or a shortcut -->
 		<PModal

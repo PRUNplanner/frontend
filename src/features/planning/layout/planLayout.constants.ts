@@ -8,8 +8,11 @@ export const H_MAX = 4000;
 export const H_STEP = 40;
 // heights from a drag snap to this grid
 export const H_SNAP = 8;
-// below this grid width every item stacks
+// below this grid width every item stacks, or the phone arrangement is used
 export const PHONE_WIDTH = 760;
+// the phone arrangement: two columns, edited at a phone's width
+export const PHONE_COLS = 2;
+export const PHONE_EDIT_WIDTH = 390;
 // content height of an item not measured yet
 export const UNMEASURED_HEIGHT = 180;
 // height of a folded item: its title row (44 px on touch) and its border

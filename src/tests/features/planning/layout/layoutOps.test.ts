@@ -309,22 +309,44 @@ describe("layoutOps", () => {
 			).toBe(400);
 		});
 
-		it("is fixed when set taller than the content, 'at most' when shorter", () => {
+		it("keeps a height set by hand: fixed, also below the content; 'at most' stays 'at most'", () => {
 			const p = packed(g, 1440, heights);
 			const tall = ops.setHeight(g, "i-production", 1003, p);
 			expect(item(tall.layout, "production")).toMatchObject({
 				hm: "fixed",
 				h: 1000,
 			});
+			// shorter than the content: still exactly that height, scrolling
 			const short = ops.setHeight(g, "i-production", 480, p);
 			expect(item(short.layout, "production")).toMatchObject({
-				hm: "cap",
+				hm: "fixed",
 				h: 480,
 			});
 			expect(short.announcement.params).toEqual({
 				item: expect.any(String),
 				h: 480,
 			});
+			// set to "at most" in the menu: a drag changes its limit only
+			const capped = ops.setHeightMode(
+				g,
+				"i-production",
+				"cap",
+				p
+			).layout;
+			for (const h of [300, 1500])
+				expect(
+					item(
+						ops.setHeight(capped, "i-production", h, p).layout,
+						"production"
+					)
+				).toMatchObject({ hm: "cap", h });
+			// and the packed height is the set one, however short the content
+			const fixed = short.layout;
+			expect(
+				packLayout(fixed, 1440, { "i-production": 120 }).items[
+					"i-production"
+				].height
+			).toBe(480);
 			// a snap keeps the exact px; snapped to the content it fits again
 			expect(
 				item(
@@ -370,13 +392,13 @@ describe("layoutOps", () => {
 				p
 			);
 			expect(item(shorter.layout, "production")).toMatchObject({
-				hm: "cap",
+				hm: "fixed",
 				h: 904,
 			});
-			// shorter than the content
-			const cap = ops.stepHeight(g, "i-production", -1, p);
-			expect(item(cap.layout, "production")).toMatchObject({
-				hm: "cap",
+			// shorter than the content: fixed too
+			const below = ops.stepHeight(g, "i-production", -1, p);
+			expect(item(below.layout, "production")).toMatchObject({
+				hm: "fixed",
 				h: 864,
 			});
 			// unknown: nothing

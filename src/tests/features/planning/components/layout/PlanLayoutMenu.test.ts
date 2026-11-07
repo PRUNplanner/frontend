@@ -12,7 +12,6 @@ async function mountMenu(props: Record<string, unknown> = {}) {
 			choice: "standard",
 			hasCustom: false,
 			canCustomise: true,
-			tinted: false,
 			...props,
 		},
 		{ messages: { plan } }
@@ -35,13 +34,6 @@ describe("PlanLayoutMenu", () => {
 				checked: true,
 			},
 			{ type: "divider" },
-			{
-				key: "tint",
-				label: "Tinted parts",
-				hint: "A slightly lighter background on every part, for more contrast",
-				checked: false,
-			},
-			{ type: "divider" },
 			{ key: "customise", label: "Customise, starting from Standard…" },
 		]);
 		expect(
@@ -58,8 +50,6 @@ describe("PlanLayoutMenu", () => {
 			"standard",
 			"custom",
 			undefined,
-			"tint",
-			undefined,
 			"customise",
 		]);
 		expect(options(wrapper).at(-1)).toMatchObject({
@@ -69,7 +59,8 @@ describe("PlanLayoutMenu", () => {
 
 	it("has no customising where it isn't offered (a phone)", async () => {
 		const { wrapper } = await mountMenu({ canCustomise: false });
-		expect(keys(wrapper)).toEqual(["standard", undefined, "tint"]);
+		// Tinted parts is set while customising, not here
+		expect(keys(wrapper)).toEqual(["standard"]);
 	});
 
 	it("picks a layout, nothing for the one in use, or customises", async () => {
@@ -78,20 +69,7 @@ describe("PlanLayoutMenu", () => {
 		dropdown.vm.$emit("select", "custom");
 		dropdown.vm.$emit("select", "standard");
 		dropdown.vm.$emit("select", "customise");
-		dropdown.vm.$emit("select", "tint");
 		expect(component.emitted("pick")).toEqual([["custom"]]);
 		expect(component.emitted("customise")).toHaveLength(1);
-		expect(component.emitted("tint")).toEqual([[true]]);
-	});
-});
-
-describe("PlanLayoutMenu, Tinted parts on", () => {
-	it("shows it checked and turns it off", async () => {
-		const { wrapper, component } = await mountMenu({ tinted: true });
-		expect(options(wrapper)).toContainEqual(
-			expect.objectContaining({ key: "tint", checked: true })
-		);
-		wrapper.findComponent(PDropdown).vm.$emit("select", "tint");
-		expect(component.emitted("tint")).toEqual([[false]]);
 	});
 });

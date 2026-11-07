@@ -1,9 +1,12 @@
 // Types & Interfaces
 import type {
+	Arrangement,
 	ElementId,
+	FoldedByArrangement,
 	GridItem,
 	GridLayout,
 	HeightMode,
+	ICustomLayout,
 	JoinSide,
 } from "@/features/planning/layout/planLayout.types";
 
@@ -15,10 +18,13 @@ import {
 	H_MAX,
 	H_MIN,
 	MAX_ELEMENTS,
+	PHONE_COLS,
 } from "@/features/planning/layout/planLayout.constants";
 import {
+	ELEMENT_IDS,
 	ELEMENTS,
 	isElementId,
+	LAUNCH_ELEMENTS,
 	OPENABLE,
 	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
@@ -79,12 +85,22 @@ const height = (v: unknown): number => {
  * changes nothing.
  * @author jplacht
  *
+ * The phone arrangement always has two columns and nothing follows while
+ * scrolling there.
+ *
  * @param {unknown} input Layout, possibly broken
+ * @param {Arrangement} arrangement Wide (4–24 columns) or phone (2)
  * @returns {GridLayout} Valid layout
  */
-export function normaliseLayout(input: unknown): GridLayout {
+export function normaliseLayout(
+	input: unknown,
+	arrangement: Arrangement = "wide"
+): GridLayout {
 	const raw = (input ?? {}) as Partial<Record<keyof GridLayout, unknown>>;
-	const cols = clamp(Math.round(num(raw.cols, 12)), COLS_MIN, COLS_MAX);
+	const phone = arrangement === "phone";
+	const cols = phone
+		? PHONE_COLS
+		: clamp(Math.round(num(raw.cols, 12)), COLS_MIN, COLS_MAX);
 	const gapIn = num(raw.gap, 16);
 	const gap = GAPS.reduce((best, g) =>
 		Math.abs(g - gapIn) < Math.abs(best - gapIn) ? g : best
@@ -139,7 +155,9 @@ export function normaliseLayout(input: unknown): GridLayout {
 			h: height(it.h),
 			pin: it.pin === true,
 			// pinned parts are in the band: following means nothing there
-			...(it.follow === true && it.pin !== true && { follow: true }),
+			...(it.follow === true &&
+				it.pin !== true &&
+				!phone && { follow: true }),
 			join,
 			joinSize,
 		};
@@ -180,7 +198,7 @@ export function normaliseLayout(input: unknown): GridLayout {
  * @param {unknown} input Stored list
  * @returns {ElementId[]} Folded elements
  */
-export function normaliseFolded(input: unknown): ElementId[] {
+function normaliseFolded(input: unknown): ElementId[] {
 	return [
 		...new Set((Array.isArray(input) ? input : []).filter(isElementId)),
 	];
@@ -205,3 +223,96 @@ export const cloneLayout = (layout: GridLayout): GridLayout => ({
 	...(layout.open && { open: [...layout.open] }),
 	...(layout.table && { table: [...layout.table] }),
 });
+
+/**
+ * Custom Layout as stored, fixed up: Wide and, when there is one, Phone
+ * normalised; `known` kept when it is a list. The shape before the phone
+ * arrangement (2026-11-07: a grid of its own) reads as its Wide.
+ *
+ * @param {unknown} input Stored custom layout
+ * @returns {ICustomLayout} Valid custom layout
+ */
+export function normaliseCustom(input: unknown): ICustomLayout {
+	const raw = (input ?? {}) as Record<string, unknown>;
+	if (!("wide" in raw)) return { wide: normaliseLayout(raw) };
+	return {
+		wide: normaliseLayout(raw.wide),
+		...(raw.phone !== undefined &&
+			raw.phone !== null && {
+				phone: normaliseLayout(raw.phone, "phone"),
+			}),
+		...(Array.isArray(raw.known) && { known: normaliseFolded(raw.known) }),
+	};
+}
+
+/**
+ * Folded parts per arrangement as stored; a plain list (before the phone
+ * arrangement) is Wide's
+ *
+ * @param {unknown} input Stored folded parts
+ * @returns {FoldedByArrangement} Folded parts of Wide and Phone
+ */
+export function normaliseFoldedBy(input: unknown): FoldedByArrangement {
+	if (Array.isArray(input))
+		return { wide: normaliseFolded(input), phone: [] };
+	const raw = (input ?? {}) as Record<string, unknown>;
+	return {
+		wide: normaliseFolded(raw.wide),
+		phone: normaliseFolded(raw.phone),
+	};
+}
+
+/**
+ * Elements of the catalogue a custom layout hasn't seen: not in its
+ * `known` (not set: the elements there were at launch)
+ *
+ * @param {ICustomLayout} custom Custom Layout
+ * @returns {ElementId[]} New elements
+ */
+function newElements(custom: ICustomLayout): ElementId[] {
+	const known = new Set(custom.known ?? LAUNCH_ELEMENTS);
+	return ELEMENT_IDS.filter((e) => !known.has(e));
+}
+
+/**
+ * Custom Layout with its new elements at the bottom of Wide and of Phone
+ * (full width, fitting their content), all of them known from now on;
+ * an element already placed stays where it is
+ *
+ * @param {ICustomLayout} custom Custom Layout
+ * @returns {{ custom: ICustomLayout; added: ElementId[] }} The layout, and what was added
+ */
+export function addNewElements(custom: ICustomLayout): {
+	custom: ICustomLayout;
+	added: ElementId[];
+} {
+	const fresh = newElements(custom);
+	const place = (g: GridLayout): GridLayout => {
+		const items = [...g.items];
+		for (const el of fresh) {
+			if (items.some((i) => i.els.includes(el))) continue;
+			items.push({
+				id: freeItemId(items, el),
+				els: [el],
+				active: el,
+				x: 0,
+				w: g.cols,
+				y: Number.MAX_SAFE_INTEGER,
+				hm: "fit",
+				h: 0,
+				pin: false,
+			});
+		}
+		return { ...g, items: renumber(items) };
+	};
+	return {
+		custom: {
+			wide: fresh.length ? place(custom.wide) : custom.wide,
+			...(custom.phone && {
+				phone: fresh.length ? place(custom.phone) : custom.phone,
+			}),
+			known: [...ELEMENT_IDS],
+		},
+		added: fresh,
+	};
+}

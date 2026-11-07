@@ -109,7 +109,7 @@ describe("usePlanGrid", () => {
 		prod.els.splice(prod.els.indexOf("repair-analysis") + 1, 0, "experts");
 		prod.join = { experts: "below" };
 		g.items = g.items.filter((i) => i.els[0] !== "experts");
-		pref.saveCustom(g);
+		pref.saveCustom({ wide: g, phone: null });
 		const el = box("i-production");
 		grid.focusElement("experts");
 		expect(grid.tabs["i-production"]).toBe("repair-analysis");
@@ -132,7 +132,7 @@ describe("usePlanGrid", () => {
 		const { grid, pref } = setup();
 		const custom = presetLayout("standard");
 		custom.items = custom.items.filter((i) => !i.els.includes("experts"));
-		pref.saveCustom(custom);
+		pref.saveCustom({ wide: custom, phone: null });
 		grid.focusElement("experts");
 		expect(grid.refDialog.value).toBe("experts");
 	});

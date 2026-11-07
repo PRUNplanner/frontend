@@ -2,12 +2,18 @@ import { describe, expect, it } from "vitest";
 
 // Util
 import {
+	addNewElements,
 	cloneLayout,
 	freeItemId,
-	normaliseFolded,
+	normaliseCustom,
+	normaliseFoldedBy,
 	normaliseLayout,
 	renumber,
 } from "@/features/planning/layout/normaliseLayout";
+import {
+	ELEMENT_IDS,
+	LAUNCH_ELEMENTS,
+} from "@/features/planning/layout/elements";
 import { presetLayout } from "@/features/planning/layout/presets";
 import {
 	prng,
@@ -272,12 +278,130 @@ describe("normaliseLayout", () => {
 	});
 });
 
-describe("normaliseFolded", () => {
-	it("keeps known ids once", () => {
+describe("normaliseFoldedBy", () => {
+	it("keeps known ids once, per arrangement", () => {
 		expect(
-			normaliseFolded(["planet", "x", "planet", 3, "experts"])
-		).toEqual(["planet", "experts"]);
-		expect(normaliseFolded("planet")).toEqual([]);
+			normaliseFoldedBy({
+				wide: ["planet", "x", "planet", 3, "experts"],
+				phone: ["workforce", "workforce"],
+			})
+		).toEqual({ wide: ["planet", "experts"], phone: ["workforce"] });
+		expect(normaliseFoldedBy({ wide: "planet" })).toEqual({
+			wide: [],
+			phone: [],
+		});
+		expect(normaliseFoldedBy(null)).toEqual({ wide: [], phone: [] });
+	});
+
+	it("reads a plain list (before the phone arrangement) as Wide's", () => {
+		expect(normaliseFoldedBy(["planet", "nope"])).toEqual({
+			wide: ["planet"],
+			phone: [],
+		});
+	});
+});
+
+describe("phone arrangement", () => {
+	it("has two columns and nothing follows", () => {
+		const g = normaliseLayout(
+			{
+				cols: 12,
+				items: [
+					{ ...prod, id: "i-production", w: 12 },
+					{
+						id: "i-planet",
+						els: ["planet"],
+						x: 7,
+						w: 5,
+						y: 1,
+						follow: true,
+					},
+				],
+			},
+			"phone"
+		);
+		expect(g.cols).toBe(2);
+		expect(g.items.every((i) => i.w <= 2 && i.x + i.w <= 2)).toBe(true);
+		expect(g.items.some((i) => i.follow)).toBe(false);
+	});
+});
+
+describe("normaliseCustom", () => {
+	it("reads the shape before the phone arrangement as Wide", () => {
+		const wide = presetLayout("standard");
+		expect(normaliseCustom(wide)).toEqual({ wide });
+		expect(normaliseCustom(null)).toEqual({ wide: normaliseLayout({}) });
+	});
+
+	it("normalises Wide and Phone and keeps `known`", () => {
+		const c = normaliseCustom({
+			wide: presetLayout("standard"),
+			phone: { cols: 12, items: [prod] },
+			known: ["planet", "nope", "planet"],
+		});
+		expect(c.wide).toEqual(presetLayout("standard"));
+		expect(c.phone?.cols).toBe(2);
+		expect(c.known).toEqual(["planet"]);
+		const noPhone = normaliseCustom({
+			wide: presetLayout("standard"),
+			phone: null,
+			known: "x",
+		});
+		expect(noPhone).toEqual({ wide: presetLayout("standard") });
+	});
+});
+
+describe("addNewElements", () => {
+	const without = (g: ReturnType<typeof presetLayout>, el: string) => ({
+		...g,
+		items: g.items
+			.map((i) => ({ ...i, els: i.els.filter((e) => e !== el) }))
+			.filter((i) => i.els.length)
+			.map((i) => ({
+				...i,
+				active: i.els.includes(i.active) ? i.active : i.els[0],
+			})),
+	});
+
+	it("adds nothing for the elements there were at launch", () => {
+		// a layout saved before `known`: every element then is known
+		const wide = without(presetLayout("standard"), "experts");
+		const { custom, added } = addNewElements({ wide });
+		expect(added).toEqual(
+			ELEMENT_IDS.filter((e) => !LAUNCH_ELEMENTS.includes(e))
+		);
+		expect(custom.wide).toEqual(wide);
+		expect(custom.known).toEqual(ELEMENT_IDS);
+	});
+
+	it("adds an element it hasn't seen at the bottom of both, full width", () => {
+		const wide = normaliseLayout(
+			without(presetLayout("standard"), "experts")
+		);
+		const phone = normaliseLayout(wide, "phone");
+		const known = ELEMENT_IDS.filter((e) => e !== "experts");
+		const { custom, added } = addNewElements({ wide, phone, known });
+		expect(added).toEqual(["experts"]);
+		for (const g of [custom.wide, custom.phone!]) {
+			const last = g.items.at(-1)!;
+			expect(last.els).toEqual(["experts"]);
+			expect(last).toMatchObject({
+				x: 0,
+				w: g.cols,
+				hm: "fit",
+				pin: false,
+			});
+		}
+		expect(custom.known).toEqual(ELEMENT_IDS);
+	});
+
+	it("leaves an unseen element that is placed already where it is", () => {
+		const wide = presetLayout("standard");
+		const known = ELEMENT_IDS.filter((e) => e !== "experts");
+		const { custom, added } = addNewElements({ wide, known });
+		expect(added).toEqual(["experts"]);
+		expect(custom.wide).toEqual(wide);
+		expect(custom.phone).toBeUndefined();
 	});
 });
 
