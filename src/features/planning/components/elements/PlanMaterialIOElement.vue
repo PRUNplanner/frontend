@@ -10,7 +10,10 @@
 	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 
 	// UI
-	import { PSegmented, PSelect } from "@/ui";
+	import { PSegmented } from "@/ui";
+
+	// Util
+	import { FILTER_BAR } from "@/features/planning/planView.util";
 
 	/**
 	 * The plan's material flow: source, filter and value, the table with
@@ -47,16 +50,14 @@
 
 <template>
 	<div data-io>
-		<!-- the filters wrap below 480 px, one line from there; on a touch
-			screen each button is a whole 44 px target -->
-		<div
-			class="flex flex-wrap @min-[480px]:flex-nowrap items-center gap-2 px-3 pb-2 [&_button]:px-2 [&_button]:min-w-6 pointer-coarse:[&_button]:h-11 pointer-coarse:[&_button]:min-w-11">
-			<PSelect
+		<!-- the same filter bar as the Supply Cart's: which materials, then
+			which way and what value; it wraps where it doesn't fit -->
+		<div :class="FILTER_BAR" class="px-3 pb-2">
+			<PSegmented
 				v-model:value="refIOSource"
 				size="sm"
-				class="w-36"
-				:aria-label="t('plan.io.source.label')"
-				:options="ioSourceOptions" />
+				:options="ioSourceOptions"
+				:label="t('plan.io.source.label')" />
 			<PSegmented
 				v-model:value="refIOFilter"
 				size="sm"

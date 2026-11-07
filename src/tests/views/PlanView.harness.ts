@@ -319,7 +319,7 @@ export function debugMeta(wrapper: VueWrapper) {
 
 // the production list stays mounted under another tab, v-show hides it
 export const productionShown = (wrapper: VueWrapper): boolean =>
-	(wrapper.find("[data-element='production']").element as HTMLElement).style
+	(wrapper.find("[data-tab-body='production']").element as HTMLElement).style
 		.display !== "none";
 
 /** Catches a file download: returns the spy on the link's click */

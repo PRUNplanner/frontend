@@ -12,7 +12,12 @@ import * as ops from "@/features/planning/layout/layoutOps";
 import { normaliseLayout } from "@/features/planning/layout/normaliseLayout";
 import { packLayout } from "@/features/planning/layout/packLayout";
 import { PRESET_KEYS, presetLayout } from "@/features/planning/layout/presets";
-import { ELEMENT_IDS } from "@/features/planning/layout/elements";
+import {
+	ELEMENT_IDS,
+	ELEMENTS,
+	minHeightOf,
+} from "@/features/planning/layout/elements";
+import { tabsOf } from "@/features/planning/layout/tabs";
 import { GAPS } from "@/features/planning/layout/planLayout.constants";
 import {
 	ctx,
@@ -604,6 +609,283 @@ describe("layoutOps", () => {
 		});
 	});
 
+	describe("two parts in one tab", () => {
+		// Material I/O with its totals below, in one item
+		const paired = () =>
+			ops.joinTab(
+				today(),
+				{ item: "i-material-io-totals" },
+				"i-material-io",
+				"below",
+				packed(today())
+			);
+
+		it("puts an item of one element below or beside the tab another shows", () => {
+			const c = paired();
+			const io = item(c.layout, "material-io");
+			expect(io.els).toEqual(["material-io", "material-io-totals"]);
+			expect(io.join).toEqual({ "material-io-totals": "below" });
+			expect(io.active).toBe("material-io");
+			expect(c.layout.items).toHaveLength(today().items.length - 1);
+			expect(ann(c)).toBe("joined_below");
+			expect(c.announcement.params).toEqual({
+				el: "material-io-totals",
+				name: "material-io",
+			});
+			// in a group: right after the tab shown, which stays shown
+			const g = today();
+			const p = ops.setActive(g, "i-production", "supply-cart", ctx());
+			const b = ops.joinTab(
+				p.layout,
+				{ item: "i-experts" },
+				"i-production",
+				"beside",
+				ctx()
+			).layout;
+			const prod = item(b, "production");
+			expect(prod.els.indexOf("experts")).toBe(
+				prod.els.indexOf("supply-cart") + 1
+			);
+			expect(prod.join).toEqual({ experts: "beside" });
+			expect(prod.active).toBe("supply-cart");
+			expect(tabsOf(prod)).not.toContain("experts");
+		});
+
+		it("adds an element from Elements next to a tab", () => {
+			const g = ops.hide(today(), "i-experts", "experts", ctx()).layout;
+			const c = ops.joinTab(
+				g,
+				{ el: "experts" },
+				"i-workforce",
+				"beside",
+				ctx()
+			);
+			expect(item(c.layout, "workforce").join).toEqual({
+				experts: "beside",
+			});
+			// not one already on the page
+			expect(
+				ann(
+					ops.joinTab(
+						today(),
+						{ el: "planet" },
+						"i-workforce",
+						"below",
+						ctx()
+					)
+				)
+			).toBe("nothing");
+		});
+
+		it("holds two at most, joined one at a time; says why not", () => {
+			const g = paired().layout;
+			expect(ops.joinBlocked(g, ["planet"], "i-material-io")).toBe(
+				"plan.layout.why.join_full"
+			);
+			expect(
+				ann(
+					ops.joinTab(
+						g,
+						{ item: "i-planet" },
+						"i-material-io",
+						"beside",
+						ctx()
+					)
+				)
+			).toBe("nothing");
+			// a pair, or a group, joins nothing
+			expect(
+				ops.joinBlocked(
+					g,
+					["material-io", "material-io-totals"],
+					"i-planet"
+				)
+			).toBe("plan.layout.why.join_one");
+			expect(
+				ann(
+					ops.joinTab(
+						g,
+						{ item: "i-material-io" },
+						"i-planet",
+						"below",
+						ctx()
+					)
+				)
+			).toBe("nothing");
+			expect(ops.joinBlocked(g, ["planet"], "i-empire")).toBeNull();
+		});
+
+		it("switches below and beside", () => {
+			const g = paired().layout;
+			const c = ops.setSide(
+				g,
+				"i-material-io",
+				"material-io-totals",
+				"beside",
+				ctx()
+			);
+			expect(item(c.layout, "material-io").join).toEqual({
+				"material-io-totals": "beside",
+			});
+			expect(ann(c)).toBe("joined_beside");
+			expect(
+				ann(
+					ops.setSide(
+						c.layout,
+						"i-material-io",
+						"material-io-totals",
+						"beside",
+						ctx()
+					)
+				)
+			).toBe("nothing");
+			expect(
+				ann(
+					ops.setSide(
+						g,
+						"i-material-io",
+						"material-io",
+						"beside",
+						ctx()
+					)
+				)
+			).toBe("nothing");
+		});
+
+		it("takes the one shown with another out; a tab goes with its partner", () => {
+			const g = paired().layout;
+			const out = ops.takeOut(
+				g,
+				"i-material-io",
+				"material-io-totals",
+				ctx()
+			);
+			expect(item(out.layout, "material-io").els).toEqual([
+				"material-io",
+			]);
+			expect(item(out.layout, "material-io").join).toBeUndefined();
+			expect(item(out.layout, "material-io-totals").els).toEqual([
+				"material-io-totals",
+			]);
+			// Material I/O and its totals as a tab of Production, then out again
+			const grouped = ops.makeTab(
+				g,
+				{ item: "i-material-io" },
+				"i-production",
+				ctx()
+			).layout;
+			const prod = item(grouped, "production");
+			expect(prod.join).toEqual({ "material-io-totals": "below" });
+			expect(prod.active).toBe("material-io");
+			const back = ops.takeOut(
+				grouped,
+				prod.id,
+				"material-io",
+				ctx()
+			).layout;
+			const io = item(back, "material-io");
+			expect(io.els).toEqual(["material-io", "material-io-totals"]);
+			expect(io.join).toEqual({ "material-io-totals": "below" });
+			expect(item(back, "production").join).toBeUndefined();
+			// split keeps each pair together
+			const split = ops.split(grouped, prod.id, ctx()).layout;
+			expect(item(split, "material-io-totals").id).toBe(
+				item(split, "material-io").id
+			);
+		});
+
+		it("drags a tab out of a group next to the tab another item shows", () => {
+			const g = today();
+			const c = ops.takeOutTo(
+				g,
+				"i-production",
+				"supply-cart",
+				{ tab: "i-planet", side: "beside" },
+				ctx()
+			);
+			expect(item(c.layout, "planet").join).toEqual({
+				"supply-cart": "beside",
+			});
+			expect(item(c.layout, "production").els).not.toContain(
+				"supply-cart"
+			);
+		});
+
+		it("hides a tab with the one shown with it, or only that one", () => {
+			const g = paired().layout;
+			const one = ops.hide(
+				g,
+				"i-material-io",
+				"material-io-totals",
+				ctx()
+			);
+			expect(item(one.layout, "material-io").els).toEqual([
+				"material-io",
+			]);
+			expect(one.announcement.params).toEqual({
+				el: "material-io-totals",
+			});
+			const both = ops.hide(g, "i-material-io", "material-io", ctx());
+			expect(
+				both.layout.items.some((i) =>
+					i.els.includes("material-io-totals")
+				)
+			).toBe(false);
+			expect(both.announcement.params).toEqual({
+				el: "material-io+material-io-totals",
+			});
+			// a tab whose partner always stays: neither goes
+			const withProd = ops.joinTab(
+				today(),
+				{ item: "i-experts" },
+				"i-production",
+				"below",
+				ctx()
+			).layout;
+			const prod = item(withProd, "production");
+			expect(ops.hideTabBlocked(prod, "production")).toBe(
+				"plan.layout.why.required"
+			);
+			expect(ops.hideTabBlocked(prod, "experts")).toBeNull();
+			// Production always stays, so its tab does with what is shown with it
+			const gone = ops.hide(
+				ops.joinTab(
+					today(),
+					{ item: "i-experts" },
+					"i-production",
+					"beside",
+					ctx()
+				).layout,
+				"i-production",
+				"production",
+				ctx()
+			);
+			expect(ann(gone)).toBe("nothing");
+		});
+
+		it("needs the height of two below each other", () => {
+			const g = paired().layout;
+			const io = item(g, "material-io");
+			expect(minHeightOf(io)).toBe(
+				ELEMENTS["material-io"].minH +
+					ELEMENTS["material-io-totals"].minH
+			);
+			const beside = ops.setSide(
+				g,
+				io.id,
+				"material-io-totals",
+				"beside",
+				ctx()
+			).layout;
+			expect(minHeightOf(item(beside, "material-io"))).toBe(
+				Math.max(
+					ELEMENTS["material-io"].minH,
+					ELEMENTS["material-io-totals"].minH
+				)
+			);
+		});
+	});
+
 	describe("hide and add", () => {
 		it("hides an item or a tab, never Production", () => {
 			const g = today();
@@ -821,6 +1103,7 @@ describe("layoutOps", () => {
 	});
 
 	describe("200 random ops on random layouts", () => {
+		const SIDES = ["below", "beside"] as const;
 		const run = (seed: number) => {
 			const rnd = prng(seed);
 			let g = randomLayout(rnd);
@@ -906,6 +1189,33 @@ describe("layoutOps", () => {
 					() => ops.setCols(g, int(rnd, 2, 26), c),
 					() => ops.setGap(g, pick(rnd, GAPS), c),
 					() => ops.setActive(g, it.id, el, c),
+					() =>
+						ops.joinTab(
+							g,
+							{ item: it.id },
+							other,
+							pick(rnd, SIDES),
+							c
+						),
+					() =>
+						missing.length
+							? ops.joinTab(
+									g,
+									{ el: pick(rnd, missing) },
+									other,
+									pick(rnd, SIDES),
+									c
+								)
+							: ops.setGap(g, 8, c),
+					() => ops.setSide(g, it.id, el, pick(rnd, SIDES), c),
+					() =>
+						ops.takeOutTo(
+							g,
+							it.id,
+							el,
+							{ tab: other, side: pick(rnd, SIDES) },
+							c
+						),
 				];
 				const next = pick(rnd, steps)().layout;
 				// the input is never changed: undo is the previous layout
@@ -934,6 +1244,8 @@ describe("layoutOps", () => {
 				ops.togglePin(g, it.id, c),
 				ops.split(g, it.id, c),
 				ops.hide(g, it.id, it.els[0], c),
+				ops.joinTab(g, { item: it.id }, "i-production", "below", c),
+				ops.joinTab(g, { item: "i-experts" }, it.id, "beside", c),
 			])
 				expect(normaliseLayout(change.layout)).toEqual(change.layout);
 	});

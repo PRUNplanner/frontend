@@ -46,6 +46,16 @@ export function randomLayout(rnd: () => number): GridLayout {
 			hm,
 			h: hm === "fit" ? 0 : int(rnd, 64, 900),
 			pin: rnd() < 0.15,
+			// now and then one shown with the element before it
+			...(group.length > 1 &&
+				rnd() < 0.4 && {
+					join: {
+						[group[int(rnd, 1, group.length - 1)]]: pick(rnd, [
+							"below",
+							"beside",
+						] as const),
+					},
+				}),
 		});
 	}
 	return normaliseLayout({ cols, gap: pick(rnd, GAPS), items });
@@ -64,7 +74,7 @@ export const ctx = (
 	more: Partial<ILayoutOpsContext> = {}
 ): ILayoutOpsContext => ({
 	width,
-	title: (els) => els.join("+"),
+	title: (it) => it.els.join("+"),
 	label: (el) => el,
 	...more,
 });

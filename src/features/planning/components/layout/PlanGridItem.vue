@@ -26,6 +26,7 @@
 	import { ELEMENTS, isKpiItem } from "@/features/planning/layout/elements";
 	import { elementView } from "@/features/planning/layout/elementComponents";
 	import { gridMeasureKey } from "@/features/planning/layout/planGrid.util";
+	import { partnerOf, tabEls, tabsOf } from "@/features/planning/layout/tabs";
 
 	// Components
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
@@ -71,12 +72,41 @@
 
 	const kpi = computed(() => isKpiItem(item));
 	const label = (el: ElementId): string => t(ELEMENTS[el].label);
+	// its tabs, each with the element shown with it, if any
+	const hosts = computed(() => tabsOf(item));
+	const partners = computed(
+		() =>
+			Object.fromEntries(
+				hosts.value.map((h) => [h, partnerOf(item, h)])
+			) as Partial<Record<ElementId, ElementId>>
+	);
+	/**
+	 * How a tab lays out its two: side by side ("row") where it is beside
+	 * and the box fits both minimums, else below each other ("col"); one
+	 * element: nothing
+	 */
+	const layoutOf = (host: ElementId): "row" | "col" | undefined => {
+		const partner = partners.value[host];
+		if (!partner) return undefined;
+		return item.join?.[partner] === "beside" &&
+			pos.width >= ELEMENTS[host].minW + ELEMENTS[partner].minW
+			? "row"
+			: "col";
+	};
+	/** A tab's name: "Material I/O & Material I/O totals" for two */
+	const tabLabel = (host: ElementId): string =>
+		partners.value[host]
+			? t("plan.layout.pair", {
+					a: label(host),
+					b: label(partners.value[host]!),
+				})
+			: label(host);
 	const tabs = computed(() =>
-		item.els.map((el) => ({
+		hosts.value.map((el) => ({
 			key: el,
-			label: label(el),
+			label: tabLabel(el),
 			dot:
-				el === "plan-check" && flagCount.value > 0
+				tabEls(item, el).includes("plan-check") && flagCount.value > 0
 					? t(
 							"plan.layout.flags",
 							{ n: flagCount.value },
@@ -142,7 +172,7 @@
 				width: `${pos.width}px`,
 				height: `${pos.height}px`,
 			}"
-			:aria-label="label(item.els.length > 1 ? active : item.els[0])"
+			:aria-label="tabLabel(active)"
 			tabindex="-1"
 			:data-item="item.id"
 			:data-folded="folded || undefined"
@@ -150,7 +180,7 @@
 			<!-- every item but a lone results tile; customising, that too: the editor
 			puts its grip, size and menu here, the tabs stay clickable -->
 			<div
-				v-if="!kpi || editing || item.els.length > 1"
+				v-if="!kpi || editing || hosts.length > 1"
 				ref="head"
 				class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pr-1"
 				:class="[
@@ -163,7 +193,7 @@
 				:data-item-head="editing ? item.id : undefined">
 				<slot name="lead" />
 				<PlanToolTabs
-					v-if="item.els.length > 1 && !folded"
+					v-if="hosts.length > 1 && !folded"
 					class="flex-1 min-w-0"
 					:tabs="tabs"
 					:active="active"
@@ -178,7 +208,7 @@
 						editing ? 'text-sm' : '',
 						folded && summary ? 'shrink-0 max-w-2/3' : 'flex-1',
 					]">
-					{{ label(item.els.length > 1 ? active : item.els[0]) }}
+					{{ tabLabel(active) }}
 				</h2>
 				<!-- folded, where the part stands: "COGC Metallurgy · 3 permits" -->
 				<span
@@ -225,14 +255,39 @@
 				:inert="editing || undefined"
 				data-body>
 				<div ref="inner" :class="kpi ? '' : 'py-3'">
-					<template v-for="el in item.els" :key="el">
+					<!-- a tab: its element, or two with a line between them,
+					below each other or beside (where the box fits both
+					minimums; otherwise below); each adapts to its own width -->
+					<template v-for="host in hosts" :key="host">
 						<div
-							v-if="mounted.has(el)"
-							v-show="el === active"
-							:data-element="el">
-							<component
-								:is="elementView(el).component"
-								v-bind="elementView(el).props" />
+							v-if="mounted.has(host)"
+							v-show="host === active"
+							:class="
+								layoutOf(host) === 'row'
+									? 'flex [&>*+*]:border-l [&>*+*]:border-line'
+									: layoutOf(host) === 'col'
+										? 'flex flex-col gap-3 [&>*+*]:pt-3 [&>*+*]:border-t [&>*+*]:border-line'
+										: ''
+							"
+							:data-tab-body="host"
+							:data-pair="layoutOf(host)">
+							<div
+								v-for="el in tabEls(item, host)"
+								:key="el"
+								class="@container min-w-0"
+								:style="
+									layoutOf(host) === 'row'
+										? {
+												// the room beyond both minimums shared as they are
+												flex: `${ELEMENTS[el].minW} 1 ${ELEMENTS[el].minW}px`,
+											}
+										: undefined
+								"
+								:data-element="el">
+								<component
+									:is="elementView(el).component"
+									v-bind="elementView(el).props" />
+							</div>
 						</div>
 					</template>
 				</div>

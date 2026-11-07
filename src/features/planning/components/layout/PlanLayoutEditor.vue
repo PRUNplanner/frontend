@@ -132,6 +132,22 @@
 		phone,
 	} = editor;
 
+	// the dragged box: its name, or what a drop on a title bar does
+	const dragText = computed(() => {
+		const d = drag.value;
+		if (!d) return "";
+		const target = d.tabTo
+			? editor.draft.value.items.find((i) => i.id === d.tabTo)
+			: undefined;
+		if (!target) return editor.label(d.el);
+		if (d.join)
+			return t(`plan.layout.drop_join_${d.join}`, {
+				el: editor.label(d.el),
+				name: editor.label(target.active),
+			});
+		return t("plan.layout.drop_as_tab", { name: editor.label(d.el) });
+	});
+
 	// the elements show everything open and as tables as the draft says,
 	// here only
 	const planView = usePlanView();
@@ -436,23 +452,27 @@
 								data-landing>
 								{{ t("plan.layout.lands_here") }}
 							</div>
-							<!-- the dragged item follows the pointer -->
+							<!-- the dragged item follows the pointer; over a title bar
+							only a label below it, so the drop zones stay in view -->
 							<div
 								v-if="drag && drag.region === region"
 								class="absolute z-30 rounded border border-link bg-surface/80 shadow-xl pointer-events-none px-2 py-1 text-sm font-medium text-white"
-								:style="{
-									transform: `translate(${drag.left}px, ${drag.top}px)`,
-									width: `${widthPx(drag.w)}px`,
-									height: `${(drag.id && p.items[drag.id]?.height) || 120}px`,
-								}"
-								data-ghost>
-								{{
+								:class="
+									drag.tabTo ? 'w-max max-w-80 truncate' : ''
+								"
+								:style="
 									drag.tabTo
-										? t("plan.layout.drop_as_tab", {
-												name: editor.label(drag.el),
-											})
-										: editor.label(drag.el)
-								}}
+										? {
+												transform: `translate(${drag.pointer.x + 12}px, ${drag.pointer.y + 24}px)`,
+											}
+										: {
+												transform: `translate(${drag.left}px, ${drag.top}px)`,
+												width: `${widthPx(drag.w)}px`,
+												height: `${(drag.id && p.items[drag.id]?.height) || 120}px`,
+											}
+								"
+								data-ghost>
+								{{ dragText }}
 							</div>
 							<div
 								v-if="drag?.snap && drag.region === region"
@@ -521,7 +541,7 @@
 								class="flex items-center justify-center shrink-0 w-6 h-8 pointer-coarse:w-9 pointer-coarse:h-11 rounded-control text-muted hover:text-ink-strong outline-none focus-visible:ring-2 focus-visible:ring-link"
 								:aria-label="
 									t('plan.layout.handle', {
-										name: editor.title(item.els),
+										name: editor.title(item),
 									})
 								"
 								:aria-describedby="`size-${item.id}`"
@@ -570,14 +590,16 @@
 									class="shrink-0 pointer-coarse:size-11"
 									:aria-label="
 										t('plan.layout.hide_named', {
-											name: editor.label(
+											name: editor.tabLabel(
+												item,
 												editor.hideTarget(item)!
 											),
 										})
 									"
 									:title="
 										t('plan.layout.hide_named', {
-											name: editor.label(
+											name: editor.tabLabel(
+												item,
 												editor.hideTarget(item)!
 											),
 										})
@@ -612,7 +634,7 @@
 										class="shrink-0 pointer-coarse:size-11"
 										:aria-label="
 											t('plan.layout.item_menu', {
-												name: editor.title(item.els),
+												name: editor.title(item),
 											})
 										"
 										data-item-menu>
@@ -687,15 +709,40 @@
 								</div>
 								<!-- a drop here makes the dragged element a tab -->
 								<div
-									v-if="drag?.tabTo === item.id"
+									v-if="
+										drag?.tabTo === item.id &&
+										!drag.joinable
+									"
 									class="absolute inset-x-0 top-0 flex items-center justify-center h-10 pointer-coarse:h-11 px-2 rounded-t bg-surface ring-2 ring-inset ring-link text-sm font-medium text-link truncate"
 									data-tab-target>
 									{{
 										t("plan.layout.drop_tab_target", {
 											el: editor.label(drag.el),
-											name: editor.title(item.els),
+											name: editor.title(item),
 										})
 									}}
+								</div>
+								<!-- or three: a tab, below or beside the tab it shows -->
+								<div
+									v-else-if="drag?.tabTo === item.id"
+									class="absolute inset-x-0 top-0 grid grid-cols-3 h-10 pointer-coarse:h-11 rounded-t bg-surface ring-2 ring-inset ring-link text-sm font-medium text-muted-strong overflow-hidden"
+									data-tab-target>
+									<span
+										v-for="zone in [
+											'tab',
+											'below',
+											'beside',
+										] as const"
+										:key="zone"
+										class="flex items-center justify-center px-1 truncate border-l border-line first:border-l-0"
+										:class="
+											(drag.join ?? 'tab') === zone
+												? 'bg-link/15 text-link'
+												: ''
+										"
+										:data-zone="zone">
+										{{ t(`plan.layout.zone.${zone}`) }}
+									</span>
 								</div>
 							</div>
 						</template>

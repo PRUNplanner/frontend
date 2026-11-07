@@ -20,6 +20,9 @@ export type PresetKey = "today" | "wide" | "stacked";
 /** Height mode: fit the content, fit it up to `h`, or always `h` */
 export type HeightMode = "fit" | "cap" | "fixed";
 
+/** Where an element shown with another sits in their tab */
+export type JoinSide = "below" | "beside";
+
 /** A box on the grid: one element, or several as tabs */
 export interface GridItem {
 	id: string;
@@ -38,6 +41,8 @@ export interface GridItem {
 	pin: boolean;
 	// follows while scrolling, in its columns, with the parts below it
 	follow?: boolean;
+	// elements shown in the tab of the element before them, below or beside it
+	join?: Partial<Record<ElementId, JoinSide>>;
 }
 
 /** The player's grid */

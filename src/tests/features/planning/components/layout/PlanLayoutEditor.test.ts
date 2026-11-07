@@ -327,11 +327,24 @@ describe("PlanLayoutEditor", () => {
 			expect(ioKey("right")).toMatchObject({ disabled: true });
 			// the menu's way to make a tab: each other item, on its page
 			expect(ioKey("page:tabs")).toMatchObject({
-				label: "Make it a tab of …",
+				label: "Tab, below or beside …",
 			});
 			await pick(m, "material-io", "page:tabs");
-			expect(ioKey("tab:i-production")).toMatchObject({
-				label: "Production + 7 tabs",
+			// a row per other item: a tab of it, below or beside the tab it shows
+			expect(
+				(
+					menuOf(m, "material-io").props(
+						"options"
+					) as PDropdownOption[]
+				).find(
+					(o) => "buttons" in o && o.label === "Production + 7 tabs"
+				)
+			).toBeDefined();
+			expect(ioKey("tab:i-production")).toMatchObject({ text: "Tab" });
+			expect(ioKey("below:i-production")).toMatchObject({
+				text: "Below",
+				label: "Below Production",
+				disabled: false,
 			});
 			expect(ioKey("tab:i-material-io")).toBeUndefined();
 			// a menu opens on its first page again
@@ -643,7 +656,8 @@ describe("PlanLayoutEditor", () => {
 				to: "page",
 			});
 
-			// onto another title bar: a tab there, the drop target says so
+			// onto another title bar: a tab there, or below or beside the tab it
+			// shows; the drop target has the three, a tab where the bar has no width
 			hitAt(
 				m.wrapper.find("[data-item='i-planet'] [data-item-head]")
 					.element
@@ -657,7 +671,15 @@ describe("PlanLayoutEditor", () => {
 				m.wrapper
 					.find("[data-item='i-planet'] [data-tab-target]")
 					.text()
-			).toBe("Drop to add Repair as a tab to Planet");
+			).toBe("TabBelowBeside");
+			expect(
+				m.wrapper
+					.find("[data-item='i-planet'] [data-zone='tab']")
+					.classes()
+			).toContain("text-link");
+			expect(m.wrapper.find("[data-ghost]").text()).toBe(
+				"Repair as a tab here"
+			);
 			window.dispatchEvent(new MouseEvent("pointerup"));
 			await flushPromises();
 			expect(draft(m, "planet").els).toEqual([
@@ -665,6 +687,97 @@ describe("PlanLayoutEditor", () => {
 				"repair-analysis",
 			]);
 			expect(draft(m, "production").els).not.toContain("repair-analysis");
+		});
+
+		it("drops a part on the middle of a title bar below the tab shown there, on the right beside it", async () => {
+			const m = await mountEditor();
+			const head = m.wrapper.find(
+				"[data-item='i-material-io'] [data-item-head]"
+			).element;
+			// a title bar 300 px wide from x 0: thirds at 100 and 200
+			vi.spyOn(head, "getBoundingClientRect").mockReturnValue({
+				left: 0,
+				width: 300,
+			} as DOMRect);
+			hitAt(head);
+			await pointerdown(
+				m.wrapper.find(
+					"[data-item='i-material-io-totals'] [data-item-head]"
+				),
+				100,
+				100
+			);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 150, clientY: 140 })
+			);
+			await flushPromises();
+			const target = m.wrapper.find(
+				"[data-item='i-material-io'] [data-tab-target]"
+			);
+			expect(target.find("[data-zone='below']").classes()).toContain(
+				"text-link"
+			);
+			expect(m.wrapper.find("[data-ghost]").text()).toBe(
+				"Material I/O totals below Material I/O"
+			);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "material-io").els).toEqual([
+				"material-io",
+				"material-io-totals",
+			]);
+			expect(draft(m, "material-io").join).toEqual({
+				"material-io-totals": "below",
+			});
+			expect(announce(m)).toBe(
+				"Material I/O totals is below Material I/O now"
+			);
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
+				element: "material-io-totals",
+				how: "drag",
+				to: "joined",
+			});
+			// Elements says where it is; the title names both
+			expect(
+				m.wrapper.find("[data-element-row='material-io-totals']").text()
+			).toContain("Below Material I/O");
+			expect(
+				m.wrapper.find("[data-item='i-material-io'] h2").text()
+			).toBe("Material I/O & Material I/O totals");
+
+			// the menu: beside instead, then out again
+			await pick(m, "material-io", "page:tabs");
+			expect(option(m, "material-io", "side:below")).toMatchObject({
+				checked: true,
+			});
+			await pick(m, "material-io", "side:beside");
+			expect(draft(m, "material-io").join).toEqual({
+				"material-io-totals": "beside",
+			});
+			await pick(m, "material-io", "page:tabs");
+			await pick(m, "material-io", "out:material-io-totals");
+			expect(draft(m, "material-io").els).toEqual(["material-io"]);
+			expect(draft(m, "material-io-totals").els).toEqual([
+				"material-io-totals",
+			]);
+		});
+
+		it("joins from the menu; a tab holding two takes no third", async () => {
+			const m = await mountEditor();
+			await pick(m, "experts", "page:tabs");
+			await pick(m, "experts", "beside:i-workforce");
+			expect(draft(m, "workforce").join).toEqual({ experts: "beside" });
+			await pick(m, "planet", "page:tabs");
+			expect(option(m, "planet", "below:i-workforce")).toMatchObject({
+				disabled: true,
+				hint: "Workforce & Experts shows two parts already",
+			});
+			// hiding the tab hides both, as the eye button says
+			expect(
+				m.wrapper
+					.find("[data-item='i-workforce'] [data-item-hide]")
+					.attributes("aria-label")
+			).toBe("Hide Workforce & Experts");
 		});
 
 		it("moves a placed element dragged from Elements; the first tab moves its group", async () => {
@@ -1075,22 +1188,28 @@ describe("PlanLayoutEditor", () => {
 
 		it("shows Workforce as a table from its menu, undoably, saved with the layout", async () => {
 			const m = await mountEditor();
-			expect(option(m, "workforce", "view:cards")).toMatchObject({
+			expect(
+				option(m, "workforce", "view:cards:workforce")
+			).toMatchObject({
 				label: "As cards",
 				checked: true,
 			});
-			expect(option(m, "workforce", "view:table")).toMatchObject({
+			expect(
+				option(m, "workforce", "view:table:workforce")
+			).toMatchObject({
 				checked: false,
 			});
 			// only where a table exists
-			expect(option(m, "planet", "view:table")).toBeUndefined();
-			await pick(m, "workforce", "view:table");
+			expect(option(m, "planet", "view:table:planet")).toBeUndefined();
+			await pick(m, "workforce", "view:table:workforce");
 			const layout = () =>
 				m.wrapper
 					.findComponent({ name: "PlanGrid" })
 					.props("layout") as GridLayout;
 			expect(layout().table).toEqual(["workforce"]);
-			expect(option(m, "workforce", "view:table")).toMatchObject({
+			expect(
+				option(m, "workforce", "view:table:workforce")
+			).toMatchObject({
 				checked: true,
 			});
 			expect(announce(m)).toBe("Workforce shown as a table");
@@ -1106,20 +1225,20 @@ describe("PlanLayoutEditor", () => {
 					.props("layout") as GridLayout;
 			const state = (id: string, k: string) =>
 				m.wrapper.find(`[data-item="i-${id}"] [data-state="${k}"]`);
-			expect(option(m, "production", "open")).toBeUndefined();
+			expect(option(m, "production", "open:production")).toBeUndefined();
 			// as on the page until switched
-			expect(option(m, "workforce", "open")).toMatchObject({
+			expect(option(m, "workforce", "open:workforce")).toMatchObject({
 				label: "Everything open",
 				tip: "Every tier, field and button, also on the page",
 				checked: false,
 			});
 			expect(state("workforce", "open").exists()).toBe(false);
-			await pick(m, "workforce", "open");
+			await pick(m, "workforce", "open:workforce");
 			expect(layout().open).toEqual(["workforce"]);
-			expect(option(m, "workforce", "open")).toMatchObject({
+			expect(option(m, "workforce", "open:workforce")).toMatchObject({
 				checked: true,
 			});
-			expect(option(m, "experts", "open")).toMatchObject({
+			expect(option(m, "experts", "open:experts")).toMatchObject({
 				checked: false,
 			});
 			// shown as an icon on the title row, named for screen readers
@@ -1132,7 +1251,7 @@ describe("PlanLayoutEditor", () => {
 			await button(m, "[data-undo]").trigger("click");
 			expect(layout().open).toBeUndefined();
 
-			await pick(m, "workforce", "open");
+			await pick(m, "workforce", "open:workforce");
 			await button(m, "[data-save]").trigger("click");
 			expect(m.pref.layout.value.open).toEqual(["workforce"]);
 		});
@@ -1154,7 +1273,7 @@ describe("PlanLayoutEditor", () => {
 			expect(draft(m, "material-io").follow).toBe(true);
 			expect(state("material-io", "follows").exists()).toBe(true);
 			expect(announce(m)).toBe("Material I/O follows while scrolling");
-			await pick(m, "workforce", "view:table");
+			await pick(m, "workforce", "view:table:workforce");
 			expect(state("workforce", "table").exists()).toBe(true);
 			// pinning ends following, following unpins
 			await pick(m, "material-io", "pin");

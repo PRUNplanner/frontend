@@ -21,6 +21,7 @@ import {
 	io,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import plan from "@/locales/en_US/plan.json";
+import { FILTER_BAR } from "@/features/planning/planView.util";
 
 // Types & Interfaces
 import type { Component } from "vue";
@@ -174,11 +175,22 @@ describe("PlanToolElement", () => {
 });
 
 describe("PlanMaterialIOElement", () => {
-	it("puts the filters on one line from 480 px of its own width", async () => {
+	it("has the Supply Cart's filter bar: which materials as buttons, wrapping where it doesn't fit", async () => {
 		const { wrapper } = await mountElement(PlanMaterialIOElement);
 		const row = wrapper.find("[data-io] > div");
 		expect(row.classes()).toEqual(
-			expect.arrayContaining(["flex-wrap", "@min-[480px]:flex-nowrap"])
+			expect.arrayContaining(FILTER_BAR.split(" "))
+		);
+		const source = row.find("[role=group]");
+		expect(source.attributes("aria-label")).toBe(plan.io.source.label);
+		expect(source.findAll("button").map((b) => b.text())).toEqual([
+			"Whole base",
+			"Production",
+			"Workforce",
+		]);
+		await source.findAll("button")[1].trigger("click");
+		expect(source.findAll("button")[1].attributes("aria-pressed")).toBe(
+			"true"
 		);
 		expect(wrapper.findComponent(PlanMaterialIO).props()).toMatchObject({
 			value: "price",

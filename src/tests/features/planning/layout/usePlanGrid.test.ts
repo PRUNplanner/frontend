@@ -44,6 +44,22 @@ describe("visibleLayout", () => {
 			"production"
 		);
 	});
+
+	it("gives one shown with POPR a tab of its own, never joins it elsewhere", () => {
+		const layout = presetLayout("today");
+		const prod = layout.items.find((i) => i.els.includes("popr"))!;
+		// Experts beside POPR, in Production's group
+		prod.els.splice(prod.els.indexOf("popr") + 1, 0, "experts");
+		prod.join = { experts: "beside" };
+		layout.items = layout.items.filter((i) => i.els[0] !== "experts");
+		const anon = visibleLayout(layout, false).items.find(
+			(i) => i.id === prod.id
+		)!;
+		expect(anon.els).toContain("experts");
+		expect(anon.join).toBeUndefined();
+		// the stored layout keeps it
+		expect(prod.join).toEqual({ experts: "beside" });
+	});
 });
 
 describe("usePlanGrid", () => {
@@ -83,6 +99,21 @@ describe("usePlanGrid", () => {
 			behavior: "smooth",
 		});
 		expect(document.activeElement).toBe(el);
+		el.remove();
+	});
+
+	it("focuses one shown with another: the tab they share", async () => {
+		const { grid, pref } = setup();
+		const g = presetLayout("today");
+		const prod = g.items.find((i) => i.els[0] === "production")!;
+		prod.els.splice(prod.els.indexOf("repair-analysis") + 1, 0, "experts");
+		prod.join = { experts: "below" };
+		g.items = g.items.filter((i) => i.els[0] !== "experts");
+		pref.saveCustom(g);
+		const el = box("i-production");
+		grid.focusElement("experts");
+		expect(grid.tabs["i-production"]).toBe("repair-analysis");
+		await nextTick();
 		el.remove();
 	});
 

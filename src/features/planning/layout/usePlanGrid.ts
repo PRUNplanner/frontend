@@ -10,6 +10,7 @@ import {
 // Types & Interfaces
 import type {
 	ElementId,
+	GridItem,
 	GridLayout,
 } from "@/features/planning/layout/planLayout.types";
 
@@ -19,6 +20,12 @@ import type { usePlanLayoutPreference } from "@/features/planning/layout/usePlan
 
 // Util
 import { ELEMENTS } from "@/features/planning/layout/elements";
+import {
+	hostOf,
+	removeEl,
+	tabsOf,
+	tidyJoin,
+} from "@/features/planning/layout/tabs";
 
 /**
  * A layout without the elements this visitor can't use (POPR needs a login)
@@ -33,15 +40,14 @@ export function visibleLayout(
 ): GridLayout {
 	if (loggedIn) return layout;
 	const items = layout.items.flatMap((it) => {
-		const els = it.els.filter((e) => !ELEMENTS[e].loggedIn);
-		if (!els.length) return [];
-		return [
-			{
-				...it,
-				els,
-				active: els.includes(it.active) ? it.active : els[0],
-			},
-		];
+		if (!it.els.some((e) => ELEMENTS[e].loggedIn)) return [it];
+		// one shown with a hidden one gets a tab of its own
+		const copy: GridItem = {
+			...it,
+			...(it.join && { join: { ...it.join } }),
+		};
+		for (const e of it.els) if (ELEMENTS[e].loggedIn) removeEl(copy, e);
+		return copy.els.length ? [tidyJoin(copy)] : [];
 	});
 	return { ...layout, items };
 }
@@ -83,7 +89,7 @@ export function usePlanGrid(
 			refDialog.value = el;
 			return;
 		}
-		if (item.els.length > 1) tabs[item.id] = el;
+		if (tabsOf(item).length > 1) tabs[item.id] = hostOf(item, el);
 		if (pref.folded.value.includes(item.els[0])) fold(item.els[0], false);
 		void nextTick(() => {
 			const box = document.querySelector<HTMLElement>(

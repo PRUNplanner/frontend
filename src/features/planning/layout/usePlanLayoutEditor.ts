@@ -27,6 +27,7 @@ import type {
 	GridItem,
 	GridLayout,
 	HeightMode,
+	JoinSide,
 	ILayoutChange,
 	IPackResult,
 } from "@/features/planning/layout/planLayout.types";
@@ -49,6 +50,12 @@ import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { snapHeightTo, snapTopTo } from "@/features/planning/layout/snapping";
 import { visibleLayout } from "@/features/planning/layout/usePlanGrid";
+import {
+	hostOf,
+	partnerOf,
+	tabEls,
+	tabsOf,
+} from "@/features/planning/layout/tabs";
 
 /** Preview widths of the editor; 0 is the page's own, 390 a phone */
 export const PREVIEW_WIDTHS = [0, 1600, 1440, 1280, 1024, 390] as const;
@@ -56,7 +63,15 @@ export const PHONE_PREVIEW = 390;
 // a pointer moves this far before a press becomes a drag
 const DRAG_START = 6;
 // changes that get a toast with Undo (their announcement keys)
-const TOASTED = new Set(["hidden", "tab", "taken_out", "split", "reset"]);
+const TOASTED = new Set([
+	"hidden",
+	"tab",
+	"joined_below",
+	"joined_beside",
+	"taken_out",
+	"split",
+	"reset",
+]);
 
 type How = "drag" | "menu" | "keys" | "button";
 /** An edge that resizes: right (w), bottom (h), the corner (wh), left (l) */
@@ -84,10 +99,15 @@ export interface IEditorDrag {
 	// where the box follows the pointer, grid px
 	left: number;
 	top: number;
+	// the pointer itself, grid px
+	pointer: { x: number; y: number };
 	region: Region;
 	snap: ISnap | null;
 	// dropped on this item's title bar: a tab there
 	tabTo: string | null;
+	// whether it can join the tab that item shows, and where it would
+	joinable: boolean;
+	join: JoinSide | null;
 	// over the Elements panel: a drop hides it
 	hide: boolean;
 }
@@ -155,14 +175,27 @@ export function usePlanLayoutEditor(
 	const shown = computed(() => visibleLayout(draft.value, env.loggedIn()));
 
 	const label = (el: ElementId): string => t(ELEMENTS[el].label);
-	const title = (els: ElementId[]): string =>
-		els.length > 1
+	/** A tab's name: its element, or "Material I/O & Material I/O totals" */
+	const tabLabel = (
+		it: Pick<GridItem, "els" | "join">,
+		host: ElementId
+	): string => {
+		const partner = partnerOf(it, host);
+		return partner
+			? t("plan.layout.pair", { a: label(host), b: label(partner) })
+			: label(host);
+	};
+	/** An item's name: its tab, or "Production + 7 tabs" */
+	const title = (it: Pick<GridItem, "els" | "join">): string => {
+		const tabs = tabsOf(it);
+		return tabs.length > 1
 			? t(
 					"plan.layout.item_title",
-					{ name: label(els[0]), n: els.length - 1 },
-					els.length - 1
+					{ name: tabLabel(it, tabs[0]), n: tabs.length - 1 },
+					tabs.length - 1
 				)
-			: label(els[0]);
+			: tabLabel(it, tabs[0]);
+	};
 	const ctx = (): ops.ILayoutOpsContext => ({
 		width: env.grid()?.gridWidth ?? 1280,
 		pack: env.grid()?.pack,
@@ -239,7 +272,7 @@ export function usePlanLayoutEditor(
 	const trackMove = (
 		el: ElementId,
 		how: How,
-		to: "page" | "band" | "tabs" | "hidden"
+		to: "page" | "band" | "tabs" | "joined" | "hidden"
 	) => trackEvent("plan:layout_item_move", { element: el, how, to });
 	const trackResize = (
 		el: ElementId,
@@ -324,10 +357,9 @@ export function usePlanLayoutEditor(
 		if (apply(ops.hide(draft.value, id, el, ctx())))
 			trackMove(el, how, "hidden");
 	}
-	/** What hiding an item hides: its tab on view, or its one element; null when that stays */
+	/** What hiding an item hides: its tab on view (with the element shown with it); null when that stays */
 	function hideTarget(it: GridItem): ElementId | null {
-		const el = it.els.length > 1 ? it.active : it.els[0];
-		return ops.hideBlocked(el) ? null : el;
+		return ops.hideTabBlocked(it, it.active) ? null : it.active;
 	}
 	/** The hide button on a title bar */
 	function hideNow(id: string): void {
@@ -338,15 +370,22 @@ export function usePlanLayoutEditor(
 	const hideDrop = computed(() => {
 		const d = drag.value;
 		if (!d?.hide) return null;
+		// a whole item, or a tab (or an element shown with another) out of one
 		const it = d.id ? itemOf(d.id) : undefined;
-		const els = it ? it.els : [d.el];
-		const blocked = els.map((el) => ops.hideBlocked(el)).find(Boolean);
+		const from = d.from ? itemOf(d.from) : undefined;
+		const blocked = it
+			? it.els.map((el) => ops.hideBlocked(el)).find(Boolean)
+			: from
+				? ops.hideTabBlocked(from, d.el)
+				: ops.hideBlocked(d.el);
+		const name = it
+			? title(it)
+			: from && !from.join?.[d.el]
+				? tabLabel(from, d.el)
+				: label(d.el);
 		return blocked
 			? { blocked: true, text: t(blocked) }
-			: {
-					blocked: false,
-					text: t("plan.layout.drop_hide", { name: title(els) }),
-				};
+			: { blocked: false, text: t("plan.layout.drop_hide", { name }) };
 	});
 	function add(el: ElementId): void {
 		if (apply(ops.add(draft.value, el, ctx()))) {
@@ -383,7 +422,7 @@ export function usePlanLayoutEditor(
 	function show(el: ElementId): void {
 		// the panel shows only placed elements
 		const it = draft.value.items.find((i) => i.els.includes(el))!;
-		if (it.active !== el) setTab(it.id, el);
+		if (it.active !== hostOf(it, el)) setTab(it.id, el);
 		refFlash.value = it.id;
 		setTimeout(() => {
 			if (refFlash.value === it.id) refFlash.value = null;
@@ -429,7 +468,7 @@ export function usePlanLayoutEditor(
 		const it = itemOf(id)!;
 		const g = draft.value;
 		const p = env.grid()?.pack.items[id];
-		const name = title(it.els);
+		const name = title(it);
 		const mc = minCols(it);
 		const mh = minHeightOf(it);
 		const room = ops.edgeRoom(g, id, "right", ctx());
@@ -469,7 +508,7 @@ export function usePlanLayoutEditor(
 								? t("plan.layout.why.right_edge")
 								: room.by && it.x + it.w >= room.edge
 									? t("plan.layout.why.neighbour_min", {
-											name: title(room.by.els),
+											name: title(room.by),
 										})
 									: undefined,
 					},
@@ -532,32 +571,47 @@ export function usePlanLayoutEditor(
 				checked: !!it.follow,
 			},
 			{ type: "divider" },
-			// how the tab shown displays: cards or a table, everything open
-			...(TABLE_VIEW.includes(it.active) || OPENABLE.includes(it.active)
-				? ([
-						{ type: "group", label: t("plan.layout.display") },
-						...(TABLE_VIEW.includes(it.active)
-							? (["cards", "table"] as const).map((v) => ({
-									key: `view:${v}`,
-									label: t(`plan.layout.view_${v}`),
-									checked:
-										!!g.table?.includes(it.active) ===
-										(v === "table"),
-								}))
-							: []),
-						...(OPENABLE.includes(it.active)
-							? [
-									{
-										key: "open",
-										label: t("plan.layout.content_open"),
-										tip: t("plan.layout.content_open_hint"),
-										checked: !!g.open?.includes(it.active),
-									},
-								]
-							: []),
-						{ type: "divider" },
-					] as PDropdownOption[])
-				: []),
+			// how the tab shown displays: cards or a table, everything open;
+			// for each of its elements, named when it shows two
+			...tabEls(it, it.active).flatMap((el, _, shownEls) =>
+				TABLE_VIEW.includes(el) || OPENABLE.includes(el)
+					? ([
+							{
+								type: "group",
+								label:
+									shownEls.length > 1
+										? t("plan.layout.display_of", {
+												name: label(el),
+											})
+										: t("plan.layout.display"),
+							},
+							...(TABLE_VIEW.includes(el)
+								? (["cards", "table"] as const).map((v) => ({
+										key: `view:${v}:${el}`,
+										label: t(`plan.layout.view_${v}`),
+										checked:
+											!!g.table?.includes(el) ===
+											(v === "table"),
+									}))
+								: []),
+							...(OPENABLE.includes(el)
+								? [
+										{
+											key: `open:${el}`,
+											label: t(
+												"plan.layout.content_open"
+											),
+											tip: t(
+												"plan.layout.content_open_hint"
+											),
+											checked: !!g.open?.includes(el),
+										},
+									]
+								: []),
+							{ type: "divider" },
+						] as PDropdownOption[])
+					: []
+			),
 			{
 				type: "buttons",
 				label: t("plan.layout.move"),
@@ -599,21 +653,23 @@ export function usePlanLayoutEditor(
 		// tabs on a page of their own: a group's list, or every item to join
 		if (refMenuPage.value === "tabs" && refMenu.value === id)
 			return tabPage(it);
+		const tabs = tabsOf(it);
 		opts.push({
 			key: "page:tabs",
 			label:
-				it.els.length > 1
-					? t("plan.layout.tabs_more", { n: it.els.length })
+				tabs.length > 1
+					? t("plan.layout.tabs_more", { n: tabs.length })
 					: t("plan.layout.make_tab_more"),
 		});
 		opts.push({ type: "divider" });
-		const hideEl = it.els.length > 1 ? it.active : it.els[0];
-		const blocked = ops.hideBlocked(hideEl);
+		const blocked = ops.hideTabBlocked(it, it.active);
 		opts.push({
 			key: "hide",
 			label:
-				it.els.length > 1
-					? t("plan.layout.hide_tab", { name: label(hideEl) })
+				tabs.length > 1
+					? t("plan.layout.hide_tab", {
+							name: tabLabel(it, it.active),
+						})
 					: t("plan.layout.hide"),
 			disabled: !!blocked,
 			hint: blocked ? t(blocked) : undefined,
@@ -621,19 +677,49 @@ export function usePlanLayoutEditor(
 		return opts;
 	}
 
-	/** The ⋯ menu's tabs page: Back, then take out and split, or join */
+	/**
+	 * The ⋯ menu's tabs page: Back; the element shown with the tab on view
+	 * (below or beside, out); the tabs to take out and split; for an item
+	 * of one tab, every other item to join: as a tab, below or beside
+	 */
 	function tabPage(it: GridItem): PDropdownOption[] {
 		const g = draft.value;
+		const tabs = tabsOf(it);
 		const opts: PDropdownOption[] = [
 			{ key: "page:main", label: t("plan.layout.menu_back") },
 			{ type: "divider" },
 		];
-		if (it.els.length > 1) {
+		const partner = partnerOf(it, it.active);
+		if (partner) {
+			opts.push({
+				type: "buttons",
+				label: t("plan.layout.with", {
+					el: label(partner),
+					name: label(it.active),
+				}),
+				buttons: (["below", "beside"] as const).map((side) => ({
+					key: `side:${side}`,
+					label: t(`plan.layout.join_${side}`, {
+						name: label(it.active),
+					}),
+					text: t(`plan.layout.zone.${side}`),
+					checked: it.join?.[partner] === side,
+				})),
+			});
+			opts.push({
+				key: `out:${partner}`,
+				label: t("plan.layout.take_out", { name: label(partner) }),
+			});
+			opts.push({ type: "divider" });
+		}
+		if (tabs.length > 1) {
 			opts.push({ type: "group", label: t("plan.layout.tabs") });
-			for (const el of it.els)
+			for (const el of tabs)
 				opts.push({
 					key: `out:${el}`,
-					label: t("plan.layout.take_out", { name: label(el) }),
+					label: t("plan.layout.take_out", {
+						name: tabLabel(it, el),
+					}),
 					disabled: el === it.els[0],
 					hint:
 						el === it.els[0]
@@ -641,14 +727,37 @@ export function usePlanLayoutEditor(
 							: undefined,
 				});
 			opts.push({ key: "split", label: t("plan.layout.split") });
-		} else {
-			// the menu's way to what dragging onto a title bar does
-			opts.push({ type: "group", label: t("plan.layout.make_tab") });
-			for (const o of g.items.filter((o) => o !== it))
-				opts.push({
-					key: `tab:${o.id}`,
-					label: title(o.els),
-				});
+			return opts;
+		}
+		// the menu's way to what dragging onto a title bar does: a tab of
+		// another item, or with the tab it shows, below or beside it
+		opts.push({ type: "group", label: t("plan.layout.make_tab") });
+		for (const o of g.items.filter((o) => o !== it)) {
+			const why = ops.joinBlocked(g, it.els, o.id);
+			opts.push({
+				type: "buttons",
+				label: title(o),
+				buttons: [
+					{
+						key: `tab:${o.id}`,
+						label: t("plan.layout.drop_as_tab", {
+							name: title(it),
+						}),
+						text: t("plan.layout.zone.tab"),
+					},
+					...(["below", "beside"] as const).map((side) => ({
+						key: `${side}:${o.id}`,
+						label: t(`plan.layout.join_${side}`, {
+							name: label(o.active),
+						}),
+						text: t(`plan.layout.zone.${side}`),
+						disabled: !!why,
+						hint: why
+							? t(why, { name: tabLabel(o, o.active) })
+							: undefined,
+					})),
+				],
+			});
 		}
 		return opts;
 	}
@@ -695,18 +804,19 @@ export function usePlanLayoutEditor(
 		else if (key === "pin") togglePin(id);
 		else if (key === "follow")
 			apply(ops.toggleFollow(draft.value, id, ctx()), id);
-		else if (key === "open") toggleOpen(it.active);
-		else if (key.startsWith("view:"))
+		else if (key.startsWith("open:")) toggleOpen(key.slice(5) as ElementId);
+		else if (key.startsWith("view:")) {
+			const [, view, el] = key.split(":");
 			apply(
 				ops.setView(
 					draft.value,
-					it.active,
-					key.slice(5) as "cards" | "table",
+					el as ElementId,
+					view as "cards" | "table",
 					ctx()
 				),
 				id
 			);
-		else if (key === "up") moveY(id, -1, "menu");
+		} else if (key === "up") moveY(id, -1, "menu");
 		else if (key === "down") moveY(id, 1, "menu");
 		else if (key === "left") moveX(id, -1, "menu");
 		else if (key === "right") moveX(id, 1, "menu");
@@ -716,8 +826,29 @@ export function usePlanLayoutEditor(
 			const to = key.slice(4);
 			if (apply(ops.makeTab(draft.value, { item: id }, to, ctx()), to))
 				trackMove(it.els[0], "menu", "tabs");
-		} else if (key === "hide")
-			hide(id, it.els.length > 1 ? it.active : it.els[0]);
+		} else if (key.startsWith("below:") || key.startsWith("beside:")) {
+			const [side, to] = key.split(":") as [JoinSide, string];
+			if (
+				apply(
+					ops.joinTab(draft.value, { item: id }, to, side, ctx()),
+					to
+				)
+			)
+				trackMove(it.els[0], "menu", "joined");
+		} else if (key.startsWith("side:")) {
+			const partner = partnerOf(it, it.active);
+			if (partner)
+				apply(
+					ops.setSide(
+						draft.value,
+						id,
+						partner,
+						key.slice(5) as JoinSide,
+						ctx()
+					),
+					id
+				);
+		} else if (key === "hide") hide(id, it.active);
 	}
 
 	/*
@@ -846,7 +977,7 @@ export function usePlanLayoutEditor(
 				p.w,
 				side === "right" ? room.edge - it.x : it.x + it.w - room.edge
 			),
-			by: room.by ? title(room.by.els) : null,
+			by: room.by ? title(room.by) : null,
 		};
 		resize.value = {
 			id,
@@ -890,18 +1021,32 @@ export function usePlanLayoutEditor(
 			!!hit?.closest?.("[data-elements-panel]");
 		const rg = hit?.closest?.("[data-region]")?.getAttribute("data-region");
 		if (rg === "band" || rg === "page") region = rg;
-		const head = hit
-			?.closest?.("[data-item-head]")
-			?.getAttribute("data-item-head");
+		const headEl = hit?.closest?.<HTMLElement>("[data-item-head]");
+		const head = headEl?.getAttribute("data-item-head");
 		if (
 			head &&
 			head !== press0.id &&
 			head !== press0.from &&
-			(!cur || cur.els.length === 1)
+			(!cur || tabsOf(cur).length === 1)
 		)
 			tabTo = head;
 		const q = gridPoint(e, region);
 		const g = draft.value;
+		// on a title bar: its left third makes a tab, the middle puts it
+		// below the tab shown there, the right beside it, where it can join
+		const from = press0.from ? itemOf(press0.from) : undefined;
+		const els = cur
+			? cur.els
+			: from && !from.join?.[press0.el]
+				? tabEls(from, press0.el)
+				: [press0.el];
+		const joinable = !!tabTo && !ops.joinBlocked(g, els, tabTo);
+		let join: JoinSide | null = null;
+		const r = joinable ? headEl?.getBoundingClientRect() : undefined;
+		if (r?.width) {
+			const f = (e.clientX - r.left) / r.width;
+			join = f < 1 / 3 ? null : f < 2 / 3 ? "below" : "beside";
+		}
 		const step = pack.page.colWidth + g.gap;
 		const probe = cur ?? { els: [press0.el] };
 		const w = Math.max(
@@ -934,9 +1079,12 @@ export function usePlanLayoutEditor(
 			w,
 			left: q.x - press0.off.x,
 			top,
+			pointer: { x: q.x, y: q.y },
 			region,
 			snap,
 			tabTo: hide ? null : tabTo,
+			joinable: !hide && joinable,
+			join: hide ? null : join,
 			hide,
 		};
 	}
@@ -985,7 +1133,7 @@ export function usePlanLayoutEditor(
 	/** The text of a snap, for the badge, the line and the toast */
 	function snapText(s: ISnap): string {
 		const ref = s.ref ? itemOf(s.ref) : undefined;
-		const name = ref ? title(ref.els) : "";
+		const name = ref ? title(ref) : "";
 		if (s.kind === "content") return t("plan.layout.snap.content");
 		if (s.kind === "bottom") return t("plan.layout.snap.bottom", { name });
 		if (s.kind === "height")
@@ -1010,15 +1158,20 @@ export function usePlanLayoutEditor(
 			return;
 		}
 		if (d.tabTo) {
+			const src = d.id ? { item: d.id } : { el: d.el };
 			const change = d.from
-				? ops.takeOutTo(g, d.from, d.el, { tab: d.tabTo }, ctx())
-				: ops.makeTab(
+				? ops.takeOutTo(
 						g,
-						d.id ? { item: d.id } : { el: d.el },
-						d.tabTo,
+						d.from,
+						d.el,
+						{ tab: d.tabTo, ...(d.join && { side: d.join }) },
 						ctx()
-					);
-			if (apply(change, d.tabTo)) trackMove(d.el, "drag", "tabs");
+					)
+				: d.join
+					? ops.joinTab(g, src, d.tabTo, d.join, ctx())
+					: ops.makeTab(g, src, d.tabTo, ctx());
+			if (apply(change, d.tabTo))
+				trackMove(d.el, "drag", d.join ? "joined" : "tabs");
 			return;
 		}
 		const to = {
@@ -1122,7 +1275,7 @@ export function usePlanLayoutEditor(
 		pref.saveCustom(g);
 		trackEvent("plan:layout_save", {
 			items: g.items.length,
-			tabs: g.items.filter((i) => i.els.length > 1).length,
+			tabs: g.items.filter((i) => tabsOf(i).length > 1).length,
 			kept_in_view: g.items.filter((i) => i.pin).length,
 			hidden: ELEMENT_IDS.filter(
 				(e) => !g.items.some((i) => i.els.includes(e))
@@ -1160,7 +1313,12 @@ export function usePlanLayoutEditor(
 	const where = (el: ElementId): string => {
 		const it = draft.value.items.find((i) => i.els.includes(el));
 		if (!it) return t("plan.layout.where.hidden");
-		if (it.els.length > 1 && it.els[0] !== el)
+		const side = it.join?.[el];
+		if (side)
+			return t(`plan.layout.where.${side}`, {
+				name: label(hostOf(it, el)),
+			});
+		if (it.els[0] !== el)
 			return t("plan.layout.where.tab", { name: label(it.els[0]) });
 		return it.pin
 			? t("plan.layout.where.band")
@@ -1183,6 +1341,7 @@ export function usePlanLayoutEditor(
 		landing,
 		phone,
 		title,
+		tabLabel,
 		label,
 		minCols,
 		where,

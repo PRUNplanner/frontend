@@ -231,9 +231,6 @@
 			"filter_label": "Supply for",
 			"more_in": "More options in {link}",
 			"buttons": {
-				"all": "All",
-				"workforce": "Workforce",
-				"production": "Production",
 				"xit_initial": "XIT Initial"
 			},
 			"table": {
@@ -821,8 +818,8 @@
 		"source": {
 			"label": "Show materials for",
 			"all": "Whole base",
-			"production": "Production only",
-			"workforce": "Workforce only"
+			"production": "Production",
+			"workforce": "Workforce"
 		},
 		"filter": {
 			"label": "Filter",
@@ -890,6 +887,8 @@
 			"page": "On the page",
 			"band": "Pinned to top",
 			"tab": "A tab of {name}",
+			"below": "Below {name}",
+			"beside": "Beside {name}",
 			"hidden": "Hidden"
 		},
 		"show": "Show",
@@ -914,6 +913,7 @@
 		"content_open": "Everything open",
 		"content_open_hint": "Every tier, field and button, also on the page",
 		"display": "Display",
+		"display_of": "Display · {name}",
 		"follow": "Follow while scrolling",
 		"follow_hint": "Stays in view in its column while you scroll, with the parts below it",
 		"state": {
@@ -940,6 +940,17 @@
 		"drop_hide": "Drop to hide {name}",
 		"lands_here": "Lands here",
 		"drop_as_tab": "{name} as a tab here",
+		"drop_join_below": "{el} below {name}",
+		"drop_join_beside": "{el} beside {name}",
+		"zone": {
+			"tab": "Tab",
+			"below": "Below",
+			"beside": "Beside"
+		},
+		"pair": "{a} & {b}",
+		"with": "{el} with {name}",
+		"join_below": "Below {name}",
+		"join_beside": "Beside {name}",
 		"drop_tab_target": "Drop to add {el} as a tab to {name}",
 		"menu_width": "Width · {n} of {cols} columns",
 		"menu_height_fit": "Height · fits its content, {h} px now",
@@ -964,8 +975,8 @@
 		"left": "Left one column",
 		"right": "Right one column",
 		"tabs": "Tabs",
-		"make_tab": "Make it a tab of",
-		"make_tab_more": "Make it a tab of …",
+		"make_tab": "Join another part",
+		"make_tab_more": "Tab, below or beside …",
 		"tabs_more": "Tabs ({n}) …",
 		"menu_back": "Back",
 		"view_cards": "As cards",
@@ -982,6 +993,8 @@
 			"left_edge": "Already at the left edge",
 			"full_width": "Already full width",
 			"first_tab": "The first tab stays; take the others out",
+			"join_one": "Only a part of its own can go with another; take its tabs out first",
+			"join_full": "{name} shows two parts already",
 			"neighbour_min": "{name} beside it is at its minimum width",
 			"required": "Production always stays on the page"
 		},
@@ -1012,6 +1025,8 @@
 			"unfollowed": "{item} stays in place again",
 			"tab": "{el} is now a tab of {item}",
 			"taken_out": "{el} is its own item now",
+			"joined_below": "{el} is below {name} now",
+			"joined_beside": "{el} is beside {name} now",
 			"split": "{el} and its tabs are separate items now",
 			"hidden": "{el} hidden. It stays in Elements.",
 			"added": "{el} added",

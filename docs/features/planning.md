@@ -26,7 +26,7 @@ the folder layout and the editor.
 | `usePlanDraft.ts` | Backend autosave draft: debounced PUT, keepalive flush on page hide, DELETE on undo-to-saved, discard or reload; a draft found on open is only offered (`restore`), the next write replaces it; one write queue per tab shared with saves; another tab's draft (409) stops autosaving and asks |
 | `usePlanVersions.ts`, `usePlanVersionPreview.ts`, `planVersions.util.ts` | Saved versions and the read-only preview of an older one |
 | `usePlanEdits.ts`, `usePlanSharedCopy.ts`, `usePlanIO.ts`, `usePlanShortcuts.ts`, `usePlanCheckView.ts`, `usePlanView.ts` | Page composables: edit feedback (undo toasts, starter setup, hab auto-optimise), shared-plan working copy, Material I/O, keyboard shortcuts, Plan check view; `providePlanView` / `usePlanView` hand the page's state to the elements |
-| `layout/*.ts` | The plan grid, pure and Vue-free except the `use*` files: element registry with minimum sizes (`elements.ts`), presets, `normaliseLayout`, `packLayout` (skyline packing, kept-in-view band, automatic reflow, phone stacking), `layoutOps` (every customise change, with its announcement), `snapping`, the tab's `sessionLayoutStore` (`planLayout.schemas.ts`), `usePlanLayoutPreference`, `usePlanGrid` (tabs, folding, `focusElement`), `usePlanLayoutEditor` (customise mode) |
+| `layout/*.ts` | The plan grid, pure and Vue-free except the `use*` files: element registry with minimum sizes (`elements.ts`), presets, `normaliseLayout`, `packLayout` (skyline packing, kept-in-view band, automatic reflow, phone stacking), `layoutOps` (every customise change, with its announcement), `tabs` (an item's tabs and the part shown with a tab, below or beside: `GridItem.join`), `snapping`, the tab's `sessionLayoutStore` (`planLayout.schemas.ts`), `usePlanLayoutPreference`, `usePlanGrid` (tabs, folding, `focusElement`), `usePlanLayoutEditor` (customise mode) |
 | `planView.util.ts` / `.types.ts`, `recipePicker.util.ts` | `PlanTool` keys, Material I/O totals/CSV, page types; recipe picker ordering |
 | `useMaterialIOUtil.ts` | Material I/O enrichment; also combines empire I/O |
 | `calculations/*.ts` | Infrastructure, extraction, hab LP optimisation (the `.types.ts` there are engine types) |
@@ -46,7 +46,8 @@ the folder layout and the editor.
   tool, loaded inside `Suspense` with `PlanToolFallback`),
   `PlanMaterialIOElement` and `PlanMaterialIOTotalsElement`. Elements take
   no props: they read `usePlanView()`, and lay out for their own width with
-  container queries. A tab group uses `PlanToolTabs`. `PlanLayoutMenu` picks
+  container queries. A tab group uses `PlanToolTabs`; a tab can show two
+  parts, below or beside each other (`join`), each adapting to its half. `PlanLayoutMenu` picks
   the layout, `PlanLayoutEditor` (+ `PlanLayoutElementsPanel`) customises it.
 - Header: `PlanSaveControl` (undo, redo, save status → `PlanVersionsPopover`,
   Save → `PlanSavePopover`), `PlanMoreMenu` (CSV, Debug),

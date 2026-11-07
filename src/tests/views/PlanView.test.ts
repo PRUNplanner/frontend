@@ -556,7 +556,7 @@ describe("PlanView", () => {
 			wrapper
 				.find("[data-item='i-workforce']")
 				.findComponent({ name: "PDropdown" })
-				.vm.$emit("select", "open");
+				.vm.$emit("select", "open:workforce");
 			await flushPromises();
 			expect(showAll()).toBe(true);
 			await wrapper.find("[data-save]").trigger("click");
@@ -593,9 +593,7 @@ describe("PlanView", () => {
 			value: "volume",
 		});
 
-		const source = pane().findComponent(PSelect);
-		source.vm.$emit("update:value", "production");
-		await flushPromises();
+		await toggle("plan.io.source.production");
 		// without what the workforce consumes
 		expect(
 			io()
@@ -619,10 +617,8 @@ describe("PlanView", () => {
 		expect(io().props("checks")).toBeUndefined();
 		expect(totals().text()).not.toContain("plan.io.profit");
 
-		source.vm.$emit("update:value", "workforce");
-		await flushPromises();
-		source.vm.$emit("update:value", "all");
-		await flushPromises();
+		await toggle("plan.io.source.workforce");
+		await toggle("plan.io.source.all");
 		expect(io().props("materialIOData")).toStrictEqual(whole);
 		expect(totals().text()).toContain("plan.io.profit");
 	});

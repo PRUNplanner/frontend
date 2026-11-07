@@ -11,6 +11,7 @@ import {
 } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { PRESET_KEYS } from "@/features/planning/layout/presets";
+import { ELEMENTS } from "@/features/planning/layout/elements";
 
 // Types & Interfaces
 import type {
@@ -219,6 +220,83 @@ describe("PlanGrid", () => {
 		);
 	});
 
+	it("shows two parts in one tab below or beside each other, both lines folded", async () => {
+		const today = presetLayout("today");
+		const pair = (side: "below" | "beside"): GridLayout => ({
+			...today,
+			items: today.items
+				.filter((i) => i.els[0] !== "material-io-totals")
+				.map((i) =>
+					i.els[0] === "material-io"
+						? {
+								...i,
+								els: ["material-io", "material-io-totals"],
+								join: { "material-io-totals": side },
+							}
+						: i
+				),
+		});
+		const below = await mountGrid({ layout: pair("below") });
+		const tab = box(below.wrapper, "i-material-io").find(
+			"[data-tab-body='material-io']"
+		);
+		expect(
+			tab
+				.findAll("[data-element]")
+				.map((e) => e.attributes("data-element"))
+		).toEqual(["material-io", "material-io-totals"]);
+		expect(tab.classes()).toContain("flex-col");
+		// one tab: a title, no tab strip
+		expect(
+			box(below.wrapper, "i-material-io")
+				.findComponent(PlanToolTabs)
+				.exists()
+		).toBe(false);
+
+		// beside in a box narrower than both minimums: below each other
+		const narrow = await mountGrid({ layout: pair("beside") });
+		expect(
+			box(narrow.wrapper, "i-material-io")
+				.find("[data-tab-body='material-io']")
+				.attributes("data-pair")
+		).toBe("col");
+		// full width: side by side, a line between, the room beyond both
+		// minimums shared as they are
+		const wide = pair("beside");
+		const io = wide.items.find((i) => i.els[0] === "material-io")!;
+		io.x = 0;
+		io.w = 12;
+		const beside = await mountGrid({ layout: wide });
+		const side = box(beside.wrapper, "i-material-io").find(
+			"[data-tab-body='material-io']"
+		);
+		expect(side.attributes("data-pair")).toBe("row");
+		expect(side.classes()).toContain("[&>*+*]:border-l");
+		expect(
+			side
+				.findAll("[data-element]")
+				.map((e) => (e.element as HTMLElement).style.flex)
+		).toEqual(
+			(["material-io", "material-io-totals"] as const).map(
+				(el) => `${ELEMENTS[el].minW} 1 ${ELEMENTS[el].minW}px`
+			)
+		);
+
+		const folded = await mountGrid({
+			layout: pair("below"),
+			folded: ["material-io"],
+			summaries: {
+				"material-io": "12 imports",
+				"material-io-totals": "Profit / day 10.00",
+			},
+		});
+		expect(
+			box(folded.wrapper, "i-material-io")
+				.find("[data-fold-summary]")
+				.text()
+		).toBe("12 imports · Profit / day 10.00");
+	});
+
 	it("says where a folded part stands after its title, only folded", async () => {
 		const { wrapper } = await mountGrid({
 			folded: ["planet"],
@@ -252,7 +330,7 @@ describe("PlanGrid", () => {
 		await setProps({ tabs: {} });
 		// kept mounted, hidden
 		expect(
-			(prod.find("[data-element='supply-cart']").element as HTMLElement)
+			(prod.find("[data-tab-body='supply-cart']").element as HTMLElement)
 				.style.display
 		).toBe("none");
 	});

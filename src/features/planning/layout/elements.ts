@@ -4,6 +4,9 @@ import type {
 	GridItem,
 } from "@/features/planning/layout/planLayout.types";
 
+// Util
+import { tabEls, tabsOf } from "@/features/planning/layout/tabs";
+
 /** What the grid knows of an element: its name, its minimum size, its group */
 export interface IElementMeta {
 	// i18n key of its name
@@ -110,12 +113,24 @@ export const TABLE_VIEW: readonly ElementId[] = ["workforce"];
 export const isElementId = (id: unknown): id is ElementId =>
 	typeof id === "string" && Object.hasOwn(ELEMENTS, id);
 
-/** A tab group's minimum width: the largest of its elements */
+/**
+ * A tab group's minimum width: the largest of its elements (two beside
+ * each other in a tab stack where the box is narrower than both)
+ */
 export const minWidthOf = (item: Pick<GridItem, "els">): number =>
 	Math.max(...item.els.map((e) => ELEMENTS[e].minW));
 
-export const minHeightOf = (item: Pick<GridItem, "els">): number =>
-	Math.max(...item.els.map((e) => ELEMENTS[e].minH));
+/** A tab group's minimum height: its tallest tab, two below each other added */
+export const minHeightOf = (item: Pick<GridItem, "els" | "join">): number =>
+	Math.max(
+		...tabsOf(item).map((host) => {
+			const [a, b] = tabEls(item, host);
+			if (!b) return ELEMENTS[a].minH;
+			return item.join?.[b] === "below"
+				? ELEMENTS[a].minH + ELEMENTS[b].minH
+				: Math.max(ELEMENTS[a].minH, ELEMENTS[b].minH);
+		})
+	);
 
 export const isKpiItem = (item: Pick<GridItem, "els">): boolean =>
 	item.els.every((e) => ELEMENTS[e].kpi);

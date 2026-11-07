@@ -37,6 +37,43 @@ describe("normaliseLayout", () => {
 			});
 	});
 
+	it("keeps two shown in one tab as stored, two at most, never the first", () => {
+		const g = normaliseLayout({
+			items: [
+				{
+					...prod,
+					els: [
+						"production",
+						"planet",
+						"experts",
+						"housing",
+						"empire",
+					],
+					// the first can't join, nor one after a joined one; an
+					// unknown side or element is dropped
+					join: {
+						production: "below",
+						planet: "beside",
+						experts: "below",
+						housing: "sideways",
+						popr: "below",
+					},
+					active: "planet",
+				},
+			],
+		});
+		const it = g.items[0];
+		expect(it.join).toEqual({ planet: "beside" });
+		// the tab shown is the one Planet is shown in
+		expect(it.active).toBe("production");
+		expect(normaliseLayout(g)).toEqual(g);
+		// none left: no join at all
+		expect(
+			normaliseLayout({ items: [{ ...prod, join: { x: "below" } }] })
+				.items[0]
+		).not.toHaveProperty("join");
+	});
+
 	it("drops unknown and duplicate elements and empty items", () => {
 		const out = normaliseLayout({
 			cols: 12,

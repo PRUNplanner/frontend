@@ -130,7 +130,7 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:layout_customise_open` | `from` (`preset`, `custom`) | customise mode opened |
 | `plan:layout_save` | `items`, `tabs`, `kept_in_view`, `hidden`, `cols`, `gap`, `replaced`, `store` (`session`) | Custom Layout saved |
 | `plan:layout_cancel` | `changes` | customise mode left without saving |
-| `plan:layout_item_move` | `element`, `how` (`drag`, `menu`, `keys`, `button`), `to` (`page`, `band`, `tabs`, `hidden`) | an item moved, made a tab or hidden |
+| `plan:layout_item_move` | `element`, `how` (`drag`, `menu`, `keys`, `button`), `to` (`page`, `band`, `tabs`, `joined`, `hidden`) | an item moved, made a tab, put below or beside a tab (`joined`) or hidden |
 | `plan:layout_item_resize` | `element`, `how` (`drag`, `menu`, `keys`), `what` (`width`, `height`), `snapped` (`bottom`, `height`, `content`, null) | an item resized |
 | `plan:layout_undo` | `how` (`toast`, `button`, `keys`) | a layout change undone while customising |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | any of the three switched |

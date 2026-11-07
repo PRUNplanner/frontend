@@ -4,6 +4,7 @@ import type {
 	GridItem,
 	GridLayout,
 	HeightMode,
+	JoinSide,
 	ILayoutChange,
 	IPackResult,
 } from "@/features/planning/layout/planLayout.types";
@@ -28,6 +29,14 @@ import {
 	freeItemId,
 	renumber,
 } from "@/features/planning/layout/normaliseLayout";
+import {
+	hostOf,
+	partnerOf,
+	removeEl,
+	tabEls,
+	tabsOf,
+	tidyJoin,
+} from "@/features/planning/layout/tabs";
 
 /** What an op needs to know of the screen */
 export interface ILayoutOpsContext {
@@ -36,7 +45,7 @@ export interface ILayoutOpsContext {
 	// the last packing: positions settle the order, content heights
 	pack?: IPackResult;
 	// an item's name for the announcements, e.g. "Production + 7 tabs"
-	title: (els: ElementId[]) => string;
+	title: (it: Pick<GridItem, "els" | "join">) => string;
 	// an element's name
 	label: (el: ElementId) => string;
 }
@@ -111,7 +120,7 @@ const done = (
 	key: string,
 	params: Record<string, string | number> = {}
 ): ILayoutChange => ({
-	layout: { ...layout, items: renumber(layout.items) },
+	layout: { ...layout, items: renumber(layout.items).map(tidyJoin) },
 	announcement: { key: `plan.layout.announce.${key}`, params },
 });
 
@@ -166,7 +175,7 @@ export const moveX = (
 			ctx
 		);
 		return done(g, "column", {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 			n: it.x + 1,
 		});
 	});
@@ -194,7 +203,7 @@ export const moveY = (
 				: others.find((o) => o.y > it.y);
 		if (next) it.y = next.y + dir * HALF;
 		return done(g, dir < 0 ? "up" : "down", {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 		});
 	});
 
@@ -215,7 +224,7 @@ export const moveTo = (
 		it.pin = to.band;
 		if (to.band) delete it.follow;
 		return done(g, to.band ? "moved_band" : "moved", {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 			n: it.x + 1,
 		});
 	});
@@ -310,11 +319,11 @@ function setEdge(
 					o.w = end - from;
 				}
 			} else if (o.x + o.w > it.x && it.x - o.x >= 1) o.w = it.x - o.x;
-		const params = { item: ctx.title(it.els), n: it.w, cols: g.cols };
+		const params = { item: ctx.title(it), n: it.w, cols: g.cols };
 		if (want > it.w && room.by)
 			return done(g, "width_neighbour", {
 				...params,
-				name: ctx.title(room.by.els),
+				name: ctx.title(room.by),
 			});
 		return done(
 			g,
@@ -356,7 +365,7 @@ export const fullWidth = (
 	edit(layout, id, ctx, (it, g) => {
 		it.x = 0;
 		it.w = g.cols;
-		return done(g, "full_width", { item: ctx.title(it.els) });
+		return done(g, "full_width", { item: ctx.title(it) });
 	});
 
 /** Height mode; "at most" and "fixed" start from the content, up to 480 px */
@@ -374,7 +383,7 @@ export const setHeightMode = (
 				minHeightOf(it)
 			);
 		return done(g, `height_${hm}`, {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 			h: it.h,
 		});
 	});
@@ -408,7 +417,7 @@ export const setHeight = (
 				: v === min && h < min
 					? "height_min"
 					: `height_${it.hm}`,
-			{ item: ctx.title(it.els), h: v }
+			{ item: ctx.title(it), h: v }
 		);
 	});
 
@@ -441,7 +450,7 @@ export const togglePin = (
 		// to the end of the band, or the top of the page
 		it.y = it.pin ? END : -1;
 		return done(g, it.pin ? "pinned" : "unpinned", {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 		});
 	});
 
@@ -464,13 +473,20 @@ export const toggleFollow = (
 			}
 		}
 		return done(g, it.follow ? "followed" : "unfollowed", {
-			item: ctx.title(it.els),
+			item: ctx.title(it),
 		});
 	});
 
+/** A tab's name: its element, or the two shown in it */
+const tabName = (
+	it: GridItem,
+	host: ElementId,
+	ctx: ILayoutOpsContext
+): string => ctx.title({ els: tabEls(it, host), join: it.join });
+
 /**
- * Makes an element a tab of another item: an item of one element (moved
- * there), or an element from Elements that isn't on the page
+ * Makes an item of one tab, or an element from Elements that isn't on the
+ * page, a tab of another item; two shown in one tab come along together
  */
 export const makeTab = (
 	layout: GridLayout,
@@ -487,41 +503,120 @@ export const makeTab = (
 		!target ||
 		!el ||
 		src === target ||
-		(src && src.els.length > 1) ||
+		(src && tabsOf(src).length > 1) ||
 		(!src && g.items.some((i) => i.els.includes(el)))
 	)
 		return done(g, "nothing");
 	if (src) g.items = g.items.filter((i) => i !== src);
-	target.els.push(el);
+	target.els.push(...(src ? src.els : [el]));
+	if (src?.join) target.join = { ...target.join, ...src.join };
 	target.active = el;
 	target.w = Math.max(target.w, minCols(target, g, ctx));
 	target.x = Math.min(target.x, g.cols - target.w);
 	return done(g, "tab", {
-		el: ctx.label(el),
+		el: src ? ctx.title(src) : ctx.label(el),
 		item: ctx.label(target.els[0]),
 	});
 };
 
+/**
+ * Why an element can't join the tab an item shows, or null: only one
+ * element joins, and a tab holds two
+ */
+export function joinBlocked(
+	layout: GridLayout,
+	els: ElementId[],
+	to: string
+): string | null {
+	const target = layout.items.find((i) => i.id === to);
+	if (!target) return null;
+	if (els.length > 1) return "plan.layout.why.join_one";
+	if (partnerOf(target, target.active)) return "plan.layout.why.join_full";
+	return null;
+}
+
+/**
+ * Shows an element in the tab another item shows, below or beside its
+ * element: an item of one element (moved there), or one from Elements
+ */
+export const joinTab = (
+	layout: GridLayout,
+	from: { item: string } | { el: ElementId },
+	to: string,
+	side: JoinSide,
+	ctx: ILayoutOpsContext
+): ILayoutChange => {
+	const g = settle(layout, ctx);
+	const target = g.items.find((i) => i.id === to);
+	const src =
+		"item" in from ? g.items.find((i) => i.id === from.item) : undefined;
+	const el = "el" in from ? from.el : src?.els[0];
+	if (
+		!target ||
+		!el ||
+		src === target ||
+		joinBlocked(g, src ? src.els : [el], to) ||
+		(!src && g.items.some((i) => i.els.includes(el)))
+	)
+		return done(g, "nothing");
+	if (src) g.items = g.items.filter((i) => i !== src);
+	const host = target.active;
+	target.els.splice(target.els.indexOf(host) + 1, 0, el);
+	target.join = { ...target.join, [el]: side };
+	target.w = Math.max(target.w, minCols(target, g, ctx));
+	target.x = Math.min(target.x, g.cols - target.w);
+	return done(g, `joined_${side}`, {
+		el: ctx.label(el),
+		name: ctx.label(host),
+	});
+};
+
+/** Below or beside: where an element shown with another sits */
+export const setSide = (
+	layout: GridLayout,
+	id: string,
+	el: ElementId,
+	side: JoinSide,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		if (!it.join?.[el] || it.join[el] === side) return done(g, "nothing");
+		it.join[el] = side;
+		return done(g, `joined_${side}`, {
+			el: ctx.label(el),
+			name: ctx.label(hostOf(it, el)),
+		});
+	});
+
+/** A new item below `it` with these elements (a tab, maybe with its partner) */
 const splitOff = (
 	g: GridLayout,
 	it: GridItem,
-	el: ElementId,
+	els: ElementId[],
 	i: number
 ): void => {
+	const join = Object.fromEntries(
+		els.filter((e) => it.join?.[e]).map((e) => [e, it.join![e]])
+	);
 	g.items.push({
-		id: freeItemId(g.items, el),
-		els: [el],
-		active: el,
+		id: freeItemId(g.items, els[0]),
+		els,
+		active: els[0],
 		x: it.x,
 		w: it.w,
 		y: it.y + 0.01 * (i + 1),
 		hm: "fit",
 		h: 0,
 		pin: it.pin,
+		...(Object.keys(join).length && { join }),
 	});
 };
 
-/** Takes a tab out into its own item, below; the first tab stays */
+/**
+ * Takes a tab out into its own item, below, with the element shown with
+ * it; or an element shown with another, out of their tab. The first tab
+ * stays.
+ */
 export const takeOut = (
 	layout: GridLayout,
 	id: string,
@@ -529,53 +624,65 @@ export const takeOut = (
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		if (!it.els.includes(el) || it.els[0] === el) return done(g, "nothing");
-		it.els = it.els.filter((e) => e !== el);
-		if (it.active === el) it.active = it.els[0];
-		splitOff(g, it, el, 0);
+		const joined = !!it.join?.[el];
+		if (!it.els.includes(el) || (!joined && it.els[0] === el))
+			return done(g, "nothing");
+		const els = joined ? [el] : tabEls(it, el);
+		splitOff(g, it, els, 0);
+		if (joined) removeEl(it, el);
+		else it.els = it.els.filter((e) => !els.includes(e));
 		return done(g, "taken_out", { el: ctx.label(el) });
 	});
 
 /**
- * A tab dragged out of its group: its own item where it drops, or a tab
- * of another item
+ * A tab dragged out of its group: its own item where it drops, a tab
+ * of another item, or with the tab another item shows
  */
 export const takeOutTo = (
 	layout: GridLayout,
 	id: string,
 	el: ElementId,
-	to: { x: number; y: number; band: boolean } | { tab: string },
+	to:
+		| { x: number; y: number; band: boolean }
+		| { tab: string; side?: JoinSide },
 	ctx: ILayoutOpsContext
 ): ILayoutChange => {
 	const out = takeOut(layout, id, el, ctx);
-	const it = out.layout.items.find(
-		(i) => i.els.length === 1 && i.els[0] === el
-	);
+	const it = out.layout.items.find((i) => i.id !== id && i.els[0] === el);
 	if (!it || ("tab" in to && to.tab === id)) return done(layout, "nothing");
 	return "tab" in to
-		? makeTab(out.layout, { item: it.id }, to.tab, ctx)
+		? to.side
+			? joinTab(out.layout, { item: it.id }, to.tab, to.side, ctx)
+			: makeTab(out.layout, { item: it.id }, to.tab, ctx)
 		: moveTo(out.layout, it.id, to, ctx);
 };
 
-/** Every tab its own item */
+/** Every tab its own item, each with the element shown with it */
 export const split = (
 	layout: GridLayout,
 	id: string,
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		const rest = it.els.slice(1);
-		it.els = [it.els[0]];
-		it.active = it.els[0];
-		rest.forEach((el, i) => splitOff(g, it, el, i));
-		return done(g, "split", { el: ctx.label(it.els[0]) });
+		const [first, ...rest] = tabsOf(it);
+		rest.forEach((host, i) => splitOff(g, it, tabEls(it, host), i));
+		it.els = tabEls(it, first);
+		return done(g, "split", { el: ctx.label(first) });
 	});
 
 /** Why an element can't be hidden, or null */
 export const hideBlocked = (el: ElementId): string | null =>
 	ELEMENTS[el].required ? "plan.layout.why.required" : null;
 
-/** Hides an element: a tab, or the whole item of one element */
+/** Why a tab can't be hidden (its element or the one with it stays), or null */
+export const hideTabBlocked = (it: GridItem, el: ElementId): string | null =>
+	(it.join?.[el] ? [el] : tabEls(it, el)).map(hideBlocked).find(Boolean) ??
+	null;
+
+/**
+ * Hides a tab with the element shown with it, or an element shown with
+ * another; the item goes when nothing is left
+ */
 export const hide = (
 	layout: GridLayout,
 	id: string,
@@ -583,13 +690,13 @@ export const hide = (
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		if (!it.els.includes(el) || hideBlocked(el)) return done(g, "nothing");
-		if (it.els.length === 1) g.items = g.items.filter((i) => i !== it);
-		else {
-			it.els = it.els.filter((e) => e !== el);
-			if (it.active === el) it.active = it.els[0];
-		}
-		return done(g, "hidden", { el: ctx.label(el) });
+		if (!it.els.includes(el) || hideTabBlocked(it, el))
+			return done(g, "nothing");
+		const name = it.join?.[el] ? ctx.label(el) : tabName(it, el, ctx);
+		const els = it.join?.[el] ? [el] : tabEls(it, el);
+		els.forEach((e) => removeEl(it, e));
+		if (!it.els.length) g.items = g.items.filter((i) => i !== it);
+		return done(g, "hidden", { el: name });
 	});
 
 /** Hides an item with all its tabs, unless one of them always stays */
@@ -601,7 +708,7 @@ export const hideItem = (
 	edit(layout, id, ctx, (it, g) => {
 		if (it.els.some((el) => hideBlocked(el))) return done(g, "nothing");
 		g.items = g.items.filter((i) => i !== it);
-		return done(g, "hidden", { el: ctx.title(it.els) });
+		return done(g, "hidden", { el: ctx.title(it) });
 	});
 
 /** Adds an element that isn't on the page, at the bottom */
@@ -716,6 +823,6 @@ export const setActive = (
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		if (it.els.includes(el)) it.active = el;
+		if (it.els.includes(el)) it.active = hostOf(it, el);
 		return done(g, "tab_shown", { el: ctx.label(it.active) });
 	});

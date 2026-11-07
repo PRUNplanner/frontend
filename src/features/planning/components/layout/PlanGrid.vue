@@ -27,6 +27,7 @@
 		gridMeasureKey,
 	} from "@/features/planning/layout/planGrid.util";
 	import { BAND_STICKY_SHARE } from "@/features/planning/layout/planLayout.constants";
+	import { hostOf, tabEls } from "@/features/planning/layout/tabs";
 
 	// Components
 	import PlanGridItem from "@/features/planning/components/layout/PlanGridItem.vue";
@@ -202,7 +203,15 @@
 	// a tab picked on the page, while the item still has it (a layout
 	// switched or saved since may have moved it elsewhere)
 	const shownTab = (it: GridItem): ElementId =>
-		tabs[it.id] && it.els.includes(tabs[it.id]) ? tabs[it.id] : it.active;
+		tabs[it.id] && it.els.includes(tabs[it.id])
+			? hostOf(it, tabs[it.id])
+			: it.active;
+	// folded, what its tab says: both lines when it shows two
+	const summaryOf = (it: GridItem): string =>
+		tabEls(it, shownTab(it))
+			.map((el) => summaries[el])
+			.filter(Boolean)
+			.join(" · ");
 
 	defineExpose({ pack, gridWidth, capped, content });
 </script>
@@ -240,7 +249,7 @@
 						:pos="pack.items[it.id]"
 						:active="shownTab(it)"
 						:folded="isFolded(it, foldedSet)"
-						:summary="summaries[shownTab(it)]"
+						:summary="summaryOf(it)"
 						:editing="editing"
 						@fold="(v: boolean) => emit('fold', it.els[0], v)"
 						@tab="(el: ElementId) => emit('tab', it.id, el)">
@@ -270,7 +279,7 @@
 				:pos="pack.items[it.id]"
 				:active="shownTab(it)"
 				:folded="isFolded(it, foldedSet)"
-				:summary="summaries[shownTab(it)]"
+				:summary="summaryOf(it)"
 				:editing="editing"
 				:follow="followOf(it.id)"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"

@@ -4,6 +4,7 @@ import type {
 	GridItem,
 	GridLayout,
 	HeightMode,
+	JoinSide,
 } from "@/features/planning/layout/planLayout.types";
 
 // Util
@@ -21,8 +22,10 @@ import {
 	OPENABLE,
 	TABLE_VIEW,
 } from "@/features/planning/layout/elements";
+import { tidyJoin } from "@/features/planning/layout/tabs";
 
 const HEIGHT_MODES: HeightMode[] = ["fit", "cap", "fixed"];
+const JOIN_SIDES: JoinSide[] = ["below", "beside"];
 
 const clamp = (v: number, lo: number, hi: number): number =>
 	Math.min(hi, Math.max(lo, v));
@@ -108,7 +111,16 @@ export function normaliseLayout(input: unknown): GridLayout {
 			!items.some((o) => o.id === it.id)
 				? it.id
 				: freeItemId(items, els[0]);
-		items.push({
+		// two parts in one tab: known sides of its own elements, tidied below
+		const join: Partial<Record<ElementId, JoinSide>> = {};
+		if (it.join && typeof it.join === "object")
+			for (const [e, side] of Object.entries(it.join))
+				if (
+					els.includes(e as ElementId) &&
+					JOIN_SIDES.includes(side as JoinSide)
+				)
+					join[e as ElementId] = side as JoinSide;
+		const item: GridItem = {
 			id,
 			els,
 			active: els.includes(it.active as ElementId)
@@ -122,7 +134,9 @@ export function normaliseLayout(input: unknown): GridLayout {
 			pin: it.pin === true,
 			// pinned parts are in the band: following means nothing there
 			...(it.follow === true && it.pin !== true && { follow: true }),
-		});
+			join,
+		};
+		items.push(tidyJoin(item));
 	}
 
 	// Production can't be hidden
@@ -175,7 +189,11 @@ export function normaliseFolded(input: unknown): ElementId[] {
 export const cloneLayout = (layout: GridLayout): GridLayout => ({
 	cols: layout.cols,
 	gap: layout.gap,
-	items: layout.items.map((i) => ({ ...i, els: [...i.els] })),
+	items: layout.items.map((i) => ({
+		...i,
+		els: [...i.els],
+		...(i.join && { join: { ...i.join } }),
+	})),
 	...(layout.open && { open: [...layout.open] }),
 	...(layout.table && { table: [...layout.table] }),
 });

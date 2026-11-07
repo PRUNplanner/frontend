@@ -314,7 +314,7 @@ export interface IAnalyticsEventProperties {
 	"plan:layout_item_move": {
 		element: ElementId;
 		how: LayoutHow;
-		to: "page" | "band" | "tabs" | "hidden";
+		to: "page" | "band" | "tabs" | "joined" | "hidden";
 	};
 	"plan:layout_item_resize": {
 		element: ElementId;
