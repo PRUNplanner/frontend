@@ -4,13 +4,14 @@ import { describe, expect, it, vi } from "vitest";
 import { sessionLayoutStore } from "@/features/planning/layout/layoutStore";
 import { STORAGE_KEY } from "@/features/planning/layout/planLayout.constants";
 import { presetLayout } from "@/features/planning/layout/presets";
+import { wideLayout } from "@/tests/features/planning/layout/layout.fixtures";
 
 describe("sessionLayoutStore", () => {
 	it("keeps the layout in the tab's sessionStorage", () => {
 		const stored = {
 			v: 1 as const,
 			preset: "custom" as const,
-			custom: presetLayout("wide"),
+			custom: wideLayout(),
 			folded: ["planet" as const],
 		};
 		sessionLayoutStore.save(stored);
@@ -28,7 +29,7 @@ describe("sessionLayoutStore", () => {
 		expect(sessionLayoutStore.load()).toBeNull();
 		sessionStorage.setItem(
 			STORAGE_KEY,
-			JSON.stringify({ v: 0, rows: [], preset: "today" })
+			JSON.stringify({ v: 0, rows: [], preset: "standard" })
 		);
 		expect(sessionLayoutStore.load()).toBeNull();
 		sessionStorage.setItem(
@@ -43,7 +44,7 @@ describe("sessionLayoutStore", () => {
 			STORAGE_KEY,
 			JSON.stringify({
 				v: 1,
-				preset: "today",
+				preset: "standard",
 				custom: { cols: 30, items: [{ els: ["empire", "nope"] }] },
 				folded: ["planet", "nope"],
 			})
@@ -55,6 +56,22 @@ describe("sessionLayoutStore", () => {
 			["production"],
 		]);
 		expect(out.folded).toEqual(["planet"]);
+		// Tinted parts: off is left out
+		expect(out).not.toHaveProperty("tinted");
+	});
+
+	it("keeps Tinted parts when on, drops a bad value", () => {
+		const base = { v: 1, preset: "standard", custom: null, folded: [] };
+		sessionStorage.setItem(
+			STORAGE_KEY,
+			JSON.stringify({ ...base, tinted: true })
+		);
+		expect(sessionLayoutStore.load()).toMatchObject({ tinted: true });
+		sessionStorage.setItem(
+			STORAGE_KEY,
+			JSON.stringify({ ...base, tinted: "yes" })
+		);
+		expect(sessionLayoutStore.load()).toEqual(base);
 	});
 
 	it("keeps working with storage blocked", () => {
@@ -69,7 +86,7 @@ describe("sessionLayoutStore", () => {
 		expect(() =>
 			sessionLayoutStore.save({
 				v: 1,
-				preset: "wide",
+				preset: "standard",
 				custom: null,
 				folded: [],
 			})

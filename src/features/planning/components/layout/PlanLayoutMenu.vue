@@ -17,19 +17,22 @@
 
 	/**
 	 * The plan header's Layout menu: the presets, Custom Layout when there
-	 * is one, and customising from the layout in use (not on a phone)
+	 * is one, Tinted parts (a lighter background on every part) and
+	 * customising from the layout in use (not on a phone)
 	 *
 	 * @author jplacht
 	 */
-	const { choice, hasCustom, canCustomise } = defineProps<{
+	const { choice, hasCustom, canCustomise, tinted } = defineProps<{
 		choice: LayoutChoice;
 		hasCustom: boolean;
 		canCustomise: boolean;
+		tinted: boolean;
 	}>();
 
 	const emit = defineEmits<{
 		(e: "pick", choice: LayoutChoice): void;
 		(e: "customise"): void;
+		(e: "tint", value: boolean): void;
 	}>();
 
 	const name = (c: LayoutChoice): string =>
@@ -52,6 +55,13 @@
 					},
 				]
 			: []),
+		{ type: "divider" as const },
+		{
+			key: "tint",
+			label: t("plan.layout.tint.name"),
+			hint: t("plan.layout.tint.description"),
+			checked: tinted,
+		},
 		...(canCustomise
 			? [
 					{ type: "divider" as const },
@@ -70,6 +80,7 @@
 
 	function onSelect(key: string): void {
 		if (key === "customise") emit("customise");
+		else if (key === "tint") emit("tint", !tinted);
 		else if (key !== choice) emit("pick", key as LayoutChoice);
 	}
 </script>

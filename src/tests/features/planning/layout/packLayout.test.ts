@@ -26,6 +26,8 @@ import {
 	prng,
 	randomHeights,
 	randomLayout,
+	stackedLayout,
+	wideLayout,
 } from "@/tests/features/planning/layout/layout.fixtures";
 
 const item = (o: Partial<GridItem>): GridItem => ({
@@ -213,7 +215,7 @@ describe("packLayout", () => {
 
 		it("keep Material I/O at the top beside Production in Wide", () => {
 			// Supply needs 5 of 12 columns here: it goes below Production
-			const { items } = packLayout(presetLayout("wide"), 1316, measured);
+			const { items } = packLayout(wideLayout(), 1316, measured);
 			expect(items["i-supply-cart"].top).toBeGreaterThan(0);
 			// Material I/O takes the free space above it, in its own column
 			expect(items["i-material-io"]).toMatchObject({ x: 9, top: 0 });
@@ -221,12 +223,10 @@ describe("packLayout", () => {
 
 		it("fill the space under a short column of folded parts", () => {
 			// 1132 px (the full sidebar at a 1440 px window): Base parts need 3
-			const { items } = packLayout(
-				presetLayout("stacked"),
-				1132,
-				measured,
-				["empire", "planet"]
-			);
+			const { items } = packLayout(stackedLayout(), 1132, measured, [
+				"empire",
+				"planet",
+			]);
 			const column = items["i-planet"];
 			expect(items["i-empire"].x).toBe(column.x);
 			// Experts goes up under the short column, not below Workforce
@@ -237,8 +237,12 @@ describe("packLayout", () => {
 		});
 
 		it("never fill space above parts when the layout fits its width", () => {
-			// Today's at 1440: the stored places, the skyline as stored
-			const { items } = packLayout(presetLayout("today"), 1440, measured);
+			// Standard at 1440: the stored places, the skyline as stored
+			const { items } = packLayout(
+				presetLayout("standard"),
+				1440,
+				measured
+			);
 			expect(Object.values(items).some((p) => p.auto)).toBe(false);
 			expect(items["i-material-io-totals"]).toMatchObject({
 				x: 9,
@@ -253,7 +257,7 @@ describe("packLayout", () => {
 	describe("folded parts side by side", () => {
 		// Stacked at 1316 px: Empire 2, Planet 3, Workforce 3, Infrastructure 2,
 		// Experts 2 columns in one row, Production full width below
-		const layout = presetLayout("stacked");
+		const layout = stackedLayout();
 		const heights = Object.fromEntries(
 			layout.items.map((i) => [i.id, i.pin ? 80 : 500])
 		);
@@ -361,7 +365,7 @@ describe("packLayout", () => {
 
 	describe("on a phone", () => {
 		it("stacks in layout order, small items two per row", () => {
-			const layout = presetLayout("stacked");
+			const layout = stackedLayout();
 			const { items, phone } = packLayout(layout, 390);
 			expect(phone).toBe(true);
 			// 390 px: an item fits half when its minimum is at most 187 px,
@@ -380,8 +384,8 @@ describe("packLayout", () => {
 		});
 
 		it("gives a small part without a small partner the full width", () => {
-			// Today's at 700: Empire is followed by Production (full width)
-			const { items } = packLayout(presetLayout("today"), 700);
+			// Standard at 700: Empire is followed by Production (full width)
+			const { items } = packLayout(presetLayout("standard"), 700);
 			expect(items["i-empire"]).toMatchObject({ x: 0, w: 12 });
 			// the fifth results tile, alone in its row
 			expect(items["i-kpi-storage"]).toMatchObject({ x: 0, w: 12 });
@@ -389,7 +393,7 @@ describe("packLayout", () => {
 		});
 
 		it("pairs Base parts on a wider phone", () => {
-			const { items } = packLayout(presetLayout("stacked"), 700);
+			const { items } = packLayout(stackedLayout(), 700);
 			expect(items["i-planet"].top).toBe(items["i-empire"].top);
 			expect(items["i-planet"].x).toBe(6);
 			expect(items["i-housing"].top).toBe(items["i-workforce"].top);

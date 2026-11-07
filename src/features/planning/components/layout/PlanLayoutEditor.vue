@@ -314,7 +314,7 @@
 				type="ghost"
 				:disabled="!history.length"
 				data-undo
-				@click="editor.undo('button')">
+				@click="editor.undo()">
 				<template #icon><UndoSharp /></template>
 				{{ t("plan.layout.undo") }}
 			</PButton>
@@ -428,7 +428,8 @@
 						:folded="[]"
 						:width="gridWidth"
 						editing
-						@tab="editor.setTab">
+						@tab="editor.setTab"
+						@split="editor.startSplit">
 						<template #region="{ region, pack: p }">
 							<!-- column guides behind the items -->
 							<div

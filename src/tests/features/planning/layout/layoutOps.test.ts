@@ -26,6 +26,7 @@ import {
 	prng,
 	randomHeights,
 	randomLayout,
+	wideLayout,
 } from "@/tests/features/planning/layout/layout.fixtures";
 
 const item = (g: GridLayout, el: ElementId) =>
@@ -41,7 +42,7 @@ const packed = (
 ) => ctx(width, { pack: packLayout(g, width, heights) });
 
 describe("layoutOps", () => {
-	const today = () => presetLayout("today");
+	const today = () => presetLayout("standard");
 
 	describe("moving", () => {
 		it("moves left and right within the grid", () => {
@@ -400,7 +401,7 @@ describe("layoutOps", () => {
 
 	describe("tabs", () => {
 		it("makes an item of one element a tab of another", () => {
-			const g = presetLayout("wide");
+			const g = wideLayout();
 			const c = ops.makeTab(
 				g,
 				{ item: "i-supply-cart" },
@@ -419,7 +420,7 @@ describe("layoutOps", () => {
 
 		it("adds an element from Elements as a tab", () => {
 			const g = ops.hide(
-				presetLayout("wide"),
+				wideLayout(),
 				"i-supply-cart",
 				"supply-cart",
 				ctx()
@@ -619,6 +620,116 @@ describe("layoutOps", () => {
 				"below",
 				packed(today())
 			);
+
+		it("sizes the two: columns beside, px below, auto again; kept to the item", () => {
+			// below: the first part's height, at least its minimum, 64–4000
+			const c = paired();
+			const h = ops.setJoinSize(
+				c.layout,
+				"i-material-io",
+				"material-io-totals",
+				300,
+				ctx()
+			);
+			expect(item(h.layout, "material-io").joinSize).toEqual({
+				"material-io-totals": 300,
+			});
+			expect(ann(h)).toBe("share_height");
+			expect(h.announcement.params).toMatchObject({
+				name: "material-io",
+				h: 300,
+			});
+			const low = ops.setJoinSize(
+				c.layout,
+				"i-material-io",
+				"material-io-totals",
+				1,
+				ctx()
+			);
+			expect(
+				item(low.layout, "material-io").joinSize!["material-io-totals"]
+			).toBe(Math.max(64, ELEMENTS["material-io"].minH));
+			// the same again changes nothing
+			expect(
+				ann(
+					ops.setJoinSize(
+						h.layout,
+						"i-material-io",
+						"material-io-totals",
+						300,
+						ctx()
+					)
+				)
+			).toBe("nothing");
+			// beside: columns of the first, 1 to w − 1
+			const side = ops.setSide(
+				h.layout,
+				"i-material-io",
+				"material-io-totals",
+				"beside",
+				ctx()
+			);
+			// a px size means nothing beside: gone with the switch
+			expect(item(side.layout, "material-io").joinSize).toBeUndefined();
+			const w = item(side.layout, "material-io").w;
+			const cols = ops.setJoinSize(
+				side.layout,
+				"i-material-io",
+				"material-io-totals",
+				99,
+				ctx()
+			);
+			expect(
+				item(cols.layout, "material-io").joinSize!["material-io-totals"]
+			).toBe(w - 1);
+			expect(ann(cols)).toBe("share_cols");
+			// narrower: the columns follow
+			const narrow = ops.setWidth(cols.layout, "i-material-io", 2, ctx());
+			expect(
+				item(narrow.layout, "material-io").joinSize?.[
+					"material-io-totals"
+				] ?? 1
+			).toBeLessThanOrEqual(item(narrow.layout, "material-io").w - 1);
+			// auto again
+			const auto = ops.setJoinSize(
+				cols.layout,
+				"i-material-io",
+				"material-io-totals",
+				null,
+				ctx()
+			);
+			expect(item(auto.layout, "material-io").joinSize).toBeUndefined();
+			expect(ann(auto)).toBe("share_auto");
+			// not a joined element: nothing
+			expect(
+				ann(
+					ops.setJoinSize(
+						auto.layout,
+						"i-material-io",
+						"material-io",
+						2,
+						ctx()
+					)
+				)
+			).toBe("nothing");
+		});
+
+		it("drops the size with the join, keeps it when the tab is split off", () => {
+			const c = ops.setJoinSize(
+				paired().layout,
+				"i-material-io",
+				"material-io-totals",
+				300,
+				ctx()
+			);
+			const out = ops.takeOut(
+				c.layout,
+				"i-material-io",
+				"material-io-totals",
+				ctx()
+			);
+			expect(item(out.layout, "material-io").joinSize).toBeUndefined();
+		});
 
 		it("puts an item of one element below or beside the tab another shows", () => {
 			const c = paired();

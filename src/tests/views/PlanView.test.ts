@@ -50,13 +50,18 @@ import PlanConfiguration from "@/features/planning/components/PlanConfiguration.
 import PlanLayoutMenu from "@/features/planning/components/layout/PlanLayoutMenu.vue";
 import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 import { presetLayout } from "@/features/planning/layout/presets";
+import { stackedLayout } from "@/tests/features/planning/layout/layout.fixtures";
 import type { ElementId } from "@/features/planning/layout/planLayout.types";
 import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";
 import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 import { hoverTooltip } from "@/tests/mountComponent";
 import { calcDebug } from "@/lib/debugMode";
-import { flushPlanEdits, trackEvent } from "@/lib/analytics/useAnalytics";
+import {
+	flushPlanEdits,
+	trackEvent,
+	trackUser,
+} from "@/lib/analytics/useAnalytics";
 import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { etherwindPlan } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -65,9 +70,9 @@ import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 const activeTab = (wrapper: VueWrapper) =>
 	wrapper.find("nav button[aria-pressed='true']").text();
 
-/** Today's without an element, as a stored Custom Layout */
+/** Standard without an element, as a stored Custom Layout */
 function presetWithout(el: ElementId) {
-	const custom = presetLayout("today");
+	const custom = presetLayout("standard");
 	custom.items = custom.items
 		.map((i) => ({ ...i, els: i.els.filter((e) => e !== el) }))
 		.filter((i) => i.els.length);
@@ -426,7 +431,7 @@ describe("PlanView", () => {
 		const item = (wrapper: VueWrapper, id: string) =>
 			wrapper.find(`[data-item="i-${id}"]`);
 
-		it("lays out Today's: results kept in view, Base, Production with tools, Material I/O", async () => {
+		it("lays out Standard: results kept in view, Base, Production with tools, Material I/O", async () => {
 			const { wrapper } = await mountView({}, { login: true });
 			const band = wrapper.find("[data-region='band']");
 			expect(
@@ -480,9 +485,9 @@ describe("PlanView", () => {
 			});
 			expect(
 				JSON.parse(sessionStorage.getItem("prunplanner:planLayout:v1")!)
-			).toMatchObject({ preset: "today", folded: ["planet"] });
+			).toMatchObject({ preset: "standard", folded: ["planet"] });
 
-			// the next plan view (a reload) keeps it folded, still Today's
+			// the next plan view (a reload) keeps it folded, still Standard
 			wrapper.unmount();
 			const again = await mountView();
 			expect(
@@ -501,19 +506,37 @@ describe("PlanView", () => {
 		});
 
 		it("switches the layout from the Layout menu, kept for the tab", async () => {
+			// a Custom Layout with Base's parts side by side, not in use
+			sessionStorage.setItem(
+				"prunplanner:planLayout:v1",
+				JSON.stringify({
+					v: 1,
+					preset: "standard",
+					custom: stackedLayout(),
+					folded: [],
+				})
+			);
 			const { wrapper } = await mountView();
 			const menu = () => wrapper.findComponent(PlanLayoutMenu);
 			expect(menu().props()).toMatchObject({
-				choice: "today",
-				hasCustom: false,
+				choice: "standard",
+				hasCustom: true,
 				canCustomise: true,
 			});
+			expect(trackUser).toHaveBeenLastCalledWith({
+				plan_layout: "standard",
+				is_plan_parts_tinted: false,
+			});
 
-			menu().vm.$emit("pick", "stacked");
+			menu().vm.$emit("pick", "custom");
 			await flushPromises();
-			expect(menu().props("choice")).toBe("stacked");
+			expect(menu().props("choice")).toBe("custom");
 			expect(trackEvent).toHaveBeenCalledWith("plan:layout_preset", {
-				preset: "stacked",
+				preset: "custom",
+			});
+			expect(trackUser).toHaveBeenLastCalledWith({
+				plan_layout: "custom",
+				is_plan_parts_tinted: false,
 			});
 			// Base's parts side by side in one row
 			const tops = ["empire", "planet", "workforce"].map(
@@ -528,7 +551,34 @@ describe("PlanView", () => {
 			const again = await mountView();
 			expect(
 				again.wrapper.findComponent(PlanLayoutMenu).props("choice")
-			).toBe("stacked");
+			).toBe("custom");
+		});
+
+		it("tints every part from the Layout menu, kept for the tab", async () => {
+			const { wrapper } = await mountView();
+			const menu = () => wrapper.findComponent(PlanLayoutMenu);
+			const tinted = (w: VueWrapper) =>
+				w
+					.find("[data-item='i-planet']")
+					.element.closest("[data-tinted]");
+			expect(menu().props("tinted")).toBe(false);
+			expect(tinted(wrapper)).toBeNull();
+
+			menu().vm.$emit("tint", true);
+			await flushPromises();
+			expect(menu().props("tinted")).toBe(true);
+			expect(tinted(wrapper)).not.toBeNull();
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_tint_toggle", {
+				is_active: true,
+			});
+			expect(trackUser).toHaveBeenLastCalledWith({
+				plan_layout: "standard",
+				is_plan_parts_tinted: true,
+			});
+
+			wrapper.unmount();
+			const again = await mountView();
+			expect(tinted(again.wrapper)).not.toBeNull();
 		});
 
 		it("opens customise mode and tracks it", async () => {

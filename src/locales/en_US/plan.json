@@ -839,22 +839,18 @@
 		"flags": "{n} market flag | {n} market flags",
 		"menu": "Layout",
 		"presets": {
-			"today": {
-				"name": "Today's",
+			"standard": {
+				"name": "Standard",
 				"description": "Results on top · Base · Production with tools · Material I/O"
-			},
-			"wide": {
-				"name": "Wide",
-				"description": "Supply and Plan check next to Production"
-			},
-			"stacked": {
-				"name": "Stacked",
-				"description": "Base parts side by side, Production full width below"
 			},
 			"custom": {
 				"name": "Custom Layout",
 				"description": "Your own arrangement, used for all your plans"
 			}
+		},
+		"tint": {
+			"name": "Tinted parts",
+			"description": "A slightly lighter background on every part, for more contrast"
 		},
 		"customise_from": "Customise, starting from {name}…",
 		"customise_custom": "Customise Custom Layout…",
@@ -897,7 +893,7 @@
 		"add_named": "Add {name}",
 		"drag_onto_page": "Drag onto the page",
 		"undo": "Undo",
-		"reset": "Reset to Today's",
+		"reset": "Reset to Standard",
 		"save": "Save",
 		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
@@ -951,6 +947,15 @@
 		"with": "{el} with {name}",
 		"join_below": "Below {name}",
 		"join_beside": "Beside {name}",
+		"share": {
+			"cols": "{name}: {n} of {cols} columns",
+			"height": "{name}: {h} px high",
+			"fit": "{name}: as high as its content",
+			"less": "Less room for {name}",
+			"more": "More room for {name}",
+			"auto": "{name} and {el} sized automatically",
+			"auto_text": "Auto"
+		},
 		"drop_tab_target": "Drop to add {el} as a tab to {name}",
 		"menu_width": "Width · {n} of {cols} columns",
 		"menu_height_fit": "Height · fits its content, {h} px now",
@@ -1027,6 +1032,9 @@
 			"taken_out": "{el} is its own item now",
 			"joined_below": "{el} is below {name} now",
 			"joined_beside": "{el} is beside {name} now",
+			"share_cols": "{name} takes {n} of {cols} columns, {el} the rest",
+			"share_height": "{name} is {h} px high, {el} below it",
+			"share_auto": "{name} and {el} share the tab by their sizes",
 			"split": "{el} and its tabs are separate items now",
 			"hidden": "{el} hidden. It stays in Elements.",
 			"added": "{el} added",
@@ -1037,7 +1045,7 @@
 			"closed": "{el} shows only what it needs",
 			"view_table": "{el} shown as a table",
 			"view_cards": "{el} shown as cards",
-			"reset": "Reset to Today's",
+			"reset": "Reset to Standard",
 			"undone": "Undone"
 		}
 	}

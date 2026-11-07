@@ -7,12 +7,7 @@ import {
 } from "@/features/planning/layout/normaliseLayout";
 
 /** Which layout the plan page uses: a preset, or the one Custom Layout */
-export const LayoutChoiceSchema = z.enum([
-	"today",
-	"wide",
-	"stacked",
-	"custom",
-]);
+export const LayoutChoiceSchema = z.enum(["standard", "custom"]);
 export type LayoutChoice = z.infer<typeof LayoutChoiceSchema>;
 
 /**
@@ -26,6 +21,8 @@ export const StoredLayoutSchema = z
 		preset: LayoutChoiceSchema,
 		custom: z.unknown().nullable(),
 		folded: z.unknown().optional(),
+		// Tinted parts: a lighter background on every part; kept only when on
+		tinted: z.boolean().optional().catch(undefined),
 	})
 	.transform((s) => ({
 		v: 1 as const,
@@ -35,5 +32,6 @@ export const StoredLayoutSchema = z
 				? null
 				: normaliseLayout(s.custom),
 		folded: normaliseFolded(s.folded),
+		...(s.tinted ? { tinted: true as const } : {}),
 	}));
 export type StoredLayout = z.output<typeof StoredLayoutSchema>;

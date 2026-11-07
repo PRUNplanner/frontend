@@ -62,6 +62,8 @@
 	const emit = defineEmits<{
 		(e: "fold", el: ElementId, value: boolean): void;
 		(e: "tab", item: string, el: ElementId): void;
+		// customising: the line between a tab's two pressed
+		(e: "split", item: string, el: ElementId, ev: PointerEvent): void;
 	}>();
 
 	defineSlots<{
@@ -251,8 +253,13 @@
 						:folded="isFolded(it, foldedSet)"
 						:summary="summaryOf(it)"
 						:editing="editing"
+						:gap="layout.gap"
 						@fold="(v: boolean) => emit('fold', it.els[0], v)"
-						@tab="(el: ElementId) => emit('tab', it.id, el)">
+						@tab="(el: ElementId) => emit('tab', it.id, el)"
+						@split="
+							(el: ElementId, ev: PointerEvent) =>
+								emit('split', it.id, el, ev)
+						">
 						<template #lead
 							><slot name="lead" :item="it"
 						/></template>
@@ -281,9 +288,14 @@
 				:folded="isFolded(it, foldedSet)"
 				:summary="summaryOf(it)"
 				:editing="editing"
+				:gap="layout.gap"
 				:follow="followOf(it.id)"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"
-				@tab="(el: ElementId) => emit('tab', it.id, el)">
+				@tab="(el: ElementId) => emit('tab', it.id, el)"
+				@split="
+					(el: ElementId, ev: PointerEvent) =>
+						emit('split', it.id, el, ev)
+				">
 				<template #lead><slot name="lead" :item="it" /></template>
 				<template #actions><slot name="actions" :item="it" /></template>
 				<template #overlay><slot name="item" :item="it" /></template>

@@ -64,3 +64,62 @@ export function followStacks(
 	}
 	return out;
 }
+
+/** Where a tab's two parts beside each other split */
+export interface IBesideSplit {
+	// width of the first part in px
+	px: number;
+	// its columns: the ones set, or the nearest to the shared split
+	cols: number | null;
+	// the columns the first part may have, both keeping their minimums
+	range: [number, number] | null;
+	// not set: shared by the parts' minimum widths
+	auto: boolean;
+}
+
+/**
+ * Two parts beside each other in a box `cols` columns wide: the first
+ * gets the columns set (and half the gap after them, so the line between
+ * them sits where the grid's columns meet), held to where both keep their
+ * minimum widths; not set, the room beyond both minimums is shared in
+ * proportion. Null: narrower than both minimums, so they stack.
+ * @author jplacht
+ *
+ * @param {number} width Box width in px
+ * @param {number} cols Box width in columns
+ * @param {number} gap The grid's gap in px
+ * @param {number | undefined} set Columns of the first part, if set
+ * @param {number} minA First part's minimum width
+ * @param {number} minB Second part's minimum width
+ * @returns {IBesideSplit | null} The split, or null to stack
+ */
+export function besideSplit(
+	width: number,
+	cols: number,
+	gap: number,
+	set: number | undefined,
+	minA: number,
+	minB: number
+): IBesideSplit | null {
+	if (width < minA + minB) return null;
+	const col = (width - (cols - 1) * gap) / cols;
+	const at = (n: number) => n * col + (n - 1) * gap + gap / 2;
+	const fits: number[] = [];
+	for (let n = 1; n < cols; n++)
+		if (at(n) >= minA && width - at(n) >= minB) fits.push(n);
+	const range: [number, number] | null = fits.length
+		? [fits[0], fits.at(-1)!]
+		: null;
+	const nearest = (px: number) =>
+		range
+			? fits.reduce((a, n) =>
+					Math.abs(at(n) - px) < Math.abs(at(a) - px) ? n : a
+				)
+			: null;
+	if (set === undefined || !range) {
+		const px = (width * minA) / (minA + minB);
+		return { px, cols: nearest(px), range, auto: true };
+	}
+	const n = Math.min(Math.max(set, range[0]), range[1]);
+	return { px: at(n), cols: n, range, auto: false };
+}

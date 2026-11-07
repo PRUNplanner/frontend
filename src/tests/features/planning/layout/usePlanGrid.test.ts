@@ -26,7 +26,7 @@ function box(id: string): HTMLElement {
 
 describe("visibleLayout", () => {
 	it("keeps POPR for logged in users only", () => {
-		const layout = presetLayout("today");
+		const layout = presetLayout("standard");
 		expect(visibleLayout(layout, true)).toBe(layout);
 		const anon = visibleLayout(layout, false);
 		expect(anon.items.flatMap((i) => i.els)).not.toContain("popr");
@@ -34,7 +34,7 @@ describe("visibleLayout", () => {
 	});
 
 	it("drops an item of POPR alone and moves its shown tab", () => {
-		const layout = presetLayout("today");
+		const layout = presetLayout("standard");
 		const prod = layout.items.find((i) => i.els.includes("popr"))!;
 		prod.active = "popr";
 		layout.items.push({ ...prod, id: "x", els: ["popr"], active: "popr" });
@@ -46,7 +46,7 @@ describe("visibleLayout", () => {
 	});
 
 	it("gives one shown with POPR a tab of its own, never joins it elsewhere", () => {
-		const layout = presetLayout("today");
+		const layout = presetLayout("standard");
 		const prod = layout.items.find((i) => i.els.includes("popr"))!;
 		// Experts beside POPR, in Production's group
 		prod.els.splice(prod.els.indexOf("popr") + 1, 0, "experts");
@@ -104,7 +104,7 @@ describe("usePlanGrid", () => {
 
 	it("focuses one shown with another: the tab they share", async () => {
 		const { grid, pref } = setup();
-		const g = presetLayout("today");
+		const g = presetLayout("standard");
 		const prod = g.items.find((i) => i.els[0] === "production")!;
 		prod.els.splice(prod.els.indexOf("repair-analysis") + 1, 0, "experts");
 		prod.join = { experts: "below" };
@@ -130,7 +130,7 @@ describe("usePlanGrid", () => {
 
 	it("opens a hidden element in the dialog", () => {
 		const { grid, pref } = setup();
-		const custom = presetLayout("today");
+		const custom = presetLayout("standard");
 		custom.items = custom.items.filter((i) => !i.els.includes("experts"));
 		pref.saveCustom(custom);
 		grid.focusElement("experts");

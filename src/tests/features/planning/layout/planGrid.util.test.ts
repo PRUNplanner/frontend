@@ -8,7 +8,10 @@ import type {
 } from "@/features/planning/layout/planLayout.types";
 
 // Util
-import { followStacks } from "@/features/planning/layout/planGrid.util";
+import {
+	besideSplit,
+	followStacks,
+} from "@/features/planning/layout/planGrid.util";
 import { packLayout } from "@/features/planning/layout/packLayout";
 
 /** An item of fixed height, so the packing is easy to follow */
@@ -80,5 +83,41 @@ describe("followStacks", () => {
 				600
 			).size
 		).toBe(0);
+	});
+});
+
+describe("besideSplit", () => {
+	// 1200 px over 12 columns with a 16 px gap: columns of 85.33 px
+	const col = (1200 - 11 * 16) / 12;
+	const at = (n: number) => n * col + (n - 1) * 16 + 8;
+
+	it("splits where the columns meet, held to both minimums", () => {
+		const s = besideSplit(1200, 12, 16, 4, 300, 200)!;
+		expect(s.px).toBeCloseTo(at(4));
+		expect(s.cols).toBe(4);
+		expect(s.auto).toBe(false);
+		// the first needs 300 px (4 columns), the second 200 (the last 2)
+		expect(s.range).toEqual([4, 9]);
+		expect(besideSplit(1200, 12, 16, 1, 300, 200)!.cols).toBe(4);
+		expect(besideSplit(1200, 12, 16, 11, 300, 200)!.cols).toBe(9);
+	});
+
+	it("shares by the minimums when not set, naming the nearest columns", () => {
+		const s = besideSplit(1200, 12, 16, undefined, 300, 200)!;
+		expect(s.px).toBe(720);
+		expect(s.auto).toBe(true);
+		expect(s.cols).toBe(7);
+	});
+
+	it("stacks when narrower than both minimums", () => {
+		expect(besideSplit(450, 6, 16, 3, 300, 200)).toBeNull();
+	});
+
+	it("shares by size where no column split fits both", () => {
+		// 520 px in 2 columns: the one split leaves the first 252 px
+		const s = besideSplit(520, 2, 16, 1, 300, 200)!;
+		expect(s.range).toBeNull();
+		expect(s.cols).toBeNull();
+		expect(s.auto).toBe(true);
 	});
 });

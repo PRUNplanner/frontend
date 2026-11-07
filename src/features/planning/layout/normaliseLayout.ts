@@ -120,6 +120,12 @@ export function normaliseLayout(input: unknown): GridLayout {
 					JOIN_SIDES.includes(side as JoinSide)
 				)
 					join[e as ElementId] = side as JoinSide;
+		// and how they share it: numbers for known joins, fitted by tidyJoin
+		const joinSize: Partial<Record<ElementId, number>> = {};
+		if (it.joinSize && typeof it.joinSize === "object")
+			for (const [e, n] of Object.entries(it.joinSize))
+				if (join[e as ElementId] && Number.isFinite(n))
+					joinSize[e as ElementId] = Math.round(n as number);
 		const item: GridItem = {
 			id,
 			els,
@@ -135,6 +141,7 @@ export function normaliseLayout(input: unknown): GridLayout {
 			// pinned parts are in the band: following means nothing there
 			...(it.follow === true && it.pin !== true && { follow: true }),
 			join,
+			joinSize,
 		};
 		items.push(tidyJoin(item));
 	}
@@ -193,6 +200,7 @@ export const cloneLayout = (layout: GridLayout): GridLayout => ({
 		...i,
 		els: [...i.els],
 		...(i.join && { join: { ...i.join } }),
+		...(i.joinSize && { joinSize: { ...i.joinSize } }),
 	})),
 	...(layout.open && { open: [...layout.open] }),
 	...(layout.table && { table: [...layout.table] }),

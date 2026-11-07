@@ -14,8 +14,9 @@ import { normaliseLayout } from "@/features/planning/layout/normaliseLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 
 /**
- * The player's plan layout: a preset or Custom Layout, and which items
- * are folded, read from and written to a LayoutStore (this tab for now)
+ * The player's plan layout: a preset or Custom Layout, which items
+ * are folded and Tinted parts, read from and written to a LayoutStore
+ * (this tab for now)
  * @author jplacht
  *
  * @param {LayoutStore} store Where it is kept
@@ -27,15 +28,19 @@ export function usePlanLayoutPreference(
 	const custom: Ref<GridLayout | null> = ref(stored?.custom ?? null);
 	const choice: Ref<LayoutChoice> = ref(
 		stored?.preset === "custom" && !custom.value
-			? "today"
-			: (stored?.preset ?? "today")
+			? "standard"
+			: (stored?.preset ?? "standard")
 	);
 	const folded: Ref<ElementId[]> = ref(stored?.folded ?? []);
+	// Tinted parts: a lighter background on every part
+	const tinted: Ref<boolean> = ref(stored?.tinted ?? false);
 
 	const layout: ComputedRef<GridLayout> = computed(() =>
 		choice.value === "custom" && custom.value
 			? custom.value
-			: presetLayout(choice.value === "custom" ? "today" : choice.value)
+			: presetLayout(
+					choice.value === "custom" ? "standard" : choice.value
+				)
 	);
 
 	function persist(): void {
@@ -44,6 +49,7 @@ export function usePlanLayoutPreference(
 			preset: choice.value,
 			custom: custom.value,
 			folded: folded.value,
+			...(tinted.value ? { tinted: true as const } : {}),
 		});
 	}
 
@@ -68,5 +74,21 @@ export function usePlanLayoutPreference(
 		persist();
 	}
 
-	return { choice, custom, layout, folded, pick, saveCustom, setFolded };
+	/** Tinted parts on or off, for every layout */
+	function setTinted(value: boolean): void {
+		tinted.value = value;
+		persist();
+	}
+
+	return {
+		choice,
+		custom,
+		layout,
+		folded,
+		tinted,
+		pick,
+		saveCustom,
+		setFolded,
+		setTinted,
+	};
 }

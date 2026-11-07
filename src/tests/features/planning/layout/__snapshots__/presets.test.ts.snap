@@ -1,190 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`presets > stacked packs the same as before > at 375 px 1`] = `
-{
-  "band": 260,
-  "page": 2812,
-  "phone": true,
-  "rows": [
-    "i-kpi-profit band x0 w12 @0,0 375×76 auto",
-    "i-kpi-payback band x0 w6 @0,92 180×76 auto",
-    "i-kpi-workforce band x6 w6 @195,92 180×76 auto",
-    "i-kpi-area band x0 w6 @0,184 180×76 auto",
-    "i-kpi-storage band x6 w6 @195,184 180×76 auto",
-    "i-empire page x0 w12 @0,0 375×140 auto",
-    "i-planet page x0 w12 @0,156 375×260 auto",
-    "i-workforce page x0 w12 @0,432 375×200 auto",
-    "i-housing page x0 w12 @0,648 375×120 auto",
-    "i-experts page x0 w12 @0,784 375×300 auto",
-    "i-production page x0 w12 @0,1100 375×900",
-    "i-material-io page x0 w12 @0,2016 375×640 auto",
-    "i-material-io-totals page x0 w12 @0,2672 375×140 auto",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 390 px 1`] = `
-{
-  "band": 260,
-  "page": 2812,
-  "phone": true,
-  "rows": [
-    "i-kpi-profit band x0 w6 @0,0 187×76 auto",
-    "i-kpi-payback band x6 w6 @203,0 187×76 auto",
-    "i-kpi-workforce band x0 w6 @0,92 187×76 auto",
-    "i-kpi-area band x6 w6 @203,92 187×76 auto",
-    "i-kpi-storage band x0 w12 @0,184 390×76 auto",
-    "i-empire page x0 w12 @0,0 390×140 auto",
-    "i-planet page x0 w12 @0,156 390×260 auto",
-    "i-workforce page x0 w12 @0,432 390×200 auto",
-    "i-housing page x0 w12 @0,648 390×120 auto",
-    "i-experts page x0 w12 @0,784 390×300 auto",
-    "i-production page x0 w12 @0,1100 390×900",
-    "i-material-io page x0 w12 @0,2016 390×640 auto",
-    "i-material-io-totals page x0 w12 @0,2672 390×140 auto",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 768 px 1`] = `
-{
-  "band": 168,
-  "page": 2088,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 180×76",
-    "i-kpi-payback band x3 w3 @196,0 180×76 auto",
-    "i-kpi-workforce band x6 w3 @392,0 180×76 auto",
-    "i-kpi-area band x9 w3 @588,0 180×76 auto",
-    "i-kpi-storage band x9 w3 @588,92 180×76 auto",
-    "i-empire page x0 w4 @0,0 245×140 auto",
-    "i-planet page x4 w4 @261,0 245×260 auto",
-    "i-workforce page x8 w4 @523,0 245×200 auto",
-    "i-housing page x0 w4 @0,156 245×120 auto",
-    "i-experts page x8 w4 @523,216 245×300 auto",
-    "i-production page x0 w12 @0,532 768×900",
-    "i-material-io page x0 w8 @0,1448 507×640",
-    "i-material-io-totals page x4 w4 @261,276 245×140 auto",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 1024 px 1`] = `
-{
-  "band": 76,
-  "page": 2008,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 244×76",
-    "i-kpi-payback band x3 w2 @260,0 157×76",
-    "i-kpi-workforce band x5 w3 @433,0 244×76",
-    "i-kpi-area band x8 w2 @693,0 157×76",
-    "i-kpi-storage band x10 w2 @867,0 157×76",
-    "i-empire page x0 w3 @0,0 244×140 auto",
-    "i-planet page x3 w3 @260,0 244×260 auto",
-    "i-workforce page x6 w3 @520,0 244×200 auto",
-    "i-housing page x9 w3 @780,0 244×120 auto",
-    "i-experts page x9 w3 @780,136 244×300 auto",
-    "i-production page x0 w12 @0,452 1024×900",
-    "i-material-io page x0 w8 @0,1368 677×640",
-    "i-material-io-totals page x5 w4 @433,276 331×140 auto",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 1280 px 1`] = `
-{
-  "band": 76,
-  "page": 1872,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 308×76",
-    "i-kpi-payback band x3 w2 @324,0 200×76",
-    "i-kpi-workforce band x5 w3 @540,0 308×76",
-    "i-kpi-area band x8 w2 @864,0 200×76",
-    "i-kpi-storage band x10 w2 @1080,0 200×76",
-    "i-empire page x0 w2 @0,0 200×140",
-    "i-planet page x2 w3 @216,0 308×260",
-    "i-workforce page x5 w3 @540,0 308×200",
-    "i-housing page x8 w2 @864,0 200×120",
-    "i-experts page x10 w2 @1080,0 200×300",
-    "i-production page x0 w12 @0,316 1280×900",
-    "i-material-io page x0 w8 @0,1232 848×640",
-    "i-material-io-totals page x8 w4 @864,1232 416×140",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 1440 px 1`] = `
-{
-  "band": 76,
-  "page": 1872,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 348×76",
-    "i-kpi-payback band x3 w2 @364,0 227×76",
-    "i-kpi-workforce band x5 w3 @607,0 348×76",
-    "i-kpi-area band x8 w2 @971,0 227×76",
-    "i-kpi-storage band x10 w2 @1213,0 227×76",
-    "i-empire page x0 w2 @0,0 227×140",
-    "i-planet page x2 w3 @243,0 348×260",
-    "i-workforce page x5 w3 @607,0 348×200",
-    "i-housing page x8 w2 @971,0 227×120",
-    "i-experts page x10 w2 @1213,0 227×300",
-    "i-production page x0 w12 @0,316 1440×900",
-    "i-material-io page x0 w8 @0,1232 955×640",
-    "i-material-io-totals page x8 w4 @971,1232 469×140",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 1920 px 1`] = `
-{
-  "band": 76,
-  "page": 1872,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 468×76",
-    "i-kpi-payback band x3 w2 @484,0 307×76",
-    "i-kpi-workforce band x5 w3 @807,0 468×76",
-    "i-kpi-area band x8 w2 @1291,0 307×76",
-    "i-kpi-storage band x10 w2 @1613,0 307×76",
-    "i-empire page x0 w2 @0,0 307×140",
-    "i-planet page x2 w3 @323,0 468×260",
-    "i-workforce page x5 w3 @807,0 468×200",
-    "i-housing page x8 w2 @1291,0 307×120",
-    "i-experts page x10 w2 @1613,0 307×300",
-    "i-production page x0 w12 @0,316 1920×900",
-    "i-material-io page x0 w8 @0,1232 1275×640",
-    "i-material-io-totals page x8 w4 @1291,1232 629×140",
-  ],
-}
-`;
-
-exports[`presets > stacked packs the same as before > at 2560 px 1`] = `
-{
-  "band": 76,
-  "page": 1872,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 628×76",
-    "i-kpi-payback band x3 w2 @644,0 413×76",
-    "i-kpi-workforce band x5 w3 @1073,0 628×76",
-    "i-kpi-area band x8 w2 @1717,0 413×76",
-    "i-kpi-storage band x10 w2 @2147,0 413×76",
-    "i-empire page x0 w2 @0,0 413×140",
-    "i-planet page x2 w3 @429,0 628×260",
-    "i-workforce page x5 w3 @1073,0 628×200",
-    "i-housing page x8 w2 @1717,0 413×120",
-    "i-experts page x10 w2 @2147,0 413×300",
-    "i-production page x0 w12 @0,316 2560×900",
-    "i-material-io page x0 w8 @0,1232 1701×640",
-    "i-material-io-totals page x8 w4 @1717,1232 843×140",
-  ],
-}
-`;
-
-exports[`presets > today packs the same as before > at 375 px 1`] = `
+exports[`presets > standard packs the same as before > at 375 px 1`] = `
 {
   "band": 260,
   "page": 2812,
@@ -207,7 +23,7 @@ exports[`presets > today packs the same as before > at 375 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 390 px 1`] = `
+exports[`presets > standard packs the same as before > at 390 px 1`] = `
 {
   "band": 260,
   "page": 2812,
@@ -230,7 +46,7 @@ exports[`presets > today packs the same as before > at 390 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 768 px 1`] = `
+exports[`presets > standard packs the same as before > at 768 px 1`] = `
 {
   "band": 168,
   "page": 1864,
@@ -253,7 +69,7 @@ exports[`presets > today packs the same as before > at 768 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 1024 px 1`] = `
+exports[`presets > standard packs the same as before > at 1024 px 1`] = `
 {
   "band": 76,
   "page": 1556,
@@ -276,7 +92,7 @@ exports[`presets > today packs the same as before > at 1024 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 1280 px 1`] = `
+exports[`presets > standard packs the same as before > at 1280 px 1`] = `
 {
   "band": 76,
   "page": 1084,
@@ -299,7 +115,7 @@ exports[`presets > today packs the same as before > at 1280 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 1440 px 1`] = `
+exports[`presets > standard packs the same as before > at 1440 px 1`] = `
 {
   "band": 76,
   "page": 1084,
@@ -322,7 +138,7 @@ exports[`presets > today packs the same as before > at 1440 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 1920 px 1`] = `
+exports[`presets > standard packs the same as before > at 1920 px 1`] = `
 {
   "band": 76,
   "page": 1084,
@@ -345,7 +161,7 @@ exports[`presets > today packs the same as before > at 1920 px 1`] = `
 }
 `;
 
-exports[`presets > today packs the same as before > at 2560 px 1`] = `
+exports[`presets > standard packs the same as before > at 2560 px 1`] = `
 {
   "band": 76,
   "page": 1084,
@@ -360,206 +176,6 @@ exports[`presets > today packs the same as before > at 2560 px 1`] = `
     "i-production page x2 w7 @429,0 1487×900",
     "i-material-io page x9 w3 @1932,0 628×640",
     "i-planet page x0 w2 @0,156 413×260",
-    "i-material-io-totals page x9 w3 @1932,656 628×140",
-    "i-workforce page x0 w2 @0,432 413×200",
-    "i-housing page x0 w2 @0,648 413×120",
-    "i-experts page x0 w2 @0,784 413×300",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 375 px 1`] = `
-{
-  "band": 260,
-  "page": 3624,
-  "phone": true,
-  "rows": [
-    "i-kpi-profit band x0 w12 @0,0 375×76 auto",
-    "i-kpi-payback band x0 w6 @0,92 180×76 auto",
-    "i-kpi-workforce band x6 w6 @195,92 180×76 auto",
-    "i-kpi-area band x0 w6 @0,184 180×76 auto",
-    "i-kpi-storage band x6 w6 @195,184 180×76 auto",
-    "i-empire page x0 w12 @0,0 375×140 auto",
-    "i-production page x0 w12 @0,156 375×900 auto",
-    "i-supply-cart page x0 w12 @0,1072 375×420 auto",
-    "i-material-io page x0 w12 @0,1508 375×640 auto",
-    "i-planet page x0 w12 @0,2164 375×260 auto",
-    "i-plan-check page x0 w12 @0,2440 375×360 auto scroll",
-    "i-material-io-totals page x0 w12 @0,2816 375×140 auto",
-    "i-workforce page x0 w12 @0,2972 375×200 auto",
-    "i-housing page x0 w12 @0,3188 375×120 auto",
-    "i-experts page x0 w12 @0,3324 375×300 auto",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 390 px 1`] = `
-{
-  "band": 260,
-  "page": 3624,
-  "phone": true,
-  "rows": [
-    "i-kpi-profit band x0 w6 @0,0 187×76 auto",
-    "i-kpi-payback band x6 w6 @203,0 187×76 auto",
-    "i-kpi-workforce band x0 w6 @0,92 187×76 auto",
-    "i-kpi-area band x6 w6 @203,92 187×76 auto",
-    "i-kpi-storage band x0 w12 @0,184 390×76 auto",
-    "i-empire page x0 w12 @0,0 390×140 auto",
-    "i-production page x0 w12 @0,156 390×900 auto",
-    "i-supply-cart page x0 w12 @0,1072 390×420 auto",
-    "i-material-io page x0 w12 @0,1508 390×640 auto",
-    "i-planet page x0 w12 @0,2164 390×260 auto",
-    "i-plan-check page x0 w12 @0,2440 390×360 auto scroll",
-    "i-material-io-totals page x0 w12 @0,2816 390×140 auto",
-    "i-workforce page x0 w12 @0,2972 390×200 auto",
-    "i-housing page x0 w12 @0,3188 390×120 auto",
-    "i-experts page x0 w12 @0,3324 390×300 auto",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 768 px 1`] = `
-{
-  "band": 168,
-  "page": 2244,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 180×76",
-    "i-kpi-payback band x3 w3 @196,0 180×76 auto",
-    "i-kpi-workforce band x6 w3 @392,0 180×76 auto",
-    "i-kpi-area band x9 w3 @588,0 180×76 auto",
-    "i-kpi-storage band x9 w3 @588,92 180×76 auto",
-    "i-empire page x0 w4 @0,0 245×140 auto",
-    "i-production page x2 w9 @131,156 572×900 auto",
-    "i-supply-cart page x5 w7 @327,1072 441×420 auto",
-    "i-material-io page x0 w5 @0,1072 311×640 auto",
-    "i-planet page x5 w4 @327,1508 245×260 auto",
-    "i-plan-check page x5 w7 @327,1784 441×360 auto scroll",
-    "i-material-io-totals page x8 w4 @523,0 245×140 auto",
-    "i-workforce page x0 w4 @0,1728 245×200 auto",
-    "i-housing page x4 w4 @261,0 245×120 auto",
-    "i-experts page x0 w4 @0,1944 245×300 auto",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 1024 px 1`] = `
-{
-  "band": 76,
-  "page": 1872,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 244×76",
-    "i-kpi-payback band x3 w2 @260,0 157×76",
-    "i-kpi-workforce band x5 w3 @433,0 244×76",
-    "i-kpi-area band x8 w2 @693,0 157×76",
-    "i-kpi-storage band x10 w2 @867,0 157×76",
-    "i-empire page x0 w3 @0,0 244×140 auto",
-    "i-production page x3 w7 @260,0 591×900 auto",
-    "i-supply-cart page x6 w6 @520,916 504×420 auto",
-    "i-material-io page x2 w4 @173,916 331×640 auto",
-    "i-planet page x0 w3 @0,156 244×260 auto",
-    "i-plan-check page x6 w6 @520,1352 504×360 auto scroll",
-    "i-material-io-totals page x0 w3 @0,432 244×140 auto",
-    "i-workforce page x0 w3 @0,588 244×200 auto",
-    "i-housing page x0 w3 @0,1572 244×120 auto",
-    "i-experts page x3 w3 @260,1572 244×300 auto",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 1280 px 1`] = `
-{
-  "band": 76,
-  "page": 1592,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 308×76",
-    "i-kpi-payback band x3 w2 @324,0 200×76",
-    "i-kpi-workforce band x5 w3 @540,0 308×76",
-    "i-kpi-area band x8 w2 @864,0 200×76",
-    "i-kpi-storage band x10 w2 @1080,0 200×76",
-    "i-empire page x0 w2 @0,0 200×140",
-    "i-production page x2 w6 @216,0 632×900 auto",
-    "i-supply-cart page x6 w5 @648,916 524×420 auto",
-    "i-material-io page x9 w3 @972,0 308×640",
-    "i-planet page x0 w2 @0,156 200×260",
-    "i-plan-check page x1 w5 @108,916 524×360 auto scroll",
-    "i-material-io-totals page x9 w3 @972,656 308×140",
-    "i-workforce page x0 w2 @0,432 200×200",
-    "i-housing page x0 w2 @0,648 200×120",
-    "i-experts page x0 w2 @0,1292 200×300",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 1440 px 1`] = `
-{
-  "band": 76,
-  "page": 1276,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 348×76",
-    "i-kpi-payback band x3 w2 @364,0 227×76",
-    "i-kpi-workforce band x5 w3 @607,0 348×76",
-    "i-kpi-area band x8 w2 @971,0 227×76",
-    "i-kpi-storage band x10 w2 @1213,0 227×76",
-    "i-empire page x0 w2 @0,0 227×140",
-    "i-production page x2 w5 @243,0 591×900 auto",
-    "i-supply-cart page x7 w4 @849,0 469×420 auto",
-    "i-material-io page x9 w3 @1092,436 348×640",
-    "i-planet page x0 w2 @0,156 227×260",
-    "i-plan-check page x5 w4 @607,916 469×360 auto scroll",
-    "i-material-io-totals page x2 w3 @243,916 348×140 auto",
-    "i-workforce page x0 w2 @0,432 227×200",
-    "i-housing page x7 w2 @849,436 227×120 auto",
-    "i-experts page x7 w2 @849,572 227×300 auto",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 1920 px 1`] = `
-{
-  "band": 76,
-  "page": 1084,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 468×76",
-    "i-kpi-payback band x3 w2 @484,0 307×76",
-    "i-kpi-workforce band x5 w3 @807,0 468×76",
-    "i-kpi-area band x8 w2 @1291,0 307×76",
-    "i-kpi-storage band x10 w2 @1613,0 307×76",
-    "i-empire page x0 w2 @0,0 307×140",
-    "i-production page x2 w4 @323,0 629×900",
-    "i-supply-cart page x6 w3 @968,0 468×420",
-    "i-material-io page x9 w3 @1452,0 468×640",
-    "i-planet page x0 w2 @0,156 307×260",
-    "i-plan-check page x6 w3 @968,436 468×360 scroll",
-    "i-material-io-totals page x9 w3 @1452,656 468×140",
-    "i-workforce page x0 w2 @0,432 307×200",
-    "i-housing page x0 w2 @0,648 307×120",
-    "i-experts page x0 w2 @0,784 307×300",
-  ],
-}
-`;
-
-exports[`presets > wide packs the same as before > at 2560 px 1`] = `
-{
-  "band": 76,
-  "page": 1084,
-  "phone": false,
-  "rows": [
-    "i-kpi-profit band x0 w3 @0,0 628×76",
-    "i-kpi-payback band x3 w2 @644,0 413×76",
-    "i-kpi-workforce band x5 w3 @1073,0 628×76",
-    "i-kpi-area band x8 w2 @1717,0 413×76",
-    "i-kpi-storage band x10 w2 @2147,0 413×76",
-    "i-empire page x0 w2 @0,0 413×140",
-    "i-production page x2 w4 @429,0 843×900",
-    "i-supply-cart page x6 w3 @1288,0 628×420",
-    "i-material-io page x9 w3 @1932,0 628×640",
-    "i-planet page x0 w2 @0,156 413×260",
-    "i-plan-check page x6 w3 @1288,436 628×360 scroll",
     "i-material-io-totals page x9 w3 @1932,656 628×140",
     "i-workforce page x0 w2 @0,432 413×200",
     "i-housing page x0 w2 @0,648 413×120",

@@ -12,7 +12,9 @@ import {
 } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
 import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
 import { presetLayout } from "@/features/planning/layout/presets";
+import { wideLayout } from "@/tests/features/planning/layout/layout.fixtures";
 import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
+import { ELEMENTS } from "@/features/planning/layout/elements";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import plan from "@/locales/en_US/plan.json";
 import common from "@/locales/en_US/common.json";
@@ -105,6 +107,13 @@ const pick = async (m: Mounted, id: string, k: string) => {
 	await flushPromises();
 };
 const button = (m: Mounted, selector: string) => m.wrapper.find(selector);
+/** Saves and returns what plan:layout_save sent */
+async function savedCounts(m: Mounted) {
+	await button(m, "[data-save]").trigger("click");
+	return vi
+		.mocked(trackEvent)
+		.mock.calls.findLast(([e]) => e === "plan:layout_save")?.[1];
+}
 
 /** A pointer press: VTU can't set clientX on the events it makes */
 async function pointerdown(
@@ -168,7 +177,7 @@ describe("PlanLayoutEditor", () => {
 		const m = await mountEditor();
 		const bar = m.wrapper.find("[data-editor-bar]");
 		expect(bar.text()).toContain("Custom Layout");
-		expect(bar.text()).toContain("starting from Today's");
+		expect(bar.text()).toContain("starting from Standard");
 		expect(bar.find("[data-zoom]").exists()).toBe(false);
 		expect(
 			bar
@@ -200,11 +209,6 @@ describe("PlanLayoutEditor", () => {
 			expect(document.activeElement).toBe(
 				handle(m, "material-io").element
 			);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "material-io",
-				how: "keys",
-				to: "page",
-			});
 
 			await key(m, "planet", "ArrowUp");
 			expect(announce(m)).toBe("Planet moved up");
@@ -231,12 +235,7 @@ describe("PlanLayoutEditor", () => {
 			expect(size(m, "empire")).toBe("2/12 · 224 px");
 			await key(m, "empire", "ArrowUp", true);
 			expect(draft(m, "empire").h).toBe(184);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_resize", {
-				element: "empire",
-				how: "keys",
-				what: "height",
-				snapped: null,
-			});
+			expect(await savedCounts(m)).toMatchObject({ key_count: 5 });
 		});
 
 		it("opens the menu with Enter or Space, ignores other keys", async () => {
@@ -260,9 +259,7 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			expect(draft(m, "material-io").x).toBe(9);
 			expect(announce(m)).toBe("Undone");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_undo", {
-				how: "keys",
-			});
+			expect(await savedCounts(m)).toMatchObject({ undo_count: 1 });
 		});
 	});
 
@@ -438,11 +435,7 @@ describe("PlanLayoutEditor", () => {
 			await pick(m, "material-io", "tab:i-production");
 			expect(draft(m, "production").els.at(-1)).toBe("material-io");
 			expect(announce(m)).toBe("Material I/O is now a tab of Production");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "material-io",
-				how: "menu",
-				to: "tabs",
-			});
+			expect(await savedCounts(m)).toMatchObject({ menu_count: 1 });
 		});
 
 		it("hides with one click on a title bar, the shown tab of a group", async () => {
@@ -458,11 +451,6 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			expect(draft(m, "experts")).toBeUndefined();
 			expect(announce(m)).toBe("Experts hidden. It stays in Elements.");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "experts",
-				how: "button",
-				to: "hidden",
-			});
 			m.wrapper
 				.findComponent({ name: "PlanGrid" })
 				.vm.$emit("tab", "i-production", "popr");
@@ -527,11 +515,7 @@ describe("PlanLayoutEditor", () => {
 			window.dispatchEvent(new MouseEvent("pointerup"));
 			await flushPromises();
 			expect(draft(m, "material-io").x).toBe(8);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "material-io",
-				how: "drag",
-				to: "page",
-			});
+			expect(await savedCounts(m)).toMatchObject({ drag_count: 1 });
 		});
 
 		it("cancels a move with Esc, ignores other buttons and menu presses", async () => {
@@ -650,11 +634,6 @@ describe("PlanLayoutEditor", () => {
 					.props("layout") as GridLayout
 			).items.find((i) => i.els[0] === "supply-cart")!;
 			expect(out.els).toEqual(["supply-cart"]);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "supply-cart",
-				how: "drag",
-				to: "page",
-			});
 
 			// onto another title bar: a tab there, or below or beside the tab it
 			// shows; the drop target has the three, a tab where the bar has no width
@@ -732,11 +711,6 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe(
 				"Material I/O totals is below Material I/O now"
 			);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "material-io-totals",
-				how: "drag",
-				to: "joined",
-			});
 			// Elements says where it is; the title names both
 			expect(
 				m.wrapper.find("[data-element-row='material-io-totals']").text()
@@ -814,11 +788,9 @@ describe("PlanLayoutEditor", () => {
 			);
 			expect(draft(m, "empire")).toMatchObject({ hm: "fixed", h: 384 });
 			expect(announce(m)).toContain("Same height as Planet · 384 px");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_resize", {
-				element: "empire",
-				how: "drag",
-				what: "height",
-				snapped: "height",
+			expect(await savedCounts(m)).toMatchObject({
+				drag_count: 1,
+				snapped_count: 1,
 			});
 		});
 
@@ -829,11 +801,7 @@ describe("PlanLayoutEditor", () => {
 			});
 			expect(draft(m, "production").els.at(-1)).toBe("material-io");
 			expect(announce(m)).toBe("Material I/O is now a tab of Production");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "material-io",
-				how: "drag",
-				to: "tabs",
-			});
+			expect(await savedCounts(m)).toMatchObject({ drag_count: 1 });
 		});
 
 		it("drops into the band to keep an item in view", async () => {
@@ -867,11 +835,9 @@ describe("PlanLayoutEditor", () => {
 				0
 			);
 			expect(draft(m, "empire").w).toBe(2);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_resize", {
-				element: "empire",
-				how: "drag",
-				what: "width",
-				snapped: null,
+			expect(await savedCounts(m)).toMatchObject({
+				drag_count: 2,
+				snapped_count: 0,
 			});
 		});
 
@@ -954,10 +920,10 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			expect(draft(m, "experts")).toBeUndefined();
 			expect(m.wrapper.find("[data-drop-hide]").exists()).toBe(false);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_item_move", {
-				element: "experts",
-				how: "drag",
-				to: "hidden",
+			expect(await savedCounts(m)).toMatchObject({
+				drag_count: 1,
+				hidden_count: 1,
+				hidden_elements: ["experts"],
 			});
 		});
 
@@ -1260,7 +1226,7 @@ describe("PlanLayoutEditor", () => {
 			const m = await mountEditor();
 			const state = (id: string, k: string) =>
 				m.wrapper.find(`[data-item="i-${id}"] [data-state="${k}"]`);
-			// the results tiles are pinned in Today's; the words are gone
+			// the results tiles are pinned in Standard; the words are gone
 			expect(state("kpi-profit", "pinned").attributes("title")).toBe(
 				"Pinned to top"
 			);
@@ -1362,21 +1328,113 @@ describe("PlanLayoutEditor", () => {
 			).toBe(8);
 			expect(m.component.emitted("close")).toHaveLength(1);
 			expect(trackEvent).toHaveBeenCalledWith("plan:layout_save", {
-				items: 13,
-				tabs: 1,
-				kept_in_view: 5,
-				hidden: 0,
-				cols: 12,
-				gap: 16,
-				replaced: false,
+				item_count: 13,
+				tab_group_count: 1,
+				joined_count: 0,
+				joined_sized_count: 0,
+				kept_in_view_count: 5,
+				hidden_count: 0,
+				hidden_elements: [],
+				column_count: 12,
+				gap_px: 16,
+				is_replacing: false,
 				store: "session",
+				change_count: 1,
+				drag_count: 0,
+				menu_count: 0,
+				key_count: 1,
+				button_count: 0,
+				snapped_count: 0,
+				undo_count: 0,
+			});
+			// one event for the round, none per change
+			expect(
+				vi
+					.mocked(trackEvent)
+					.mock.calls.filter(([e]) => e.startsWith("plan:layout"))
+			).toHaveLength(1);
+		});
+
+		it("counts each change by how, undos too, and sends them with save", async () => {
+			const m = await mountEditor();
+			await key(m, "material-io", "ArrowLeft");
+			await key(m, "material-io", "ArrowLeft");
+			await pick(m, "empire", "full");
+			await m.wrapper
+				.find('[data-item="i-experts"] [data-item-hide]')
+				.trigger("click");
+			await flushPromises();
+			await button(m, "[data-undo]").trigger("click");
+			expect(await savedCounts(m)).toMatchObject({
+				change_count: 3,
+				key_count: 2,
+				menu_count: 1,
+				button_count: 1,
+				drag_count: 0,
+				undo_count: 1,
+			});
+		});
+
+		it("names the hidden elements and counts the joined tabs", async () => {
+			const m = await mountEditor();
+			await pick(m, "experts", "hide");
+			await pick(m, "material-io-totals", "below:i-material-io");
+			expect(await savedCounts(m)).toMatchObject({
+				hidden_count: 1,
+				hidden_elements: ["experts"],
+				joined_count: 1,
+			});
+		});
+
+		it("sizes a tab's two from the menu and by the line between them", async () => {
+			const m = await mountEditor();
+			// every part drawn 300 px high (jsdom draws nothing)
+			vi.spyOn(
+				Element.prototype,
+				"getBoundingClientRect"
+			).mockReturnValue(DOMRect.fromRect({ width: 1440, height: 300 }));
+			await pick(m, "material-io-totals", "below:i-material-io");
+			// as high as its content until set
+			await pick(m, "material-io", "page:tabs");
+			expect(option(m, "material-io", "share:auto")).toMatchObject({
+				checked: true,
+			});
+			const min = Math.max(64, ELEMENTS["material-io"].minH);
+			await pick(m, "material-io", "share:+");
+			expect(draft(m, "material-io").joinSize).toEqual({
+				// 40 px more, on the 8 px grid
+				"material-io-totals":
+					Math.round((Math.max(300, min) + 40) / 8) * 8,
+			});
+			expect(option(m, "material-io", "share:-")).toMatchObject({
+				disabled: false,
+			});
+			// the line, dragged down 400 px from 300: 700, on the 8 px grid
+			await dragBy(
+				m.wrapper.find("[data-split='material-io-totals']"),
+				0,
+				400,
+				{ target: null }
+			);
+			expect(draft(m, "material-io").joinSize).toEqual({
+				"material-io-totals": 704,
+			});
+			expect(announce(m)).toBe(
+				"Material I/O is 704 px high, Material I/O totals below it"
+			);
+			await pick(m, "material-io", "share:auto");
+			expect(draft(m, "material-io")).not.toHaveProperty("joinSize");
+			await pick(m, "material-io", "share:+");
+			expect(await savedCounts(m)).toMatchObject({
+				drag_count: 1,
+				joined_sized_count: 1,
 			});
 		});
 
 		it("asks before replacing an existing Custom Layout", async () => {
-			const custom = presetLayout("wide");
+			const custom = wideLayout();
 			const m = await mountEditor({
-				stored: { v: 1, preset: "today", custom, folded: [] },
+				stored: { v: 1, preset: "standard", custom, folded: [] },
 			});
 			await button(m, "[data-save]").trigger("click");
 			expect(m.wrapper.find("[data-replace]").exists()).toBe(true);
@@ -1396,10 +1454,10 @@ describe("PlanLayoutEditor", () => {
 				.findAll("button")[1]
 				.trigger("click");
 			void replace;
-			expect(m.pref.custom.value).toEqual(presetLayout("today"));
+			expect(m.pref.custom.value).toEqual(presetLayout("standard"));
 			expect(trackEvent).toHaveBeenCalledWith(
 				"plan:layout_save",
-				expect.objectContaining({ replaced: true })
+				expect.objectContaining({ is_replacing: true })
 			);
 		});
 
@@ -1408,7 +1466,7 @@ describe("PlanLayoutEditor", () => {
 				stored: {
 					v: 1,
 					preset: "custom",
-					custom: presetLayout("wide"),
+					custom: wideLayout(),
 					folded: [],
 				},
 			});
@@ -1425,9 +1483,12 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			expect(mocks.confirm).not.toHaveBeenCalled();
 			expect(m.component.emitted("close")).toHaveLength(1);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_cancel", {
-				changes: 0,
-			});
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_cancel",
+				expect.objectContaining({
+					change_count: 0,
+				})
+			);
 
 			const n = await mountEditor();
 			await key(n, "material-io", "ArrowLeft");
@@ -1442,13 +1503,16 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			expect(n.component.emitted("close")).toHaveLength(1);
 			// Cancel restores: nothing saved
-			expect(n.pref.choice.value).toBe("today");
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_cancel", {
-				changes: 1,
-			});
+			expect(n.pref.choice.value).toBe("standard");
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_cancel",
+				expect.objectContaining({
+					change_count: 1,
+				})
+			);
 		});
 
-		it("undoes with the button and the toast, resets to Today's", async () => {
+		it("undoes with the button and the toast, resets to Standard", async () => {
 			const m = await mountEditor();
 			await key(m, "material-io", "ArrowLeft");
 			await key(m, "material-io", "ArrowLeft");
@@ -1463,14 +1527,11 @@ describe("PlanLayoutEditor", () => {
 			options.action.onClick();
 			await flushPromises();
 			expect(draft(m, "experts").els).toEqual(["experts"]);
-			expect(trackEvent).toHaveBeenCalledWith("plan:layout_undo", {
-				how: "toast",
-			});
 
 			await pick(m, "empire", "full");
 			await button(m, "[data-reset]").trigger("click");
 			expect(draft(m, "empire").w).toBe(2);
-			expect(announce(m)).toBe("Reset to Today's");
+			expect(announce(m)).toBe("Reset to Standard");
 		});
 	});
 

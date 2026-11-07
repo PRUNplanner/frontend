@@ -50,6 +50,12 @@ import { cloneLayout } from "@/features/planning/layout/normaliseLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { snapHeightTo, snapTopTo } from "@/features/planning/layout/snapping";
 import { visibleLayout } from "@/features/planning/layout/usePlanGrid";
+import { besideSplit } from "@/features/planning/layout/planGrid.util";
+import {
+	H_MAX,
+	H_MIN,
+	H_STEP,
+} from "@/features/planning/layout/planLayout.constants";
 import {
 	hostOf,
 	partnerOf,
@@ -246,7 +252,7 @@ export function usePlanLayoutEditor(
 			lastToast = toast(text, {
 				action: {
 					label: t("plan.layout.undo"),
-					onClick: () => undo("toast"),
+					onClick: () => undo(),
 				},
 				duration: 5000,
 			});
@@ -258,7 +264,8 @@ export function usePlanLayoutEditor(
 		return true;
 	}
 
-	function undo(how: "toast" | "button" | "keys"): void {
+	let undos = 0;
+	function undo(): void {
 		const prev = history.value.at(-1);
 		if (!prev) return;
 		history.value = history.value.slice(0, -1);
@@ -266,96 +273,57 @@ export function usePlanLayoutEditor(
 		draft.value = prev;
 		lastToast?.destroy();
 		announce(t("plan.layout.announce.undone"));
-		trackEvent("plan:layout_undo", { how });
+		undos++;
 	}
 
-	const trackMove = (
-		el: ElementId,
-		how: How,
-		to: "page" | "band" | "tabs" | "joined" | "hidden"
-	) => trackEvent("plan:layout_item_move", { element: el, how, to });
-	const trackResize = (
-		el: ElementId,
-		how: How,
-		what: "width" | "height",
-		snapped: "bottom" | "height" | "content" | null = null
-	) =>
-		trackEvent("plan:layout_item_resize", {
-			element: el,
-			how,
-			what,
-			snapped,
-		});
+	/*
+	 * What this round of customising changed, by how, sent once with save
+	 * or cancel: one event per arrow press would say no more
+	 */
+	const tally = { drag: 0, menu: 0, keys: 0, button: 0, snapped: 0 };
+	const count = (how: How, snapped: boolean = false) => {
+		tally[how]++;
+		if (snapped) tally.snapped++;
+	};
+	const summary = () => ({
+		change_count: history.value.length,
+		drag_count: tally.drag,
+		menu_count: tally.menu,
+		key_count: tally.keys,
+		button_count: tally.button,
+		snapped_count: tally.snapped,
+		undo_count: undos,
+	});
 
 	/*
 	 * The ops, as the menu, the keys and the drags use them: each on the
-	 * item it names (one the menu or the keys come from), tracked when it
+	 * item it names (one the menu or the keys come from), counted when it
 	 * changed something
 	 */
 	type Op = (g: GridLayout, c: ops.ILayoutOpsContext) => ILayoutChange;
-	function run(id: string, op: Op, track: (it: GridItem) => void): void {
-		const it = itemOf(id)!;
-		if (apply(op(draft.value, ctx()), id)) track(it);
+	function run(id: string, op: Op, how: How): void {
+		if (apply(op(draft.value, ctx()), id)) count(how);
 	}
-	const regionOf = (it: GridItem) => (it.pin ? "band" : "page");
 	const moveX = (id: string, dx: number, how: How) =>
-		run(
-			id,
-			(g, c) => ops.moveX(g, id, dx, c),
-			(it) => trackMove(it.els[0], how, regionOf(it))
-		);
+		run(id, (g, c) => ops.moveX(g, id, dx, c), how);
 	const moveY = (id: string, dir: -1 | 1, how: How) =>
-		run(
-			id,
-			(g, c) => ops.moveY(g, id, dir, c),
-			(it) => trackMove(it.els[0], how, regionOf(it))
-		);
+		run(id, (g, c) => ops.moveY(g, id, dir, c), how);
 	const setWidth = (id: string, w: number, how: How) =>
-		run(
-			id,
-			(g, c) => ops.setWidth(g, id, w, c),
-			(it) => trackResize(it.els[0], how, "width")
-		);
+		run(id, (g, c) => ops.setWidth(g, id, w, c), how);
 	const fullWidth = (id: string) =>
-		run(
-			id,
-			(g, c) => ops.fullWidth(g, id, c),
-			(it) => trackResize(it.els[0], "menu", "width")
-		);
+		run(id, (g, c) => ops.fullWidth(g, id, c), "menu");
 	const setHeightMode = (id: string, hm: HeightMode) =>
-		run(
-			id,
-			(g, c) => ops.setHeightMode(g, id, hm, c),
-			(it) => trackResize(it.els[0], "menu", "height")
-		);
+		run(id, (g, c) => ops.setHeightMode(g, id, hm, c), "menu");
 	const stepHeight = (id: string, dir: -1 | 1, how: How) =>
-		run(
-			id,
-			(g, c) => ops.stepHeight(g, id, dir, c),
-			(it) => trackResize(it.els[0], how, "height")
-		);
-	// tracked where it goes: the band, or back to the page
+		run(id, (g, c) => ops.stepHeight(g, id, dir, c), how);
 	const togglePin = (id: string) =>
-		run(
-			id,
-			(g, c) => ops.togglePin(g, id, c),
-			(it) => trackMove(it.els[0], "menu", it.pin ? "page" : "band")
-		);
+		run(id, (g, c) => ops.togglePin(g, id, c), "menu");
 	const takeOut = (id: string, el: ElementId) =>
-		run(
-			id,
-			(g, c) => ops.takeOut(g, id, el, c),
-			() => trackMove(el, "menu", "page")
-		);
+		run(id, (g, c) => ops.takeOut(g, id, el, c), "menu");
 	const split = (id: string) =>
-		run(
-			id,
-			(g, c) => ops.split(g, id, c),
-			(it) => trackMove(it.els[0], "menu", "page")
-		);
+		run(id, (g, c) => ops.split(g, id, c), "menu");
 	function hide(id: string, el: ElementId, how: How = "menu"): void {
-		if (apply(ops.hide(draft.value, id, el, ctx())))
-			trackMove(el, how, "hidden");
+		if (apply(ops.hide(draft.value, id, el, ctx()))) count(how);
 	}
 	/** What hiding an item hides: its tab on view (with the element shown with it); null when that stays */
 	function hideTarget(it: GridItem): ElementId | null {
@@ -389,7 +357,7 @@ export function usePlanLayoutEditor(
 	});
 	function add(el: ElementId): void {
 		if (apply(ops.add(draft.value, el, ctx()))) {
-			trackMove(el, "menu", "page");
+			count("menu");
 			focusHandle(draft.value.items.find((i) => i.els.includes(el))?.id);
 		}
 	}
@@ -413,7 +381,7 @@ export function usePlanLayoutEditor(
 	}
 	function reset(): void {
 		apply({
-			layout: presetLayout("today"),
+			layout: presetLayout("standard"),
 			announcement: { key: "plan.layout.announce.reset", params: {} },
 		});
 	}
@@ -678,6 +646,58 @@ export function usePlanLayoutEditor(
 	}
 
 	/**
+	 * The ⋯ menu's row sizing a tab's two: less or more room for the first
+	 * part (a column beside, 40 px below) and Auto; none while a pair set
+	 * beside is stacked for want of width
+	 */
+	function splitRow(it: GridItem, el: ElementId): PDropdownOption | null {
+		const host = hostOf(it, el);
+		const name = label(host);
+		const set = it.joinSize?.[el];
+		const auto = {
+			key: "share:auto",
+			label: t("plan.layout.share.auto", { name, el: label(el) }),
+			text: t("plan.layout.share.auto_text"),
+			checked: set === undefined,
+		};
+		const step = (dir: "-" | "+", disabled: boolean) => ({
+			key: `share:${dir}`,
+			label: t(`plan.layout.share.${dir === "-" ? "less" : "more"}`, {
+				name,
+			}),
+			icon: dir === "-" ? RemoveSharp : AddSharp,
+			disabled,
+		});
+		if (it.join?.[el] === "beside") {
+			const s = besideNow(it, el);
+			if (!s?.range || s.cols === null) return null;
+			const cols = env.grid()!.pack.items[it.id].w;
+			return {
+				type: "buttons",
+				label: t("plan.layout.share.cols", { name, n: s.cols, cols }),
+				buttons: [
+					step("-", s.cols <= s.range[0]),
+					step("+", s.cols >= s.range[1]),
+					auto,
+				],
+			};
+		}
+		const min = Math.max(H_MIN, ELEMENTS[host].minH);
+		return {
+			type: "buttons",
+			label:
+				set === undefined
+					? t("plan.layout.share.fit", { name })
+					: t("plan.layout.share.height", { name, h: set }),
+			buttons: [
+				step("-", set !== undefined && set <= min),
+				step("+", set !== undefined && set >= H_MAX),
+				auto,
+			],
+		};
+	}
+
+	/**
 	 * The ⋯ menu's tabs page: Back; the element shown with the tab on view
 	 * (below or beside, out); the tabs to take out and split; for an item
 	 * of one tab, every other item to join: as a tab, below or beside
@@ -706,6 +726,8 @@ export function usePlanLayoutEditor(
 					checked: it.join?.[partner] === side,
 				})),
 			});
+			const size = splitRow(it, partner);
+			if (size) opts.push(size);
 			opts.push({
 				key: `out:${partner}`,
 				label: t("plan.layout.take_out", { name: label(partner) }),
@@ -776,6 +798,8 @@ export function usePlanLayoutEditor(
 		"up",
 		"down",
 		"right",
+		"share:-",
+		"share:+",
 	]);
 	function onMenu(id: string, key: string): void {
 		menuStays = MENU_STEPS.has(key);
@@ -825,7 +849,7 @@ export function usePlanLayoutEditor(
 		else if (key.startsWith("tab:")) {
 			const to = key.slice(4);
 			if (apply(ops.makeTab(draft.value, { item: id }, to, ctx()), to))
-				trackMove(it.els[0], "menu", "tabs");
+				count("menu");
 		} else if (key.startsWith("below:") || key.startsWith("beside:")) {
 			const [side, to] = key.split(":") as [JoinSide, string];
 			if (
@@ -834,7 +858,10 @@ export function usePlanLayoutEditor(
 					to
 				)
 			)
-				trackMove(it.els[0], "menu", "joined");
+				count("menu");
+		} else if (key.startsWith("share:")) {
+			const partner = partnerOf(it, it.active);
+			if (partner) stepSplit(id, partner, key.slice(6));
 		} else if (key.startsWith("side:")) {
 			const partner = partnerOf(it, it.active);
 			if (partner)
@@ -898,6 +925,8 @@ export function usePlanLayoutEditor(
 		e.stopPropagation();
 		press = null;
 		rs = null;
+		if (sp) draft.value = sp.before;
+		sp = null;
 		drag.value = null;
 		resize.value = null;
 		stopListening();
@@ -994,7 +1023,144 @@ export function usePlanLayoutEditor(
 		listen();
 	}
 
+	/*
+	 * The line between a tab's two parts, dragged: beside, the first
+	 * part's columns (held to where both keep their minimums); below, its
+	 * height in 8 px steps. The parts follow as it moves; Esc puts it back.
+	 */
+	let sp: {
+		id: string;
+		el: ElementId;
+		side: JoinSide;
+		before: GridLayout;
+		x: number;
+		y: number;
+		// the first part's width (beside) or height (below) when pressed
+		px0: number;
+		value: number | null;
+	} | null = null;
+
+	/** The first part of a tab's two as drawn, in grid px */
+	function hostBox(id: string, host: ElementId): DOMRect | undefined {
+		return env
+			.root()
+			?.querySelector<HTMLElement>(
+				`[data-item="${id}"] [data-element="${host}"]`
+			)
+			?.getBoundingClientRect();
+	}
+
+	/** Press on the line between a tab's two parts, `el` the second */
+	function startSplit(id: string, el: ElementId, e: PointerEvent): void {
+		const it = itemOf(id);
+		const side = it?.join?.[el];
+		if (phone.value || e.button !== 0 || !it || !side) return;
+		e.stopPropagation();
+		e.preventDefault();
+		const box = hostBox(id, hostOf(it, el));
+		sp = {
+			id,
+			el,
+			side,
+			before: draft.value,
+			x: e.clientX,
+			y: e.clientY,
+			px0:
+				(side === "beside" ? (box?.width ?? 0) : (box?.height ?? 0)) /
+				env.zoom(),
+			value: null,
+		};
+		refMenu.value = null;
+		listen();
+	}
+
+	function splitMove(e: PointerEvent): void {
+		const s = sp!;
+		const z = env.zoom();
+		const it = s.before.items.find((i) => i.id === s.id)!;
+		const host = hostOf(it, s.el);
+		let value: number | null;
+		if (s.side === "beside") {
+			const p = grid().pack.items[s.id];
+			const gap = s.before.gap;
+			const col = (p.width - (p.w - 1) * gap) / p.w;
+			const px = s.px0 + (e.clientX - s.x) / z;
+			value =
+				besideSplit(
+					p.width,
+					p.w,
+					gap,
+					Math.round((px + gap / 2) / (col + gap)),
+					ELEMENTS[host].minW,
+					ELEMENTS[s.el].minW
+				)?.cols ?? null;
+		} else
+			value = ops.snapHeight(
+				s.px0 + (e.clientY - s.y) / z,
+				Math.max(H_MIN, ELEMENTS[host].minH)
+			);
+		if (value === null || value === s.value) return;
+		s.value = value;
+		draft.value = ops.setJoinSize(
+			s.before,
+			s.id,
+			s.el,
+			value,
+			ctx()
+		).layout;
+	}
+
+	function splitUp(): void {
+		const s = sp!;
+		sp = null;
+		draft.value = s.before;
+		if (s.value === null) return;
+		if (apply(ops.setJoinSize(s.before, s.id, s.el, s.value, ctx()), s.id))
+			count("drag");
+	}
+
+	/** A step of the ⋯ menu's split row: less or more room for the first, or auto */
+	function stepSplit(id: string, el: ElementId, step: string): void {
+		const it = itemOf(id)!;
+		const host = hostOf(it, el);
+		let value: number | null = null;
+		if (step !== "auto") {
+			const dir = step === "+" ? 1 : -1;
+			if (it.join?.[el] === "beside") {
+				const s = besideNow(it, el);
+				if (!s?.cols) return;
+				value = s.cols + dir;
+			} else {
+				const now =
+					it.joinSize?.[el] ??
+					Math.round((hostBox(id, host)?.height ?? 0) / env.zoom()) ??
+					0;
+				value = ops.snapHeight(
+					Math.max(now, ELEMENTS[host].minH) + dir * H_STEP,
+					Math.max(H_MIN, ELEMENTS[host].minH)
+				);
+			}
+		}
+		if (apply(ops.setJoinSize(draft.value, id, el, value, ctx()), id))
+			count("menu");
+	}
+
+	/** Where a tab's two beside each other split now, as the page draws it */
+	function besideNow(it: GridItem, el: ElementId) {
+		const p = env.grid()?.pack.items[it.id];
+		if (!p) return null;
+		return besideSplit(
+			p.width,
+			p.w,
+			draft.value.gap,
+			it.joinSize?.[el],
+			ELEMENTS[hostOf(it, el)].minW,
+			ELEMENTS[el].minW
+		);
+	}
+
 	function onPointerMove(e: PointerEvent): void {
+		if (sp) return splitMove(e);
 		if (rs) return resizeMove(e);
 		// listening means a press or a resize
 		const press0 = press!;
@@ -1011,8 +1177,7 @@ export function usePlanLayoutEditor(
 		const { pack } = grid();
 		const cur = press0.id ? itemOf(press0.id) : undefined;
 		// over neither region: where it was
-		let region: Region =
-			drag.value?.region ?? (cur ? regionOf(cur) : "page");
+		let region: Region = drag.value?.region ?? (cur?.pin ? "band" : "page");
 		let tabTo: string | null = null;
 		const hit = document.elementFromPoint?.(e.clientX, e.clientY) ?? null;
 		// a part of the page dropped on Elements is hidden
@@ -1143,6 +1308,7 @@ export function usePlanLayoutEditor(
 
 	function onPointerUp(): void {
 		stopListening();
+		if (sp) return splitUp();
 		if (rs) return resizeUp();
 		const p = press;
 		const d = drag.value;
@@ -1154,7 +1320,7 @@ export function usePlanLayoutEditor(
 			const change = d.id
 				? ops.hideItem(g, d.id, ctx())
 				: ops.hide(g, d.from!, d.el, ctx());
-			if (apply(change)) trackMove(d.el, "drag", "hidden");
+			if (apply(change)) count("drag");
 			return;
 		}
 		if (d.tabTo) {
@@ -1170,8 +1336,7 @@ export function usePlanLayoutEditor(
 				: d.join
 					? ops.joinTab(g, src, d.tabTo, d.join, ctx())
 					: ops.makeTab(g, src, d.tabTo, ctx());
-			if (apply(change, d.tabTo))
-				trackMove(d.el, "drag", d.join ? "joined" : "tabs");
+			if (apply(change, d.tabTo)) count("drag");
 			return;
 		}
 		const to = {
@@ -1191,7 +1356,7 @@ export function usePlanLayoutEditor(
 				d.snap ? snapText(d.snap) : undefined
 			)
 		) {
-			trackMove(d.el, "drag", to.band ? "band" : "page");
+			count("drag");
 			if (!d.id)
 				focusHandle(
 					draft.value.items.find((i) => i.els.includes(d.el))?.id
@@ -1205,7 +1370,6 @@ export function usePlanLayoutEditor(
 		rs = null;
 		resize.value = null;
 		if (!z || (z.w === r.w0 && z.h === r.h0)) return;
-		const el = itemOf(r.id)!.els[0];
 		// a resize snaps to bottoms, heights and content, never to tops
 		const snapped = (z.snap?.kind ?? null) as SnapKind | null;
 		// the width only when it was dragged: the packed one may be "auto"
@@ -1227,8 +1391,7 @@ export function usePlanLayoutEditor(
 						snapped
 					);
 		if (apply(change, r.id, z.snap ? snapText(z.snap) : undefined)) {
-			if (z.w !== r.w0) trackResize(el, "drag", "width");
-			if (z.h !== r.h0) trackResize(el, "drag", "height", snapped);
+			count("drag", !!snapped && z.h !== r.h0);
 		}
 	}
 
@@ -1236,6 +1399,8 @@ export function usePlanLayoutEditor(
 		stopListening();
 		press = null;
 		rs = null;
+		if (sp) draft.value = sp.before;
+		sp = null;
 		drag.value = null;
 		resize.value = null;
 	}
@@ -1273,17 +1438,22 @@ export function usePlanLayoutEditor(
 		}
 		const g = draft.value;
 		pref.saveCustom(g);
+		const hidden = ELEMENT_IDS.filter(
+			(e) => !g.items.some((i) => i.els.includes(e))
+		);
 		trackEvent("plan:layout_save", {
-			items: g.items.length,
-			tabs: g.items.filter((i) => tabsOf(i).length > 1).length,
-			kept_in_view: g.items.filter((i) => i.pin).length,
-			hidden: ELEMENT_IDS.filter(
-				(e) => !g.items.some((i) => i.els.includes(e))
-			).length,
-			cols: g.cols,
-			gap: g.gap,
-			replaced,
+			item_count: g.items.length,
+			tab_group_count: g.items.filter((i) => tabsOf(i).length > 1).length,
+			joined_count: g.items.filter((i) => i.join).length,
+			joined_sized_count: g.items.filter((i) => i.joinSize).length,
+			kept_in_view_count: g.items.filter((i) => i.pin).length,
+			hidden_count: hidden.length,
+			hidden_elements: hidden,
+			column_count: g.cols,
+			gap_px: g.gap,
+			is_replacing: replaced,
 			store: "session",
+			...summary(),
 		});
 		lastToast?.destroy();
 		toast(t("plan.layout.saved"));
@@ -1291,7 +1461,7 @@ export function usePlanLayoutEditor(
 	}
 
 	function cancel(): void {
-		trackEvent("plan:layout_cancel", { changes: history.value.length });
+		trackEvent("plan:layout_cancel", summary());
 		lastToast?.destroy();
 		env.close();
 	}
@@ -1359,6 +1529,7 @@ export function usePlanLayoutEditor(
 		setMenu,
 		startMove,
 		startResize,
+		startSplit,
 		hideNow,
 		hideTarget,
 		hideDrop,

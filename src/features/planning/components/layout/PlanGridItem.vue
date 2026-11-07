@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import {
 		computed,
+		type CSSProperties,
 		inject,
 		onBeforeUnmount,
 		onMounted,
@@ -21,11 +22,15 @@
 		GridItem,
 		IPackedItem,
 	} from "@/features/planning/layout/planLayout.types";
+	import type { IBesideSplit } from "@/features/planning/layout/planGrid.util";
 
 	// Util
 	import { ELEMENTS, isKpiItem } from "@/features/planning/layout/elements";
 	import { elementView } from "@/features/planning/layout/elementComponents";
-	import { gridMeasureKey } from "@/features/planning/layout/planGrid.util";
+	import {
+		besideSplit,
+		gridMeasureKey,
+	} from "@/features/planning/layout/planGrid.util";
 	import { partnerOf, tabEls, tabsOf } from "@/features/planning/layout/tabs";
 
 	// Components
@@ -51,6 +56,7 @@
 		editing = false,
 		follow = null,
 		summary = "",
+		gap = 16,
 	} = defineProps<{
 		item: GridItem;
 		pos: IPackedItem;
@@ -61,11 +67,15 @@
 		follow?: { top: number; slide: number } | null;
 		// what the part says after its title while folded
 		summary?: string;
+		// the grid's gap: a pair beside each other splits where columns meet
+		gap?: number;
 	}>();
 
 	const emit = defineEmits<{
 		(e: "fold", value: boolean): void;
 		(e: "tab", el: ElementId): void;
+		// customising: the line between a tab's two pressed, by the second
+		(e: "split", el: ElementId, ev: PointerEvent): void;
 	}>();
 
 	const { flagCount } = usePlanView();
@@ -81,18 +91,45 @@
 			) as Partial<Record<ElementId, ElementId>>
 	);
 	/**
+	 * Where a tab's two split, side by side: the first part's width, from
+	 * its columns or shared by their minimums; null when it's below, or the
+	 * box is too narrow for both (then they stack)
+	 */
+	const besideOf = (host: ElementId): IBesideSplit | null => {
+		const partner = partners.value[host];
+		if (!partner || item.join?.[partner] !== "beside") return null;
+		return besideSplit(
+			pos.width,
+			pos.w,
+			gap,
+			item.joinSize?.[partner],
+			ELEMENTS[host].minW,
+			ELEMENTS[partner].minW
+		);
+	};
+	/**
 	 * How a tab lays out its two: side by side ("row") where it is beside
 	 * and the box fits both minimums, else below each other ("col"); one
 	 * element: nothing
 	 */
 	const layoutOf = (host: ElementId): "row" | "col" | undefined => {
-		const partner = partners.value[host];
-		if (!partner) return undefined;
-		return item.join?.[partner] === "beside" &&
-			pos.width >= ELEMENTS[host].minW + ELEMENTS[partner].minW
-			? "row"
-			: "col";
+		if (!partners.value[host]) return undefined;
+		return besideOf(host) ? "row" : "col";
 	};
+	/**
+	 * A part's size in its tab: beside, the first one's width (the second
+	 * takes the rest); below, the first one's height when set, scrolling
+	 * inside when its content is taller
+	 */
+	function partStyle(host: ElementId, el: ElementId): CSSProperties {
+		const split = besideOf(host);
+		if (split)
+			return el === host
+				? { flex: `0 0 ${split.px}px` }
+				: { flex: "1 1 0" };
+		const h = item.joinSize?.[partners.value[host]!];
+		return el === host && h ? { height: `${h}px`, overflowY: "auto" } : {};
+	}
 	/** A tab's name: "Material I/O & Material I/O totals" for two */
 	const tabLabel = (host: ElementId): string =>
 		partners.value[host]
@@ -158,7 +195,7 @@
 		customising, parts slide to where a change puts them -->
 		<div
 			role="group"
-			class="@container/item flex flex-col rounded border border-line bg-(--app-bg) outline-none focus-visible:ring-2 focus-visible:ring-link"
+			class="@container/item flex flex-col rounded border border-line bg-(--app-bg) in-data-tinted:[--app-bg:var(--color-surface)] outline-none focus-visible:ring-2 focus-visible:ring-link"
 			:class="[
 				follow ? 'sticky pointer-events-auto' : 'absolute top-0 left-0',
 				editing
@@ -252,12 +289,13 @@
 						? 'overflow-y-auto overflow-x-hidden'
 						: 'overflow-visible'
 				"
-				:inert="editing || undefined"
 				data-body>
 				<div ref="inner" :class="kpi ? '' : 'py-3'">
 					<!-- a tab: its element, or two with a line between them,
 					below each other or beside (where the box fits both
-					minimums; otherwise below); each adapts to its own width -->
+					minimums; otherwise below), split as set; each adapts to
+					its own width. Customising, the parts can't be used, the
+					line between them can be dragged. -->
 					<template v-for="host in hosts" :key="host">
 						<div
 							v-if="mounted.has(host)"
@@ -274,19 +312,45 @@
 							<div
 								v-for="el in tabEls(item, host)"
 								:key="el"
-								class="@container min-w-0"
-								:style="
-									layoutOf(host) === 'row'
-										? {
-												// the room beyond both minimums shared as they are
-												flex: `${ELEMENTS[el].minW} 1 ${ELEMENTS[el].minW}px`,
-											}
-										: undefined
-								"
+								class="@container relative min-w-0"
+								:style="partStyle(host, el)"
 								:data-element="el">
-								<component
-									:is="elementView(el).component"
-									v-bind="elementView(el).props" />
+								<div
+									class="contents"
+									:inert="editing || undefined">
+									<component
+										:is="elementView(el).component"
+										v-bind="elementView(el).props" />
+								</div>
+								<!-- on the line before the second part: a
+								wide grip, the line lit while over it -->
+								<div
+									v-if="
+										editing &&
+										el !== host &&
+										(layoutOf(host) === 'row' ||
+											item.join?.[el] === 'below')
+									"
+									class="group/split absolute z-10 flex touch-none"
+									:class="
+										layoutOf(host) === 'row'
+											? '-left-2 inset-y-0 w-4 justify-center cursor-col-resize'
+											: '-top-2 inset-x-0 h-4 flex-col justify-center cursor-row-resize'
+									"
+									aria-hidden="true"
+									:data-split="el"
+									@pointerdown="
+										(ev: PointerEvent) =>
+											emit('split', el, ev)
+									">
+									<span
+										class="rounded-full bg-link opacity-0 transition-opacity group-hover/split:opacity-100"
+										:class="
+											layoutOf(host) === 'row'
+												? 'w-0.5 h-full'
+												: 'h-0.5 w-full'
+										" />
+								</div>
 							</div>
 						</div>
 					</template>

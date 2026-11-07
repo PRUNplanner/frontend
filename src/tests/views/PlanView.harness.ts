@@ -142,6 +142,7 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackEvent: vi.fn(),
 	flushPlanEdits: vi.fn(),
+	trackUser: vi.fn(),
 }));
 vi.mock("@/features/planning/calculations/habOptimization", async (orig) => {
 	const actual =

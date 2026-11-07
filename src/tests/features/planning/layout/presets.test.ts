@@ -46,9 +46,9 @@ describe("presets", () => {
 	});
 
 	it("hands out a fresh copy each time", () => {
-		const a = presetLayout("today");
+		const a = presetLayout("standard");
 		a.items[0].x = 5;
-		expect(presetLayout("today").items[0].x).toBe(0);
+		expect(presetLayout("standard").items[0].x).toBe(0);
 	});
 
 	describe.each(PRESET_KEYS)("%s packs the same as before", (key) => {

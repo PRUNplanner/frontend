@@ -15,7 +15,7 @@ export type ElementId =
 	| "material-io-totals";
 
 /** The three built-in layouts; presets never change */
-export type PresetKey = "today" | "wide" | "stacked";
+export type PresetKey = "standard";
 
 /** Height mode: fit the content, fit it up to `h`, or always `h` */
 export type HeightMode = "fit" | "cap" | "fixed";
@@ -43,6 +43,10 @@ export interface GridItem {
 	follow?: boolean;
 	// elements shown in the tab of the element before them, below or beside it
 	join?: Partial<Record<ElementId, JoinSide>>;
+	// per joined element, how much of the tab the part before it takes:
+	// beside, its columns (1 to w − 1); below, its height in px. Not set:
+	// shared by their minimum sizes (beside) or their content (below)
+	joinSize?: Partial<Record<ElementId, number>>;
 }
 
 /** The player's grid */

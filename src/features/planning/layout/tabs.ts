@@ -5,6 +5,9 @@ import type {
 	JoinSide,
 } from "@/features/planning/layout/planLayout.types";
 
+// Util
+import { H_MAX, H_MIN } from "@/features/planning/layout/planLayout.constants";
+
 /*
  * Two parts in one tab: an element listed in `join` shows in the tab of
  * the element before it in `els` (its host), below or beside it. A tab
@@ -45,9 +48,10 @@ export function removeEl(it: GridItem, el: ElementId): void {
 }
 
 /**
- * Fits the joins and the tab shown to the elements: no join on the first
- * element, none on an element whose host is joined itself, none on
- * elements it no longer has; the tab shown is a host
+ * Fits the joins, their sizes and the tab shown to the elements: no join
+ * on the first element, none on an element whose host is joined itself,
+ * none on elements it no longer has; sizes only of joins it keeps, within
+ * its width; the tab shown is a host
  *
  * @param {GridItem} it Item, changed in place
  * @returns {GridItem} The same item
@@ -60,6 +64,19 @@ export function tidyJoin(it: GridItem): GridItem {
 	});
 	if (Object.keys(join).length) it.join = join;
 	else delete it.join;
+	// sizes of the joins it keeps: columns within its width, px within limits
+	const size: Partial<Record<ElementId, number>> = {};
+	for (const [e, n] of Object.entries(it.joinSize ?? {}) as [
+		ElementId,
+		number,
+	][]) {
+		if (join[e] === "beside" && it.w >= 2)
+			size[e] = Math.min(Math.max(n, 1), it.w - 1);
+		else if (join[e] === "below")
+			size[e] = Math.min(Math.max(n, H_MIN), H_MAX);
+	}
+	if (Object.keys(size).length) it.joinSize = size;
+	else delete it.joinSize;
 	const active = it.els.includes(it.active) ? it.active : it.els[0];
 	it.active = hostOf(it, active);
 	return it;

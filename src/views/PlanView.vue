@@ -9,6 +9,7 @@
 		ref,
 		type Ref,
 		useTemplateRef,
+		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -54,7 +55,7 @@
 	import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
 	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
 	import { calcDebug } from "@/lib/debugMode";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	const { cachedProfitPerArea } = useEmpireProfits();
@@ -311,7 +312,7 @@
 			// while customising, Ctrl/Cmd+Z undoes the last layout change
 			undoLayout: () =>
 				refEditingLayout.value
-					? (refEditor.value?.undo("keys"), true)
+					? (refEditor.value?.undo(), true)
 					: false,
 		});
 
@@ -343,13 +344,25 @@
 	// The layout: a preset or Custom Layout, kept for this tab
 	const layoutPref = usePlanLayoutPreference();
 	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
+	// who uses Custom Layout and Tinted parts: person properties, kept as
+	// they change (unchanged values are not resent)
+	watch(
+		[layoutPref.choice, layoutPref.tinted],
+		([choice, tinted]) =>
+			trackUser({ plan_layout: choice, is_plan_parts_tinted: tinted }),
+		{ immediate: true }
+	);
 	// customise mode
 	const refEditingLayout: Ref<boolean> = ref(false);
-	const refEditor = useTemplateRef<{ undo: (how: "keys") => void }>("editor");
+	const refEditor = useTemplateRef<{ undo: () => void }>("editor");
 
 	function pickLayout(choice: LayoutChoice): void {
 		layoutPref.pick(choice);
 		trackEvent("plan:layout_preset", { preset: choice });
+	}
+	function setTint(value: boolean): void {
+		layoutPref.setTinted(value);
+		trackEvent("plan:layout_tint_toggle", { is_active: value });
 	}
 	function startCustomise(): void {
 		refEditingLayout.value = true;
@@ -629,7 +642,9 @@
 					:choice="layoutPref.choice.value"
 					:has-custom="!!layoutPref.custom.value"
 					:can-customise="!refIsPhone && !refEditingLayout"
+					:tinted="layoutPref.tinted.value"
 					@pick="pickLayout"
+					@tint="setTint"
 					@customise="startCustomise" />
 				<PlanMoreMenu
 					:debug="calcDebug"
@@ -656,7 +671,9 @@
 			:compare="sharedCompare" />
 
 		<!-- every part of the plan as the player's layout places it -->
-		<div class="px-6 max-md:px-4 pt-1">
+		<div
+			class="px-6 max-md:px-4 pt-1"
+			:data-tinted="layoutPref.tinted.value || undefined">
 			<PlanLayoutEditor
 				v-if="refEditingLayout"
 				ref="editor"

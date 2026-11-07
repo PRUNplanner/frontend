@@ -65,49 +65,13 @@ const build = (items: GridItem[]): GridLayout => ({
 
 const PRESETS: Record<PresetKey, () => GridLayout> = {
 	// KPIs on top · Base · Production with tools · Material I/O
-	today: () =>
+	standard: () =>
 		build([
 			...kpis(),
 			...baseColumn(),
 			item(["production", ...TOOLS], 2, 7, 1),
 			item(["material-io"], 9, 3, 1),
 			item(["material-io-totals"], 9, 3, 2),
-		]),
-	// Supply and Plan check next to Production
-	wide: () =>
-		build([
-			...kpis(),
-			...baseColumn(),
-			item(
-				[
-					"production",
-					"construction-cart",
-					"visitation-frequency",
-					"repair-analysis",
-					"profit-breakdown",
-					"popr",
-				],
-				2,
-				4,
-				1
-			),
-			item(["supply-cart"], 6, 3, 1),
-			item(["plan-check"], 6, 3, 2, { hm: "cap", h: 360 }),
-			item(["material-io"], 9, 3, 1),
-			item(["material-io-totals"], 9, 3, 2),
-		]),
-	// Base parts side by side, Production full width below
-	stacked: () =>
-		build([
-			...kpis(),
-			item(["empire"], 0, 2, 1),
-			item(["planet"], 2, 3, 1),
-			item(["workforce"], 5, 3, 1),
-			item(["housing"], 8, 2, 1),
-			item(["experts"], 10, 2, 1),
-			item(["production", ...TOOLS], 0, 12, 2),
-			item(["material-io"], 0, 8, 3),
-			item(["material-io-totals"], 8, 4, 3),
 		]),
 };
 

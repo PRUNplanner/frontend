@@ -9,7 +9,11 @@ import type { ILayoutOpsContext } from "@/features/planning/layout/layoutOps";
 // Util
 import { ELEMENT_IDS } from "@/features/planning/layout/elements";
 import { GAPS } from "@/features/planning/layout/planLayout.constants";
-import { normaliseLayout } from "@/features/planning/layout/normaliseLayout";
+import {
+	normaliseLayout,
+	renumber,
+} from "@/features/planning/layout/normaliseLayout";
+import { presetLayout } from "@/features/planning/layout/presets";
 
 /** A seeded random generator, so a failing case reproduces */
 export function prng(seed: number): () => number {
@@ -77,4 +81,93 @@ export const ctx = (
 	title: (it) => it.els.join("+"),
 	label: (el) => el,
 	...more,
+});
+
+/*
+ * Two other arrangements than Standard, as the presets Wide and Stacked
+ * had them: Supply and Plan check out of Production's tabs, and Base's
+ * parts side by side with Production full width below
+ */
+const fixtureItem = (
+	els: ElementId[],
+	x: number,
+	w: number,
+	y: number,
+	more: Partial<GridItem> = {}
+): GridItem => ({
+	id: `i-${els[0]}`,
+	els,
+	active: els[0],
+	x,
+	w,
+	y,
+	hm: "fit",
+	h: 0,
+	pin: false,
+	...more,
+});
+const kpisOf = (): GridItem[] =>
+	presetLayout("standard").items.filter((i) => i.els[0].startsWith("kpi-"));
+const BASE: ElementId[] = [
+	"empire",
+	"planet",
+	"workforce",
+	"housing",
+	"experts",
+];
+
+export const wideLayout = (): GridLayout => ({
+	cols: 12,
+	gap: 16,
+	items: renumber([
+		...kpisOf(),
+		...BASE.map((el, i) => fixtureItem([el], 0, 2, 1 + i)),
+		fixtureItem(
+			[
+				"production",
+				"construction-cart",
+				"visitation-frequency",
+				"repair-analysis",
+				"profit-breakdown",
+				"popr",
+			],
+			2,
+			4,
+			1
+		),
+		fixtureItem(["supply-cart"], 6, 3, 1),
+		fixtureItem(["plan-check"], 6, 3, 2, { hm: "cap", h: 360 }),
+		fixtureItem(["material-io"], 9, 3, 1),
+		fixtureItem(["material-io-totals"], 9, 3, 2),
+	]),
+});
+
+export const stackedLayout = (): GridLayout => ({
+	cols: 12,
+	gap: 16,
+	items: renumber([
+		...kpisOf(),
+		fixtureItem(["empire"], 0, 2, 1),
+		fixtureItem(["planet"], 2, 3, 1),
+		fixtureItem(["workforce"], 5, 3, 1),
+		fixtureItem(["housing"], 8, 2, 1),
+		fixtureItem(["experts"], 10, 2, 1),
+		fixtureItem(
+			[
+				"production",
+				"construction-cart",
+				"supply-cart",
+				"visitation-frequency",
+				"repair-analysis",
+				"profit-breakdown",
+				"plan-check",
+				"popr",
+			],
+			0,
+			12,
+			2
+		),
+		fixtureItem(["material-io"], 0, 8, 3),
+		fixtureItem(["material-io-totals"], 8, 4, 3),
+	]),
 });

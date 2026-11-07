@@ -14,6 +14,7 @@ import {
 	COLS_MAX,
 	COLS_MIN,
 	H_MAX,
+	H_MIN,
 	H_SNAP,
 	H_STEP,
 } from "@/features/planning/layout/planLayout.constants";
@@ -37,6 +38,7 @@ import {
 	tabsOf,
 	tidyJoin,
 } from "@/features/planning/layout/tabs";
+import { clamp } from "@/util/numbers";
 
 /** What an op needs to know of the screen */
 export interface ILayoutOpsContext {
@@ -582,10 +584,50 @@ export const setSide = (
 	edit(layout, id, ctx, (it, g) => {
 		if (!it.join?.[el] || it.join[el] === side) return done(g, "nothing");
 		it.join[el] = side;
+		// columns beside, px below: a size means nothing on the other side
+		if (it.joinSize) delete it.joinSize[el];
 		return done(g, `joined_${side}`, {
 			el: ctx.label(el),
 			name: ctx.label(hostOf(it, el)),
 		});
+	});
+
+/**
+ * How a tab's two parts share it: beside, the columns of the part before
+ * `el`; below, that part's height in px (at least its minimum); null
+ * shares by their sizes again
+ */
+export const setJoinSize = (
+	layout: GridLayout,
+	id: string,
+	el: ElementId,
+	value: number | null,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		const side = it.join?.[el];
+		if (!side || (side === "beside" && it.w < 2)) return done(g, "nothing");
+		const host = hostOf(it, el);
+		const v =
+			value === null
+				? undefined
+				: side === "beside"
+					? clamp(Math.round(value), 1, it.w - 1)
+					: clamp(
+							Math.round(value),
+							Math.max(H_MIN, ELEMENTS[host].minH),
+							H_MAX
+						);
+		if (it.joinSize?.[el] === v) return done(g, "nothing");
+		const size = { ...it.joinSize };
+		delete size[el];
+		if (v !== undefined) size[el] = v;
+		it.joinSize = size;
+		const params = { name: ctx.label(host), el: ctx.label(el) };
+		if (v === undefined) return done(g, "share_auto", params);
+		return side === "beside"
+			? done(g, "share_cols", { ...params, n: v, cols: it.w })
+			: done(g, "share_height", { ...params, h: v });
 	});
 
 /** A new item below `it` with these elements (a tab, maybe with its partner) */
@@ -598,6 +640,11 @@ const splitOff = (
 	const join = Object.fromEntries(
 		els.filter((e) => it.join?.[e]).map((e) => [e, it.join![e]])
 	);
+	const joinSize = Object.fromEntries(
+		els
+			.filter((e) => it.joinSize?.[e] !== undefined)
+			.map((e) => [e, it.joinSize![e]])
+	);
 	g.items.push({
 		id: freeItemId(g.items, els[0]),
 		els,
@@ -609,6 +656,7 @@ const splitOff = (
 		h: 0,
 		pin: it.pin,
 		...(Object.keys(join).length && { join }),
+		...(Object.keys(joinSize).length && { joinSize }),
 	});
 };
 

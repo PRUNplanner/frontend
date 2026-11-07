@@ -9,7 +9,7 @@ import plan from "@/locales/en_US/plan.json";
 import type { ElementId } from "@/features/planning/layout/planLayout.types";
 
 async function mountPanel(loggedIn = true) {
-	const layout = presetLayout("today");
+	const layout = presetLayout("standard");
 	// Supply and Experts hidden
 	layout.items = layout.items
 		.map((i) => ({ ...i, els: i.els.filter((e) => e !== "supply-cart") }))

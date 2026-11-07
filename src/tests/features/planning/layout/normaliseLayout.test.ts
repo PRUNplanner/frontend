@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 // Util
 import {
+	cloneLayout,
 	freeItemId,
 	normaliseFolded,
 	normaliseLayout,
@@ -72,6 +73,55 @@ describe("normaliseLayout", () => {
 			normaliseLayout({ items: [{ ...prod, join: { x: "below" } }] })
 				.items[0]
 		).not.toHaveProperty("join");
+	});
+
+	it("keeps a pair's size: columns within the item, px within limits", () => {
+		const pair = (
+			side: "below" | "beside",
+			joinSize: unknown,
+			w: number = 6
+		) =>
+			normaliseLayout({
+				cols: 12,
+				items: [
+					{
+						...prod,
+						w,
+						els: ["production", "planet", "workforce"],
+						join: { planet: side },
+						joinSize,
+					},
+				],
+			}).items[0];
+		expect(pair("beside", { planet: 4 }).joinSize).toEqual({ planet: 4 });
+		// held to 1 … w − 1
+		expect(pair("beside", { planet: 9 }).joinSize).toEqual({ planet: 5 });
+		expect(pair("beside", { planet: 0 }).joinSize).toEqual({ planet: 1 });
+		// one column: no columns to share
+		expect(pair("beside", { planet: 1 }, 1)).not.toHaveProperty("joinSize");
+		expect(pair("below", { planet: 299.6 }).joinSize).toEqual({
+			planet: 300,
+		});
+		expect(pair("below", { planet: 9000 }).joinSize).toEqual({
+			planet: 4000,
+		});
+		// not a joined element, not a number, not an object: dropped
+		expect(
+			pair("below", { workforce: 300, planet: "tall" })
+		).not.toHaveProperty("joinSize");
+		expect(pair("below", 5)).not.toHaveProperty("joinSize");
+		const g = normaliseLayout({
+			items: [
+				{
+					...prod,
+					els: ["production", "planet"],
+					join: { planet: "below" },
+					joinSize: { planet: 200 },
+				},
+			],
+		});
+		expect(normaliseLayout(g)).toEqual(g);
+		expect(cloneLayout(g).items[0].joinSize).not.toBe(g.items[0].joinSize);
 	});
 
 	it("drops unknown and duplicate elements and empty items", () => {
@@ -207,7 +257,7 @@ describe("normaliseLayout", () => {
 
 	it("keeps at most 40 element ids", () => {
 		// the registry has fewer, so all of them survive
-		const items = presetLayout("today").items;
+		const items = presetLayout("standard").items;
 		expect(
 			normaliseLayout({ items }).items.flatMap((i) => i.els)
 		).toHaveLength(20);

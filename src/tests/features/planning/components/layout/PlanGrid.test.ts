@@ -10,6 +10,10 @@ import {
 	provideContext,
 } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
 import { presetLayout } from "@/features/planning/layout/presets";
+import {
+	stackedLayout,
+	wideLayout,
+} from "@/tests/features/planning/layout/layout.fixtures";
 import { PRESET_KEYS } from "@/features/planning/layout/presets";
 import { ELEMENTS } from "@/features/planning/layout/elements";
 
@@ -65,7 +69,7 @@ async function mountGrid(
 ) {
 	return mountComponent(
 		PlanGrid,
-		{ layout: presetLayout("today"), folded: [], width: 1440, ...props },
+		{ layout: presetLayout("standard"), folded: [], width: 1440, ...props },
 		{ setup: provideContext(planViewContext()) }
 	);
 }
@@ -117,7 +121,7 @@ describe("PlanGrid", () => {
 	it("never cuts the band where the page leaves room, nor when it is the page", async () => {
 		vi.stubGlobal("innerHeight", 1000);
 		// everything kept in view: the band is the page, whole, not sticky
-		const all = presetLayout("today");
+		const all = presetLayout("standard");
 		all.items = all.items.map((i) => ({ ...i, pin: true }));
 		const { wrapper, setProps } = await mountGrid({ layout: all });
 		const band = () => wrapper.find("[data-region='band']");
@@ -126,7 +130,7 @@ describe("PlanGrid", () => {
 
 		// one short part left on the page (180 px): the band may take the
 		// rest of the window, 1000 − 180 − 16 px
-		const one = presetLayout("today");
+		const one = presetLayout("standard");
 		one.items = one.items.map((i) => ({
 			...i,
 			pin: i.id !== "i-material-io-totals",
@@ -140,7 +144,7 @@ describe("PlanGrid", () => {
 	});
 
 	it("has no band without items kept in view", async () => {
-		const layout = presetLayout("today");
+		const layout = presetLayout("standard");
 		layout.items = layout.items.filter((i) => !i.pin);
 		const { wrapper } = await mountGrid({ layout });
 		expect(wrapper.find("[data-region='band']").exists()).toBe(false);
@@ -188,7 +192,7 @@ describe("PlanGrid", () => {
 			.mockReturnValue(700);
 		const { wrapper } = await mountComponent(
 			PlanGrid,
-			{ layout: presetLayout("stacked"), folded: [] },
+			{ layout: stackedLayout(), folded: [] },
 			{ setup: provideContext(planViewContext()) }
 		);
 		await flushPromises();
@@ -221,7 +225,7 @@ describe("PlanGrid", () => {
 	});
 
 	it("shows two parts in one tab below or beside each other, both lines folded", async () => {
-		const today = presetLayout("today");
+		const today = presetLayout("standard");
 		const pair = (side: "below" | "beside"): GridLayout => ({
 			...today,
 			items: today.items
@@ -272,15 +276,45 @@ describe("PlanGrid", () => {
 		);
 		expect(side.attributes("data-pair")).toBe("row");
 		expect(side.classes()).toContain("[&>*+*]:border-l");
-		expect(
-			side
-				.findAll("[data-element]")
-				.map((e) => (e.element as HTMLElement).style.flex)
-		).toEqual(
-			(["material-io", "material-io-totals"] as const).map(
-				(el) => `${ELEMENTS[el].minW} 1 ${ELEMENTS[el].minW}px`
-			)
+		const flexes = (w: Awaited<ReturnType<typeof mountGrid>>["wrapper"]) =>
+			box(w, "i-material-io")
+				.findAll("[data-tab-body='material-io'] [data-element]")
+				.map((e) => (e.element as HTMLElement).style.flex);
+		const minA = ELEMENTS["material-io"].minW;
+		const minB = ELEMENTS["material-io-totals"].minW;
+		expect(flexes(beside.wrapper)).toEqual([
+			`0 0 ${(1440 * minA) / (minA + minB)}px`,
+			"1 1 0px",
+		]);
+
+		// set to 8 of 12 columns: the line where columns 8 and 9 meet
+		const eight = await mountGrid({
+			layout: {
+				...wide,
+				items: wide.items.map((i) =>
+					i === io
+						? { ...i, joinSize: { "material-io-totals": 8 } }
+						: i
+				),
+			},
+		});
+		const col = (1440 - 11 * 16) / 12;
+		expect(parseFloat(flexes(eight.wrapper)[0].split(" ")[2])).toBeCloseTo(
+			8 * col + 7 * 16 + 8
 		);
+
+		// below, 300 px high: the first part scrolls inside
+		const tall = pair("below");
+		const tallIo = tall.items.find((i) => i.els[0] === "material-io")!;
+		tallIo.joinSize = { "material-io-totals": 300 };
+		const held = await mountGrid({ layout: tall });
+		const first = box(held.wrapper, "i-material-io").find(
+			"[data-element='material-io']"
+		).element as HTMLElement;
+		expect([first.style.height, first.style.overflowY]).toEqual([
+			"300px",
+			"auto",
+		]);
 
 		const folded = await mountGrid({
 			layout: pair("below"),
@@ -337,7 +371,7 @@ describe("PlanGrid", () => {
 
 	it("shows the tabs of results tiles made into tabs, not a lone tile's title", async () => {
 		// Payback, Profit / day and Area as one item, as a player saved it
-		const today = presetLayout("today");
+		const today = presetLayout("standard");
 		const grouped = ["kpi-profit", "kpi-area"];
 		const layout: GridLayout = {
 			...today,
@@ -365,9 +399,9 @@ describe("PlanGrid", () => {
 	});
 
 	it("shows the stored tab when the one picked left the item", async () => {
-		// Supply picked on Today's, then Wide, where Production has no Supply
+		// Supply picked on Standard, then a layout where Production has no Supply
 		const { wrapper, setProps } = await mountGrid({
-			layout: presetLayout("wide"),
+			layout: wideLayout(),
 		});
 		await setProps({ tabs: { "i-production": "supply-cart" } });
 		const prod = box(wrapper, "i-production");
@@ -379,25 +413,51 @@ describe("PlanGrid", () => {
 		const { wrapper } = await mountComponent(
 			PlanGrid,
 			{
-				layout: presetLayout("today"),
+				layout: presetLayout("standard"),
 				folded: [],
 				width: 1440,
 				editing: true,
 			},
 			{ setup: provideContext(planViewContext()) }
 		);
+		// every part can't be used; the line between two parts stays live
+		const parts = wrapper.findAll("[data-element]");
+		expect(parts.length).toBeGreaterThan(0);
 		expect(
-			wrapper
-				.findAll("[data-body]")
-				.every((b) => b.attributes("inert") !== undefined)
+			parts.every((p) => p.find(":scope > [inert]").exists() === true)
 		).toBe(true);
+		expect(
+			wrapper.findAll("[data-body]").some((b) => b.attributes("inert"))
+		).toBe(false);
+		// no pair in Standard: no line to drag
+		expect(wrapper.find("[data-split]").exists()).toBe(false);
+	});
+
+	it("offers the line between two parts to drag while customising", async () => {
+		const g = presetLayout("standard");
+		const io = g.items.find((i) => i.els[0] === "material-io")!;
+		g.items = g.items.filter((i) => i.els[0] !== "material-io-totals");
+		io.els = ["material-io", "material-io-totals"];
+		io.join = { "material-io-totals": "below" };
+		const { wrapper, component } = await mountComponent(
+			PlanGrid,
+			{ layout: g, folded: [], width: 1440, editing: true },
+			{ setup: provideContext(planViewContext()) }
+		);
+		const line = wrapper.find("[data-split='material-io-totals']");
+		expect(line.classes()).toContain("cursor-row-resize");
+		await line.trigger("pointerdown");
+		expect(component.emitted("split")?.[0]?.slice(0, 2)).toEqual([
+			"i-material-io",
+			"material-io-totals",
+		]);
 	});
 
 	it("gives every item a title row while customising, without the fold", async () => {
-		const { wrapper } = await mountComponent(
+		const { wrapper, component } = await mountComponent(
 			PlanGrid,
 			{
-				layout: presetLayout("today"),
+				layout: presetLayout("standard"),
 				folded: [],
 				width: 1440,
 				editing: true,
@@ -419,7 +479,7 @@ describe("PlanGrid", () => {
 		const height = vi
 			.spyOn(HTMLElement.prototype, "offsetHeight", "get")
 			.mockReturnValue(500);
-		const { wrapper } = await mountGrid({ layout: presetLayout("wide") });
+		const { wrapper } = await mountGrid({ layout: wideLayout() });
 		await flushPromises();
 		// Plan check is at most 360 px: it scrolls inside
 		expect(
