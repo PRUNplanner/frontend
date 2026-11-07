@@ -291,9 +291,9 @@ describe("PlanLayoutEditor", () => {
 			await flushPromises();
 			await pick(m, "experts", "hm-cap");
 			expect(draft(m, "experts").hm).toBe("cap");
-			// taller than its content: fixed
+			// a step changes the limit of "at most", the mode stays
 			await pick(m, "experts", "taller");
-			expect(draft(m, "experts").hm).toBe("fixed");
+			expect(draft(m, "experts").hm).toBe("cap");
 			expect(menuOf(m, "experts").props("show")).toBe(true);
 			// the steps are rows of buttons, not a line each
 			const rows = (
@@ -1150,10 +1150,15 @@ describe("PlanLayoutEditor", () => {
 			expect(announce(m)).toBe(
 				"Production + 7 tabs: fixed at 1200 px; taller content scrolls"
 			);
+			// below the content too: a height set by hand stays (owner,
+			// 2026-11-07)
 			await dragBy(edge(), 0, -400, { alt: true });
-			expect(draft(m, "production")).toMatchObject({ hm: "cap", h: 800 });
+			expect(draft(m, "production")).toMatchObject({
+				hm: "fixed",
+				h: 800,
+			});
 			expect(announce(m)).toBe(
-				"Production + 7 tabs: fits its content up to 800 px, scrolls beyond"
+				"Production + 7 tabs: fixed at 800 px; taller content scrolls"
 			);
 			// never below its 240 px minimum
 			await dragBy(edge(), 0, -2000, { alt: true });

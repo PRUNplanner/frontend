@@ -2078,18 +2078,32 @@ describe("PlanView", () => {
 									y: 0,
 								},
 								{
-									id: "i-planet",
-									els: ["planet"],
+									id: "i-kpi-payback",
+									els: ["kpi-payback"],
 									x: 1,
 									w: 1,
 									y: 1,
 								},
 								{
-									id: "i-empire",
-									els: ["empire"],
+									id: "i-kpi-area",
+									els: ["kpi-area"],
 									x: 0,
 									w: 1,
 									y: 2,
+								},
+								{
+									id: "i-empire",
+									els: ["empire"],
+									x: 0,
+									w: 2,
+									y: 3,
+								},
+								{
+									id: "i-planet",
+									els: ["planet"],
+									x: 0,
+									w: 2,
+									y: 4,
 								},
 							],
 						},
@@ -2100,8 +2114,12 @@ describe("PlanView", () => {
 			);
 			const { wrapper } = await mountView();
 			await flushPromises();
-			expect(box(wrapper, "planet").x).toBeGreaterThan(0);
-			expect(box(wrapper, "empire").y).toBe(box(wrapper, "planet").y);
+			// as arranged: Area beside Payback, not a stack
+			expect(box(wrapper, "kpi-payback").x).toBeGreaterThan(0);
+			expect(box(wrapper, "kpi-area").x).toBe(0);
+			expect(box(wrapper, "kpi-area").y).toBe(
+				box(wrapper, "kpi-payback").y
+			);
 			// Wide's folds are Wide's
 			expect(
 				wrapper.find("[data-item='i-empire']").attributes("data-folded")

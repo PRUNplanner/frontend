@@ -190,7 +190,7 @@ describe("PlanGrid", () => {
 		const width = vi
 			.spyOn(HTMLElement.prototype, "clientWidth", "get")
 			.mockReturnValue(700);
-		const { wrapper } = await mountComponent(
+		const { wrapper, component } = await mountComponent(
 			PlanGrid,
 			{ layout: stackedLayout(), folded: [] },
 			{ setup: provideContext(planViewContext()) }
@@ -201,7 +201,7 @@ describe("PlanGrid", () => {
 			"width: 700px"
 		);
 		// and says so: the phone arrangement is the one to show
-		expect(wrapper.emitted("phone")).toEqual([[true]]);
+		expect(component.emitted("phone")).toEqual([[true]]);
 		width.mockRestore();
 	});
 
@@ -209,16 +209,16 @@ describe("PlanGrid", () => {
 		const width = vi
 			.spyOn(HTMLElement.prototype, "clientWidth", "get")
 			.mockReturnValue(1200);
-		const { wrapper } = await mountComponent(
+		const { component } = await mountComponent(
 			PlanGrid,
 			{ layout: stackedLayout(), folded: [] },
 			{ setup: provideContext(planViewContext()) }
 		);
 		await flushPromises();
-		expect(wrapper.emitted("phone")).toEqual([[false]]);
+		expect(component.emitted("phone")).toEqual([[false]]);
 		const fixed = await mountGrid({ width: 390 });
 		await flushPromises();
-		expect(fixed.wrapper.emitted("phone")).toBeUndefined();
+		expect(fixed.component.emitted("phone")).toBeUndefined();
 		width.mockRestore();
 	});
 

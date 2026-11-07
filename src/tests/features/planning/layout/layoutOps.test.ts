@@ -333,7 +333,7 @@ describe("layoutOps", () => {
 				"cap",
 				p
 			).layout;
-			for (const h of [300, 1500])
+			for (const h of [304, 1504])
 				expect(
 					item(
 						ops.setHeight(capped, "i-production", h, p).layout,

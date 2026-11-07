@@ -405,18 +405,17 @@
 					:label="t('plan.layout.gap')"
 					@update:value="(g: number) => editor.setGap(g)" />
 			</div>
-			<label
-				class="flex items-center gap-2"
+			<span
+				class="text-muted-strong"
 				:title="t('plan.layout.tint.description')"
 				data-tint>
 				<PCheckbox
 					:checked="pref.tinted.value"
 					size="sm"
-					@update:checked="(v?: boolean) => editor.setTinted(!!v)" />
-				<span class="text-muted-strong">{{
-					t("plan.layout.tint.name")
-				}}</span>
-			</label>
+					@update:checked="(v?: boolean) => editor.setTinted(!!v)">
+					{{ t("plan.layout.tint.name") }}
+				</PCheckbox>
+			</span>
 			<span class="text-xs text-muted">{{ t("plan.layout.hint") }}</span>
 			<p
 				v-if="autoCount && !phone"

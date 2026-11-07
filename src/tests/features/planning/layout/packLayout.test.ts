@@ -389,8 +389,8 @@ describe("packLayout", () => {
 					cols: 2,
 					items: [
 						{ id: "a", els: ["production"], x: 0, w: 2, y: 0 },
-						{ id: "b", els: ["planet"], x: 1, w: 1, y: 1 },
-						{ id: "c", els: ["empire"], x: 0, w: 1, y: 2 },
+						{ id: "b", els: ["kpi-payback"], x: 1, w: 1, y: 1 },
+						{ id: "c", els: ["kpi-area"], x: 0, w: 1, y: 2 },
 					],
 				},
 				"phone"
@@ -399,7 +399,7 @@ describe("packLayout", () => {
 			expect(phone).toBe(true);
 			expect(items.a).toMatchObject({ x: 0, w: 2, auto: false });
 			expect(items.b).toMatchObject({ x: 1, w: 1, auto: false });
-			// Empire goes up beside Planet: a grid, not a stack
+			// Area goes up beside Payback: a grid, not a stack
 			expect(items.c).toMatchObject({ x: 0, w: 1 });
 			expect(items.c.top).toBe(items.b.top);
 		});

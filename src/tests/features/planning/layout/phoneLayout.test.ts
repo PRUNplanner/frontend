@@ -41,7 +41,7 @@ describe("phoneFromWide", () => {
 				{ id: "b", els: ["planet"], x: 8, w: 4, y: 0, follow: true },
 				{
 					id: "c",
-					els: ["kpi-profit", "kpi-roi"],
+					els: ["kpi-profit", "kpi-payback"],
 					x: 0,
 					w: 4,
 					y: 1,
@@ -53,7 +53,7 @@ describe("phoneFromWide", () => {
 		expect(phone.items.map((i) => i.id)).toEqual(["c", "a", "b"]);
 		expect(phone.items[0]).toMatchObject({
 			pin: true,
-			els: ["kpi-profit", "kpi-roi"],
+			els: ["kpi-profit", "kpi-payback"],
 		});
 		expect(phone.items.some((i) => i.follow)).toBe(false);
 	});
