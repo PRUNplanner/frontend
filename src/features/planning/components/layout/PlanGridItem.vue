@@ -49,6 +49,7 @@
 		folded = false,
 		editing = false,
 		follow = null,
+		summary = "",
 	} = defineProps<{
 		item: GridItem;
 		pos: IPackedItem;
@@ -57,6 +58,8 @@
 		editing?: boolean;
 		// sticks this far from the window's top, sliding at most this far
 		follow?: { top: number; slide: number } | null;
+		// what the part says after its title while folded
+		summary?: string;
 	}>();
 
 	const emit = defineEmits<{
@@ -170,10 +173,21 @@
 					@toggle="(el: ElementId) => emit('tab', el)" />
 				<h2
 					v-else
-					class="flex-1 min-w-0 truncate font-bold text-white"
-					:class="editing ? 'text-sm' : ''">
+					class="min-w-0 truncate font-bold text-white"
+					:class="[
+						editing ? 'text-sm' : '',
+						folded && summary ? 'shrink-0 max-w-2/3' : 'flex-1',
+					]">
 					{{ label(item.els.length > 1 ? active : item.els[0]) }}
 				</h2>
+				<!-- folded, where the part stands: "COGC Metallurgy · 3 permits" -->
+				<span
+					v-if="folded && summary"
+					class="flex-1 min-w-0 truncate pl-1 text-xs text-muted tabular-nums"
+					:title="summary"
+					data-fold-summary>
+					{{ summary }}
+				</span>
 				<slot name="actions" />
 				<!-- the fold chevron at the right end: down to unfold, up to
 				fold, as an accordion reads -->

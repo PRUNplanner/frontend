@@ -50,6 +50,7 @@
 	import { usePlanSharedCopy } from "@/features/planning/usePlanSharedCopy";
 	import { usePlanIO } from "@/features/planning/usePlanIO";
 	import { providePlanView } from "@/features/planning/usePlanView";
+	import { usePlanFoldSummaries } from "@/features/planning/usePlanFoldSummaries";
 	import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
 	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
@@ -456,7 +457,7 @@
 	};
 
 	// what the elements read, wherever the layout puts them
-	providePlanView({
+	const view = providePlanView({
 		calculation,
 		planData: refPlanData,
 		planet: planetData,
@@ -499,6 +500,9 @@
 			table: (el: ElementId) => !!grid.layout.value.table?.includes(el),
 		},
 	});
+
+	// what a folded part says after its title
+	const foldSummaries = usePlanFoldSummaries(view);
 
 	// breadcrumb: the current empire if it holds the plan, else the first
 	const crumbEmpire = computed(() => {
@@ -664,6 +668,7 @@
 				:layout="grid.layout.value"
 				:folded="layoutPref.folded.value"
 				:tabs="grid.tabs"
+				:summaries="foldSummaries"
 				@fold="grid.fold"
 				@tab="grid.showTab" />
 		</div>

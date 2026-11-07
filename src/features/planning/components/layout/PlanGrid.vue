@@ -43,6 +43,7 @@
 		layout,
 		folded,
 		tabs = {},
+		summaries = {},
 		width = undefined,
 		editing = false,
 	} = defineProps<{
@@ -50,6 +51,8 @@
 		folded: ElementId[];
 		// the tab each item shows, when it isn't the stored one
 		tabs?: Record<string, ElementId>;
+		// what a folded part says after its title, per element
+		summaries?: Partial<Record<ElementId, string>>;
 		// a preview width instead of the page's
 		width?: number;
 		editing?: boolean;
@@ -237,6 +240,7 @@
 						:pos="pack.items[it.id]"
 						:active="shownTab(it)"
 						:folded="isFolded(it, foldedSet)"
+						:summary="summaries[shownTab(it)]"
 						:editing="editing"
 						@fold="(v: boolean) => emit('fold', it.els[0], v)"
 						@tab="(el: ElementId) => emit('tab', it.id, el)">
@@ -266,6 +270,7 @@
 				:pos="pack.items[it.id]"
 				:active="shownTab(it)"
 				:folded="isFolded(it, foldedSet)"
+				:summary="summaries[shownTab(it)]"
 				:editing="editing"
 				:follow="followOf(it.id)"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"

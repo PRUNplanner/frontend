@@ -55,7 +55,12 @@ beforeEach(() => {
 });
 
 async function mountGrid(
-	props: { layout?: GridLayout; folded?: ElementId[]; width?: number } = {}
+	props: {
+		layout?: GridLayout;
+		folded?: ElementId[];
+		width?: number;
+		summaries?: Partial<Record<ElementId, string>>;
+	} = {}
 ) {
 	return mountComponent(
 		PlanGrid,
@@ -212,6 +217,23 @@ describe("PlanGrid", () => {
 		expect(box(wrapper, "i-kpi-area").find("[data-fold]").exists()).toBe(
 			false
 		);
+	});
+
+	it("says where a folded part stands after its title, only folded", async () => {
+		const { wrapper } = await mountGrid({
+			folded: ["planet"],
+			summaries: {
+				planet: "COGC METAL · 3 permits",
+				experts: "Agri 1 · Chem 4",
+			},
+		});
+		const line = box(wrapper, "i-planet").find("[data-fold-summary]");
+		expect(line.text()).toBe("COGC METAL · 3 permits");
+		// the whole line on hover, where it is cut short
+		expect(line.attributes("title")).toBe("COGC METAL · 3 permits");
+		expect(
+			box(wrapper, "i-experts").find("[data-fold-summary]").exists()
+		).toBe(false);
 	});
 
 	it("shows a tab group's tabs, mounts a tab when first shown and keeps it", async () => {

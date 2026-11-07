@@ -723,6 +723,7 @@
 		},
 		"planet": {
 			"label": "Planet",
+			"summary": "COGC {cogc} · {n} permit | COGC {cogc} · {n} permits",
 			"area": "area {n}",
 			"resources": "Resources",
 			"add_extractor": "Add {building} for {ticker}",
