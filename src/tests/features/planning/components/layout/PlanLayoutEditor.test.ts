@@ -301,7 +301,7 @@ describe("PlanLayoutEditor", () => {
 			).filter((o) => "type" in o && o.type === "buttons");
 			expect(rows.map((r) => "label" in r && r.label)).toEqual([
 				"Width · 2 of 12 columns",
-				expect.stringContaining("Height · fixed"),
+				expect.stringContaining("Height · at most"),
 				"Move",
 			]);
 
