@@ -37,6 +37,11 @@
 			type: String,
 			required: true,
 		},
+		// while customising the layout: the manual buttons too
+		showAll: {
+			type: Boolean,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -107,7 +112,7 @@
 				</template>
 				{{ t("plan.components.infrastructure.auto_optimize_tooltip") }}
 			</PTooltip>
-			<template v-if="!localAutoOptimizeHabs && !disabled">
+			<template v-if="showAll || (!localAutoOptimizeHabs && !disabled)">
 				<PButton
 					size="sm"
 					type="secondary"
@@ -122,7 +127,8 @@
 				</PButton>
 			</template>
 		</div>
-		<div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm tabular-nums">
+		<div
+			class="grid grid-cols-[repeat(auto-fill,minmax(118px,1fr))] gap-x-4 gap-y-2 text-sm tabular-nums">
 			<div
 				v-for="inf in infrastructureOrder"
 				:key="inf"

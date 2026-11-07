@@ -348,7 +348,7 @@
 		</PButton>
 		<label
 			v-if="!disabled"
-			class="flex items-center gap-2 text-sm text-nowrap cursor-pointer">
+			class="flex items-center gap-2 min-h-6 pointer-coarse:min-h-11 text-sm text-nowrap cursor-pointer">
 			<PCheckbox
 				v-model:checked="localMatchCOGC"
 				:aria-label="t('plan.components.production.form.match_cogc')" />

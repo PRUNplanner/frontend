@@ -32,10 +32,13 @@
 		needWeight: number;
 	}
 
-	type TYPE_FILTER = "all" | "workforce" | "production";
-
 	// Util
 	import { formatNumber, formatAmount, clamp } from "@/util/numbers";
+	import {
+		FILTER_BAR,
+		IO_SOURCES,
+		type IOSource,
+	} from "@/features/planning/planView.util";
 
 	// UI
 	import {
@@ -84,11 +87,12 @@
 	const refSelectedStorage: Ref<string | undefined> = ref(
 		planetStorageId(props.planetNaturalId)
 	);
-	const refTypeFilter: Ref<TYPE_FILTER> = ref("all");
+	const refTypeFilter: Ref<IOSource> = ref("all");
 	const typeOptions = computed(() =>
-		(["all", "workforce", "production"] as const).map((value) => ({
+		// as Material I/O lists them
+		IO_SOURCES.map((value) => ({
 			value,
-			label: t(`plan.tools.supply_cart.buttons.${value}`),
+			label: t(`plan.io.source.${value}`),
 		}))
 	);
 	const localMaterialIO: Ref<ISupplyCartElement[]> = ref([]);
@@ -291,7 +295,7 @@
 		</div>
 
 		<!-- what to supply, for how long, from where -->
-		<div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+		<div :class="FILTER_BAR" class="text-sm">
 			<PSegmented
 				v-model:value="refTypeFilter"
 				size="sm"

@@ -6,6 +6,8 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Util
 import {
+	IO_SOURCES,
+	type IOSource,
 	materialIOCsv,
 	materialIOTotals,
 } from "@/features/planning/planView.util";
@@ -13,7 +15,6 @@ import { downloadFile } from "@/util/download";
 
 // Types & Interfaces
 import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import type { PSelectOption } from "@/ui/ui.types";
 
 /**
  * Plan's Material I/O pane: which flow, which rows and which value per
@@ -29,7 +30,7 @@ export function usePlanIO(
 ) {
 	const { t } = useI18n();
 
-	const refIOSource: Ref<"all" | "production" | "workforce"> = ref("all");
+	const refIOSource: Ref<IOSource> = ref("all");
 	const refIOFilter: Ref<"all" | "exports" | "imports"> = ref("all");
 	const refIOValue: Ref<"price" | "weight" | "volume" | "share"> =
 		ref("price");
@@ -47,11 +48,12 @@ export function usePlanIO(
 	);
 	const ioTotals = computed(() => materialIOTotals(ioRows.value));
 
-	const ioSourceOptions = computed<PSelectOption[]>(() => [
-		{ value: "all", label: t("plan.io.source.all") },
-		{ value: "production", label: t("plan.io.source.production") },
-		{ value: "workforce", label: t("plan.io.source.workforce") },
-	]);
+	const ioSourceOptions = computed(() =>
+		IO_SOURCES.map((value) => ({
+			value,
+			label: t(`plan.io.source.${value}`),
+		}))
+	);
 	const ioFilterOptions = computed(() => [
 		{ value: "all" as const, label: t("plan.io.filter.all") },
 		{ value: "exports" as const, label: t("plan.io.filter.exports") },

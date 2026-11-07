@@ -88,6 +88,7 @@ async function mountCart(
 		planUuid?: string;
 		disabled?: boolean;
 		built?: Record<string, number>;
+		cxUuid?: string;
 	} = {}
 ) {
 	const pinia = createPinia();
@@ -116,7 +117,7 @@ async function mountCart(
 			planetNaturalId: options.planet ?? "ZV-307c",
 			planUuid: options.planUuid,
 			disabled: options.disabled,
-			cxUuid: CX_UUID,
+			cxUuid: "cxUuid" in options ? options.cxUuid : CX_UUID,
 			constructionData: options.construction ?? CONSTRUCTION,
 			productionBuildingData: [{ name: "FRM", amount: 3 }],
 			infrastructureData: { HB1: 1 },
@@ -255,6 +256,17 @@ describe("PlanConstructionCart", () => {
 		expect(materialSums(wrapper)).toEqual(["14", "14", "100"]);
 	});
 
+	it("wraps its two tables by their content, never a 50/50 split", async () => {
+		const { wrapper } = await mountCart();
+		const box = wrapper.find("[data-construction-tables]");
+		expect(box.classes()).toEqual(
+			expect.arrayContaining(["flex", "flex-wrap"])
+		);
+		expect(box.classes().some((c) => c.includes("grid-cols"))).toBe(false);
+		for (const part of box.findAll(":scope > *"))
+			expect(part.classes()).toContain("flex-[1_1_max-content]");
+	});
+
 	it("sums price, weight and volume of all materials", async () => {
 		const { wrapper } = await mountCart();
 
@@ -354,6 +366,69 @@ describe("PlanConstructionCart", () => {
 		release();
 		await flushPromises();
 		expect(summary(wrapper, 0).price).toBe("1,900.00");
+	});
+
+	it("counts an emptied amount as none", async () => {
+		const { wrapper } = await mountCart();
+
+		await buildingRow(wrapper, "FRM").findAll("input")[1].setValue("");
+		await flushPromises();
+
+		expect(buildingRows(wrapper)[1]).toEqual([
+			"FRM",
+			"0",
+			"",
+			"3",
+			"0",
+			"0",
+			"0",
+		]);
+		expect(materialSums(wrapper)).toEqual(["2", "2", "100"]);
+	});
+
+	it("keeps the amount typed for a building the plan doesn't have", async () => {
+		// unknown to the game data too: it houses and needs no one
+		const { wrapper } = await mountCart({
+			construction: [
+				...CONSTRUCTION,
+				{ ticker: "ZZZ", materials: [mat("MCG", 5)], amount: 0 },
+			],
+		});
+		expect(buildingRows(wrapper)[3]).toEqual([
+			"ZZZ",
+			"0",
+			"",
+			"0",
+			"0",
+			"0",
+			"—",
+		]);
+
+		await setBuildingAmount(wrapper, "ZZZ", 2);
+		await setBuilt(wrapper, "ZZZ", "1");
+
+		// nothing planned to subtract the built one from: 2 stay
+		expect(buildingRows(wrapper)[3]).toEqual([
+			"ZZZ",
+			"1",
+			"2",
+			"0",
+			"0",
+			"0",
+			"10",
+		]);
+		// still 150 pioneers for 3 FRM against 100 in one HB1
+		expect(habitationWarning(wrapper)).toBe(true);
+	});
+
+	it("prices from the exchange data without a CX preference", async () => {
+		const { wrapper } = await mountCart({ cxUuid: undefined });
+
+		const totals = summary(wrapper, 0);
+		// not the CX's 3,100.00; weight and volume don't depend on it
+		expect(totals.price).not.toBe("3,100.00");
+		expect(totals.price).not.toBe("0.00");
+		expect(totals).toMatchObject({ weight: "35.20", volume: "28.20" });
 	});
 
 	describe("with FIO", () => {

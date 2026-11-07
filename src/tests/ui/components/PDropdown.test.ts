@@ -5,12 +5,13 @@ import {
 	flushPromises,
 	mount,
 } from "@vue/test-utils";
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h, reactive, ref } from "vue";
 
 import { createI18n } from "vue-i18n";
 
 import PDropdown from "@/ui/components/PDropdown.vue";
 import PModal from "@/ui/components/PModal.vue";
+import PPopover from "@/ui/components/PPopover.vue";
 import type { PDropdownOption } from "@/ui/ui.types";
 
 enableAutoUnmount(afterEach);
@@ -264,5 +265,338 @@ describe("PDropdown", () => {
 		await flushPromises();
 		expect(show.value).toBe(false);
 		anchor.remove();
+	});
+
+	it("keeps the place it moved to when ArrowDown on the trigger comes back to it", async () => {
+		const { trigger, show } = mountDropdown();
+		trigger().element.focus();
+		key("ArrowDown", trigger().element);
+		await flushPromises();
+		key("ArrowDown");
+		await flushPromises();
+		expect(activeLabel()).toBe("Share");
+
+		trigger().element.focus();
+		key("ArrowDown", trigger().element);
+		await flushPromises();
+		expect(show.value).toBe(true);
+		expect(activeLabel()).toBe("Share");
+		expect(document.activeElement).toBe(menu().element);
+	});
+
+	it("opens on no other key on the trigger, closes on Tab, ignores other keys", async () => {
+		const { trigger, show } = mountDropdown();
+		trigger().element.focus();
+		key("Enter", trigger().element);
+		key("a", trigger().element);
+		await flushPromises();
+		expect(show.value).toBe(false);
+
+		await trigger().trigger("click");
+		await flushPromises();
+		key("a");
+		await flushPromises();
+		expect(show.value).toBe(true);
+		key("Tab");
+		await flushPromises();
+		expect(show.value).toBe(false);
+	});
+
+	it("click: hovering neither opens nor closes it", async () => {
+		vi.useFakeTimers();
+		const { trigger, show } = mountDropdown();
+		await trigger().trigger("mouseover");
+		expect(show.value).toBe(false);
+
+		await trigger().trigger("click");
+		await menu().trigger("mouseenter");
+		await menu().trigger("mouseleave");
+		await trigger().trigger("mouseout");
+		vi.advanceTimersByTime(200);
+		expect(show.value).toBe(true);
+	});
+
+	it("hover: closes when the focus leaves for the page, not for the menu", async () => {
+		const { trigger, show, wrapper } = mountDropdown({ trigger: "hover" });
+		trigger().element.focus();
+		await flushPromises();
+		expect(show.value).toBe(true);
+
+		await trigger().trigger("focusout", { relatedTarget: menu().element });
+		expect(show.value).toBe(true);
+		await trigger().trigger("focusout", {
+			relatedTarget: wrapper.find("#outside").element,
+		});
+		expect(show.value).toBe(false);
+	});
+
+	it("manual without an anchor or a trigger: nothing to place it by, no cut", async () => {
+		const wrapper = mount(PDropdown, {
+			props: { options: OPTIONS, trigger: "manual" },
+			attachTo: document.body,
+		});
+		await wrapper.setProps({ show: true });
+		await flushPromises();
+		expect(menu().exists()).toBe(true);
+		expect(menu().attributes("style")).toBeUndefined();
+	});
+});
+
+describe("PDropdown items with a state", () => {
+	const STATEFUL: PDropdownOption[] = [
+		{ type: "group", label: "Width" },
+		{
+			key: "narrower",
+			label: "Narrower",
+			disabled: true,
+			hint: "At its minimum",
+		},
+		{ key: "wider", label: "Wider" },
+		{ key: "pin", label: "Keep in view", checked: true },
+		{ key: "fit", label: "Fit content", checked: false },
+	];
+
+	it("heads a group, checks an on/off item and says why one is disabled", async () => {
+		const { show } = mountDropdown({ options: STATEFUL });
+		show.value = true;
+		await flushPromises();
+
+		expect(menu().find("[role=presentation]").text()).toBe("Width");
+		const all = body().findAll("[role=menuitem], [role=menuitemcheckbox]");
+		expect(all.map((i) => i.attributes("role"))).toEqual([
+			"menuitem",
+			"menuitem",
+			"menuitemcheckbox",
+			"menuitemcheckbox",
+		]);
+		expect(all[0].attributes("aria-disabled")).toBe("true");
+		expect(all[0].text()).toContain("At its minimum");
+		expect(all[2].attributes("aria-checked")).toBe("true");
+		expect(all[2].find("svg").exists()).toBe(true);
+		expect(all[3].attributes("aria-checked")).toBe("false");
+	});
+
+	it("keeps a disabled item from being picked, by click or key", async () => {
+		const { show, onSelect } = mountDropdown({ options: STATEFUL });
+		show.value = true;
+		await flushPromises();
+
+		await body().find("[aria-disabled=true]").trigger("click");
+		key("ArrowDown");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).not.toHaveBeenCalled();
+		expect(show.value).toBe(true);
+
+		key("ArrowDown");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenCalledWith("wider");
+	});
+});
+
+describe("PDropdown rows of buttons", () => {
+	const ROWS: PDropdownOption[] = [
+		{
+			type: "buttons",
+			label: "Width · 3 of 12 columns",
+			buttons: [
+				{ key: "narrower", label: "Narrower", text: "−" },
+				{
+					key: "wider",
+					label: "Wider",
+					text: "+",
+					disabled: true,
+					hint: "Reaches the right edge",
+				},
+			],
+		},
+		{
+			type: "buttons",
+			label: "Height",
+			buttons: [
+				{
+					key: "fit",
+					label: "Fit content",
+					text: "Fit",
+					checked: true,
+				},
+				{
+					key: "cap",
+					label: "At most 480 px",
+					text: "≤ 480",
+					checked: false,
+				},
+			],
+		},
+		{ key: "pin", label: "Pin to top", tip: "Stays at the top" },
+	];
+	const button = (k: string) => body().find<HTMLElement>(`[data-key="${k}"]`);
+
+	it("groups each row, names its buttons and shows the hovered one's reason", async () => {
+		const { show } = mountDropdown({ options: ROWS });
+		show.value = true;
+		await flushPromises();
+
+		const rows = body().findAll("[role=group]");
+		expect(rows.map((r) => r.attributes("aria-label"))).toEqual([
+			"Width · 3 of 12 columns",
+			"Height",
+		]);
+		expect(button("wider").attributes()).toMatchObject({
+			role: "menuitem",
+			"aria-disabled": "true",
+			"aria-label": "Wider. Reaches the right edge",
+		});
+		expect(button("fit").attributes()).toMatchObject({
+			role: "menuitemradio",
+			"aria-checked": "true",
+		});
+		expect(rows[0].text()).toContain("Width · 3 of 12 columns");
+		await button("wider").trigger("mouseenter");
+		expect(rows[0].text()).toContain("Reaches the right edge");
+		await button("narrower").trigger("mouseenter");
+		expect(rows[0].text()).toContain("Narrower");
+		// the plain item's explanation is a tooltip, not a second line
+		expect(body().find("[role=menuitem][title]").attributes("title")).toBe(
+			"Stays at the top"
+		);
+	});
+
+	it("a button picks and keeps the menu open; an item closes it", async () => {
+		const { show, onSelect } = mountDropdown({ options: ROWS });
+		show.value = true;
+		await flushPromises();
+
+		await button("narrower").trigger("click");
+		await button("wider").trigger("click");
+		expect(onSelect.mock.calls).toEqual([["narrower"]]);
+		expect(show.value).toBe(true);
+
+		// the arrows go through the buttons, then the items: the fourth is ≤ 480
+		key("ArrowRight");
+		key("ArrowRight");
+		key("ArrowRight");
+		key("ArrowRight");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenLastCalledWith("cap");
+		expect(show.value).toBe(true);
+		key("ArrowLeft");
+		key("End");
+		key("Enter");
+		await flushPromises();
+		expect(onSelect).toHaveBeenLastCalledWith("pin");
+		expect(show.value).toBe(false);
+	});
+
+	it("shows a button's icon, or its name without a text", async () => {
+		const { show } = mountDropdown({
+			options: [
+				{
+					type: "buttons",
+					label: "Move",
+					buttons: [
+						{ key: "up", label: "Up", icon: () => h("svg") },
+						{ key: "down", label: "Down" },
+					],
+				},
+			],
+		});
+		show.value = true;
+		await flushPromises();
+		expect(button("up").find("svg").exists()).toBe(true);
+		expect(button("down").text()).toBe("Down");
+	});
+});
+
+describe("PDropdown near the window's edge", () => {
+	afterEach(() => vi.restoreAllMocks());
+
+	async function openAt(top: number, height: number) {
+		vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(
+			height
+		);
+		const m = mountDropdown({ placement: "bottom-end" });
+		vi.spyOn(m.trigger().element, "getBoundingClientRect").mockReturnValue(
+			new DOMRect(0, top, 40, 30)
+		);
+		m.show.value = true;
+		await flushPromises();
+		return m;
+	}
+	const placed = (m: ReturnType<typeof mountDropdown>) =>
+		m.wrapper.findComponent(PPopover).props("placement");
+
+	it("opens downward when it fits", async () => {
+		const m = await openAt(100, 300);
+		expect(placed(m)).toBe("bottom-end");
+		expect(menu().attributes("style")).toBeUndefined();
+	});
+
+	it("opens upward when only the room above fits it", async () => {
+		// 768 px window: 24 px below the button, 686 above
+		const m = await openAt(700, 300);
+		expect(placed(m)).toBe("top-end");
+		expect(menu().attributes("style")).toBeUndefined();
+
+		// closed, it starts from the asked side again
+		m.show.value = false;
+		await flushPromises();
+		expect(placed(m)).toBe("bottom-end");
+	});
+
+	it("fitting neither side, takes the larger one and scrolls inside", async () => {
+		// 424 px below, 286 above
+		const m = await openAt(300, 600);
+		expect(placed(m)).toBe("bottom-end");
+		expect(menu().attributes("style")).toContain("max-height: 424px");
+	});
+
+	it("opens upward when asked, downward when only below fits", async () => {
+		vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(
+			300
+		);
+		const m = mountDropdown({ placement: "top" });
+		// 40 px above the button, 698 below
+		vi.spyOn(m.trigger().element, "getBoundingClientRect").mockReturnValue(
+			new DOMRect(0, 40, 40, 30)
+		);
+		m.show.value = true;
+		await flushPromises();
+		expect(placed(m)).toBe("bottom");
+	});
+
+	it("leaves a menu opening to the side where the popover puts it", async () => {
+		const m = mountDropdown({ placement: "right" });
+		m.show.value = true;
+		await flushPromises();
+		expect(placed(m)).toBe("right");
+	});
+
+	it("fits again when its items change while open, not while closed", async () => {
+		const scroll = vi
+			.spyOn(HTMLElement.prototype, "scrollHeight", "get")
+			.mockReturnValue(300);
+		const props = reactive({ placement: "bottom-end", options: OPTIONS });
+		const m = mountDropdown(props);
+		vi.spyOn(m.trigger().element, "getBoundingClientRect").mockReturnValue(
+			new DOMRect(0, 400, 40, 30)
+		);
+		m.show.value = true;
+		await flushPromises();
+		expect(placed(m)).toBe("bottom-end");
+
+		// a longer menu no longer fits the 324 px below, the 386 above: up
+		scroll.mockReturnValue(350);
+		props.options = [...OPTIONS, { key: "more", label: "More" }];
+		await flushPromises();
+		expect(placed(m)).toBe("top-end");
+
+		m.show.value = false;
+		await flushPromises();
+		props.options = OPTIONS;
+		await flushPromises();
+		expect(placed(m)).toBe("bottom-end");
 	});
 });

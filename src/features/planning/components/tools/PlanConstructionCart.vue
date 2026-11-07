@@ -286,16 +286,12 @@
 	});
 
 	function isDeficitHabitationBuilding(ticker: string): boolean {
-		const building = buildingsMap.value[ticker];
-		if (!building?.habitations) return false;
+		const habitations = buildingsMap.value[ticker]?.habitations;
+		if (!habitations) return false;
 
 		return deficitWorkforceTypes.value.some(
 			(workforceType) =>
-				(building.habitations?.[
-					`${workforceType}s` as keyof NonNullable<
-						Building["habitations"]
-					>
-				] ?? 0) > 0
+				habitations[`${workforceType}s` as keyof typeof habitations] > 0
 		);
 	}
 
@@ -312,18 +308,6 @@
 
 		return r;
 	});
-
-	const xitTransferElements: ComputedRef<IXITTransferMaterial[]> = computed(
-		() =>
-			Object.values(totalMaterialsSorted.value)
-				.map((e) => ({
-					ticker: e.ticker,
-					value: e.amount,
-				}))
-				.sort((a, b) =>
-					a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0
-				)
-	);
 
 	const totalMaterialsSorted: ComputedRef<
 		{
@@ -416,7 +400,7 @@
 	watchEffect(() => {
 		const run = startTotal();
 		// the sync part of calculateTotal reads the dependencies
-		void calculateTotal(xitTransferElements.value).then((total) => {
+		void calculateTotal(xitTransferElementsOverview.value).then((total) => {
 			if (run.isCurrent()) totalInformation.value = total;
 		});
 	});
@@ -478,75 +462,146 @@
 			</div>
 		</div>
 
-		<!-- Buildings: built and to build, and what each needs -->
-		<section class="flex flex-col gap-2">
-			<h3 class="font-medium text-ink-strong">
-				{{ $t("plan.tools.construction_cart.sections.buildings") }}
-			</h3>
-			<PTable striped>
-				<thead>
-					<tr>
-						<th>
-							{{
-								$t(
-									"plan.tools.construction_cart.table.building"
-								)
-							}}
-						</th>
-						<th>
-							{{ $t("plan.tools.construction_cart.table.built") }}
-						</th>
-						<th>
-							<div class="inline-flex">
-								<span>{{
+		<!-- the two tables side by side only where both fit at their own
+		width (a wrapping row, no fixed split; owner, 2026-11-07: the materials
+		table scrolled in its half); alone, a table scrolls inside -->
+		<div
+			class="flex flex-wrap gap-x-6 gap-y-3 items-start"
+			data-construction-tables>
+			<!-- Buildings: built and to build, and what each needs -->
+			<section class="flex flex-col gap-2 flex-[1_1_max-content] min-w-0">
+				<h3 class="font-medium text-ink-strong">
+					{{ $t("plan.tools.construction_cart.sections.buildings") }}
+				</h3>
+				<PTable striped>
+					<thead>
+						<tr>
+							<th>
+								{{
 									$t(
-										"plan.tools.construction_cart.table.amount"
+										"plan.tools.construction_cart.table.building"
 									)
-								}}</span>
-								<PTooltip
-									v-if="deficitWorkforceTypes.length > 0">
-									<template #trigger>
-										<PIcon
-											class="text-warning ml-1 relative top-px">
-											<WarningAmberRound />
-										</PIcon>
-									</template>
-									{{
+								}}
+							</th>
+							<th>
+								{{
+									$t(
+										"plan.tools.construction_cart.table.built"
+									)
+								}}
+							</th>
+							<th>
+								<div class="inline-flex">
+									<span>{{
 										$t(
-											"plan.tools.construction_cart.table.habitation_info"
+											"plan.tools.construction_cart.table.amount"
 										)
-									}}
-								</PTooltip>
-							</div>
-						</th>
-						<th>
-							{{
-								$t("plan.tools.construction_cart.table.planned")
-							}}
-						</th>
-						<th
-							v-for="mat in uniqueMaterials"
-							:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
-							class="text-center!">
-							<MaterialTile
-								:key="mat"
-								:ticker="mat"
-								popover-placement="bottom" />
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="building in buildingTicker"
-						:key="`CONSTRUCTIONCART#ROW#${building}`">
-						<th>{{ building }}</th>
-						<th>
-							<div class="flex flex-row items-center gap-x-1">
+									}}</span>
+									<PTooltip
+										v-if="deficitWorkforceTypes.length > 0">
+										<template #trigger>
+											<PIcon
+												class="text-warning ml-1 relative top-px">
+												<WarningAmberRound />
+											</PIcon>
+										</template>
+										{{
+											$t(
+												"plan.tools.construction_cart.table.habitation_info"
+											)
+										}}
+									</PTooltip>
+								</div>
+							</th>
+							<th>
+								{{
+									$t(
+										"plan.tools.construction_cart.table.planned"
+									)
+								}}
+							</th>
+							<th
+								v-for="mat in uniqueMaterials"
+								:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
+								class="text-center!">
+								<MaterialTile
+									:key="mat"
+									:ticker="mat"
+									popover-placement="bottom" />
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="building in buildingTicker"
+							:key="`CONSTRUCTIONCART#ROW#${building}`">
+							<th>{{ building }}</th>
+							<th>
+								<div class="flex flex-row items-center gap-x-1">
+									<PInputNumber
+										:value="getBuilt(building)"
+										:aria-label="
+											$t(
+												'plan.tools.construction_cart.built_label',
+												{ building }
+											)
+										"
+										show-buttons
+										size="sm"
+										class="min-w-20"
+										:status="
+											getBuilt(building) >
+											(plannedBuildings[building] ?? 0)
+												? 'warning'
+												: undefined
+										"
+										:min="0"
+										@update:value="
+											(v) => setBuilt(building, v)
+										" />
+									<template v-if="isManualBuilt(building)">
+										<PTooltip>
+											<template #trigger>
+												<PIcon
+													class="text-muted"
+													role="img"
+													:aria-label="
+														$t(
+															'plan.tools.construction_cart.built_manual'
+														)
+													">
+													<EditSharp />
+												</PIcon>
+											</template>
+											{{
+												$t(
+													"plan.tools.construction_cart.built_manual"
+												)
+											}}
+										</PTooltip>
+										<PButton
+											size="sm"
+											type="ghost"
+											:aria-label="
+												$t(
+													'plan.tools.construction_cart.built_reset',
+													{ building }
+												)
+											"
+											@click="setBuilt(building, null)">
+											<template #icon
+												><RestartAltSharp
+											/></template>
+										</PButton>
+									</template>
+								</div>
+							</th>
+							<th class="border-r!">
 								<PInputNumber
-									:value="getBuilt(building)"
+									:value="localBuildingAmount[building]"
 									:aria-label="
 										$t(
-											'plan.tools.construction_cart.built_label',
+											'plan.tools.construction_cart.amount_label',
 											{ building }
 										)
 									"
@@ -554,280 +609,248 @@
 									size="sm"
 									class="min-w-20"
 									:status="
-										getBuilt(building) >
-										(plannedBuildings[building] ?? 0)
-											? 'warning'
+										isDeficitHabitationBuilding(building)
+											? 'error'
 											: undefined
 									"
 									:min="0"
 									@update:value="
-										(v) => setBuilt(building, v)
+										(v: number | null | undefined) =>
+											(amountOverrides[building] =
+												v ?? null)
 									" />
-								<template v-if="isManualBuilt(building)">
-									<PTooltip>
-										<template #trigger>
-											<PIcon
-												class="text-muted"
-												role="img"
-												:aria-label="
-													$t(
-														'plan.tools.construction_cart.built_manual'
-													)
-												">
-												<EditSharp />
-											</PIcon>
-										</template>
-										{{
-											$t(
-												"plan.tools.construction_cart.built_manual"
-											)
-										}}
-									</PTooltip>
-									<PButton
-										size="sm"
-										type="ghost"
-										:aria-label="
-											$t(
-												'plan.tools.construction_cart.built_reset',
-												{ building }
-											)
-										"
-										@click="setBuilt(building, null)">
-										<template #icon
-											><RestartAltSharp
-										/></template>
-									</PButton>
-								</template>
-							</div>
-						</th>
-						<th class="border-r!">
-							<PInputNumber
-								:value="localBuildingAmount[building]"
-								:aria-label="
-									$t(
-										'plan.tools.construction_cart.amount_label',
-										{ building }
-									)
-								"
-								show-buttons
-								size="sm"
-								class="min-w-20"
-								:status="
-									isDeficitHabitationBuilding(building)
-										? 'error'
-										: undefined
-								"
-								:min="0"
-								@update:value="
-									(v: number | null | undefined) =>
-										(amountOverrides[building] = v ?? null)
-								" />
-						</th>
-						<th>
-							{{ plannedBuildings[building] ?? 0 }}
-						</th>
-						<td
-							v-for="mat in uniqueMaterials"
-							:key="`CONSTRUCTIONCART#COLUMN#${building}#${mat}`"
-							class="text-center">
-							<span
-								:class="
-									!localBuildingMaterials[building][mat]
-										? 'text-muted'
-										: ''
-								">
+							</th>
+							<th>
+								{{ plannedBuildings[building] ?? 0 }}
+							</th>
+							<td
+								v-for="mat in uniqueMaterials"
+								:key="`CONSTRUCTIONCART#COLUMN#${building}#${mat}`"
+								class="text-center">
+								<span
+									:class="
+										!localBuildingMaterials[building][mat]
+											? 'text-muted'
+											: ''
+									">
+									{{
+										formatAmount(
+											localBuildingMaterials[building][
+												mat
+											] ?? 0
+										)
+									}}
+								</span>
+							</td>
+						</tr>
+						<tr class="child:border-t-2! child:border-b-2!">
+							<td :colspan="4">
 								{{
-									formatAmount(
-										localBuildingMaterials[building][mat] ??
-											0
+									$t(
+										"plan.tools.construction_cart.table.materials_sum"
 									)
 								}}
-							</span>
-						</td>
-					</tr>
-					<tr class="child:border-t-2! child:border-b-2!">
-						<td :colspan="4">
+							</td>
+							<td
+								v-for="mat in uniqueMaterials"
+								:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
+								class="text-center font-bold">
+								{{ formatAmount(totalMaterials[mat]) }}
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
+				<dl :class="totalsStrip">
+					<div>
+						<dt>
 							{{
 								$t(
-									"plan.tools.construction_cart.table.materials_sum"
+									"plan.tools.construction_cart.table.total_cost"
 								)
 							}}
-						</td>
-						<td
-							v-for="mat in uniqueMaterials"
-							:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
-							class="text-center font-bold">
-							{{ formatAmount(totalMaterials[mat] ?? 0) }}
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
-			<dl :class="totalsStrip">
-				<div>
-					<dt>
-						{{
-							$t("plan.tools.construction_cart.table.total_cost")
-						}}
-					</dt>
-					<dd class="font-medium text-ink-strong">
-						{{ formatNumber(totalInformation.price) }} ȼ
-					</dd>
-				</div>
-				<div class="@min-[40rem]:ml-auto">
-					<dt>
+						</dt>
+						<dd class="font-medium text-ink-strong">
+							{{ formatNumber(totalInformation.price) }} ȼ
+						</dd>
+					</div>
+					<div class="@min-[40rem]:ml-auto">
+						<dt>
+							{{
+								$t(
+									"plan.tools.construction_cart.table.total_weight"
+								)
+							}}
+						</dt>
+						<dd>{{ formatNumber(totalInformation.weight) }} t</dd>
+					</div>
+					<div>
+						<dt>
+							{{
+								$t(
+									"plan.tools.construction_cart.table.total_volume"
+								)
+							}}
+						</dt>
+						<dd>{{ formatNumber(totalInformation.volume) }} m³</dd>
+					</div>
+				</dl>
+			</section>
+
+			<!-- Materials: what is left to buy after stock and overrides -->
+			<section class="flex flex-col gap-2 flex-[1_1_max-content] min-w-0">
+				<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+					<h3 class="font-medium text-ink-strong">
 						{{
 							$t(
-								"plan.tools.construction_cart.table.total_weight"
+								"plan.tools.construction_cart.sections.materials"
 							)
 						}}
-					</dt>
-					<dd>{{ formatNumber(totalInformation.weight) }} t</dd>
-				</div>
-				<div>
-					<dt>
-						{{
-							$t(
-								"plan.tools.construction_cart.table.total_volume"
-							)
-						}}
-					</dt>
-					<dd>{{ formatNumber(totalInformation.volume) }} m³</dd>
-				</div>
-			</dl>
-		</section>
-
-		<!-- Materials: what is left to buy after stock and overrides -->
-		<section class="flex flex-col gap-2">
-			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-				<h3 class="font-medium text-ink-strong">
-					{{ $t("plan.tools.construction_cart.sections.materials") }}
-				</h3>
-				<div class="ml-auto flex flex-wrap items-center gap-2">
-					<label
-						v-if="hasStorage && storageOptions"
-						class="flex items-center gap-2 text-sm text-muted-strong">
-						{{ $t("plan.tools.construction_cart.table.storage") }}
-						<PSelect
-							v-model:value="refSelectedStorage"
-							:aria-label="
-								$t('plan.tools.construction_cart.table.storage')
-							"
-							size="sm"
-							searchable
-							:options="storageOptions"
-							class="w-56!" />
-					</label>
-					<XITTransferActionButton
-						source="construction_cart_need"
-						:elements="xitTransferElementsNeed"
-						transfer-name="Construct"
-						:drawer-width="400" />
-				</div>
-			</div>
-
-			<PTable striped>
-				<thead>
-					<tr>
-						<th>
+					</h3>
+					<div class="ml-auto flex flex-wrap items-center gap-2">
+						<label
+							v-if="hasStorage && storageOptions"
+							class="flex items-center gap-2 text-sm text-muted-strong">
 							{{
-								$t(
-									"plan.tools.construction_cart.table.material"
-								)
+								$t("plan.tools.construction_cart.table.storage")
 							}}
-						</th>
-						<th class="numeric">
-							{{
-								$t("plan.tools.construction_cart.table.amount")
-							}}
-						</th>
-						<th v-if="hasStorage" class="numeric">
-							{{ $t("plan.tools.construction_cart.table.stock") }}
-						</th>
-						<th>
-							{{
-								$t(
-									"plan.tools.construction_cart.table.stock_override"
-								)
-							}}
-						</th>
-						<th class="numeric">
-							{{ $t("plan.tools.construction_cart.table.need") }}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr
-						v-for="material in totalMaterialsSorted"
-						:key="material.ticker">
-						<td>
-							<MaterialTile
-								:key="`CONSTRUCTION#MATERIAL#${material.ticker}`"
-								:ticker="material.ticker" />
-						</td>
-						<td class="numeric">
-							{{ formatAmount(material.amount) }}
-						</td>
-						<td v-if="hasStorage" class="numeric">
-							{{ formatAmount(material.stock) }}
-						</td>
-						<td>
-							<PInputNumber
-								v-model:value="
-									refStorageOverride[material.ticker]
-								"
+							<PSelect
+								v-model:value="refSelectedStorage"
 								:aria-label="
 									$t(
-										'plan.tools.construction_cart.override_label',
-										{ ticker: material.ticker }
+										'plan.tools.construction_cart.table.storage'
 									)
 								"
-								placeholder=""
-								show-buttons
-								:min="0"
-								class="max-w-50" />
-						</td>
-						<td class="numeric">
-							{{ formatAmount(material.total) }}
-						</td>
-					</tr>
-				</tbody>
-			</PTable>
-			<dl :class="totalsStrip">
-				<div>
-					<dt>
-						{{
-							$t("plan.tools.construction_cart.table.total_cost")
-						}}
-					</dt>
-					<dd class="font-medium text-ink-strong">
-						{{ formatNumber(overviewTotalInformation.price) }} ȼ
-					</dd>
+								size="sm"
+								searchable
+								:options="storageOptions"
+								class="w-56!" />
+						</label>
+						<XITTransferActionButton
+							source="construction_cart_need"
+							:elements="xitTransferElementsNeed"
+							transfer-name="Construct"
+							:drawer-width="400" />
+					</div>
 				</div>
-				<div class="@min-[40rem]:ml-auto">
-					<dt>
-						{{
-							$t(
-								"plan.tools.construction_cart.table.total_weight"
-							)
-						}}
-					</dt>
-					<dd>
-						{{ formatNumber(overviewTotalInformation.weight) }} t
-					</dd>
-				</div>
-				<div>
-					<dt>
-						{{
-							$t(
-								"plan.tools.construction_cart.table.total_volume"
-							)
-						}}
-					</dt>
-					<dd>
-						{{ formatNumber(overviewTotalInformation.volume) }} m³
-					</dd>
-				</div>
-			</dl>
-		</section>
+
+				<PTable striped>
+					<thead>
+						<tr>
+							<th>
+								{{
+									$t(
+										"plan.tools.construction_cart.table.material"
+									)
+								}}
+							</th>
+							<th class="numeric">
+								{{
+									$t(
+										"plan.tools.construction_cart.table.amount"
+									)
+								}}
+							</th>
+							<th v-if="hasStorage" class="numeric">
+								{{
+									$t(
+										"plan.tools.construction_cart.table.stock"
+									)
+								}}
+							</th>
+							<th>
+								{{
+									$t(
+										"plan.tools.construction_cart.table.stock_override"
+									)
+								}}
+							</th>
+							<th class="numeric">
+								{{
+									$t(
+										"plan.tools.construction_cart.table.need"
+									)
+								}}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="material in totalMaterialsSorted"
+							:key="material.ticker">
+							<td>
+								<MaterialTile
+									:key="`CONSTRUCTION#MATERIAL#${material.ticker}`"
+									:ticker="material.ticker" />
+							</td>
+							<td class="numeric">
+								{{ formatAmount(material.amount) }}
+							</td>
+							<td v-if="hasStorage" class="numeric">
+								{{ formatAmount(material.stock) }}
+							</td>
+							<td>
+								<PInputNumber
+									v-model:value="
+										refStorageOverride[material.ticker]
+									"
+									:aria-label="
+										$t(
+											'plan.tools.construction_cart.override_label',
+											{ ticker: material.ticker }
+										)
+									"
+									placeholder=""
+									show-buttons
+									:min="0"
+									class="max-w-50" />
+							</td>
+							<td class="numeric">
+								{{ formatAmount(material.total) }}
+							</td>
+						</tr>
+					</tbody>
+				</PTable>
+				<dl :class="totalsStrip">
+					<div>
+						<dt>
+							{{
+								$t(
+									"plan.tools.construction_cart.table.total_cost"
+								)
+							}}
+						</dt>
+						<dd class="font-medium text-ink-strong">
+							{{ formatNumber(overviewTotalInformation.price) }} ȼ
+						</dd>
+					</div>
+					<div class="@min-[40rem]:ml-auto">
+						<dt>
+							{{
+								$t(
+									"plan.tools.construction_cart.table.total_weight"
+								)
+							}}
+						</dt>
+						<dd>
+							{{ formatNumber(overviewTotalInformation.weight) }}
+							t
+						</dd>
+					</div>
+					<div>
+						<dt>
+							{{
+								$t(
+									"plan.tools.construction_cart.table.total_volume"
+								)
+							}}
+						</dt>
+						<dd>
+							{{ formatNumber(overviewTotalInformation.volume) }}
+							m³
+						</dd>
+					</div>
+				</dl>
+			</section>
+		</div>
 	</div>
 </template>

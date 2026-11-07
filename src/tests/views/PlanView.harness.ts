@@ -142,6 +142,7 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),
 	trackEvent: vi.fn(),
 	flushPlanEdits: vi.fn(),
+	trackUser: vi.fn(),
 }));
 vi.mock("@/features/planning/calculations/habOptimization", async (orig) => {
 	const actual =
@@ -317,10 +318,10 @@ export function debugMeta(wrapper: VueWrapper) {
 	return wrapper.findComponent({ name: "PlanCalcDebug" }).props("meta");
 }
 
-// the production list stays mounted under a tool, v-show hides it
+// the production list stays mounted under another tab, v-show hides it
 export const productionShown = (wrapper: VueWrapper): boolean =>
-	(wrapper.find("[data-production]").element as HTMLElement).style.display !==
-	"none";
+	(wrapper.find("[data-tab-body='production']").element as HTMLElement).style
+		.display !== "none";
 
 /** Catches a file download: returns the spy on the link's click */
 export function stubDownload() {

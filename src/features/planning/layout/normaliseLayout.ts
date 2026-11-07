@@ -1,0 +1,318 @@
+// Types & Interfaces
+import type {
+	Arrangement,
+	ElementId,
+	FoldedByArrangement,
+	GridItem,
+	GridLayout,
+	HeightMode,
+	ICustomLayout,
+	JoinSide,
+} from "@/features/planning/layout/planLayout.types";
+
+// Util
+import {
+	COLS_MAX,
+	COLS_MIN,
+	GAPS,
+	H_MAX,
+	H_MIN,
+	MAX_ELEMENTS,
+	PHONE_COLS,
+} from "@/features/planning/layout/planLayout.constants";
+import {
+	ELEMENT_IDS,
+	ELEMENTS,
+	isElementId,
+	LAUNCH_ELEMENTS,
+	OPENABLE,
+	TABLE_VIEW,
+} from "@/features/planning/layout/elements";
+import { tidyJoin } from "@/features/planning/layout/tabs";
+
+const HEIGHT_MODES: HeightMode[] = ["fit", "cap", "fixed"];
+const JOIN_SIDES: JoinSide[] = ["below", "beside"];
+
+const clamp = (v: number, lo: number, hi: number): number =>
+	Math.min(hi, Math.max(lo, v));
+
+const num = (v: unknown, fallback: number): number =>
+	typeof v === "number" && Number.isFinite(v) ? v : fallback;
+
+/**
+ * Renumbers `y` 0…n in reading order: the kept-in-view band first, then
+ * the page, each by y, then x, keeping the order of items that tie
+ *
+ * @param {GridItem[]} items Items, changed in place
+ * @returns {GridItem[]} The items sorted
+ */
+export function renumber(items: GridItem[]): GridItem[] {
+	const sorted = items
+		.map((it, i) => ({ it, i }))
+		.sort(
+			(a, b) =>
+				Number(b.it.pin) - Number(a.it.pin) ||
+				a.it.y - b.it.y ||
+				a.it.x - b.it.x ||
+				a.i - b.i
+		)
+		.map(({ it }) => it);
+	sorted.forEach((it, i) => (it.y = i));
+	return sorted;
+}
+
+/** A free item id: `i-<element>`, or with a number when taken */
+export function freeItemId(items: GridItem[], el: ElementId): string {
+	const taken = new Set(items.map((i) => i.id));
+	let id = `i-${el}`;
+	for (let n = 2; taken.has(id); n++) id = `i-${el}-${n}`;
+	return id;
+}
+
+/** A height: 0, or 64–4000 px */
+const height = (v: unknown): number => {
+	const h = Math.round(num(v, 0));
+	return h <= 0 ? 0 : clamp(h, H_MIN, H_MAX);
+};
+
+/**
+ * A layout as the grid can use it, from whatever was stored: drops unknown
+ * and duplicate elements, keeps Production, clamps columns, widths and
+ * heights to the limits, makes `active` one of the item's tabs and
+ * renumbers `y` in reading order; keeps the elements shown everything
+ * open or as a table that can be. Elements missing from it count as hidden,
+ * except Production, which is added at the bottom. Normalising twice
+ * changes nothing.
+ * @author jplacht
+ *
+ * The phone arrangement always has two columns and nothing follows while
+ * scrolling there.
+ *
+ * @param {unknown} input Layout, possibly broken
+ * @param {Arrangement} arrangement Wide (4–24 columns) or phone (2)
+ * @returns {GridLayout} Valid layout
+ */
+export function normaliseLayout(
+	input: unknown,
+	arrangement: Arrangement = "wide"
+): GridLayout {
+	const raw = (input ?? {}) as Partial<Record<keyof GridLayout, unknown>>;
+	const phone = arrangement === "phone";
+	const cols = phone
+		? PHONE_COLS
+		: clamp(Math.round(num(raw.cols, 12)), COLS_MIN, COLS_MAX);
+	const gapIn = num(raw.gap, 16);
+	const gap = GAPS.reduce((best, g) =>
+		Math.abs(g - gapIn) < Math.abs(best - gapIn) ? g : best
+	);
+
+	const seen = new Set<ElementId>();
+	const items: GridItem[] = [];
+	for (const r of Array.isArray(raw.items) ? raw.items : []) {
+		const it = (r ?? {}) as Partial<Record<keyof GridItem, unknown>>;
+		const els: ElementId[] = [];
+		for (const e of Array.isArray(it.els) ? it.els : [])
+			if (isElementId(e) && !seen.has(e) && seen.size < MAX_ELEMENTS) {
+				seen.add(e);
+				els.push(e);
+			}
+		if (!els.length) continue;
+		const w = clamp(Math.round(num(it.w, cols)), 1, cols);
+		const hm = HEIGHT_MODES.includes(it.hm as HeightMode)
+			? (it.hm as HeightMode)
+			: "fit";
+		const id =
+			typeof it.id === "string" &&
+			it.id &&
+			!items.some((o) => o.id === it.id)
+				? it.id
+				: freeItemId(items, els[0]);
+		// two parts in one tab: known sides of its own elements, tidied below
+		const join: Partial<Record<ElementId, JoinSide>> = {};
+		if (it.join && typeof it.join === "object")
+			for (const [e, side] of Object.entries(it.join))
+				if (
+					els.includes(e as ElementId) &&
+					JOIN_SIDES.includes(side as JoinSide)
+				)
+					join[e as ElementId] = side as JoinSide;
+		// and how they share it: numbers for known joins, fitted by tidyJoin
+		const joinSize: Partial<Record<ElementId, number>> = {};
+		if (it.joinSize && typeof it.joinSize === "object")
+			for (const [e, n] of Object.entries(it.joinSize))
+				if (join[e as ElementId] && Number.isFinite(n))
+					joinSize[e as ElementId] = Math.round(n as number);
+		const item: GridItem = {
+			id,
+			els,
+			active: els.includes(it.active as ElementId)
+				? (it.active as ElementId)
+				: els[0],
+			x: clamp(Math.round(num(it.x, 0)), 0, cols - w),
+			w,
+			y: num(it.y, Number.MAX_SAFE_INTEGER),
+			hm,
+			h: height(it.h),
+			pin: it.pin === true,
+			// pinned parts are in the band: following means nothing there
+			...(it.follow === true &&
+				it.pin !== true &&
+				!phone && { follow: true }),
+			join,
+			joinSize,
+		};
+		items.push(tidyJoin(item));
+	}
+
+	// Production can't be hidden
+	for (const el of Object.keys(ELEMENTS) as ElementId[])
+		if (ELEMENTS[el].required && !seen.has(el))
+			items.push({
+				id: freeItemId(items, el),
+				els: [el],
+				active: el,
+				x: 0,
+				w: cols,
+				y: Number.MAX_SAFE_INTEGER,
+				hm: "fit",
+				h: 0,
+				pin: false,
+			});
+
+	const open = normaliseFolded(raw.open).filter((e) => OPENABLE.includes(e));
+	const table = normaliseFolded(raw.table).filter((e) =>
+		TABLE_VIEW.includes(e)
+	);
+	return {
+		cols,
+		gap,
+		items: renumber(items),
+		...(open.length && { open }),
+		...(table.length && { table }),
+	};
+}
+
+/**
+ * Folded element ids as stored: known ids, each once
+ *
+ * @param {unknown} input Stored list
+ * @returns {ElementId[]} Folded elements
+ */
+function normaliseFolded(input: unknown): ElementId[] {
+	return [
+		...new Set((Array.isArray(input) ? input : []).filter(isElementId)),
+	];
+}
+
+/**
+ * A copy of a layout; unlike structuredClone it takes Vue's reactive
+ * proxies too
+ *
+ * @param {GridLayout} layout Layout
+ * @returns {GridLayout} Copy
+ */
+export const cloneLayout = (layout: GridLayout): GridLayout => ({
+	cols: layout.cols,
+	gap: layout.gap,
+	items: layout.items.map((i) => ({
+		...i,
+		els: [...i.els],
+		...(i.join && { join: { ...i.join } }),
+		...(i.joinSize && { joinSize: { ...i.joinSize } }),
+	})),
+	...(layout.open && { open: [...layout.open] }),
+	...(layout.table && { table: [...layout.table] }),
+});
+
+/**
+ * Custom Layout as stored, fixed up: Wide and, when there is one, Phone
+ * normalised; `known` kept when it is a list. The shape before the phone
+ * arrangement (2026-11-07: a grid of its own) reads as its Wide.
+ *
+ * @param {unknown} input Stored custom layout
+ * @returns {ICustomLayout} Valid custom layout
+ */
+export function normaliseCustom(input: unknown): ICustomLayout {
+	const raw = (input ?? {}) as Record<string, unknown>;
+	if (!("wide" in raw)) return { wide: normaliseLayout(raw) };
+	return {
+		wide: normaliseLayout(raw.wide),
+		...(raw.phone !== undefined &&
+			raw.phone !== null && {
+				phone: normaliseLayout(raw.phone, "phone"),
+			}),
+		...(Array.isArray(raw.known) && { known: normaliseFolded(raw.known) }),
+	};
+}
+
+/**
+ * Folded parts per arrangement as stored; a plain list (before the phone
+ * arrangement) is Wide's
+ *
+ * @param {unknown} input Stored folded parts
+ * @returns {FoldedByArrangement} Folded parts of Wide and Phone
+ */
+export function normaliseFoldedBy(input: unknown): FoldedByArrangement {
+	if (Array.isArray(input))
+		return { wide: normaliseFolded(input), phone: [] };
+	const raw = (input ?? {}) as Record<string, unknown>;
+	return {
+		wide: normaliseFolded(raw.wide),
+		phone: normaliseFolded(raw.phone),
+	};
+}
+
+/**
+ * Elements of the catalogue a custom layout hasn't seen: not in its
+ * `known` (not set: the elements there were at launch)
+ *
+ * @param {ICustomLayout} custom Custom Layout
+ * @returns {ElementId[]} New elements
+ */
+function newElements(custom: ICustomLayout): ElementId[] {
+	const known = new Set(custom.known ?? LAUNCH_ELEMENTS);
+	return ELEMENT_IDS.filter((e) => !known.has(e));
+}
+
+/**
+ * Custom Layout with its new elements at the bottom of Wide and of Phone
+ * (full width, fitting their content), all of them known from now on;
+ * an element already placed stays where it is
+ *
+ * @param {ICustomLayout} custom Custom Layout
+ * @returns {{ custom: ICustomLayout; added: ElementId[] }} The layout, and what was added
+ */
+export function addNewElements(custom: ICustomLayout): {
+	custom: ICustomLayout;
+	added: ElementId[];
+} {
+	const fresh = newElements(custom);
+	const place = (g: GridLayout): GridLayout => {
+		const items = [...g.items];
+		for (const el of fresh) {
+			if (items.some((i) => i.els.includes(el))) continue;
+			items.push({
+				id: freeItemId(items, el),
+				els: [el],
+				active: el,
+				x: 0,
+				w: g.cols,
+				y: Number.MAX_SAFE_INTEGER,
+				hm: "fit",
+				h: 0,
+				pin: false,
+			});
+		}
+		return { ...g, items: renumber(items) };
+	};
+	return {
+		custom: {
+			wide: fresh.length ? place(custom.wide) : custom.wide,
+			...(custom.phone && {
+				phone: fresh.length ? place(custom.phone) : custom.phone,
+			}),
+			known: [...ELEMENT_IDS],
+		},
+		added: fresh,
+	};
+}

@@ -45,6 +45,11 @@
 			required: false,
 			default: () => [],
 		},
+		// while customising the layout: every field, no toggle
+		showAll: {
+			type: Boolean,
+			default: false,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -74,7 +79,9 @@
 	);
 	const refShowMore: Ref<boolean> = ref(false);
 	const shown: ComputedRef<IExpertElement[]> = computed(() =>
-		refShowMore.value ? [...used.value, ...more.value] : used.value
+		props.showAll || refShowMore.value
+			? [...used.value, ...more.value]
+			: used.value
 	);
 
 	function update(expert: ExpertType, value: number): void {
@@ -99,8 +106,10 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-2 tabular-nums">
-		<PNotice v-if="totalExperts > 6" type="warning">
+	<!-- wider: 2 experts per line from about 450 px, 3 from 680 -->
+	<div
+		class="grid grid-cols-[repeat(auto-fill,minmax(min(210px,100%),1fr))] gap-x-6 gap-y-2 tabular-nums">
+		<PNotice v-if="totalExperts > 6" type="warning" class="col-span-full">
 			{{
 				t("plan.components.experts.warning", {
 					expert_number: totalExperts,
@@ -151,9 +160,9 @@
 				" />
 		</div>
 		<button
-			v-if="more.length > 0"
+			v-if="more.length > 0 && !showAll"
 			type="button"
-			class="self-start min-h-6 pointer-coarse:min-h-11 text-xs text-muted-strong hover:text-white cursor-pointer"
+			class="col-span-full justify-self-start min-h-6 pointer-coarse:min-h-11 text-xs text-muted-strong hover:text-white cursor-pointer"
 			:aria-expanded="refShowMore ? 'true' : 'false'"
 			@click="refShowMore = !refShowMore">
 			{{

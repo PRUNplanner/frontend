@@ -1,4 +1,6 @@
 import type { ResultTile } from "@/features/planning/planView.util";
+import type { ElementId } from "@/features/planning/layout/planLayout.types";
+import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
 import type { HomepageTourName } from "@/features/homepage/homepageTour.types";
 import type {
 	NavArea,
@@ -30,6 +32,19 @@ import type {
 	APIEndpointFormat,
 	APISnippetKind,
 } from "@/features/api_keys/apiEndpoints.types";
+
+// what one round of customising changed, counted by how: dragged, from
+// the ⋯ menu, by the keyboard, or a title bar's button
+interface ILayoutSessionProperties {
+	change_count: number;
+	drag_count: number;
+	menu_count: number;
+	key_count: number;
+	button_count: number;
+	// resizes that snapped to an edge, a height or the content
+	snapped_count: number;
+	undo_count: number;
+}
 
 export type PlanEditField =
 	| "building_add"
@@ -286,13 +301,36 @@ export interface IAnalyticsEventProperties {
 	};
 	"plan:recipe_picker_open": { mode: "change" | "add" };
 	"plan:recipe_picker_undo": undefined;
-	"plan:panel_fold": { panel: "base" | "io"; folded: boolean };
-	"plan:overlay_open": { panel: "base" | "io" };
-	// a results bar tile clicked, opening where its figure comes from
+	// an item of the plan grid folded or unfolded, by its first element
+	"plan:panel_fold": { panel: ElementId; folded: boolean };
+	// a results tile clicked, opening where its figure comes from
 	"plan:result_tile_open": { tile: ResultTile };
 	// the tiers the plan needs no workers of shown or hidden in Base
 	"plan:workforce_unneeded_toggle": { is_shown: boolean };
-	"plan:section_view": { section: "production" | "base" | "io" | "tools" };
+	// the plan layout picked from the Layout menu
+	"plan:layout_preset": { preset: LayoutChoice };
+	"plan:layout_customise_open": { from: "preset" | "custom" };
+	"plan:layout_save": ILayoutSessionProperties & {
+		item_count: number;
+		// items with more than one tab
+		tab_group_count: number;
+		// items with two parts in one tab
+		joined_count: number;
+		// of those, the ones sized by hand (columns or px)
+		joined_sized_count: number;
+		kept_in_view_count: number;
+		hidden_count: number;
+		hidden_elements: ElementId[];
+		column_count: number;
+		gap_px: number;
+		// saved over an existing Custom Layout
+		is_replacing: boolean;
+		// Phone arranged by hand, not automatic
+		has_phone_layout: boolean;
+		store: "session";
+	};
+	"plan:layout_cancel": ILayoutSessionProperties;
+	"plan:layout_tint_toggle": { is_active: boolean };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";
 		filter: "all" | "exports" | "imports";

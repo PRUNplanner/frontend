@@ -112,7 +112,7 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:shared_copy_changes` | `planet_natural_id`, `change_count` | change summary copied |
 | `plan:share_create` | | |
 | `plan:share_delete` | | |
-| `plan:tool_toggle` | `panel` (panel key, e.g. `construction-cart`) | a tool panel opened |
+| `plan:tool_toggle` | `panel` (panel key, e.g. `construction-cart`) | a tab of a plan grid item shown |
 | `plan:profit_breakdown_mode` | `mode` (`cost_type`, `building`) | |
 | `plan:plancheck_change` | `view` (`market`, `sensitivity`, `compare`), `pct` (on a price change only) | Plan check view or price change switched |
 | `plan:plancheck_compare` | `same_planet` | Plan check compared with another plan |
@@ -123,11 +123,14 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:recipe_picker_open` | `mode` (`change`, `add`) | the pick itself is a `plan:edit` |
 | `plan:recipe_picker_undo` | | Undo after a picked recipe |
 | `plan:recipe_picker_sort` | `sort` (`daily`, `popular`) | |
-| `plan:panel_fold` | `panel` (`base`, `io`), `folded` | a side pane folded or unfolded by hand |
-| `plan:overlay_open` | `panel` (`base`, `io`) | pane opened as an overlay on narrow pages |
-| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results bar tile clicked |
+| `plan:panel_fold` | `panel` (the item's first element id, e.g. `planet`), `folded` | a plan grid item folded or unfolded |
+| `plan:result_tile_open` | `tile` (`profit`, `payback`, `area`, `storage`, `workforce`) | a results tile clicked |
 | `plan:workforce_unneeded_toggle` | `is_shown` | unneeded workforce tiers shown / hidden |
-| `plan:section_view` | `section` (`production`, `base`, `io`, `tools`) | phone switched section |
+| `plan:layout_preset` | `preset` (`standard`, `custom`) | a layout picked in the Layout menu |
+| `plan:layout_tint_toggle` | `is_active` | Tinted parts turned on or off while customising |
+| `plan:layout_customise_open` | `from` (`preset`, `custom`) | customise mode opened |
+| `plan:layout_save` | the round's counts (below), `item_count`, `tab_group_count` (items with more than one tab), `joined_count` (items with two parts in one tab), `joined_sized_count` (of those, sized by hand), `kept_in_view_count`, `hidden_count`, `hidden_elements` (element ids, e.g. `experts`), `column_count`, `gap_px`, `is_replacing` (over an existing Custom Layout), `has_phone_layout` (Phone arranged by hand, not automatic), `store` (`session`) | Custom Layout saved |
+| `plan:layout_cancel` | the round's counts (below) | customise mode left without saving |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | any of the three switched |
 | `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | typical-setup card shown, once per plan view |
@@ -147,6 +150,13 @@ amount, and sets `is_shared` on `/shared/…` URLs. `is_from_popular`
 (`building_add`) and `is_most_planned` (`recipe_add`, `recipe_change`) are
 only sent while plan suggestions are on. `recipe_mix_add` has `amount` =
 recipes added.
+
+Plan layout: one round of customising sends one event, `plan:layout_save`
+or `plan:layout_cancel`, with what it changed: `change_count` (changes
+left after undos), `drag_count`, `menu_count`, `key_count`, `button_count`
+(a title bar's hide button), `snapped_count` (resizes that snapped) and
+`undo_count`. Single moves and resizes are not sent. Screen width comes
+with every event (`$viewport_width`), so saves break down by screen size.
 
 ### Planet, empire, management, exchanges, materials
 
@@ -261,6 +271,7 @@ before a consent grant is sent once PostHog starts.
 | `username`, `prun_username`, `is_fio_enabled`, `has_verified_email` | the profile (`identifyUser`) |
 | `language`, `color_palette`, `navigation_style`, `market_card_trigger`, `is_plan_suggestions_enabled`, `has_default_empire`, `has_default_cx`, `is_buy_from_cx_default`, `burn_days_red`, `burn_days_yellow`, `burn_resupply_days`, `burn_origin`, `supply_cart_days`, `fio_repair_interval_days`, `fio_repair_due_soon_days`, `fio_repair_arrival_days`, `fio_repair_plan_link_count`, `plan_override_count`, `email_nudge_dismissal`, `email_nudge_dismissed_at` | preferences, on load and each sync (`trackPreferences` in `user.queries.ts`); ids only as `has_*`, maps as counts |
 | `plan_count`, `empire_count`, `cx_count` | `usePlanningDataLoader` |
+| `plan_layout` (`standard`, `custom`), `is_plan_parts_tinted` | the plan page, on open and on each change (`PlanView`) |
 
 Properties set before identify are held and sent with it (person profiles
 are identified-only); unchanged values are not resent.

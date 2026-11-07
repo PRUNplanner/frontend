@@ -5,9 +5,11 @@
 		defineAsyncComponent,
 		nextTick,
 		onMounted,
+		onUnmounted,
 		ref,
 		type Ref,
 		useTemplateRef,
+		watch,
 	} from "vue";
 
 	import { useI18n } from "vue-i18n";
@@ -27,6 +29,8 @@
 	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
 	import type { IPlanViewProps } from "@/features/planning/planView.types";
 	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
+	import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
+	import type { ElementId } from "@/features/planning/layout/planLayout.types";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -45,11 +49,14 @@
 	import { usePlanShortcuts } from "@/features/planning/usePlanShortcuts";
 	import { usePlanEdits } from "@/features/planning/usePlanEdits";
 	import { usePlanSharedCopy } from "@/features/planning/usePlanSharedCopy";
-	import { usePlanLayout } from "@/features/planning/usePlanLayout";
 	import { usePlanIO } from "@/features/planning/usePlanIO";
-	import { cogcTextMapping } from "@/features/planning_data/usePlan";
+	import { providePlanView } from "@/features/planning/usePlanView";
+	import { usePlanFoldSummaries } from "@/features/planning/usePlanFoldSummaries";
+	import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
+	import { PHONE_WIDTH } from "@/features/planning/layout/planLayout.constants";
+	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
+	import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
 	import { calcDebug } from "@/lib/debugMode";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
 	const { cachedProfitPerArea } = useEmpireProfits();
@@ -64,18 +71,21 @@
 	} from "@/layout/components/navigation/navigation.util";
 
 	// Components
-	import PlanBase from "@/features/planning/components/PlanBase.vue";
-	import PlanProduction from "@/features/planning/components/PlanProduction.vue";
-	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
-	import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
 	import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";
 	import PlanVersionPreviewBanner from "@/features/planning/components/PlanVersionPreviewBanner.vue";
 	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
-	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
-	import PlanToolFallback from "@/features/planning/components/PlanToolFallback.vue";
+	import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
+	import PlanLayoutMenu from "@/features/planning/components/layout/PlanLayoutMenu.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
+	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
+	import { elementView } from "@/features/planning/layout/elementComponents";
+	import { ELEMENTS } from "@/features/planning/layout/elements";
+	const PlanLayoutEditor = defineAsyncComponent(
+		() =>
+			import("@/features/planning/components/layout/PlanLayoutEditor.vue")
+	);
 	const SaveConflictDialog = defineAsyncComponent(
 		() =>
 			import("@/features/save_conflict/components/SaveConflictDialog.vue")
@@ -91,24 +101,15 @@
 	// UI
 	import {
 		PButton,
-		PIcon,
 		PForm,
 		PFormItem,
 		PInput,
 		PModal,
-		PSegmented,
 		PSelect,
 		PTooltip,
-		PValue,
+		useToast,
 	} from "@/ui";
-	import {
-		ChangeCircleOutlined,
-		ChevronLeftSharp,
-		ChevronRightSharp,
-		CloseSharp,
-		EditSharp,
-		MenuOpenSharp,
-	} from "@vicons/material";
+	import { ChangeCircleOutlined, EditSharp } from "@vicons/material";
 
 	const props = defineProps<IPlanViewProps>();
 
@@ -142,22 +143,10 @@
 		backendData,
 		computedActiveEmpire,
 		planEmpires,
-		visitationData,
 		overviewData,
 		savedAt,
 		canUndo,
 		canRedo,
-		handleUpdateCorpHQ,
-		handleUpdateCOGC,
-		handleUpdatePermits,
-		handleUpdateWorkforceLux,
-		handleUpdateInfrastructure,
-		handleUpdateExpert,
-		handleUpdateBuildingAmount,
-		handleCreateBuilding,
-		handleCreateBuildingAndRecipe,
-		handleUpdateBuildingRecipeAmount,
-		handleAddBuildingRecipes,
 		handleChangePlanName,
 		traceCalculation,
 	} = calculation;
@@ -179,17 +168,11 @@
 	}));
 
 	// Material I/O pane: flow, rows, value per day and the CSV
-	const {
-		refIOSource,
-		refIOFilter,
-		refIOValue,
-		ioRows,
-		ioTotals,
-		ioSourceOptions,
-		ioFilterOptions,
-		ioValueOptions,
-		downloadMaterialIO,
-	} = usePlanIO(result, () => planName.value || planetData.planet_natural_id);
+	const planIO = usePlanIO(
+		result,
+		() => planName.value || planetData.planet_natural_id
+	);
+	const { downloadMaterialIO } = planIO;
 
 	// Plan Preferences
 	const { autoOptimizeHabs } = usePlanPreferences(() => props.planData.uuid);
@@ -328,25 +311,22 @@
 			openSaveAsModal,
 			openSaveMenu: () => (refShowSaveMenu.value = true),
 			readOnly: () => readOnly.value,
+			// while customising, Ctrl/Cmd+Z undoes the last layout change
+			undoLayout: () =>
+				refEditingLayout.value
+					? (refEditor.value?.undo(), true)
+					: false,
 		});
 
 	// Recipe and building edits with undo, starter setup, hab optimizing
-	const {
-		refRecipeStatus,
-		deleteBuilding,
-		deleteBuildingRecipe,
-		changeBuildingRecipe,
-		addPickedRecipe,
-		undoPickedRecipe,
-		applyStarterSetup,
-		applyOptimizeHabs,
-	} = usePlanEdits(
+	const planEdits = usePlanEdits(
 		calculation,
 		refPlanData,
 		refAutoOptimizeHabs,
 		trackedUndo,
 		planetData.planet_natural_id
 	);
+	const { applyOptimizeHabs } = planEdits;
 
 	// Shared plan: compared against the shared version, reset and copied
 	const {
@@ -363,56 +343,69 @@
 		props
 	);
 
-	// Tool tabs, folding, overlays and the phone layout
-	const {
-		strip,
-		stripIcon,
-		stripTitle,
-		stripDetail,
-		refShowTool,
-		openPlanCheck,
-		toolTabs,
-		selectTab,
-		compViewToolComponent,
-		baseFolded,
-		ioFolded,
-		refBaseCollapsed,
-		foldBase,
-		unfoldBase,
-		refIOCollapsed,
-		foldIO,
-		unfoldIO,
-		refBaseOverlay,
-		refIOOverlay,
-		toggleOverlay,
-		closeOverlays,
-		openTile,
-		refIsPhone,
-		refPhoneSection,
-		showSection,
-		phoneSections,
-		onPhone,
-	} = usePlanLayout(flagCount);
+	// The layout: a preset or Custom Layout, kept for this tab; Custom
+	// Layout's phone arrangement below 760 px of grid (the grid tells, this
+	// is the first guess: the page's padding is 2 × 16 px below 768, 2 × 24
+	// above)
+	const layoutPref = usePlanLayoutPreference(
+		undefined,
+		window.innerWidth - (window.innerWidth < 768 ? 32 : 48) < PHONE_WIDTH
+			? "phone"
+			: "wide"
+	);
+	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
+	// an element new to Custom Layout joined it at the bottom: say so once
+	const toast = useToast();
+	if (layoutPref.added.value.length)
+		toast(
+			t(
+				"plan.layout.new_toast",
+				{
+					names: layoutPref.added.value
+						.map((e) => t(ELEMENTS[e].label))
+						.join(", "),
+				},
+				layoutPref.added.value.length
+			),
+			{ duration: 10000, closable: true }
+		);
+	// who uses Custom Layout and Tinted parts: person properties, kept as
+	// they change (unchanged values are not resent)
+	watch(
+		[layoutPref.choice, layoutPref.tinted],
+		([choice, tinted]) =>
+			trackUser({ plan_layout: choice, is_plan_parts_tinted: tinted }),
+		{ immediate: true }
+	);
+	// customise mode
+	const refEditingLayout: Ref<boolean> = ref(false);
+	const refEditor = useTemplateRef<{ undo: () => void }>("editor");
+
+	function pickLayout(choice: LayoutChoice): void {
+		layoutPref.pick(choice);
+		trackEvent("plan:layout_preset", { preset: choice });
+	}
+	function startCustomise(): void {
+		refEditingLayout.value = true;
+		trackEvent("plan:layout_customise_open", {
+			from: layoutPref.choice.value === "custom" ? "custom" : "preset",
+		});
+	}
+
+	// a phone (below md, where the app shows its bottom bar) saves from a
+	// bar above it
+	const phoneQuery =
+		typeof window.matchMedia === "function"
+			? window.matchMedia("(max-width: 767.98px)")
+			: null;
+	const refIsPhone: Ref<boolean> = ref(phoneQuery?.matches ?? false);
+	const onPhoneMedia = (e: MediaQueryListEvent) =>
+		(refIsPhone.value = e.matches);
+	phoneQuery?.addEventListener("change", onPhoneMedia);
+	onUnmounted(() => phoneQuery?.removeEventListener("change", onPhoneMedia));
 
 	// Share link: the sharing modal creates, copies and stops the link
 	const refShowShare: Ref<boolean> = ref(false);
-
-	const expertCount = computed(() =>
-		Object.values(result.value.experts).reduce(
-			(sum, e) => sum + e.amount,
-			0
-		)
-	);
-	const baseStrip = computed(() =>
-		t(
-			"plan.layout.base_strip",
-			{
-				cogc: t(cogcTextMapping[result.value.cogc]),
-				n: expertCount.value,
-			},
-			expertCount.value
-		)
-	);
 
 	// the planet link in Base opens the insights box
 	const refInsights = useTemplateRef<{ open: () => void }>("insights");
@@ -497,96 +490,53 @@
 		},
 	};
 
-	// props change with every recalculation, the component only on a switch
-	const compViewToolMeta = computed(() => {
-		switch (refShowTool.value) {
-			case "visitation-frequency":
-				return {
-					props: {
-						storage: result.value.storage,
-						materialIO: result.value.materialio,
-						disabled: readOnly.value,
-						planUuid: refPlanData.value.uuid,
-					},
-					listeners: {},
-				};
-			case "repair-analysis":
-				return {
-					props: {
-						data: result.value.production.buildings.map((b) => {
-							return {
-								name: b.name,
-								amount: b.amount,
-								dailyRevenue: b.dailyRevenue,
-								workforceDailyCost: b.workforceDailyCost,
-								constructionCost: b.constructionCost,
-								constructionMaterials: b.constructionMaterials,
-							};
-						}),
-						cxUuid: refCXUuid.value,
-						planetNaturalId: planetData.planet_natural_id,
-						shared: props.shared,
-					},
-					listeners: {},
-				};
-			case "popr":
-				return {
-					props: {
-						planetNaturalId: planetData.planet_natural_id,
-						workforceData: result.value.workforce,
-					},
-					listeners: {},
-				};
-			case "supply-cart":
-				return {
-					props: {
-						planetNaturalId: planetData.planet_natural_id,
-						materialIO: result.value.materialio,
-						workforceMaterialIO: result.value.workforceMaterialIO,
-						productionMaterialIO: result.value.productionMaterialIO,
-					},
-					listeners: {},
-				};
-			case "construction-cart":
-				return {
-					props: {
-						planetNaturalId: planetData.planet_natural_id,
-						planUuid: refPlanData.value.uuid,
-						disabled: readOnly.value,
-						cxUuid: refCXUuid.value,
-						constructionData: result.value.constructionMaterials,
-						productionBuildingData:
-							result.value.production.buildings,
-						infrastructureData: result.value.infrastructure,
-					},
-					listeners: {},
-				};
-			case "profit-breakdown":
-				return {
-					props: {
-						materialIO: result.value.materialio,
-						workforceMaterialIO: result.value.workforceMaterialIO,
-						buildings: result.value.production.buildings,
-						overview: overviewData.value,
-					},
-					listeners: {},
-				};
-			case "plan-check":
-				return {
-					props: {
-						plan: refPlanData.value,
-						planUuid: refPlanData.value.uuid,
-						empire: computedActiveEmpire.value,
-						cxUuid: refCXUuid.value,
-						planet: planetData,
-						own: isOwnPlan.value,
-					},
-					listeners: {},
-				};
-			default:
-				return null;
-		}
+	// what the elements read, wherever the layout puts them
+	const view = providePlanView({
+		calculation,
+		planData: refPlanData,
+		planet: planetData,
+		readOnly,
+		shared: !!props.shared,
+		isOwnPlan,
+		empire: {
+			uuid: refEmpireUuid,
+			list: refEmpireList,
+			cxUuid: refCXUuid,
+			profitPerArea: computed(() =>
+				refEmpireUuid.value
+					? cachedProfitPerArea(refEmpireUuid.value)
+					: undefined
+			),
+		},
+		priceSource: computed(() =>
+			props.shared && !refEmpireList.value?.length
+				? sharedPriceSource.value
+				: undefined
+		),
+		sharedCopy: { sharedChanges, sharedCompare },
+		edits: planEdits,
+		io: planIO,
+		marketChecks,
+		flagCount,
+		autoOptimizeHabs: refAutoOptimizeHabs,
+		setAutoOptimizeHabs: (v: boolean, goal: HabSolverGoal) => {
+			refAutoOptimizeHabs.value = v;
+			trackEvent("plan:hab_auto_toggle", { is_active: v });
+			applyOptimizeHabs(goal, false);
+		},
+		openInsights: () => refInsights.value?.open(),
+		focusElement: grid.focusElement,
+		layoutEditing: {
+			active: refEditingLayout,
+			// the layout's choice; customising, the editor's draft (it
+			// provides its own)
+			showAll: (el: ElementId) => !!grid.layout.value.open?.includes(el),
+			table: (el: ElementId) => !!grid.layout.value.table?.includes(el),
+		},
 	});
+
+	// what a folded part says after its title
+	const foldSummaries = usePlanFoldSummaries(view);
 
 	// breadcrumb: the current empire if it holds the plan, else the first
 	const crumbEmpire = computed(() => {
@@ -621,11 +571,9 @@
 		@save="openSaveAsModal" />
 	<!-- keep focused controls clear of the sticky results bar; the bottom
 		padding leaves room below the last rows -->
-	<!-- @container: the panes lay out by the width next to the app
-		navigation, so an expanded sidebar makes Base an overlay -->
 	<!-- a phone keeps the last rows clear of the Save bar and the app's
 		bottom bar as well -->
-	<div ref="layout" class="@container pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
+	<div class="pb-16 max-md:pb-36 [&_*]:scroll-mt-24">
 		<!-- Header: name, history, save state and the plan's actions -->
 		<header
 			class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 max-md:px-4 py-3">
@@ -711,6 +659,12 @@
 						v-model:show="refShowShare"
 						:plan-uuid="refPlanData.uuid" />
 				</template>
+				<PlanLayoutMenu
+					:choice="layoutPref.choice.value"
+					:has-custom="!!layoutPref.custom.value"
+					:can-customise="!refIsPhone && !refEditingLayout"
+					@pick="pickLayout"
+					@customise="startCustomise" />
 				<PlanMoreMenu
 					:debug="calcDebug"
 					@csv="downloadMaterialIO"
@@ -729,421 +683,58 @@
 			@open-as-plan="preview.openAsPlan"
 			@back="preview.back" />
 
-		<!-- Results (sticky); from 48rem its first and last tile carry the
-			side padding, so their hover reaches the edges -->
+		<!-- a shared plan's copy: what differs from the shared plan -->
+		<SharedPlanDeltas
+			v-if="sharedCompare"
+			class="px-6 max-md:px-4 pb-2"
+			:compare="sharedCompare" />
+
+		<!-- every part of the plan as the player's layout places it -->
 		<div
-			class="sticky top-0 z-1000 px-6 max-md:px-4 @min-[48rem]:px-0 bg-(--app-bg) border-y border-line">
-			<PlanResultsBar
-				:overview="overviewData"
-				:area="result.area"
-				:visitation="visitationData"
-				:workforce="result.workforce"
-				:experts="result.experts"
-				:revenue="result.revenue"
-				:cost="result.cost"
-				:empire-profit-per-area="
-					refEmpireUuid
-						? cachedProfitPerArea(refEmpireUuid)
-						: undefined
+			class="px-6 max-md:px-4 pt-1"
+			:data-tinted="
+				(!refEditingLayout && layoutPref.tinted.value) || undefined
+			">
+			<PlanLayoutEditor
+				v-if="refEditingLayout"
+				ref="editor"
+				:pref="layoutPref"
+				:logged-in="userStore.isLoggedIn"
+				@close="refEditingLayout = false" />
+			<PlanGrid
+				v-else
+				:layout="grid.layout.value"
+				:folded="layoutPref.folded.value"
+				:tabs="grid.tabs"
+				:summaries="foldSummaries"
+				:fresh="
+					layoutPref.choice.value === 'custom'
+						? layoutPref.added.value
+						: []
 				"
-				:compare="sharedCompare"
-				@open="openTile" />
-			<!-- a phone: one section at a time -->
-			<PlanToolTabs
-				v-if="refIsPhone"
-				class="-mx-4 px-2 border-t border-line [&>button]:flex-1 [&>button]:justify-center"
-				:tabs="phoneSections"
-				:active="refPhoneSection"
-				:label="t('plan.layout.sections')"
-				@toggle="showSection" />
+				@fold="grid.fold"
+				@tab="grid.showTab"
+				@phone="
+					(v: boolean) =>
+						(layoutPref.arrangement.value = v ? 'phone' : 'wide')
+				" />
 		</div>
-
-		<!-- Set up → build → result, side by side; from 100rem of page width
-			Base stays open, from 81rem it starts as a strip; below 81rem
-			Base, below 71rem Material I/O too open as overlays from the tab
-			row, so Production keeps the width; a phone shows one section -->
-		<div
-			class="relative flex flex-col md:flex-row md:items-start gap-6 px-6 max-md:px-4 pt-4"
-			@keydown.esc="closeOverlays">
-			<!-- Base -->
-			<button
-				v-if="refBaseCollapsed || baseFolded"
-				type="button"
-				:class="[
-					strip,
-					refBaseCollapsed
-						? 'hidden @min-[81rem]:flex'
-						: 'hidden @min-[81rem]:@max-[100rem]:flex',
-				]"
-				:aria-label="`${t('plan.layout.show_base')}: ${baseStrip}`"
-				data-base-strip
-				@click="unfoldBase">
-				<span :class="stripIcon">
-					<PIcon :size="16"><ChevronRightSharp /></PIcon>
-				</span>
-				<span :class="stripTitle">{{ t("plan.base.label") }}</span>
-				<span :class="stripDetail">{{ baseStrip }}</span>
-			</button>
-			<!-- data-folded: "hand" when the user folded it, "auto" when the
-				layout does (Base at mid width, I/O under a wide tool) -->
-			<aside
-				:aria-label="t('plan.base.label')"
-				class="shrink-0 w-full md:w-74 rounded border border-line md:sticky md:top-20 md:max-h-[calc(100dvh-6rem)] md:overflow-y-auto bg-(--app-bg)"
-				:class="[
-					refBaseCollapsed
-						? '@min-[81rem]:hidden'
-						: baseFolded
-							? '@min-[81rem]:@max-[100rem]:hidden'
-							: '',
-					refBaseOverlay
-						? 'md:@max-[81rem]:absolute md:@max-[81rem]:left-6 md:@max-[81rem]:top-4 md:@max-[81rem]:z-50 md:@max-[81rem]:shadow-xl md:@max-[81rem]:bg-surface'
-						: 'md:@max-[81rem]:hidden',
-					onPhone('base') ? '' : 'hidden',
-				]"
-				:data-folded="
-					refBaseCollapsed ? 'hand' : baseFolded ? 'auto' : undefined
-				"
-				:data-section-hidden="!onPhone('base') || undefined"
-				data-base-pane>
-				<!-- a phone names Base in its section tabs already -->
-				<div
-					class="flex items-center gap-2 px-3 pt-3 pb-1 max-md:hidden">
-					<h2 class="flex-1 font-bold text-white">
-						{{ t("plan.base.label") }}
-					</h2>
-					<PButton
-						v-if="refBaseOverlay"
-						type="ghost"
-						size="sm"
-						class="hidden md:@max-[81rem]:flex"
-						data-base-close
-						@click="closeOverlays">
-						<template #icon><CloseSharp /></template>
-						{{ t("plan.layout.close") }}
-					</PButton>
-					<!-- side by side (from 81rem) Base folds on request, at any width -->
-					<PButton
-						type="ghost"
-						size="sm"
-						class="hidden @min-[81rem]:flex"
-						data-base-fold
-						:aria-label="t('plan.layout.fold_base')"
-						:title="t('plan.layout.fold_base')"
-						@click="foldBase">
-						<template #icon><ChevronLeftSharp /></template>
-					</PButton>
-				</div>
-				<PlanBase
-					ref="base"
-					:disabled="readOnly"
-					:result="result"
-					:planet="planetData"
-					:auto-optimize-habs="refAutoOptimizeHabs"
-					:empire-options="refEmpireList"
-					:active-empire="computedActiveEmpire"
-					:plan-empires="planEmpires"
-					:cx-uuid="refCXUuid"
-					:price-source="
-						shared && !refEmpireList?.length
-							? sharedPriceSource
-							: undefined
-					"
-					@update:active-empire="
-						(empireUuid: string) => (refEmpireUuid = empireUuid)
-					"
-					@update:permits="handleUpdatePermits"
-					@update:corphq="handleUpdateCorpHQ"
-					@update:cogc="handleUpdateCOGC"
-					@update:lux="handleUpdateWorkforceLux"
-					@update:infrastructure="handleUpdateInfrastructure"
-					@update:auto-optimize-habs="
-						(v: boolean, goal: HabSolverGoal) => {
-							refAutoOptimizeHabs = v;
-							trackEvent('plan:hab_auto_toggle', {
-								is_active: v,
-							});
-							applyOptimizeHabs(goal, false);
-						}
-					"
-					@optimize-habs="
-						(goal: HabSolverGoal) => applyOptimizeHabs(goal, true)
-					"
-					@update:expert="handleUpdateExpert"
-					@create:building:recipe="handleCreateBuildingAndRecipe"
-					@open:insights="refInsights?.open()" />
-			</aside>
-
-			<!-- Production, or a tool in its place -->
-			<main
-				v-show="onPhone('production') || onPhone('tools')"
-				class="flex-1 min-w-0 w-full">
-				<div
-					v-if="!refIsPhone"
-					class="flex items-start gap-2 border-b border-line">
-					<PButton
-						type="secondary"
-						size="sm"
-						class="hidden md:@max-[81rem]:flex shrink-0 mt-2"
-						data-base-toggle
-						:aria-expanded="refBaseOverlay ? 'true' : 'false'"
-						@click="toggleOverlay('base')">
-						<template #icon><MenuOpenSharp /></template>
-						{{ t("plan.base.label") }}
-					</PButton>
-					<!-- a narrow row wraps instead of hiding tabs behind I/O;
-						Base and I/O stay on its first line -->
-					<PlanToolTabs
-						class="flex-wrap"
-						:tabs="toolTabs"
-						:active="refShowTool ?? 'production'"
-						:label="t('plan.actions.tools')"
-						@toggle="selectTab" />
-					<PButton
-						type="secondary"
-						size="sm"
-						class="hidden md:@max-[71rem]:flex shrink-0 ml-auto mt-2"
-						data-io-toggle
-						:aria-expanded="refIOOverlay ? 'true' : 'false'"
-						@click="toggleOverlay('io')">
-						<!-- a narrow row says I/O, a screen reader still hears the name -->
-						<span class="@max-[64rem]:sr-only">
-							{{ t("plan.components.materialio.label") }}
-						</span>
-						<span
-							class="hidden @max-[64rem]:inline"
-							aria-hidden="true">
-							{{ t("plan.layout.io_short") }}
-						</span>
-						<span
-							v-if="flagCount > 0"
-							role="img"
-							:aria-label="
-								t(
-									'plan.layout.flags',
-									{ n: flagCount },
-									flagCount
-								)
-							"
-							class="size-1.5 ml-1.5 rounded-full bg-warning" />
-					</PButton>
-				</div>
-				<!-- a phone's Tools section: the tools as a list -->
-				<nav
-					v-if="
-						refIsPhone &&
-						refPhoneSection === 'tools' &&
-						!refShowTool
-					"
-					:aria-label="t('plan.actions.tools')"
-					class="rounded border border-line divide-y divide-line"
-					data-phone-tools>
-					<button
-						v-for="tool in toolTabs.filter(
-							(x) => x.key !== 'production'
-						)"
-						:key="tool.key"
-						type="button"
-						class="flex items-center gap-3 w-full min-h-14 px-3.5 text-left cursor-pointer hover:bg-hover"
-						@click="selectTab(tool.key)">
-						<span class="flex-1 min-w-0">
-							<span
-								class="flex items-center gap-1.5 font-medium text-ink-strong">
-								{{ tool.label }}
-								<span
-									v-if="tool.dot"
-									role="img"
-									:aria-label="tool.dot"
-									class="size-1.5 rounded-full bg-warning" />
-							</span>
-							<span class="block text-xs text-muted">
-								{{ t(`plan.tools.descriptions.${tool.key}`) }}
-							</span>
-						</span>
-						<PIcon :size="16" class="text-muted">
-							<ChevronRightSharp />
-						</PIcon>
-					</button>
-				</nav>
-				<!-- kept mounted under a tool: its folds, filters and the
-					starter card's state survive -->
-				<div
-					v-show="
-						refIsPhone
-							? refPhoneSection === 'production'
-							: !refShowTool
-					"
-					data-production>
-					<PlanProduction
-						:disabled="readOnly"
-						:production-data="result.production"
-						:planet-resources="planetData.resources"
-						:cogc="result.cogc"
-						:cx-uuid="refCXUuid"
-						:planet-id="planetData.planet_natural_id"
-						:changes="sharedChanges"
-						:material-i-o="result.materialio"
-						:experts="result.experts"
-						:status="refRecipeStatus"
-						@update:building:amount="handleUpdateBuildingAmount"
-						@delete:building="deleteBuilding"
-						@create:building="handleCreateBuilding"
-						@update:building:recipe:amount="
-							handleUpdateBuildingRecipeAmount
-						"
-						@delete:building:recipe="deleteBuildingRecipe"
-						@add:building:recipes="handleAddBuildingRecipes"
-						@apply:starter="applyStarterSetup"
-						@update:building:recipe="changeBuildingRecipe"
-						@pick:building:recipe="addPickedRecipe"
-						@undo="undoPickedRecipe" />
-				</div>
-				<div
-					v-if="refShowTool && onPhone('tools')"
-					class="py-3"
-					data-tool>
-					<PButton
-						v-if="refIsPhone"
-						type="ghost"
-						size="sm"
-						class="mb-2"
-						@click="selectTab('production')">
-						<template #icon><ChevronLeftSharp /></template>
-						{{ t("plan.layout.all_tools") }}
-					</PButton>
-					<Suspense :timeout="200">
-						<template #default>
-							<component
-								:is="compViewToolComponent"
-								v-bind="compViewToolMeta?.props"
-								v-on="compViewToolMeta?.listeners ?? {}" />
-						</template>
-						<template #fallback>
-							<PlanToolFallback />
-						</template>
-					</Suspense>
-				</div>
-			</main>
-
-			<!-- Material I/O -->
-			<button
-				v-if="refIOCollapsed || ioFolded"
-				type="button"
-				:class="strip"
-				class="hidden @min-[71rem]:flex"
-				:title="t('plan.layout.show_io')"
-				data-io-strip
-				@click="unfoldIO">
-				<span :class="stripIcon">
-					<PIcon :size="16"><ChevronLeftSharp /></PIcon>
-				</span>
-				<span :class="stripTitle">
-					{{ t("plan.components.materialio.label") }}
-				</span>
-				<span
-					v-if="flagCount > 0"
-					class="[writing-mode:vertical-rl] px-0.5 py-1.5 rounded-full bg-warning/15 text-xs font-medium text-warning">
-					{{ t("plan.layout.flags", { n: flagCount }, flagCount) }}
-				</span>
-			</button>
-			<aside
-				:aria-label="t('plan.components.materialio.label')"
-				class="shrink-0 w-full md:w-96 @min-[100rem]:w-112 rounded border border-line md:sticky md:top-20 bg-(--app-bg)"
-				:class="[
-					refIOCollapsed || ioFolded ? '@min-[71rem]:hidden' : '',
-					refIOOverlay
-						? 'md:@max-[71rem]:absolute md:@max-[71rem]:right-6 md:@max-[71rem]:top-4 md:@max-[71rem]:z-50 md:@max-[71rem]:w-96 md:@max-[71rem]:shadow-xl md:@max-[71rem]:bg-surface'
-						: 'md:@max-[71rem]:hidden',
-					onPhone('io') ? '' : 'hidden',
-				]"
-				:data-folded="
-					refIOCollapsed ? 'hand' : ioFolded ? 'auto' : undefined
-				"
-				:data-section-hidden="!onPhone('io') || undefined"
-				data-io-pane>
-				<div class="flex items-center gap-2 px-3 pt-3 pb-2">
-					<h2 class="flex-1 font-bold text-white">
-						{{ t("plan.components.materialio.label") }}
-					</h2>
-					<PSelect
-						v-model:value="refIOSource"
-						size="sm"
-						class="w-36"
-						:aria-label="t('plan.io.source.label')"
-						:options="ioSourceOptions" />
-					<PButton
-						v-if="refIOOverlay"
-						type="ghost"
-						size="sm"
-						class="hidden md:@max-[71rem]:flex"
-						data-io-close
-						@click="closeOverlays">
-						<template #icon><CloseSharp /></template>
-						{{ t("plan.layout.close") }}
-					</PButton>
-					<PButton
-						type="ghost"
-						size="sm"
-						class="hidden @min-[71rem]:flex"
-						data-io-fold
-						:aria-label="t('plan.layout.fold_io')"
-						:title="t('plan.layout.fold_io')"
-						@click="foldIO">
-						<template #icon><ChevronRightSharp /></template>
-					</PButton>
-				</div>
-				<div
-					class="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 pb-2 [&_button]:px-2 [&_button]:min-w-6">
-					<PSegmented
-						v-model:value="refIOFilter"
-						size="sm"
-						:options="ioFilterOptions"
-						:label="t('plan.io.filter.label')" />
-					<PSegmented
-						v-model:value="refIOValue"
-						size="sm"
-						:options="ioValueOptions"
-						:label="t('plan.io.value.label')" />
-				</div>
-				<PlanMaterialIO
-					:material-i-o-data="ioRows"
-					max-height="calc(100dvh - 20rem)"
-					:value="refIOValue"
-					:filter="refIOFilter"
-					:checks="refIOSource === 'all' ? marketChecks : undefined"
-					:market="marketChecks"
-					@open:plan-check="openPlanCheck" />
-				<dl
-					class="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-3 py-2 border-t border-line text-sm tabular-nums">
-					<dt class="text-muted-strong">
-						{{ t("plan.io.exports") }}
-					</dt>
-					<dd class="text-right">
-						<PValue :value="ioTotals.exports" />
-					</dd>
-					<dt class="text-muted-strong">
-						{{ t("plan.io.imports") }}
-					</dt>
-					<dd class="text-right">
-						<PValue :value="ioTotals.imports" />
-					</dd>
-					<template v-if="refIOSource === 'all'">
-						<dt class="text-muted-strong">
-							{{ t("plan.io.degradation") }}
-						</dt>
-						<dd class="text-right">
-							<PValue
-								:value="-overviewData.dailyDegradationCost" />
-						</dd>
-						<dt class="font-medium text-ink-strong">
-							{{ t("plan.io.profit") }}
-						</dt>
-						<dd class="text-right font-medium">
-							<PValue :value="overviewData.profit" />
-						</dd>
-					</template>
-				</dl>
-			</aside>
-		</div>
+		<!-- a hidden element, opened from a results tile or a shortcut -->
+		<PModal
+			:show="grid.refDialog.value !== null"
+			:width="720"
+			:title="
+				grid.refDialog.value
+					? t(ELEMENTS[grid.refDialog.value].label)
+					: ''
+			"
+			@update:show="(v: boolean) => !v && (grid.refDialog.value = null)">
+			<div v-if="grid.refDialog.value" class="@container">
+				<component
+					:is="elementView(grid.refDialog.value).component"
+					v-bind="elementView(grid.refDialog.value).props" />
+			</div>
+		</PModal>
 		<!-- a phone: the save status and Save in a bar above the app's
 			bottom bar, for a saved plan (its versions) or while there is
 			something to save -->

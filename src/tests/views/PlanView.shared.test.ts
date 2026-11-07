@@ -21,7 +21,7 @@ import {
 } from "@/tests/views/PlanView.harness";
 import { describe, it, expect, vi } from "vitest";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
-import PlanResultsBar from "@/features/planning/components/PlanResultsBar.vue";
+import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
 import PlanProduction from "@/features/planning/components/PlanProduction.vue";
 import PlanInfrastructure from "@/features/planning/components/PlanInfrastructure.vue";
 import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
@@ -100,7 +100,7 @@ describe("PlanView shared plans, toasts and habs", () => {
 		expect(banner().props("changed")).toBe(true);
 		expect(production().props("changes")).toBeDefined();
 		expect(
-			wrapper.findComponent(PlanResultsBar).props("compare")
+			wrapper.findComponent(SharedPlanDeltas).props("compare")
 		).toMatchObject({
 			before: expect.any(Object),
 			after: expect.any(Object),

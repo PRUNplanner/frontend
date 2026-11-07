@@ -82,7 +82,7 @@ function summary(wrapper: VueWrapper) {
 async function clickFilter(wrapper: VueWrapper, key: string) {
 	const button = wrapper
 		.findAll("button")
-		.find((b) => b.text() === `plan.tools.supply_cart.buttons.${key}`);
+		.find((b) => b.text() === `plan.io.source.${key}`);
 	expect(button).toBeDefined();
 	await button!.trigger("click");
 	await flushPromises();

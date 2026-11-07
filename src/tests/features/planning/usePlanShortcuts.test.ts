@@ -41,7 +41,10 @@ function press(key: string, init: KeyboardEventInit = {}, target?: Element) {
 	return e;
 }
 
-async function mountShortcuts(props: Partial<IPlanViewProps> = {}) {
+async function mountShortcuts(
+	props: Partial<IPlanViewProps> = {},
+	undoLayout?: () => boolean
+) {
 	const calculation = {
 		canUndo,
 		canRedo: ref(true),
@@ -56,6 +59,7 @@ async function mountShortcuts(props: Partial<IPlanViewProps> = {}) {
 				openSaveAsModal,
 				openSaveMenu,
 				readOnly: () => readOnly.value || !!props.disabled,
+				undoLayout,
 			}),
 		{ pinia }
 	);
@@ -174,5 +178,26 @@ describe("usePlanShortcuts", () => {
 		wrapper.unmount();
 		press("s");
 		expect(save).not.toHaveBeenCalled();
+	});
+
+	it("gives Ctrl/Cmd+Z to customise mode while it is open", async () => {
+		let editing = true;
+		const undoLayout = vi.fn(() => editing);
+		await mountShortcuts({}, undoLayout);
+
+		const e = press("z");
+		expect(e.defaultPrevented).toBe(true);
+		expect(undoLayout).toHaveBeenCalledTimes(1);
+		expect(undo).not.toHaveBeenCalled();
+
+		// closed: the plan's own undo again
+		editing = false;
+		press("z");
+		expect(undo).toHaveBeenCalledTimes(1);
+		// Shift too: no plan redo under the editor
+		editing = true;
+		press("z", { shiftKey: true });
+		expect(redo).not.toHaveBeenCalled();
+		expect(undoLayout).toHaveBeenCalledTimes(3);
 	});
 });

@@ -77,7 +77,9 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-3 text-sm">
+	<!-- two columns from 480 px -->
+	<div
+		class="grid grid-cols-1 gap-3 text-sm @min-[480px]:grid-cols-2 @min-[480px]:gap-x-6">
 		<!-- a visitor's shared copy has no empire to pick -->
 		<label
 			v-if="!disabled && empireSelectOptions.length > 0"
@@ -102,7 +104,8 @@
 				)
 			}}
 		</div>
-		<div class="flex items-center justify-between gap-3">
+		<div
+			class="flex items-center justify-between gap-3 @max-[319px]:flex-col @max-[319px]:items-start">
 			<span>{{ t("plan.components.configuration.prices") }}</span>
 			<RouterLink
 				v-if="cxName && !disabled"
