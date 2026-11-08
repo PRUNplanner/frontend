@@ -81,7 +81,6 @@
 		"more": "Mehr",
 		"save_as_copy": "Als Kopie speichern",
 		"share_link": "Link teilen",
-		"tools": "Plan-Werkzeuge",
 		"download_csv": "Material I/O herunterladen (CSV)",
 		"reload": "Gespeicherte Version neu laden",
 		"reload_confirm": "Die gespeicherte Version neu laden? Deine ungespeicherten Änderungen gehen verloren."
@@ -232,9 +231,6 @@
 			"filter_label": "Versorgung für",
 			"more_in": "Weitere Optionen in {link}",
 			"buttons": {
-				"all": "Alles",
-				"workforce": "Belegschaft",
-				"production": "Produktion",
 				"xit_initial": "XIT Erstversorgung"
 			},
 			"table": {
@@ -684,7 +680,6 @@
 		"rename": "Plan umbenennen"
 	},
 	"results": {
-		"label": "Planergebnisse",
 		"profit": "Profit / Tag",
 		"revenue_cost": "Umsatz {revenue} · Kosten {cost} inkl. {degradation} Abnutzung",
 		"payback": "Amortisation",
@@ -718,7 +713,6 @@
 		}
 	},
 	"base": {
-		"label": "Basis",
 		"empire": {
 			"label": "Imperium & Preise",
 			"calculate_with": "Mit Imperium berechnen",
@@ -740,7 +734,14 @@
 			"supply": "{ticker} bereitstellen",
 			"beds_free": "{n} frei",
 			"show_not_needed": "{tiers} anzeigen (nicht benötigt)",
-			"hide_not_needed": "Nicht benötigte Belegschaft ausblenden"
+			"hide_not_needed": "Nicht benötigte Belegschaft ausblenden",
+			"table": {
+				"tier": "Tier",
+				"need_housed": "Need / housed",
+				"free": "Free",
+				"luxuries": "Luxuries",
+				"efficiency": "Efficiency %"
+			}
 		},
 		"housing": {
 			"label": "Infrastruktur",
@@ -750,7 +751,6 @@
 		},
 		"experts": {
 			"label": "Experten",
-			"summary": "{n} zugewiesen",
 			"more": "+ {n} weitere Felder",
 			"fewer": "Weniger Felder"
 		}
@@ -818,8 +818,8 @@
 		"source": {
 			"label": "Materialien zeigen für",
 			"all": "Ganze Basis",
-			"production": "Nur Produktion",
-			"workforce": "Nur Belegschaft"
+			"production": "Production",
+			"workforce": "Workforce"
 		},
 		"filter": {
 			"label": "Filter",
@@ -837,15 +837,228 @@
 	},
 	"layout": {
 		"flags": "{n} Markthinweis | {n} Markthinweise",
-		"base_strip": "COGC {cogc} · {n} Experte | COGC {cogc} · {n} Experten",
-		"show_base": "Basis-Setup anzeigen",
-		"show_io": "Material I/O anzeigen",
-		"close": "Schließen",
-		"fold_base": "Basis-Setup einklappen",
-		"fold_io": "Material I/O einklappen",
-		"sections": "Planbereiche",
-		"tools": "Werkzeuge",
-		"io_short": "I/O",
-		"all_tools": "Alle Werkzeuge"
+		"menu": "Layout",
+		"presets": {
+			"standard": {
+				"name": "Standard",
+				"description": "Results on top · Base · Production with tools · Material I/O"
+			},
+			"custom": {
+				"name": "Custom Layout",
+				"description": "Your own arrangement, used for all your plans"
+			}
+		},
+		"tint": {
+			"name": "Tinted parts",
+			"description": "A slightly lighter background on every part, for more contrast"
+		},
+		"customise_from": "Customise, starting from {name}…",
+		"customise_custom": "Customise Custom Layout…",
+		"material_io_totals": "Material I/O totals",
+		"kpis": {
+			"profit": "Profit / day",
+			"payback": "Payback",
+			"workforce": "Workforce %",
+			"area": "Area",
+			"storage": "Storage"
+		},
+		"fold": "Fold {name}",
+		"unfold": "Unfold {name}",
+		"tabs_of": "Tabs of {name}",
+		"item_title": "{name} + {n} tab | {name} + {n} tabs",
+		"starting_from": "starting from {name}",
+		"shown_at": "Shown at {n} %",
+		"elements": "Elements",
+		"elements_hint": "Drag an element onto the page to place or move it, or add a hidden one at the bottom. Drop a part from the page here to hide it.",
+		"groups": {
+			"base": "Base",
+			"production": "Production & tools",
+			"results": "Material I/O",
+			"kpis": "Results"
+		},
+		"where": {
+			"page": "On the page",
+			"band": "Pinned to top",
+			"tab": "A tab of {name}",
+			"below": "Below {name}",
+			"beside": "Beside {name}",
+			"hidden": "Hidden"
+		},
+		"show": "Show",
+		"show_named": "Show {name}",
+		"add": "Add",
+		"add_named": "Add {name}",
+		"drag_onto_page": "Drag onto the page",
+		"undo": "Undo",
+		"reset": "Reset to Standard",
+		"save": "Save",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"replace_question": "This replaces your current Custom Layout.",
+		"replace": "Replace Custom Layout",
+		"keep_editing": "Keep editing",
+		"leave_title": "Discard your layout changes?",
+		"leave_content": "Your changes to the layout are not saved yet.",
+		"leave_discard": "Discard changes",
+		"columns": "Columns",
+		"fewer_columns": "Fewer columns",
+		"more_columns": "More columns",
+		"gap": "Gap",
+		"content_open": "Everything open",
+		"content_open_hint": "Every tier, field and button, also on the page",
+		"display": "Display",
+		"display_of": "Display · {name}",
+		"follow": "Follow while scrolling",
+		"follow_hint": "Stays in view in its column while you scroll, with the parts below it",
+		"state": {
+			"pinned": "Pinned to top",
+			"follows": "Follows while scrolling",
+			"open": "Everything open",
+			"table": "Shown as a table"
+		},
+		"hint": "Drag a title bar to move, an edge to resize; on a title bar arrows move, Shift+arrows resize, Enter opens the menu.",
+		"auto_note": "{n} item is rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is. | {n} items are rearranged automatically (marked “auto”): to fit this width, or because folded parts stack. Your layout stays as it is.",
+		"band_note": "The parts pinned to top are taller than 40 % of the window: they stay at that height and scroll inside.",
+		"handle": "Move {name}. Arrows move, Shift+arrows resize, Enter opens the menu.",
+		"item_menu": "{name}: layout menu",
+		"size_auto": "auto {n}/{cols} (yours {w})",
+		"size_moved": "auto {n}/{cols}",
+		"size_scrolls": "scrolls",
+		"size_cap": "≤ {h} px",
+		"size_px": "{h} px",
+		"badge_cols": "{n} of {cols} columns",
+		"badge_scrolls": "{h} px · content {content} px, scrolls",
+		"badge_min": "(minimum)",
+		"badge_neighbour": "{name} at its minimum",
+		"drop_hide": "Drop to hide {name}",
+		"lands_here": "Lands here",
+		"drop_as_tab": "{name} as a tab here",
+		"drop_join_below": "{el} below {name}",
+		"drop_join_beside": "{el} beside {name}",
+		"zone": {
+			"tab": "Tab",
+			"below": "Below",
+			"beside": "Beside"
+		},
+		"pair": "{a} & {b}",
+		"with": "{el} with {name}",
+		"join_below": "Below {name}",
+		"join_beside": "Beside {name}",
+		"share": {
+			"cols": "{name}: {n} of {cols} columns",
+			"height": "{name}: {h} px high",
+			"fit": "{name}: as high as its content",
+			"less": "Less room for {name}",
+			"more": "More room for {name}",
+			"auto": "{name} and {el} sized automatically",
+			"auto_text": "Auto"
+		},
+		"drop_tab_target": "Drop to add {el} as a tab to {name}",
+		"menu_width": "Width · {n} of {cols} columns",
+		"menu_height_fit": "Height · fits its content, {h} px now",
+		"menu_height_cap": "Height · at most {h} px",
+		"menu_height_fixed": "Height · fixed {h} px",
+		"narrower": "Narrower",
+		"wider": "Wider",
+		"full_width": "Full width",
+		"height_fit": "Fit content",
+		"height_cap": "Fit content, at most {h} px",
+		"height_fixed": "Fixed {h} px",
+		"height_fit_short": "Fit",
+		"height_cap_short": "≤ {h}",
+		"height_fixed_short": "{h} px",
+		"taller": "Taller, +40 px",
+		"shorter": "Shorter, −40 px",
+		"keep_in_view": "Pin to top",
+		"keep_in_view_hint": "Stays at the top while you scroll the rest",
+		"move": "Move",
+		"up": "Up",
+		"down": "Down",
+		"left": "Left one column",
+		"right": "Right one column",
+		"tabs": "Tabs",
+		"make_tab": "Join another part",
+		"make_tab_more": "Tab, below or beside …",
+		"tabs_more": "Tabs ({n}) …",
+		"menu_back": "Back",
+		"view_cards": "As cards",
+		"view_table": "As a table",
+		"take_out": "Take {name} out",
+		"split": "Split all into separate items",
+		"hide": "Hide",
+		"hide_tab": "Hide {name}",
+		"hide_named": "Hide {name}",
+		"why": {
+			"min_width": "{name} needs at least {px} px: {n} of {cols} columns at this width",
+			"min_height": "{name} needs at least {px} px",
+			"right_edge": "Reaches the right edge; move it left first",
+			"left_edge": "Already at the left edge",
+			"full_width": "Already full width",
+			"first_tab": "The first tab stays; take the others out",
+			"join_one": "Only a part of its own can go with another; take its tabs out first",
+			"join_full": "{name} shows two parts already",
+			"neighbour_min": "{name} beside it is at its minimum width",
+			"required": "Production always stays on the page"
+		},
+		"snap": {
+			"bottom": "Bottom of {name}",
+			"height": "Same height as {name} · {h} px",
+			"content": "Fits its content",
+			"top": "Lines up with the top of {name}"
+		},
+		"announce": {
+			"nothing": "Nothing changed",
+			"column": "{item}: column {n}",
+			"up": "{item} moved up",
+			"down": "{item} moved down",
+			"moved": "{item} moved · column {n}",
+			"moved_band": "{item} moved · column {n} · pinned to top",
+			"width": "{item}: {n} of {cols} columns wide",
+			"width_min": "{item}: {n} of {cols} columns wide (its minimum at this width)",
+			"width_neighbour": "{item}: {n} of {cols} columns wide; {name} beside it is at its minimum",
+			"full_width": "{item}: full width",
+			"height_fit": "{item}: fits its content",
+			"height_cap": "{item}: fits its content up to {h} px, scrolls beyond",
+			"height_fixed": "{item}: fixed at {h} px; taller content scrolls",
+			"height_min": "{item}: {h} px (its minimum)",
+			"pinned": "{item} pinned to top",
+			"unpinned": "{item} scrolls with the page again",
+			"followed": "{item} follows while scrolling",
+			"unfollowed": "{item} stays in place again",
+			"tab": "{el} is now a tab of {item}",
+			"taken_out": "{el} is its own item now",
+			"joined_below": "{el} is below {name} now",
+			"joined_beside": "{el} is beside {name} now",
+			"share_cols": "{name} takes {n} of {cols} columns, {el} the rest",
+			"share_height": "{name} is {h} px high, {el} below it",
+			"share_auto": "{name} and {el} share the tab by their sizes",
+			"split": "{el} and its tabs are separate items now",
+			"hidden": "{el} hidden. It stays in Elements.",
+			"added": "{el} added",
+			"cols": "{n} columns; items kept their share of the width",
+			"gap": "Gap {n} px",
+			"tab_shown": "{el} shown",
+			"open": "{el} shows everything",
+			"closed": "{el} shows only what it needs",
+			"view_table": "{el} shown as a table",
+			"view_cards": "{el} shown as cards",
+			"reset": "Reset to Standard",
+			"undone": "Undone",
+			"phone_auto": "Phone follows Wide again"
+		},
+		"new_tag": "New",
+		"new_toast": "New in your Custom Layout: {names}, at the bottom. Move or hide it while customising. | New in your Custom Layout: {names}, at the bottom. Move or hide them while customising.",
+		"elements_count": "Elements · {n}",
+		"arrangement": {
+			"label": "Arrangement",
+			"wide": "Wide",
+			"phone": "Phone",
+			"wide_shown": "Wide arrangement: for tablets and wider screens",
+			"phone_shown": "Phone arrangement: two columns, at a phone’s width"
+		},
+		"phone_auto": "Automatic: Wide as a phone shows it, every item stacked in order, small ones two per row. Change anything to arrange Phone yourself.",
+		"phone_own": "Your own phone arrangement: changes to Wide no longer show here.",
+		"back_to_auto": "Back to automatic",
+		"narrower_note": "Rearranged automatically on narrower screens, to keep their minimum width: {list}.",
+		"narrower_at": "{n} item at {w} px | {n} items at {w} px"
 	}
 }
