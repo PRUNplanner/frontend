@@ -819,36 +819,28 @@ describe("PlanView", () => {
 			expect(wrapper.find("[data-elsewhere]").exists()).toBe(false);
 		});
 
-		it("keeps a visitor's layout in the tab, new elements added there", async () => {
+		it("gives a logged out visitor Standard, no Layout menu, and keeps nothing", async () => {
 			const { custom } = presetWithout("experts");
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({
-					v: 1,
-					preset: "custom",
-					custom: {
-						wide: custom,
-						known: ELEMENT_IDS.filter((e) => e !== "experts"),
-					},
-					folded: [],
-				})
-			);
+			const tab = JSON.stringify({
+				v: 1,
+				preset: "custom",
+				custom: { wide: custom },
+				folded: [],
+			});
+			sessionStorage.setItem("prunplanner:planLayout:v1", tab);
 			const { wrapper, user } = await mountView();
-			expect(mocks.toast).toHaveBeenCalledWith(
-				"plan.layout.new_toast",
-				expect.anything()
-			);
+			expect(wrapper.findComponent(PlanLayoutMenu).exists()).toBe(false);
+			// Standard: the tab's Custom Layout is neither used nor taken
 			expect(wrapper.find("[data-item='i-experts']").exists()).toBe(true);
-			expect(
-				JSON.parse(sessionStorage.getItem("prunplanner:planLayout:v1")!)
-					.custom.known
-			).toEqual(ELEMENT_IDS);
-			// the account's preference stays as it was
+			expect(mocks.toast).not.toHaveBeenCalled();
+			expect(sessionStorage.getItem("prunplanner:planLayout:v1")).toBe(
+				tab
+			);
 			expect(user.preferences.planLayout.custom).toBeNull();
 		});
 
 		it("opens customise mode and tracks it", async () => {
-			const { wrapper } = await mountView();
+			const { wrapper } = await mountView({}, { login: true });
 			wrapper.findComponent(PlanLayoutMenu).vm.$emit("customise");
 			await flushPromises();
 			await vi.waitFor(() =>
@@ -2310,7 +2302,7 @@ describe("PlanView", () => {
 		});
 
 		it("switches presets there but offers no customising", async () => {
-			const { wrapper } = await mountView();
+			const { wrapper } = await mountView({}, { login: true });
 			expect(
 				wrapper.findComponent(PlanLayoutMenu).props("canCustomise")
 			).toBe(false);

@@ -328,7 +328,7 @@ export interface IAnalyticsEventProperties {
 		// Phone arranged by hand, not automatic
 		has_phone_layout: boolean;
 		// the account, or the tab for a visitor of a shared plan
-		store: "account" | "session";
+		store: "account";
 	};
 	"plan:layout_cancel": ILayoutSessionProperties;
 	"plan:layout_tint_toggle": { is_active: boolean };

@@ -56,7 +56,7 @@
 	import { PHONE_WIDTH } from "@/features/planning/layout/planLayout.constants";
 	import {
 		preferencesLayoutStore,
-		sessionLayoutStore,
+		standardLayoutStore,
 		takeTabLayout,
 	} from "@/features/planning/layout/layoutStore";
 	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
@@ -348,14 +348,14 @@
 		props
 	);
 
-	// The layout: a preset or Custom Layout, kept in the account (in the tab
-	// for a visitor of a shared plan, carried over once they log in); Custom
+	// The layout: a preset or Custom Layout, kept in the account (a logged
+	// out visitor of a shared plan always gets Standard); Custom
 	// Layout's phone arrangement below 760 px of grid (the grid tells, this
 	// is the first guess: the page's padding is 2 × 16 px below 768, 2 × 24
 	// above)
 	const inAccount = userStore.isLoggedIn;
 	const layoutPref = usePlanLayoutPreference(
-		inAccount ? preferencesLayoutStore : sessionLayoutStore,
+		inAccount ? preferencesLayoutStore : standardLayoutStore,
 		window.innerWidth - (window.innerWidth < 768 ? 32 : 48) < PHONE_WIDTH
 			? "phone"
 			: "wide"
@@ -724,6 +724,7 @@
 						:plan-uuid="refPlanData.uuid" />
 				</template>
 				<PlanLayoutMenu
+					v-if="inAccount"
 					:choice="layoutPref.choice.value"
 					:has-custom="!!layoutPref.custom.value"
 					:can-customise="!refIsPhone && !refEditingLayout"

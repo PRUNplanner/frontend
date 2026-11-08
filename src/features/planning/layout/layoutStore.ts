@@ -21,25 +21,13 @@ export interface LayoutStore {
 }
 
 /**
- * The layout of this browser tab, for visitors (a shared plan): survives a
- * reload, gone when the tab closes. Blocked storage, broken JSON or an
- * unknown shape read as nothing stored.
+ * A logged out visitor's: Standard, nothing kept (a fold lasts until the
+ * page reloads)
  * @author jplacht
  */
-export const sessionLayoutStore: LayoutStore = {
-	load() {
-		const raw = readStorage(STORAGE_KEY, "session");
-		if (raw === null) return null;
-		try {
-			const parsed = StoredLayoutSchema.safeParse(JSON.parse(raw));
-			return parsed.success ? parsed.data : null;
-		} catch {
-			return null;
-		}
-	},
-	save(v) {
-		writeStorage(STORAGE_KEY, JSON.stringify(v), "session");
-	},
+export const standardLayoutStore: LayoutStore = {
+	load: () => null,
+	save: () => {},
 };
 
 /**
@@ -61,14 +49,20 @@ export const preferencesLayoutStore: LayoutStore = {
 };
 
 /**
- * The Custom Layout this tab kept (as a visitor, or before layouts were saved
- * to the account), read once: the key is cleared either way
+ * The Custom Layout this tab kept (plan-layouts-01 kept it in sessionStorage,
+ * before layouts were saved to the account), read once: the key is cleared either way
  * @author jplacht
  *
  * @returns {StoredLayout | null} The tab's layout, when it has a Custom Layout
  */
 export function takeTabLayout(): StoredLayout | null {
-	const tab = sessionLayoutStore.load();
+	const raw = readStorage(STORAGE_KEY, "session");
+	if (raw === null) return null;
 	writeStorage(STORAGE_KEY, null, "session");
-	return tab?.custom ? tab : null;
+	try {
+		const parsed = StoredLayoutSchema.safeParse(JSON.parse(raw));
+		return parsed.success && parsed.data.custom ? parsed.data : null;
+	} catch {
+		return null;
+	}
 }

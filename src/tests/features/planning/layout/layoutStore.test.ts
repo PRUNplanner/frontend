@@ -8,7 +8,7 @@ import { useUserStore } from "@/stores/userStore";
 // Util
 import {
 	preferencesLayoutStore,
-	sessionLayoutStore,
+	standardLayoutStore,
 	takeTabLayout,
 } from "@/features/planning/layout/layoutStore";
 import {
@@ -61,14 +61,13 @@ describe("preferencesLayoutStore", () => {
 	});
 });
 
-describe("sessionLayoutStore", () => {
-	it("keeps a visitor's layout in the tab's sessionStorage", () => {
-		sessionLayoutStore.save(custom());
+describe("standardLayoutStore", () => {
+	it("gives a visitor Standard and keeps nothing", () => {
+		expect(standardLayoutStore.load()).toBeNull();
+		standardLayoutStore.save(custom());
+		expect(standardLayoutStore.load()).toBeNull();
+		expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
 		expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
-		const out = sessionLayoutStore.load()!;
-		expect(out.custom!.wide).toEqual(wideLayout());
-		expect(out.folded).toEqual(custom().folded);
-		expect(out.tinted).toBe(true);
 	});
 });
 

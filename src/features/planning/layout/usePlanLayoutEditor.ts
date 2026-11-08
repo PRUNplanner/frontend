@@ -1560,7 +1560,7 @@ export function usePlanLayoutEditor(
 			gap_px: g.gap,
 			is_replacing: replaced,
 			has_phone_layout: !!ph,
-			store: env.loggedIn() ? "account" : "session",
+			store: "account",
 			...summary(),
 		});
 		lastToast?.destroy();

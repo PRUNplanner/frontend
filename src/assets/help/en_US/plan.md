@@ -22,7 +22,7 @@ The plan page is a grid of parts: Base's empire and prices, planet, workforce, i
   - **New parts**: when PRUNplanner gets a new part, it joins your Custom Layout once, at the bottom of both arrangements, marked **New** for that visit; a message says so. Move or hide it like any other.
 - **Folding**: the chevron on a part's title bar folds it to its title. Two or more folded parts side by side with open ones stack into a short column, and the open parts in that row take their room. Folded parts stay folded, whichever layout you use; Wide and Phone keep their own folds. A results tile or a "Plan check →" link opens and unfolds the part it points to; a hidden one opens in a dialog.
 - **Smaller screens**: when a part would be narrower than it needs, the parts are rearranged at that width (marked "auto" while customising); your layout stays as it is. On a phone Custom Layout uses its Phone arrangement (automatic: every part stacked in order, small ones two per row); layouts can be switched there, customising is for wider screens. Recipes are picked in a sheet from the bottom, and the save status with Save sits above the navigation bar.
-- The layout (Standard or Custom Layout with both arrangements), what is folded and Tinted parts are saved to your account and used on every device and in every tab. A change made elsewhere shows after a reload; while you customise, a note asks whether to load it.
+- The layout (Standard or Custom Layout with both arrangements), what is folded and Tinted parts are saved to your account and used on every device and in every tab. A change made elsewhere shows after a reload; while you customise, a note asks whether to load it. Logged out, a shared plan is always shown in Standard.
 
 **Results**
 
