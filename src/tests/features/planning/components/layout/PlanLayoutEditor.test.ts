@@ -1708,7 +1708,7 @@ describe("PlanLayoutEditor", () => {
 				gap_px: 16,
 				is_replacing: false,
 				has_phone_layout: false,
-				store: "session",
+				store: "account",
 				change_count: 1,
 				drag_count: 0,
 				menu_count: 0,
@@ -1943,6 +1943,50 @@ describe("PlanLayoutEditor", () => {
 			);
 			await button(m, "[data-save]").trigger("click");
 			expect(m.component.emitted("close")).toHaveLength(1);
+		});
+
+		it("asks when the layout changed elsewhere: keep editing", async () => {
+			const m = await mountEditor();
+			expect(m.wrapper.find("[data-elsewhere]").exists()).toBe(false);
+			m.pref.changedElsewhere.value = true;
+			await flushPromises();
+			expect(m.wrapper.find("[data-elsewhere]").text()).toContain(
+				"Your layout was changed elsewhere"
+			);
+			await button(m, "[data-elsewhere-keep]").trigger("click");
+			await flushPromises();
+			expect(m.wrapper.find("[data-elsewhere]").exists()).toBe(false);
+			expect(m.component.emitted("close")).toBeUndefined();
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_remote_update",
+				{
+					is_customising: true,
+					choice: "keep",
+				}
+			);
+		});
+
+		it("loads the layout changed elsewhere, asking first with changes", async () => {
+			const m = await mountEditor();
+			await key(m, "material-io", "ArrowLeft");
+			m.pref.changedElsewhere.value = true;
+			await flushPromises();
+			mocks.confirm.mockResolvedValueOnce(false);
+			await button(m, "[data-elsewhere-load]").trigger("click");
+			await flushPromises();
+			expect(m.component.emitted("close")).toBeUndefined();
+			mocks.confirm.mockResolvedValueOnce(true);
+			await button(m, "[data-elsewhere-load]").trigger("click");
+			await flushPromises();
+			expect(m.component.emitted("close")).toHaveLength(1);
+			expect(m.pref.changedElsewhere.value).toBe(false);
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_remote_update",
+				{
+					is_customising: true,
+					choice: "load",
+				}
+			);
 		});
 
 		it("cancels at once without changes, asks with changes", async () => {

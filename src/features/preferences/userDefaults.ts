@@ -1,4 +1,5 @@
 import type { IPreferenceDefault } from "@/features/preferences/userPreferences.types";
+import { standardStoredLayout } from "@/features/planning/layout/planLayout.constants";
 
 /**
  * Defines default values for user preferences, contains generic tool
@@ -22,6 +23,7 @@ export const preferenceDefaults: IPreferenceDefault = {
 	colorPalette: "default",
 	marketCardTrigger: "hover",
 	planSuggestions: true,
+	planLayout: standardStoredLayout(),
 
 	fioRepairIntervalDays: 60,
 	fioRepairDueSoonDays: 7,

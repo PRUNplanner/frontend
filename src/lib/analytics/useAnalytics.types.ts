@@ -327,10 +327,21 @@ export interface IAnalyticsEventProperties {
 		is_replacing: boolean;
 		// Phone arranged by hand, not automatic
 		has_phone_layout: boolean;
-		store: "session";
+		// the account, or the tab for a visitor of a shared plan
+		store: "account" | "session";
 	};
 	"plan:layout_cancel": ILayoutSessionProperties;
 	"plan:layout_tint_toggle": { is_active: boolean };
+	// the Custom Layout a tab kept before layouts were saved to the account
+	"plan:layout_carry_over": { result: "saved" | "replaced" | "kept_saved" };
+	// the layout changed in another tab or device; the answer when it came
+	// while customising
+	"plan:layout_remote_update": {
+		is_customising: boolean;
+		choice: "load" | "keep" | null;
+	};
+	// an element new to Custom Layout joined it (once per account)
+	"plan:layout_new_element": { element: ElementId };
 	"plan:io_view": {
 		source: "all" | "production" | "workforce";
 		filter: "all" | "exports" | "imports";

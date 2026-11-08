@@ -135,6 +135,8 @@ export interface PToastOptions {
 	duration?: number;
 	/** adds an X */
 	closable?: boolean;
+	/** the X was clicked (not called for destroy() or the timeout) */
+	onClose?: () => void;
 }
 
 /** returned by toast(), closes it early */
@@ -148,6 +150,7 @@ export interface PToastEntry {
 	type: "info" | "error";
 	action?: { label: string; onClick: () => void };
 	closable: boolean;
+	onClose?: () => void;
 }
 
 export interface PToastConfig {

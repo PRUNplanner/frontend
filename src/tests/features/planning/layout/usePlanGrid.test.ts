@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
+import { createPinia, setActivePinia } from "pinia";
 
 // Util
 import {
@@ -63,6 +64,8 @@ describe("visibleLayout", () => {
 });
 
 describe("usePlanGrid", () => {
+	beforeEach(() => setActivePinia(createPinia()));
+
 	const setup = (loggedIn = true) => {
 		const pref = usePlanLayoutPreference();
 		return { pref, grid: usePlanGrid(pref, () => loggedIn) };

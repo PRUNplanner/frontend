@@ -1560,7 +1560,7 @@ export function usePlanLayoutEditor(
 			gap_px: g.gap,
 			is_replacing: replaced,
 			has_phone_layout: !!ph,
-			store: "session",
+			store: env.loggedIn() ? "account" : "session",
 			...summary(),
 		});
 		lastToast?.destroy();
@@ -1585,6 +1585,38 @@ export function usePlanLayoutEditor(
 			}))
 		)
 			cancel();
+	}
+
+	/*
+	 * The layout was changed elsewhere (another tab or device) while
+	 * customising: load it, dropping the edits, or keep editing (saving then
+	 * replaces it)
+	 */
+	async function loadElsewhere(): Promise<void> {
+		if (
+			history.value.length &&
+			!(await confirm({
+				title: t("plan.layout.elsewhere.load_title"),
+				content: t("plan.layout.elsewhere.load_content"),
+				positiveText: t("plan.layout.elsewhere.load"),
+				negativeText: t("plan.layout.keep_editing"),
+			}))
+		)
+			return;
+		pref.changedElsewhere.value = false;
+		trackEvent("plan:layout_remote_update", {
+			is_customising: true,
+			choice: "load",
+		});
+		lastToast?.destroy();
+		env.close();
+	}
+	function keepElsewhere(): void {
+		pref.changedElsewhere.value = false;
+		trackEvent("plan:layout_remote_update", {
+			is_customising: true,
+			choice: "keep",
+		});
 	}
 
 	/** Elements: where each one is, for the panel */
@@ -1637,6 +1669,8 @@ export function usePlanLayoutEditor(
 		setArrangement,
 		backToAuto,
 		setTinted,
+		loadElsewhere,
+		keepElsewhere,
 		onHandleKey,
 		menuOptions,
 		onMenu,

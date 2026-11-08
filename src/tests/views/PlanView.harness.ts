@@ -21,6 +21,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import { calcDebug } from "@/lib/debugMode";
 import { remoteChange } from "@/lib/crossTab";
 import { useUserStore } from "@/stores/userStore";
+import { UserPreferenceSchema } from "@/features/api/schemas/user.schemas";
+import { deepClone } from "@/util/data";
 import { usePlanningStore } from "@/stores/planningStore";
 import {
 	emptyPlan,
@@ -209,6 +211,23 @@ export interface IMountOptions {
 	}) => void;
 }
 
+// the account's planLayout, kept across mounts (a reload) like the backend
+let accountLayout: unknown;
+let lastUser: ReturnType<typeof useUserStore> | undefined;
+
+/**
+ * The layout the account has before the next mount, as the backend sends it
+ *
+ * @param {unknown} layout Stored layout
+ */
+export function seedLayout(layout: unknown): void {
+	accountLayout = layout;
+	lastUser = undefined;
+}
+
+/** The account's planLayout now */
+export const savedLayout = () => lastUser?.preferences.planLayout;
+
 export async function mountView(
 	props: Record<string, unknown> = {},
 	options: IMountOptions = {}
@@ -221,6 +240,11 @@ export async function mountView(
 		user.accessToken = "access";
 		user.refreshToken = "refresh";
 	}
+	if (lastUser) accountLayout = deepClone(lastUser.preferences.planLayout);
+	if (accountLayout !== undefined)
+		user.preferences.planLayout =
+			UserPreferenceSchema.shape.planLayout.parse(accountLayout);
+	lastUser = user;
 	options.seed?.({ user, planning });
 
 	const mounted = await mountComponent(
@@ -373,6 +397,8 @@ export function setupPlanViewSuite(): void {
 		mocks.getPlanet.mockResolvedValue(planet_etherwind);
 		mocks.toast.mockImplementation(() => ({ destroy: vi.fn() }));
 		remoteChange.value = null;
+		accountLayout = undefined;
+		lastUser = undefined;
 	});
 	afterEach(() => {
 		errors.length = 0;

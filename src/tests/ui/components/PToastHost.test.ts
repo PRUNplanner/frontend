@@ -53,7 +53,13 @@ describe("PToastHost", () => {
 		mountHost();
 		const onClick = vi.fn();
 		toast("Removed", { action: { label: "Undo", onClick } });
-		toast("Failed", { type: "error", duration: 0, closable: true });
+		const onClose = vi.fn();
+		toast("Failed", {
+			type: "error",
+			duration: 0,
+			closable: true,
+			onClose,
+		});
 		await flushPromises();
 
 		const buttons = body().findAll(".ptoast-host button");
@@ -64,6 +70,7 @@ describe("PToastHost", () => {
 			.find('.ptoast-host button[aria-label="common.ui.close"]')
 			.trigger("click");
 		expect(toasts.value.map((t) => t.text)).toEqual(["Removed"]);
+		expect(onClose).toHaveBeenCalledTimes(1);
 	});
 
 	it("keeps a toast while hovered", async () => {

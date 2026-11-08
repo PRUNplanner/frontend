@@ -54,6 +54,11 @@
 	import { usePlanFoldSummaries } from "@/features/planning/usePlanFoldSummaries";
 	import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
 	import { PHONE_WIDTH } from "@/features/planning/layout/planLayout.constants";
+	import {
+		preferencesLayoutStore,
+		sessionLayoutStore,
+		takeTabLayout,
+	} from "@/features/planning/layout/layoutStore";
 	import { usePlanGrid } from "@/features/planning/layout/usePlanGrid";
 	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	import { trackEvent, trackUser } from "@/lib/analytics/useAnalytics";
@@ -343,12 +348,14 @@
 		props
 	);
 
-	// The layout: a preset or Custom Layout, kept for this tab; Custom
+	// The layout: a preset or Custom Layout, kept in the account (in the tab
+	// for a visitor of a shared plan, carried over once they log in); Custom
 	// Layout's phone arrangement below 760 px of grid (the grid tells, this
 	// is the first guess: the page's padding is 2 × 16 px below 768, 2 × 24
 	// above)
+	const inAccount = userStore.isLoggedIn;
 	const layoutPref = usePlanLayoutPreference(
-		undefined,
+		inAccount ? preferencesLayoutStore : sessionLayoutStore,
 		window.innerWidth - (window.innerWidth < 768 ? 32 : 48) < PHONE_WIDTH
 			? "phone"
 			: "wide"
@@ -356,19 +363,71 @@
 	const grid = usePlanGrid(layoutPref, () => userStore.isLoggedIn);
 	// an element new to Custom Layout joined it at the bottom: say so once
 	const toast = useToast();
-	if (layoutPref.added.value.length)
-		toast(
-			t(
-				"plan.layout.new_toast",
-				{
-					names: layoutPref.added.value
-						.map((e) => t(ELEMENTS[e].label))
-						.join(", "),
-				},
-				layoutPref.added.value.length
-			),
-			{ duration: 10000, closable: true }
-		);
+	watch(
+		layoutPref.added,
+		(added) => {
+			if (!added.length) return;
+			for (const element of added)
+				trackEvent("plan:layout_new_element", { element });
+			toast(
+				t(
+					"plan.layout.new_toast",
+					{
+						names: added
+							.map((e) => t(ELEMENTS[e].label))
+							.join(", "),
+					},
+					added.length
+				),
+				{ duration: 10000, closable: true }
+			);
+		},
+		{ immediate: true }
+	);
+	// the layout this tab kept before it was saved to the account, once
+	// the account's own arrived
+	watch(
+		() => inAccount && userStore.preferencesLoaded,
+		(loaded) => {
+			if (!loaded) return;
+			const tab = takeTabLayout();
+			const result = layoutPref.carryOver(tab);
+			if (result === "saved") {
+				trackEvent("plan:layout_carry_over", { result: "saved" });
+				toast(t("plan.layout.carry_over.saved"));
+			} else if (result === "ask" && tab) {
+				const handle = toast(t("plan.layout.carry_over.question"), {
+					duration: 0,
+					closable: true,
+					action: {
+						label: t("plan.layout.carry_over.use_tab"),
+						onClick: () => {
+							layoutPref.applyTabLayout(tab);
+							trackEvent("plan:layout_carry_over", {
+								result: "replaced",
+							});
+							handle.destroy();
+						},
+					},
+					onClose: () =>
+						trackEvent("plan:layout_carry_over", {
+							result: "kept_saved",
+						}),
+				});
+			}
+		},
+		{ immediate: true }
+	);
+	// a layout changed elsewhere: used at once; while customising the bar
+	// asks (and tracks the answer)
+	watch(layoutPref.changedElsewhere, (changed) => {
+		if (!changed || refEditingLayout.value) return;
+		trackEvent("plan:layout_remote_update", {
+			is_customising: false,
+			choice: null,
+		});
+		layoutPref.changedElsewhere.value = false;
+	});
 	// who uses Custom Layout and Tinted parts: person properties, kept as
 	// they change (unchanged values are not resent)
 	watch(
@@ -384,6 +443,11 @@
 	function pickLayout(choice: LayoutChoice): void {
 		layoutPref.pick(choice);
 		trackEvent("plan:layout_preset", { preset: choice });
+	}
+	// a change elsewhere the bar didn't get an answer for is in use anyway
+	function closeCustomise(): void {
+		refEditingLayout.value = false;
+		layoutPref.changedElsewhere.value = false;
 	}
 	function startCustomise(): void {
 		refEditingLayout.value = true;
@@ -700,7 +764,7 @@
 				ref="editor"
 				:pref="layoutPref"
 				:logged-in="userStore.isLoggedIn"
-				@close="refEditingLayout = false" />
+				@close="closeCustomise" />
 			<PlanGrid
 				v-else
 				:layout="grid.layout.value"

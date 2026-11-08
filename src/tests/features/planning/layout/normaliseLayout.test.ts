@@ -201,6 +201,21 @@ describe("normaliseLayout", () => {
 		]);
 	});
 
+	it("fits cap and fixed without a height, as the backend needs", () => {
+		const out = normaliseLayout({
+			cols: 12,
+			gap: 16,
+			items: [
+				{ ...prod, hm: "cap", h: 0 },
+				{ id: "e", els: ["empire"], x: 0, w: 4, y: 1, hm: "fixed" },
+			],
+		});
+		expect(out.items.map(({ hm, h }) => ({ hm, h }))).toEqual([
+			{ hm: "fit", h: 0 },
+			{ hm: "fit", h: 0 },
+		]);
+	});
+
 	it("falls back to the first tab when `active` isn't one", () => {
 		const out = normaliseLayout({
 			items: [{ ...prod, els: ["production", "popr"], active: "empire" }],

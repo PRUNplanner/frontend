@@ -1,4 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
+import { nextTick, ref } from "vue";
+import { createPinia, setActivePinia } from "pinia";
+
+// Stores
+import { useUserStore } from "@/stores/userStore";
 
 // Util
 import { usePlanLayoutPreference } from "@/features/planning/layout/usePlanLayoutPreference";
@@ -7,9 +12,9 @@ import {
 	stackedLayout,
 	wideLayout,
 } from "@/tests/features/planning/layout/layout.fixtures";
-import { sessionLayoutStore } from "@/features/planning/layout/layoutStore";
 import { normaliseLayout } from "@/features/planning/layout/normaliseLayout";
 import { ELEMENT_IDS } from "@/features/planning/layout/elements";
+import { deepClone } from "@/util/data";
 
 // Types & Interfaces
 import type { LayoutStore } from "@/features/planning/layout/layoutStore";
@@ -22,6 +27,18 @@ const memoryStore = (initial: StoredLayout | null = null) => {
 		save: vi.fn((v: StoredLayout) => (value = v)),
 	};
 	return store;
+};
+
+// a store whose value changes elsewhere (another tab, the account's GET)
+const sharedStore = (initial: StoredLayout | null, ready = true) => {
+	const value = ref<StoredLayout | null>(initial);
+	const isReady = ref(ready);
+	const store = {
+		load: () => value.value,
+		save: vi.fn((v: StoredLayout) => (value.value = deepClone(v))),
+		ready: () => isReady.value,
+	} satisfies LayoutStore;
+	return { store, value, isReady };
 };
 
 const none = { wide: [], phone: [] };
@@ -38,8 +55,9 @@ describe("usePlanLayoutPreference", () => {
 		expect(pref.added.value).toEqual([]);
 	});
 
-	it("reads the tab's store by default", () => {
-		sessionLayoutStore.save({
+	it("reads the account's preferences by default", () => {
+		setActivePinia(createPinia());
+		useUserStore().setPreference("planLayout", {
 			v: 1,
 			preset: "custom",
 			custom: { wide: wideLayout(), known },
@@ -210,6 +228,123 @@ describe("usePlanLayoutPreference", () => {
 			});
 			usePlanLayoutPreference(store);
 			expect(store.save).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("the store changed elsewhere", () => {
+		const customised = (): StoredLayout => ({
+			v: 1,
+			preset: "custom",
+			custom: { wide: wideLayout(), known },
+			folded: { wide: ["planet"], phone: [] },
+			tinted: true,
+		});
+
+		it("uses the new layout at once and says so", async () => {
+			const { store, value } = sharedStore(null);
+			const pref = usePlanLayoutPreference(store);
+			value.value = customised();
+			await nextTick();
+			expect(pref.choice.value).toBe("custom");
+			expect(pref.layout.value).toEqual(wideLayout());
+			expect(pref.folded.value).toEqual(["planet"]);
+			expect(pref.tinted.value).toBe(true);
+			expect(pref.changedElsewhere.value).toBe(true);
+			// a copy: the store's value is never changed here
+			pref.setFolded("empire", true);
+			expect(value.value?.folded.wide).toEqual(["planet", "empire"]);
+		});
+
+		it("doesn't take its own saves for a change elsewhere", async () => {
+			const { store } = sharedStore(null);
+			const pref = usePlanLayoutPreference(store);
+			pref.saveCustom({ wide: wideLayout(), phone: null });
+			pref.setFolded("planet", true);
+			pref.setTinted(true);
+			await nextTick();
+			expect(pref.changedElsewhere.value).toBe(false);
+		});
+
+		it("adds new elements only once the store has the latest", async () => {
+			const g = presetLayout("standard");
+			const without = normaliseLayout({
+				...g,
+				items: g.items.filter((i) => !i.els.includes("experts")),
+			});
+			const stale: StoredLayout = {
+				v: 1,
+				preset: "custom",
+				custom: {
+					wide: without,
+					known: ELEMENT_IDS.filter((e) => e !== "experts"),
+				},
+				folded: none,
+			};
+			const { store, value, isReady } = sharedStore(stale, false);
+			const pref = usePlanLayoutPreference(store);
+			expect(pref.added.value).toEqual([]);
+			expect(store.save).not.toHaveBeenCalled();
+			// another device added it already: placed, nothing new here
+			value.value = {
+				...stale,
+				custom: { wide: presetLayout("standard"), known },
+			};
+			isReady.value = true;
+			await nextTick();
+			expect(pref.added.value).toEqual([]);
+			expect(store.save).not.toHaveBeenCalled();
+			expect(pref.wide.value).toEqual(presetLayout("standard"));
+		});
+	});
+
+	describe("carrying over the tab's layout", () => {
+		const tab = (): StoredLayout => ({
+			v: 1,
+			preset: "standard",
+			custom: { wide: wideLayout(), known },
+			folded: { wide: ["planet"], phone: [] },
+			tinted: true,
+		});
+
+		it("does nothing without a tab layout", () => {
+			const store = memoryStore();
+			const pref = usePlanLayoutPreference(store);
+			expect(pref.carryOver(null)).toBeNull();
+			expect(store.save).not.toHaveBeenCalled();
+		});
+
+		it("saves it when the account has none, with folds and Tinted parts", () => {
+			const store = memoryStore();
+			const pref = usePlanLayoutPreference(store);
+			expect(pref.carryOver(tab())).toBe("saved");
+			expect(pref.choice.value).toBe("custom");
+			expect(store.load()).toEqual({ ...tab(), preset: "custom" });
+		});
+
+		it("does nothing when the account has the same one", () => {
+			const store = memoryStore({
+				...tab(),
+				folded: none,
+				tinted: undefined,
+			});
+			const pref = usePlanLayoutPreference(store);
+			expect(pref.carryOver(tab())).toBeNull();
+			expect(store.save).not.toHaveBeenCalled();
+		});
+
+		it("asks when the account has another, and applies the tab's on request", () => {
+			const store = memoryStore({
+				v: 1,
+				preset: "standard",
+				custom: { wide: presetLayout("standard"), known },
+				folded: none,
+			});
+			const pref = usePlanLayoutPreference(store);
+			expect(pref.carryOver(tab())).toBe("ask");
+			expect(store.save).not.toHaveBeenCalled();
+			pref.applyTabLayout(tab());
+			expect(pref.layout.value).toEqual(wideLayout());
+			expect(store.load()).toEqual({ ...tab(), preset: "custom" });
 		});
 	});
 });

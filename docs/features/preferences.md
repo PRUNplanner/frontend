@@ -27,6 +27,10 @@ computed in `usePreferences` / `usePlanPreferences`.
   it; clone first (leaks cause order-dependent test failures).
 - **Sync is fire-and-forget**: errors are reported, a failed PATCH is retried
   once, a pending sync is dropped if its session (refresh token) ended.
+- **`planLayout`** (the plan page layout) is sent whole, read and written by
+  `preferencesLayoutStore` in `planning/layout/layoutStore.ts`; its PATCH
+  schema has no `.catch`, so an unusable layout is never sent as Standard. A
+  failed PATCH that carries it toasts "Layout not saved to your account yet".
 - **The backend removes a deleted plan's overrides**; the frontend must not,
   or a stale tab deletes overrides of plans another tab just created.
 - **Locale** loads before mount (`userStore.initLocale`); change it with

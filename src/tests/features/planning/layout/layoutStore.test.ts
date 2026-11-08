@@ -1,53 +1,91 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { isReactive } from "vue";
+import { createPinia, setActivePinia } from "pinia";
+
+// Stores
+import { useUserStore } from "@/stores/userStore";
 
 // Util
-import { sessionLayoutStore } from "@/features/planning/layout/layoutStore";
-import { STORAGE_KEY } from "@/features/planning/layout/planLayout.constants";
+import {
+	preferencesLayoutStore,
+	sessionLayoutStore,
+	takeTabLayout,
+} from "@/features/planning/layout/layoutStore";
+import {
+	STORAGE_KEY,
+	standardStoredLayout,
+} from "@/features/planning/layout/planLayout.constants";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { wideLayout } from "@/tests/features/planning/layout/layout.fixtures";
 
+// Types & Interfaces
+import type { StoredLayout } from "@/features/planning/layout/planLayout.schemas";
+
+const custom = (): StoredLayout => ({
+	v: 1,
+	preset: "custom",
+	custom: {
+		wide: wideLayout(),
+		phone: { ...presetLayout("standard"), cols: 2 },
+		known: ["planet"],
+	},
+	folded: { wide: ["planet"], phone: [] },
+	tinted: true,
+});
+
+describe("preferencesLayoutStore", () => {
+	beforeEach(() => setActivePinia(createPinia()));
+
+	it("reads Standard from the defaults", () => {
+		expect(preferencesLayoutStore.load()).toEqual(standardStoredLayout());
+	});
+
+	it("writes the planLayout preference, a copy", () => {
+		const userStore = useUserStore();
+		const v = custom();
+		preferencesLayoutStore.save(v);
+		expect(userStore.preferences.planLayout).toEqual(v);
+		v.folded.wide.push("empire");
+		expect(userStore.preferences.planLayout.folded.wide).toEqual([
+			"planet",
+		]);
+		// reactive, so the page follows changes from other tabs
+		expect(isReactive(preferencesLayoutStore.load())).toBe(true);
+	});
+
+	it("is ready once the account's preferences arrived", () => {
+		const userStore = useUserStore();
+		expect(preferencesLayoutStore.ready!()).toBe(false);
+		userStore.preferencesLoaded = true;
+		expect(preferencesLayoutStore.ready!()).toBe(true);
+	});
+});
+
 describe("sessionLayoutStore", () => {
-	it("keeps the layout in the tab's sessionStorage", () => {
-		const stored = {
-			v: 1 as const,
-			preset: "custom" as const,
-			custom: {
-				wide: wideLayout(),
-				phone: { ...presetLayout("standard"), cols: 2 },
-				known: ["planet" as const],
-			},
-			folded: { wide: ["planet" as const], phone: [] },
-		};
-		sessionLayoutStore.save(stored);
-		expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull();
+	it("keeps a visitor's layout in the tab's sessionStorage", () => {
+		sessionLayoutStore.save(custom());
 		expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
 		const out = sessionLayoutStore.load()!;
 		expect(out.custom!.wide).toEqual(wideLayout());
+		expect(out.folded).toEqual(custom().folded);
+		expect(out.tinted).toBe(true);
+	});
+});
+
+describe("takeTabLayout", () => {
+	it("reads the tab's Custom Layout once and clears it", () => {
+		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(custom()));
+		const out = takeTabLayout()!;
+		expect(out.custom!.wide).toEqual(wideLayout());
 		expect(out.custom!.phone!.cols).toBe(2);
 		expect(out.custom!.known).toEqual(["planet"]);
-		expect(out.folded).toEqual(stored.folded);
+		expect(out.folded).toEqual({ wide: ["planet"], phone: [] });
+		expect(out.tinted).toBe(true);
+		expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+		expect(takeTabLayout()).toBeNull();
 	});
 
-	it("reads nothing stored as null", () => {
-		expect(sessionLayoutStore.load()).toBeNull();
-	});
-
-	it("reads broken JSON or an older shape as null", () => {
-		sessionStorage.setItem(STORAGE_KEY, "{oops");
-		expect(sessionLayoutStore.load()).toBeNull();
-		sessionStorage.setItem(
-			STORAGE_KEY,
-			JSON.stringify({ v: 0, rows: [], preset: "standard" })
-		);
-		expect(sessionLayoutStore.load()).toBeNull();
-		sessionStorage.setItem(
-			STORAGE_KEY,
-			JSON.stringify({ v: 1, preset: "mine", custom: null })
-		);
-		expect(sessionLayoutStore.load()).toBeNull();
-	});
-
-	it("fixes up what it reads", () => {
+	it("reads the earlier shape: one grid is Wide, one list Wide's folds", () => {
 		sessionStorage.setItem(
 			STORAGE_KEY,
 			JSON.stringify({
@@ -57,9 +95,7 @@ describe("sessionLayoutStore", () => {
 				folded: ["planet", "nope"],
 			})
 		);
-		const out = sessionLayoutStore.load()!;
-		// the shape before the phone arrangement: its grid is Wide, its
-		// folds Wide's
+		const out = takeTabLayout()!;
 		expect(out.custom!.wide.cols).toBe(24);
 		expect(out.custom!.wide.items.map((i) => i.els)).toEqual([
 			["empire"],
@@ -67,25 +103,21 @@ describe("sessionLayoutStore", () => {
 		]);
 		expect(out.custom!.phone).toBeUndefined();
 		expect(out.folded).toEqual({ wide: ["planet"], phone: [] });
-		// Tinted parts: off is left out
 		expect(out).not.toHaveProperty("tinted");
 	});
 
-	it("keeps Tinted parts when on, drops a bad value", () => {
-		const base = { v: 1, preset: "standard", custom: null, folded: [] };
-		sessionStorage.setItem(
-			STORAGE_KEY,
-			JSON.stringify({ ...base, tinted: true })
-		);
-		expect(sessionLayoutStore.load()).toMatchObject({ tinted: true });
-		sessionStorage.setItem(
-			STORAGE_KEY,
-			JSON.stringify({ ...base, tinted: "yes" })
-		);
-		expect(sessionLayoutStore.load()).toEqual({
-			...base,
-			folded: { wide: [], phone: [] },
-		});
+	it("reads nothing, no Custom Layout, broken JSON or an unknown shape as none, clearing it", () => {
+		expect(takeTabLayout()).toBeNull();
+		for (const raw of [
+			"{oops",
+			JSON.stringify({ v: 0, rows: [], preset: "standard" }),
+			JSON.stringify({ v: 1, preset: "mine", custom: null }),
+			JSON.stringify(standardStoredLayout()),
+		]) {
+			sessionStorage.setItem(STORAGE_KEY, raw);
+			expect(takeTabLayout()).toBeNull();
+			expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+		}
 	});
 
 	it("keeps working with storage blocked", () => {
@@ -97,14 +129,7 @@ describe("sessionLayoutStore", () => {
 			setItem: blocked,
 			removeItem: blocked,
 		});
-		expect(() =>
-			sessionLayoutStore.save({
-				v: 1,
-				preset: "standard",
-				custom: null,
-				folded: { wide: [], phone: [] },
-			})
-		).not.toThrow();
-		expect(sessionLayoutStore.load()).toBeNull();
+		expect(takeTabLayout()).toBeNull();
+		vi.unstubAllGlobals();
 	});
 });

@@ -29,6 +29,8 @@ import {
 	rename,
 	queryCalls,
 	respond,
+	savedLayout,
+	seedLayout,
 	setupPlanViewSuite,
 	stubDownload,
 	supplyCart,
@@ -454,6 +456,14 @@ describe("PlanView", () => {
 	});
 
 	describe("grid", () => {
+		// the account's preferences arrived (the GET answered)
+		const loaded = {
+			login: true,
+			seed: ({ user }: { user: { preferencesLoaded: boolean } }) => {
+				user.preferencesLoaded = true;
+			},
+		};
+
 		const item = (wrapper: VueWrapper, id: string) =>
 			wrapper.find(`[data-item="i-${id}"]`);
 
@@ -494,8 +504,8 @@ describe("PlanView", () => {
 			expect(wrapper.find("[data-auto]").exists()).toBe(false);
 		});
 
-		it("folds an item by its chevron, kept for the tab", async () => {
-			const { wrapper } = await mountView();
+		it("folds an item by its chevron, kept in the account", async () => {
+			const { wrapper } = await mountView({}, { login: true });
 			const fold = () => item(wrapper, "planet").find("[data-fold]");
 			expect(fold().attributes("aria-label")).toBe("plan.layout.fold");
 			expect(fold().attributes("aria-expanded")).toBe("true");
@@ -509,16 +519,14 @@ describe("PlanView", () => {
 				panel: "planet",
 				folded: true,
 			});
-			expect(
-				JSON.parse(sessionStorage.getItem("prunplanner:planLayout:v1")!)
-			).toMatchObject({
+			expect(savedLayout()).toMatchObject({
 				preset: "standard",
 				folded: { wide: ["planet"], phone: [] },
 			});
 
 			// the next plan view (a reload) keeps it folded, still Standard
 			wrapper.unmount();
-			const again = await mountView();
+			const again = await mountView({}, { login: true });
 			expect(
 				again.wrapper
 					.find("[data-item='i-planet']")
@@ -534,18 +542,15 @@ describe("PlanView", () => {
 			).toBeUndefined();
 		});
 
-		it("switches the layout from the Layout menu, kept for the tab", async () => {
+		it("switches the layout from the Layout menu, kept in the account", async () => {
 			// a Custom Layout with Base's parts side by side, not in use
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({
-					v: 1,
-					preset: "standard",
-					custom: stackedLayout(),
-					folded: [],
-				})
-			);
-			const { wrapper } = await mountView();
+			seedLayout({
+				v: 1,
+				preset: "standard",
+				custom: stackedLayout(),
+				folded: [],
+			});
+			const { wrapper } = await mountView({}, { login: true });
 			const menu = () => wrapper.findComponent(PlanLayoutMenu);
 			expect(menu().props()).toMatchObject({
 				choice: "standard",
@@ -577,14 +582,14 @@ describe("PlanView", () => {
 			expect(new Set(tops).size).toBe(1);
 
 			wrapper.unmount();
-			const again = await mountView();
+			const again = await mountView({}, { login: true });
 			expect(
 				again.wrapper.findComponent(PlanLayoutMenu).props("choice")
 			).toBe("custom");
 		});
 
-		it("tints every part from customise mode, kept for the tab", async () => {
-			const { wrapper } = await mountView();
+		it("tints every part from customise mode, kept in the account", async () => {
+			const { wrapper } = await mountView({}, { login: true });
 			const tinted = (w: VueWrapper) =>
 				w
 					.find("[data-item='i-planet']")
@@ -622,35 +627,40 @@ describe("PlanView", () => {
 			expect(tinted(wrapper)).not.toBeNull();
 
 			wrapper.unmount();
-			const again = await mountView();
+			const again = await mountView({}, { login: true });
 			expect(tinted(again.wrapper)).not.toBeNull();
 		});
 
 		it("says once that a new element joined Custom Layout, tagged New", async () => {
 			const { custom } = presetWithout("experts");
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({
-					v: 1,
-					preset: "custom",
-					custom: {
-						wide: custom,
-						known: ELEMENT_IDS.filter((e) => e !== "experts"),
-					},
-					folded: [],
-				})
-			);
-			const { wrapper } = await mountView();
+			seedLayout({
+				v: 1,
+				preset: "custom",
+				custom: {
+					wide: custom,
+					known: ELEMENT_IDS.filter((e) => e !== "experts"),
+				},
+				folded: [],
+			});
+			const { wrapper, user } = await mountView({}, { login: true });
+			// not before the account's preferences arrived: another device
+			// may have added it already
+			expect(mocks.toast).not.toHaveBeenCalled();
+			user.preferencesLoaded = true;
+			await flushPromises();
 			expect(mocks.toast).toHaveBeenCalledWith(
 				"plan.layout.new_toast",
 				expect.objectContaining({ closable: true })
 			);
+			expect(trackEvent).toHaveBeenCalledWith("plan:layout_new_element", {
+				element: "experts",
+			});
 			expect(
 				wrapper.find("[data-item='i-experts'] [data-fresh]").exists()
 			).toBe(true);
 			mocks.toast.mockClear();
 			wrapper.unmount();
-			const again = await mountView();
+			const again = await mountView({}, loaded);
 			expect(mocks.toast).not.toHaveBeenCalledWith(
 				"plan.layout.new_toast",
 				expect.anything()
@@ -664,11 +674,158 @@ describe("PlanView", () => {
 
 		it("tags nothing New while the page shows Standard", async () => {
 			const { custom } = presetWithout("experts");
+			seedLayout({
+				v: 1,
+				preset: "standard",
+				custom: {
+					wide: custom,
+					known: ELEMENT_IDS.filter((e) => e !== "experts"),
+				},
+				folded: [],
+			});
+			const { wrapper } = await mountView({}, loaded);
+			// the toast is about Custom Layout; Standard's parts aren't new
+			expect(mocks.toast).toHaveBeenCalledWith(
+				"plan.layout.new_toast",
+				expect.anything()
+			);
+			expect(wrapper.find("[data-fresh]").exists()).toBe(false);
+		});
+
+		describe("the layout this tab kept before", () => {
+			const tabLayout = {
+				v: 1,
+				preset: "custom",
+				custom: { wide: stackedLayout(), known: ELEMENT_IDS },
+				folded: { wide: ["planet"], phone: [] },
+			};
+			const keep = () =>
+				sessionStorage.setItem(
+					"prunplanner:planLayout:v1",
+					JSON.stringify(tabLayout)
+				);
+
+			it("is saved to an account without Custom Layout, once", async () => {
+				keep();
+				const { wrapper, user } = await mountView({}, loaded);
+				expect(mocks.toast).toHaveBeenCalledWith(
+					"plan.layout.carry_over.saved"
+				);
+				expect(trackEvent).toHaveBeenCalledWith(
+					"plan:layout_carry_over",
+					{
+						result: "saved",
+					}
+				);
+				expect(user.preferences.planLayout).toMatchObject({
+					preset: "custom",
+					folded: { wide: ["planet"], phone: [] },
+				});
+				expect(
+					wrapper.findComponent(PlanLayoutMenu).props("choice")
+				).toBe("custom");
+				expect(
+					sessionStorage.getItem("prunplanner:planLayout:v1")
+				).toBeNull();
+			});
+
+			it("asks when the account has another one", async () => {
+				keep();
+				seedLayout({
+					v: 1,
+					preset: "standard",
+					custom: {
+						wide: presetLayout("standard"),
+						known: ELEMENT_IDS,
+					},
+					folded: [],
+				});
+				const { wrapper, user } = await mountView({}, loaded);
+				const [, options] = mocks.toast.mock.calls.find(
+					([text]) => text === "plan.layout.carry_over.question"
+				)!;
+				expect(options).toMatchObject({ duration: 0, closable: true });
+				expect(user.preferences.planLayout.preset).toBe("standard");
+				// the X keeps the saved one
+				options.onClose();
+				expect(trackEvent).toHaveBeenCalledWith(
+					"plan:layout_carry_over",
+					{
+						result: "kept_saved",
+					}
+				);
+				// the action takes the tab's
+				options.action.onClick();
+				await flushPromises();
+				expect(trackEvent).toHaveBeenCalledWith(
+					"plan:layout_carry_over",
+					{
+						result: "replaced",
+					}
+				);
+				expect(user.preferences.planLayout).toMatchObject({
+					preset: "custom",
+					folded: { wide: ["planet"], phone: [] },
+				});
+				expect(
+					wrapper.findComponent(PlanLayoutMenu).props("choice")
+				).toBe("custom");
+			});
+		});
+
+		it("uses a layout changed in another tab at once", async () => {
+			const { wrapper, user } = await mountView({}, loaded);
+			user.preferences.planLayout = {
+				v: 1,
+				preset: "custom",
+				custom: { wide: stackedLayout(), known: [...ELEMENT_IDS] },
+				folded: { wide: [], phone: [] },
+			};
+			await flushPromises();
+			expect(wrapper.findComponent(PlanLayoutMenu).props("choice")).toBe(
+				"custom"
+			);
+			expect(trackEvent).toHaveBeenCalledWith(
+				"plan:layout_remote_update",
+				{
+					is_customising: false,
+					choice: null,
+				}
+			);
+		});
+
+		it("forgets a change elsewhere the bar wasn't answered for once customising ends", async () => {
+			const { wrapper, user } = await mountView({}, loaded);
+			const open = async () => {
+				wrapper.findComponent(PlanLayoutMenu).vm.$emit("customise");
+				await vi.waitFor(() =>
+					expect(wrapper.find("[data-layout-editor]").exists()).toBe(
+						true
+					)
+				);
+			};
+			await open();
+			user.preferences.planLayout = {
+				v: 1,
+				preset: "standard",
+				custom: null,
+				folded: { wide: ["planet"], phone: [] },
+			};
+			await flushPromises();
+			expect(wrapper.find("[data-elsewhere]").exists()).toBe(true);
+			await wrapper.find("[data-cancel]").trigger("click");
+			await flushPromises();
+			await open();
+			expect(wrapper.find("[data-elsewhere]").exists()).toBe(false);
+		});
+
+		it("keeps a visitor's layout in the tab, new elements added there", async () => {
+			const { custom } = presetWithout("experts");
 			sessionStorage.setItem(
 				"prunplanner:planLayout:v1",
 				JSON.stringify({
 					v: 1,
-					preset: "standard",
+					preset: "custom",
 					custom: {
 						wide: custom,
 						known: ELEMENT_IDS.filter((e) => e !== "experts"),
@@ -676,13 +833,18 @@ describe("PlanView", () => {
 					folded: [],
 				})
 			);
-			const { wrapper } = await mountView();
-			// the toast is about Custom Layout; Standard's parts aren't new
+			const { wrapper, user } = await mountView();
 			expect(mocks.toast).toHaveBeenCalledWith(
 				"plan.layout.new_toast",
 				expect.anything()
 			);
-			expect(wrapper.find("[data-fresh]").exists()).toBe(false);
+			expect(wrapper.find("[data-item='i-experts']").exists()).toBe(true);
+			expect(
+				JSON.parse(sessionStorage.getItem("prunplanner:planLayout:v1")!)
+					.custom.known
+			).toEqual(ELEMENT_IDS);
+			// the account's preference stays as it was
+			expect(user.preferences.planLayout.custom).toBeNull();
 		});
 
 		it("opens customise mode and tracks it", async () => {
@@ -731,16 +893,13 @@ describe("PlanView", () => {
 		});
 
 		it("tracks customising the Custom Layout in use as such", async () => {
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({
-					v: 1,
-					preset: "custom",
-					custom: stackedLayout(),
-					folded: [],
-				})
-			);
-			const { wrapper } = await mountView();
+			seedLayout({
+				v: 1,
+				preset: "custom",
+				custom: stackedLayout(),
+				folded: [],
+			});
+			const { wrapper } = await mountView({}, { login: true });
 			wrapper.findComponent(PlanLayoutMenu).vm.$emit("customise");
 			await flushPromises();
 			expect(trackEvent).toHaveBeenCalledWith(
@@ -892,11 +1051,8 @@ describe("PlanView", () => {
 
 		it("opens a hidden element in a dialog", async () => {
 			const { custom } = presetWithout("visitation-frequency");
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({ v: 1, preset: "custom", custom, folded: [] })
-			);
-			const { wrapper } = await mountView();
+			seedLayout({ v: 1, preset: "custom", custom, folded: [] });
+			const { wrapper } = await mountView({}, { login: true });
 			expect(wrapper.findComponent(PlanLayoutMenu).props("choice")).toBe(
 				"custom"
 			);
@@ -2082,60 +2238,57 @@ describe("PlanView", () => {
 		});
 
 		it("shows Custom Layout's phone arrangement, folds kept for it", async () => {
-			sessionStorage.setItem(
-				"prunplanner:planLayout:v1",
-				JSON.stringify({
-					v: 1,
-					preset: "custom",
-					custom: {
-						wide: presetLayout("standard"),
-						phone: {
-							cols: 2,
-							gap: 16,
-							items: [
-								{
-									id: "i-production",
-									els: ["production"],
-									x: 0,
-									w: 2,
-									y: 0,
-								},
-								{
-									id: "i-kpi-payback",
-									els: ["kpi-payback"],
-									x: 1,
-									w: 1,
-									y: 1,
-								},
-								{
-									id: "i-kpi-area",
-									els: ["kpi-area"],
-									x: 0,
-									w: 1,
-									y: 2,
-								},
-								{
-									id: "i-empire",
-									els: ["empire"],
-									x: 0,
-									w: 2,
-									y: 3,
-								},
-								{
-									id: "i-planet",
-									els: ["planet"],
-									x: 0,
-									w: 2,
-									y: 4,
-								},
-							],
-						},
-						known: ELEMENT_IDS,
+			seedLayout({
+				v: 1,
+				preset: "custom",
+				custom: {
+					wide: presetLayout("standard"),
+					phone: {
+						cols: 2,
+						gap: 16,
+						items: [
+							{
+								id: "i-production",
+								els: ["production"],
+								x: 0,
+								w: 2,
+								y: 0,
+							},
+							{
+								id: "i-kpi-payback",
+								els: ["kpi-payback"],
+								x: 1,
+								w: 1,
+								y: 1,
+							},
+							{
+								id: "i-kpi-area",
+								els: ["kpi-area"],
+								x: 0,
+								w: 1,
+								y: 2,
+							},
+							{
+								id: "i-empire",
+								els: ["empire"],
+								x: 0,
+								w: 2,
+								y: 3,
+							},
+							{
+								id: "i-planet",
+								els: ["planet"],
+								x: 0,
+								w: 2,
+								y: 4,
+							},
+						],
 					},
-					folded: { wide: ["empire"], phone: [] },
-				})
-			);
-			const { wrapper } = await mountView();
+					known: ELEMENT_IDS,
+				},
+				folded: { wide: ["empire"], phone: [] },
+			});
+			const { wrapper } = await mountView({}, { login: true });
 			await flushPromises();
 			// as arranged: Area beside Payback, not a stack
 			expect(box(wrapper, "kpi-payback").x).toBeGreaterThan(0);
@@ -2150,10 +2303,10 @@ describe("PlanView", () => {
 			await wrapper
 				.find("[data-item='i-planet'] [data-fold]")
 				.trigger("click");
-			expect(
-				JSON.parse(sessionStorage.getItem("prunplanner:planLayout:v1")!)
-					.folded
-			).toEqual({ wide: ["empire"], phone: ["planet"] });
+			expect(savedLayout()?.folded).toEqual({
+				wide: ["empire"],
+				phone: ["planet"],
+			});
 		});
 
 		it("switches presets there but offers no customising", async () => {

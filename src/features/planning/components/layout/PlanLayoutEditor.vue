@@ -340,6 +340,29 @@
 			<PButton size="sm" type="primary" data-save @click="editor.save()">
 				{{ t("plan.layout.save") }}
 			</PButton>
+			<!-- the layout changed in another tab or device meanwhile -->
+			<div
+				v-if="pref.changedElsewhere.value"
+				role="alertdialog"
+				:aria-label="t('plan.layout.elsewhere.note')"
+				class="basis-full flex flex-wrap items-center justify-end gap-3 pt-2 border-t border-line text-sm"
+				data-elsewhere>
+				<span>{{ t("plan.layout.elsewhere.note") }}</span>
+				<PButton
+					size="sm"
+					type="secondary"
+					data-elsewhere-keep
+					@click="editor.keepElsewhere">
+					{{ t("plan.layout.keep_editing") }}
+				</PButton>
+				<PButton
+					size="sm"
+					type="primary"
+					data-elsewhere-load
+					@click="editor.loadElsewhere">
+					{{ t("plan.layout.elsewhere.load") }}
+				</PButton>
+			</div>
 			<!-- saving a preset's copy over an existing Custom Layout -->
 			<div
 				v-if="refConfirmReplace"

@@ -19,6 +19,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Default values
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import { reportError } from "@/lib/analytics/useAnalytics";
+import { toast } from "@/ui/useToast";
 
 // Types & Interfaces
 import type { IPlanPreferenceOverview } from "@/features/preferences/userPreferences.types";
@@ -46,7 +47,13 @@ const patchPrefs = async (session: string | undefined, retry = true) => {
 		markPreferencesSynced(patch);
 	} catch (err) {
 		reportError(err);
-		if (retry) syncToBackend(session, false);
+		if (!retry) return;
+		syncToBackend(session, false);
+		// the layout stays in use here; say it isn't in the account yet
+		// (once, not again for the retry)
+		if ("planLayout" in patch) {
+			toast(i18n.global.t("plan.layout.not_saved"), { type: "error" });
+		}
 	}
 };
 const syncToBackend = debounce(patchPrefs, 5000);

@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
+import { StoredLayoutSchema } from "@/features/planning/layout/planLayout.schemas";
+import { standardStoredLayout } from "@/features/planning/layout/planLayout.constants";
 
 export const LoginPayloadSchema = z.object({
 	username: z.string().min(1),
@@ -161,6 +163,8 @@ export const UserPreferenceSchema = z.object({
 	marketCardTrigger: z.enum(["hover", "click"]).catch("hover"),
 	// popularity in the pickers, mix hint and planet insights box
 	planSuggestions: z.boolean().catch(true),
+	// the plan page layout (plan-layouts); missing or unusable: Standard
+	planLayout: StoredLayoutSchema.catch(standardStoredLayout),
 	planOverrides: z
 		.record(z.string(), PreferencePerPlanSchema)
 		.nullable()
@@ -204,5 +208,7 @@ export const UserPreferencePatchSchema =
 		fioRepairPlanLinks: z
 			.record(z.string(), FIORepairPlanLinkSchema.nullable())
 			.optional(),
+		// never sent as Standard because the layout was unusable
+		planLayout: StoredLayoutSchema.optional(),
 	});
 export type UserPreferencePatch = z.input<typeof UserPreferencePatchSchema>;

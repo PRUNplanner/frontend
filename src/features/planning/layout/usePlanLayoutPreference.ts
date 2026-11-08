@@ -1,4 +1,5 @@
-import { computed, type ComputedRef, ref, type Ref } from "vue";
+import { computed, type ComputedRef, ref, type Ref, watch } from "vue";
+import { isEqual } from "lodash-es";
 
 // Types & Interfaces
 import type {
@@ -9,48 +10,54 @@ import type {
 	IArrangements,
 	ICustomLayout,
 } from "@/features/planning/layout/planLayout.types";
-import type { LayoutChoice } from "@/features/planning/layout/planLayout.schemas";
+import type {
+	LayoutChoice,
+	StoredLayout,
+} from "@/features/planning/layout/planLayout.schemas";
 import type { LayoutStore } from "@/features/planning/layout/layoutStore";
 
 // Util
-import { sessionLayoutStore } from "@/features/planning/layout/layoutStore";
+import { preferencesLayoutStore } from "@/features/planning/layout/layoutStore";
 import {
 	addNewElements,
 	normaliseLayout,
 } from "@/features/planning/layout/normaliseLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { ELEMENT_IDS } from "@/features/planning/layout/elements";
+import { deepClone } from "@/util/data";
+
+// the same once stored: undefined keys dropped, key order ignored
+const same = (a: unknown, b: unknown): boolean =>
+	isEqual(JSON.parse(JSON.stringify(a)), JSON.parse(JSON.stringify(b)));
 
 /**
  * The player's plan layout: Standard or Custom Layout (a Wide and maybe a
  * Phone arrangement), which items are folded per arrangement, and Tinted
- * parts, read from and written to a LayoutStore (this tab for now). Elements
- * new to Custom Layout join it at the bottom once (`added`).
+ * parts, read from and written to a LayoutStore (the account, or the tab for
+ * a visitor). A change that reaches the store from elsewhere (another tab, the
+ * account's preferences arriving) is used at once (`changedElsewhere`).
+ * Elements new to Custom Layout join it at the bottom once (`added`), when
+ * the store has the latest, so another device's addition isn't repeated.
  * @author jplacht
  *
  * @param {LayoutStore} store Where it is kept
  * @param {Arrangement} start The arrangement on screen at first
  */
 export function usePlanLayoutPreference(
-	store: LayoutStore = sessionLayoutStore,
+	store: LayoutStore = preferencesLayoutStore,
 	start: Arrangement = "wide"
 ) {
-	const stored = store.load();
-	const custom: Ref<ICustomLayout | null> = ref(stored?.custom ?? null);
-	const choice: Ref<LayoutChoice> = ref(
-		stored?.preset === "custom" && !custom.value
-			? "standard"
-			: (stored?.preset ?? "standard")
-	);
-	const foldedBy: Ref<FoldedByArrangement> = ref(
-		stored?.folded ?? { wide: [], phone: [] }
-	);
+	const custom: Ref<ICustomLayout | null> = ref(null);
+	const choice: Ref<LayoutChoice> = ref("standard");
+	const foldedBy: Ref<FoldedByArrangement> = ref({ wide: [], phone: [] });
 	// Tinted parts: a lighter background on every part, both arrangements
-	const tinted: Ref<boolean> = ref(stored?.tinted ?? false);
+	const tinted: Ref<boolean> = ref(false);
 	// the arrangement on screen: the page tells (its grid's width)
 	const arrangement: Ref<Arrangement> = ref(start);
 	// elements new to Custom Layout, added at its bottom this session
 	const added: Ref<ElementId[]> = ref([]);
+	// the stored layout changed elsewhere and is used here now
+	const changedElsewhere: Ref<boolean> = ref(false);
 
 	/** Custom Layout's wide arrangement, or Standard */
 	const wide: ComputedRef<GridLayout> = computed(() =>
@@ -70,24 +77,80 @@ export function usePlanLayoutPreference(
 		() => foldedBy.value[arrangement.value]
 	);
 
-	function persist(): void {
-		store.save({
+	function snapshot(): StoredLayout {
+		return {
 			v: 1,
 			preset: choice.value,
 			custom: custom.value,
 			folded: foldedBy.value,
 			...(tinted.value ? { tinted: true as const } : {}),
-		});
+		};
+	}
+	function persist(): void {
+		store.save(snapshot());
 	}
 
-	// a custom layout meets the elements added since it was saved
-	if (custom.value) {
+	/** Uses a stored layout (a copy: the store's value is never changed here) */
+	function adopt(stored: StoredLayout | null): void {
+		const next = stored ? deepClone(stored) : null;
+		custom.value = next?.custom ?? null;
+		choice.value =
+			next?.preset === "custom" && custom.value ? "custom" : "standard";
+		foldedBy.value = next?.folded ?? { wide: [], phone: [] };
+		tinted.value = next?.tinted ?? false;
+	}
+	adopt(store.load());
+
+	/** A custom layout meets the elements added since it was saved */
+	function meetNewElements(): void {
+		if (!custom.value) return;
 		const next = addNewElements(custom.value);
 		if (next.added.length || !custom.value.known) {
 			custom.value = next.custom;
-			added.value = next.added;
+			if (next.added.length) added.value = next.added;
 			persist();
 		}
+	}
+
+	// the store's latest: at once for the tab, when the account's
+	// preferences arrive, and whenever another tab changes them. Its own
+	// saves come back equal and change nothing.
+	watch(
+		() => [store.ready?.() ?? true, store.load()] as const,
+		([ready, stored]) => {
+			if (!ready) return;
+			if (stored && !same(stored, snapshot())) {
+				adopt(stored);
+				changedElsewhere.value = true;
+			}
+			meetNewElements();
+		},
+		{ deep: true, immediate: true }
+	);
+
+	/**
+	 * The Custom Layout this tab kept before layouts were saved to the
+	 * account: taken when the account has none, a question when it has
+	 * another one
+	 *
+	 * @param {StoredLayout | null} tab The tab's layout (takeTabLayout)
+	 * @returns {"saved" | "ask" | null} Saved to the account, or the player chooses (applyTabLayout)
+	 */
+	function carryOver(tab: StoredLayout | null): "saved" | "ask" | null {
+		if (!tab?.custom) return null;
+		if (!custom.value) {
+			applyTabLayout(tab);
+			return "saved";
+		}
+		const grids = (c: ICustomLayout) => ({ wide: c.wide, phone: c.phone });
+		return same(grids(tab.custom), grids(custom.value)) ? null : "ask";
+	}
+
+	/** The tab's Custom Layout replaces the saved one, with its folds and Tinted parts */
+	function applyTabLayout(tab: StoredLayout): void {
+		adopt({ ...tab, preset: "custom" });
+		persist();
+		meetNewElements();
 	}
 
 	/** Use Standard, or Custom Layout when there is one */
@@ -138,7 +201,10 @@ export function usePlanLayoutPreference(
 		tinted,
 		arrangement,
 		added,
+		changedElsewhere,
 		pick,
+		carryOver,
+		applyTabLayout,
 		saveCustom,
 		setFolded,
 		setTinted,
