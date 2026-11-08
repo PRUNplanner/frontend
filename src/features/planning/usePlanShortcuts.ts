@@ -35,7 +35,7 @@ function isTextField(target: EventTarget | null): boolean {
  *
  * @param {IPlanCalculation} calculation The plan's calculation (history)
  * @param {IPlanViewProps} props The view's props
- * @param {{ canSave: ComputedRef<boolean>; save: (trigger: "shortcut") => void; openSaveAsModal: () => void; openSaveMenu: () => void; readOnly: () => boolean }} saving Save actions, read-only while previewing a version
+ * @param {{ canSave: ComputedRef<boolean>; save: (trigger: "shortcut") => void; openSaveAsModal: () => void; openSaveMenu: () => void; readOnly: () => boolean; undoLayout?: () => boolean }} saving Save actions, read-only while previewing a version, layout undo while customising
  */
 export function usePlanShortcuts(
 	calculation: IPlanCalculation,
@@ -46,6 +46,8 @@ export function usePlanShortcuts(
 		openSaveAsModal: () => void;
 		openSaveMenu: () => void;
 		readOnly: () => boolean;
+		// customise mode takes Ctrl/Cmd+Z: true when it did
+		undoLayout?: () => boolean;
 	}
 ) {
 	const userStore = useUserStore();
@@ -96,6 +98,13 @@ export function usePlanShortcuts(
 				if (e.altKey) saving.openSaveMenu();
 				else saving.save("shortcut");
 			}
+		} else if (
+			key === "z" &&
+			!isTextField(e.target) &&
+			// customising: Shift+Z too, so the plan never changes under it
+			saving.undoLayout?.()
+		) {
+			e.preventDefault();
 		} else if (
 			key === "z" &&
 			!saving.readOnly() &&

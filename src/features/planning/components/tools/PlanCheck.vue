@@ -208,6 +208,7 @@
 			</h2>
 			<PSegmented
 				v-if="views.length > 1"
+				block="phone"
 				:value="shownView"
 				:options="
 					views.map((v) => ({

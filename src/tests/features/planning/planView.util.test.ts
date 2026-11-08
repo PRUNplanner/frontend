@@ -1,30 +1,10 @@
 import { describe, it, expect } from "vitest";
 
 import {
-	foldedPanes,
 	materialIOCsv,
 	materialIOTotals,
-	type PlanTool,
 } from "@/features/planning/planView.util";
 import { io } from "@/tests/features/planning/usePlanCalculation.fixtures";
-
-describe("foldedPanes", () => {
-	it("folds Base on the production list too (only 81–100rem, by CSS)", () => {
-		expect(foldedPanes(null)).toStrictEqual({ base: true, io: false });
-	});
-
-	it.each<[PlanTool, boolean]>([
-		["construction-cart", false],
-		["supply-cart", false],
-		["visitation-frequency", false],
-		["popr", false],
-		["repair-analysis", true],
-		["profit-breakdown", true],
-		["plan-check", true],
-	])("%s folds Base, Material I/O: %s", (tool, io) => {
-		expect(foldedPanes(tool)).toStrictEqual({ base: true, io });
-	});
-});
 
 describe("materialIOTotals", () => {
 	it("splits exports and imports by the delta's sign", () => {

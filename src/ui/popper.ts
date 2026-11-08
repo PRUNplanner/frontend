@@ -13,7 +13,7 @@ import { createPopper, type Placement } from "@popperjs/core";
  * @param {number} offset Gap to the reference in px
  * @param {Placement[]} [fallbacks] sides to try in order when the panel
  *  doesn't fit (default: the opposite side)
- * @returns {{ destroy }} stops positioning
+ * @returns {{ destroy, update }} stops positioning; places it again
  */
 export function createFloating(
 	reference: Element,
@@ -21,7 +21,7 @@ export function createFloating(
 	placement: Placement,
 	offset: number,
 	fallbacks?: Placement[]
-): { destroy: () => void } {
+): { destroy: () => void; update: () => void } {
 	const popper = createPopper(reference, floating, {
 		placement,
 		strategy: "fixed",
@@ -48,6 +48,7 @@ export function createFloating(
 	ro.observe(floating);
 
 	return {
+		update: () => void popper.update(),
 		destroy: () => {
 			ro.disconnect();
 			popper.destroy();

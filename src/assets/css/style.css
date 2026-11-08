@@ -20,7 +20,10 @@
 	--font-mono: "Roboto Mono", monospace;
 
 	/* the UI kit's look (src/ui), one value per meaning */
-	/* panels: popover, menu, select list, tooltip, toast, modal, drawer */
+	/* panels: popover, menu, select list, tooltip, toast, modal, drawer;
+	   plan parts with Tinted parts on, which set --app-bg to it, so what
+	   inside is drawn in the page colour (table stripes, sticky cells)
+	   follows */
 	--color-surface: #151515;
 	/* table header */
 	--color-surface-sunken: #000000;

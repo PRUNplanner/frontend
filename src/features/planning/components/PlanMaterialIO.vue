@@ -152,11 +152,11 @@
 <template>
 	<!-- numbers never break mid-digit in the narrow side column; titles
 		wrap there instead of running into their sort arrows. In, Out and Δ
-		always show: a pane narrower than the columns scrolls sideways;
-		a phone shares its width instead. The scroll box fades out at the
+		always show: a box narrower than the columns scrolls sideways,
+		on a phone too. The scroll box fades out at the
 		bottom, so a cut-off row reads as more to scroll -->
 	<PDataTable
-		class="max-md:[&_.p-data-table-table]:min-w-0! [&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)] [&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		class="[&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)] [&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"
@@ -236,7 +236,7 @@
 		{{ summary }}
 		<button
 			type="button"
-			class="inline-flex items-center min-h-11 sm:min-h-6 text-link hover:underline cursor-pointer"
+			class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-link hover:underline cursor-pointer"
 			@click="emit('open:planCheck')">
 			{{ t("cx.market_flags.summary.link") }}
 		</button>

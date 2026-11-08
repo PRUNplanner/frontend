@@ -14,36 +14,18 @@ export type PlanTool =
 export type BaseSection =
 	"empire" | "planet" | "workforce" | "housing" | "experts";
 
+// which materials Material I/O and the Supply Cart show, in this order
+export const IO_SOURCES = ["all", "production", "workforce"] as const;
+export type IOSource = (typeof IO_SOURCES)[number];
+
+// the filter bar of Material I/O and the Supply Cart: on a touch screen
+// each segment is a whole 44 px target
+export const FILTER_BAR =
+	"flex flex-wrap items-center gap-2 [&_[role=group]>button]:px-2 [&_[role=group]>button]:min-w-6 pointer-coarse:[&_[role=group]>button]:h-11 pointer-coarse:[&_[role=group]>button]:min-w-11";
+
 // the tiles of the results bar, each opens where its figure comes from
 export type ResultTile =
 	"profit" | "payback" | "area" | "storage" | "workforce";
-
-// tools wide enough to need Material I/O's room too
-const WIDE_TOOLS: PlanTool[] = [
-	"repair-analysis",
-	"profit-breakdown",
-	"plan-check",
-];
-
-/**
- * Which side panes fold: Base always (the CSS keeps that to 81–100rem of
- * page width, where Production would get too narrow next to both panes),
- * Material I/O for the wide tools
- *
- * @author jplacht
- *
- * @param {PlanTool | null} tool Open tool, null for the production list
- * @returns {{ base: boolean; io: boolean }} Folded panes
- */
-export function foldedPanes(tool: PlanTool | null): {
-	base: boolean;
-	io: boolean;
-} {
-	return {
-		base: true,
-		io: tool !== null && WIDE_TOOLS.includes(tool),
-	};
-}
 
 /**
  * Exported and imported value per day of Material I/O rows

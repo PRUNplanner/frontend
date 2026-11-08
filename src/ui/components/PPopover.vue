@@ -72,7 +72,7 @@
 		if (trigger === "click") show.value = false;
 	}
 
-	let floating: { destroy: () => void } | null = null;
+	let floating: ReturnType<typeof createFloating> | null = null;
 	function sync(): void {
 		const open = show.value;
 		floating?.destroy();
@@ -95,7 +95,10 @@
 	}
 
 	// after the render, when the trigger and the panel exist
-	watch([show, () => anchor], sync, { flush: "post" });
+	watch([show, () => anchor, () => placement], sync, { flush: "post" });
+
+	// places the panel again, after its trigger moved
+	defineExpose({ update: () => floating?.update() });
 	onMounted(sync);
 
 	onBeforeUnmount(() => {

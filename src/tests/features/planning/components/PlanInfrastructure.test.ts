@@ -252,4 +252,13 @@ describe("PlanInfrastructure", () => {
 			(numberInput(wrapper, "HBB").element as HTMLInputElement).value
 		).toBe("42");
 	});
+
+	it("shows the habitation buttons while customising (showAll)", async () => {
+		const { wrapper } = await mountInfrastructure({
+			autoOptimizeHabs: true,
+			showAll: true,
+		});
+		expect(costButton(wrapper)).toBeDefined();
+		expect(areaButton(wrapper)).toBeDefined();
+	});
 });

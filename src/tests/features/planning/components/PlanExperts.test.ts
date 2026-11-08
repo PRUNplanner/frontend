@@ -212,4 +212,21 @@ describe("PlanExperts", () => {
 			).toEqual([disabled, disabled]);
 		}
 	);
+
+	it("shows every field while customising (showAll), without the button", async () => {
+		const { wrapper } = await mountExperts({ showAll: true });
+		expect(names(wrapper)).toHaveLength(9);
+		expect(moreButton(wrapper).exists()).toBe(false);
+	});
+
+	it("puts 2 experts per line from about 450 px, 3 from 680", async () => {
+		const { wrapper } = await mountExperts();
+		// minmax(210px): 2 × 210 + 24 gap = 444 px, 3 × 210 + 2 × 24 = 678 px
+		expect(wrapper.find("div").classes()).toEqual(
+			expect.arrayContaining([
+				"grid-cols-[repeat(auto-fill,minmax(min(210px,100%),1fr))]",
+				"gap-x-6",
+			])
+		);
+	});
 });

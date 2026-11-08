@@ -97,6 +97,7 @@
 			:key="tab.key"
 			type="button"
 			:aria-pressed="active === tab.key ? 'true' : 'false'"
+			:data-tab="tab.key"
 			class="flex items-center gap-1.5 h-10 pointer-coarse:h-11 px-2.5 @max-[64rem]:px-2 border-b-2 cursor-pointer text-nowrap hover:text-white"
 			:class="
 				active === tab.key

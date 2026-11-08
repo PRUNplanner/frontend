@@ -99,17 +99,19 @@
 <template>
 	<div class="flex flex-col gap-3 text-sm">
 		<!-- label left, control right, like Corp. HQ and Permits below -->
-		<label class="flex items-center justify-between gap-3">
+		<label
+			class="flex items-center justify-between gap-3 @max-[199px]:flex-col @max-[199px]:items-start">
 			{{ t("plan.components.bonuses.cogc") }}
 			<PSelect
 				v-model:value="cogc"
 				:aria-label="t('plan.components.bonuses.cogc')"
 				size="sm"
-				class="flex-1 min-w-0 max-w-44"
+				class="flex-1 min-w-0 max-w-44 @max-[199px]:w-full @max-[199px]:max-w-none"
 				:disabled="disabled"
 				:options="cogcOptions" />
 		</label>
-		<div class="flex items-center justify-between gap-3">
+		<div
+			class="flex items-center justify-between gap-3 @max-[199px]:flex-col @max-[199px]:items-start">
 			<PTooltip>
 				<template #trigger>
 					<span>{{ t("plan.components.bonuses.corp_hq") }}</span>
