@@ -71,6 +71,7 @@
 			"inputs": "Produktions-Inputs",
 			"workforce": "Belegschaft",
 			"degradation": "Abnutzung",
+			"fees": "Production fees",
 			"profit": "Profit",
 			"uncovered": "Nicht gedeckte Kosten"
 		},
@@ -79,6 +80,7 @@
 			"inputs": "Inputs {pct}",
 			"workforce": "Belegschaft {pct}",
 			"degradation": "Abnutzung {pct}",
+			"fees": "Fees {pct}",
 			"profit": "Profit {pct}",
 			"uncovered": "Nicht gedeckt {pct}",
 			"of_cost": "Anteil der Kosten, den der Umsatz nicht deckt"
