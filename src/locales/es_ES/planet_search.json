@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "{n} planeta más coincide con \"{text}\", pero está oculto por los filtros: | {n} planetas más coinciden con \"{text}\", pero están ocultos por los filtros:",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label} (+{n})",
 		"show_all": "Mostrar los {n}"
 	},
