@@ -23,7 +23,10 @@
 
 	// Types & Interfaces
 	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+	import type {
+		PlanSummary,
+		PlanVersionListItem,
+	} from "@/features/api/schemas/planningData.schemas";
 	import type { Planet } from "@/features/api/schemas/gameData.schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
@@ -154,7 +157,12 @@
 		canRedo,
 		handleChangePlanName,
 		traceCalculation,
+		planSummary,
 	} = calculation;
+
+	// a new share stores the summary only when it matches the saved plan
+	const sharedSummary = (): PlanSummary | undefined =>
+		modified.value ? undefined : planSummary();
 
 	// what save sends, with the plan's id, empires and version
 	const calcDebugPlan = computed((): ICalcDebugPlan => ({
@@ -721,7 +729,8 @@
 					</PButton>
 					<SharingModal
 						v-model:show="refShowShare"
-						:plan-uuid="refPlanData.uuid" />
+						:plan-uuid="refPlanData.uuid"
+						:summary="sharedSummary" />
 				</template>
 				<PlanLayoutMenu
 					v-if="inAccount"

@@ -142,6 +142,28 @@ export const PlanEmpireSchema = z.object({
 });
 export type PlanEmpire = z.infer<typeof PlanEmpireSchema>;
 
+/**
+ * The plan's numbers at save time, stored for link previews of shared
+ * plans (all money per day). price_basis: the CX exchange option the sold
+ * outputs are priced with (e.g. "CI1_30D"), "CUSTOM" for fixed prices.
+ */
+export const PlanSummarySchema = z.object({
+	v: z.literal(1),
+	profit: z.number(),
+	revenue: z.number(),
+	cost: z.number(),
+	payback_days: z.number().min(0).nullable(),
+	plan_cost: z.number().min(0),
+	area_used: z.number().int().min(0),
+	area_total: z.number().int().min(0),
+	outputs: z
+		.array(z.object({ ticker: z.string(), per_day: z.number().min(0) }))
+		.max(4),
+	price_basis: z.string().nullable(),
+	cogc: PlanCOGCProgramSchema.exclude(["---"]).nullable(),
+});
+export type PlanSummary = z.infer<typeof PlanSummarySchema>;
+
 export const PlanSchema = z.object({
 	uuid: z.uuid(),
 	plan_name: z.string(),
@@ -153,6 +175,10 @@ export const PlanSchema = z.object({
 	empires: z.array(PlanEmpireSchema).optional(),
 	// save version, the shared payload has none
 	modified_at: z.string().optional(),
+	// null until a save sent one, absent in the shared payload; a newer
+	// version this build can't read is null, never a failed plan load
+	plan_summary: PlanSummarySchema.nullish().catch(null),
+	plan_summary_at: z.string().nullish(),
 });
 export type Plan = z.infer<typeof PlanSchema>;
 
@@ -178,6 +204,8 @@ export const PlanCreateDataSchema = PlanSchema.pick({
 }).extend({
 	empire_uuid: z.uuid().optional(),
 	plan_permits_used: z.number(),
+	// left out: the stored summary stays
+	plan_summary: PlanSummarySchema.optional(),
 });
 export type PlanCreateData = z.input<typeof PlanCreateDataSchema>;
 

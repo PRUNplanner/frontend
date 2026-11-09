@@ -12,6 +12,7 @@ import {
 	type SharedCloneResponse,
 	type SharedCreateResponse,
 } from "@/features/api/schemas/sharingData.schemas";
+import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
 
 /**
  * Fetches all shared plan information for user from API
@@ -45,15 +46,19 @@ export async function callDeleteSharing(sharedUuid: string): Promise<void> {
  * @export
  * @async
  * @param {string} planUuid Plan Uuid
+ * @param {PlanSummary} [planSummary] The plan's numbers, stored for its link
+ * preview
  * @returns {Promise<SharedCreateResponse>} Sharing Information
  */
 export async function callCreateSharing(
-	planUuid: string
+	planUuid: string,
+	planSummary?: PlanSummary
 ): Promise<SharedCreateResponse> {
 	return apiService.post(
 		`/planning/shared/`,
 		{
 			plan: planUuid,
+			plan_summary: planSummary,
 		},
 		SharedCreatePayloadSchema,
 		SharedCreateResponseSchema

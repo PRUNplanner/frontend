@@ -9,7 +9,7 @@ import type {
 } from "@/features/api/schemas/planningData.schemas";
 
 /** the plan as save sends it, with its id, empires and save version */
-export interface ICalcDebugPlan extends PlanCreateData {
+export interface ICalcDebugPlan extends Omit<PlanCreateData, "plan_summary"> {
 	uuid: string | undefined;
 	empires?: PlanEmpire[];
 	modified_at?: string;

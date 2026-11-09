@@ -12,6 +12,9 @@
 	import { PButton, PModal, useToast } from "@/ui";
 	import { useI18n } from "vue-i18n";
 
+	// Types & Interfaces
+	import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
+
 	const { t } = useI18n();
 	const toast = useToast();
 
@@ -24,6 +27,12 @@
 			type: String as PropType<"sm" | "md">,
 			required: false,
 			default: "md",
+		},
+		// the saved plan's numbers for its link preview, read on create
+		summary: {
+			type: Function as PropType<() => PlanSummary | undefined>,
+			required: false,
+			default: undefined,
 		},
 	});
 
@@ -52,7 +61,7 @@
 	async function doCreateSharing(): Promise<void> {
 		isCreating.value = true;
 		try {
-			await createSharing();
+			await createSharing(props.summary?.());
 			trackEvent("plan:share_create");
 		} catch (err) {
 			reportError(err);

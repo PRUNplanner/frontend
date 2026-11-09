@@ -76,6 +76,7 @@ import type {
 	PlanSaveCreateResponse,
 	PlanSaveData,
 	PlanShare,
+	PlanSummary,
 	PlanVersion,
 	PlanVersionListItem,
 } from "@/features/api/schemas/planningData.schemas";
@@ -266,8 +267,12 @@ export const planningQueries = {
 	CreateSharedPlan: defineMutation({
 		fetchFn: async (params: {
 			planUuid: string;
+			planSummary?: PlanSummary;
 		}): Promise<SharedCreateResponse> => {
-			const data = await callCreateSharing(params.planUuid);
+			const data = await callCreateSharing(
+				params.planUuid,
+				params.planSummary
+			);
 			await dropShared();
 			return data;
 		},

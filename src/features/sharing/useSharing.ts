@@ -9,6 +9,9 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Lib
 import config from "@/lib/config";
 
+// Types & Interfaces
+import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
+
 export function useSharing(planUuid: string) {
 	const planningStore = usePlanningStore();
 
@@ -81,13 +84,16 @@ export function useSharing(planUuid: string) {
 	 * @author jplacht
 	 *
 	 * @async
+	 * @param {PlanSummary} [planSummary] The saved plan's numbers, for its
+	 * link preview
 	 * @returns {Promise<void>}
 	 */
-	async function createSharing(): Promise<void> {
+	async function createSharing(planSummary?: PlanSummary): Promise<void> {
 		if (!isShared.value) {
 			// call sharing creation
 			await useQuery("CreateSharedPlan", {
 				planUuid: planUuid,
+				planSummary,
 			}).execute();
 			await refreshStore();
 		}

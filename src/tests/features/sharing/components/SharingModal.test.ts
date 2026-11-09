@@ -103,10 +103,26 @@ describe("SharingModal", () => {
 			expect(dialog()?.textContent).toContain(`/${SHARE}`);
 		});
 
-		expect(callCreateSharing).toHaveBeenCalledWith(PLAN);
+		expect(callCreateSharing).toHaveBeenCalledWith(PLAN, undefined);
 		expect(trackEvent).toHaveBeenCalledWith("plan:share_create");
 		expect(dialog()?.textContent).toContain("42 views");
 		expect(button(CREATE)).toBeUndefined();
+	});
+
+	it("sends the plan's summary with the new link", async () => {
+		const summary = { v: 1, profit: 5 };
+		vi.mocked(callCreateSharing).mockResolvedValue({
+			uuid: SHARE,
+			created_at: new Date(),
+			view_count: 0,
+		});
+		vi.mocked(callGetSharedList).mockResolvedValue([sharedEntry]);
+		await mountModal({ summary: () => summary });
+
+		button(CREATE)!.click();
+		await vi.waitFor(() => {
+			expect(callCreateSharing).toHaveBeenCalledWith(PLAN, summary);
+		});
 	});
 
 	it("says so when creating fails and lets the user retry", async () => {

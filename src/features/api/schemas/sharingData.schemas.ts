@@ -2,6 +2,7 @@ import { z } from "zod";
 
 // Util
 import { PositiveOrZeroNumber } from "@/util/zodValidators";
+import { PlanSummarySchema } from "@/features/api/schemas/planningData.schemas";
 
 export const SharedSchema = z.object({
 	uuid: z.uuid(),
@@ -22,4 +23,9 @@ export const SharedCloneResponseSchema = z.object({
 });
 export type SharedCloneResponse = z.infer<typeof SharedCloneResponseSchema>;
 
-export const SharedCreatePayloadSchema = SharedSchema.pick({ plan: true });
+export const SharedCreatePayloadSchema = SharedSchema.pick({
+	plan: true,
+}).extend({
+	// stored on the plan for its link preview
+	plan_summary: PlanSummarySchema.optional(),
+});
