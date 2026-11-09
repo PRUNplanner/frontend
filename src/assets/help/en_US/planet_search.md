@@ -1,6 +1,6 @@
 **Planet Search** finds a planet you already know, or places for new production. Every change to a filter updates the results right away.
 
-**Name or ID.** Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. The name is one more filter: it combines with everything set in the filter panel. When the filters hide planets that match the name, a note above the results says how many and offers up to three changes that would show more of them, each with the number of planets it adds. *Show all* keeps the name and resets every other filter, so you see every planet matching it.
+**Name or ID.** Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. *Apply filters* combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. *Show all* pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
 
 **Materials.** Each group matches *any of* or *all of* its materials, and the groups combine with *all groups* or *any group*. That covers searches like "(FEO and H2O) or (MAG and O)". Every material can have a minimum daily extraction in units per day.
 
