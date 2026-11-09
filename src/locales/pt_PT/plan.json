@@ -122,6 +122,7 @@
 				"inputs": "Production inputs",
 				"workforce": "Workforce",
 				"degradation": "Degradation",
+				"fees": "Production fees",
 				"unattributed": "Not attributed",
 				"profit": "Daily profit"
 			},
@@ -139,7 +140,7 @@
 			"key_figures": {
 				"title": "Key figures",
 				"output": "Output value",
-				"costs": "Costs incl. degradation",
+				"costs": "Costs incl. degradation and fees",
 				"margin": "Margin",
 				"earner": "brings in {share} of the output value. Its price decides this plan.",
 				"cost": "is the largest cost at {share} of the output value.",
@@ -348,7 +349,7 @@
 		"cogm": {
 			"title": "Cost of Goods Manufactured",
 			"cogm": "@:terms.cogm",
-			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
@@ -380,6 +381,7 @@
 				"percent_day": "% / day",
 				"efficiency": "Efficiency",
 				"degradation": "Degradation",
+				"production_fee": "Production fee / run",
 				"cost": "@:terms.cost",
 				"materials": "@:terms.materials_plural",
 				"input_total": "Input Total",
@@ -552,6 +554,7 @@
 					"output": "Output value",
 					"cost": "Daily cost",
 					"degradation": "Degradation",
+					"fees": "Production fees",
 					"planCost": "Plan cost",
 					"roi": "ROI",
 					"profitArea": "Profit / Area",
@@ -681,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
 		"payback": "Payback",
 		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
@@ -833,6 +836,7 @@
 		"exports": "Exports",
 		"imports": "Imports",
 		"degradation": "Degradation",
+		"production_fees": "Production fees",
 		"profit": "Profit / day"
 	},
 	"layout": {
