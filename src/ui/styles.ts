@@ -109,9 +109,9 @@ export const checkboxConfig: PCheckboxConfig = {
 
 export const buttonGroupConfig: PButtonGroupConfig = {
 	horizontal:
-		"inline-flex child:rounded-none [&_button]:first:rounded-l-control [&_button]:last:rounded-r-control",
+		"inline-flex child:rounded-none [&_button]:rounded-none [&>button:first-child]:rounded-l-control [&>:first-child_button]:rounded-l-control [&>button:last-child]:rounded-r-control [&>:last-child_button]:rounded-r-control",
 	vertical:
-		"inline-flex flex-col child:rounded-none [&_button]:first:rounded-t-control [&_button]:last:rounded-b-control",
+		"inline-flex flex-col child:rounded-none [&_button]:rounded-none [&>button:first-child]:rounded-t-control [&>:first-child_button]:rounded-t-control [&>button:last-child]:rounded-b-control [&>:last-child_button]:rounded-b-control",
 };
 
 /** one look for every floating panel: popover, menu, select list, tooltip, toast */
