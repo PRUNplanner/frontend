@@ -18,6 +18,7 @@ import {
 	filterPlanets,
 	indexMaterials,
 	isSectionWide,
+	nameOnlyFilter,
 	nameSearchNote,
 	parseRefKey,
 	planetJumps,
@@ -563,12 +564,12 @@ describe("planet search engine", () => {
 				expect(h.filter.text).toBe("KI-");
 			}
 
-			expect(ids(filterPlanets(index, note.showAll, realCtx))).toEqual(
-				ids(nameMatches)
-			);
+			expect(
+				ids(filterPlanets(index, nameOnlyFilter(f), realCtx))
+			).toEqual(ids(nameMatches));
 		});
 
-		it("name note: show all resets everything but the name", () => {
+		it("name only: resets everything but the name", () => {
 			const f: PlanetSearchFilter = {
 				...defaultFilter(),
 				text: " KI- ",
@@ -583,7 +584,7 @@ describe("planet search engine", () => {
 			const note = nameSearchNote(index, f, realCtx)!;
 			expect(count(f)).toBe(0);
 			expect(note.hidden).toBe(note.matches);
-			expect(note.showAll).toEqual({
+			expect(nameOnlyFilter(f)).toEqual({
 				...defaultFilter(),
 				text: " KI- ",
 				surface: ["rocky", "gaseous"],

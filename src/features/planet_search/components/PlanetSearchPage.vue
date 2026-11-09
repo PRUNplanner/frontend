@@ -36,6 +36,7 @@
 		filterPlanets,
 		indexMaterials,
 		materialMax,
+		nameOnlyFilter,
 		nameSearchNote,
 		refKey,
 		restrictionHints,
@@ -304,8 +305,26 @@
 		]
 	);
 
+	const nameNote = computed(() =>
+		nameSearchNote(index.value, filter.value, ctx.value)
+	);
+	// a name search shows every planet matching it until the user applies
+	// the filters again; a new search starts without them
+	const applyFilters = ref(false);
+	watch(
+		() => !filter.value.text.trim(),
+		(empty) => empty && (applyFilters.value = false)
+	);
+	const filtersPaused = computed(
+		() => !!nameNote.value && !applyFilters.value
+	);
+
 	const matched = computed(() =>
-		filterPlanets(index.value, filter.value, ctx.value)
+		filterPlanets(
+			index.value,
+			filtersPaused.value ? nameOnlyFilter(filter.value) : filter.value,
+			ctx.value
+		)
 	);
 	const fallbackSort = computed(() => defaultSort(filter.value));
 	const activeSort = computed((): IPlanetSearchSort[] =>
@@ -324,9 +343,6 @@
 		)
 	);
 	const chips = computed(() => activeChips(filter.value));
-	const nameNote = computed(() =>
-		nameSearchNote(index.value, filter.value, ctx.value)
-	);
 	// the name note takes over when the filters hide every name match
 	const hints = computed(() =>
 		index.value.length && !matched.value.length && !nameNote.value
@@ -355,7 +371,17 @@
 		const note = nameNote.value;
 		if (!note) return null;
 		const shown = note.matches - note.hidden;
+		if (filtersPaused.value)
+			return {
+				paused: true,
+				text: t("planet_search.name_note.paused", {
+					text: filter.value.text.trim(),
+				}),
+				hints: [],
+				toggle: t("planet_search.name_note.apply", { n: shown }),
+			};
 		return {
+			paused: false,
 			text: t(
 				"planet_search.name_note.text",
 				{ n: note.hidden, text: filter.value.text.trim() },
@@ -368,12 +394,7 @@
 				}),
 				filter: h.filter,
 			})),
-			showAll: {
-				label: t("planet_search.name_note.show_all", {
-					n: note.matches,
-				}),
-				filter: note.showAll,
-			},
+			toggle: t("planet_search.name_note.show_all", { n: note.matches }),
 		};
 	});
 
@@ -642,6 +663,7 @@
 							:ref-name="refName"
 							:sorts="sort"
 							:default-sort="fallbackSort"
+							@toggle-filters="applyFilters = !applyFilters"
 							@update:filter="(f) => (filter = f)"
 							@sort="setSort"
 							@open-filters="drawerOpen = true" />

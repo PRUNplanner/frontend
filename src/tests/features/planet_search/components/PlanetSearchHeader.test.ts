@@ -162,7 +162,6 @@ describe("PlanetSearchHeader actions", () => {
 describe("PlanetSearchResultsBar", () => {
 	it("shows the name note and applies its relaxations", async () => {
 		const relaxed = { ...defaultFilter(), text: "KI-", fertile: true };
-		const all = { ...defaultFilter(), text: "KI-" };
 		const { component, setProps } = await mountComponent(
 			PlanetSearchResultsBar,
 			{
@@ -178,7 +177,8 @@ describe("PlanetSearchResultsBar", () => {
 				nameNote: {
 					text: "3 more planets",
 					hints: [{ label: "Include gaseous (+2)", filter: relaxed }],
-					showAll: { label: "Show all 4", filter: all },
+					paused: false,
+					toggle: "Show all 4",
 				},
 				isDesktop: true,
 				sorts: [{ key: "name", dir: "asc" }],
@@ -194,12 +194,51 @@ describe("PlanetSearchResultsBar", () => {
 		await button(bar, "Include gaseous (+2)").trigger("click");
 		expect(bar.emitted("update:filter")![0]).toEqual([relaxed]);
 		await button(bar, "Show all 4").trigger("click");
-		expect(bar.emitted("update:filter")![1]).toEqual([all]);
+		expect(bar.emitted("update:filter")).toHaveLength(1);
+		expect(bar.emitted("toggle-filters")).toHaveLength(1);
 
 		// the region stays for the next announcement, empty
 		await setProps({ nameNote: null });
 		expect(note().exists()).toBe(true);
 		expect(note().text()).toBe("");
+	});
+
+	it("dims the filter chips while a name search pauses them", async () => {
+		const named = { ...filter, text: "KI-" };
+		const { component, setProps } = await mountComponent(
+			PlanetSearchResultsBar,
+			{
+				view: "list",
+				hiddenColumns: [],
+				hiddenMaterials: [],
+				count: 4,
+				total: 10,
+				results: [],
+				filter: named,
+				chips: activeChips(named),
+				hints: [],
+				nameNote: {
+					paused: true,
+					text: "filters are paused",
+					hints: [],
+					toggle: "Apply filters (1)",
+				},
+				isDesktop: true,
+				sorts: [{ key: "name", dir: "asc" }],
+				defaultSort: { key: "name", dir: "asc" },
+				refName,
+			}
+		);
+		const bar = component as VueWrapper;
+		const dimmed = () =>
+			bar.findAll("li").map((li) => li.classes("opacity-50"));
+
+		expect(dimmed()).toEqual([false, true, true]);
+		await button(bar, "Apply filters (1)").trigger("click");
+		expect(bar.emitted("toggle-filters")).toHaveLength(1);
+
+		await setProps({ nameNote: null });
+		expect(dimmed()).toEqual([false, false, false]);
 	});
 
 	it("removes the right constraint and applies hints", async () => {

@@ -44,9 +44,12 @@
 		hints: { label: string; filter: PlanetSearchFilter }[];
 		/** name matches hidden by the other filters, null when there are none */
 		nameNote: {
+			/** filters are ignored, only the name counts */
+			paused: boolean;
 			text: string;
 			hints: { label: string; filter: PlanetSearchFilter }[];
-			showAll: { label: string; filter: PlanetSearchFilter };
+			/** label of the button that applies or pauses the filters */
+			toggle: string;
 		} | null;
 		isDesktop: boolean;
 		refName: (ref: PlanetSearchReference) => string;
@@ -58,6 +61,7 @@
 		(e: "update:filter", value: PlanetSearchFilter): void;
 		(e: "open-filters"): void;
 		(e: "sort", value: IPlanetSearchSort[]): void;
+		(e: "toggle-filters"): void;
 	}>();
 
 	const labelledChips = computed(() =>
@@ -116,7 +120,10 @@
 			<li
 				v-for="c in labelledChips"
 				:key="c.chip.key"
-				class="inline-flex items-center gap-1 pl-3 rounded-full border border-blue-300/60 bg-blue-950 text-sm">
+				class="inline-flex items-center gap-1 pl-3 rounded-full border border-blue-300/60 bg-blue-950 text-sm"
+				:class="{
+					'opacity-50': nameNote?.paused && c.chip.kind !== 'text',
+				}">
 				{{ c.label }}
 				<button
 					type="button"
@@ -144,10 +151,8 @@
 					@click="emit('update:filter', h.filter)">
 					{{ h.label }}
 				</PButton>
-				<PButton
-					size="sm"
-					@click="emit('update:filter', nameNote.showAll.filter)">
-					{{ nameNote.showAll.label }}
+				<PButton size="sm" @click="emit('toggle-filters')">
+					{{ nameNote.toggle }}
 				</PButton>
 			</div>
 		</div>

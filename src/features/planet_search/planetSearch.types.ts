@@ -105,6 +105,4 @@ export interface IPlanetSearchNameNote {
 	matches: number;
 	hidden: number;
 	hints: IPlanetSearchHint[];
-	/** everything but the name text reset to its widest */
-	showAll: PlanetSearchFilter;
 }
