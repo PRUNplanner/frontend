@@ -2,6 +2,7 @@
   "overviewData": {
     "dailyCost": 0,
     "dailyDegradationCost": 3690.021937,
+    "dailyProductionFeeCost": 0,
     "dailyProfit": 0,
     "profit": -3690.021937,
     "roi": -227.3211934,
@@ -293,6 +294,7 @@
                   },
                 ],
                 "outputRevenue": 3530.071806,
+                "productionFee": 0,
                 "runtime": "Infinity",
                 "runtimeShare": "Infinity",
                 "totalCost": "Infinity",
@@ -353,6 +355,7 @@
                   },
                 ],
                 "outputRevenue": 3523.601778,
+                "productionFee": 0,
                 "runtime": "Infinity",
                 "runtimeShare": "Infinity",
                 "totalCost": "Infinity",
@@ -416,6 +419,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": -2667.198501,
           "efficiencyElements": [
             {
@@ -431,6 +435,7 @@
           "name": "HYF",
           "totalBatchTime": "Infinity",
           "totalEfficiency": 0,
+          "weightedProductionFee": 0,
           "workforceDailyCost": 0,
           "workforceMaterials": [],
         },
@@ -453,6 +458,7 @@
                   },
                 ],
                 "outputRevenue": 424.1506508,
+                "productionFee": 0,
                 "runtime": "Infinity",
                 "runtimeShare": "Infinity",
                 "totalCost": "Infinity",
@@ -496,6 +502,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": -772.7667442,
           "efficiencyElements": [
             {
@@ -515,6 +522,7 @@
           "name": "RIG",
           "totalBatchTime": "Infinity",
           "totalEfficiency": 0,
+          "weightedProductionFee": 0,
           "workforceDailyCost": 0,
           "workforceMaterials": [],
         },
@@ -550,6 +558,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": -250.0566924,
           "efficiencyElements": [
             {
@@ -569,6 +578,7 @@
           "name": "INC",
           "totalBatchTime": 0,
           "totalEfficiency": 0,
+          "weightedProductionFee": 0,
           "workforceDailyCost": 0,
           "workforceMaterials": [],
         },

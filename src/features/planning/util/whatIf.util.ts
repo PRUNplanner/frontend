@@ -100,7 +100,8 @@ export function sensitivityRows(
 /**
  * Price sensitivity of a plan: one recalculation per material with its
  * price doubled gives how much profit moves per +100 % (profit is linear
- * in one price, through material i/o and degradation alike).
+ * in one price, through material i/o and degradation alike; production
+ * fees don't depend on prices, a constant cost).
  * @author jplacht
  *
  * @param {IPlanInput} input Plan input
@@ -140,6 +141,7 @@ const MORE_IS_BETTER: Record<CompareFigure, boolean | undefined> = {
 	output: true,
 	cost: false,
 	degradation: false,
+	fees: false,
 	planCost: false,
 	roi: false,
 	profitArea: true,
@@ -153,6 +155,7 @@ function figures(c: IPlanCalculation): Record<CompareFigure, number> {
 		output: c.overview.dailyProfit,
 		cost: c.overview.dailyCost,
 		degradation: c.overview.dailyDegradationCost,
+		fees: c.overview.dailyProductionFeeCost,
 		planCost: c.overview.totalConstructionCost,
 		roi: c.overview.roi,
 		profitArea: area ? c.overview.profit / area : 0,

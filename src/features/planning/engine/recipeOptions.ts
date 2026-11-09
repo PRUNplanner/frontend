@@ -23,6 +23,7 @@ import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculati
  * @param {number} totalEfficiency Building efficiency
  * @param {number} constructionCost Construction cost (positive)
  * @param {number} workforceCost Daily workforce cost (positive)
+ * @param {number} weightedFee The planet's production fee per day at 100 %
  * @param {IPriceBook} prices Price Book
  * @returns {IRecipeBuildingOption[]} Recipe options
  */
@@ -32,8 +33,12 @@ export function calculateRecipeOptions(
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,
+	weightedFee: number,
 	prices: IPriceBook
 ): IRecipeBuildingOption[] {
+	// running all day, a building pays the weighted fee × its efficiency
+	const dailyFee: number = weightedFee * totalEfficiency;
+
 	return recipes.map((br) => {
 		// calculate daily revenue
 		const dailyIncome: number = getMaterialIOTotalPrice(
@@ -66,7 +71,8 @@ export function calculateRecipeOptions(
 			dailyIncome * maxDailyRuns -
 			dailyCost * maxDailyRuns -
 			constructionCost * (1 / 180) -
-			workforceCost;
+			workforceCost -
+			dailyFee;
 
 		// Recipe option ROI
 		const roi: number = constructionCost / dailyRevenue;

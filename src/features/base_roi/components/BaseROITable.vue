@@ -236,10 +236,7 @@
 		const map = new Map<string, number[]>();
 		if (!series) return map;
 		for (const row of rows)
-			map.set(
-				row.key,
-				profitHistory(row.materials, row.degradation, series).profit
-			);
+			map.set(row.key, profitHistory(row, series).profit);
 		return map;
 	});
 	function trend(points: number[]): number {

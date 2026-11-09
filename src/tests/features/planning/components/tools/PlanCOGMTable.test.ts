@@ -65,6 +65,7 @@ const DATA = {
 	workforceCostTotal: 400,
 	inputCost: ["GRN", "NUT", "H2O"].map(input),
 	inputTotal: 30,
+	productionFee: 12.5,
 	outputCOGM: [
 		{ ticker: "RAT", amount: 10, costSplit: 64.43, costTotal: 64.43 },
 		{ ticker: "DW", amount: 10, costSplit: 64.43, costTotal: 64.43 },
@@ -129,6 +130,25 @@ describe("PlanCOGMTable", () => {
 
 		expect(wrapper.findAll("[data-source]")).toHaveLength(0);
 		expect(wrapper.find("[data-market]").exists()).toBe(false);
+	});
+
+	it("shows the production fee per run after degradation, 0 without one", async () => {
+		const { wrapper } = await mountTable();
+		const rows = wrapper.findAll("tr");
+		const fee = wrapper.find("[data-production-fee]");
+		expect(fee.text()).toContain("plan.tools.cogm.table.production_fee");
+		expect(fee.text()).toContain("12.50");
+		const at = rows.findIndex(
+			(r) => r.attributes("data-production-fee") !== undefined
+		);
+		expect(rows[at - 1].text()).toContain(
+			"plan.tools.cogm.table.degradation"
+		);
+
+		const none = await mountTable({ data: { ...DATA, productionFee: 0 } });
+		expect(none.wrapper.find("[data-production-fee]").text()).toContain(
+			"0.00"
+		);
 	});
 
 	it("compares each output's COGM with its market price", async () => {

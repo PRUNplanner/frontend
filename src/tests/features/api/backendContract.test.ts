@@ -46,12 +46,14 @@ import { UserPreferenceSchema } from "@/features/api/schemas/user.schemas";
 import {
 	FIOStorageSchema,
 	PlanetSchema,
+	PlanetSearchIndexSchema,
 } from "@/features/api/schemas/gameData.schemas";
 import { ExplorationPayloadSchema } from "@/features/market_exploration/marketExploration.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // test data
 import planet_single from "@/tests/test_data/api_data_planet_single.json";
+import planetSearchIndex from "@/tests/test_data/api_data_planet_search_index.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 
@@ -595,10 +597,57 @@ describe("Backend contract", () => {
 					},
 				},
 			},
+			{
+				description: "with a category the frontend doesn't know",
+				production_fees: {
+					currency: "CIS",
+					fees: {
+						METALLURGY: [25, 59, 133, 385, 385],
+						SPACE_MAGIC: [1, 2, 3, 4, 5],
+					},
+				},
+			},
 		])("parses backend payload $description", ({ production_fees }) => {
-			expect(() =>
+			expect(
 				PlanetSchema.parse({ ...planet_single, production_fees })
-			).not.toThrow();
+					.production_fees
+			).toStrictEqual(production_fees);
+		});
+
+		it("rejects negative fees and fee lists of the wrong length", () => {
+			for (const fees of [
+				{ METALLURGY: [-1, 0, 0, 0, 0] },
+				{ METALLURGY: [1, 2, 3, 4] },
+			])
+				expect(() =>
+					PlanetSchema.parse({
+						...planet_single,
+						production_fees: { currency: "NCC", fees },
+					})
+				).toThrow();
+		});
+
+		it("parses the search index with and without fees", () => {
+			const entry = planetSearchIndex[0];
+			const [none, montem] = PlanetSearchIndexSchema.parse([
+				{ ...entry, production_fees: null },
+				{
+					...entry,
+					planet_natural_id: "OT-580b",
+					production_fees: {
+						currency: "NCC",
+						fees: { RESOURCE_EXTRACTION: [25, 59, 133, 385, 385] },
+					},
+				},
+			]);
+
+			expect(none.production_fees).toBeNull();
+			expect(montem.production_fees?.fees.RESOURCE_EXTRACTION).toEqual([
+				25, 59, 133, 385, 385,
+			]);
+			// the index requires the field: an old backend without it fails
+			const { production_fees: _, ...old } = entry;
+			expect(() => PlanetSearchIndexSchema.parse([old])).toThrow();
 		});
 	});
 

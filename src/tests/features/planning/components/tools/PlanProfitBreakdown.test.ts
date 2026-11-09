@@ -30,13 +30,26 @@ const OVERVIEW: IOverviewData = {
 	dailyProfit: 0,
 	totalConstructionCost: 18000,
 	dailyDegradationCost: 100,
+	dailyProductionFeeCost: 0,
 	// 1,000 − 200 − 250 − 100
 	profit: 450,
 	roi: 0,
 };
 const BUILDINGS = [
-	{ name: "SME", amount: 1, dailyRevenue: 500, constructionCost: -9000 },
-	{ name: "FRM", amount: 1, dailyRevenue: 50, constructionCost: -9000 },
+	{
+		name: "SME",
+		amount: 1,
+		dailyRevenue: 500,
+		constructionCost: -9000,
+		dailyProductionFee: 0,
+	},
+	{
+		name: "FRM",
+		amount: 1,
+		dailyRevenue: 50,
+		constructionCost: -9000,
+		dailyProductionFee: 0,
+	},
 ] as IProductionBuilding[];
 
 async function mountTool(props: Record<string, unknown> = {}) {
@@ -235,6 +248,45 @@ describe("PlanProfitBreakdown", () => {
 		expect(tip).not.toContain("tooltip.consumed");
 	});
 
+	it("shows production fees as a step by building after degradation", async () => {
+		const wrapper = await mountTool({
+			buildings: [
+				{ ...BUILDINGS[0], dailyRevenue: 440, dailyProductionFee: 60 },
+				BUILDINGS[1],
+			],
+			// 1,000 − 200 − 250 − 100 − 60
+			overview: { ...OVERVIEW, dailyProductionFeeCost: 60, profit: 390 },
+		});
+
+		const key = "plan.tools.profit_breakdown";
+		const cols = wrapper.findComponent(PWaterfall).props("columns");
+		expect(steps(wrapper).slice(3)).toEqual([
+			[`${key}.steps.degradation`, -100, "hatched"],
+			[`${key}.steps.fees`, -60, "negative"],
+			[`${key}.steps.profit`, 390, "positive"],
+		]);
+		expect(cols[4].segments).toEqual([
+			{ key: "SME", label: "SME", value: 60, chipClass: undefined },
+		]);
+		// the steps still add up to the profit
+		expect(
+			cols.slice(0, 5).reduce((sum, c) => sum + c.value, 0)
+		).toBeCloseTo(390, 6);
+		// costs incl. degradation and fees: 200 + 250 + 100 + 60
+		expect(wrapper.text()).toContain("610.00 ȼ");
+
+		// by building: SME gets its fee back, fees follow degradation
+		await setView(wrapper, 1);
+		expect(steps(wrapper)).toEqual([
+			["SME", 550, "neutral"],
+			["FRM", 100, "neutral"],
+			[`${key}.steps.unattributed`, -100, "negative"],
+			[`${key}.steps.degradation`, -100, "hatched"],
+			[`${key}.steps.fees`, -60, "negative"],
+			[`${key}.steps.profit`, 390, "positive"],
+		]);
+	});
+
 	describe("by building", () => {
 		// 9 buildings, top 7 by size; the 2 smallest sum to -30
 		const revenues = [90, 80, 70, 60, 50, 40, -35, -20, -10];
@@ -243,6 +295,7 @@ describe("PlanProfitBreakdown", () => {
 			amount: 1,
 			dailyRevenue,
 			constructionCost: 0,
+			dailyProductionFee: 0,
 		})) as IProductionBuilding[];
 		// 325 − 100 degradation = 225 attributed
 		const overview = (profit: number) => ({ ...OVERVIEW, profit });
@@ -259,6 +312,7 @@ describe("PlanProfitBreakdown", () => {
 				"plan.tools.profit_breakdown.more_buildings"
 			);
 			expect(text).not.toContain("B7");
+			// no fees on this plan, so no fees step
 			// largest first; B6 (-35) and the folded steps (-30) lose, the 75
 			// not attributed do not
 			const key = "plan.tools.profit_breakdown";

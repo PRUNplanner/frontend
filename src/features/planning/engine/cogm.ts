@@ -23,8 +23,9 @@ import type { IPlanTracer } from "@/features/planning/engine/engine.types";
  * degradation: share of full daily building degradation
  * workforce: share of buildings daily workforce cost
  * input cost: buy prices for the required input materials
+ * production fee: the planet's fee for one run, on base time
  *
- * total cost: degradation share + workforce share + input total
+ * total cost: degradation share + workforce share + input total + fee
  *
  * cogm: per output material
  * 	- either consuming the full cost
@@ -34,6 +35,7 @@ import type { IPlanTracer } from "@/features/planning/engine/engine.types";
  * @param {number} totalEfficiency Building efficiency
  * @param {number} constructionCost Construction cost (positive)
  * @param {number} workforceCost Daily workforce cost (positive)
+ * @param {number} productionFee Production fee per run (positive)
  * @param {IPriceBook} prices Price Book
  * @param {IPlanTracer} [trace] Tracer
  * @returns {IProductionBuildingRecipeCOGM} COGM
@@ -43,6 +45,7 @@ export function calculateCOGM(
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,
+	productionFee: number,
 	prices: IPriceBook,
 	trace?: IPlanTracer
 ): IProductionBuildingRecipeCOGM {
@@ -57,11 +60,19 @@ export function calculateCOGM(
 					totalEfficiency,
 					constructionCost,
 					workforceCost,
+					productionFee,
 					prices,
 					trace
 				)
 		);
-	return cogm(ar, totalEfficiency, constructionCost, workforceCost, prices);
+	return cogm(
+		ar,
+		totalEfficiency,
+		constructionCost,
+		workforceCost,
+		productionFee,
+		prices
+	);
 }
 
 function cogm(
@@ -69,6 +80,7 @@ function cogm(
 	totalEfficiency: number,
 	constructionCost: number,
 	workforceCost: number,
+	productionFee: number,
 	prices: IPriceBook,
 	trace?: IPlanTracer
 ): IProductionBuildingRecipeCOGM {
@@ -109,7 +121,7 @@ function cogm(
 		.reduce((a, b) => a + b, 0);
 
 	const totalCost: number =
-		degradationShare + workforceCostShare + inputTotal;
+		degradationShare + workforceCostShare + inputTotal + productionFee;
 
 	const sumOutputs: number = ar.recipe.outputs.reduce(
 		(sum, current) => sum + current.material_amount,
@@ -139,6 +151,7 @@ function cogm(
 		workforceCostTotal,
 		inputCost,
 		inputTotal,
+		productionFee,
 		outputCOGM,
 		totalCost,
 		outputRevenue,
@@ -189,11 +202,23 @@ function traceCOGM(
 			amount: i.amount,
 			price: i.costUnit,
 		});
-	step("total cost", c.totalCost, "degradation + workforce + inputs", {
-		degradation: c.degradationShare,
-		workforce: c.workforceCost,
-		inputs: c.inputTotal,
-	});
+	step(
+		"production fee per run",
+		c.productionFee,
+		"weighted_fee × time_ms ÷ 86,400,000 (base time, not efficiency)",
+		{ time_ms: ar.recipe.time_ms }
+	);
+	step(
+		"total cost",
+		c.totalCost,
+		"degradation + workforce + inputs + production_fee",
+		{
+			degradation: c.degradationShare,
+			workforce: c.workforceCost,
+			inputs: c.inputTotal,
+			production_fee: c.productionFee,
+		}
+	);
 	step("output revenue", c.outputRevenue, "Σ amount × SELL price");
 	for (const o of c.outputCOGM)
 		step(`${o.ticker} cost per unit`, o.costTotal, "total_cost ÷ amount", {

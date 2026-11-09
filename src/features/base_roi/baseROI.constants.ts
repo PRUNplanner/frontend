@@ -74,6 +74,7 @@ export const STANDARD_PLANET: Planet = {
 	resources: [],
 	cogc_programs: [],
 	active_cogc_program_type: null,
+	production_fees: null,
 	plots_total: null,
 	plots_used: null,
 	ghost_sites: null,

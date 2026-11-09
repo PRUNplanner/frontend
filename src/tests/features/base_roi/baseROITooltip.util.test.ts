@@ -21,6 +21,7 @@ function row(metrics: Partial<IBaseROIMetrics> = {}): IBaseROIRow {
 		inputs: 400,
 		consumables: 100,
 		degradation: 50,
+		fees: 30,
 		construction: 10_000,
 		weightIn: 10,
 		weightOut: 20,
@@ -32,8 +33,8 @@ function row(metrics: Partial<IBaseROIMetrics> = {}): IBaseROIRow {
 		],
 		recipeInputs: [{ ticker: "C", amount: 20, traded: 4, exchange: "AI1" }],
 		metrics: {
-			dailyProfit: 450,
-			runningCost: 550,
+			dailyProfit: 420,
+			runningCost: 580,
 			buildingCost: 12_000,
 			bufferStock: 1500,
 			hqCost: 0,
@@ -58,16 +59,18 @@ const s = (o: Partial<BaseROISettings> = {}) => ({
 const keys = (lines: string[]) => lines.map((l) => l.split("{")[0]);
 
 describe("baseROITooltip.util", () => {
-	it("daily profit: revenue − inputs − consumables − degradation", () => {
+	it("daily profit: revenue − inputs − consumables − degradation − fees", () => {
 		const lines = cellMath(row(), "daily_profit", s(), t);
 		expect(keys(lines)).toEqual([
 			k("revenue"),
 			k("minus_inputs"),
 			k("minus_consumables"),
 			k("minus_degradation"),
+			k("minus_fees"),
 			k("per_day"),
 		]);
-		expect(lines[4]).toContain('"value":"450"');
+		expect(lines[4]).toContain('"value":"30"');
+		expect(lines[5]).toContain('"value":"420"');
 	});
 
 	it("break-even with the ramp: the stages until paid, then the day", () => {
@@ -152,8 +155,12 @@ describe("baseROITooltip.util", () => {
 			k("inputs"),
 			k("plus_consumables"),
 			k("plus_degradation"),
+			k("plus_fees"),
 			k("per_day"),
 		]);
+		expect(cellMath(row(), "running_cost", s(), t)[4]).toContain(
+			'"value":"580"'
+		);
 	});
 
 	it("cargo against the ship only with a ship limit", () => {

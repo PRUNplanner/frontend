@@ -274,8 +274,8 @@
 			.every((b) => b.planet && !b.overArea)
 	);
 
-	const unitCost = (site: IChainExtractionSite) =>
-		extractionUnitCost(ctx.value, site, input.value.efficiency);
+	const unitCost = (site: IChainExtractionSite, typical: boolean) =>
+		extractionUnitCost(ctx.value, site, input.value.efficiency, typical);
 	const buyPrice = (ticker: string) =>
 		ctx.value.prices.getPrice(ticker, "BUY");
 </script>

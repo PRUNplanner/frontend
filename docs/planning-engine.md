@@ -40,6 +40,7 @@ const { result, overview } = calculatePlan(input, ctx);
 | `production.ts` | Per building: efficiency, active recipes, daily I/O |
 | `recipeOptions.ts` | Every recipe option of a building with revenue, ROI, profit per area |
 | `cogm.ts` | COGM per active recipe; `calculateCOGM` is reused by `exchanges/exchangePlanData.util.ts` |
+| `fees.ts` | Planet production fees: `weightedProductionFee` per building, `productionFeePerRun`; also used by Production Chains |
 | `materialIO.ts` | Combining and enriching material I/O, `TOTALMSDAY` |
 | `construction.ts` | Construction materials and cost, infrastructure costs |
 | `finance.ts` | Revenue, cost, profit and the overview in one pass |
@@ -60,7 +61,10 @@ const { result, overview } = calculatePlan(input, ctx);
 3. Workforce consumption + production I/O are combined, enriched with weight
    and volume, and priced.
 4. Money: revenue = prices of positive deltas; cost = negative deltas +
-   **1/180 of total construction cost per day** (degradation); profit =
+   **1/180 of total construction cost per day** (degradation) + **production
+   fees** (the planet's fees for the building's expertise, averaged over its
+   workforce by headcount; per run on base time, so per day weighted fee ×
+   efficiency × amount; 0 without fees); profit =
    revenue − cost.
 
 **Signs.** Material values are `output - input`, so costs are negative in

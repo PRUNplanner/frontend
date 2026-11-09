@@ -195,6 +195,10 @@
 				<dd class="text-right">
 					{{ money(row.costParts.upkeepWear) }}
 				</dd>
+				<dt>{{ $t("production_chains.detail.production_fees") }}</dt>
+				<dd class="text-right" data-testid="chain-detail-fees">
+					{{ money(row.costParts.fees) }}
+				</dd>
 				<dt class="font-bold border-t border-line pt-1">
 					{{ $t("production_chains.detail.chain_cost") }}
 				</dt>

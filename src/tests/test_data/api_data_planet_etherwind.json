@@ -96,5 +96,6 @@
 	"plots_used": 418,
 	"ghost_sites": 4,
 	"supports_ghost_sites": true,
-	"plots_updated": "2026-10-24T17:37:45.416641Z"
+	"plots_updated": "2026-10-24T17:37:45.416641Z",
+	"production_fees": null
 }

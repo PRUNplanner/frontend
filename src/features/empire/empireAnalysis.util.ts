@@ -15,6 +15,7 @@ const PARTS = [
 	"inputs",
 	"workforce",
 	"degradation",
+	"fees",
 	"profit",
 ] as const;
 
@@ -43,7 +44,8 @@ export function sumSplitParts(plans: IEmpireSplitParts[]): IEmpireSplitParts {
  * @returns {IEmpireSplitShares} shares in %
  */
 export function splitShares(parts: IEmpireSplitParts): IEmpireSplitShares {
-	const cost = parts.inputs + parts.workforce + parts.degradation;
+	const cost =
+		parts.inputs + parts.workforce + parts.degradation + parts.fees;
 	const loss = parts.profit < 0;
 	const base = loss ? cost : parts.revenue;
 	const pct = (v: number) => (base > 0 ? (v / base) * 100 : 0);
@@ -51,6 +53,7 @@ export function splitShares(parts: IEmpireSplitParts): IEmpireSplitShares {
 		inputs: pct(parts.inputs),
 		workforce: pct(parts.workforce),
 		degradation: pct(parts.degradation),
+		fees: pct(parts.fees),
 		profit: loss ? 0 : pct(parts.profit),
 		uncovered: loss ? pct(cost - parts.revenue) : 0,
 		margin: parts.revenue ? (parts.profit / parts.revenue) * 100 : NaN,
@@ -85,7 +88,8 @@ export function revenueSplitRows(
  * The empire's split, on the KPIs' own numbers (materials traded between
  * plans netted out), built from named parts: materials bought, from the
  * empire's material i/o, split into inputs and workforce as the plans split
- * theirs, and the plans' degradation. A new cost part needs its own part.
+ * theirs, and the plans' degradation and production fees. A new cost part
+ * needs its own part.
  * @author jplacht
  *
  * @param {IEmpireCostOverview} overview empire KPIs
@@ -109,6 +113,7 @@ export function empireSplitParts(
 		inputs: materials - workforce,
 		workforce,
 		degradation: sum.degradation,
+		fees: sum.fees,
 		profit: overview.totalProfit,
 	};
 }

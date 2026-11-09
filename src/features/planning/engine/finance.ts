@@ -17,7 +17,7 @@ interface IPlanFinance {
  * Revenue, cost, profit and the plan overview, computed in one pass
  *
  * Revenue: Material IO with positive Delta
- * Cost: Material IO with negative delta + 1/180 of all buildings daily degradation
+ * Cost: Material IO with negative delta + 1/180 of all buildings daily degradation + production fees
  * Profit: Revenue - cost
  *
  * @remark The plan result and the overview report the same money with
@@ -62,11 +62,22 @@ export function calculateFinance(
 	const dailyDegradationCost: number = constructionCost * (1 / 180);
 	const dailyDegradationValue: number = constructionValue / 180;
 
+	// production fees per day, positive; not materials, so not in Material IO
+	let dailyProductionFeeCost: number = 0;
+	for (const b of production)
+		dailyProductionFeeCost = dailyProductionFeeCost + b.dailyProductionFee;
+
 	// both values negative, so this subtracts their costs
 	const overviewProfit: number =
-		materialRevenue + dailyDegradationValue + materialValueBought;
+		materialRevenue +
+		dailyDegradationValue +
+		materialValueBought -
+		dailyProductionFeeCost;
 	const profit: number =
-		materialRevenue - materialCost - dailyDegradationCost;
+		materialRevenue -
+		materialCost -
+		dailyDegradationCost -
+		dailyProductionFeeCost;
 
 	if (trace) {
 		const step = (
@@ -98,19 +109,31 @@ export function calculateFinance(
 			"construction ÷ 180",
 			{ construction: constructionCost }
 		);
-		step("profit", profit, "revenue − material_cost − degradation", {
-			revenue: materialRevenue,
-			material_cost: materialCost,
-			degradation: dailyDegradationCost,
-		});
+		step(
+			"production fees",
+			dailyProductionFeeCost,
+			"Σ building daily production fee"
+		);
+		step(
+			"profit",
+			profit,
+			"revenue − material_cost − degradation − production_fees",
+			{
+				revenue: materialRevenue,
+				material_cost: materialCost,
+				degradation: dailyDegradationCost,
+				production_fees: dailyProductionFeeCost,
+			}
+		);
 		step(
 			"overview profit",
 			overviewProfit,
-			"revenue − material_cost − overview_degradation",
+			"revenue − material_cost − overview_degradation − production_fees",
 			{
 				revenue: materialRevenue,
 				material_cost: materialValueBought * -1,
 				overview_degradation: dailyDegradationValue * -1,
+				production_fees: dailyProductionFeeCost,
 			}
 		);
 		trace.step({
@@ -128,13 +151,14 @@ export function calculateFinance(
 
 	return {
 		profit,
-		cost: materialCost + dailyDegradationCost,
+		cost: materialCost + dailyDegradationCost + dailyProductionFeeCost,
 		revenue: materialRevenue,
 		overview: {
 			dailyCost: materialValueBought * -1,
 			dailyProfit: materialRevenue,
 			totalConstructionCost,
 			dailyDegradationCost: dailyDegradationValue * -1,
+			dailyProductionFeeCost,
 			profit: overviewProfit,
 			roi: totalConstructionCost / overviewProfit,
 		},

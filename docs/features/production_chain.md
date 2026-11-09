@@ -46,7 +46,10 @@ thresholds) rather than copying their math.
   deltas, reloaded on `remoteChange`. Typed amounts beat the empire, linked
   ones (`have=`) give way to it; the URL holds amounts, never the empire.
 - **Unit cost.** Inputs + upkeep (basic needs + the base's luxuries at CX) +
-  wear (construction ÷ 180 per day); multi-output recipes split by CX value.
+  wear (construction ÷ 180 per day) + production fee (the base planet's,
+  extraction: the site planet's, typical site none; per run on base time,
+  not ÷ efficiency; `fees` in `costParts`); multi-output recipes split by CX
+  value. Chain totals count fees per day (load × the planet's weighted fee) in profit and payback.
 - **Bases.** Up to 26 (A–Z) via `baseOf` (base → built buildings; one
   base = the whole step, URL `NA:A`; a split step `NA:A3.B3`, its load
   shared by the counts). `row.base` is the largest piece, `row.shares` all
@@ -63,7 +66,7 @@ thresholds) rather than copying their math.
   production at CX BUY − upkeep − wear. Planet extras (MCG, AEF, …) ignored.
 - **Auto layout** (greedy, no optimiser). Solved in one plain base:
   1. Steps under 0.2 building whose whole building costs more per unit
-     (`inputs + upkeepWear / buildings`) than the CX buy price are bought
+     (`inputs + fees + upkeepWear / buildings`) than the CX buy price are bought
      (`buyHint`, also the table's Buy hint).
   2. Expertise groups of ≥ 1.5 buildings, largest first, fill bases first
      fit decreasing up to the max base size (`maxArea`: 500 default, 750,

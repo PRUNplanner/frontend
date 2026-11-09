@@ -90,7 +90,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7e5af59d1f31c7b0657e8092e210e027",
@@ -190,7 +191,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "873671e7d644f464bd48e9fe90ae1298",
@@ -248,7 +250,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4672c438261315fe28c992b20b3e32e7",
@@ -348,7 +351,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4709b7a2412cbec9d818acd55197f9e7",
@@ -445,7 +449,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "da26f6aa1a4f60803682767ca35b5d01",
@@ -531,7 +536,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "75f5444ea05eab9f436029b9a9698c3e",
@@ -624,7 +630,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "b6141f665b411b052b521b899be06d0a",
@@ -717,7 +724,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7f11259da81d301cec0bca3d4b7b2f78",
@@ -817,7 +825,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7f1135f5d7792a058c8be66e7cbcb536",
@@ -924,7 +933,8 @@
 		"plots_used": 418,
 		"ghost_sites": 96,
 		"supports_ghost_sites": true,
-		"plots_updated": "2026-10-24T17:37:45.416641Z"
+		"plots_updated": "2026-10-24T17:37:45.416641Z",
+		"production_fees": null
 	},
 	{
 		"planet_id": "1e4725b234f288004597aa0879883be5",
@@ -1002,7 +1012,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "c0bcf1bc418fd2196ff2ca42ad1b297f",
@@ -1080,7 +1091,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "562f35329d00ddcb9fb9bc791517848c",
@@ -1180,7 +1192,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4aa54d86db262cc5f2e06542c035215d",
@@ -1266,7 +1279,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "19d8c3a9c2f2a4df01d3a3a4f498f64a",
@@ -1359,7 +1373,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "5ea983bc9af96facb5eb79f8a47c5a1c",
@@ -1452,7 +1467,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "937c7ed1bb455566f68eb88706092522",
@@ -1552,7 +1568,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4d44985703ce5805eb52f316af4cf9fc",
@@ -1645,7 +1662,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "6825174e925bcbf0a28043ad97e15259",
@@ -1738,7 +1756,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "08cffb1d0922bfb334744b1cc3c23a2e",
@@ -1831,7 +1850,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "c9ef5f20d7c0000f024117757feff059",
@@ -1917,7 +1937,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7c90e41148928ca3fd68364634e05900",
@@ -2017,7 +2038,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "e6499e0f33fb97ebd1abc9eda76316db",
@@ -2117,7 +2139,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "036eaee886cdb8969a633d0532621c48",
@@ -2217,7 +2240,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "abd552df6e061adad13eaa3afd4434d2",
@@ -2310,7 +2334,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "819e48b8cd76fd83a479c64eafea5f3f",
@@ -2410,7 +2435,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "004234201296502d6033ca62f9c654fa",
@@ -2510,7 +2536,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "928b5154df17e8b40b7a8cb3ab2bf804",
@@ -2603,7 +2630,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7de63f8caf7f1093798f7de6bd8d995d",
@@ -2710,7 +2738,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "afacca721bb215130f471c5001d8641a",
@@ -2803,7 +2832,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "8c8c8e5653612cbcc359da2941faeb7e",
@@ -2896,7 +2926,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "64f76e3a45074d8372b943b01b2cdf73",
@@ -2982,7 +3013,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "8d2ab7eb5a47d2ab4e209303b2a13c69",
@@ -3060,7 +3092,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4c4167e4c4d6f9541f695a9165d0e17c",
@@ -3146,7 +3179,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "e4e93a5d20a1d75fb04696279137a0b0",
@@ -3224,7 +3258,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "42f1a54e993fc221d5499b224eb80471",
@@ -3317,7 +3352,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7ef6caa148aa38c0e3966fdf47ee1a6b",
@@ -3417,7 +3453,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "5d77c6cb911d46573b81b6f5a57aaa94",
@@ -3503,7 +3540,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "8c3f1d4eea8766a3e97836aa56e45d00",
@@ -3596,7 +3634,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "0043bc735e48a8a36c53961f51423fd0",
@@ -3682,7 +3721,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "484e5bd5b89095049ab2b09ca373e2af",
@@ -3768,7 +3808,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "1619040ac8d2d4e7716cfe7d0a64318f",
@@ -3854,7 +3895,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "3d6af21a78c52187dbdce21d7170cbc9",
@@ -3947,7 +3989,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "799a94b1ff27fa1670898c29cf3cfd73",
@@ -4047,7 +4090,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "838c5b203aa8597f7d3c43bce78eaacb",
@@ -4133,7 +4177,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "3ed3e5fd3ad002f7a81f7fd90d9d66fc",
@@ -4233,7 +4278,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "0af6ae31252a2e389415cbd366e3c031",
@@ -4340,7 +4386,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "91ab093e1691685203d15f5c4de95f07",
@@ -4426,7 +4473,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "7cddd8776c154c64c96d1d77c4a7a948",
@@ -4512,7 +4560,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "183ef736d1d1d7895b2a6b95417db0b0",
@@ -4612,7 +4661,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "b6e46126901ad3b28e1cf77f1dcfd3c5",
@@ -4705,7 +4755,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "ceca269439c41804cb57f3f338672b1d",
@@ -4812,7 +4863,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "59b698ae74a4f398ab88b55126df02c2",
@@ -4919,7 +4971,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "4fa5452b23e7ba33328dd2f45eebb4c7",
@@ -5012,7 +5065,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "53ec36c57f16d4660aea2097a553f826",
@@ -5112,7 +5166,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "944077703aad212ec45793173bc7f524",
@@ -5219,7 +5274,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "535dbb73c474229398314bb6b626ea35",
@@ -5305,7 +5361,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "eab171c2455654e1e57381d8a67e9897",
@@ -5383,7 +5440,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "5c7d8cbf1f55652ea0c99c247284821b",
@@ -5476,7 +5534,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "3ee7c8f67c2261761958122b2f543621",
@@ -5554,7 +5613,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "b4f7bdbe7e69087d5c05fbce290e2703",
@@ -5647,7 +5707,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "d134bb78112a901850a6ff28943cf0d9",
@@ -5747,7 +5808,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "426d37fbaff5d1a8da2948c4ba6ed7c8",
@@ -5840,7 +5902,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "34a1660b7aa9b9e00cd3b313f02705c3",
@@ -5933,7 +5996,8 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	},
 	{
 		"planet_id": "f47c29147d66705a5110c0f7cbcf77f9",
@@ -6011,6 +6075,7 @@
 		"plots_used": null,
 		"ghost_sites": null,
 		"supports_ghost_sites": null,
-		"plots_updated": null
+		"plots_updated": null,
+		"production_fees": null
 	}
 ]

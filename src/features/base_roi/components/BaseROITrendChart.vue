@@ -55,15 +55,7 @@
 		const map = new Map<string, number[]>();
 		if (!series) return map;
 		for (const row of rows)
-			map.set(
-				row.key,
-				profitHistory(
-					row.materials,
-					row.degradation,
-					series,
-					HISTORY_DAYS
-				).profit
-			);
+			map.set(row.key, profitHistory(row, series, HISTORY_DAYS).profit);
 		return map;
 	});
 

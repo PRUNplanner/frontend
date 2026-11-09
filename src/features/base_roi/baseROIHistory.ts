@@ -3,6 +3,7 @@ import type {
 	IBaseROIHistory,
 	IBaseROIMaterial,
 	IBaseROIOutput,
+	IBaseROIRowInput,
 	IBaseROISeries,
 } from "@/features/base_roi/baseROI.types";
 import type { ILineSeries } from "@/ui/charts/charts.types";
@@ -37,23 +38,26 @@ function dailyPrices(
 /**
  * Revenue, running cost and daily profit of a fixed layout for each of the
  * last days: profit is linear in prices, so Σ sold × price − Σ bought ×
- * price − degradation, with degradation at today's value. No new engine
- * pass.
+ * price − degradation − production fees, both at today's value. No new
+ * engine pass.
  *
- * @param {IBaseROIMaterial[]} materials Bought (< 0) and sold (> 0) per day
- * @param {number} degradation Degradation per day
+ * @param {Pick<IBaseROIRowInput, "materials" | "degradation" | "fees">} row
+ *   Bought (< 0) and sold (> 0) per day, degradation and fees per day
  * @param {IBaseROISeries} series Daily VWAP per exchange
  * @param {number} [days] Days, oldest first
  * @returns {IBaseROIHistory} Per day, today last
  */
 export function profitHistory(
-	materials: IBaseROIMaterial[],
-	degradation: number,
+	{
+		materials,
+		degradation,
+		fees,
+	}: Pick<IBaseROIRowInput, "materials" | "degradation" | "fees">,
 	series: IBaseROISeries,
 	days: number = 30
 ): IBaseROIHistory {
 	const revenue: number[] = Array(days).fill(0);
-	const cost: number[] = Array(days).fill(degradation);
+	const cost: number[] = Array(days).fill(degradation + fees);
 	for (const m of materials) {
 		const prices = dailyPrices(m, series, days);
 		const into = m.amount > 0 ? revenue : cost;

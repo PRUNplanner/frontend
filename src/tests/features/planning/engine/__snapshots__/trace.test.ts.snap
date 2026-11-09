@@ -21,6 +21,8 @@ exports[`plan tracer > lists efficiency factors, recipe times and runs per day (
   "GRN out",
   "workforce cost per building",
   "construction cost per building",
+  "weighted production fee",
+  "daily production fee",
   "daily revenue",
 ]
 `;

@@ -268,6 +268,7 @@
 					inputs: split.inputs,
 					workforce: split.workforce,
 					degradation: split.degradation,
+					fees: overview.dailyProductionFeeCost,
 				};
 			}
 		);

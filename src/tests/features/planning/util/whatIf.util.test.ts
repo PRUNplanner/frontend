@@ -313,6 +313,7 @@ function calc(
 			dailyProfit: 0,
 			totalConstructionCost: 0,
 			dailyDegradationCost: 0,
+			dailyProductionFeeCost: 0,
 			profit: 0,
 			roi: 0,
 			...overview,
@@ -328,6 +329,7 @@ const MONTEM = calc(
 		dailyProfit: 51717,
 		dailyCost: 28821,
 		dailyDegradationCost: 3583,
+		dailyProductionFeeCost: 1000,
 		totalConstructionCost: 1231984,
 		roi: 63.79,
 	},
@@ -339,6 +341,7 @@ const SME7 = calc(
 		dailyProfit: 59623,
 		dailyCost: 36878,
 		dailyDegradationCost: 4095,
+		dailyProductionFeeCost: 1250,
 		totalConstructionCost: 1283238,
 		roi: 68.81,
 	},
@@ -360,6 +363,13 @@ describe("compareRows", () => {
 		expect(rows.output).toMatchObject({ delta: 7906, better: true });
 		expect(rows.cost).toMatchObject({ delta: 8057, better: false });
 		expect(rows.degradation).toMatchObject({ delta: 512, better: false });
+		// fees are a cost like degradation
+		expect(rows.fees).toMatchObject({
+			a: 1000,
+			b: 1250,
+			delta: 250,
+			better: false,
+		});
 		expect(rows.planCost).toMatchObject({ delta: 51254, better: false });
 		expect(rows.roi.delta).toBeCloseTo(5.02);
 		expect(rows.roi.better).toBe(false);
@@ -376,6 +386,7 @@ describe("compareRows", () => {
 		expect(rows.output.better).toBe(false);
 		expect(rows.cost.better).toBe(true);
 		expect(rows.degradation.better).toBe(true);
+		expect(rows.fees.better).toBe(true);
 		expect(rows.planCost.better).toBe(true);
 		expect(rows.roi.better).toBe(true);
 		expect(rows.profitArea.better).toBe(true);

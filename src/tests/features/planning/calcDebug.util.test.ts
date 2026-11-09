@@ -32,6 +32,7 @@ import {
 	emptyPlan,
 	etherwindPlan,
 	largePlan,
+	withProductionFees,
 	setupPlanningTestData,
 	smallPlan,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -80,16 +81,19 @@ describe("calcDebug.util", () => {
 		ctx = await createContext(await loadGameData(), "KW-688c", undefined);
 	});
 
-	function runs(plan: Plan = etherwindPlan()): {
+	function runs(
+		plan: Plan = etherwindPlan(),
+		c: IPlanContext = ctx
+	): {
 		live: IPlanCalculation;
 		run: IPlanTraceRun;
 	} {
 		const input = { plan, empire: undefined, cxUuid: undefined };
 		const { tracer, entries, truncated } = createPlanTracer();
 		return {
-			live: calculatePlan(input, ctx),
+			live: calculatePlan(input, c),
 			run: {
-				calculation: calculatePlan(input, { ...ctx, trace: tracer }),
+				calculation: calculatePlan(input, { ...c, trace: tracer }),
 				entries: entries(),
 				truncated: truncated(),
 				ms: 1,
@@ -107,7 +111,7 @@ describe("calcDebug.util", () => {
 		const { live, run } = runs(planFactory());
 		const { checks } = calcDebugChecks(live, run);
 
-		expect(checks).toHaveLength(6);
+		expect(checks).toHaveLength(7);
 		expect(checks.filter((c) => !c.pass)).toEqual([]);
 	});
 
@@ -141,6 +145,81 @@ describe("calcDebug.util", () => {
 		expect(check.actual).toBeDefined();
 		expect(check.difference).not.toBe(0);
 		expect(checkLine(check)).toMatch(/^✗ .*expected .*actual .*difference/);
+	});
+
+	describe("on a planet with production fees", () => {
+		const feeRuns = (plan: Plan = etherwindPlan()) =>
+			runs(plan, withProductionFees(ctx));
+
+		it.each([
+			["small", smallPlan],
+			["etherwind", etherwindPlan],
+			["large", largePlan],
+		])("every check passes on the %s fixture", (_, planFactory) => {
+			const { live, run } = feeRuns(planFactory());
+			const { checks } = calcDebugChecks(live, run);
+
+			expect(
+				run.calculation.overview.dailyProductionFeeCost
+			).toBeGreaterThan(0);
+			expect(checks).toHaveLength(7);
+			expect(checks.filter((c) => !c.pass)).toEqual([]);
+		});
+
+		it("traces the weighted fee, the fee per run and the daily fee", () => {
+			const { run } = feeRuns();
+			const labels = new Set(run.entries.map((e) => e.label));
+
+			for (const label of [
+				"weighted production fee",
+				"daily production fee",
+				"production fee per run",
+				"production fees",
+			])
+				expect(labels).toContain(label);
+			const totalCost = run.entries.find(
+				(e) => e.label === "total cost" && e.inputs?.production_fee
+			);
+			expect(totalCost?.formula).toContain("production_fee");
+		});
+
+		it.each([
+			[
+				"the plan's fees",
+				(c: IPlanCalculation) =>
+					(c.overview.dailyProductionFeeCost += 1),
+				"plan",
+			],
+			[
+				"a building's daily fee",
+				(c: IPlanCalculation) =>
+					(c.result.production.buildings[0].dailyProductionFee += 1),
+				`daily`,
+			],
+			[
+				"a recipe's fee per run",
+				(c: IPlanCalculation) =>
+					(c.result.production.buildings[0].activeRecipes[0].cogm!.productionFee += 1),
+				"per run",
+			],
+		])("check 6 fails on tampered %s", (_, tamper, detail) => {
+			const { live, run } = feeRuns();
+			tamper(run.calculation);
+			const check = calcDebugChecks(live, run).checks[6];
+
+			expect(check.pass).toBe(false);
+			expect(check.detail).toContain(detail);
+			expect(check.difference).toBeCloseTo(1, 6);
+		});
+
+		it("counts the fees in the profit check", () => {
+			const { live, run } = feeRuns();
+			// profit without the fees
+			run.calculation.result.profit +=
+				run.calculation.overview.dailyProductionFeeCost;
+
+			expect(calcDebugChecks(live, run).checks[2].pass).toBe(false);
+		});
 	});
 
 	it("names the first differing path and the failing ticker", () => {
@@ -290,7 +369,7 @@ describe("calcDebug.util", () => {
 		const json = JSON.parse(traceJSON(meta, report, run.entries, plan));
 		expect(json.plan).toEqual(plan);
 		expect(json.meta).toEqual(meta);
-		expect(json.checks).toHaveLength(6);
+		expect(json.checks).toHaveLength(7);
 		expect(json.warnings).toEqual(report.warnings);
 		expect(json.entries).toHaveLength(run.entries.length);
 	});

@@ -72,6 +72,7 @@
     }
    ],
    "inputTotal": 17107.90322,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "ETC",
@@ -144,6 +145,7 @@
     }
    ],
    "inputTotal": 11586.84211,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "TCS",
@@ -220,6 +222,7 @@
     }
    ],
    "inputTotal": 548.0187192,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "O",
@@ -308,6 +311,7 @@
     }
    ],
    "inputTotal": 109,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "DW",
@@ -380,6 +384,7 @@
     }
    ],
    "inputTotal": 90,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "DW",
@@ -472,6 +477,7 @@
     }
    ],
    "inputTotal": 419.4105582,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "PPA",
@@ -554,6 +560,7 @@
     }
    ],
    "inputTotal": 2103.239199,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "COF",
@@ -646,6 +653,7 @@
     }
    ],
    "inputTotal": 756.2468716,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -738,6 +746,7 @@
     }
    ],
    "inputTotal": 775.5311154,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -830,6 +839,7 @@
     }
    ],
    "inputTotal": 493.8363134,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -922,6 +932,7 @@
     }
    ],
    "inputTotal": 513.1205572,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1014,6 +1025,7 @@
     }
    ],
    "inputTotal": 1114.455441,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1106,6 +1118,7 @@
     }
    ],
    "inputTotal": 1133.739685,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1198,6 +1211,7 @@
     }
    ],
    "inputTotal": 852.0448827,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1290,6 +1304,7 @@
     }
    ],
    "inputTotal": 871.3291265,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1382,6 +1397,7 @@
     }
    ],
    "inputTotal": 713.4697949,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1474,6 +1490,7 @@
     }
    ],
    "inputTotal": 1071.678364,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1566,6 +1583,7 @@
     }
    ],
    "inputTotal": 732.7540387,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1658,6 +1676,7 @@
     }
    ],
    "inputTotal": 1090.962608,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RAT",
@@ -1740,6 +1759,7 @@
     }
    ],
    "inputTotal": 681.8211164,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "PPA",
@@ -1822,6 +1842,7 @@
     }
    ],
    "inputTotal": 157,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "PPA",
@@ -1904,6 +1925,7 @@
     }
    ],
    "inputTotal": 3184.467618,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "MEA",
@@ -1986,6 +2008,7 @@
     }
    ],
    "inputTotal": 1426.433964,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "FIM",
@@ -2078,6 +2101,7 @@
     }
    ],
    "inputTotal": 5820.827199,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "FOD",
@@ -2160,6 +2184,7 @@
     }
    ],
    "inputTotal": 5718.657008,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "LI",
@@ -2242,6 +2267,7 @@
     }
    ],
    "inputTotal": 1674.593979,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "AU",
@@ -2324,6 +2350,7 @@
     }
    ],
    "inputTotal": 175.9777261,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "S",
@@ -2406,6 +2433,7 @@
     }
    ],
    "inputTotal": 2124.624203,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "STL",
@@ -2488,6 +2516,7 @@
     }
    ],
    "inputTotal": 770.1314157,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "SI",
@@ -2590,6 +2619,7 @@
     }
    ],
    "inputTotal": 932.4524759,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "SI",
@@ -2682,6 +2712,7 @@
     }
    ],
    "inputTotal": 705.1314157,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "SI",
@@ -2774,6 +2805,7 @@
     }
    ],
    "inputTotal": 3054.241278,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "CF",
@@ -2866,6 +2898,7 @@
     }
    ],
    "inputTotal": 1498.798018,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "TI",
@@ -2958,6 +2991,7 @@
     }
    ],
    "inputTotal": 836.1502972,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "SI",
@@ -3050,6 +3084,7 @@
     }
    ],
    "inputTotal": 2728.702848,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "CU",
@@ -3142,6 +3177,7 @@
     }
    ],
    "inputTotal": 1183.319153,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "AL",
@@ -3244,6 +3280,7 @@
     }
    ],
    "inputTotal": 1410.640213,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "AL",
@@ -3346,6 +3383,7 @@
     }
    ],
    "inputTotal": 1289.863317,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "FE",
@@ -3438,6 +3476,7 @@
     }
    ],
    "inputTotal": 1062.542257,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "FE",
@@ -3540,6 +3579,7 @@
     }
    ],
    "inputTotal": 19893.93541,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RE",
@@ -3632,6 +3672,7 @@
     }
    ],
    "inputTotal": 19666.61435,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "RE",
@@ -3704,6 +3745,7 @@
     }
    ],
    "inputTotal": 1350,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "BDE",
@@ -3786,6 +3828,7 @@
     }
    ],
    "inputTotal": 1224.007695,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "BSE",
@@ -3868,6 +3911,7 @@
     }
    ],
    "inputTotal": 1372.312101,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "BTA",
@@ -3950,6 +3994,7 @@
     }
    ],
    "inputTotal": 1995.472,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "BBH",

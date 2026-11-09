@@ -16,6 +16,7 @@ const totals = (over: Partial<IChainTotals> = {}): IChainTotals => ({
 	ownCount: 0,
 	upkeep: 100,
 	wear: 50,
+	fees: 0,
 	profit: 650,
 	built: 3,
 	exact: 2.5,
@@ -60,6 +61,19 @@ describe("ChainResults", () => {
 		);
 		expect((await text(totals(), "workforce")).text()).toContain("P 100");
 		expect((await text(totals(), "bought")).text()).toContain("1 material");
+	});
+
+	it("counts production fees with upkeep and wear", async () => {
+		const upkeep = await text(totals({ fees: 30, profit: 620 }), "upkeep");
+		expect(upkeep.text()).toContain("Upkeep, wear + fees / day");
+		expect(upkeep.text()).toContain("180 ȼ");
+		expect(upkeep.text()).toContain(
+			"100 ȼ workforce, 30 ȼ production fees"
+		);
+
+		const none = await text(totals(), "upkeep");
+		expect(none.text()).toContain("150 ȼ");
+		expect(none.text()).toContain("0 ȼ production fees");
 	});
 
 	it("shows a loss, no payback, byproducts and an empty output", async () => {

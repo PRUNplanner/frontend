@@ -114,6 +114,15 @@
 					<span class="pl-1 font-light text-muted"> ȼ </span>
 				</td>
 			</tr>
+			<tr data-production-fee>
+				<td class="border-r">
+					{{ $t("plan.tools.cogm.table.production_fee") }}
+				</td>
+				<td colspan="3" class="whitespace-nowrap font-bold">
+					{{ formatNumber(data.productionFee) }}
+					<span class="pl-1 font-light text-muted"> ȼ </span>
+				</td>
+			</tr>
 			<template v-if="data.inputCost.length > 0">
 				<tr>
 					<td :rowspan="data.inputCost.length + 2" class="border-r">

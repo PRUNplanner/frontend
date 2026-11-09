@@ -337,8 +337,9 @@ export function calculateBase(
 
 /**
  * A row's engine numbers: daily money split into revenue, inputs,
- * consumables and degradation, cargo, materials with their price sources,
- * outputs with their traded volume and the required workforce
+ * consumables, degradation and production fees, cargo, materials with
+ * their price sources, outputs with their traded volume and the required
+ * workforce
  *
  * @param {IBaseROICandidate} candidate Row
  * @param {IBaseCalculation} base Engine result of calculateBase
@@ -452,6 +453,7 @@ export function toRowInput(
 		inputs: bought - consumables,
 		consumables,
 		degradation: Math.abs(overview.dailyDegradationCost),
+		fees: overview.dailyProductionFeeCost,
 		construction: overview.totalConstructionCost,
 		planetCOGC: ctx.planet.active_cogc_program_type,
 		environment: environmentMaterials.reduce(

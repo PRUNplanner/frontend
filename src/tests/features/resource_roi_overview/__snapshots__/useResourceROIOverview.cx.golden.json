@@ -16,6 +16,7 @@
     "workforceCostTotal": 515.7556536,
     "inputCost": [],
     "inputTotal": 0,
+    "productionFee": 0,
     "outputCOGM": [
      {
       "ticker": "H2O",
@@ -71,6 +72,7 @@
     "workforceCostTotal": 1031.511307,
     "inputCost": [],
     "inputTotal": 0,
+    "productionFee": 0,
     "outputCOGM": [
      {
       "ticker": "SIO",
@@ -126,6 +128,7 @@
     "workforceCostTotal": 859.592756,
     "inputCost": [],
     "inputTotal": 0,
+    "productionFee": 0,
     "outputCOGM": [
      {
       "ticker": "O",

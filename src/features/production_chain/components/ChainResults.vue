@@ -74,9 +74,10 @@
 					},
 			{
 				key: "upkeep",
-				value: money(tt.upkeep + tt.wear),
+				value: money(tt.upkeep + tt.wear + tt.fees),
 				sub: t("production_chains.results.upkeep_workforce", {
 					value: money(tt.upkeep),
+					fees: money(tt.fees),
 				}),
 			},
 			{

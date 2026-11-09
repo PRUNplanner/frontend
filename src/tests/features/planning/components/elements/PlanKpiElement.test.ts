@@ -126,8 +126,15 @@ describe("PlanKpiElement", () => {
 		expect(wrapper.text()).toContain("Profit / day");
 		expect(wrapper.text()).toContain("+1,234.50");
 		expect(wrapper.text()).toContain(
-			"Revenue 5,000.00 · cost 3,765.50 incl. 12.00 degradation"
+			"Revenue 5,000.00 · cost 3,765.50 incl. 12.00 degradation and 0.00 production fees"
 		);
+	});
+
+	it("names the production fees in the sub line", async () => {
+		const { wrapper } = await mountTile("profit", {
+			overview: { dailyProductionFeeCost: 385 },
+		});
+		expect(wrapper.text()).toMatch(/and 385\.00\sproduction fees/);
 	});
 
 	it("shows a loss", async () => {

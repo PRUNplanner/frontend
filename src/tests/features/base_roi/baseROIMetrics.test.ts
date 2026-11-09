@@ -53,6 +53,7 @@ function rowInput(overrides: Partial<IBaseROIRowInput> = {}): IBaseROIRowInput {
 		inputs: 400,
 		consumables: 100,
 		degradation: 50,
+		fees: 0,
 		construction: 10_000,
 		planetCOGC: null,
 		environment: 0,
@@ -156,6 +157,40 @@ describe("baseROIMetrics", () => {
 		expect(m.dailyProfit).toBe(450);
 		expect(m.breakEven).toBeCloseTo(10_000 / 450);
 		expect(m.timeline).toEqual([]);
+	});
+
+	it("production fees count once: running cost, profit, payback (criterion 12)", () => {
+		const s = { ...defaultBaseROISettings(), experts: 3, bufferDays: 0 };
+		const m = calculateMetrics(rowInput({ fees: 30 }), s, 0);
+		expect(m.runningCost).toBe(400 + 100 + 50 + 30);
+		expect(m.dailyProfit).toBe(1000 - 580);
+		expect(m.payback).toBeCloseTo(10_000 / 420);
+		expect(m.breakEven).toBeCloseTo(10_000 / 420);
+		expect(m.weeklyReturn).toBeCloseTo((7 * 420) / 10_000);
+	});
+
+	it("ramp: production fees scale with the experts, like revenue and inputs", () => {
+		const s = { ...defaultBaseROISettings(), bufferDays: 0 };
+		// never paid off early, so every stage is in the timeline
+		const construction = 1e9;
+		const { timeline } = calculateMetrics(
+			rowInput({ fees: 30, construction }),
+			s,
+			0
+		);
+		const base = calculateMetrics(
+			rowInput({ construction }),
+			s,
+			0
+		).timeline;
+		// at 5 experts the full fee, the same profit as the fixed metrics
+		expect(timeline[5].dailyProfit).toBeCloseTo(420);
+		// at 0 experts the fee is cut by the missing expert bonus
+		const full = base[5].dailyProfit - timeline[5].dailyProfit;
+		expect(full).toBeCloseTo(30);
+		expect(base[0].dailyProfit - timeline[0].dailyProfit).toBeLessThan(
+			full
+		);
 	});
 
 	it("ramp: break-even ≥ the 5-expert payback, never without profit (criterion 9)", () => {

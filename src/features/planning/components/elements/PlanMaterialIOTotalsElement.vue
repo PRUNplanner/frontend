@@ -10,8 +10,8 @@
 
 	/**
 	 * Material I/O's totals: exports, imports, and with every source the
-	 * degradation and the profit; four lines, 2 × 2 from 420 px, one row
-	 * from 720 px
+	 * degradation, the production fees and the profit; five lines, two
+	 * columns from 420 px, three from 720 px, one row from 1080 px
 	 *
 	 * @author jplacht
 	 */
@@ -24,7 +24,7 @@
 
 <template>
 	<dl
-		class="grid grid-cols-1 @min-[420px]:grid-cols-2 @min-[720px]:grid-cols-4 gap-x-6 gap-y-1 px-3 py-2 text-sm tabular-nums"
+		class="grid grid-cols-1 @min-[420px]:grid-cols-2 @min-[720px]:grid-cols-3 @min-[1080px]:grid-cols-5 gap-x-6 gap-y-1 px-3 py-2 text-sm tabular-nums"
 		data-io-totals>
 		<div :class="cell">
 			<dt class="text-muted-strong">{{ t("plan.io.exports") }}</dt>
@@ -41,6 +41,14 @@
 				</dt>
 				<dd class="text-right">
 					<PValue :value="-overviewData.dailyDegradationCost" />
+				</dd>
+			</div>
+			<div :class="cell">
+				<dt class="text-muted-strong">
+					{{ t("plan.io.production_fees") }}
+				</dt>
+				<dd class="text-right">
+					<PValue :value="-overviewData.dailyProductionFeeCost" />
 				</dd>
 			</div>
 			<div :class="cell">

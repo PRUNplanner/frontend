@@ -31,7 +31,13 @@
 	}
 
 	const TOP = 10;
-	const PART_KEYS = ["inputs", "workforce", "degradation", "profit"] as const;
+	const PART_KEYS = [
+		"inputs",
+		"workforce",
+		"degradation",
+		"fees",
+		"profit",
+	] as const;
 
 	const { plans } = defineProps<{ plans: IEmpirePlanListData[] }>();
 
@@ -76,6 +82,7 @@
 		inputs: theme.value.costPart(1),
 		workforce: theme.value.costPart(2),
 		degradation: theme.value.costPart(3),
+		fees: theme.value.costPart(4),
 		profit: theme.value.positive,
 	}));
 

@@ -5,19 +5,27 @@ import { mountComponent } from "@/tests/mountComponent";
 import { solveChain } from "@/features/production_chain/engine/chainSolver";
 import {
 	chainInput,
+	FOOD_PLANET,
 	seedGameData,
 	testContext,
+	withFees,
 } from "@/tests/features/production_chain/chain.fixtures";
 import messages from "@/locales/en_US/production_chains.json";
 
 const ctx = testContext();
 
-async function mountDetail(ticker: string, targets: [string, number][]) {
+async function mountDetail(
+	ticker: string,
+	targets: [string, number][],
+	c = ctx,
+	planetId: string | null = null
+) {
 	const result = solveChain(
 		chainInput(targets, {
 			recipeId: { RAT: "FP#1xGRN 1xALG 1xNUT=>10xRAT" },
+			bases: [{ id: "A", name: "", planetId, cogc: "auto", experts: {} }],
 		}),
-		ctx
+		c
 	);
 	const { wrapper } = await mountComponent(
 		ChainStepDetail,
@@ -62,5 +70,27 @@ describe("ChainStepDetail", () => {
 		const spare = wrapper.find("[data-testid='chain-spare']");
 		expect(spare.text()).toBe("up to +20.0 RAT / day");
 		for (const s of shares(wrapper, "Takes")) expect(s).toBeGreaterThan(0);
+	});
+
+	it("shows the production fees per unit, 0 without fees (AC 14)", async () => {
+		const fees = async (c: typeof ctx) => {
+			const { wrapper, result } = await mountDetail(
+				"DW",
+				[["DW", 100]],
+				c,
+				FOOD_PLANET
+			);
+			const dd = wrapper.find("[data-testid='chain-detail-fees']");
+			expect(dd.element.previousElementSibling!.textContent).toContain(
+				"Production fees"
+			);
+			return { text: dd.text(), part: result.rows.DW.costParts!.fees };
+		};
+		const none = await fees(ctx);
+		expect(none.part).toBe(0);
+		expect(none.text).toBe("0 ȼ");
+		const charged = await fees(withFees(ctx, [FOOD_PLANET]));
+		expect(charged.part).toBeGreaterThan(0);
+		expect(charged.text).not.toBe(none.text);
 	});
 });

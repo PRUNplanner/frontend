@@ -17,6 +17,10 @@ import {
 	MAX_EXPERTS_PER_TYPE,
 	MAX_EXPERTS_TOTAL,
 } from "@/features/planning/engine/efficiency";
+import {
+	productionFeePerRun,
+	weightedProductionFee,
+} from "@/features/planning/engine/fees";
 import { activeProgram } from "@/features/planet_search/planetSearch.engine";
 import {
 	getMaterialIOTotalPrice,
@@ -32,6 +36,7 @@ import type {
 	BuildingExpertise,
 	Exchange,
 	Planet,
+	PlanetProductionFees,
 	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
@@ -250,8 +255,9 @@ function buildingDaily(
 
 /**
  * Cost per unit of one output of a recipe: inputs at their unit cost plus
- * the building's upkeep and wear for the run, shared between outputs by
- * CX value (by quantity when no output has a price)
+ * the building's upkeep and wear for the run and the planet's production
+ * fee, shared between outputs by CX value (by quantity when no output has
+ * a price)
  */
 export function recipeCost(
 	ctx: IChainContext,
@@ -259,7 +265,8 @@ export function recipeCost(
 	ticker: string,
 	efficiency: number,
 	unitCostOf: (ticker: string) => number,
-	lux: ChainLux = DEFAULT_LUX
+	lux: ChainLux = DEFAULT_LUX,
+	fees?: PlanetProductionFees
 ): { unit: number; parts: IChainCostParts } {
 	const out =
 		recipe.outputs.find((o) => o.material_ticker === ticker)
@@ -267,7 +274,7 @@ export function recipeCost(
 	if (out <= 0)
 		return {
 			unit: 0,
-			parts: { inputs: 0, upkeepWear: 0, share: 1 },
+			parts: { inputs: 0, upkeepWear: 0, fees: 0, share: 1 },
 		};
 
 	let inputs = 0;
@@ -277,6 +284,14 @@ export function recipeCost(
 		(buildingDaily(ctx, recipe.building_ticker, lux) * recipe.time_ms) /
 		DAY_MS /
 		efficiency;
+	// per run on the base time: efficiency doesn't change it
+	const building = ctx.buildings.get(recipe.building_ticker);
+	const fee = building
+		? productionFeePerRun(
+				weightedProductionFee(building, fees),
+				recipe.time_ms
+			)
+		: 0;
 
 	let value = 0;
 	let amount = 0;
@@ -288,10 +303,11 @@ export function recipeCost(
 		value > 0 ? (out * sellPrice(ctx, ticker)) / value : out / amount;
 
 	return {
-		unit: ((inputs + upkeepWear) * share) / out,
+		unit: ((inputs + upkeepWear + fee) * share) / out,
 		parts: {
 			inputs: (inputs * share) / out,
 			upkeepWear: (upkeepWear * share) / out,
+			fees: (fee * share) / out,
 			share,
 		},
 	};
@@ -382,23 +398,81 @@ export function extractorRate(site: IChainExtractionSite): number {
 }
 
 /**
- * Cost per unit extracted on a site: the extractor's upkeep and wear
- * per building-day over its daily rate
+ * Cost per unit extracted on a site, in parts: the extractor's upkeep and
+ * wear per building-day over its daily rate, and the production fee per
+ * run over the units per run (not scaled by efficiency)
  * @author jplacht
  *
  * @param {IChainContext} ctx Chain context
  * @param {IChainExtractionSite} site Planet and extractor
  * @param {number} efficiency Efficiency in %
+ * @param {ChainLux} lux Luxuries
+ * @param {PlanetProductionFees | null} fees Fees, from siteProductionFees
+ * @returns {{ upkeepWear: number; fees: number }} Per unit, 0 without a rate
+ */
+export function extractionCostParts(
+	ctx: IChainContext,
+	site: IChainExtractionSite,
+	efficiency: number,
+	lux: ChainLux,
+	fees: PlanetProductionFees | null
+): { upkeepWear: number; fees: number } {
+	const base = extractorRate(site);
+	if (base <= 0) return { upkeepWear: 0, fees: 0 };
+	const building = ctx.buildings.get(site.buildingTicker);
+	const rate = base * (Math.max(efficiency, 1) / 100);
+	return {
+		upkeepWear: buildingDaily(ctx, site.buildingTicker, lux) / rate,
+		// fee per run ÷ units per run = weighted fee ÷ units per day at 100 %
+		fees: building ? weightedProductionFee(building, fees) / base : 0,
+	};
+}
+
+/**
+ * Cost per unit extracted on a site: upkeep, wear and the site planet's
+ * production fee
+ * @author jplacht
+ *
+ * @param {IChainContext} ctx Chain context
+ * @param {IChainExtractionSite} site Planet and extractor
+ * @param {number} efficiency Efficiency in %
+ * @param {boolean} typical The typical site, which pays no fees
  * @returns {number} Cost per unit, 0 without a rate
  */
 export function extractionUnitCost(
 	ctx: IChainContext,
 	site: IChainExtractionSite,
 	efficiency: number,
-	lux: ChainLux = DEFAULT_LUX
+	typical: boolean
 ): number {
-	const rate = extractorRate(site) * (Math.max(efficiency, 1) / 100);
-	return rate > 0 ? buildingDaily(ctx, site.buildingTicker, lux) / rate : 0;
+	const c = extractionCostParts(
+		ctx,
+		site,
+		efficiency,
+		DEFAULT_LUX,
+		siteProductionFees(ctx, site, typical)
+	);
+	return c.upkeepWear + c.fees;
+}
+
+/**
+ * Production fees of an extraction site's planet; the typical site stands
+ * for no planet, so it has none
+ * @author jplacht
+ *
+ * @param {IChainContext} ctx Chain context
+ * @param {IChainExtractionSite} site Planet and extractor
+ * @param {boolean} typical The typical site
+ * @returns {PlanetProductionFees | null} Fees, null without
+ */
+export function siteProductionFees(
+	ctx: IChainContext,
+	site: IChainExtractionSite,
+	typical: boolean
+): PlanetProductionFees | null {
+	return typical
+		? null
+		: (ctx.planets?.get(site.planetId)?.production_fees ?? null);
 }
 
 /**
@@ -1124,6 +1198,16 @@ export function solveChain(
 	}
 
 	const rows: Record<string, IChainRow> = {};
+	// production fees per day: the fee per run × runs per day is the load
+	// (buildings at 100 %) × the planet's weighted fee
+	let feesPerDay = 0;
+	const feeOf = (
+		ticker: string,
+		fees: PlanetProductionFees | null
+	): number => {
+		const building = ctx.buildings.get(ticker);
+		return building ? weightedProductionFee(building, fees) : 0;
+	};
 	for (const t of order) {
 		const p = pass.rows.get(t)!;
 		const source = pass.rows.get(t)!.source;
@@ -1151,8 +1235,22 @@ export function solveChain(
 				typicalSite = s.typical;
 				notOnPlanet = s.notOnPlanet;
 				buildingTicker = s.site.buildingTicker;
-				uc = extractionUnitCost(ctx, s.site, costEff * 100, lux);
-				costParts = { inputs: 0, upkeepWear: uc, share: 1 };
+				const c = extractionCostParts(
+					ctx,
+					s.site,
+					costEff * 100,
+					lux,
+					siteProductionFees(ctx, s.site, s.typical)
+				);
+				uc = c.upkeepWear + c.fees;
+				costParts = { inputs: 0, ...c, share: 1 };
+				if (eff > 0)
+					feesPerDay +=
+						p.load *
+						feeOf(
+							s.site.buildingTicker,
+							siteProductionFees(ctx, s.site, s.typical)
+						);
 			}
 		} else {
 			recipe = recipeOf(t);
@@ -1163,10 +1261,22 @@ export function solveChain(
 				t,
 				costEff,
 				(x) => unitCost.get(x) ?? buyPrice(ctx, x),
-				lux
+				lux,
+				planetOf(baseIdOf(t))?.production_fees
 			);
 			uc = cost.unit;
 			costParts = cost.parts;
+			// each base's piece on its own planet; a piece that runs no
+			// buildings (a farm without fertility) pays nothing
+			for (const s of sharesOf(t))
+				if (effOf(t, s.base) > 0)
+					feesPerDay +=
+						p.load *
+						s.share *
+						feeOf(
+							recipe.building_ticker,
+							planetOf(s.base)?.production_fees ?? null
+						);
 		}
 		unitCost.set(t, uc);
 
@@ -1311,7 +1421,8 @@ export function solveChain(
 			order,
 			targetPerDay,
 			byproducts,
-			baseResults
+			baseResults,
+			feesPerDay
 		),
 		warnings: {
 			cheaper: order.filter((t) => rows[t].cheaper),
@@ -1330,7 +1441,8 @@ function totalsOf(
 	order: string[],
 	targetPerDay: Map<string, number>,
 	byproducts: IChainByproduct[],
-	bases: IChainFootprint[]
+	bases: IChainFootprint[],
+	fees: number
 ): IChainTotals {
 	const workforce: Record<WorkforceType, number> = {
 		pioneer: 0,
@@ -1399,7 +1511,7 @@ function totalsOf(
 	);
 	const outputValue = targetsValue + byproductsValue;
 	// own production counts like a bought input at its CX price
-	const profit = outputValue - bought - own - upkeep - wear;
+	const profit = outputValue - bought - own - upkeep - wear - fees;
 
 	return {
 		targetsValue,
@@ -1411,6 +1523,7 @@ function totalsOf(
 		ownCount,
 		upkeep,
 		wear,
+		fees,
 		profit,
 		built,
 		exact,

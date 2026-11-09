@@ -11,7 +11,7 @@ const EXCHANGE_TOKENS: Record<string, string> = {
 	NC1: "--color-cx-nc1",
 };
 
-/** cost parts 1..4 (inputs, workforce, degradation, shipping) reuse the exchange hues */
+/** cost parts 1..4 (inputs, workforce, degradation, shipping or production fees) reuse the exchange hues */
 const COST_PARTS = ["AI1", "CI1", "IC1", "NC1"] as const;
 
 function readTokens() {

@@ -29,6 +29,7 @@ export type CompareFigure =
 	| "output"
 	| "cost"
 	| "degradation"
+	| "fees"
 	| "planCost"
 	| "roi"
 	| "profitArea"

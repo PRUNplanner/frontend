@@ -14,15 +14,16 @@ const byValue = (a: IProfitBreakdownItem, b: IProfitBreakdownItem) =>
 
 /**
  * Splits a plan's daily profit into output value, production inputs,
- * workforce consumables and degradation, and into buildings. No new maths:
- * the steps reuse the engine's priced material i/o, so output − inputs −
- * workforce − degradation is the Overview profit.
+ * workforce consumables, degradation and production fees, and into
+ * buildings. No new maths: the steps reuse the engine's priced material
+ * i/o, so output − inputs − workforce − degradation − fees is the Overview
+ * profit.
  *
  * @remark Materials are netted on the combined material i/o, so one made
  * and used here only counts its surplus or shortfall. A shortfall goes to
  * workforce up to what the workers consume, the rest to production inputs.
- * A building's `dailyRevenue` already subtracts its degradation, which is
- * added back here, so degradation is its own step. Workforce per building
+ * A building's `dailyRevenue` already subtracts its degradation and fees,
+ * which are added back here, so each is its own step. Workforce per building
  * and buy/sell spreads of materials traded between buildings leave a small
  * rest, `unattributed`.
  * @author jplacht
@@ -89,21 +90,30 @@ export function profitBreakdown(
 	// constructionCost is a (negative) value, so this adds degradation back
 	const buildingItems: IProfitBreakdownItem[] = buildings.map((b) => ({
 		key: b.name,
-		value: b.dailyRevenue - (b.constructionCost * b.amount) / 180,
+		value:
+			b.dailyRevenue -
+			(b.constructionCost * b.amount) / 180 +
+			b.dailyProductionFee,
 	}));
+	const feeItems: IProfitBreakdownItem[] = buildings
+		.filter((b) => b.dailyProductionFee > 0)
+		.map((b) => ({ key: b.name, value: b.dailyProductionFee }));
 	const degradation = overview.dailyDegradationCost;
+	const fees = overview.dailyProductionFeeCost;
 	const attributed =
-		buildingItems.reduce((sum, b) => sum + b.value, 0) - degradation;
+		buildingItems.reduce((sum, b) => sum + b.value, 0) - degradation - fees;
 
 	return {
 		output,
 		inputs,
 		workforce,
 		degradation,
+		fees,
 		profit: overview.profit,
 		outputItems: outputItems.sort(byValue),
 		inputItems: inputItems.sort(byValue),
 		workforceItems: workforceItems.sort(byValue),
+		feeItems: feeItems.sort(byValue),
 		buildings: buildingItems.sort(byValue),
 		unattributed: overview.profit - attributed,
 	};
