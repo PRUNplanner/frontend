@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "{n} weiterer Planet stimmt mit \"{text}\" überein, wird aber von Filtern versteckt: | {n} weitere Planeten stimmen mit \"{text}\" überein, werden aber durch Filter versteckt:",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label} (+{n})",
 		"show_all": "Zeige alle {n}"
 	},
