@@ -892,10 +892,22 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"saved": "Saved as Custom Layout, used for all your plans on every device",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
+		"not_saved": "Layout not saved to your account yet. It stays in use here and is sent with your next change or when you leave the page.",
+		"carry_over": {
+			"saved": "Your layout from this tab is now saved to your account",
+			"question": "This tab has a different layout than the one saved to your account. Close this to keep the saved one.",
+			"use_tab": "Use the layout from this tab"
+		},
+		"elsewhere": {
+			"note": "Your layout was changed elsewhere",
+			"load": "Load it",
+			"load_title": "Load the changed layout?",
+			"load_content": "Your changes here are dropped and the layout saved elsewhere is used."
+		},
 		"leave_title": "Discard your layout changes?",
 		"leave_content": "Your changes to the layout are not saved yet.",
 		"leave_discard": "Discard changes",
