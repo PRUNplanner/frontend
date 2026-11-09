@@ -71,6 +71,7 @@
 			"inputs": "Insumos de producción",
 			"workforce": "Mano de obra",
 			"degradation": "Degradación",
+			"fees": "Production fees",
 			"profit": "Beneficio",
 			"uncovered": "Coste no cubierto"
 		},
@@ -79,6 +80,7 @@
 			"inputs": "Insumos {pct}",
 			"workforce": "Mano de obra {pct}",
 			"degradation": "Degradación {pct}",
+			"fees": "Fees {pct}",
 			"profit": "Beneficio {pct}",
 			"uncovered": "No cubierto {pct}",
 			"of_cost": "Parte del coste: los ingresos no lo cubren"
