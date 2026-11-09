@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "另有{n}颗星球匹配“{text}”，但因筛选条件未显示： | 另有{n}颗星球匹配“{text}”，但因筛选条件未显示：",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label}（+{n}）",
 		"show_all": "展示全部{n}颗行星"
 	},
