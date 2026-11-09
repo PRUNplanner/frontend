@@ -1,6 +1,6 @@
 **행성 검색**에서는 이미 알고 있는 행성을 찾거나 새로운 생산 거점이 될 곳을 찾을 수 있습니다. 필터를 변경할 때마다 결과가 즉시 업데이트됩니다.
 
-**이름 또는 ID.** 상단 입력란에 행성 이름이나 고유 ID의 일부(예: 'OT-580' 또는 'Montem')를 입력하세요. 이름 검색도 필터 중 하나로, 필터 패널에서 설정한 모든 조건과 함께 적용됩니다. 이름과 일치하는 행성이 필터 때문에 숨겨진 경우, 결과 위에 그 개수를 알려 주는 안내가 표시됩니다. 이 안내에는 숨겨진 행성을 더 많이 보이게 할 수 있는 변경 방법이 최대 세 가지 제시되며, 각 방법마다 추가로 표시되는 행성 수도 함께 나옵니다. _모두 보&#xAE30;_&#xB294; 이름 검색어는 유지하고 나머지 필터를 모두 초기화하여 해당 이름에 맞는 모든 행성을 보여 줍니다.
+**이름 또는 ID.** 상단 입력란에 행성 이름이나 고유 ID의 일부(예: 'OT-580' 또는 'Montem')를 입력하세요. A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. _Apply filters_ combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. _Show all_ pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
 
 **물자.** 각 그룹은 포함된 물자 중 _하나라도_ 또는 _모두_ 만족하는 행성을 찾으며, 그룹끼리는 _모든 그룹_ 또는 _하나 이상의 그룹_ 조건으로 결합됩니다. 이를 통해 '(FEO and H2O) or (MAG and O)'와 같은 검색도 할 수 있습니다. 모든 자원에 대해 일일 최소 채굴량을 개/일 단위로 지정할 수 있습니다.
 
