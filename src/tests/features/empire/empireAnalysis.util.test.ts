@@ -21,22 +21,24 @@ const plan = (
 	profit: number,
 	inputs = 100,
 	workforce = 50,
-	degradation = 10
+	degradation = 10,
+	fees = 0
 ): IEmpirePlanListData => ({
 	uuid,
 	name: uuid,
 	planet: "OT-580b",
 	permits: 1,
 	cogc: "---",
-	revenue: inputs + workforce + degradation + profit,
+	revenue: inputs + workforce + degradation + fees + profit,
 	inputs,
 	workforce,
 	degradation,
+	fees,
 	profit,
 });
 
 const sumOfShares = (s: ReturnType<typeof splitShares>) =>
-	s.inputs + s.workforce + s.degradation + s.profit + s.uncovered;
+	s.inputs + s.workforce + s.degradation + s.fees + s.profit + s.uncovered;
 
 describe("revenueSplitRows", () => {
 	// 14 profitable plans (profit 1..14) and 2 loss-making ones
@@ -65,6 +67,7 @@ describe("revenueSplitRows", () => {
 			inputs: 400,
 			workforce: 200,
 			degradation: 40,
+			fees: 0,
 			profit: 10,
 		});
 	});
@@ -101,7 +104,26 @@ describe("splitShares", () => {
 		expect(s.profit).toBe(0);
 		expect(s.uncovered).toBeCloseTo(25);
 		expect(s.margin).toBeCloseTo(-33.33, 1);
-		expect(s.inputs + s.workforce + s.degradation).toBeCloseTo(100, 1);
+		expect(s.inputs + s.workforce + s.degradation + s.fees).toBeCloseTo(
+			100,
+			1
+		);
+	});
+
+	it("has a fees part, the shares still add up to 100 (criterion 11)", () => {
+		// 200 revenue: 100 inputs, 50 workforce, 10 degradation, 20 fees
+		const s = splitShares(plan("a", 20, 100, 50, 10, 20));
+		expect(s.fees).toBeCloseTo(10);
+		expect(s.profit).toBeCloseTo(10);
+		expect(sumOfShares(s)).toBeCloseTo(100, 6);
+
+		const loss = splitShares(plan("b", -40, 100, 50, 10, 40));
+		// a loss: the cost parts make 100, revenue misses 40 of 200
+		expect(loss.fees).toBeCloseTo(20);
+		expect(
+			loss.inputs + loss.workforce + loss.degradation + loss.fees
+		).toBeCloseTo(100, 6);
+		expect(loss.uncovered).toBeCloseTo(20);
 	});
 
 	it("is empty without revenue or cost", () => {
@@ -121,9 +143,11 @@ describe("empireSplitParts", () => {
 	] as IEmpireMaterialIO[];
 	const { calculateEmpireCostOverview } = useMaterialIOUtil();
 	// cost the split doesn't account for
-	const unaccounted = (overview: IEmpireCostOverview) => {
-		const p = empireSplitParts(overview, io, plans);
-		return overview.totalCost - p.inputs - p.workforce - p.degradation;
+	const unaccounted = (overview: IEmpireCostOverview, of = plans) => {
+		const p = empireSplitParts(overview, io, of);
+		return (
+			overview.totalCost - p.inputs - p.workforce - p.degradation - p.fees
+		);
 	};
 
 	it("covers the empire cost with known parts only", () => {
@@ -133,11 +157,23 @@ describe("empireSplitParts", () => {
 	});
 
 	it("catches a cost part it doesn't know", () => {
-		// e.g. production fees added to the plans' cost
-		const fees = 25;
+		// e.g. shipping added to the plans' cost
+		const shipping = 25;
 		expect(
-			unaccounted(calculateEmpireCostOverview(io, 0, 30 + fees))
-		).toBeCloseTo(fees);
+			unaccounted(calculateEmpireCostOverview(io, 0, 30 + shipping))
+		).toBeCloseTo(shipping);
+	});
+
+	it("covers the plans' production fees with the fees part (criterion 11)", () => {
+		const withFees = [
+			plan("a", 185, 300, 100, 20, 15),
+			plan("b", -20, 60, 20, 10, 10),
+		];
+		const overview = calculateEmpireCostOverview(io, 0, 30 + 25);
+		expect(unaccounted(overview, withFees)).toBeCloseTo(0);
+		const parts = empireSplitParts(overview, io, withFees);
+		expect(parts.fees).toBe(25);
+		expect(sumOfShares(splitShares(parts))).toBeCloseTo(100, 6);
 	});
 
 	it("matches the KPIs and adds up to 100 %", () => {
@@ -163,7 +199,10 @@ describe("empireSplitParts", () => {
 			totalAreaUsed: 0,
 		};
 		const s = splitShares(empireSplitParts(overview, io, plans));
-		expect(s.inputs + s.workforce + s.degradation).toBeCloseTo(100, 1);
+		expect(s.inputs + s.workforce + s.degradation + s.fees).toBeCloseTo(
+			100,
+			1
+		);
 		expect(s.uncovered).toBeCloseTo((360 / 460) * 100);
 	});
 

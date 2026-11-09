@@ -160,12 +160,13 @@ describe("solveChain edge cases", () => {
 			dailyExtraction: 0,
 			buildingTicker: "RIG",
 		};
-		expect(extractionUnitCost(ctx, site, 100)).toBe(0);
+		expect(extractionUnitCost(ctx, site, 100, false)).toBe(0);
 		expect(
 			extractionUnitCost(
 				ctx,
 				{ ...site, dailyExtraction: 10, buildingTicker: "XYZ" },
-				100
+				100,
+				false
 			)
 		).toBe(0);
 	});

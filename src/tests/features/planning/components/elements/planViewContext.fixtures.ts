@@ -22,6 +22,7 @@ export const OVERVIEW: IOverviewData = {
 	dailyProfit: 1234.5,
 	totalConstructionCost: 1500000,
 	dailyDegradationCost: 12,
+	dailyProductionFeeCost: 0,
 	profit: 1234.5,
 	roi: 123.456,
 };

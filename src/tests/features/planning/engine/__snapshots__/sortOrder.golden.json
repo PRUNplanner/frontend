@@ -82,6 +82,7 @@
     }
    ],
    "inputTotal": 141499.5438,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "AIR",
@@ -123,6 +124,7 @@
     }
    ],
    "inputTotal": 1479.802495,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "SIO",
@@ -177,6 +179,7 @@
     }
    ],
    "inputTotal": 1226.987564,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "CL",
@@ -224,6 +227,7 @@
     }
    ],
    "inputTotal": 548.0187192,
+   "productionFee": 0,
    "outputCOGM": [
     {
      "ticker": "O",

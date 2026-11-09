@@ -4,12 +4,14 @@ import type {
 	IVisitationData,
 } from "@/features/planning/usePlanCalculation.types";
 
-/** ¢ per day: costs positive, revenue − inputs − workforce − degradation = profit */
+/** ¢ per day: costs positive, revenue − inputs − workforce − degradation − fees = profit */
 export interface IEmpireSplitParts {
 	revenue: number;
 	inputs: number;
 	workforce: number;
 	degradation: number;
+	/** production fees */
+	fees: number;
 	profit: number;
 }
 
@@ -26,6 +28,7 @@ export interface IEmpireSplitShares {
 	inputs: number;
 	workforce: number;
 	degradation: number;
+	fees: number;
 	profit: number;
 	/** share of the cost revenue does not cover */
 	uncovered: number;

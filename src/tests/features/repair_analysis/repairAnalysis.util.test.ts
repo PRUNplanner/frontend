@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 
 import {
 	calculateRepairCurve,
@@ -8,12 +8,40 @@ import {
 	dueTagType,
 	goodRange,
 	repairCostSplit,
+	repairCurveOf,
 	repairMaterialsAt,
 	repairEfficiency,
 } from "@/features/repair_analysis/repairAnalysis.util";
 
+// Engine
+import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { usePlanContext } from "@/features/planning/usePlanContext";
+
 // Types & Interfaces
 import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
+
+// test data
+import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import {
+	largePlan,
+	setupPlanningTestData,
+	withProductionFees,
+} from "@/tests/features/planning/usePlanCalculation.fixtures";
+
+vi.mock("@/database/services/usePlanetData", async () => {
+	const actual: any = await vi.importActual(
+		"@/database/services/usePlanetData"
+	);
+
+	return {
+		usePlanetData: vi.fn(() => ({
+			getPlanet: vi.fn().mockResolvedValue(planet_etherwind),
+			getPlanetSpecialMaterials:
+				actual.usePlanetData().getPlanetSpecialMaterials,
+		})),
+	};
+});
 
 const MATERIALS = [
 	{ ticker: "A", input: 180, output: 0 },
@@ -220,3 +248,49 @@ describe("repairAnalysis.util", () => {
 function curveOf(profits: number[]): IPlanRepairAnalysisElement[] {
 	return profits.map((profit) => ({ profit }) as IPlanRepairAnalysisElement);
 }
+
+describe("repairCurveOf on a planet with production fees", () => {
+	let ctx: IPlanContext;
+
+	beforeAll(async () => {
+		await setupPlanningTestData();
+		const { loadGameData, createContext } = usePlanContext();
+		ctx = await createContext(await loadGameData(), "KW-688c", undefined);
+	});
+
+	const buildingsOn = (c: IPlanContext) =>
+		calculatePlan(
+			{ plan: largePlan(), empire: undefined, cxUuid: undefined },
+			c
+		).result.production.buildings;
+
+	it("nets the fee out of the production value, so it wears with output", () => {
+		const plain = buildingsOn(ctx);
+		const charged = buildingsOn(withProductionFees(ctx));
+		const paying = charged.filter((b) => b.dailyProductionFee > 0);
+		expect(paying.length).toBeGreaterThan(0);
+
+		for (const b of paying) {
+			const without = plain.find((p) => p.name === b.name)!;
+			// one building's fee per day scales with efficiency, like output
+			const fee = b.dailyProductionFee / b.amount;
+			expect(fee).toBeCloseTo(
+				b.weightedProductionFee * b.totalEfficiency,
+				9
+			);
+
+			const a = repairCurveOf(without, ctx.prices);
+			const f = repairCurveOf(b, ctx.prices);
+			expect(a.productionValue - f.productionValue).toBeCloseTo(fee, 6);
+			expect(f.workforceCost).toBe(a.workforceCost);
+			// at every age the fee wears down exactly like the output it
+			// pays for, and repairs cost the same
+			for (const day of [0, 1, 50, 100, 180]) {
+				expect(
+					a.curve[day].dailyRevenue - f.curve[day].dailyRevenue
+				).toBeCloseTo(repairEfficiency(day) * fee, 6);
+				expect(f.curve[day].repair).toBe(a.curve[day].repair);
+			}
+		}
+	});
+});

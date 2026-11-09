@@ -2,6 +2,7 @@
   "overviewData": {
     "dailyCost": 17061.60878,
     "dailyDegradationCost": 13405.09521,
+    "dailyProductionFeeCost": 0,
     "dailyProfit": 182596.7731,
     "profit": 152130.0691,
     "roi": 20.71083689,
@@ -569,6 +570,7 @@
                   },
                 ],
                 "outputRevenue": 1907.148524,
+                "productionFee": 0,
                 "runtime": 35130713.03,
                 "runtimeShare": 0.4066054749,
                 "totalCost": 492.9473763,
@@ -612,6 +614,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": 3478.067157,
           "efficiencyElements": [
             {
@@ -649,6 +652,7 @@
           ],
           "totalBatchTime": 35130713.03,
           "totalEfficiency": 1.28825,
+          "weightedProductionFee": 0,
           "workforceDailyCost": -1031.511307,
           "workforceMaterials": [
             {
@@ -704,6 +708,7 @@
                   },
                 ],
                 "outputRevenue": 789.1410247,
+                "productionFee": 0,
                 "runtime": 8077786.088,
                 "runtimeShare": 0.09349289454,
                 "totalCost": 165.6573555,
@@ -766,6 +771,7 @@
                   },
                 ],
                 "outputRevenue": 2907.37636,
+                "productionFee": 0,
                 "runtime": 24233358.26,
                 "runtimeShare": 0.2804786836,
                 "totalCost": 2330.211266,
@@ -838,6 +844,7 @@
                   },
                 ],
                 "outputRevenue": 1632.169818,
+                "productionFee": 0,
                 "runtime": 20194465.22,
                 "runtimeShare": 0.2337322364,
                 "totalCost": 1280.105997,
@@ -904,6 +911,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": 58967.37434,
           "efficiencyElements": [
             {
@@ -1498,6 +1506,7 @@
           ],
           "totalBatchTime": 60583395.66,
           "totalEfficiency": 1.0696,
+          "weightedProductionFee": 0,
           "workforceDailyCost": -687.6742048,
           "workforceMaterials": [
             {
@@ -1559,6 +1568,7 @@
                   },
                 ],
                 "outputRevenue": 3530.071806,
+                "productionFee": 0,
                 "runtime": 19203413.94,
                 "runtimeShare": 0.2222617354,
                 "totalCost": 1081.46077,
@@ -1625,6 +1635,7 @@
                   },
                 ],
                 "outputRevenue": 3265.055111,
+                "productionFee": 0,
                 "runtime": 30725462.3,
                 "runtimeShare": 0.3556187767,
                 "totalCost": 969.5372316,
@@ -1685,6 +1696,7 @@
                   },
                 ],
                 "outputRevenue": 3523.601778,
+                "productionFee": 0,
                 "runtime": 38406827.88,
                 "runtimeShare": 0.4445234708,
                 "totalCost": 1466.921539,
@@ -1747,6 +1759,7 @@
                   },
                 ],
                 "outputRevenue": 2316.723343,
+                "productionFee": 0,
                 "runtime": 15362731.15,
                 "runtimeShare": 0.1778093883,
                 "totalCost": 640.7686158,
@@ -1813,6 +1826,7 @@
                   },
                 ],
                 "outputRevenue": 4934.502832,
+                "productionFee": 0,
                 "runtime": 61450924.61,
                 "runtimeShare": 0.7112375533,
                 "totalCost": 1867.074463,
@@ -1880,6 +1894,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": 78809.1832,
           "efficiencyElements": [
             {
@@ -2089,6 +2104,7 @@
           ],
           "totalBatchTime": 399431010,
           "totalEfficiency": 1.1248,
+          "weightedProductionFee": 0,
           "workforceDailyCost": -1283.42707,
           "workforceMaterials": [
             {
@@ -2170,6 +2186,7 @@
                   },
                 ],
                 "outputRevenue": 3884.43556,
+                "productionFee": 0,
                 "runtime": 44264700.17,
                 "runtimeShare": 0.5123229187,
                 "totalCost": 1534.783282,
@@ -2237,6 +2254,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": 32103.9043,
           "efficiencyElements": [
             {
@@ -2400,6 +2418,7 @@
           ],
           "totalBatchTime": 44264700.17,
           "totalEfficiency": 1.28825,
+          "weightedProductionFee": 0,
           "workforceDailyCost": -687.6742048,
           "workforceMaterials": [
             {
@@ -2448,6 +2467,7 @@
                   },
                 ],
                 "outputRevenue": 424.1506508,
+                "productionFee": 0,
                 "runtime": 14371655.33,
                 "runtimeShare": 0.1663386034,
                 "totalCost": 107.2135653,
@@ -2491,6 +2511,7 @@
               "ticker": "MCG",
             },
           ],
+          "dailyProductionFee": 0,
           "dailyRevenue": 40012.83324,
           "efficiencyElements": [
             {
@@ -2528,6 +2549,7 @@
           ],
           "totalBatchTime": 14371655.33,
           "totalEfficiency": 1.28825,
+          "weightedProductionFee": 0,
           "workforceDailyCost": -515.7556536,
           "workforceMaterials": [
             {

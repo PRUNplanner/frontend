@@ -23,6 +23,7 @@ import {
 	type WorkforceType,
 } from "@/features/api/schemas/planningData.schemas";
 import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
+import type { IPlanContext } from "@/features/planning/engine/engine.types";
 import type {
 	IExpertRecord,
 	IMaterialIO,
@@ -174,6 +175,30 @@ export function planetSearchWithN(): Planet[] {
 }
 
 /**
+ * The context on a planet that charges the same production fees, by
+ * workforce level (P, S, T, E, Sc), in every category
+ */
+export function withProductionFees(
+	ctx: IPlanContext,
+	levels: [number, number, number, number, number] = [10, 20, 30, 40, 50]
+): IPlanContext {
+	const categories = new Set(buildings.map((b) => b.expertise));
+	categories.delete(null);
+	return {
+		...ctx,
+		planet: {
+			...ctx.planet,
+			production_fees: {
+				currency: "CIS",
+				fees: Object.fromEntries(
+					[...categories].map((c) => [c, levels])
+				),
+			},
+		},
+	};
+}
+
+/**
  * The ROI tools compare buildings at full housing with both luxuries:
  * every workforce type of every plan is fully housed with both luxuries,
  * and every building's workforce cost is that fully provided reference.
@@ -254,6 +279,8 @@ export const building = (
 	constructionCost: 0,
 	workforceMaterials: [],
 	workforceDailyCost: 0,
+	weightedProductionFee: 0,
+	dailyProductionFee: 0,
 	dailyRevenue: 0,
 	expertise: null,
 	...over,

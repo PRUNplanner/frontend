@@ -53,6 +53,7 @@ const COGM = {
 	workforceCostTotal: 0,
 	inputCost: [],
 	inputTotal: 0,
+	productionFee: 0,
 	outputCOGM: [],
 	totalCost: 0,
 	outputRevenue: 0,

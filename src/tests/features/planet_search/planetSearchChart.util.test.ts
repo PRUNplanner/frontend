@@ -33,6 +33,7 @@ function planet(
 		has_shipyard: false,
 		cogc_program_status: null,
 		cogc_programs: [],
+		production_fees: null,
 		resources: Object.entries(resources).map(([t, daily]) => ({
 			material_ticker: t,
 			resource_type: "MINERAL",

@@ -141,8 +141,12 @@ function planSteps(ctx: IChainContext, plan: ICheckPlan): ICheckStep[] {
 		if (!(b.totalBatchTime > 0) || !Number.isFinite(b.totalBatchTime))
 			continue;
 		const batchRuns = (DAY_MS * b.amount) / b.totalBatchTime;
-		// both are material values: negative
-		const daily = -b.workforceDailyCost - b.constructionCost / WEAR_DAYS;
+		// both are material values: negative; the fee per building-day
+		// is the weighted fee × efficiency, so per run it is the fee per run
+		const daily =
+			-b.workforceDailyCost -
+			b.constructionCost / WEAR_DAYS +
+			b.weightedProductionFee * b.totalEfficiency;
 		for (const ar of b.activeRecipes) {
 			if (ar.amount <= 0) continue;
 			const runs = ar.amount * batchRuns;

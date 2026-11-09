@@ -80,12 +80,13 @@ export function bufferStock(
 
 /**
  * Break-even with experts arriving over time: the stages with 0–4 experts
- * last EXPERT_STAGE_DAYS ÷ production buildings, revenue and inputs scale
- * with the expert bonus, consumables and degradation stay. After 4 experts
- * the 5-expert profit pays off the rest; no positive profit then = never.
+ * last EXPERT_STAGE_DAYS ÷ production buildings, revenue, inputs and
+ * production fees scale with the expert bonus, consumables and degradation
+ * stay. After 4 experts the 5-expert profit pays off the rest; no positive
+ * profit then = never.
  *
  * @param {number} buildingCost Building cost
- * @param {number} scaling Revenue − inputs per day at 5 experts
+ * @param {number} scaling Revenue − inputs − fees per day at 5 experts
  * @param {number} fixed Consumables + degradation per day
  * @param {number} buildings Production buildings
  * @returns {{ breakEven: number; timeline: IBaseROIStage[] }} Days and stages
@@ -217,7 +218,8 @@ export function calculateMetrics(
 	settings: MetricsSettings,
 	hqCost: number
 ): IBaseROIMetrics {
-	const runningCost = row.inputs + row.consumables + row.degradation;
+	const runningCost =
+		row.inputs + row.consumables + row.degradation + row.fees;
 	const dailyProfit = row.revenue - runningCost;
 
 	const weight = Math.max(row.weightIn, row.weightOut);
@@ -238,7 +240,8 @@ export function calculateMetrics(
 	if (settings.experts === "ramp") {
 		({ breakEven, timeline } = rampBreakEven(
 			buildingCost,
-			row.revenue - row.inputs,
+			// fees scale with efficiency, so with the experts
+			row.revenue - row.inputs - row.fees,
 			row.consumables + row.degradation,
 			row.productionBuildings
 		));

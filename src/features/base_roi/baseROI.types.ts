@@ -66,6 +66,8 @@ export interface IBaseROIRowInput extends IBaseROICandidate {
 	inputs: number;
 	consumables: number;
 	degradation: number;
+	// production fees, scale with efficiency like revenue and inputs
+	fees: number;
 	construction: number;
 	// the planet's active COGC program, shown, never applied
 	planetCOGC: string | null;

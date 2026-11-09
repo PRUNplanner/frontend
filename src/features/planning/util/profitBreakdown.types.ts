@@ -17,13 +17,17 @@ export interface IProfitBreakdown {
 	inputs: number;
 	workforce: number;
 	degradation: number;
+	/** production fees */
+	fees: number;
 	profit: number;
 	/** items per step, largest first */
 	outputItems: IProfitBreakdownItem[];
 	inputItems: IProfitBreakdownItem[];
 	workforceItems: IProfitBreakdownItem[];
-	/** buildings before degradation, largest first */
+	/** production fees by building, those that pay any */
+	feeItems: IProfitBreakdownItem[];
+	/** buildings before degradation and fees, largest first */
 	buildings: IProfitBreakdownItem[];
-	/** profit not explained by the buildings and degradation */
+	/** profit not explained by the buildings, degradation and fees */
 	unattributed: number;
 }

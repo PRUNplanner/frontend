@@ -22,6 +22,7 @@ export interface IExchangePlanBase {
 		// per building, priced like the engine does
 		constructionMaterials: IMaterialIOMinimal[];
 		workforceMaterials: IMaterialIOMinimal[];
+		productionFee: number;
 	}[];
 }
 

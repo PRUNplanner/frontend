@@ -71,9 +71,12 @@ export function buyHint(row: IChainRow): boolean {
 	if (row.buildings <= EPS || row.buildings >= BUY_HINT_BUILDINGS)
 		return false;
 	if (row.price <= 0) return false;
-	// upkeep per unit grows from the used share to the whole building
+	// upkeep per unit grows from the used share to the whole building;
+	// the fee is per run, so it doesn't
 	const whole =
-		row.costParts.inputs + row.costParts.upkeepWear / row.buildings;
+		row.costParts.inputs +
+		row.costParts.fees +
+		row.costParts.upkeepWear / row.buildings;
 	return whole > row.price + EPS;
 }
 

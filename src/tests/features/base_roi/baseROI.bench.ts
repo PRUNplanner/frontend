@@ -196,10 +196,7 @@ const workloads: [string, () => number][] = [
 	],
 	[
 		"B10e profit history, every row",
-		() =>
-			allRows.map((r) =>
-				profitHistory(r.materials, r.degradation, series)
-			).length,
+		() => allRows.map((r) => profitHistory(r, series)).length,
 	],
 ];
 

@@ -223,7 +223,7 @@ describe("PlanMaterialIOElement", () => {
 });
 
 describe("PlanMaterialIOTotalsElement", () => {
-	it("shows exports, imports, degradation and profit, 4 → 2 × 2 → 1 row", async () => {
+	it("shows exports, imports, degradation, fees and profit, 1 → 2 → 3 → 5 columns", async () => {
 		const { wrapper, context } = await mountElement(
 			PlanMaterialIOTotalsElement
 		);
@@ -232,13 +232,15 @@ describe("PlanMaterialIOTotalsElement", () => {
 			expect.arrayContaining([
 				"grid-cols-1",
 				"@min-[420px]:grid-cols-2",
-				"@min-[720px]:grid-cols-4",
+				"@min-[720px]:grid-cols-3",
+				"@min-[1080px]:grid-cols-5",
 			])
 		);
 		expect(dl.findAll("dt").map((d) => d.text())).toEqual([
 			"Exports",
 			"Imports",
 			"Degradation",
+			"Production fees",
 			"Profit / day",
 		]);
 		expect(dl.text()).toContain("+500.00");
@@ -247,5 +249,18 @@ describe("PlanMaterialIOTotalsElement", () => {
 		context.io.refIOSource.value = "production";
 		await flushPromises();
 		expect(wrapper.findAll("dt")).toHaveLength(2);
+	});
+
+	it("shows the production fees as a cost, 0 without any", async () => {
+		const fee = async (dailyProductionFeeCost: number) => {
+			const { wrapper } = await mountElement(
+				PlanMaterialIOTotalsElement,
+				{},
+				{ overview: { dailyProductionFeeCost } }
+			);
+			return wrapper.findAll("[data-io-totals] dd")[3].text();
+		};
+		expect(await fee(385)).toBe("-385.00");
+		expect(await fee(0)).toBe("0.00");
 	});
 });

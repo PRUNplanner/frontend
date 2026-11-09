@@ -1,5 +1,8 @@
 // Engine
-import { calculateMaterialIO } from "@/features/planning/engine/materialIO";
+import {
+	calculateMaterialIO,
+	TOTALMSDAY,
+} from "@/features/planning/engine/materialIO";
 import { TRACE_PHASES } from "@/features/planning/engine/trace";
 
 // Util
@@ -10,7 +13,10 @@ import type {
 	IPlanCalculation,
 	ITraceEntry,
 } from "@/features/planning/engine/engine.types";
-import type { IPlanTraceRun } from "@/features/planning/usePlanCalculation.types";
+import type {
+	IPlanTraceRun,
+	IProductionBuilding,
+} from "@/features/planning/usePlanCalculation.types";
 import type {
 	ICalcDebugCheck,
 	ICalcDebugPlan,
@@ -139,10 +145,19 @@ export function calcDebugChecks(
 			(sum, b) => sum - b.constructionCost * b.amount,
 			0
 		) / 180;
+	// a building pays its weighted fee × efficiency while anything runs
+	const feeOf = (b: IProductionBuilding): number =>
+		b.activeRecipes.some((ar) => ar.dailyShare > 0)
+			? b.weightedProductionFee * b.totalEfficiency * b.amount
+			: 0;
+	const fees: number = result.production.buildings.reduce(
+		(sum, b) => sum + feeOf(b),
+		0
+	);
 	checks.push(
 		numberCheck(
-			"profit = revenue − material cost − degradation",
-			result.revenue - overview.dailyCost - degradation,
+			"profit = revenue − material cost − degradation − fees",
+			result.revenue - overview.dailyCost - degradation - fees,
 			result.profit
 		)
 	);
@@ -216,6 +231,35 @@ export function calcDebugChecks(
 			pass: true,
 		}
 	);
+
+	// 7. production fees: per run on base time, per day by efficiency
+	const FEES =
+		"fees: per run = weighted × time ÷ day, Σ weighted × efficiency";
+	const feeFailure = [
+		...result.production.buildings.flatMap((b) => [
+			numberCheck(
+				FEES,
+				feeOf(b),
+				b.dailyProductionFee,
+				`${b.name} daily`
+			),
+			...b.activeRecipes.flatMap((ar) =>
+				ar.cogm
+					? [
+							numberCheck(
+								FEES,
+								(b.weightedProductionFee * ar.recipe.time_ms) /
+									TOTALMSDAY,
+								ar.cogm.productionFee,
+								`${b.name} ${ar.recipeId} per run`
+							),
+						]
+					: []
+			),
+		]),
+		numberCheck(FEES, fees, overview.dailyProductionFeeCost, "plan"),
+	].find((c) => !c.pass);
+	checks.push(feeFailure ?? { name: FEES, pass: true });
 
 	const warnings: string[] = run.entries
 		.filter((e) => e.level === "warn")

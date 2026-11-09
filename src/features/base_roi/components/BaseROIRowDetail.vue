@@ -227,14 +227,7 @@
 	 * and aggregation of the chart controls
 	 */
 	const history = computed(() =>
-		series
-			? profitHistory(
-					shown.value.materials,
-					shown.value.degradation,
-					series,
-					HISTORY_DAYS
-				)
-			: null
+		series ? profitHistory(shown.value, series, HISTORY_DAYS) : null
 	);
 	const chartDays = historyDays(HISTORY_DAYS);
 	const view = (lines: ILineSeries[]) =>

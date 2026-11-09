@@ -11,7 +11,8 @@
     "revenue": 182596.7731,
     "inputs": 29484.63016,
     "workforce": 6408.686759,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
@@ -23,7 +24,8 @@
     "revenue": 177096.3443,
     "inputs": 82609.93662,
     "workforce": 5218.250877,
-    "degradation": 9825.213186
+    "degradation": 9825.213186,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
@@ -35,7 +37,8 @@
     "revenue": 210135.864,
     "inputs": 59157.75326,
     "workforce": 6408.686759,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    }
   ],
   "costOverview": {
@@ -58,6 +61,7 @@
     "inputs": 164428.2914,
     "workforce": 17316.9444,
     "degradation": 36635.40361,
+    "fees": 0,
     "profit": 343905.6333
    }
   },
@@ -1454,7 +1458,8 @@
     "revenue": 182596.7731,
     "inputs": 11064.13846,
     "workforce": 5997.470322,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
@@ -1466,7 +1471,8 @@
     "revenue": 177096.3443,
     "inputs": 21209.472,
     "workforce": 4807.03444,
-    "degradation": 9825.213186
+    "degradation": 9825.213186,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
@@ -1478,7 +1484,8 @@
     "revenue": 210135.864,
     "inputs": 45669.92286,
     "workforce": 5997.470322,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    }
   ],
   "costOverview": {
@@ -1501,6 +1508,7 @@
     "inputs": 72467.46881,
     "workforce": 15621.5218,
     "degradation": 36635.40361,
+    "fees": 0,
     "profit": 437561.8785
    }
   },
@@ -2898,7 +2906,8 @@
     "revenue": 190936.3736,
     "inputs": 30565.66911,
     "workforce": 6408.686759,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000002",
@@ -2910,7 +2919,8 @@
     "revenue": 177534.1164,
     "inputs": 82609.93662,
     "workforce": 5218.250877,
-    "degradation": 9825.213186
+    "degradation": 9825.213186,
+    "fees": 0
    },
    {
     "uuid": "8b0e6b1c-0000-4000-8000-000000000003",
@@ -2922,7 +2932,8 @@
     "revenue": 212218.7214,
     "inputs": 55433.76135,
     "workforce": 6408.686759,
-    "degradation": 13405.09521
+    "degradation": 13405.09521,
+    "fees": 0
    }
   ],
   "costOverview": {
@@ -2945,6 +2956,7 @@
     "inputs": 156056.2508,
     "workforce": 16692.85623,
     "degradation": 36635.40361,
+    "fees": 0,
     "profit": 357408.8163
    }
   },

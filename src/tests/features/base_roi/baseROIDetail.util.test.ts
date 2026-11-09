@@ -8,6 +8,7 @@ import {
 } from "@/features/base_roi/baseROIDetail.util";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { baseROIRows } from "@/tests/features/base_roi/baseROI.fixtures";
+import { formatNumber } from "@/util/numbers";
 
 // Types & Interfaces
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
@@ -72,6 +73,18 @@ describe("baseROIDetail.util (criterion 16)", () => {
 		expect(money.lines[at].formula).toContain(`"n":${consumed}`);
 		// the next line is degradation, no per-material lines in between
 		expect(money.lines[at + 1].label).toBe("base_roi.detail.degradation");
+	});
+
+	it("production fees: a cost line after degradation, before the profit (criterion 12)", () => {
+		const row = { ...rows[0], fees: 1234 };
+		const lines = detailSections(row, settings(), t).find(
+			(s) => s.id === 6
+		)!.lines;
+		const at = lines.findIndex((l) => l.label === "base_roi.detail.fees");
+		expect(lines[at - 1].label).toBe("base_roi.detail.degradation");
+		expect(lines[at].value).toBe(formatNumber(-1234, 0));
+		expect(lines[at].formula).toBe("base_roi.detail.fees_formula");
+		expect(lines[at + 1].label).toBe("base_roi.detail.daily_profit");
 	});
 
 	it("section 8: outputs and recipe inputs, then the market capacity with its side", () => {

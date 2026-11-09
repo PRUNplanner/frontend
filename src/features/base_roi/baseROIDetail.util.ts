@@ -256,6 +256,11 @@ export function detailSections(
 			formula: k("degradation_formula"),
 		},
 		{
+			label: k("fees"),
+			value: money(-row.fees),
+			formula: k("fees_formula"),
+		},
+		{
 			label: k("daily_profit"),
 			value: money(m.dailyProfit),
 			total: true,

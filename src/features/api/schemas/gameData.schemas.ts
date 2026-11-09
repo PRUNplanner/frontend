@@ -170,6 +170,28 @@ const PlanetCOGCProgramStatusSchema = z.enum([
 	"PLANNED",
 ]);
 
+const ProductionFeeSchema = z.number().min(0);
+
+// production fees per building expertise as [PIONEER, SETTLER, TECHNICIAN,
+// ENGINEER, SCIENTIST]; plain string keys, so a category FIO adds later
+// doesn't fail the whole planet
+const PlanetProductionFeesSchema = z
+	.object({
+		currency: z.enum(["AIC", "CIS", "ICA", "NCC"]),
+		fees: z.record(
+			z.string(),
+			z.tuple([
+				ProductionFeeSchema,
+				ProductionFeeSchema,
+				ProductionFeeSchema,
+				ProductionFeeSchema,
+				ProductionFeeSchema,
+			])
+		),
+	})
+	.nullable();
+export type PlanetProductionFees = z.infer<typeof PlanetProductionFeesSchema>;
+
 export const PlanetSchema = z.object({
 	planet_id: z.string().min(32).max(32),
 	planet_natural_id: z.string(),
@@ -192,6 +214,7 @@ export const PlanetSchema = z.object({
 	resources: z.array(PlanetResourceSchema),
 	cogc_programs: z.array(PlanetCOGCProgramSchema),
 	active_cogc_program_type: PlanetCOGCProgramTypeSchema.nullable(),
+	production_fees: PlanetProductionFeesSchema,
 
 	// plots from the FIO API, null until the backend's first plots refresh
 	plots_total: z.number().int().nullable(),
@@ -221,6 +244,7 @@ const PlanetSearchIndexEntrySchema = PlanetSchema.pick({
 	has_shipyard: true,
 	cogc_program_status: true,
 	cogc_programs: true,
+	production_fees: true,
 	plots_total: true,
 	plots_used: true,
 	ghost_sites: true,

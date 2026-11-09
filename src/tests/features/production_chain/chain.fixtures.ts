@@ -26,6 +26,7 @@ import type {
 	Exchange,
 	Material,
 	Planet,
+	PlanetProductionFees,
 	PlanetSearchIndexEntry,
 	Recipe,
 } from "@/features/api/schemas/gameData.schemas";
@@ -147,6 +148,29 @@ export function splitByExpertise(result: IChainResult, ctx: IChainContext) {
 			Object.entries(idOf).map(([t, id]) => [t, { [id]: 1 }])
 		) as Record<string, ChainBaseShare>,
 	};
+}
+
+/** Montem's fees: the same in every category (FIO, 2026-10-25) */
+export const FEES: PlanetProductionFees = {
+	currency: "NCC",
+	fees: Object.fromEntries(
+		["FOOD_INDUSTRIES", "AGRICULTURE", "RESOURCE_EXTRACTION"].map((c) => [
+			c,
+			[25, 59, 133, 385, 385],
+		])
+	),
+};
+
+/** the context with the given planets charging production fees */
+export function withFees(
+	ctx: IChainContext,
+	planetIds: string[],
+	fees: PlanetProductionFees = FEES
+): IChainContext {
+	const planets = new Map(ctx.planets);
+	for (const id of planetIds)
+		planets.set(id, { ...planets.get(id)!, production_fees: fees });
+	return { ...ctx, planets };
 }
 
 /** runs Food Industries, not fertile */
@@ -291,10 +315,15 @@ export function fixturePlan(
 }
 
 /** a stored plan through the plan engine, as the check gets it */
-export function checkFromPlan(id: string, plan: Plan): ICheckPlan {
+export function checkFromPlan(
+	id: string,
+	plan: Plan,
+	fees: PlanetProductionFees = null
+): ICheckPlan {
+	const planCtx = planContextFor(plan.planet_natural_id);
 	const result = calculatePlan(
 		{ plan, empire: undefined, cxUuid: undefined, recipeOptions: false },
-		planContextFor(plan.planet_natural_id)
+		{ ...planCtx, planet: { ...planCtx.planet, production_fees: fees } }
 	);
 	return {
 		id,
@@ -349,9 +378,12 @@ export function fixtureEmpirePlans(dwRecipe = DW): Plan[] {
 	];
 }
 
-export function fixtureEmpire(dwRecipe = DW): ICheckPlan[] {
+export function fixtureEmpire(
+	dwRecipe = DW,
+	fees: PlanetProductionFees = null
+): ICheckPlan[] {
 	return fixtureEmpirePlans(dwRecipe).map((p, i) =>
-		checkFromPlan(String.fromCharCode(65 + i), p)
+		checkFromPlan(String.fromCharCode(65 + i), p, fees)
 	);
 }
 

@@ -74,7 +74,7 @@ describe("exchange plan data", () => {
 			createPriceBook(() => cx, planet, getExchangeTickerLoaded);
 	});
 
-	const base = (plan = etherwindPlan()) =>
+	const base = (plan = etherwindPlan(), c: IPlanContext = ctx) =>
 		toPlanBase(
 			{
 				planUuid: plan.uuid,
@@ -84,7 +84,7 @@ describe("exchange plan data", () => {
 				linked: true,
 			},
 			// price-free: calculated with Universe prices
-			calculatePlan({ plan, empire: undefined, cxUuid: undefined }, ctx)
+			calculatePlan({ plan, empire: undefined, cxUuid: undefined }, c)
 		);
 
 	it("re-priced Material I/O matches a full calculation", () => {
@@ -104,34 +104,57 @@ describe("exchange plan data", () => {
 		}
 	});
 
-	it("re-priced COGM matches a full calculation", () => {
-		for (const plan of [etherwindPlan(), largePlan()]) {
-			const full = calculatePlan(
-				{ plan, empire: undefined, cxUuid: "cx" },
-				{ ...ctx, prices: book(PLANET) }
-			).result;
-			const cogms = calculateMaterialCOGMs([base(plan)], book);
-
-			const expected = new Map<string, number>();
-			for (const b of full.production.buildings)
-				for (const ar of b.activeRecipes)
-					for (const o of ar.cogm!.outputCOGM)
-						if (Number.isFinite(o.costTotal))
-							expected.set(
-								o.ticker,
-								Math.min(
-									expected.get(o.ticker) ?? Infinity,
-									o.costTotal
-								)
-							);
-
-			expect([...cogms.keys()].sort()).toEqual(
-				[...expected.keys()].sort()
-			);
-			for (const [ticker, value] of expected)
-				expect(cogms.get(ticker)!.value).toBeCloseTo(value, 9);
-		}
+	// every category charges a fee, by workforce level
+	const withFees = (): IPlanContext => ({
+		...ctx,
+		planet: {
+			...ctx.planet,
+			production_fees: {
+				currency: "CIS",
+				fees: Object.fromEntries(
+					[
+						"AGRICULTURE",
+						"CHEMISTRY",
+						"FOOD_INDUSTRIES",
+						"RESOURCE_EXTRACTION",
+					].map((c) => [c, [10, 20, 30, 40, 50]])
+				),
+			},
+		},
 	});
+
+	it.each(["without", "with"])(
+		"re-priced COGM matches a full calculation, %s production fees",
+		(fees) => {
+			const c = fees === "with" ? withFees() : ctx;
+			for (const plan of [etherwindPlan(), largePlan()]) {
+				const full = calculatePlan(
+					{ plan, empire: undefined, cxUuid: "cx" },
+					{ ...c, prices: book(PLANET) }
+				).result;
+				const cogms = calculateMaterialCOGMs([base(plan, c)], book);
+
+				const expected = new Map<string, number>();
+				for (const b of full.production.buildings)
+					for (const ar of b.activeRecipes)
+						for (const o of ar.cogm!.outputCOGM)
+							if (Number.isFinite(o.costTotal))
+								expected.set(
+									o.ticker,
+									Math.min(
+										expected.get(o.ticker) ?? Infinity,
+										o.costTotal
+									)
+								);
+
+				expect([...cogms.keys()].sort()).toEqual(
+					[...expected.keys()].sort()
+				);
+				for (const [ticker, value] of expected)
+					expect(cogms.get(ticker)!.value).toBeCloseTo(value, 9);
+			}
+		}
+	);
 
 	it("aggregates planets: ranges, varies and the lowest COGM", () => {
 		const one = base();

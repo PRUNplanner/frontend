@@ -14,6 +14,7 @@ import {
 	runningCOGC,
 	workerUpkeep,
 } from "@/features/production_chain/engine/chainSolver";
+import { productionFeePerRun } from "@/features/planning/engine/fees";
 
 // Fixtures
 import {
@@ -22,9 +23,11 @@ import {
 	DW,
 	DW7,
 	FARM_PLANET,
+	FEES,
 	FOOD_PLANET,
 	checkPlan,
 	fixtureEmpire,
+	fixtureEmpirePlans,
 	fixturePlan,
 	fixtureWithRigs,
 	index,
@@ -34,7 +37,10 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type {
+	PlanetProductionFees,
+	PlanetSearchIndexEntry,
+} from "@/features/api/schemas/gameData.schemas";
 import type {
 	ICheckInput,
 	ICheckLocationFinding,
@@ -546,6 +552,65 @@ describe("checkEmpire", () => {
 		]);
 		expect(planLux(PLANS[0].result.workforce)).toBe("both");
 		expect(planLux(PLANS[1].result.workforce)).toBe("none");
+	});
+});
+
+describe("checkEmpire production fees (AC 14)", () => {
+	/** the fixture empire, its Food Industries planet charging the fees */
+	const run = (rid: string, fees: PlanetProductionFees) =>
+		checkEmpire(
+			{
+				plans: fixtureEmpirePlans(rid).map((p, i) =>
+					checkFromPlan(
+						String.fromCharCode(65 + i),
+						p,
+						p.planet_natural_id === FOOD_PLANET ? fees : null
+					)
+				),
+				targets: ["DW", "RAT"],
+				min: 0,
+				setup: false,
+				payback: 100,
+				picks: {},
+			},
+			ctx
+		);
+
+	it("adds the fee per run ÷ output to a step's unit cost", () => {
+		const plain = step(run(DW, null), "A", "FP");
+		const fee = step(run(DW, FEES), "A", "FP");
+		// FP: pioneers only, 25 a day at 100 %
+		expect(fee.daily - plain.daily).toBeCloseTo(25 * fee.efficiency, 9);
+		expect(fee.inputCost).toBeCloseTo(plain.inputCost, 9);
+		expect(fee.unitCost - plain.unitCost).toBeCloseTo(
+			productionFeePerRun(25, fee.recipe.time_ms) / 10,
+			9
+		);
+		// the planet without fees is unchanged
+		expect(step(run(DW, FEES), "B", "FRM").daily).toBe(
+			step(run(DW, null), "B", "FRM").daily
+		);
+	});
+
+	it("compares recipes with their fee per run", () => {
+		let hits = 0;
+		for (const rid of [DW, DW7]) {
+			const plain = base(run(rid, null), "A").findings.find(
+				(f) => f.kind === "recipe"
+			);
+			const fee = base(run(rid, FEES), "A").findings.find(
+				(f) => f.kind === "recipe"
+			);
+			if (!plain || plain.kind !== "recipe") continue;
+			if (!fee || fee.kind !== "recipe") throw new Error("kind");
+			const per = (r: typeof fee.recipe) =>
+				productionFeePerRun(25, r.time_ms) /
+				r.outputs[0].material_amount;
+			expect(fee.now - plain.now).toBeCloseTo(per(fee.step.recipe), 9);
+			expect(fee.alt - plain.alt).toBeCloseTo(per(fee.recipe), 9);
+			hits++;
+		}
+		expect(hits).toBe(1);
 	});
 });
 

@@ -2,6 +2,7 @@
   "overviewData": {
     "dailyCost": 0,
     "dailyDegradationCost": 0,
+    "dailyProductionFeeCost": 0,
     "dailyProfit": 0,
     "profit": 0,
     "roi": "Infinity",

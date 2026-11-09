@@ -19,6 +19,7 @@ import {
 	etherwindPlan,
 	io,
 	largePlan,
+	withProductionFees,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
@@ -41,19 +42,24 @@ vi.mock("@/database/services/usePlanetData", async () => {
 const mio = (ticker: string, delta: number, price: number) =>
 	io(ticker, delta, { price: delta * price });
 
-function overview(profit: number, degradation: number): IOverviewData {
+function overview(
+	profit: number,
+	degradation: number,
+	fees: number = 0
+): IOverviewData {
 	return {
 		dailyCost: 0,
 		dailyProfit: 0,
 		totalConstructionCost: degradation * 180,
 		dailyDegradationCost: degradation,
+		dailyProductionFeeCost: fees,
 		profit,
 		roi: 0,
 	};
 }
 
 const sumSteps = (b: IProfitBreakdown) =>
-	b.output - b.inputs - b.workforce - b.degradation;
+	b.output - b.inputs - b.workforce - b.degradation - b.fees;
 
 // Montem iron, the spec's mockup: 51,717 − 15,729 − 13,092 − 3,583 = 19,313
 const MONTEM_WORKFORCE = [
@@ -163,6 +169,42 @@ describe("profitBreakdown", () => {
 		]);
 		// 300 + 110 − 30 = 380, the plan says 330
 		expect(b.unattributed).toBeCloseTo(-50, 6);
+		expect(b.fees).toBe(0);
+		expect(b.feeItems).toEqual([]);
+	});
+
+	it("makes production fees a step by building and adds them back to each", () => {
+		const b = profitBreakdown(
+			[mio("FE", 1, 1000), mio("C", -1, 300)],
+			[],
+			[
+				// 290 after 10 degradation and 25 fees
+				building("SME", {
+					dailyRevenue: 255,
+					constructionCost: -1800,
+					dailyProductionFee: 25,
+				}),
+				building("EXT", { dailyRevenue: 400, dailyProductionFee: 60 }),
+				// pays nothing: not listed as a fee
+				building("FRM", { dailyRevenue: 45 }),
+			],
+			// 1,000 − 300 − 10 − 85
+			overview(605, 10, 85)
+		);
+
+		expect(b.fees).toBe(85);
+		expect(b.feeItems).toEqual([
+			{ key: "EXT", value: 60 },
+			{ key: "SME", value: 25 },
+		]);
+		expect(sumSteps(b)).toBeCloseTo(b.profit, 6);
+		expect(b.buildings).toEqual([
+			{ key: "EXT", value: 460 },
+			{ key: "SME", value: 290 },
+			{ key: "FRM", value: 45 },
+		]);
+		// 460 + 290 + 45 − 10 − 85 = 700, the plan says 605
+		expect(b.unattributed).toBeCloseTo(-95, 6);
 	});
 
 	describe("on the real engine", () => {
@@ -179,27 +221,38 @@ describe("profitBreakdown", () => {
 		});
 
 		it.each([
-			["etherwind", etherwindPlan],
-			["large", largePlan],
-		])("both modes end at the Overview profit (%s)", (_name, plan) => {
-			const { result, overview: o } = calculatePlan(
-				{ plan: plan(), empire: undefined, cxUuid: undefined },
-				ctx
-			);
-			const b = profitBreakdown(
-				result.materialio,
-				result.workforceMaterialIO,
-				result.production.buildings,
-				o
-			);
+			["etherwind", etherwindPlan, false],
+			["large", largePlan, false],
+			["etherwind with fees", etherwindPlan, true],
+			["large with fees", largePlan, true],
+		])(
+			"both modes end at the Overview profit (%s)",
+			(_name, plan, fees) => {
+				const { result, overview: o } = calculatePlan(
+					{ plan: plan(), empire: undefined, cxUuid: undefined },
+					fees ? withProductionFees(ctx) : ctx
+				);
+				const b = profitBreakdown(
+					result.materialio,
+					result.workforceMaterialIO,
+					result.production.buildings,
+					o
+				);
 
-			expect(b.output).toBeGreaterThan(0);
-			expect(Math.abs(sumSteps(b) - o.profit)).toBeLessThan(0.01);
-			const byBuilding =
-				b.buildings.reduce((s, i) => s + i.value, 0) -
-				b.degradation +
-				b.unattributed;
-			expect(Math.abs(byBuilding - o.profit)).toBeLessThan(0.01);
-		});
+				expect(b.output).toBeGreaterThan(0);
+				expect(b.fees > 0).toBe(fees);
+				expect(b.feeItems.reduce((s, i) => s + i.value, 0)).toBeCloseTo(
+					b.fees,
+					6
+				);
+				expect(Math.abs(sumSteps(b) - o.profit)).toBeLessThan(0.01);
+				const byBuilding =
+					b.buildings.reduce((s, i) => s + i.value, 0) -
+					b.degradation -
+					b.fees +
+					b.unattributed;
+				expect(Math.abs(byBuilding - o.profit)).toBeLessThan(0.01);
+			}
+		);
 	});
 });

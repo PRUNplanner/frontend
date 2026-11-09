@@ -43,6 +43,8 @@ export function toPlanBase(
 				efficiency: b.totalEfficiency,
 				constructionMaterials: b.constructionMaterials,
 				workforceMaterials: b.workforceMaterials,
+				// per run, on the plan's planet; independent of prices
+				productionFee: recipe.cogm?.productionFee ?? 0,
 			}))
 		),
 	};
@@ -131,6 +133,7 @@ export function calculateMaterialCOGMs(
 				getMaterialIOTotalPrice(book, r.constructionMaterials, "BUY") *
 					-1,
 				getMaterialIOTotalPrice(book, r.workforceMaterials, "BUY") * -1,
+				r.productionFee,
 				book
 			);
 			for (const output of cogm.outputCOGM) {

@@ -114,6 +114,7 @@
         "workforceCostTotal": 1031.511307,
         "inputCost": [],
         "inputTotal": 0,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "SIO",
@@ -166,7 +167,8 @@
         "input": 0.3,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -212,6 +214,7 @@
          }
         ],
         "inputTotal": 471.2785009,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "DW",
@@ -274,7 +277,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -330,6 +334,7 @@
          }
         ],
         "inputTotal": 2103.239199,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "COF",
@@ -392,7 +397,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -458,6 +464,7 @@
          }
         ],
         "inputTotal": 1090.962608,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "RAT",
@@ -520,7 +527,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -576,6 +584,7 @@
          }
         ],
         "inputTotal": 2236.009876,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "CAF",
@@ -663,7 +672,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -719,6 +729,7 @@
          }
         ],
         "inputTotal": 1059.522293,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "HCP",
@@ -806,7 +817,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -852,6 +864,7 @@
          }
         ],
         "inputTotal": 1598.929565,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MUS",
@@ -939,7 +952,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -995,6 +1009,7 @@
          }
         ],
         "inputTotal": 1153.777993,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "VEG",
@@ -1082,7 +1097,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -1138,6 +1154,7 @@
          }
         ],
         "inputTotal": 1742.021784,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MAI",
@@ -1225,7 +1242,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -1281,6 +1299,7 @@
          }
         ],
         "inputTotal": 2454.944694,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "C",
@@ -1348,7 +1367,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -1382,6 +1402,7 @@
         "workforceCostTotal": 515.7556536,
         "inputCost": [],
         "inputTotal": 0,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "H2O",
@@ -1434,7 +1455,8 @@
         "input": 0.15,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      }
     ]
    }
@@ -2629,6 +2651,7 @@
         "workforceCostTotal": 1031.511307,
         "inputCost": [],
         "inputTotal": 0,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "SIO",
@@ -2681,7 +2704,8 @@
         "input": 0.3,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -2727,6 +2751,7 @@
          }
         ],
         "inputTotal": 471.2785009,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "DW",
@@ -2789,7 +2814,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -2845,6 +2871,7 @@
          }
         ],
         "inputTotal": 2103.239199,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "COF",
@@ -2907,7 +2934,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -2973,6 +3001,7 @@
          }
         ],
         "inputTotal": 1090.962608,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "RAT",
@@ -3035,7 +3064,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3091,6 +3121,7 @@
          }
         ],
         "inputTotal": 2236.009876,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "CAF",
@@ -3178,7 +3209,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3234,6 +3266,7 @@
          }
         ],
         "inputTotal": 1059.522293,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "HCP",
@@ -3321,7 +3354,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3367,6 +3401,7 @@
          }
         ],
         "inputTotal": 1598.929565,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MUS",
@@ -3454,7 +3489,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3510,6 +3546,7 @@
          }
         ],
         "inputTotal": 1153.777993,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "VEG",
@@ -3597,7 +3634,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3653,6 +3691,7 @@
          }
         ],
         "inputTotal": 1742.021784,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MAI",
@@ -3740,7 +3779,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3796,6 +3836,7 @@
          }
         ],
         "inputTotal": 2454.944694,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "C",
@@ -3863,7 +3904,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -3897,6 +3939,7 @@
         "workforceCostTotal": 515.7556536,
         "inputCost": [],
         "inputTotal": 0,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "H2O",
@@ -3949,7 +3992,8 @@
         "input": 0.15,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      }
     ]
    },
@@ -4062,6 +4106,7 @@
         "workforceCostTotal": 1031.511307,
         "inputCost": [],
         "inputTotal": 0,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "SIO",
@@ -4114,7 +4159,8 @@
         "input": 0.3,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4160,6 +4206,7 @@
          }
         ],
         "inputTotal": 471.2785009,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "DW",
@@ -4222,7 +4269,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4278,6 +4326,7 @@
          }
         ],
         "inputTotal": 2103.239199,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "COF",
@@ -4340,7 +4389,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4406,6 +4456,7 @@
          }
         ],
         "inputTotal": 1090.962608,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "RAT",
@@ -4468,7 +4519,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4524,6 +4576,7 @@
          }
         ],
         "inputTotal": 2236.009876,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "CAF",
@@ -4611,7 +4664,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4667,6 +4721,7 @@
          }
         ],
         "inputTotal": 1059.522293,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "HCP",
@@ -4754,7 +4809,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4800,6 +4856,7 @@
          }
         ],
         "inputTotal": 1598.929565,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MUS",
@@ -4887,7 +4944,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -4943,6 +5001,7 @@
          }
         ],
         "inputTotal": 1153.777993,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "VEG",
@@ -5030,7 +5089,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      },
      {
       "recipe": {
@@ -5086,6 +5146,7 @@
          }
         ],
         "inputTotal": 1742.021784,
+        "productionFee": 0,
         "outputCOGM": [
          {
           "ticker": "MAI",
@@ -5173,7 +5234,8 @@
         "input": 0.2,
         "output": 0
        }
-      ]
+      ],
+      "productionFee": 0
      }
     ]
    }

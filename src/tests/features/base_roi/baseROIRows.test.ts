@@ -172,6 +172,52 @@ describe("baseROIRows", () => {
 		expect(input.environment).toBeGreaterThan(0);
 	});
 
+	it("a fee planet: the row's fees are the engine's, counted once (criterion 12)", () => {
+		const candidate: IBaseROICandidate = {
+			key: "h2o",
+			kind: "resource",
+			building: "RIG",
+			expertise: "RESOURCE_EXTRACTION",
+			recipeId: "RIG#H2O",
+			planetNaturalId: planet_etherwind.planet_natural_id,
+			planetName: planet_etherwind.planet_name,
+			jumps: 3,
+		};
+		const run = (planet: Planet) => {
+			const ctx = ctxOn(planet);
+			const base = calculateBase(candidate, ctx, plain, undefined);
+			const input = toRowInput(candidate, base, ctx, getExchange);
+			return {
+				base,
+				input,
+				metrics: calculateMetrics(input, plain, 0),
+			};
+		};
+		const free = run(planet_etherwind as Planet);
+		const paid = run({
+			...(planet_etherwind as Planet),
+			production_fees: {
+				currency: "NCC",
+				fees: { RESOURCE_EXTRACTION: [25, 59, 133, 385, 385] },
+			},
+		});
+
+		expect(free.input.fees).toBe(0);
+		expect(paid.input.fees).toBeGreaterThan(0);
+		expect(paid.input.fees).toBe(paid.base.overview.dailyProductionFeeCost);
+		// same output, the fees once: in running cost and in profit
+		expect(paid.input.revenue).toBeCloseTo(free.input.revenue, 6);
+		expect(paid.metrics.runningCost - free.metrics.runningCost).toBeCloseTo(
+			paid.input.fees,
+			6
+		);
+		expect(paid.metrics.dailyProfit).toBeCloseTo(
+			paid.base.overview.profit,
+			6
+		);
+		expect(paid.metrics.payback).toBeGreaterThan(free.metrics.payback);
+	});
+
 	it("buffer 28 days adds storage and never exceeds the area (criterion 6)", () => {
 		const ctx = ctxOn(STANDARD_PLANET);
 		const candidates = recipeCandidates(gameData).filter((c) =>

@@ -323,8 +323,16 @@ describe("planning engine", () => {
 	describe("calculateFinance", () => {
 		const io = (delta: number, price: number) =>
 			({ delta, price }) as IMaterialIO;
-		const building = (constructionCost: number, amount: number) =>
-			({ constructionCost, amount }) as IProductionBuilding;
+		const building = (
+			constructionCost: number,
+			amount: number,
+			dailyProductionFee = 0
+		) =>
+			({
+				constructionCost,
+				amount,
+				dailyProductionFee,
+			}) as IProductionBuilding;
 
 		it("reports the same money in the result and the overview", () => {
 			const finance = calculateFinance(
@@ -341,9 +349,24 @@ describe("planning engine", () => {
 				dailyProfit: 300,
 				totalConstructionCost: 9000,
 				dailyDegradationCost: 20,
+				dailyProductionFeeCost: 0,
 				profit: 180,
 				roi: 50,
 			});
+		});
+
+		it("subtracts production fees from profit and adds them to cost", () => {
+			const finance = calculateFinance(
+				[io(-2, -100), io(3, 300)],
+				[building(-1800, 2, 15), building(0, 1, 5)],
+				9000
+			);
+
+			expect(finance.cost).toBe(100 + 20 + 20);
+			expect(finance.profit).toBe(300 - 100 - 20 - 20);
+			expect(finance.overview.dailyProductionFeeCost).toBe(20);
+			expect(finance.overview.profit).toBe(160);
+			expect(finance.overview.roi).toBe(9000 / 160);
 		});
 
 		it("keeps the sign of zero for an empty plan", () => {
@@ -426,6 +449,192 @@ describe("planning engine", () => {
 			expect(() =>
 				getBuildingRecipes(ctx.recipesByBuilding, "FOO")
 			).toThrowError("No recipe data");
+		});
+	});
+
+	describe("production fees", () => {
+		// every category charges, by level
+		const FEES = [10, 20, 30, 40, 50] as [
+			number,
+			number,
+			number,
+			number,
+			number,
+		];
+		const feeCtx = (): IPlanContext => ({
+			...ctx,
+			planet: {
+				...ctx.planet,
+				production_fees: {
+					currency: "CIS",
+					fees: Object.fromEntries(
+						[
+							"AGRICULTURE",
+							"CHEMISTRY",
+							"CONSTRUCTION",
+							"ELECTRONICS",
+							"FOOD_INDUSTRIES",
+							"FUEL_REFINING",
+							"MANUFACTURING",
+							"METALLURGY",
+							"RESOURCE_EXTRACTION",
+						].map((c) => [c, FEES])
+					),
+				},
+			},
+		});
+		const run = (plan: Plan, c: IPlanContext) =>
+			calculatePlan({ plan, empire: undefined, cxUuid: undefined }, c);
+
+		it("charges weighted fee × efficiency × amount per day, the per-run fee summed over a day's runs", () => {
+			const plan = etherwindPlan();
+			// a building that mixes recipes
+			const { index, recipeid } = findRecipeSwap(plan);
+			plan.plan_data.buildings[index].active_recipes.push({
+				recipeid,
+				amount: 1,
+			});
+			const { result } = run(plan, feeCtx());
+
+			const charged = result.production.buildings.filter(
+				(b) => b.weightedProductionFee > 0
+			);
+			expect(charged.length).toBeGreaterThan(0);
+			expect(
+				result.production.buildings[index].activeRecipes.length
+			).toBeGreaterThan(1);
+
+			for (const b of result.production.buildings) {
+				expect(b.dailyProductionFee).toBeCloseTo(
+					b.weightedProductionFee * b.totalEfficiency * b.amount,
+					9
+				);
+				// runs per day × fee per run, recipe by recipe
+				const fromRuns = b.activeRecipes.reduce(
+					(sum, ar) =>
+						sum +
+						((ar.dailyShare * 86_400_000) / ar.time) *
+							ar.amount *
+							b.amount *
+							ar.cogm!.productionFee,
+					0
+				);
+				expect(fromRuns).toBeCloseTo(b.dailyProductionFee, 6);
+				// the fee per run is on base time, whatever the efficiency
+				for (const ar of b.activeRecipes)
+					expect(ar.cogm!.productionFee).toBeCloseTo(
+						(b.weightedProductionFee * ar.recipe.time_ms) /
+							86_400_000,
+						12
+					);
+			}
+		});
+
+		it("lowers profit, ROI, building revenue, COGM and every recipe option by the fees", () => {
+			const plan = etherwindPlan();
+			const without = run(plan, ctx);
+			const withFees = run(plan, feeCtx());
+			const fees = withFees.result.production.buildings.reduce(
+				(sum, b) => sum + b.dailyProductionFee,
+				0
+			);
+
+			expect(fees).toBeGreaterThan(0);
+			expect(withFees.overview.dailyProductionFeeCost).toBe(fees);
+			expect(withFees.overview.profit).toBeCloseTo(
+				without.overview.profit - fees,
+				6
+			);
+			expect(withFees.result.profit).toBeCloseTo(
+				without.result.profit - fees,
+				6
+			);
+			expect(withFees.result.cost).toBeCloseTo(
+				without.result.cost + fees,
+				6
+			);
+			expect(withFees.overview.roi).toBe(
+				withFees.overview.totalConstructionCost /
+					withFees.overview.profit
+			);
+
+			withFees.result.production.buildings.forEach((b, i) => {
+				const a = without.result.production.buildings[i];
+				expect(b.dailyRevenue).toBeCloseTo(
+					a.dailyRevenue - b.dailyProductionFee,
+					6
+				);
+				b.activeRecipes.forEach((ar, j) =>
+					expect(ar.cogm!.totalCost).toBeCloseTo(
+						a.activeRecipes[j].cogm!.totalCost +
+							ar.cogm!.productionFee,
+						9
+					)
+				);
+				b.recipeOptions.forEach((o, j) =>
+					expect(o.dailyRevenue).toBeCloseTo(
+						a.recipeOptions[j].dailyRevenue -
+							b.weightedProductionFee * b.totalEfficiency,
+						6
+					)
+				);
+			});
+		});
+
+		it("Overview profit = revenue − material cost − degradation − fees", () => {
+			const { overview } = run(etherwindPlan(), feeCtx());
+
+			expect(overview.profit).toBeCloseTo(
+				overview.dailyProfit -
+					overview.dailyCost -
+					overview.dailyDegradationCost -
+					overview.dailyProductionFeeCost,
+				6
+			);
+		});
+
+		it("changes nothing on a planet without fees, all zeros or null", () => {
+			const plan = etherwindPlan();
+			const zeros = feeCtx();
+			zeros.planet.production_fees!.fees = Object.fromEntries(
+				Object.keys(zeros.planet.production_fees!.fees).map((c) => [
+					c,
+					[0, 0, 0, 0, 0],
+				])
+			);
+			const none = run(plan, {
+				...ctx,
+				planet: { ...ctx.planet, production_fees: null },
+			});
+
+			expect(run(plan, zeros)).toStrictEqual(none);
+			expect(none.overview.dailyProductionFeeCost).toBe(0);
+			for (const b of none.result.production.buildings) {
+				expect(b.dailyProductionFee).toBe(0);
+				for (const ar of b.activeRecipes)
+					expect(ar.cogm!.productionFee).toBe(0);
+			}
+		});
+
+		it("charges nothing at amount 0 or 0% efficiency, all finite", () => {
+			const plan = etherwindPlan();
+			plan.plan_data.buildings[0].amount = 0;
+			for (const ar of plan.plan_data.buildings[1].active_recipes)
+				ar.amount = 0;
+			const idle = run(plan, feeCtx()).result.production.buildings;
+			expect(idle[0].dailyProductionFee).toBe(0);
+			expect(idle[1].dailyProductionFee).toBe(0);
+
+			// no housing: 0% efficiency
+			const stopped = etherwindPlan();
+			stopped.plan_data.infrastructure = [];
+			const { result, overview } = run(stopped, feeCtx());
+			for (const b of result.production.buildings) {
+				expect(b.dailyProductionFee).toBe(0);
+				expect(Number.isFinite(b.dailyRevenue)).toBe(true);
+			}
+			expect(overview.dailyProductionFeeCost).toBe(0);
+			expect(Number.isFinite(overview.profit)).toBe(true);
 		});
 	});
 });

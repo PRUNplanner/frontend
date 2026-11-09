@@ -50,6 +50,23 @@ describe("ChainPlanetPicker", () => {
 		);
 	});
 
+	it("costs the typical row without production fees, the planet rows with", async () => {
+		const calls: [string, boolean][] = [];
+		await mountPicker(undefined, {
+			unitCost: (site: { planetId: string }, typical: boolean) => {
+				calls.push([site.planetId, typical]);
+				return 1;
+			},
+		});
+		expect(calls).toContainEqual([h2o.typical.planetId, true]);
+		expect(calls.filter(([, typical]) => typical).length).toBeGreaterThan(
+			0
+		);
+		expect(
+			calls.filter(([, typical]) => !typical).map(([id]) => id)
+		).toEqual(expect.arrayContaining(h2o.sites.map((s) => s.planetId)));
+	});
+
 	it("shows every row's plots in rank, unknown never blocks a planet", async () => {
 		const { rows, planetIds } = await mountPicker();
 		expect(

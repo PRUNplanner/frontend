@@ -90,6 +90,7 @@ function plan(
 		inputs: 60,
 		workforce: 30,
 		degradation: 10,
+		fees: 0,
 	};
 }
 

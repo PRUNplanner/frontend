@@ -83,6 +83,8 @@ export interface IProductionBuildingRecipeCOGM {
 	workforceCostTotal: number;
 	inputCost: ICOGMMaterialCost[];
 	inputTotal: number;
+	/** production fee per run, on base time */
+	productionFee: number;
 	outputCOGM: ICOGMMaterialReturn[];
 	totalCost: number;
 	outputRevenue: number;
@@ -111,6 +113,10 @@ export interface IProductionBuilding {
 	constructionCost: number;
 	workforceMaterials: IMaterialIOMinimal[];
 	workforceDailyCost: number;
+	/** the planet's fee per day of production at 100 %, per building */
+	weightedProductionFee: number;
+	/** fees per day: weighted fee × efficiency × amount, 0 when nothing runs */
+	dailyProductionFee: number;
 	dailyRevenue: number;
 	expertise: BuildingExpertise | null;
 }
@@ -255,6 +261,8 @@ export interface IOverviewData {
 	dailyProfit: number;
 	totalConstructionCost: number;
 	dailyDegradationCost: number;
+	/** production fees per day, positive */
+	dailyProductionFeeCost: number;
 	profit: number;
 	roi: number;
 }

@@ -132,6 +132,8 @@ export interface IChainCostParts {
 	/** per unit, after the joint output share */
 	inputs: number;
 	upkeepWear: number;
+	/** the planet's production fee, per run on the base time */
+	fees: number;
 	/** share of the recipe's cost this output carries, 1 for one output */
 	share: number;
 }
@@ -236,6 +238,8 @@ export interface IChainTotals {
 	ownCount: number;
 	upkeep: number;
 	wear: number;
+	/** production fees per day */
+	fees: number;
 	profit: number;
 	built: number;
 	exact: number;

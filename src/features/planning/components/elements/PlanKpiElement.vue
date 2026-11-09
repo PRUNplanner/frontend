@@ -119,6 +119,7 @@
 							degradation: formatNumber(
 								overview.dailyDegradationCost
 							),
+							fees: formatNumber(overview.dailyProductionFeeCost),
 						})
 					}}
 				</span>

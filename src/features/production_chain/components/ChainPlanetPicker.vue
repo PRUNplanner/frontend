@@ -66,7 +66,8 @@
 		planetId: string | undefined;
 		loading: boolean;
 		error: boolean;
-		unitCost: (site: IChainExtractionSite) => number;
+		/** per unit; the typical site pays no production fees */
+		unitCost: (site: IChainExtractionSite, typical: boolean) => number;
 		/** the CX jumps are counted from at first */
 		defaultCX: PlanetSearchCX;
 	}>();
@@ -127,7 +128,7 @@
 				extras,
 				cogc,
 				jumps,
-				cost: unitCost(site),
+				cost: unitCost(site, false),
 			};
 		})
 	);
@@ -444,7 +445,7 @@
 								{{ options.typical.buildingTicker }}
 							</td>
 							<td class="numeric tabular-nums">
-								{{ money(unitCost(options.typical)) }}
+								{{ money(unitCost(options.typical, true)) }}
 							</td>
 							<td colspan="3" class="text-xs text-muted">
 								{{

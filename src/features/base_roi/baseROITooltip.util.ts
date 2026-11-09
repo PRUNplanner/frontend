@@ -51,6 +51,7 @@ export function cellMath(
 				k("minus_inputs", { value: money(row.inputs) }),
 				k("minus_consumables", { value: money(row.consumables) }),
 				k("minus_degradation", { value: money(row.degradation) }),
+				k("minus_fees", { value: money(row.fees) }),
 				k("per_day", { value: money(m.dailyProfit) }),
 			];
 		case "break_even": {
@@ -123,6 +124,7 @@ export function cellMath(
 				k("inputs", { value: money(row.inputs) }),
 				k("plus_consumables", { value: money(row.consumables) }),
 				k("plus_degradation", { value: money(row.degradation) }),
+				k("plus_fees", { value: money(row.fees) }),
 				k("per_day", { value: money(m.runningCost) }),
 			];
 		case "cargo": {

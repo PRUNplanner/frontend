@@ -356,7 +356,7 @@ describe("buy tiny steps (AC 4)", () => {
 			target: false,
 			buildings: 0.1,
 			price: 100,
-			costParts: { inputs: 50, upkeepWear: 10, share: 1 },
+			costParts: { inputs: 50, upkeepWear: 10, fees: 0, share: 1 },
 			...over,
 		}) as IChainRow;
 
@@ -369,6 +369,16 @@ describe("buy tiny steps (AC 4)", () => {
 		expect(buyHint(row({ source: "buy" }))).toBe(false);
 		expect(buyHint(row({ price: 0 }))).toBe(false);
 		expect(buyHint(row({ costParts: null }))).toBe(false);
+	});
+
+	it("doesn't grow the fee to the whole building: it is per run", () => {
+		const fees = { inputs: 50, upkeepWear: 10, fees: 10, share: 1 };
+		// 50 + 10 + 10 / 0.25 = 100 < 105; scaled it would be 130
+		expect(
+			buyHint(row({ buildings: 0.25, price: 105, costParts: fees }))
+		).toBe(false);
+		// 50 + 10 + 10 / 0.1 = 160 > 155
+		expect(buyHint(row({ price: 155, costParts: fees }))).toBe(true);
 	});
 
 	it("buys hinted steps in auto layout", () => {

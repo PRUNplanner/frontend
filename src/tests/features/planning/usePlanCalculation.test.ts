@@ -670,6 +670,7 @@ describe("usePlanCalculation", async () => {
 				dailyProfit: 0,
 				totalConstructionCost: 0,
 				dailyDegradationCost: 0,
+				dailyProductionFeeCost: 0,
 				profit: 0,
 				roi: 0,
 			});

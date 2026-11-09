@@ -71,6 +71,7 @@
 			"inputs": "Production inputs",
 			"workforce": "Workforce",
 			"degradation": "Degradation",
+			"fees": "Production fees",
 			"profit": "Profit",
 			"uncovered": "Cost not covered"
 		},
@@ -79,6 +80,7 @@
 			"inputs": "Inputs {pct}",
 			"workforce": "Workforce {pct}",
 			"degradation": "Degradation {pct}",
+			"fees": "Fees {pct}",
 			"profit": "Profit {pct}",
 			"uncovered": "Not covered {pct}",
 			"of_cost": "Share of cost: revenue doesn't cover it"

@@ -104,7 +104,7 @@ describe("engine ticker order (golden)", () => {
 					inputs: ar.recipe.inputs.map((m) => m.material_ticker),
 					outputs: ar.recipe.outputs.map((m) => m.material_ticker),
 				},
-				cogm: calculateCOGM(ar, 1.25, 250_000, 1_500, prices),
+				cogm: calculateCOGM(ar, 1.25, 250_000, 1_500, 0, prices),
 			};
 		});
 

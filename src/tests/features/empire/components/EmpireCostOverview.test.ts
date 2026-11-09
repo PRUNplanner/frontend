@@ -10,12 +10,13 @@ const costOverview = {
 	totalAreaUsed: 100,
 };
 
-// 1000 revenue: 300 inputs, 100 workforce, 100 degradation, 500 profit
+// 1000 revenue: 300 inputs, 100 workforce, 60 degradation, 40 fees, 500 profit
 const split = {
 	revenue: 1000,
 	inputs: 300,
 	workforce: 100,
-	degradation: 100,
+	degradation: 60,
+	fees: 40,
 	profit: 500,
 };
 
@@ -51,7 +52,7 @@ describe("EmpireCostOverview", () => {
 		expect(text).toContain("plan.components.storage.table.export");
 	});
 
-	it("splits revenue into inputs, workforce, degradation and profit", async () => {
+	it("splits revenue into inputs, workforce, degradation, fees and profit", async () => {
 		const { wrapper } = await mountComponent(EmpireCostOverview, {
 			costOverview,
 			shippingDemand,
@@ -63,10 +64,13 @@ describe("EmpireCostOverview", () => {
 			"inputs",
 			"workforce",
 			"degradation",
+			"fees",
 			"profit",
 		]);
 		expect(parts[0].attributes("style")).toContain("flex: 30 1 0%");
-		expect(parts[3].attributes("style")).toContain("flex: 50 1 0%");
+		expect(parts[3].attributes("style")).toContain("flex: 4 1 0%");
+		expect(parts[4].attributes("style")).toContain("flex: 50 1 0%");
+		expect(wrapper.text()).toContain("empire.analysis.kpi_split.fees");
 		expect(wrapper.find("[data-key=hatch]").exists()).toBe(false);
 	});
 

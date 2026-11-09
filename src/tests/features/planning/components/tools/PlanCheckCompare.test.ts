@@ -217,13 +217,15 @@ describe("PlanCheckCompare", () => {
 		const { wrapper } = await mountCompare();
 
 		expect(select(wrapper).props("value")).toBe(BIGGER.uuid);
-		expect(wrapper.findAll("tbody tr")).toHaveLength(9);
+		expect(wrapper.findAll("tbody tr")).toHaveLength(10);
 		// a lower cost and a shorter ROI are better too
 		expect(deltaTones(wrapper)).toEqual([
 			"text-positive",
 			"text-positive",
 			"text-positive",
 			"text-negative",
+			// no production fees on either plan
+			"text-muted-strong",
 			"text-negative",
 			"text-positive",
 			"text-positive",
@@ -267,6 +269,7 @@ describe("PlanCheckCompare", () => {
 			"0 ȼ",
 			"0 ȼ",
 			"0 ȼ",
+			"0 ȼ",
 			"0.00 d",
 			// payback of the difference: nothing more to build
 			"–",
@@ -275,7 +278,7 @@ describe("PlanCheckCompare", () => {
 		]);
 		// neither better nor worse
 		expect(deltaTones(wrapper)).toEqual([
-			...Array(6).fill("text-muted-strong"),
+			...Array(7).fill("text-muted-strong"),
 			"text-muted",
 			"text-muted-strong",
 			"text-muted-strong",
@@ -355,7 +358,7 @@ describe("PlanCheckCompare", () => {
 		const payback = wrapper.find("[data-payback]");
 		expect(payback.text()).toBe("20.0 d");
 		expect(payback.classes()).toContain("text-positive");
-		expect(tableRows(wrapper)[6].bars).toBe(
+		expect(tableRows(wrapper)[7].bars).toBe(
 			"plan.tools.plan_check.compare.payback.formula"
 		);
 		expect(verdict(wrapper)).toMatch(/verdict\.payback$/);
@@ -391,8 +394,8 @@ describe("PlanCheckCompare", () => {
 				.exists()
 		).toBe(false);
 		expect(wrapper.findComponent(PlanCheckCompare).exists()).toBe(true);
-		// 8 key figures and the payback of the difference
-		expect(wrapper.findAll("tbody tr")).toHaveLength(9);
+		// 9 key figures and the payback of the difference
+		expect(wrapper.findAll("tbody tr")).toHaveLength(10);
 	});
 
 	describe("edge cases", () => {

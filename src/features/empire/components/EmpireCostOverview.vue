@@ -51,7 +51,7 @@
 
 	const theme = useChartTheme();
 
-	// inputs, workforce, degradation and profit: 100 % of revenue, or of
+	// inputs, workforce, degradation, fees and profit: 100 % of revenue, or of
 	// cost with the uncovered part hatched when the empire loses money
 	const kpiSplit = computed(() => {
 		const shares = splitShares(props.split);
@@ -59,10 +59,11 @@
 			inputs: theme.value.costPart(1),
 			workforce: theme.value.costPart(2),
 			degradation: theme.value.costPart(3),
+			fees: theme.value.costPart(4),
 			profit: theme.value.positive,
 		};
 		const parts = (
-			["inputs", "workforce", "degradation", "profit"] as const
+			["inputs", "workforce", "degradation", "fees", "profit"] as const
 		).map((key) => ({
 			key,
 			value: shares[key],

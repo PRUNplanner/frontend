@@ -106,6 +106,22 @@
 		tone: "hatched",
 		segments: [],
 	}));
+	// by building, so no material chips; a planet without fees gets no
+	// step, like unattributed: a 0 bar is only a tiny target and a crowded label
+	const feesColumn = computed<IWaterfallColumn[]>(() =>
+		breakdown.value.fees >= 0.01
+			? [
+					{
+						key: "fees",
+						label: label("fees"),
+						kind: "step",
+						value: -breakdown.value.fees,
+						tone: "negative",
+						segments: segments(breakdown.value.feeItems, false),
+					},
+				]
+			: []
+	);
 	const profitColumn = computed<IWaterfallColumn>(() => ({
 		key: "profit",
 		label: label("profit"),
@@ -147,6 +163,7 @@
 					segments: segments(b.workforceItems),
 				},
 				degradationColumn.value,
+				...feesColumn.value,
 				profitColumn.value,
 			];
 
@@ -182,6 +199,7 @@
 					]
 				: []),
 			degradationColumn.value,
+			...feesColumn.value,
 			profitColumn.value,
 		];
 	});
@@ -227,7 +245,8 @@
 		() =>
 			breakdown.value.inputs +
 			breakdown.value.workforce +
-			breakdown.value.degradation
+			breakdown.value.degradation +
+			breakdown.value.fees
 	);
 	const largestCost = computed(
 		() =>

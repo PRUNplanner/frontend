@@ -61,7 +61,7 @@ export interface ICheckStep {
 	inputs: Record<string, number>;
 	/** of the main output */
 	perDay: number;
-	/** upkeep with the plan's luxuries and wear per building and day */
+	/** upkeep with the plan's luxuries, wear and production fee per building and day */
 	daily: number;
 	/** inputs at the empire's unit cost, or CX price when bought, per day */
 	inputCost: number;

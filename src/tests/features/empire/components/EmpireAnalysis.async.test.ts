@@ -64,6 +64,7 @@ const PLANS: IEmpirePlanListData[] = Array.from({ length: 12 }, (_, i) => ({
 	inputs: 60,
 	workforce: 30,
 	degradation: 10,
+	fees: 0,
 }));
 
 describe("EmpireAnalysis: chart chunk loading", () => {

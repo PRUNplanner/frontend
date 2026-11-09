@@ -28,6 +28,7 @@ const plan = (
 	inputs: 0,
 	workforce: 0,
 	degradation: 0,
+	fees: 0,
 });
 
 // KW-020d is Kakrafoon Kappa: first by name, last by id

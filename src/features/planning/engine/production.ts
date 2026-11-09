@@ -18,6 +18,10 @@ import {
 import { calculateRecipeOptions } from "@/features/planning/engine/recipeOptions";
 import { calculateCOGM } from "@/features/planning/engine/cogm";
 import {
+	productionFeePerRun,
+	weightedProductionFee,
+} from "@/features/planning/engine/fees";
+import {
 	calculateMaterialIO,
 	enhanceMaterialIOMinimal,
 } from "@/features/planning/engine/materialIO";
@@ -47,6 +51,8 @@ interface IBuildingInformation {
 	// value of the construction materials, negative
 	constructionCost: number;
 	workforceMaterials: IMaterialIOMinimal[];
+	// the planet's production fee per day at 100 %, positive
+	weightedFee: number;
 }
 
 /**
@@ -107,6 +113,10 @@ export function calculateProduction(
 				buildingData,
 				workforce
 			),
+			weightedFee: weightedProductionFee(
+				buildingData,
+				planet.production_fees
+			),
 		};
 		information.set(name, built);
 		return built;
@@ -122,6 +132,7 @@ export function calculateProduction(
 			constructionMaterials,
 			constructionCost,
 			workforceMaterials,
+			weightedFee,
 		} = informationFor(b.name);
 
 		if (trace) traceBuildingData(trace, buildingData, b.amount);
@@ -216,9 +227,16 @@ export function calculateProduction(
 				totalEfficiency,
 				constructionCostPositive,
 				workforceCostPositive,
+				productionFeePerRun(weightedFee, ar.recipe.time_ms),
 				prices,
 				trace
 			);
+
+		// per run on base time, so per day the fee scales with efficiency
+		// like output does; nothing runs, nothing is charged
+		const dailyProductionFee: number = runs
+			? weightedFee * totalEfficiency * b.amount
+			: 0;
 
 		const building: IProductionBuilding = {
 			name: b.name,
@@ -233,6 +251,7 @@ export function calculateProduction(
 						totalEfficiency,
 						constructionCostPositive,
 						workforceCostPositive,
+						weightedFee,
 						optionPrices
 					)
 				: [],
@@ -243,6 +262,8 @@ export function calculateProduction(
 			constructionCost: constructionCost,
 			workforceMaterials: workforceMaterials,
 			workforceDailyCost: workforceDailyCost,
+			weightedProductionFee: weightedFee,
+			dailyProductionFee,
 			dailyRevenue: 0,
 			expertise: buildingData.expertise,
 		};
@@ -260,7 +281,8 @@ export function calculateProduction(
 		building.dailyRevenue =
 			productionRevenue -
 			workforceCostPositive * building.amount -
-			(1 / 180) * constructionCostPositive * building.amount;
+			(1 / 180) * constructionCostPositive * building.amount -
+			dailyProductionFee;
 
 		if (trace)
 			traceBuilding(
@@ -376,14 +398,36 @@ function traceBuilding(
 	});
 	trace.step({
 		phase: "production",
+		label: "weighted production fee",
+		formula: "Σ fee[level] × workers[level] ÷ Σ workers",
+		value: building.weightedProductionFee,
+		unit: "/day",
+		scope,
+	});
+	trace.step({
+		phase: "production",
+		label: "daily production fee",
+		formula: "weighted_fee × efficiency × amount (0 when nothing runs)",
+		inputs: {
+			weighted_fee: building.weightedProductionFee,
+			efficiency: building.totalEfficiency,
+			amount: building.amount,
+		},
+		value: building.dailyProductionFee,
+		unit: "/day",
+		scope,
+	});
+	trace.step({
+		phase: "production",
 		label: "daily revenue",
 		formula:
-			"production_value − workforce_cost × amount − construction_cost ÷ 180 × amount",
+			"production_value − workforce_cost × amount − construction_cost ÷ 180 × amount − production_fee",
 		inputs: {
 			production_value: productionRevenue,
 			workforce_cost: workforceCost,
 			construction_cost: constructionCost,
 			amount: building.amount,
+			production_fee: building.dailyProductionFee,
 		},
 		value: building.dailyRevenue,
 		unit: "/day",
