@@ -57,6 +57,27 @@ describe("preferenceSync", () => {
 		});
 	});
 
+	it("sends the layout whole, nothing for a save without a real change", () => {
+		const from = prefs();
+		from.planLayout = {
+			v: 1,
+			preset: "custom",
+			custom: {
+				wide: { cols: 12, gap: 16, items: [] },
+				known: ["planet"],
+			},
+			folded: { wide: [], phone: [] },
+		};
+		const same = cloneDeep(from);
+		expect(diffPreferences(from, same)).toStrictEqual({});
+
+		const folded = cloneDeep(from);
+		folded.planLayout.folded.phone = ["planet"];
+		expect(diffPreferences(from, folded)).toStrictEqual({
+			planLayout: folded.planLayout,
+		});
+	});
+
 	it("FIO Repair plan links per SiteId, removed ones as null", () => {
 		const from = prefs();
 		from.fioRepairPlanLinks = { s1: { planUuid: null } };

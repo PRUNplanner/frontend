@@ -1,3 +1,5 @@
+import type { StoredLayout } from "@/features/planning/layout/planLayout.schemas";
+
 export const COLS_MIN = 4;
 export const COLS_MAX = 24;
 export const GAPS = [8, 12, 16, 24] as const;
@@ -21,3 +23,19 @@ export const FOLDED_HEIGHT = 46;
 // inside
 export const BAND_STICKY_SHARE = 0.4;
 export const STORAGE_KEY = "prunplanner:planLayout:v1";
+
+/**
+ * Standard with nothing folded: what an account without a saved layout has
+ * (a fresh object each call, so no caller shares it)
+ * @author jplacht
+ *
+ * @returns {StoredLayout} The stored Standard layout
+ */
+export function standardStoredLayout(): StoredLayout {
+	return {
+		v: 1,
+		preset: "standard",
+		custom: null,
+		folded: { wide: [], phone: [] },
+	};
+}

@@ -129,8 +129,11 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | `plan:layout_preset` | `preset` (`standard`, `custom`) | a layout picked in the Layout menu |
 | `plan:layout_tint_toggle` | `is_active` | Tinted parts turned on or off while customising |
 | `plan:layout_customise_open` | `from` (`preset`, `custom`) | customise mode opened |
-| `plan:layout_save` | the round's counts (below), `item_count`, `tab_group_count` (items with more than one tab), `joined_count` (items with two parts in one tab), `joined_sized_count` (of those, sized by hand), `kept_in_view_count`, `hidden_count`, `hidden_elements` (element ids, e.g. `experts`), `column_count`, `gap_px`, `is_replacing` (over an existing Custom Layout), `has_phone_layout` (Phone arranged by hand, not automatic), `store` (`session`) | Custom Layout saved |
+| `plan:layout_save` | the round's counts (below), `item_count`, `tab_group_count` (items with more than one tab), `joined_count` (items with two parts in one tab), `joined_sized_count` (of those, sized by hand), `kept_in_view_count`, `hidden_count`, `hidden_elements` (element ids, e.g. `experts`), `column_count`, `gap_px`, `is_replacing` (over an existing Custom Layout), `has_phone_layout` (Phone arranged by hand, not automatic), `store` (`account`; `session` before layouts were saved to the account) | Custom Layout saved |
 | `plan:layout_cancel` | the round's counts (below) | customise mode left without saving |
+| `plan:layout_carry_over` | `result` (`saved`, `replaced`, `kept_saved`) | the Custom Layout a tab kept before layouts were saved to the account: saved (the account had none), or the player's choice when the account had another |
+| `plan:layout_remote_update` | `is_customising`, `choice` (`load`, `keep`, or `null` when not customising) | the layout changed in another tab or device and is used here |
+| `plan:layout_new_element` | `element` | an element new to Custom Layout joined it at the bottom (once per account) |
 | `plan:io_view` | `source` (`all`, `production`, `workforce`), `filter` (`all`, `exports`, `imports`), `value` (`price`, `weight`, `volume`, `share`) | any of the three switched |
 | `plan:cogc_match_toggle` | `is_active` | "Match COGC" on the building select |
 | `plan:starter_show` | `planet_natural_id`, `candidate_count` | typical-setup card shown, once per plan view |

@@ -51,7 +51,7 @@ export function resumeToast(id: number): void {
  * @author jplacht
  *
  * @param {string} text Message
- * @param {PToastOptions} options type, action, duration (0 stays), closable
+ * @param {PToastOptions} options type, action, duration (0 stays), closable, onClose (the X)
  * @returns {PToastHandle} destroy() closes it early
  */
 export function toast(
@@ -61,10 +61,14 @@ export function toast(
 		action,
 		duration = 6000,
 		closable = false,
+		onClose,
 	}: PToastOptions = {}
 ): PToastHandle {
 	const id = nextId++;
-	toasts.value = [...toasts.value, { id, text, type, action, closable }];
+	toasts.value = [
+		...toasts.value,
+		{ id, text, type, action, closable, onClose },
+	];
 	if (duration > 0) {
 		timers.set(id, { duration });
 		resumeToast(id);

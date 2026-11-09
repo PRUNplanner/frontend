@@ -42,6 +42,8 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 		},
 	}),
 }));
+const mocks = vi.hoisted(() => ({ toast: vi.fn() }));
+vi.mock("@/ui/useToast", () => ({ toast: mocks.toast }));
 // setToken loads the profile
 vi.mock("@/features/api/userData.api", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/features/api/userData.api")>()),
@@ -60,6 +62,7 @@ describe("usePreferences: backend sync", () => {
 		scheduled.count = 0;
 		patched.length = 0;
 		failures.left = 0;
+		mocks.toast.mockClear();
 		vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
@@ -230,6 +233,36 @@ describe("usePreferences: backend sync", () => {
 		// a second failure is not retried again
 		await vi.advanceTimersByTimeAsync(20000);
 		expect(patched).toHaveLength(2);
+	});
+
+	it("says once when a failed sync holds the layout, not for other keys", async () => {
+		failures.left = 5;
+		userStore.setToken("access-a", "refresh-a");
+		const { defaultEmpireUuid } = usePreferences();
+
+		defaultEmpireUuid.value = "empire-a";
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(10000);
+		expect(mocks.toast).not.toHaveBeenCalled();
+
+		userStore.setPreference("planLayout", {
+			v: 1,
+			preset: "standard",
+			custom: null,
+			folded: { wide: ["planet"], phone: [] },
+		});
+		await nextTick();
+		await vi.advanceTimersByTimeAsync(5000);
+		expect(patched.at(-1)).toMatchObject({
+			planLayout: { folded: { wide: ["planet"], phone: [] } },
+		});
+		// its retry fails too: no second toast, the change stays unsynced
+		await vi.advanceTimersByTimeAsync(5000);
+		expect(mocks.toast).toHaveBeenCalledTimes(1);
+		expect(mocks.toast).toHaveBeenCalledWith(
+			expect.stringContaining("Layout not saved to your account yet"),
+			{ type: "error" }
+		);
 	});
 
 	it("one change runs one sync and one PATCH, however many callers", async () => {

@@ -371,6 +371,7 @@ describe("Backend contract", () => {
 			"colorPalette",
 			"marketCardTrigger",
 			"planSuggestions",
+			"planLayout",
 			"planOverrides",
 			"fioRepairIntervalDays",
 			"fioRepairDueSoonDays",
@@ -395,6 +396,13 @@ describe("Backend contract", () => {
 			colorPalette: "default",
 			marketCardTrigger: "hover",
 			planSuggestions: true,
+			// DEFAULT_PLAN_LAYOUT
+			planLayout: {
+				v: 1,
+				preset: "standard",
+				custom: null,
+				folded: { wide: [], phone: [] },
+			},
 			planOverrides: {},
 			fioRepairIntervalDays: 60,
 			fioRepairDueSoonDays: 7,

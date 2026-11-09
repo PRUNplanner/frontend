@@ -35,7 +35,10 @@
 						:action-label="t.action?.label"
 						:closable="t.closable"
 						@action="t.action?.onClick()"
-						@close="closeToast(t.id)" />
+						@close="
+							t.onClose?.();
+							closeToast(t.id);
+						" />
 				</div>
 			</TransitionGroup>
 			<slot />

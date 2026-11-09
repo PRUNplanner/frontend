@@ -118,9 +118,12 @@ export function normaliseLayout(
 			}
 		if (!els.length) continue;
 		const w = clamp(Math.round(num(it.w, cols)), 1, cols);
-		const hm = HEIGHT_MODES.includes(it.hm as HeightMode)
-			? (it.hm as HeightMode)
-			: "fit";
+		const h = height(it.h);
+		// cap and fixed need a height (the backend rejects them without)
+		const hm =
+			HEIGHT_MODES.includes(it.hm as HeightMode) && h > 0
+				? (it.hm as HeightMode)
+				: "fit";
 		const id =
 			typeof it.id === "string" &&
 			it.id &&
@@ -152,7 +155,7 @@ export function normaliseLayout(
 			w,
 			y: num(it.y, Number.MAX_SAFE_INTEGER),
 			hm,
-			h: height(it.h),
+			h,
 			pin: it.pin === true,
 			// pinned parts are in the band: following means nothing there
 			...(it.follow === true &&
