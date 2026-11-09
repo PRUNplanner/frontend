@@ -664,8 +664,19 @@ export function restrictionHints(
 }
 
 /**
+ * The name text alone: every other section at its widest
+ * @author jplacht
+ */
+export function nameOnlyFilter(filter: PlanetSearchFilter): PlanetSearchFilter {
+	return SEARCH_SECTIONS.reduce(widenSection, {
+		...defaultFilter(),
+		text: filter.text,
+	});
+}
+
+/**
  * Tells when the other filters hide planets that match the name text:
- * how many, what would show them, and the filter showing all of them.
+ * how many and what would show them.
  * Null without name text or when nothing is hidden.
  * @author jplacht
  */
@@ -684,10 +695,6 @@ export function nameSearchNote(
 		matches: pool.length,
 		hidden,
 		hints: restrictionHints(index, filter, ctx, { baseline: "name" }),
-		showAll: SEARCH_SECTIONS.reduce(widenSection, {
-			...defaultFilter(),
-			text: filter.text,
-		}),
 	};
 }
 

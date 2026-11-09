@@ -249,25 +249,34 @@ describe("PlanetSearchPage", () => {
 		});
 	});
 
-	it("notes name matches hidden by the filters and relaxes them", async () => {
+	it("shows every name match with the filters paused, and applies them on demand", async () => {
 		stubMedia(true);
 		route.query = { q: "KI-" };
 		const { wrapper } = await mountComponent(PlanetSearchPage);
 		await flushPromises();
-		const note = () =>
-			wrapper
-				.findComponent({ name: "PlanetSearchResultsBar" })
-				.find('[role="status"]');
+		const resultsBar = () =>
+			wrapper.findComponent({ name: "PlanetSearchResultsBar" });
+		const note = () => resultsBar().find('[role="status"]');
+		const buttons = () => note().findAll("button");
+		const count = () => resultsBar().props("count") as number;
 		const current = () =>
 			panel(wrapper).props("filter") as PlanetSearchFilter;
 
+		// paused: every name match, one button to apply the filters
+		expect(note().text()).toContain("planet_search.name_note.paused");
+		expect(buttons()).toHaveLength(1);
+		const allMatches = count();
+
+		await buttons()[0].trigger("click");
+		await flushPromises();
+		expect(count()).toBeLessThan(allMatches);
 		expect(note().text()).toContain("planet_search.name_note.text");
 		expect(note().text()).toContain("planet_search.name_note.show_all");
-		expect(note().findAll("button").length).toBeGreaterThan(1);
+		expect(buttons().length).toBeGreaterThan(1);
 
-		// the first relaxation
+		// the first relaxation keeps the filters applied
 		const before = current();
-		await note().findAll("button")[0].trigger("click");
+		await buttons()[0].trigger("click");
 		await flushPromises();
 		expect(current()).not.toEqual(before);
 		expect(current().text).toBe("KI-");
@@ -277,19 +286,23 @@ describe("PlanetSearchPage", () => {
 		).toBeGreaterThan(1);
 		expect(replace.mock.lastCall![0].query.q).toBe("KI-");
 
-		// show all: everything but the name at its widest
-		await note().findAll("button").at(-1)!.trigger("click");
+		// show all pauses them again without touching the filter
+		const relaxed = current();
+		await buttons().at(-1)!.trigger("click");
 		await flushPromises();
-		await urlSettled();
-		expect(replace).toHaveBeenLastCalledWith({
-			query: { q: "KI-", surf: "rg", x: "MGC,BL,SEA,HSE,INS,TSH" },
-		});
-		expect(note().text()).toBe("");
+		expect(count()).toBe(allMatches);
+		expect(current()).toEqual(relaxed);
+		expect(note().text()).toContain("planet_search.name_note.paused");
 
-		// narrowed again, but without name text: no note
-		panel(wrapper).vm.$emit("update:filter", { ...before, text: "" });
+		// applied, then the name cleared: the next search starts paused
+		await buttons()[0].trigger("click");
+		await flushPromises();
+		panel(wrapper).vm.$emit("update:filter", { ...relaxed, text: "" });
 		await flushPromises();
 		expect(note().text()).toBe("");
+		panel(wrapper).vm.$emit("update:filter", relaxed);
+		await flushPromises();
+		expect(count()).toBe(allMatches);
 	});
 
 	it("saves a search that was changed in the panel", async () => {
