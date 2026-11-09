@@ -122,6 +122,7 @@
 				"inputs": "Insumos de producción",
 				"workforce": "Mano de obra",
 				"degradation": "Degradación",
+				"fees": "Production fees",
 				"unattributed": "Sin atribuir",
 				"profit": "Beneficio diario"
 			},
@@ -139,7 +140,7 @@
 			"key_figures": {
 				"title": "Cifras clave",
 				"output": "Valor de producción",
-				"costs": "Costes incl. degradación",
+				"costs": "Costs incl. degradation and fees",
 				"margin": "Margen",
 				"earner": "aporta {share} del valor de producción. Su precio decide este plan.",
 				"cost": "es el mayor coste, con {share} del valor de producción.",
@@ -348,7 +349,7 @@
 		"cogm": {
 			"title": "Coste de bienes fabricados",
 			"cogm": "@:terms.cogm",
-			"info": "Por unidad de producción, a partir de la eficiencia, el tiempo de ejecución, la degradación, los precios de los insumos y la mano de obra de este plan, por cantidad o con asignación del coste completo.",
+			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
 			"workforce_note": "Los costes de mano de obra siguen los hábitats y lujos de este plan: los trabajadores sin vivienda y los lujos desactivados no cuestan nada.",
 			"prices_from": "Los precios proceden de {preference}.",
 			"prices_from_empire": "Los precios proceden de {preference}, la preferencia del imperio activo {empire}.",
@@ -380,6 +381,7 @@
 				"percent_day": "% / día",
 				"efficiency": "Eficiencia",
 				"degradation": "Degradación",
+				"production_fee": "Production fee / run",
 				"cost": "@:terms.cost",
 				"materials": "@:terms.materials_plural",
 				"input_total": "Total de insumos",
@@ -552,6 +554,7 @@
 					"output": "Valor de producción",
 					"cost": "Coste diario",
 					"degradation": "Degradación",
+					"fees": "Production fees",
 					"planCost": "Coste del plan",
 					"roi": "ROI",
 					"profitArea": "Beneficio / Área",
@@ -681,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Beneficio / día",
-		"revenue_cost": "Ingresos {revenue} · coste {cost} incl. {degradation} de degradación",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
 		"payback": "Amortización",
 		"build_cost": "ȼ coste de construcción",
 		"profit_per_area": "ȼ beneficio / área",
@@ -833,6 +836,7 @@
 		"exports": "Exportaciones",
 		"imports": "Importaciones",
 		"degradation": "Degradación",
+		"production_fees": "Production fees",
 		"profit": "Beneficio / día"
 	},
 	"layout": {
