@@ -122,6 +122,7 @@
 				"inputs": "Production inputs",
 				"workforce": "Workforce",
 				"degradation": "Degradation",
+				"fees": "Production fees",
 				"unattributed": "Not attributed",
 				"profit": "Daily profit"
 			},
@@ -139,7 +140,7 @@
 			"key_figures": {
 				"title": "Key figures",
 				"output": "Output value",
-				"costs": "Costs incl. degradation",
+				"costs": "Costs incl. degradation and fees",
 				"margin": "Margin",
 				"earner": "brings in {share} of the output value. Its price decides this plan.",
 				"cost": "is the largest cost at {share} of the output value.",
@@ -348,7 +349,7 @@
 		"cogm": {
 			"title": "Cost of Goods Manufactured",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, input prices and workforce, by quantity or full cost allocation.",
+			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
@@ -380,6 +381,7 @@
 				"percent_day": "% / day",
 				"efficiency": "Efficiency",
 				"degradation": "Degradation",
+				"production_fee": "Production fee / run",
 				"cost": "@:terms.cost",
 				"materials": "@:terms.materials_plural",
 				"input_total": "Input Total",
@@ -552,6 +554,7 @@
 					"output": "Output value",
 					"cost": "Daily cost",
 					"degradation": "Degradation",
+					"fees": "Production fees",
 					"planCost": "Plan cost",
 					"roi": "ROI",
 					"profitArea": "Profit / Area",
@@ -681,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
 		"payback": "Payback",
 		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
@@ -833,6 +836,7 @@
 		"exports": "Exports",
 		"imports": "Imports",
 		"degradation": "Degradation",
+		"production_fees": "Production fees",
 		"profit": "Profit / day"
 	},
 	"layout": {
@@ -892,10 +896,22 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"saved": "Saved as Custom Layout, used for all your plans on every device",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
+		"not_saved": "Layout not saved to your account yet. It stays in use here and is sent with your next change or when you leave the page.",
+		"carry_over": {
+			"saved": "Your layout from this tab is now saved to your account",
+			"question": "This tab has a different layout than the one saved to your account. Close this to keep the saved one.",
+			"use_tab": "Use the layout from this tab"
+		},
+		"elsewhere": {
+			"note": "Your layout was changed elsewhere",
+			"load": "Load it",
+			"load_title": "Load the changed layout?",
+			"load_content": "Your changes here are dropped and the layout saved elsewhere is used."
+		},
 		"leave_title": "Discard your layout changes?",
 		"leave_content": "Your changes to the layout are not saved yet.",
 		"leave_discard": "Discard changes",
