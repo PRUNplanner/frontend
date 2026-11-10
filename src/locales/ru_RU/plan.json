@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Key figures",
 				"output": "Output value",
-				"costs": "Costs incl. degradation and fees",
+				"costs": "Costs incl. degradation",
 				"margin": "Margin",
 				"earner": "brings in {share} of the output value. Its price decides this plan.",
 				"cost": "is the largest cost at {share} of the output value.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Себестоимость произведённой продукции",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
 		"payback": "Payback",
 		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
@@ -896,7 +896,7 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans on every device",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
