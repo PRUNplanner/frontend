@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Chiffres clés",
 				"output": "Valeur produite",
-				"costs": "Costs incl. degradation and fees",
+				"costs": "Coûts dégradation incluse",
 				"margin": "Marge",
 				"earner": "rapporte {share} de la valeur produite. Son prix décide de ce plan.",
 				"cost": "est le plus gros coût, avec {share} de la valeur produite.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Coût des marchandises fabriquées",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Les coûts de main-d'œuvre suivent les habitations et les produits de luxe de ce plan : les travailleurs sans logement et les luxes désactivés ne coûtent rien.",
 			"prices_from": "Les prix viennent de {preference}.",
 			"prices_from_empire": "Les prix viennent de {preference}, la préférence de l'empire actif {empire}.",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Bénéfice / jour",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
+		"revenue_cost": "Recettes {revenue} · coût {cost} dont {degradation} de dégradation",
 		"payback": "Amortissement",
 		"build_cost": "ȼ coût de construction",
 		"profit_per_area": "ȼ bénéfice / surface",
@@ -896,7 +896,7 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans on every device",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
