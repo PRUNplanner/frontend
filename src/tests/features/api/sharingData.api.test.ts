@@ -62,6 +62,37 @@ describe("Empire Data API Calls", async () => {
 		expect(spyApiServicePut).toHaveBeenCalled();
 	});
 
+	it("callCreateSharing sends the plan's summary", async () => {
+		const summary = {
+			v: 1 as const,
+			profit: 850,
+			revenue: 1000,
+			cost: 150,
+			payback_days: 52.9,
+			plan_cost: 45000,
+			area_used: 412,
+			area_total: 500,
+			outputs: [{ ticker: "FE", per_day: 10 }],
+			price_basis: "CI1_30D",
+			cogc: null,
+		};
+		mock.onPost("/planning/shared/").reply(200, {
+			uuid: "da105ce1-25f2-479d-b1eb-944353f4784f",
+			created_at: new Date(),
+			view_count: 0,
+		});
+
+		await callCreateSharing(
+			"da105ce1-25f2-479d-b1eb-944353f4784f",
+			summary
+		);
+
+		expect(JSON.parse(mock.history.post.at(-1)!.data)).toStrictEqual({
+			plan: "da105ce1-25f2-479d-b1eb-944353f4784f",
+			plan_summary: summary,
+		});
+	});
+
 	it("callCloneSharedPlan", async () => {
 		const spyApiServicePost = vi.spyOn(apiService, "post");
 

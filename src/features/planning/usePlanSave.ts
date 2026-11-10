@@ -105,7 +105,13 @@ export function usePlanSave(
 		snapshot,
 		savedSnapshot,
 		applyState,
+		planSummary,
 	} = calculation;
+
+	// a save's payload: the plan and its summary for link previews
+	function payload(): PlanCreateData {
+		return { ...backendData.value, plan_summary: planSummary() };
+	}
 	const planetNaturalId: string = props.planData.planet_natural_id;
 
 	// save version the edits started from, sent so a save over another
@@ -226,7 +232,7 @@ export function usePlanSave(
 					};
 					let result = await saveExistingPlan(
 						refPlanData.value.uuid!,
-						backendData.value,
+						payload(),
 						refBaseModifiedAt.value,
 						version
 					);
@@ -234,7 +240,7 @@ export function usePlanSave(
 					if ("error" in result && result.error === "restored_from")
 						result = await saveExistingPlan(
 							refPlanData.value.uuid!,
-							backendData.value,
+							payload(),
 							refBaseModifiedAt.value,
 							{ ...version, restored_from: undefined }
 						);
@@ -271,7 +277,7 @@ export function usePlanSave(
 				const isFirstPlan: boolean =
 					Object.keys(planningStore.plans).length === 0;
 				sent = snapshot();
-				const created = await createNewPlan(backendData.value);
+				const created = await createNewPlan(payload());
 				if (!created) return saveFailed();
 
 				refPlanData.value.uuid = created.uuid;
@@ -296,7 +302,7 @@ export function usePlanSave(
 					const again: string = snapshot();
 					const saved = await saveExistingPlan(
 						planUuid,
-						backendData.value,
+						payload(),
 						refBaseModifiedAt.value
 					);
 					if ("error" in saved) return saveFailed();
@@ -317,7 +323,7 @@ export function usePlanSave(
 
 		// Create new plan data with the new name and selected empire
 		const saveAsData: PlanCreateData = {
-			...backendData.value,
+			...payload(),
 			plan_name: refSaveAsName.value.trim(),
 			empire_uuid: refSaveAsEmpireUuid.value,
 		};
@@ -595,7 +601,7 @@ export function usePlanSave(
 				(e) => e.uuid === empire.uuid.value
 			);
 			const created = await createNewPlan({
-				...backendData.value,
+				...payload(),
 				plan_name: t("save_conflict.copy_name", {
 					name: planName.value ?? "",
 				}),

@@ -35,6 +35,13 @@ copy's logic), `PlanLoadView` (`isOwnPlan`), `usePlanningDataLoader`
 - Logged-in viewers price with their default empire's CX; visitors see
   universe prices. An owner opening their own link is redirected to the plan.
 - "Save to my plans" (or Ctrl/Cmd+S) creates a new plan via Save As.
+- **Link previews.** Chat apps' crawlers get a card from the backend
+  (`og/`, routed by Traefik on their user agent) with the plan's
+  `plan_summary`: profit, payback, area, top outputs. Every save stores it
+  (`usePlanSave`, built by `planning/planSummary.util.ts`), and
+  `SharingModal` sends it with a new link when PlanView has no unsaved
+  edits (its `summary` prop), so a plan last saved before summaries existed
+  still gets numbers. Without one the card shows no numbers.
 
 ## Tests
 

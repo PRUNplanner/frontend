@@ -129,6 +129,7 @@ function setup(id: string | null = "p-1", props = {}) {
 		snapshot: vi.fn(() => JSON.stringify({ snap: ++snap })),
 		savedSnapshot: () => '{"saved":true}',
 		applyState: vi.fn(),
+		planSummary: vi.fn((): unknown => undefined),
 	};
 	const planData = {
 		uuid,
@@ -380,6 +381,27 @@ describe("usePlanSave", () => {
 		expect(m.createNewPlan.mock.calls[0][0].empire_uuid).toBe("e-1");
 		expect(m.draft.drop).toHaveBeenCalled();
 		expect(m.push).toHaveBeenCalledWith(`/plan/${PLANET}/p-2`);
+	});
+
+	it("sends the plan's summary with saves and creates", async () => {
+		const summary = { v: 1, profit: 5 };
+		const s = setup();
+		s.calculation.planSummary.mockReturnValue(summary);
+		m.saveExistingPlan.mockResolvedValue({ modifiedAt: "t1" });
+		m.createNewPlan.mockResolvedValue({ uuid: "p-2", modifiedAt: "t1" });
+		const { result: saving } = await mountSave(s);
+
+		await saving.save();
+		expect(m.saveExistingPlan.mock.calls[0][1]).toEqual({
+			plan_name: "Plan",
+			plan_summary: summary,
+		});
+
+		saving.refSaveAsName.value = "Copy";
+		await saving.saveAs();
+		expect(m.createNewPlan.mock.calls[0][0].plan_summary).toBe(summary);
+		// drafts never carry it
+		expect(m.draft.withSave).toHaveBeenCalled();
 	});
 
 	it("creates a new plan with its habs preference and moves to its URL", async () => {

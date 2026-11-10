@@ -33,6 +33,7 @@ import {
 import { calculateFinance } from "@/features/planning/engine/finance";
 import { calculateVisitation } from "@/features/planning/engine/visitation";
 import { createPlanTracer } from "@/features/planning/engine/trace";
+import { buildPlanSummary } from "@/features/planning/planSummary.util";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
@@ -46,6 +47,7 @@ import type {
 	PlanCreateData,
 	PlanData,
 	PlanEmpire,
+	PlanSummary,
 } from "@/features/api/schemas/planningData.schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import {
@@ -204,6 +206,18 @@ export function usePlanCalculation(
 	);
 
 	/**
+	 * The live result as the summary a save stores for link previews,
+	 * undefined until the plan's planet is loaded
+	 *
+	 * @returns {PlanSummary | undefined} Summary
+	 */
+	function planSummary(): PlanSummary | undefined {
+		const current = calculation.value;
+		if (!current || !planet.value) return undefined;
+		return buildPlanSummary(current, context(planet.value).prices);
+	}
+
+	/**
 	 * Calculates the plan once, independent of the live result
 	 *
 	 * @returns {Promise<IPlanResult>} Plan result
@@ -321,5 +335,6 @@ export function usePlanCalculation(
 		calculate,
 		calculateOverview,
 		traceCalculation,
+		planSummary,
 	};
 }

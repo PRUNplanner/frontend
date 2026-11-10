@@ -82,6 +82,20 @@ describe("useSharing", async () => {
 		expect(result).toBeUndefined();
 	});
 
+	it("create shared plan with its summary", async () => {
+		const summary = { v: 1, profit: 5 } as never;
+		vi.mocked(callCreateSharing).mockResolvedValueOnce({
+			uuid: "7864a361-cca5-4384-8477-ceec21a8ee65",
+			created_at: new Date(),
+			view_count: 0,
+		});
+		vi.mocked(callGetSharedList).mockResolvedValueOnce([]);
+
+		await useSharing("bar").createSharing(summary);
+
+		expect(callCreateSharing).toHaveBeenCalledWith("bar", summary);
+	});
+
 	it("delete shared plan", async () => {
 		vi.mocked(callDeleteSharing).mockResolvedValueOnce(undefined);
 		// @ts-expect-error mock data date as string
