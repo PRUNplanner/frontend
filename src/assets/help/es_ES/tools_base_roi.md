@@ -31,7 +31,7 @@ Base ROI clasifica todas las formas de gestionar una base: cada recurso en cada 
 
 # Gráfico de beneficios
 
-Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Cada base cuenta según cuánto de su producto negocia el mercado (media de 7 días), y los muchos planetas de una misma receta de recurso cuentan como uno. Search to drill in:
+Sobre la tabla, un gráfico muestra el beneficio diario de los últimos 30 días de cada industria. Cada base cuenta según cuánto de su producto negocia el mercado (media de 7 días), y los muchos planetas de una misma receta de recurso cuentan como uno. Search to drill in:
 
 - una industria (p. ej., «Chemistry») muestra sus edificios;
 - un edificio (p. ej., «CHP») muestra sus productos;
@@ -48,7 +48,7 @@ Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3
 
 # Detalles
 
-Expand a row to see two charts, then the full math below them. También puedes copiar el cálculo como texto o abrir la fila como un plan nuevo con la misma distribución (con sesión iniciada).
+Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. También puedes copiar el cálculo como texto o abrir la fila como un plan nuevo con la misma distribución (con sesión iniciada).
 
 - **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
 - **Market volume**: how many bases the market carries each day, from the CX traded volume. _Outputs_ is the scarcest output's traded volume ÷ what one base sells per day; _Inputs (bottleneck)_ is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
