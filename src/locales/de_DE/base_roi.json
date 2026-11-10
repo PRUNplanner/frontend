@@ -127,11 +127,11 @@
 	"tooltips": {
 		"product": "Der Output der Basis, bei Ressourcen- und Landwirtschaftszeilen auf einem Planeten (Sprünge zum Marktplatz)",
 		"expertise": "Branche und Gebäude der Basis",
-		"daily_profit": "What the base earns per day after inputs, consumables, degradation and production fees",
+		"daily_profit": "Was die Basis pro Tag nach Inputs, Konsumgütern und Abnutzung verdient",
 		"break_even": "Tage, bis die Basis ihre Baukosten wieder eingebracht hat",
 		"weekly_return": "Der Profit einer Woche als Anteil der Baukosten",
 		"building_cost": "Konstruktion, der Lagerpuffer zum Start und das HQ-Upgrade, falls gesetzt",
-		"running_cost": "Inputs, consumables, degradation and production fees per day",
+		"running_cost": "Inputs, Konsumgüter und Abnutzung pro Tag",
 		"cargo": "Der größere Wert aus Fracht rein und Fracht raus pro Tag, nach Gewicht und Volumen; (I) wenn mehr reinkommt, (O) wenn mehr rausgeht",
 		"market_capacity": "Wie viele solcher Basen der Markt verkraftet: gehandelt pro Tag ÷ Menge der Basis pro Tag, der niedrigste Wert ihrer Outputs (O) und Rezept-Inputs (I)",
 		"plots": "Freie Bauplätze des Planeten. Voll ohne Geisterplätze heißt, dass keine neue Basis mehr passt; die Zeile ist dann ausgeblendet, außer du zeigst Planeten ohne Arbeiter oder Bauplätze an.",
