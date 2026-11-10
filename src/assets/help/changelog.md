@@ -1,3 +1,15 @@
+# 2026-11-10 - v. 0.36.0
+
+The headline of this release is **plan layouts**: arrange the plan page the way you work.
+
+- **Plan layouts**: keep **Standard** or make your own **Custom Layout**. You can drag, resize, tab, pin, fold or hide any part, with separate Wide and Phone arrangements. Your layout is saved to your account and follows you to every device [[PR-733]](https://github.com/PRUNplanner/frontend/pull/733)
+- **Production fees**: governors' production fees now count in every production calculation: plans, Profit Breakdown, Empire, Base ROI and Production Chains [[PR-737]](https://github.com/PRUNplanner/frontend/pull/737)
+- **Link previews**: shared plan links in Discord now show the plan's profit, payback and top outputs [[PR-738]](https://github.com/PRUNplanner/frontend/pull/738)
+- **Fixes**:
+  - A name search in Planet Search shows every matching planet, with your filters paused
+  - The Save button and its menu sit flush again
+  - Two dependencies got security patches
+
 # 2026-11-05 - v. 0.35.1
 
 A stability and cleanup release: faster loading, fewer stale or lost changes, safer handling of account data, and a lot of tidying under the hood.
