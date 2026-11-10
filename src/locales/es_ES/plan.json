@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Cifras clave",
 				"output": "Valor de producción",
-				"costs": "Costs incl. degradation and fees",
+				"costs": "Costes incl. degradación",
 				"margin": "Margen",
 				"earner": "aporta {share} del valor de producción. Su precio decide este plan.",
 				"cost": "es el mayor coste, con {share} del valor de producción.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Coste de bienes fabricados",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
+			"info": "Por unidad de producción, a partir de la eficiencia, el tiempo de ejecución, la degradación, los precios de los insumos y la mano de obra de este plan, por cantidad o con asignación del coste completo.",
 			"workforce_note": "Los costes de mano de obra siguen los hábitats y lujos de este plan: los trabajadores sin vivienda y los lujos desactivados no cuestan nada.",
 			"prices_from": "Los precios proceden de {preference}.",
 			"prices_from_empire": "Los precios proceden de {preference}, la preferencia del imperio activo {empire}.",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Beneficio / día",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
+		"revenue_cost": "Ingresos {revenue} · coste {cost} incl. {degradation} de degradación",
 		"payback": "Amortización",
 		"build_cost": "ȼ coste de construcción",
 		"profit_per_area": "ȼ beneficio / área",
@@ -896,7 +896,7 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans on every device",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
