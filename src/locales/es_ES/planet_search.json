@@ -7,7 +7,7 @@
 		"lead_any": "Filtra todos los planetas de Prosperous Universe por recursos, condiciones, COGC y saltos hasta las bolsas. Gratis, sin necesidad de cuenta."
 	},
 	"loading": "Cargando planetas…",
-	"load_error": "No se han podido cargar los planetas.",
+	"load_error": "No se pudieron cargar los planetas. Recarga la página para volver a intentarlo.",
 	"load_throttled": "Demasiadas peticiones, inténtalo de nuevo en {n} s.",
 	"header": {
 		"search_label": "Planet name or ID",
@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "{n} planeta más coincide con \"{text}\", pero está oculto por los filtros: | {n} planetas más coinciden con \"{text}\", pero están ocultos por los filtros:",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label} (+{n})",
 		"show_all": "Mostrar los {n}"
 	},

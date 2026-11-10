@@ -7,7 +7,7 @@
 		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
 	},
 	"loading": "Loading planets…",
-	"load_error": "The planets couldn't be loaded.",
+	"load_error": "The planets couldn't be loaded. Reload the page to try again.",
 	"load_throttled": "Too many requests, try again in {n} s.",
 	"header": {
 		"search_label": "Planet or system name, or ID",
@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "{n} more planet matches \"{text}\" but is hidden by filters: | {n} more planets match \"{text}\" but are hidden by filters:",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label} (+{n})",
 		"show_all": "Show all {n}"
 	},

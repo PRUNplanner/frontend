@@ -71,6 +71,7 @@
 			"inputs": "Intrants de production",
 			"workforce": "Main-d'œuvre",
 			"degradation": "Dégradation",
+			"fees": "Production fees",
 			"profit": "Bénéfice",
 			"uncovered": "Coût non couvert"
 		},
@@ -79,6 +80,7 @@
 			"inputs": "Intrants {pct}",
 			"workforce": "Main-d'œuvre {pct}",
 			"degradation": "Dégradation {pct}",
+			"fees": "Fees {pct}",
 			"profit": "Bénéfice {pct}",
 			"uncovered": "Non couvert {pct}",
 			"of_cost": "Part du coût : les recettes ne le couvrent pas"

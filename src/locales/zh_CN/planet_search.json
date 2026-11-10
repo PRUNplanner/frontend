@@ -7,7 +7,7 @@
 		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
 	},
 	"loading": "加载行星中……",
-	"load_error": "The planets couldn't be loaded.",
+	"load_error": "加载行星失败，刷新页面重试。",
 	"load_throttled": "Too many requests, try again in {n} s.",
 	"header": {
 		"search_label": "Planet or system name, or ID",
@@ -211,6 +211,8 @@
 	},
 	"name_note": {
 		"text": "另有{n}颗星球匹配“{text}”，但因筛选条件未显示： | 另有{n}颗星球匹配“{text}”，但因筛选条件未显示：",
+		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
+		"apply": "Apply filters ({n})",
 		"relaxation": "{label}（+{n}）",
 		"show_all": "展示全部{n}颗行星"
 	},
