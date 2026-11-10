@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Kennzahlen",
 				"output": "Output-Wert",
-				"costs": "Costs incl. degradation and fees",
+				"costs": "Kosten inkl. Abnutzung",
 				"margin": "Marge",
 				"earner": "bringt {share} des Output-Werts ein. Sein Preis entscheidet über diesen Plan.",
 				"cost": "ist mit {share} des Output-Werts der größte Kostenpunkt.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Kosten der hergestellten Waren",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Belegschaftskosten richten sich nach den Wohngebäuden und Luxusgütern dieses Plans: Arbeiter ohne Unterkunft und abgeschaltete Luxusgüter kosten nichts.",
 			"prices_from": "Preise stammen aus {preference}.",
 			"prices_from_empire": "Preise stammen aus {preference}, der Präferenz des aktiven Imperiums {empire}.",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / Tag",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
+		"revenue_cost": "Umsatz {revenue} · Kosten {cost} inkl. {degradation} Abnutzung",
 		"payback": "Amortisation",
 		"build_cost": "ȼ Baukosten",
 		"profit_per_area": "ȼ Profit / Fläche",
@@ -896,7 +896,7 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans on every device",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
