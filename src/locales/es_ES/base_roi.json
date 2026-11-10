@@ -127,11 +127,11 @@
 	"tooltips": {
 		"product": "La producción de la base, en un planeta (saltos hasta la bolsa) para las filas de recursos y cultivo",
 		"expertise": "Industria y edificio de la base",
-		"daily_profit": "What the base earns per day after inputs, consumables, degradation and production fees",
+		"daily_profit": "Lo que gana la base por día tras insumos, consumibles y degradación",
 		"break_even": "Días hasta que la base ha recuperado su coste de construcción",
 		"weekly_return": "El beneficio de una semana como parte del coste de construcción",
 		"building_cost": "Construcción, el búfer de stock inicial y la mejora de HQ, si está definida",
-		"running_cost": "Inputs, consumables, degradation and production fees per day",
+		"running_cost": "Insumos, consumibles y degradación por día",
 		"cargo": "El mayor entre la carga que entra y la que sale por día, en peso y volumen; (I) cuando entra más, (O) cuando sale más",
 		"market_capacity": "Cuántas bases como esta puede absorber el mercado: negociado por día ÷ cantidad diaria de la base, el valor más bajo entre sus salidas (O) y los insumos de receta (I)",
 		"plots": "Parcelas libres del planeta. Lleno sin sitios fantasma significa que no cabe ninguna base nueva, así que la fila se oculta salvo que muestres planetas sin trabajadores o parcelas.",
