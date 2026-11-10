@@ -127,11 +127,11 @@
 	"tooltips": {
 		"product": "The base's output, on a planet (jumps to the exchange) for resource and farming rows",
 		"expertise": "Industry and building of the base",
-		"daily_profit": "What the base earns per day after inputs, consumables, degradation and production fees",
+		"daily_profit": "What the base earns per day after inputs, consumables and degradation",
 		"break_even": "Days until the base has paid back its building cost",
 		"weekly_return": "A week's profit as a share of the building cost",
 		"building_cost": "Construction, the stock buffer to start with and the HQ upgrade, if set",
-		"running_cost": "Inputs, consumables, degradation and production fees per day",
+		"running_cost": "Inputs, consumables and degradation per day",
 		"cargo": "The larger of cargo in and cargo out per day, by weight and volume; (I) when more comes in, (O) when more goes out",
 		"market_capacity": "How many bases like this the market can take: traded per day ÷ the base's amount per day, the lowest of its outputs (O) and recipe inputs (I)",
 		"plots": "Free plots of the planet. Full without ghost sites means no new base fits, so the row is hidden unless you show planets without workers or plots.",
