@@ -47,8 +47,9 @@ the folder layout and the editor.
   tool, loaded inside `Suspense` with `PlanToolFallback`),
   `PlanMaterialIOElement` and `PlanMaterialIOTotalsElement`. Elements take
   no props: they read `usePlanView()`, and lay out for their own width with
-  container queries. A tab group uses `PlanToolTabs`; a tab can show two
-  parts, below or beside each other (`join`), each adapting to its half. `PlanLayoutMenu` picks
+  container queries. A tab group uses `PlanToolTabs`; a tab can show
+  several parts, all below or all beside each other (`join`, `tabs.ts`),
+  each adapting to its own width. `PlanLayoutMenu` picks
   the layout, `PlanLayoutEditor` (+ `PlanLayoutElementsPanel`) customises it.
 - Header: `PlanSaveControl` (undo, redo, save status → `PlanVersionsPopover`,
   Save → `PlanSavePopover`), `PlanMoreMenu` (CSV, Debug),

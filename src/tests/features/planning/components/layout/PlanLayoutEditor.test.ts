@@ -797,7 +797,7 @@ describe("PlanLayoutEditor", () => {
 			]);
 		});
 
-		it("joins from the menu; a tab holding two takes no third", async () => {
+		it("joins from the menu; a tab of several takes more only on its side", async () => {
 			const m = await mountEditor();
 			await pick(m, "experts", "page:tabs");
 			await pick(m, "experts", "beside:i-workforce");
@@ -805,7 +805,10 @@ describe("PlanLayoutEditor", () => {
 			await pick(m, "planet", "page:tabs");
 			expect(option(m, "planet", "below:i-workforce")).toMatchObject({
 				disabled: true,
-				hint: "Workforce & Experts shows two parts already",
+				hint: "Workforce & Experts stacks its parts beside each other; a tab doesn't mix both",
+			});
+			expect(option(m, "planet", "beside:i-workforce")).toMatchObject({
+				disabled: false,
 			});
 			// hiding the tab hides both, as the eye button says
 			expect(
@@ -814,7 +817,7 @@ describe("PlanLayoutEditor", () => {
 					.attributes("aria-label")
 			).toBe("Hide Workforce & Experts");
 
-			// dragged onto its title bar: only a tab there
+			// dragged onto its title bar: a tab, or beside; below struck out
 			hitAt(
 				m.wrapper.find("[data-item='i-workforce'] [data-item-head]")
 					.element
@@ -824,17 +827,145 @@ describe("PlanLayoutEditor", () => {
 				new MouseEvent("pointermove", { clientX: 140, clientY: 140 })
 			);
 			await flushPromises();
-			expect(
-				m.wrapper
-					.find("[data-item='i-workforce'] [data-tab-target]")
-					.text()
-			).toBe("Drop to add Planet as a tab to Workforce & Experts");
+			const zone = (z: string) =>
+				m.wrapper.find(
+					`[data-item='i-workforce'] [data-tab-target] [data-zone='${z}']`
+				);
+			expect(zone("below").classes()).toContain("line-through");
+			expect(zone("beside").classes()).not.toContain("line-through");
 			window.dispatchEvent(new MouseEvent("pointerup"));
 			await flushPromises();
 			expect(draft(m, "workforce").els).toEqual([
 				"workforce",
 				"experts",
 				"planet",
+			]);
+		});
+
+		it("joins a third: named after the first with a count, all of them on hover", async () => {
+			const m = await mountEditor();
+			await pick(m, "experts", "page:tabs");
+			await pick(m, "experts", "below:i-workforce");
+			await pick(m, "planet", "page:tabs");
+			await pick(m, "planet", "below:i-workforce");
+			expect(draft(m, "workforce").join).toEqual({
+				experts: "below",
+				planet: "below",
+			});
+			const it = m.wrapper.find("[data-item='i-workforce']");
+			expect(it.find("h2").text()).toBe("Workforce +2");
+			expect(it.find("h2").attributes("title")).toBe(
+				"Workforce, Experts & Planet"
+			);
+			expect(it.attributes("aria-label")).toBe(
+				"Workforce, Experts & Planet"
+			);
+			expect(it.findAll("[data-tab-body] > [data-element]")).toHaveLength(
+				3
+			);
+			expect(it.findAll("[data-split]")).toHaveLength(2);
+			// the menu: one side for all, each part out on its own
+			await pick(m, "workforce", "page:tabs");
+			expect(option(m, "workforce", "side:below")).toMatchObject({
+				checked: true,
+			});
+			expect(option(m, "workforce", "out:experts")).toBeDefined();
+			expect(option(m, "workforce", "out:planet")).toBeDefined();
+			await pick(m, "workforce", "side:beside");
+			expect(draft(m, "workforce").join).toEqual({
+				experts: "beside",
+				planet: "beside",
+			});
+			// beside, one Auto for the whole tab, on its last line
+			await pick(m, "workforce", "full");
+			await pick(m, "workforce", "page:tabs");
+			expect(
+				option(m, "workforce", "share:auto:experts")
+			).toBeUndefined();
+			expect(option(m, "workforce", "share:auto:planet")).toMatchObject({
+				label: "All parts sized automatically",
+				checked: true,
+			});
+			expect(option(m, "workforce", "share:+:experts")).toBeDefined();
+			await pick(m, "workforce", "page:tabs");
+			await pick(m, "workforce", "out:experts");
+			expect(draft(m, "workforce").join).toEqual({ planet: "beside" });
+			// undo puts it back
+			await button(m, "[data-undo]").trigger("click");
+			await flushPromises();
+			expect(draft(m, "workforce").join).toEqual({
+				experts: "beside",
+				planet: "beside",
+			});
+		});
+
+		it("drops a part among a tab's parts, and moves one within it", async () => {
+			const m = await mountEditor();
+			await pick(m, "experts", "page:tabs");
+			await pick(m, "experts", "below:i-workforce");
+			const part = (el: string) =>
+				m.wrapper.find(
+					`[data-item='i-workforce'] [data-element='${el}']`
+				);
+			// below the middle of the last part: after it
+			hitAt(part("experts").element);
+			await pointerdown(handle(m, "planet"), 100, 100);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 140, clientY: 5000 })
+			);
+			await flushPromises();
+			expect(
+				m.wrapper
+					.find("[data-item='i-workforce'] [data-drop-at]")
+					.attributes("data-drop-at")
+			).toBe("2");
+			// no title-bar zones over the parts
+			expect(
+				m.wrapper
+					.find("[data-item='i-workforce'] [data-tab-target]")
+					.exists()
+			).toBe(false);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "workforce").els).toEqual([
+				"workforce",
+				"experts",
+				"planet",
+			]);
+			expect(draft(m, "workforce").join).toEqual({
+				experts: "below",
+				planet: "below",
+			});
+			// a part pressed by its body, dropped over its own tab: moved
+			// within it (to the end, past Planet)
+			hitAt(part("planet").element);
+			await pointerdown(part("experts"), 100, 100);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 140, clientY: 5000 })
+			);
+			await flushPromises();
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "workforce").els).toEqual([
+				"workforce",
+				"planet",
+				"experts",
+			]);
+			expect(announce(m)).toBe("Experts moved within Workforce");
+			// a group of tabs over the parts: it can't join, no place shown
+			hitAt(part("planet").element);
+			await pointerdown(handle(m, "production"), 100, 100);
+			window.dispatchEvent(
+				new MouseEvent("pointermove", { clientX: 140, clientY: 5000 })
+			);
+			await flushPromises();
+			expect(m.wrapper.find("[data-drop-at]").exists()).toBe(false);
+			window.dispatchEvent(new MouseEvent("pointerup"));
+			await flushPromises();
+			expect(draft(m, "workforce").els).toEqual([
+				"workforce",
+				"planet",
+				"experts",
 			]);
 		});
 
@@ -1772,17 +1903,21 @@ describe("PlanLayoutEditor", () => {
 			await pick(m, "material-io-totals", "below:i-material-io");
 			// as high as its content until set
 			await pick(m, "material-io", "page:tabs");
-			expect(option(m, "material-io", "share:auto")).toMatchObject({
+			expect(
+				option(m, "material-io", "share:auto:material-io-totals")
+			).toMatchObject({
 				checked: true,
 			});
 			const min = Math.max(64, ELEMENTS["material-io"].minH);
-			await pick(m, "material-io", "share:+");
+			await pick(m, "material-io", "share:+:material-io-totals");
 			expect(draft(m, "material-io").joinSize).toEqual({
 				// 40 px more, on the 8 px grid
 				"material-io-totals":
 					Math.round((Math.max(300, min) + 40) / 8) * 8,
 			});
-			expect(option(m, "material-io", "share:-")).toMatchObject({
+			expect(
+				option(m, "material-io", "share:-:material-io-totals")
+			).toMatchObject({
 				disabled: false,
 			});
 			// the line, dragged down 400 px from 300: 700, on the 8 px grid
@@ -1808,12 +1943,12 @@ describe("PlanLayoutEditor", () => {
 			expect(draft(m, "material-io").joinSize).toEqual({
 				"material-io-totals": 704,
 			});
-			await pick(m, "material-io", "share:auto");
+			await pick(m, "material-io", "share:auto:material-io-totals");
 			expect(draft(m, "material-io")).not.toHaveProperty("joinSize");
 			const said = announce(m);
-			await pick(m, "material-io", "share:auto");
+			await pick(m, "material-io", "share:auto:material-io-totals");
 			expect(announce(m)).toBe(said);
-			await pick(m, "material-io", "share:+");
+			await pick(m, "material-io", "share:+:material-io-totals");
 			expect(await savedCounts(m)).toMatchObject({
 				drag_count: 1,
 				joined_sized_count: 1,
@@ -1845,15 +1980,17 @@ describe("PlanLayoutEditor", () => {
 			const cols = () =>
 				draft(m, "material-io").joinSize?.["material-io-totals"];
 			await pick(m, "material-io", "page:tabs");
-			expect(option(m, "material-io", "share:auto")).toMatchObject({
+			expect(
+				option(m, "material-io", "share:auto:material-io-totals")
+			).toMatchObject({
 				checked: true,
 			});
-			await pick(m, "material-io", "share:+");
+			await pick(m, "material-io", "share:+:material-io-totals");
 			const n = cols()!;
 			expect(n).toBeGreaterThan(0);
-			await pick(m, "material-io", "share:-");
+			await pick(m, "material-io", "share:-:material-io-totals");
 			expect(cols()).toBe(n - 1);
-			await pick(m, "material-io", "share:auto");
+			await pick(m, "material-io", "share:auto:material-io-totals");
 			expect(cols()).toBeUndefined();
 
 			const line = m.wrapper.find("[data-split='material-io-totals']");

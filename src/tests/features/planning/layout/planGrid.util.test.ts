@@ -92,32 +92,72 @@ describe("besideSplit", () => {
 	const at = (n: number) => n * col + (n - 1) * 16 + 8;
 
 	it("splits where the columns meet, held to both minimums", () => {
-		const s = besideSplit(1200, 12, 16, 4, 300, 200)!;
-		expect(s.px).toBeCloseTo(at(4));
-		expect(s.cols).toBe(4);
+		const s = besideSplit(1200, 12, 16, [4], [300, 200])!;
+		expect(s.px[0]).toBeCloseTo(at(4));
+		expect(s.px[1]).toBeCloseTo(1200 - at(4));
+		expect(s.cols).toEqual([4]);
 		expect(s.auto).toBe(false);
 		// the first needs 300 px (4 columns), the second 200 (the last 2)
-		expect(s.range).toEqual([4, 9]);
-		expect(besideSplit(1200, 12, 16, 1, 300, 200)!.cols).toBe(4);
-		expect(besideSplit(1200, 12, 16, 11, 300, 200)!.cols).toBe(9);
+		expect(s.range).toEqual([[4, 9]]);
+		expect(besideSplit(1200, 12, 16, [1], [300, 200])!.cols).toEqual([4]);
+		expect(besideSplit(1200, 12, 16, [11], [300, 200])!.cols).toEqual([9]);
 	});
 
-	it("shares by the minimums when not set, naming the nearest columns", () => {
-		const s = besideSplit(1200, 12, 16, undefined, 300, 200)!;
-		expect(s.px).toBe(720);
+	it("shares by the minimums when not set, on the nearest columns", () => {
+		const s = besideSplit(1200, 12, 16, [undefined], [300, 200])!;
+		// 720 px by the minimums: the line where columns 7 and 8 meet
+		expect(s.px[0]).toBeCloseTo(at(7));
+		expect(s.px[1]).toBeCloseTo(1200 - at(7));
 		expect(s.auto).toBe(true);
-		expect(s.cols).toBe(7);
+		expect(s.cols).toEqual([7]);
 	});
 
-	it("stacks when narrower than both minimums", () => {
-		expect(besideSplit(450, 6, 16, 3, 300, 200)).toBeNull();
+	it("stacks when narrower than all minimums", () => {
+		expect(besideSplit(450, 6, 16, [3], [300, 200])).toBeNull();
+		expect(
+			besideSplit(1200, 12, 16, [3, 3, 3], [300, 300, 300, 301])
+		).toBeNull();
 	});
 
 	it("shares by size where no column split fits both", () => {
 		// 520 px in 2 columns: the one split leaves the first 252 px
-		const s = besideSplit(520, 2, 16, 1, 300, 200)!;
-		expect(s.range).toBeNull();
+		const s = besideSplit(520, 2, 16, [1], [300, 200])!;
+		expect(s.range).toEqual([null]);
 		expect(s.cols).toBeNull();
 		expect(s.auto).toBe(true);
+	});
+
+	it("splits several parts, each line on the columns and in its range", () => {
+		const s = besideSplit(1200, 12, 16, [3, 5], [200, 200, 200])!;
+		expect(s.cols).toEqual([3, 5]);
+		expect(s.px[0]).toBeCloseTo(at(3));
+		expect(s.px[1]).toBeCloseTo(at(8) - at(3));
+		expect(s.px[2]).toBeCloseTo(1200 - at(8));
+		expect(s.px.reduce((a, b) => a + b, 0)).toBeCloseTo(1200);
+		// the first part takes 3 to 6 columns, the second 2 to 6, the lines beside held
+		expect(s.range).toEqual([
+			[3, 6],
+			[2, 6],
+		]);
+	});
+
+	it("holds every part to its minimum, later ones first", () => {
+		// too much asked of the first: the others keep their 200 px (2 and 3 columns)
+		expect(
+			besideSplit(1200, 12, 16, [10, 1], [200, 200, 200])!.cols
+		).toEqual([7, 2]);
+		// shared: by the minimums, a column line near each split
+		const auto = besideSplit(
+			1200,
+			12,
+			16,
+			[undefined, undefined],
+			[200, 200, 200]
+		)!;
+		expect(auto.auto).toBe(true);
+		expect(auto.px[0]).toBeCloseTo(at(4));
+		expect(auto.px[1]).toBeCloseTo(at(8) - at(4));
+		expect(auto.px[2]).toBeCloseTo(1200 - at(8));
+		expect(auto.cols).toEqual([4, 4]);
 	});
 });

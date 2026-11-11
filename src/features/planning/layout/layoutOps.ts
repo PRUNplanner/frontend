@@ -8,6 +8,7 @@ import type {
 	ILayoutChange,
 	IPackResult,
 } from "@/features/planning/layout/planLayout.types";
+import type { IBesideSplit } from "@/features/planning/layout/planGrid.util";
 
 // Util
 import {
@@ -32,12 +33,14 @@ import {
 } from "@/features/planning/layout/normaliseLayout";
 import {
 	hostOf,
-	partnerOf,
+	partsOf,
 	removeEl,
+	sideOf,
 	tabEls,
 	tabsOf,
 	tidyJoin,
 } from "@/features/planning/layout/tabs";
+import { tabBeside } from "@/features/planning/layout/planGrid.util";
 import { clamp } from "@/util/numbers";
 
 /** What an op needs to know of the screen */
@@ -480,7 +483,7 @@ export const toggleFollow = (
 		});
 	});
 
-/** A tab's name: its element, or the two shown in it */
+/** A tab's name: its element, or the parts shown in it */
 const tabName = (
 	it: GridItem,
 	host: ElementId,
@@ -524,30 +527,67 @@ export const makeTab = (
 
 /**
  * Why an element can't join the tab an item shows, or null: only one
- * element joins, and a tab holds two
+ * element joins, and a tab of several parts takes more only on its side
  */
 export function joinBlocked(
 	layout: GridLayout,
 	els: ElementId[],
-	to: string
+	to: string,
+	side?: JoinSide
 ): string | null {
 	const target = layout.items.find((i) => i.id === to);
 	if (!target) return null;
 	if (els.length > 1) return "plan.layout.why.join_one";
-	if (partnerOf(target, target.active)) return "plan.layout.why.join_full";
+	const set = sideOf(target, target.active);
+	if (side && set && set !== side) return "plan.layout.why.join_side";
 	return null;
 }
 
 /**
+ * Lays a tab out anew with these elements in this order, all on `side`;
+ * each part keeps its own size (stored on the part after it)
+ */
+function layTab(
+	it: GridItem,
+	host: ElementId,
+	els: ElementId[],
+	side: JoinSide
+): void {
+	const old = tabEls(it, host);
+	const own = new Map<ElementId, number>();
+	old.forEach((e, i) => {
+		const n = it.joinSize?.[old[i + 1]];
+		if (n !== undefined) own.set(e, n);
+	});
+	it.els.splice(it.els.indexOf(host), old.length, ...els);
+	const join = { ...it.join };
+	const size = { ...it.joinSize };
+	for (const e of old) {
+		delete join[e];
+		delete size[e];
+	}
+	els.slice(1).forEach((e, i) => {
+		join[e] = side;
+		const n = own.get(els[i]);
+		if (n !== undefined) size[e] = n;
+	});
+	it.join = join;
+	it.joinSize = size;
+	it.active = els[0];
+}
+
+/**
  * Shows an element in the tab another item shows, below or beside its
- * element: an item of one element (moved there), or one from Elements
+ * parts: an item of one element (moved there), or one from Elements. At
+ * `at` among the tab's parts (0 makes it the tab's own), else last.
  */
 export const joinTab = (
 	layout: GridLayout,
 	from: { item: string } | { el: ElementId },
 	to: string,
 	side: JoinSide,
-	ctx: ILayoutOpsContext
+	ctx: ILayoutOpsContext,
+	at?: number
 ): ILayoutChange => {
 	const g = settle(layout, ctx);
 	const target = g.items.find((i) => i.id === to);
@@ -558,14 +598,15 @@ export const joinTab = (
 		!target ||
 		!el ||
 		src === target ||
-		joinBlocked(g, src ? src.els : [el], to) ||
+		joinBlocked(g, src ? src.els : [el], to, side) ||
 		(!src && g.items.some((i) => i.els.includes(el)))
 	)
 		return done(g, "nothing");
 	if (src) g.items = g.items.filter((i) => i !== src);
 	const host = target.active;
-	target.els.splice(target.els.indexOf(host) + 1, 0, el);
-	target.join = { ...target.join, [el]: side };
+	const tab = tabEls(target, host);
+	tab.splice(clamp(at ?? tab.length, 0, tab.length), 0, el);
+	layTab(target, host, tab, side);
 	target.w = Math.max(target.w, minCols(target, g, ctx));
 	target.x = Math.min(target.x, g.cols - target.w);
 	return done(g, `joined_${side}`, {
@@ -574,7 +615,34 @@ export const joinTab = (
 	});
 };
 
-/** Below or beside: where an element shown with another sits */
+/**
+ * Moves a part of a tab to `at` among its parts (where it sits now
+ * counted), 0 making it the tab's own
+ */
+export const moveInTab = (
+	layout: GridLayout,
+	id: string,
+	el: ElementId,
+	at: number,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		const host = hostOf(it, el);
+		const tab = tabEls(it, host);
+		const i = tab.indexOf(el);
+		const side = sideOf(it, host);
+		if (i < 0 || !side || at < 0 || at === i || at === i + 1)
+			return done(g, "nothing");
+		const order = tab.filter((e) => e !== el);
+		order.splice(clamp(at > i ? at - 1 : at, 0, order.length), 0, el);
+		layTab(it, host, order, side);
+		return done(g, "moved_in_tab", {
+			el: ctx.label(el),
+			name: ctx.label(order[0]),
+		});
+	});
+
+/** Below or beside: how a tab lays out its parts, all of them */
 export const setSide = (
 	layout: GridLayout,
 	id: string,
@@ -583,20 +651,45 @@ export const setSide = (
 	ctx: ILayoutOpsContext
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		if (!it.join?.[el] || it.join[el] === side) return done(g, "nothing");
-		it.join[el] = side;
+		const host = hostOf(it, el);
+		const parts = partsOf(it, host);
+		if (!it.join?.[el] || sideOf(it, host) === side)
+			return done(g, "nothing");
 		// columns beside, px below: a size means nothing on the other side
-		if (it.joinSize) delete it.joinSize[el];
+		for (const p of parts) {
+			it.join![p] = side;
+			if (it.joinSize) delete it.joinSize[p];
+		}
 		return done(g, `joined_${side}`, {
-			el: ctx.label(el),
-			name: ctx.label(hostOf(it, el)),
+			el: ctx.label(parts[0]),
+			name: ctx.label(host),
 		});
 	});
 
+/** Where a tab's parts split beside each other now, as the page draws it */
+export function besideNow(
+	it: GridItem,
+	host: ElementId,
+	g: GridLayout,
+	ctx: Pick<ILayoutOpsContext, "width" | "pack">
+): IBesideSplit | null {
+	const p = ctx.pack?.items[it.id];
+	const col = (ctx.width - (g.cols - 1) * g.gap) / g.cols;
+	return tabBeside(
+		it,
+		host,
+		p?.width ?? it.w * col + (it.w - 1) * g.gap,
+		p?.w ?? it.w,
+		g.gap
+	);
+}
+
 /**
- * How a tab's two parts share it: beside, the columns of the part before
- * `el`; below, that part's height in px (at least its minimum); null
- * shares by their sizes again
+ * How a tab's parts share it, at the line before `el`: beside, the
+ * columns of the part before it, the part after giving or taking them,
+ * so the other lines stay; below, that part's height in px (at least its
+ * minimum). Null shares again: by minimum widths (all beside), by
+ * content (this part below).
  */
 export const setJoinSize = (
 	layout: GridLayout,
@@ -609,29 +702,67 @@ export const setJoinSize = (
 		const side = it.join?.[el];
 		if (!side || (side === "beside" && it.w < 2)) return done(g, "nothing");
 		const host = hostOf(it, el);
+		const tab = tabEls(it, host);
+		const j = tab.indexOf(el);
+		const params = { name: ctx.label(tab[j - 1]), el: ctx.label(el) };
+		const size = { ...it.joinSize };
+		if (side === "beside") {
+			const parts = tab.slice(1);
+			if (value === null) {
+				if (parts.every((p) => size[p] === undefined))
+					return done(g, "nothing");
+				for (const p of parts) delete size[p];
+				it.joinSize = size;
+				return parts.length > 1
+					? done(g, "share_auto_all", { name: ctx.label(host) })
+					: done(g, "share_auto", params);
+			}
+			const s = besideNow(it, host, g, ctx);
+			const r = s?.range[j - 1];
+			const cols = parts.map((p) => size[p] ?? 0);
+			let v: number;
+			const drawn = !!(s?.cols && r);
+			if (s?.cols && r) {
+				// as drawn: the part after the line gives or takes the columns
+				cols.splice(0, cols.length, ...s.cols);
+				v = clamp(Math.round(value), r[0], r[1]);
+				if (j < cols.length) cols[j] += cols[j - 1] - v;
+			} else {
+				// stacked for want of width: kept for when it fits, the
+				// last part keeping a column
+				const others = cols.reduce((a, b) => a + b, 0) - cols[j - 1];
+				v = clamp(Math.round(value), 1, it.w - 1 - others);
+				if (v < 1) return done(g, "nothing");
+			}
+			cols[j - 1] = v;
+			if (parts.every((p, i) => (size[p] ?? 0) === cols[i]))
+				return done(g, "nothing");
+			parts.forEach((p, i) => {
+				if (cols[i] > 0) size[p] = cols[i];
+			});
+			it.joinSize = size;
+			// a line between two parts before the last: both named, not "the rest"
+			return drawn && j < cols.length
+				? done(g, "share_cols_pair", { ...params, n: v, m: cols[j] })
+				: done(g, "share_cols", { ...params, n: v, cols: it.w });
+		}
 		const v =
 			value === null
 				? undefined
-				: side === "beside"
-					? clamp(Math.round(value), 1, it.w - 1)
-					: clamp(
-							Math.round(value),
-							Math.max(H_MIN, ELEMENTS[host].minH),
-							H_MAX
-						);
+				: clamp(
+						Math.round(value),
+						Math.max(H_MIN, ELEMENTS[tab[j - 1]].minH),
+						H_MAX
+					);
 		if (it.joinSize?.[el] === v) return done(g, "nothing");
-		const size = { ...it.joinSize };
 		delete size[el];
 		if (v !== undefined) size[el] = v;
 		it.joinSize = size;
-		const params = { name: ctx.label(host), el: ctx.label(el) };
 		if (v === undefined) return done(g, "share_auto", params);
-		return side === "beside"
-			? done(g, "share_cols", { ...params, n: v, cols: it.w })
-			: done(g, "share_height", { ...params, h: v });
+		return done(g, "share_height", { ...params, h: v });
 	});
 
-/** A new item below `it` with these elements (a tab, maybe with its partner) */
+/** A new item below `it` with these elements (a tab, maybe with its parts) */
 const splitOff = (
 	g: GridLayout,
 	it: GridItem,
@@ -662,18 +793,19 @@ const splitOff = (
 };
 
 /**
- * Takes a tab out into its own item, below, with the element shown with
- * it; or an element shown with another, out of their tab. The first tab
- * stays.
+ * Takes a tab out into its own item, below, with the parts shown with it;
+ * or a part, out of its tab (`alone`: its own element too, the next part
+ * then the tab's own). The first tab stays.
  */
 export const takeOut = (
 	layout: GridLayout,
 	id: string,
 	el: ElementId,
-	ctx: ILayoutOpsContext
+	ctx: ILayoutOpsContext,
+	alone = false
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		const joined = !!it.join?.[el];
+		const joined = !!it.join?.[el] || (alone && partsOf(it, el).length > 0);
 		if (!it.els.includes(el) || (!joined && it.els[0] === el))
 			return done(g, "nothing");
 		const els = joined ? [el] : tabEls(it, el);
@@ -693,15 +825,16 @@ export const takeOutTo = (
 	el: ElementId,
 	to:
 		| { x: number; y: number; band: boolean }
-		| { tab: string; side?: JoinSide },
-	ctx: ILayoutOpsContext
+		| { tab: string; side?: JoinSide; at?: number },
+	ctx: ILayoutOpsContext,
+	alone = false
 ): ILayoutChange => {
-	const out = takeOut(layout, id, el, ctx);
+	const out = takeOut(layout, id, el, ctx, alone);
 	const it = out.layout.items.find((i) => i.id !== id && i.els[0] === el);
 	if (!it || ("tab" in to && to.tab === id)) return done(layout, "nothing");
 	return "tab" in to
 		? to.side
-			? joinTab(out.layout, { item: it.id }, to.tab, to.side, ctx)
+			? joinTab(out.layout, { item: it.id }, to.tab, to.side, ctx, to.at)
 			: makeTab(out.layout, { item: it.id }, to.tab, ctx)
 		: moveTo(out.layout, it.id, to, ctx);
 };
@@ -736,13 +869,18 @@ export const hide = (
 	layout: GridLayout,
 	id: string,
 	el: ElementId,
-	ctx: ILayoutOpsContext
+	ctx: ILayoutOpsContext,
+	alone = false
 ): ILayoutChange =>
 	edit(layout, id, ctx, (it, g) => {
-		if (!it.els.includes(el) || hideTabBlocked(it, el))
+		const one = !!it.join?.[el] || alone;
+		if (
+			!it.els.includes(el) ||
+			(one ? hideBlocked(el) : hideTabBlocked(it, el))
+		)
 			return done(g, "nothing");
-		const name = it.join?.[el] ? ctx.label(el) : tabName(it, el, ctx);
-		const els = it.join?.[el] ? [el] : tabEls(it, el);
+		const name = one ? ctx.label(el) : tabName(it, el, ctx);
+		const els = one ? [el] : tabEls(it, el);
 		els.forEach((e) => removeEl(it, e));
 		if (!it.els.length) g.items = g.items.filter((i) => i !== it);
 		return done(g, "hidden", { el: name });

@@ -15,7 +15,7 @@
 	 * active tab in view.
 	 */
 	const props = defineProps<{
-		tabs: { key: T; label: string; dot?: string }[];
+		tabs: { key: T; label: string; dot?: string; name?: string }[];
 		active: T | null;
 		label: string;
 	}>();
@@ -98,6 +98,10 @@
 			type="button"
 			:aria-pressed="active === tab.key ? 'true' : 'false'"
 			:data-tab="tab.key"
+			:title="tab.name"
+			:aria-label="
+				tab.name && (tab.dot ? `${tab.name}, ${tab.dot}` : tab.name)
+			"
 			class="flex items-center gap-1.5 h-10 pointer-coarse:h-11 px-2.5 @max-[64rem]:px-2 border-b-2 cursor-pointer text-nowrap hover:text-white"
 			:class="
 				active === tab.key

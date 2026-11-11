@@ -53,7 +53,6 @@ import { phoneFromWide } from "@/features/planning/layout/phoneLayout";
 import { presetLayout } from "@/features/planning/layout/presets";
 import { snapHeightTo, snapTopTo } from "@/features/planning/layout/snapping";
 import { visibleLayout } from "@/features/planning/layout/usePlanGrid";
-import { besideSplit } from "@/features/planning/layout/planGrid.util";
 import {
 	H_MAX,
 	H_MIN,
@@ -61,8 +60,10 @@ import {
 } from "@/features/planning/layout/planLayout.constants";
 import {
 	hostOf,
-	partnerOf,
+	partsOf,
+	sideOf,
 	tabEls,
+	tabName,
 	tabsOf,
 } from "@/features/planning/layout/tabs";
 
@@ -76,6 +77,7 @@ const TOASTED = new Set([
 	"tab",
 	"joined_below",
 	"joined_beside",
+	"moved_in_tab",
 	"taken_out",
 	"split",
 	"reset",
@@ -107,6 +109,8 @@ export interface IEditorDrag {
 	el: ElementId;
 	// the group a tab is dragged out of
 	from: string | null;
+	// a part taken by its body: it alone, not its tab's other parts
+	part?: boolean;
 	x: number;
 	w: number;
 	// where the box follows the pointer, grid px
@@ -121,6 +125,10 @@ export interface IEditorDrag {
 	// whether it can join the tab that item shows, and where it would
 	joinable: boolean;
 	join: JoinSide | null;
+	// over the parts of that tab: where among them it would land
+	at?: number;
+	// why it can't join there (the other side of a tab of several)
+	blocked?: string;
 	// over the Elements panel: a drop hides it
 	hide: boolean;
 }
@@ -209,15 +217,19 @@ export function usePlanLayoutEditor(
 	const shown = computed(() => visibleLayout(draft.value, env.loggedIn()));
 
 	const label = (el: ElementId): string => t(ELEMENTS[el].label);
-	/** A tab's name: its element, or "Material I/O & Material I/O totals" */
+	/** A tab's name: its element, "Material I/O & Material I/O totals", "A +2" */
 	const tabLabel = (
 		it: Pick<GridItem, "els" | "join">,
 		host: ElementId
-	): string => {
-		const partner = partnerOf(it, host);
-		return partner
-			? t("plan.layout.pair", { a: label(host), b: label(partner) })
-			: label(host);
+	): string => tabName(tabEls(it, host), label, t);
+	/** Why a join is blocked, in words: "Material I/O stacks its parts beside each other" */
+	const whyText = (why: string | null, o: GridItem): string | undefined => {
+		if (!why) return undefined;
+		const side = sideOf(o, o.active);
+		return t(why, {
+			name: tabLabel(o, o.active),
+			side: side ? t(`plan.layout.side.${side}`) : "",
+		});
 	};
 	/** An item's name: its tab, or "Production + 7 tabs" */
 	const title = (it: Pick<GridItem, "els" | "join">): string => {
@@ -751,43 +763,54 @@ export function usePlanLayoutEditor(
 	}
 
 	/**
-	 * The ⋯ menu's row sizing a tab's two: less or more room for the first
-	 * part (a column beside, 40 px below) and Auto; none while a pair set
-	 * beside is stacked for want of width
+	 * The ⋯ menu's row sizing a tab's part before `el`: less or more room
+	 * for it (a column beside, the part after giving it; 40 px below) and
+	 * Auto; none while parts set beside are stacked for want of width
 	 */
 	function splitRow(it: GridItem, el: ElementId): PDropdownOption | null {
-		const host = hostOf(it, el);
-		const name = label(host);
+		const tab = tabEls(it, hostOf(it, el));
+		const j = tab.indexOf(el);
+		const prev = tab[j - 1];
+		const name = label(prev);
 		const set = it.joinSize?.[el];
+		const beside = it.join?.[el] === "beside";
+		// beside, Auto shares the whole tab: one button, on its last line
+		const many = beside && tab.length > 2;
 		const auto = {
-			key: "share:auto",
-			label: t("plan.layout.share.auto", { name, el: label(el) }),
+			key: `share:auto:${el}`,
+			label: many
+				? t("plan.layout.share.auto_all")
+				: t("plan.layout.share.auto", { name, el: label(el) }),
 			text: t("plan.layout.share.auto_text"),
-			checked: set === undefined,
+			checked: beside
+				? tab.slice(1).every((p) => it.joinSize?.[p] === undefined)
+				: set === undefined,
 		};
 		const step = (dir: "-" | "+", disabled: boolean) => ({
-			key: `share:${dir}`,
+			key: `share:${dir}:${el}`,
 			label: t(`plan.layout.share.${dir === "-" ? "less" : "more"}`, {
 				name,
 			}),
 			icon: dir === "-" ? RemoveSharp : AddSharp,
 			disabled,
 		});
-		if (it.join?.[el] === "beside") {
+		if (beside) {
 			const s = besideNow(it, el);
-			if (!s?.range || s.cols === null) return null;
+			const r = s?.range[j - 1];
+			if (!s?.cols || !r) return null;
+			const n = s.cols[j - 1];
 			const cols = env.grid()!.pack.items[it.id].w;
 			return {
 				type: "buttons",
-				label: t("plan.layout.share.cols", { name, n: s.cols, cols }),
+				label: t("plan.layout.share.cols", { name, n, cols }),
 				buttons: [
-					step("-", s.cols <= s.range[0]),
-					step("+", s.cols >= s.range[1]),
-					auto,
+					step("-", n <= r[0]),
+					step("+", n >= r[1]),
+					...(!many || j === tab.length - 1 ? [auto] : []),
 				],
 			};
 		}
-		const min = Math.max(H_MIN, ELEMENTS[host].minH);
+		const min = Math.max(H_MIN, ELEMENTS[prev].minH);
 		return {
 			type: "buttons",
 			label:
@@ -803,9 +826,10 @@ export function usePlanLayoutEditor(
 	}
 
 	/**
-	 * The ⋯ menu's tabs page: Back; the element shown with the tab on view
-	 * (below or beside, out); the tabs to take out and split; for an item
-	 * of one tab, every other item to join: as a tab, below or beside
+	 * The ⋯ menu's tabs page: Back; the parts shown with the tab on view
+	 * (all below or beside; per part its room and out); the tabs to take
+	 * out and split; for an item of one tab, every other item to join: as
+	 * a tab, below or beside
 	 */
 	function tabPage(it: GridItem): PDropdownOption[] {
 		const g = draft.value;
@@ -814,12 +838,12 @@ export function usePlanLayoutEditor(
 			{ key: "page:main", label: t("plan.layout.menu_back") },
 			{ type: "divider" },
 		];
-		const partner = partnerOf(it, it.active);
-		if (partner) {
+		const parts = partsOf(it, it.active);
+		if (parts.length) {
 			opts.push({
 				type: "buttons",
 				label: t("plan.layout.with", {
-					el: label(partner),
+					el: tabName(parts, label, t),
 					name: label(it.active),
 				}),
 				buttons: (["below", "beside"] as const).map((side) => ({
@@ -828,15 +852,18 @@ export function usePlanLayoutEditor(
 						name: label(it.active),
 					}),
 					text: t(`plan.layout.zone.${side}`),
-					checked: it.join?.[partner] === side,
+					checked: sideOf(it, it.active) === side,
 				})),
 			});
-			const size = splitRow(it, partner);
-			if (size) opts.push(size);
-			opts.push({
-				key: `out:${partner}`,
-				label: t("plan.layout.take_out", { name: label(partner) }),
-			});
+			for (const p of parts) {
+				const size = splitRow(it, p);
+				if (size) opts.push(size);
+			}
+			for (const p of parts)
+				opts.push({
+					key: `out:${p}`,
+					label: t("plan.layout.take_out", { name: label(p) }),
+				});
 			opts.push({ type: "divider" });
 		}
 		if (tabs.length > 1) {
@@ -860,7 +887,8 @@ export function usePlanLayoutEditor(
 		// another item, or with the tab it shows, below or beside it
 		opts.push({ type: "group", label: t("plan.layout.make_tab") });
 		for (const o of g.items.filter((o) => o !== it)) {
-			const why = ops.joinBlocked(g, it.els, o.id);
+			const why = (side: JoinSide) =>
+				ops.joinBlocked(g, it.els, o.id, side);
 			opts.push({
 				type: "buttons",
 				label: title(o),
@@ -878,10 +906,8 @@ export function usePlanLayoutEditor(
 							name: label(o.active),
 						}),
 						text: t(`plan.layout.zone.${side}`),
-						disabled: !!why,
-						hint: why
-							? t(why, { name: tabLabel(o, o.active) })
-							: undefined,
+						disabled: !!why(side),
+						hint: whyText(why(side), o),
 					})),
 				],
 			});
@@ -903,11 +929,9 @@ export function usePlanLayoutEditor(
 		"up",
 		"down",
 		"right",
-		"share:-",
-		"share:+",
 	]);
 	function onMenu(id: string, key: string): void {
-		menuStays = MENU_STEPS.has(key);
+		menuStays = MENU_STEPS.has(key) || /^share:[-+]:/.test(key);
 		try {
 			menuChange(id, key);
 		} finally {
@@ -965,16 +989,17 @@ export function usePlanLayoutEditor(
 			)
 				count("menu");
 		} else if (key.startsWith("share:")) {
-			const partner = partnerOf(it, it.active);
-			if (partner) stepSplit(id, partner, key.slice(6));
+			const [, step, el] = key.split(":");
+			if (it.join?.[el as ElementId])
+				stepSplit(id, el as ElementId, step);
 		} else if (key.startsWith("side:")) {
-			const partner = partnerOf(it, it.active);
-			if (partner)
+			const first = partsOf(it, it.active)[0];
+			if (first)
 				apply(
 					ops.setSide(
 						draft.value,
 						id,
-						partner,
+						first,
 						key.slice(5) as JoinSide,
 						ctx()
 					),
@@ -995,6 +1020,7 @@ export function usePlanLayoutEditor(
 		id: string | null;
 		el: ElementId;
 		from: string | null;
+		part: boolean;
 	} | null = null;
 	let rs: {
 		id: string;
@@ -1059,7 +1085,7 @@ export function usePlanLayoutEditor(
 	 */
 	function startMove(
 		e: PointerEvent,
-		from: { id: string } | { el: ElementId }
+		from: { id: string } | { el: ElementId; part?: boolean }
 	): void {
 		if (e.button !== 0) return;
 		const el = "el" in from ? from.el : itemOf(from.id)!.els[0];
@@ -1067,7 +1093,9 @@ export function usePlanLayoutEditor(
 			"el" in from
 				? draft.value.items.find((i) => i.els.includes(el))
 				: undefined;
-		const tabOf = placed && placed.els[0] !== el ? placed.id : null;
+		const part = "el" in from && !!from.part;
+		const tabOf =
+			placed && (placed.els[0] !== el || part) ? placed.id : null;
 		const id = "id" in from ? from.id : tabOf ? null : (placed?.id ?? null);
 		// where on the item it was taken; one from Elements by its corner
 		let off = { x: 20, y: 16 };
@@ -1084,6 +1112,7 @@ export function usePlanLayoutEditor(
 			id,
 			el,
 			from: tabOf,
+			part,
 		};
 		listen();
 	}
@@ -1129,9 +1158,9 @@ export function usePlanLayoutEditor(
 	}
 
 	/*
-	 * The line between a tab's two parts, dragged: beside, the first
-	 * part's columns (held to where both keep their minimums); below, its
-	 * height in 8 px steps. The parts follow as it moves; Esc puts it back.
+	 * A line between two parts of a tab, dragged: beside, the columns of
+	 * the part before it, the part after giving or taking them (held to
+	 * where both keep their minimums); below, its height in 8 px steps. The parts follow as it moves; Esc puts it back.
 	 */
 	let sp: {
 		id: string;
@@ -1147,24 +1176,38 @@ export function usePlanLayoutEditor(
 		value: number | null;
 	} | null = null;
 
-	/** The first part of a tab's two as drawn, in grid px */
-	function hostBox(id: string, host: ElementId): DOMRect | undefined {
+	/** A part of a tab as drawn, in screen px */
+	function partBox(id: string, el: ElementId): DOMRect | undefined {
 		return env
 			.root()
 			?.querySelector<HTMLElement>(
-				`[data-item="${id}"] [data-element="${host}"]`
+				`[data-item="${id}"] [data-element="${el}"]`
 			)
 			?.getBoundingClientRect();
 	}
 
-	/** Press on the line between a tab's two parts, `el` the second */
+	/** A tab's part before `el`, and the line between them's place in it */
+	function before(it: GridItem, el: ElementId) {
+		const tab = tabEls(it, hostOf(it, el));
+		const j = tab.indexOf(el);
+		return { prev: tab[j - 1], j };
+	}
+
+	/** Press on the line between two parts of a tab, `el` the one after it */
 	function startSplit(id: string, el: ElementId, e: PointerEvent): void {
 		const it = itemOf(id);
 		const side = it?.join?.[el];
 		if (e.button !== 0 || !it || !side) return;
 		e.stopPropagation();
 		e.preventDefault();
-		const box = hostBox(id, hostOf(it, el));
+		const { prev, j } = before(it, el);
+		// beside: the line's px from the tab's left; below: the part's height
+		const px0 =
+			side === "beside"
+				? (besideNow(it, el)
+						?.px.slice(0, j)
+						.reduce((a, b) => a + b, 0) ?? 0)
+				: (partBox(id, prev)?.height ?? 0) / env.zoom();
 		sp = {
 			id,
 			el,
@@ -1173,9 +1216,7 @@ export function usePlanLayoutEditor(
 			state: drafts.value,
 			x: e.clientX,
 			y: e.clientY,
-			px0:
-				(side === "beside" ? (box?.width ?? 0) : (box?.height ?? 0)) /
-				env.zoom(),
+			px0,
 			value: null,
 		};
 		refMenu.value = null;
@@ -1186,26 +1227,25 @@ export function usePlanLayoutEditor(
 		const s = sp!;
 		const z = env.zoom();
 		const it = s.before.items.find((i) => i.id === s.id)!;
-		const host = hostOf(it, s.el);
+		const { prev, j } = before(it, s.el);
 		let value: number | null;
 		if (s.side === "beside") {
 			const p = grid().pack.items[s.id];
 			const gap = s.before.gap;
 			const col = (p.width - (p.w - 1) * gap) / p.w;
 			const px = s.px0 + (e.clientX - s.x) / z;
-			value =
-				besideSplit(
-					p.width,
-					p.w,
-					gap,
-					Math.round((px + gap / 2) / (col + gap)),
-					ELEMENTS[host].minW,
-					ELEMENTS[s.el].minW
-				)?.cols ?? null;
+			const split = ops.besideNow(it, hostOf(it, s.el), s.before, ctx());
+			// the columns left of the line, less those of the parts before
+			const lead = (split?.cols ?? [])
+				.slice(0, j - 1)
+				.reduce((a, b) => a + b, 0);
+			value = split?.cols
+				? Math.round((px + gap / 2) / (col + gap)) - lead
+				: null;
 		} else
 			value = ops.snapHeight(
 				s.px0 + (e.clientY - s.y) / z,
-				Math.max(H_MIN, ELEMENTS[host].minH)
+				Math.max(H_MIN, ELEMENTS[prev].minH)
 			);
 		if (value === null || value === s.value) return;
 		s.value = value;
@@ -1227,24 +1267,24 @@ export function usePlanLayoutEditor(
 			count("drag");
 	}
 
-	/** A step of the ⋯ menu's split row: less or more room for the first, or auto */
+	/** A step of the ⋯ menu's split row: less or more room for the part before `el`, or auto */
 	function stepSplit(id: string, el: ElementId, step: string): void {
 		const it = itemOf(id)!;
-		const host = hostOf(it, el);
+		const { prev, j } = before(it, el);
 		let value: number | null = null;
 		if (step !== "auto") {
 			const dir = step === "+" ? 1 : -1;
 			if (it.join?.[el] === "beside") {
 				const s = besideNow(it, el);
 				if (!s?.cols) return;
-				value = s.cols + dir;
+				value = s.cols[j - 1] + dir;
 			} else {
 				const now =
 					it.joinSize?.[el] ??
-					Math.round((hostBox(id, host)?.height ?? 0) / env.zoom());
+					Math.round((partBox(id, prev)?.height ?? 0) / env.zoom());
 				value = ops.snapHeight(
-					Math.max(now, ELEMENTS[host].minH) + dir * H_STEP,
-					Math.max(H_MIN, ELEMENTS[host].minH)
+					Math.max(now, ELEMENTS[prev].minH) + dir * H_STEP,
+					Math.max(H_MIN, ELEMENTS[prev].minH)
 				);
 			}
 		}
@@ -1252,19 +1292,9 @@ export function usePlanLayoutEditor(
 			count("menu");
 	}
 
-	/** Where a tab's two beside each other split now, as the page draws it */
-	function besideNow(it: GridItem, el: ElementId) {
-		const p = env.grid()?.pack.items[it.id];
-		if (!p) return null;
-		return besideSplit(
-			p.width,
-			p.w,
-			draft.value.gap,
-			it.joinSize?.[el],
-			ELEMENTS[hostOf(it, el)].minW,
-			ELEMENTS[el].minW
-		);
-	}
+	/** Where the tab `el` is in splits beside each other now, as the page draws it */
+	const besideNow = (it: GridItem, el: ElementId) =>
+		ops.besideNow(it, hostOf(it, el), draft.value, ctx());
 
 	function onPointerMove(e: PointerEvent): void {
 		if (sp) return splitMove(e);
@@ -1309,16 +1339,70 @@ export function usePlanLayoutEditor(
 		const from = press0.from ? itemOf(press0.from) : undefined;
 		const els = cur
 			? cur.els
-			: from && !from.join?.[press0.el]
+			: from && !press0.part && !from.join?.[press0.el]
 				? tabEls(from, press0.el)
 				: [press0.el];
-		const joinable = !!tabTo && !ops.joinBlocked(g, els, tabTo);
+		// over the parts of a tab of several (not a title bar): between
+		// which it lands, on the tab's side; its own tab: a new place in it
+		let at: number | undefined;
+		const body = head
+			? null
+			: hit?.closest?.<HTMLElement>("[data-tab-body]");
+		const into = body
+			? itemOf(
+					body.closest("[data-item]")?.getAttribute("data-item") ?? ""
+				)
+			: undefined;
+		const own =
+			!!into &&
+			into.id === press0.from &&
+			hostOf(into, press0.el) === into.active;
+		if (
+			into &&
+			body?.dataset.tabBody === into.active &&
+			partsOf(into, into.active).length &&
+			(own ||
+				(into.id !== press0.id &&
+					into.id !== press0.from &&
+					(!cur || tabsOf(cur).length === 1)))
+		) {
+			const row = body.dataset.pair === "row";
+			const parts = [
+				...body.querySelectorAll<HTMLElement>(
+					":scope > [data-element]"
+				),
+			];
+			at = parts.findIndex((p) => {
+				const b = p.getBoundingClientRect();
+				return row
+					? e.clientX < b.left + b.width / 2
+					: e.clientY < b.top + b.height / 2;
+			});
+			if (at < 0) at = parts.length;
+			tabTo = into.id;
+		}
+		const joinable = !!tabTo && (own || !ops.joinBlocked(g, els, tabTo));
+		// over parts it can't join (a group of tabs): no place among them
+		if (!joinable && at !== undefined) {
+			at = undefined;
+			tabTo = null;
+		}
 		let join: JoinSide | null = null;
-		const r = joinable ? headEl?.getBoundingClientRect() : undefined;
+		const target = tabTo ? itemOf(tabTo) : undefined;
+		if (at !== undefined && target) join = sideOf(target, target.active)!;
+		const r =
+			joinable && at === undefined
+				? headEl?.getBoundingClientRect()
+				: undefined;
 		if (r?.width) {
 			const f = (e.clientX - r.left) / r.width;
 			join = f < 1 / 3 ? null : f < 2 / 3 ? "below" : "beside";
 		}
+		// the other side of a tab of several parts: not here
+		const blocked =
+			joinable && join && !own
+				? whyText(ops.joinBlocked(g, els, tabTo!, join), target!)
+				: undefined;
 		const step = pack.page.colWidth + g.gap;
 		const probe = cur ?? { els: [press0.el] };
 		const w = Math.max(
@@ -1357,6 +1441,9 @@ export function usePlanLayoutEditor(
 			tabTo: hide ? null : tabTo,
 			joinable: !hide && joinable,
 			join: hide ? null : join,
+			...(!hide && at !== undefined && { at }),
+			...(!hide && blocked && { blocked }),
+			...(press0.part && { part: true }),
 			hide,
 		};
 	}
@@ -1426,23 +1513,33 @@ export function usePlanLayoutEditor(
 		if (d.hide) {
 			const change = d.id
 				? ops.hideItem(g, d.id, ctx())
-				: ops.hide(g, d.from!, d.el, ctx());
+				: ops.hide(g, d.from!, d.el, ctx(), d.part);
 			if (apply(change)) count("drag");
 			return;
 		}
 		if (d.tabTo) {
+			// the other side of a tab of several parts: nothing
+			if (d.blocked) return;
 			const src = d.id ? { item: d.id } : { el: d.el };
-			const change = d.from
-				? ops.takeOutTo(
-						g,
-						d.from,
-						d.el,
-						{ tab: d.tabTo, ...(d.join && { side: d.join }) },
-						ctx()
-					)
-				: d.join
-					? ops.joinTab(g, src, d.tabTo, d.join, ctx())
-					: ops.makeTab(g, src, d.tabTo, ctx());
+			const change =
+				d.from === d.tabTo
+					? ops.moveInTab(g, d.from, d.el, d.at ?? -1, ctx())
+					: d.from
+						? ops.takeOutTo(
+								g,
+								d.from,
+								d.el,
+								{
+									tab: d.tabTo,
+									...(d.join && { side: d.join }),
+									...(d.at !== undefined && { at: d.at }),
+								},
+								ctx(),
+								d.part
+							)
+						: d.join
+							? ops.joinTab(g, src, d.tabTo, d.join, ctx(), d.at)
+							: ops.makeTab(g, src, d.tabTo, ctx());
 			if (apply(change, d.tabTo)) count("drag");
 			return;
 		}
@@ -1454,7 +1551,7 @@ export function usePlanLayoutEditor(
 		const change = d.id
 			? ops.moveTo(g, d.id, to, ctx())
 			: d.from
-				? ops.takeOutTo(g, d.from, d.el, to, ctx())
+				? ops.takeOutTo(g, d.from, d.el, to, ctx(), d.part)
 				: ops.addAt(g, d.el, to, ctx());
 		if (
 			apply(
@@ -1524,7 +1621,8 @@ export function usePlanLayoutEditor(
 		const g = d.id
 			? ops.moveTo(draft.value, d.id, to, ctx()).layout
 			: d.from
-				? ops.takeOutTo(draft.value, d.from, d.el, to, ctx()).layout
+				? ops.takeOutTo(draft.value, d.from, d.el, to, ctx(), d.part)
+						.layout
 				: ops.addAt(draft.value, d.el, to, ctx()).layout;
 		const it = g.items.find((i) => i.els.includes(d.el))!;
 		const { gridWidth, content } = grid();

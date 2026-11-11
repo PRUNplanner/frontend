@@ -52,6 +52,7 @@
 		fresh = [],
 		width = undefined,
 		editing = false,
+		drop = null,
 	} = defineProps<{
 		layout: GridLayout;
 		folded: ElementId[];
@@ -64,12 +65,14 @@
 		// a preview width instead of the page's
 		width?: number;
 		editing?: boolean;
+		// customising: where a part dragged over an item's tab would land
+		drop?: { item: string; at: number } | null;
 	}>();
 
 	const emit = defineEmits<{
 		(e: "fold", el: ElementId, value: boolean): void;
 		(e: "tab", item: string, el: ElementId): void;
-		// customising: the line between a tab's two pressed
+		// customising: a line between a tab's parts pressed
 		(e: "split", item: string, el: ElementId, ev: PointerEvent): void;
 		// the page's grid is a phone's (below 760 px) or not: which
 		// arrangement it shows
@@ -271,6 +274,7 @@
 						:fresh="isFresh(it)"
 						:editing="editing"
 						:gap="layout.gap"
+						:drop-at="drop?.item === it.id ? drop.at : null"
 						@fold="(v: boolean) => emit('fold', it.els[0], v)"
 						@tab="(el: ElementId) => emit('tab', it.id, el)"
 						@split="
@@ -307,6 +311,7 @@
 				:fresh="isFresh(it)"
 				:editing="editing"
 				:gap="layout.gap"
+				:drop-at="drop?.item === it.id ? drop.at : null"
 				:follow="followOf(it.id)"
 				@fold="(v: boolean) => emit('fold', it.els[0], v)"
 				@tab="(el: ElementId) => emit('tab', it.id, el)"
