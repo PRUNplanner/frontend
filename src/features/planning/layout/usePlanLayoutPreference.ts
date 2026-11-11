@@ -29,13 +29,16 @@ import { deepClone } from "@/util/data";
 // the same once stored: undefined keys dropped, key order ignored
 const same = (a: unknown, b: unknown): boolean =>
 	isEqual(JSON.parse(JSON.stringify(a)), JSON.parse(JSON.stringify(b)));
+// the layout without its folds
+const unfolded = (l: StoredLayout) => ({ ...l, folded: undefined });
 
 /**
  * The player's plan layout: Standard or Custom Layout (a Wide and maybe a
  * Phone arrangement), which items are folded per arrangement, and Tinted
  * parts, read from and written to a LayoutStore (the account, or the tab for
  * a visitor). A change that reaches the store from elsewhere (another tab, the
- * account's preferences arriving) is used at once (`changedElsewhere`).
+ * account's preferences arriving) is used at once; a layout change, not
+ * a fold, also sets `changedElsewhere`.
  * Elements new to Custom Layout join it at the bottom once (`added`), when
  * the store has the latest, so another device's addition isn't repeated.
  * @author jplacht
@@ -114,14 +117,17 @@ export function usePlanLayoutPreference(
 
 	// the store's latest: at once for the tab, when the account's
 	// preferences arrive, and whenever another tab changes them. Its own
-	// saves come back equal and change nothing.
+	// saves come back equal and change nothing. Folds from elsewhere are
+	// used quietly: only a layout change (Standard or Custom, the grids,
+	// Tinted parts) is a change elsewhere
 	watch(
 		() => [store.ready?.() ?? true, store.load()] as const,
 		([ready, stored]) => {
 			if (!ready) return;
 			if (stored && !same(stored, snapshot())) {
+				if (!same(unfolded(stored), unfolded(snapshot())))
+					changedElsewhere.value = true;
 				adopt(stored);
-				changedElsewhere.value = true;
 			}
 			meetNewElements();
 		},
