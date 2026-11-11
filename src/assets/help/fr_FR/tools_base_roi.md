@@ -4,7 +4,7 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 
 # Types de lignes
 
-- **Ressource** : une ressource sur une planète, avec RIG, EXT ou COL et les matériaux d'environnement de la planète. Affiche « @ planète (sauts) ».
+- **Ressource** : une ressource sur une planète, avec RIG, EXT ou COL et les matériaux d'environnement de la planète. Shows "@ planet · N jumps" (to the nearest exchange).
 - **Agriculture** : une recette FRM ou ORC sur une planète fertile, avec la fertilité de la planète dans le rendement.
 - **Recette** : une recette de n'importe quel autre bâtiment de production, sur une planète standard (rocheuse, gravité, pression et température normales). Utilise **Essayer sur une planète** dans les détails de la ligne pour la voir sur une vraie planète.
 
@@ -15,8 +15,9 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 - **Rendement hebdomadaire** : 7 × bénéfice quotidien ÷ coût des bâtiments.
 - **Coût des bâtiments** : la construction, plus les options des Réglages : le stock tampon (jours de tampon × (intrants + consommables + recettes) ÷ 2) et l'amélioration du QG pour un permis de plus (niveau de QG N − 1).
 - **Coût de fonctionnement quotidien** : intrants + consommables + dégradation. Masqué jusqu'à ce que tu l'actives dans Colonnes : le stock tampon inclus dans le coût des bâtiments couvre déjà le coût de fonctionnement au départ.
-- **Cargaison / jour** : le plus grand du poids et du volume que la base fait entrer ou sortir par jour ; (I) quand il en entre davantage, (O) quand il en sort davantage.
-- **Capacité du marché** : combien de bases comme celle-ci le marché peut absorber, des deux côtés. Pour chaque produit, c'est le volume échangé moyen sur 7 jours ÷ ce que la base produit par jour, et pour chaque intrant de recette, le volume échangé ÷ ce dont la base a besoin par jour. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. En dessous de 1, une seule base produit ou consomme plus que ce que le marché échange.
+- **Cargo / day**: the larger of the weight and volume the base moves in or out per day. The tooltip shows both directions.
+- **Capacité du marché** : combien de bases comme celle-ci le marché peut absorber, des deux côtés. Pour chaque produit, c'est le volume échangé moyen sur 7 jours ÷ ce que la base produit par jour, et pour chaque intrant de recette, le volume échangé ÷ ce dont la base a besoin par jour. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. En dessous de 1, une seule base produit ou consomme plus que ce que le marché échange. The tooltip also gives one base's share of the traded volume (1 ÷ market capacity, as a percentage).
+- **Industry**: the base's industry, in short (Food for Food Industries, Fuel for Fuel Refining, Extraction for Resource Extraction).
 - **Parcelles** : parcelles libres sur la planète, pour les lignes de planète. Trie par cette colonne pour voir les planètes les plus vides. Les lignes de recette tournent sur une planète standard ; elles affichent donc un tiret.
 - **Main-d'œuvre** : la main-d'œuvre dont la base a besoin par niveau.
 - **Bénéfice, 30 jours** : le bénéfice quotidien avec le VWAP quotidien de l'échange de chaque matériau sur les 30 derniers jours. Les jours sans transaction gardent le dernier prix. Les prix ASK, BID et fixes n'ont pas d'historique.
@@ -24,18 +25,19 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 
 # Réglages
 
+- **Ship visits**: how often the ship comes; it has to carry this many days of cargo, in and out, so rows that need more than the ship holds are hidden.
 - **Stock tampon** : du stockage pour ce nombre de jours de cargaison ; des STO ou STA sont ajoutés, et un bâtiment de production est retiré quand la base ne tiendrait plus.
 - **Capacité du marché min.** (à côté de la recherche au-dessus du tableau), **Limite logistique** et **Sauts max.** masquent des lignes ; la ligne au-dessus du tableau compte les lignes masquées par limite. Sauts max. compte jusqu'à l'échange le plus proche de ta préférence CX.
 - **Afficher les planètes sans travailleurs ni parcelles** : désactivé par défaut, donc les lignes de planète sont masquées quand aucune nouvelle base ne tient (toutes les parcelles prises et aucun site fantôme) ou quand le dernier rapport de population ne peut pas pourvoir les emplois de la base, en comptant les travailleurs libres moins les emplois déjà ouverts. Une planète sans rapport de population compte comme n'ayant aucun travailleur. Active-le pour voir ces lignes ; la colonne Main-d'œuvre montre ce qui manque. Recipe rows are not checked. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
-- **Relancer la configuration** ouvre la configuration de la première visite avec ses préréglages : Débutant (SCB, sans rendement hebdomadaire ni coût de fonctionnement), Standard (WCB) et Vétéran (n'importe quel vaisseau ou aucune limite).
+- **Run setup again** opens the first-visit setup with its presets: Rookie (SCB) and Standard (WCB) without weekly return, running cost, plots and workforce, and Veteran (any ship or no limit) with all of them but running cost. Weekly return, running cost, plots and workforce are also hidden for new visitors; turn them on in Columns.
 
 # Graphique des bénéfices
 
-Au-dessus du tableau, un graphique montre le bénéfice quotidien des 30 derniers jours pour chaque industrie. Chaque base compte selon la quantité de son produit que le marché échange (moyenne sur 7 jours), et les nombreuses planètes d'une même recette de ressource comptent comme une seule. Search to drill in:
+Au-dessus du tableau, un graphique montre le bénéfice quotidien des 30 derniers jours pour chaque industrie. Each base counts by how much of its material the market trades (7-day average), and the many planets of one resource recipe count as one: the mean of the 3 planets with the highest daily profit, so poor planets don't drag the line down. Click the title to collapse the chart; it stays collapsed. Search to drill in:
 
 - une industrie (par ex. « Chemistry ») affiche ses bâtiments ;
-- un bâtiment (par ex. « CHP ») affiche ses produits ;
-- un produit (par ex. « SC ») affiche les recettes qui le fabriquent.
+- a building (e.g. "CHP") shows its materials;
+- a material (e.g. "SC") shows the recipes that make it.
 
 Le graphique suit les réglages et les limites du tableau. Il affiche les 7 lignes les plus échangées et indique combien il en reste.
 
@@ -43,7 +45,7 @@ Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3
 
 # Recherche et info-bulles
 
-- La recherche au-dessus du tableau filtre par industrie, bâtiment ou ticker de produit.
+- The search above the table filters by industry, building or material ticker.
 - Survole un en-tête de colonne pour voir sa signification, et un nombre pour le calcul rapide qui se cache derrière.
 
 # Détails
