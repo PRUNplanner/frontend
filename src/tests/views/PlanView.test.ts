@@ -794,6 +794,21 @@ describe("PlanView", () => {
 			);
 		});
 
+		it("doesn't track a fold made in another tab", async () => {
+			const { user } = await mountView({}, loaded);
+			user.preferences.planLayout = {
+				v: 1,
+				preset: "standard",
+				custom: null,
+				folded: { wide: ["planet"], phone: [] },
+			};
+			await flushPromises();
+			expect(trackEvent).not.toHaveBeenCalledWith(
+				"plan:layout_remote_update",
+				expect.anything()
+			);
+		});
+
 		it("forgets a change elsewhere the bar wasn't answered for once customising ends", async () => {
 			const { wrapper, user } = await mountView({}, loaded);
 			const open = async () => {
@@ -809,7 +824,8 @@ describe("PlanView", () => {
 				v: 1,
 				preset: "standard",
 				custom: null,
-				folded: { wide: ["planet"], phone: [] },
+				folded: { wide: [], phone: [] },
+				tinted: true,
 			};
 			await flushPromises();
 			expect(wrapper.find("[data-elsewhere]").exists()).toBe(true);

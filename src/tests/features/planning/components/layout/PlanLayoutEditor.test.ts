@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { type DOMWrapper, flushPromises } from "@vue/test-utils";
-import { h } from "vue";
+import { h, ref } from "vue";
 import axe from "axe-core";
 
 import PlanLayoutEditor from "@/features/planning/components/layout/PlanLayoutEditor.vue";
@@ -67,9 +67,15 @@ const memoryStore = (initial: StoredLayout | null = null): LayoutStore => {
 };
 
 async function mountEditor(
-	o: { stored?: StoredLayout | null; loggedIn?: boolean } = {}
+	o: {
+		stored?: StoredLayout | null;
+		store?: LayoutStore;
+		loggedIn?: boolean;
+	} = {}
 ) {
-	const pref = usePlanLayoutPreference(memoryStore(o.stored ?? null));
+	const pref = usePlanLayoutPreference(
+		o.store ?? memoryStore(o.stored ?? null)
+	);
 	const mounted = await mountComponent(
 		PlanLayoutEditor,
 		{ pref, loggedIn: o.loggedIn ?? true },
@@ -1964,6 +1970,27 @@ describe("PlanLayoutEditor", () => {
 					choice: "keep",
 				}
 			);
+		});
+
+		it("doesn't ask when only the folds changed elsewhere", async () => {
+			const value = ref<StoredLayout | null>({
+				v: 1,
+				preset: "standard",
+				custom: null,
+				folded: none,
+			});
+			const m = await mountEditor({
+				store: {
+					load: () => value.value,
+					save: (v) => (value.value = v),
+				},
+			});
+			value.value = {
+				...value.value!,
+				folded: { wide: ["planet"], phone: [] },
+			};
+			await flushPromises();
+			expect(m.wrapper.find("[data-elsewhere]").exists()).toBe(false);
 		});
 
 		it("loads the layout changed elsewhere, asking first with changes", async () => {

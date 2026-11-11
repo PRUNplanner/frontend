@@ -255,6 +255,33 @@ describe("usePlanLayoutPreference", () => {
 			expect(value.value?.folded.wide).toEqual(["planet", "empire"]);
 		});
 
+		it("uses folds from elsewhere quietly", async () => {
+			const { store, value } = sharedStore(customised());
+			const pref = usePlanLayoutPreference(store);
+			value.value = {
+				...customised(),
+				folded: { wide: ["empire"], phone: [] },
+			};
+			await nextTick();
+			expect(pref.folded.value).toEqual(["empire"]);
+			expect(pref.changedElsewhere.value).toBe(false);
+		});
+
+		it.each([
+			["Standard", { preset: "standard" as const }],
+			["the grid", { custom: { wide: presetLayout("standard"), known } }],
+			["Tinted parts", { tinted: undefined }],
+		])(
+			"still says so when %s changes with the folds",
+			async (_, change) => {
+				const { store, value } = sharedStore(customised());
+				const pref = usePlanLayoutPreference(store);
+				value.value = { ...customised(), folded: none, ...change };
+				await nextTick();
+				expect(pref.changedElsewhere.value).toBe(true);
+			}
+		);
+
 		it("doesn't take its own saves for a change elsewhere", async () => {
 			const { store } = sharedStore(null);
 			const pref = usePlanLayoutPreference(store);
