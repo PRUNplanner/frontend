@@ -4,7 +4,7 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 
 # Row kinds
 
-- **Resource**: one resource on one planet, with RIG, EXT or COL and the planet's environment materials. Shows "@ planet (jumps)".
+- **Resource**: one resource on one planet, with RIG, EXT or COL and the planet's environment materials. Shows "@ planet · N jumps" (to the nearest exchange).
 - **Farming**: one FRM or ORC recipe on one fertile planet, with the planet's fertility in the yield.
 - **Recipe**: one recipe of any other production building, on a standard planet (rocky, normal gravity, pressure and temperature). Use **Try on a planet** in the row's details to see it on a real planet.
 
@@ -15,8 +15,9 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 - **Weekly return**: 7 × daily profit ÷ building cost.
 - **Building cost**: construction, plus the options in Settings: buffer stock (buffer days × (inputs + consumables + revenue) ÷ 2) and the HQ upgrade for one more permit (HQ level N − 1).
 - **Daily running cost**: inputs + consumables + degradation. Hidden until you turn it on in Columns: the buffer stock in the building cost already covers the running cost to start with.
-- **Cargo / day**: the larger of the weight and volume the base moves in or out per day; (I) when more comes in, (O) when more goes out.
-- **Market capacity**: how many bases like this the market can take, on both sides. For each output it is the 7-day average traded volume ÷ what the base produces per day, and for each recipe input the traded volume ÷ what the base needs per day. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1, one base produces or needs more than the market trades.
+- **Cargo / day**: the larger of the weight and volume the base moves in or out per day. The tooltip shows both directions.
+- **Market capacity**: how many bases like this the market can take, on both sides. For each output it is the 7-day average traded volume ÷ what the base produces per day, and for each recipe input the traded volume ÷ what the base needs per day. The lowest counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1, one base produces or needs more than the market trades. The tooltip also gives one base's share of the traded volume (1 ÷ market capacity, as a percentage).
+- **Industry**: the base's industry, in short (Food for Food Industries, Fuel for Fuel Refining, Extraction for Resource Extraction).
 - **Plots**: free plots on the planet, for planet rows. Sort by it to see the emptiest planets. Recipe rows run on a standard planet, so they show a dash.
 - **Workforce**: the workforce the base needs per tier.
 - **Profit, 30 days**: daily profit with the daily VWAP of each material's exchange over the last 30 days. Days without trades keep the last price. ASK, BID and fixed prices have no history.
@@ -24,18 +25,19 @@ Base ROI ranks every way to run one base: each resource on each planet that has 
 
 # Settings
 
+- **Ship visits**: how often the ship comes; it has to carry this many days of cargo, in and out, so rows that need more than the ship holds are hidden.
 - **Stock buffer**: storage for this many days of cargo; STO or STA are added, and a production building is dropped when the base would no longer fit.
 - **Min market capacity** (next to the search above the table), **Logistics limit** and **Max jumps** hide rows; the line above the table counts the hidden rows per limit. Max jumps counts to the nearest exchange of your CX preference.
 - **Show planets without workers or plots**: off by default, so planet rows are hidden when no new base fits (every plot taken and no ghost sites) or when the latest population report can't fill the base's jobs, counting free workers less the jobs already open. A planet with no population report counts as having no workers. Turn it on to see these rows; the Workforce column shows what is missing. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
-- **Run setup again** opens the first-visit setup with its presets: Rookie (SCB, without weekly return and running cost), Standard (WCB) and Veteran (any ship or no limit).
+- **Run setup again** opens the first-visit setup with its presets: Rookie (SCB) and Standard (WCB) without weekly return, running cost, plots and workforce, and Veteran (any ship or no limit) with all of them but running cost. Weekly return, running cost, plots and workforce are also hidden for new visitors; turn them on in Columns.
 
 # Profit chart
 
-Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Each base counts by how much of its product the market trades (7-day average), and the many planets of one resource recipe count as one. Search to drill in:
+Above the table (beside the settings on wide screens), a chart shows the daily profit of the last 90 days for each industry. Each base counts by how much of its material the market trades (7-day average), and the many planets of one resource recipe count as one: the mean of the 3 planets with the highest daily profit, so poor planets don't drag the line down. Click the title to collapse the chart; it stays collapsed. Search to drill in:
 
 - an industry (e.g. "Chemistry") shows its buildings;
-- a building (e.g. "CHP") shows its products;
-- a product (e.g. "SC") shows the recipes that make it.
+- a building (e.g. "CHP") shows its materials;
+- a material (e.g. "SC") shows the recipes that make it.
 
 The chart follows the table's settings and limits. It shows the 7 most traded lines and says how many more there are.
 
@@ -43,7 +45,7 @@ Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3
 
 # Search and tooltips
 
-- The search above the table filters by industry, building or product ticker.
+- The search above the table filters by industry, building or material ticker.
 - Hover a column header for what it means, and a number for the napkin math behind it.
 
 # Details

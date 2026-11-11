@@ -32,40 +32,41 @@ const weightOf = (row: IBaseROIRow) =>
 const tickers = (row: IBaseROIRow) =>
 	row.outputs.map((o) => o.ticker).join(", ");
 
+/** planets of one recipe that count: nobody builds on the worst of them */
+const BEST_PLANETS = 3;
+
 /**
- * Planet rows of one resource or farming recipe count once (their mean),
- * so a hundred planets don't swamp an industry; recipe rows are one each
+ * Planet rows of one resource or farming recipe count once, as the mean of
+ * their best BEST_PLANETS planets by daily profit, so a hundred planets
+ * don't swamp an industry and poor planets don't drag it down; recipe rows
+ * are one each
  */
 function mergePlanets(
 	rows: IBaseROIRow[],
 	profits: Map<string, number[]>
 ): { row: IBaseROIRow; values: number[]; weight: number }[] {
-	const merged = new Map<
-		string,
-		{ row: IBaseROIRow; sums: number[]; n: number; weight: number }
-	>();
+	const groups = new Map<string, IBaseROIRow[]>();
 	for (const row of rows) {
-		const values = profits.get(row.key);
-		if (!values) continue;
+		if (!profits.has(row.key)) continue;
 		const key =
 			row.kind === "recipe" ? row.key : `${row.building}|${tickers(row)}`;
-		const entry = merged.get(key);
-		if (entry) {
-			values.forEach((v, d) => (entry.sums[d] += v));
-			entry.n++;
-		} else
-			merged.set(key, {
-				row,
-				sums: [...values],
-				n: 1,
-				weight: weightOf(row),
-			});
+		const group = groups.get(key);
+		if (group) group.push(row);
+		else groups.set(key, [row]);
 	}
-	return [...merged.values()].map((e) => ({
-		row: e.row,
-		values: e.sums.map((s) => s / e.n),
-		weight: e.weight,
-	}));
+	return [...groups.values()].map((group) => {
+		const best = group
+			.sort((a, b) => b.metrics.dailyProfit - a.metrics.dailyProfit)
+			.slice(0, BEST_PLANETS)
+			.map((r) => profits.get(r.key)!);
+		return {
+			row: group[0],
+			values: best[0].map(
+				(_, d) => best.reduce((s, v) => s + v[d], 0) / best.length
+			),
+			weight: weightOf(group[0]),
+		};
+	});
 }
 
 /**

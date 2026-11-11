@@ -12,7 +12,6 @@
 
 	// Util
 	import { formatNumber, formatPercent } from "@/util/numbers";
-	import { capitalizeString } from "@/util/text";
 	import { profitHistory } from "@/features/base_roi/baseROIHistory";
 	import { planetPlots } from "@/features/planet_search/planetPlots.util";
 	import { recipeLabel } from "@/features/base_roi/baseROIDetail.util";
@@ -52,7 +51,6 @@
 		PPopover,
 		PProgressBar,
 		PSelect,
-		PTag,
 		PTooltip,
 	} from "@/ui";
 	import { SearchSharp, WarningAmberSharp } from "@vicons/material";
@@ -155,7 +153,7 @@
 	// every column its width; wider than the page, the table scrolls sideways
 	const WIDTHS: Record<string, number> = {
 		product: 230,
-		expertise: 170,
+		expertise: 130,
 		daily_profit: 150,
 		break_even: 120,
 		weekly_return: 120,
@@ -248,22 +246,18 @@
 	const days = (n: number) =>
 		Number.isFinite(n) ? formatNumber(n, 1) : t("base_roi.table.never");
 	const planetLine = (row: IBaseROIRow) =>
-		`@ ${row.planetName ?? row.planetNaturalId} (${
-			row.jumps ?? t("base_roi.table.no_route")
-		})`;
-	// (I) or (O) next to cargo: the direction that moves more, by weight or volume
-	const cargoSide = (row: IBaseROIRow) =>
-		Math.max(row.weightIn, row.volumeIn) >
-		Math.max(row.weightOut, row.volumeOut)
-			? "input"
-			: "output";
+		`@ ${row.planetName ?? row.planetNaturalId} · ${
+			row.jumps === null
+				? t("base_roi.table.no_route")
+				: t("base_roi.table.jumps", { n: row.jumps }, row.jumps)
+		}`;
 	// the product cell's tooltip: planet rows name their building too
 	const recipeText = (row: IBaseROIRow) =>
 		row.planetNaturalId
 			? `${row.building} · ${recipeLabel(row)}`
 			: recipeLabel(row);
-	const expertise = (row: IBaseROIRow) =>
-		row.expertise ? capitalizeString(row.expertise) : "—";
+	const industry = (row: IBaseROIRow) =>
+		row.expertise ? t(`base_roi.industry.${row.expertise}`) : "—";
 	// under the workforce: why this planet can't staff the base
 	const staffingNotes = (row: IBaseROIRow): string[] => {
 		const s = staffing.get(row.key);
@@ -283,11 +277,6 @@
 					`${formatNumber(w.required, 0)} ${WORKFORCE_SHORT[w.tier]}`
 			)
 			.join(" · ");
-	const kindType = {
-		resource: "primary",
-		farming: "success",
-		recipe: "secondary",
-	} as const;
 </script>
 
 <template>
@@ -515,20 +504,6 @@
 														class="font-bold">
 														{{ row.building }}
 													</span>
-													<PTag
-														v-if="
-															row.kind !==
-															'recipe'
-														"
-														size="sm"
-														:type="
-															kindType[row.kind]
-														"
-														:value="
-															t(
-																`base_roi.table.${row.kind}`
-															)
-														" />
 												</span>
 											</template>
 											<span
@@ -613,11 +588,8 @@
 						</div>
 					</template>
 					<template #cell-expertise="{ row }">
-						<span
-							class="block truncate"
-							:title="`${expertise(row)} ${row.building}`">
-							{{ expertise(row) }}
-							<span class="text-muted">{{ row.building }}</span>
+						<span class="block truncate" :title="industry(row)">
+							{{ industry(row) }}
 						</span>
 					</template>
 					<template #cell-daily_profit="{ row }">
@@ -698,20 +670,7 @@
 											1
 										)
 									}}
-									t
-									<abbr
-										class="text-xs text-muted no-underline"
-										:title="
-											t(
-												`base_roi.table.side_${cargoSide(row)}_title`
-											)
-										"
-										>({{
-											t(
-												`base_roi.table.side_${cargoSide(row)}`
-											)
-										}})</abbr
-									></span
+									t</span
 								>
 								<span class="text-xs text-muted">
 									{{

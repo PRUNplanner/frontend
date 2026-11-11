@@ -41,13 +41,18 @@ describe("BaseROIColumnsMenu (criterion 14)", () => {
 		expect(updates.at(-1)).toEqual([]);
 	});
 
-	it("Reset goes back to the default: running cost hidden", async () => {
+	it("Reset goes back to the default: weekly return, running cost, plots and workforce hidden", async () => {
 		const { wrapper, updates } = await mountMenu(["cargo", "workforce"]);
 		// the popover's panel is teleported: find it as a component
 		const reset = wrapper
 			.findAllComponents(PButton)
 			.find((b) => b.text() === "base_roi.columns.reset")!;
 		reset.vm.$emit("click");
-		expect(updates.at(-1)).toEqual(["running_cost"]);
+		expect(updates.at(-1)).toEqual([
+			"weekly_return",
+			"running_cost",
+			"plots",
+			"workforce",
+		]);
 	});
 });

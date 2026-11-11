@@ -191,6 +191,9 @@ describe("baseROITooltip.util", () => {
 			k("bottleneck"),
 		]);
 		expect(lines[2]).toContain('"value":"0.20"');
+		// one base's share of the market: the ratio flipped, as a percentage
+		expect(lines[0]).toContain('"share":"20 %"');
+		expect(lines[2]).toContain('"share":"500 %"');
 		expect(lines[3]).toContain('"ticker":"C","side":"I"');
 		expect(cellMath(row(), "workforce", s(), t)).toEqual([]);
 	});
@@ -208,5 +211,14 @@ describe("baseROITooltip.util", () => {
 		const lines = cellMath(none, "market_capacity", s(), t);
 		expect(lines).toHaveLength(1);
 		expect(lines[0]).toContain('"value":"0.00"');
+		expect(lines[0]).toContain('"share":"0 %"');
+		// nothing traded: no share
+		const untraded = {
+			...none,
+			outputs: [{ ticker: "A", amount: 1, traded: 0, exchange: "AI1" }],
+		} as IBaseROIRow;
+		expect(cellMath(untraded, "market_capacity", s(), t)[0]).toContain(
+			'"share":"—"'
+		);
 	});
 });

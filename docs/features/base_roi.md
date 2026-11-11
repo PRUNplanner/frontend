@@ -23,7 +23,8 @@ plan" is hidden.
   `rampBreakEven`, limits, `filterRows`), `baseROIHistory.ts`,
   `baseROIPopulation.ts` (`baseStaffing` from `GetMultiplePlanetPOPR`; a
   missing report limits nothing), `baseROITrend.ts` (trend chart, at most 7
-  lines), `baseROIDetail.util.ts` (row detail sections, also "Copy as text"),
+  lines, a planet recipe as the mean of its best 3 planets; collapsed it
+  skips the history pass), `baseROIDetail.util.ts` (row detail sections, also "Copy as text"),
   `baseROITooltip.util.ts` (cell math).
 - `useBaseROISettings.ts` + `baseROI.schemas.ts`: localStorage
   `prunplanner_base_roi`, each field falls back to its default on its own.

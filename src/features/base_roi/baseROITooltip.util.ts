@@ -168,6 +168,13 @@ export function cellMath(
 						traded: num(m.traded),
 						amount: num(m.amount),
 						value: num(m.amount > 0 ? m.traded / m.amount : 0, 2),
+						// the base's share of what the market trades: the same ratio flipped
+						share: formatPercent(
+							m.traded > 0
+								? (m.amount / m.traded) * 100
+								: Infinity,
+							0
+						),
 					})
 				);
 			return [

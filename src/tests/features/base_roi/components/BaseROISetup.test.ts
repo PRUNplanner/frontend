@@ -71,7 +71,7 @@ describe("BaseROISetup (criterion 13)", () => {
 		expect(shows).toEqual([false]);
 	});
 
-	it("Rookie writes the SCB and hides weekly return and running cost", async () => {
+	it("Rookie writes the SCB and hides weekly return, running cost, plots and workforce", async () => {
 		const { updates, button, preset } = await mountSetup();
 		preset("rookie").click();
 		await flushPromises();
@@ -80,7 +80,12 @@ describe("BaseROISetup (criterion 13)", () => {
 		expect(updates.at(-1)).toMatchObject({
 			ship: "SCB",
 			logistics: "ship",
-			hiddenColumns: ["weekly_return", "running_cost"],
+			hiddenColumns: [
+				"weekly_return",
+				"running_cost",
+				"plots",
+				"workforce",
+			],
 		});
 	});
 
@@ -121,7 +126,13 @@ describe("BaseROISetup (criterion 13)", () => {
 		await flushPromises();
 		expect(updates.at(-1)).toMatchObject({
 			visitDays: 5,
-			hiddenColumns: ["running_cost", "cargo"],
+			hiddenColumns: [
+				"weekly_return",
+				"running_cost",
+				"cargo",
+				"plots",
+				"workforce",
+			],
 		});
 	});
 
