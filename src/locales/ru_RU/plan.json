@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Key figures",
 				"output": "Output value",
-				"costs": "Costs incl. degradation and fees",
+				"costs": "Costs incl. degradation",
 				"margin": "Margin",
 				"earner": "brings in {share} of the output value. Its price decides this plan.",
 				"cost": "is the largest cost at {share} of the output value.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Себестоимость произведённой продукции",
 			"cogm": "@:terms.cogm",
-			"info": "Per unit of output, from this plan's efficiency, runtime, degradation, production fees, input prices and workforce, by quantity or full cost allocation.",
+			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
 			"workforce_note": "Workforce costs follow this plan's habitats and luxuries: workers without housing and luxuries turned off cost nothing.",
 			"prices_from": "Prices come from {preference}.",
 			"prices_from_empire": "Prices come from {preference}, the preference of the active empire {empire}.",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / day",
-		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation and {fees} production fees",
+		"revenue_cost": "Revenue {revenue} · cost {cost} incl. {degradation} degradation",
 		"payback": "Payback",
 		"build_cost": "ȼ build cost",
 		"profit_per_area": "ȼ profit / area",
@@ -896,7 +896,7 @@
 		"undo": "Undo",
 		"reset": "Reset to Standard",
 		"save": "Save",
-		"saved": "Saved as Custom Layout, used for all your plans on every device",
+		"saved": "Saved as Custom Layout, used for all your plans in this tab",
 		"replace_question": "This replaces your current Custom Layout.",
 		"replace": "Replace Custom Layout",
 		"keep_editing": "Keep editing",
@@ -956,6 +956,12 @@
 			"beside": "Beside"
 		},
 		"pair": "{a} & {b}",
+		"more": "{name} +{n}",
+		"list": "{rest} & {last}",
+		"side": {
+			"below": "below each other",
+			"beside": "beside each other"
+		},
 		"with": "{el} with {name}",
 		"join_below": "Below {name}",
 		"join_beside": "Beside {name}",
@@ -966,6 +972,7 @@
 			"less": "Less room for {name}",
 			"more": "More room for {name}",
 			"auto": "{name} and {el} sized automatically",
+			"auto_all": "All parts sized automatically",
 			"auto_text": "Auto"
 		},
 		"drop_tab_target": "Drop to add {el} as a tab to {name}",
@@ -1011,7 +1018,7 @@
 			"full_width": "Already full width",
 			"first_tab": "The first tab stays; take the others out",
 			"join_one": "Only a part of its own can go with another; take its tabs out first",
-			"join_full": "{name} shows two parts already",
+			"join_side": "{name} stacks its parts {side}; a tab doesn't mix both",
 			"neighbour_min": "{name} beside it is at its minimum width",
 			"required": "Production always stays on the page"
 		},
@@ -1044,9 +1051,12 @@
 			"taken_out": "{el} is its own item now",
 			"joined_below": "{el} is below {name} now",
 			"joined_beside": "{el} is beside {name} now",
+			"moved_in_tab": "{el} moved within {name}",
 			"share_cols": "{name} takes {n} of {cols} columns, {el} the rest",
+			"share_cols_pair": "{name} takes {n} columns, {el} {m}",
 			"share_height": "{name} is {h} px high, {el} below it",
 			"share_auto": "{name} and {el} share the tab by their sizes",
+			"share_auto_all": "The parts of {name}'s tab share it by their sizes",
 			"split": "{el} and its tabs are separate items now",
 			"hidden": "{el} hidden. It stays in Elements.",
 			"added": "{el} added",

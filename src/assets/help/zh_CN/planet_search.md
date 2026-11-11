@@ -1,6 +1,6 @@
-**行星搜索** 可以找到你已经知道的行星，或用于新生产的地点。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。
+**行星搜索** 可以找到你已经知道的行星，或用于新生产的地点。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。
 
-**名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。 A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. _Apply filters_ combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. _Show all_ pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
+**名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。**名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。 A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. _Apply filters_ combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. _Show all_ pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
 
 **材料**。每个分组按 _任一匹配_ 或 _全部匹配_ 来匹配其材料，各分组之间按 _全部分组匹配_ 或 _任一分组匹配_ 组合。这覆盖了诸如“(FEO 与 H2O) 或者 (MAG 与 O)”这样的搜索。每种材料都可以按“单位/天”设置最低每日开采量。
 
