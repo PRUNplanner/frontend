@@ -99,7 +99,8 @@ export const BASE_ROI_COLUMNS: BaseROIColumn[] = [
 
 /**
  * What each setup preset writes; Veteran's ship comes from the dialog.
- * Rookies see fewer columns: no weekly return, no running cost.
+ * Rookie and Standard show the default columns; Veteran adds weekly return,
+ * workforce and plots.
  */
 export const SETUP_PRESETS: Record<
 	BaseROIPreset,
@@ -110,14 +111,14 @@ export const SETUP_PRESETS: Record<
 		ship: "SCB",
 		minMarketCapacity: 0.7,
 		bufferDays: 10,
-		hiddenColumns: ["weekly_return", "running_cost"],
+		hiddenColumns: ["weekly_return", "running_cost", "plots", "workforce"],
 	},
 	standard: {
 		logistics: "ship",
 		ship: "WCB",
 		minMarketCapacity: 0.7,
 		bufferDays: 10,
-		hiddenColumns: ["running_cost"],
+		hiddenColumns: ["weekly_return", "running_cost", "plots", "workforce"],
 	},
 	veteran: {
 		logistics: "none",

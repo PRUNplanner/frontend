@@ -15,12 +15,15 @@ function row(
 		outputs: [string, number][];
 		kind?: IBaseROIRow["kind"];
 		recipe?: string;
+		/** today's daily profit: picks the best planets */
+		profit?: number;
 	}
 ): IBaseROIRow {
 	return {
 		key,
 		kind: o.kind ?? "recipe",
 		expertise: o.expertise,
+		metrics: { dailyProfit: o.profit ?? 0 },
 		building: o.building,
 		outputs: o.outputs.map(([ticker, traded]) => ({
 			ticker,
@@ -201,5 +204,22 @@ describe("profitTrend", () => {
 		expect(t.more).toBe(1);
 		expect(profitTrend([], PROFITS, "").lines).toEqual([]);
 		expect(profitTrend(ROWS, new Map(), "").lines).toEqual([]);
+	});
+
+	it("planet rows of one recipe: the mean of the best 3 planets by daily profit", () => {
+		const planets = [10, 40, 20, 30].map((profit, i) =>
+			row(`fe@${i}`, {
+				expertise: "RESOURCE_EXTRACTION",
+				building: "EXT",
+				outputs: [["FEO", 10]],
+				kind: "resource",
+				profit,
+			})
+		);
+		const profits = new Map(
+			planets.map((r, i) => [r.key, [[10, 40, 20, 30][i]]])
+		);
+		// 40, 30 and 20 count; the 10 planet is left out
+		expect(profitTrend(planets, profits, "").lines[0].values).toEqual([30]);
 	});
 });

@@ -136,4 +136,39 @@ describe("BaseROITrendChart", () => {
 		});
 		expect(wrapper.text()).toContain("base_roi.trend.empty");
 	});
+
+	it("the title collapses the chart and its controls, and opens it again", async () => {
+		const updates: { trendOpen: boolean }[] = [];
+		const wrapper = await mountChart({
+			"onUpdate:settings": (v: { trendOpen: boolean }) => updates.push(v),
+		});
+		const toggle = wrapper.find("button[aria-controls='base-roi-trend']");
+		expect(toggle.attributes("aria-expanded")).toBe("true");
+		await toggle.trigger("click");
+		expect(updates.at(-1)!.trendOpen).toBe(false);
+
+		const closed = await mountChart({
+			settings: { ...defaultBaseROISettings(), trendOpen: false },
+		});
+		expect(closed.text()).toContain("base_roi.trend.title_industry");
+		expect(closed.find("#base-roi-trend").exists()).toBe(false);
+		expect(closed.findComponent({ name: "PLineChart" }).exists()).toBe(
+			false
+		);
+		expect(
+			closed
+				.find("button[aria-controls='base-roi-trend']")
+				.attributes("aria-expanded")
+		).toBe("false");
+	});
+
+	it("industries by their short names", async () => {
+		const wrapper = await mountChart();
+		const lines = wrapper
+			.findComponent({ name: "PLineChart" })
+			.props("series") as { label: string }[];
+		expect(
+			lines.every((l) => l.label.startsWith("base_roi.industry."))
+		).toBe(true);
+	});
 });

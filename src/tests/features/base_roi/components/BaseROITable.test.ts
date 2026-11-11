@@ -109,6 +109,11 @@ describe("BaseROITable", () => {
 	it("notes a planet's missing workers and counts the rows they hide", async () => {
 		const [short, none] = rows;
 		const wrapper = await mountTable({
+			// workforce is hidden by default
+			settings: {
+				...defaultBaseROISettings(),
+				hiddenColumns: ["running_cost"],
+			},
 			hidden: { ...HIDDEN, unstaffed: 12 },
 			staffing: new Map([
 				[
@@ -313,24 +318,26 @@ describe("BaseROITable", () => {
 		).toBe(recipeLabel(row));
 	});
 
-	it("(I) or (O) next to market capacity and cargo", async () => {
+	it("(I) or (O) next to market capacity, not cargo; the industry alone", async () => {
 		const wrapper = await mountTable();
-		const row = rows.find((r) => r.metrics.capacitySide)!;
+		const row = rows.find((r) => r.metrics.capacitySide && r.expertise)!;
 		const tr = wrapper.find(`tr[data-row-key="${row.key}"]`);
 		const capacity = tr.find('td[data-col-key="market_capacity"] abbr');
 		expect(capacity.text()).toBe(
 			`(base_roi.table.side_${row.metrics.capacitySide})`
 		);
-		const cargo = tr.find('td[data-col-key="cargo"] abbr');
-		const side =
-			Math.max(row.weightIn, row.volumeIn) >
-			Math.max(row.weightOut, row.volumeOut)
-				? "input"
-				: "output";
-		expect(cargo.text()).toBe(`(base_roi.table.side_${side})`);
-		expect(cargo.attributes("title")).toBe(
-			`base_roi.table.side_${side}_title`
+		expect(tr.find('td[data-col-key="cargo"] abbr').exists()).toBe(false);
+		expect(tr.find('td[data-col-key="expertise"]').text()).toBe(
+			`base_roi.industry.${row.expertise}`
 		);
+	});
+
+	it("planet rows: '@ planet · N jumps', no kind tag", async () => {
+		const planet = rows.find((r) => r.kind === "resource" && r.jumps)!;
+		const wrapper = await mountTable({ rows: [planet] });
+		const text = wrapper.find(`tr[data-row-key="${planet.key}"]`).text();
+		expect(text).toContain(" · base_roi.table.jumps");
+		expect(text).not.toContain("base_roi.table.resource");
 	});
 
 	it("ramp: one break-even number, no payback line under it", async () => {
@@ -364,8 +371,9 @@ describe("BaseROITable", () => {
 	it("every header explains its column; metric cells show their math, without a tab stop each", async () => {
 		const wrapper = await mountTable();
 		const heads = wrapper.findAll("thead th .ptooltip");
-		// product + the shown columns (running cost hidden by default)
-		expect(heads).toHaveLength(11);
+		// product + the shown columns (weekly return, running cost, plots and
+		// workforce hidden by default)
+		expect(heads).toHaveLength(8);
 		await wrapper
 			.find('th[data-col-key="break_even"] .ptooltip')
 			.trigger("mouseenter");
@@ -487,7 +495,7 @@ describe("BaseROITable", () => {
 			series: { AI1: {} },
 		});
 		expect(wrapper.text()).toContain(
-			`@ ${planet.planetNaturalId} (base_roi.table.no_route)`
+			`@ ${planet.planetNaturalId} · base_roi.table.no_route`
 		);
 		expect(wrapper.find('tr[data-row-key="bare"]').text()).toContain("—");
 		const sortExpertise = wrapper

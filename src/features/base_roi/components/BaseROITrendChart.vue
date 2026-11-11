@@ -5,7 +5,6 @@
 	const { t } = useI18n();
 
 	// Util
-	import { capitalizeString } from "@/util/text";
 	import { matchesSearch } from "@/features/base_roi/baseROIMetrics";
 	import {
 		aggregateDays,
@@ -20,6 +19,7 @@
 
 	// Components
 	import BaseROIChartControls from "@/features/base_roi/components/BaseROIChartControls.vue";
+	import { ExpandMoreSharp } from "@vicons/material";
 	import PLineChart from "@/ui/charts/PLineChart.vue";
 
 	// Types & Interfaces
@@ -53,7 +53,8 @@
 	// every row's profit per day, again only when the rows or prices change
 	const profits = computed(() => {
 		const map = new Map<string, number[]>();
-		if (!series) return map;
+		// collapsed: no chart, no history pass
+		if (!series || !settings.value.trendOpen) return map;
 		for (const row of rows)
 			map.set(row.key, profitHistory(row, series, HISTORY_DAYS).profit);
 		return map;
@@ -71,7 +72,7 @@
 		t(`base_roi.trend.title_${trend.value.level}`, {
 			focus:
 				trend.value.level === "building"
-					? capitalizeString(trend.value.focus!)
+					? t(`base_roi.industry.${trend.value.focus}`)
 					: trend.value.focus,
 		})
 	);
@@ -89,7 +90,7 @@
 			label:
 				trend.value.level === "industry"
 					? l.key
-						? capitalizeString(l.key)
+						? t(`base_roi.industry.${l.key}`)
 						: t("base_roi.trend.no_industry")
 					: l.key,
 			color: colors.value[i % colors.value.length],
@@ -114,32 +115,54 @@
 		data-base-roi-trend>
 		<div class="flex flex-row flex-wrap items-center justify-between gap-2">
 			<h2 id="base-roi-trend-title" class="text-sm font-bold">
-				{{ title }}
+				<button
+					type="button"
+					class="flex flex-row items-center gap-1 text-left"
+					:aria-expanded="settings.trendOpen"
+					aria-controls="base-roi-trend"
+					@click="
+						settings = {
+							...settings,
+							trendOpen: !settings.trendOpen,
+						}
+					">
+					<ExpandMoreSharp
+						class="size-5 shrink-0 transition-transform"
+						:class="settings.trendOpen ? '' : '-rotate-90'" />
+					{{ title }}
+				</button>
 			</h2>
-			<BaseROIChartControls v-model:settings="settings" />
+			<BaseROIChartControls
+				v-if="settings.trendOpen"
+				v-model:settings="settings" />
 		</div>
 		<div
-			v-if="!series"
-			aria-busy="true"
-			data-skeleton
-			class="h-80 rounded bg-white/5 motion-safe:animate-pulse" />
-		<p
-			v-else-if="!chartSeries.length"
-			class="h-80 flex items-center justify-center text-muted">
-			{{ t("base_roi.trend.empty") }}
-		</p>
-		<div v-else class="h-80">
-			<PLineChart
-				:days="chart.days"
-				:series="chart.series"
-				:label="title" />
+			v-if="settings.trendOpen"
+			id="base-roi-trend"
+			class="flex flex-col gap-1">
+			<div
+				v-if="!series"
+				aria-busy="true"
+				data-skeleton
+				class="h-80 rounded bg-white/5 motion-safe:animate-pulse" />
+			<p
+				v-else-if="!chartSeries.length"
+				class="h-80 flex items-center justify-center text-muted">
+				{{ t("base_roi.trend.empty") }}
+			</p>
+			<div v-else class="h-80">
+				<PLineChart
+					:days="chart.days"
+					:series="chart.series"
+					:label="title" />
+			</div>
+			<p class="text-xs text-muted">
+				{{ t("base_roi.trend.note") }}
+				<!-- a span, not a template: no text at a fragment's edge (page translation) -->
+				<span v-if="trend.more">
+					· {{ t("base_roi.trend.more", { n: trend.more }) }}
+				</span>
+			</p>
 		</div>
-		<p class="text-xs text-muted">
-			{{ t("base_roi.trend.note") }}
-			<!-- a span, not a template: no text at a fragment's edge (page translation) -->
-			<span v-if="trend.more">
-				· {{ t("base_roi.trend.more", { n: trend.more }) }}
-			</span>
-		</p>
 	</section>
 </template>

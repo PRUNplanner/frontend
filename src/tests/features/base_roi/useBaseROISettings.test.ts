@@ -17,7 +17,7 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 	});
 	afterEach(() => vi.unstubAllGlobals());
 
-	it("starts with Knottly's defaults, the WCB and running cost hidden, nothing stored", () => {
+	it("starts with Knottly's defaults, the WCB, the veteran columns hidden and the trend open, nothing stored", () => {
 		const { settings, hasStored } = useBaseROISettings();
 		expect(hasStored.value).toBe(false);
 		expect(settings.value).toMatchObject({
@@ -36,7 +36,13 @@ describe("useBaseROISettings (criteria 2, 14)", () => {
 			showRecipes: true,
 			showNegative: false,
 			showUnbuildable: false,
-			hiddenColumns: ["running_cost"],
+			hiddenColumns: [
+				"weekly_return",
+				"running_cost",
+				"plots",
+				"workforce",
+			],
+			trendOpen: true,
 		});
 	});
 

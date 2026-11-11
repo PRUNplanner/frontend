@@ -106,12 +106,14 @@
 	}
 
 	function reset(): void {
-		const { hiddenColumns, panelOpen, chartOpen } = settings.value;
+		const { hiddenColumns, panelOpen, chartOpen, trendOpen } =
+			settings.value;
 		settings.value = {
 			...defaultBaseROISettings(),
 			hiddenColumns,
 			panelOpen,
 			chartOpen,
+			trendOpen,
 			chartRange: settings.value.chartRange,
 			chartBucket: settings.value.chartBucket,
 		};

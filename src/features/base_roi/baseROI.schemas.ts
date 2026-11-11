@@ -24,7 +24,10 @@ export const BaseROIColumnSchema = z.enum([
 	"break_even",
 	"weekly_return",
 	"building_cost",
+	"weekly_return",
 	"running_cost",
+	"plots",
+	"workforce",
 	"cargo",
 	"market_capacity",
 	"plots",
@@ -33,9 +36,15 @@ export const BaseROIColumnSchema = z.enum([
 ]);
 export type BaseROIColumn = z.infer<typeof BaseROIColumnSchema>;
 
-/** running cost is off until turned on: the buffer stock in the building cost covers it */
+/**
+ * Off until turned on: running cost (the buffer stock in the building cost
+ * covers it), weekly return, workforce and plots (detail for veterans)
+ */
 export const DEFAULT_HIDDEN_COLUMNS: readonly BaseROIColumn[] = [
+	"weekly_return",
 	"running_cost",
+	"plots",
+	"workforce",
 ];
 
 export const BaseROIPresetSchema = z.enum(["rookie", "standard", "veteran"]);
@@ -80,6 +89,8 @@ export const BaseROISettingsSchema = z.object({
 		.catch(() => [...DEFAULT_HIDDEN_COLUMNS]),
 	panelOpen: z.boolean().catch(true),
 	chartOpen: z.boolean().catch(false),
+	// the profit trend chart above the table
+	trendOpen: z.boolean().catch(true),
 	// the history charts: days shown and days per point
 	chartRange: z
 		.number()

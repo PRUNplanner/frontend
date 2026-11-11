@@ -221,6 +221,9 @@
 						v-model:value="visitDays"
 						:aria-label="t('base_roi.settings.visit_days')"
 						:options="visitOptions" />
+					<span class="text-xs text-muted">
+						{{ t("base_roi.settings.visit_days_hint") }}
+					</span>
 				</div>
 			</div>
 
