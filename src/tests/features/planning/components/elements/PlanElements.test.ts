@@ -22,8 +22,10 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import plan from "@/locales/en_US/plan.json";
 import { FILTER_BAR } from "@/features/planning/planView.util";
+import { partRoomKey } from "@/features/planning/layout/planGrid.util";
 
 // Types & Interfaces
+import { provide, ref } from "vue";
 import type { Component } from "vue";
 import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 import type { PlanTool } from "@/features/planning/planView.util";
@@ -98,7 +100,9 @@ function result(): IPlanResult {
 async function mountElement(
 	component: Component,
 	props: Record<string, unknown> = {},
-	o: IContextOptions = {}
+	o: IContextOptions = {},
+	// the room of a part set to a height, as PlanGridItem gives it
+	room: number | null = null
 ) {
 	const context = planViewContext({ result: result(), ...o });
 	const mounted = await mountComponent(component, props, {
@@ -106,6 +110,7 @@ async function mountElement(
 		setup: () => {
 			context.io = usePlanIO(context.calculation.result, () => "Plan");
 			providePlanView(context);
+			provide(partRoomKey, ref(room));
 		},
 	});
 	await flushPromises();
@@ -198,16 +203,22 @@ describe("PlanMaterialIOElement", () => {
 		});
 	});
 
-	it("keeps the table in a box as high as the window with a mouse only", async () => {
-		const mouse = await mountElement(PlanMaterialIOElement);
-		expect(
-			mouse.wrapper.findComponent(PlanMaterialIO).props("maxHeight")
-		).toBe("calc(100dvh - 20rem)");
+	it("shows the table whole on fit; set to a height, in a box filling the part", async () => {
+		const max = async (room: number | null) =>
+			(await mountElement(PlanMaterialIOElement, {}, {}, room)).wrapper
+				.findComponent(PlanMaterialIO)
+				.props("maxHeight");
+		// fit: no box of its own, the page scrolls
+		expect(await max(null)).toBeUndefined();
+		// 600 px of room, less the padding and border (jsdom draws no bar)
+		expect(await max(600)).toBe("574px");
+		// never less than a few rows
+		expect(await max(100)).toBe("120px");
 		// a touch screen: the whole table, no scroll box inside the page
 		vi.stubGlobal("matchMedia", (q: string) => ({
 			matches: q === "(pointer: coarse)",
 		}));
-		const touch = await mountElement(PlanMaterialIOElement);
+		const touch = await mountElement(PlanMaterialIOElement, {}, {}, 600);
 		expect(
 			touch.wrapper.findComponent(PlanMaterialIO).props("maxHeight")
 		).toBeUndefined();

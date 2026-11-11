@@ -302,8 +302,8 @@ describe("PlanGrid", () => {
 				.find("[data-tab-body='material-io']")
 				.attributes("data-pair")
 		).toBe("col");
-		// full width: side by side, a line between, the room beyond both
-		// minimums shared as they are
+		// full width: side by side, a line between, shared by their
+		// minimums on the nearest columns
 		const wide = pair("beside");
 		const io = wide.items.find((i) => i.els[0] === "material-io")!;
 		io.x = 0;
@@ -320,10 +320,14 @@ describe("PlanGrid", () => {
 				.map((e) => (e.element as HTMLElement).style.flex);
 		const minA = ELEMENTS["material-io"].minW;
 		const minB = ELEMENTS["material-io-totals"].minW;
-		expect(flexes(beside.wrapper)).toEqual([
-			`0 0 ${(1440 * minA) / (minA + minB)}px`,
-			"1 1 0px",
-		]);
+		const col = (1440 - 11 * 16) / 12;
+		const lineAt = (n: number) => n * col + (n - 1) * 16 + 8;
+		const near = Math.round(
+			((1440 * minA) / (minA + minB) + 8) / (col + 16)
+		);
+		const [line, rest] = flexes(beside.wrapper);
+		expect(parseFloat(line.split(" ")[2])).toBeCloseTo(lineAt(near));
+		expect(rest).toBe("1 1 0px");
 
 		// set to 8 of 12 columns: the line where columns 8 and 9 meet
 		const eight = await mountGrid({
@@ -336,7 +340,6 @@ describe("PlanGrid", () => {
 				),
 			},
 		});
-		const col = (1440 - 11 * 16) / 12;
 		expect(parseFloat(flexes(eight.wrapper)[0].split(" ")[2])).toBeCloseTo(
 			8 * col + 7 * 16 + 8
 		);
@@ -367,6 +370,83 @@ describe("PlanGrid", () => {
 				.find("[data-fold-summary]")
 				.text()
 		).toBe("12 imports · Profit / day 10.00");
+	});
+
+	it("shows three parts in one tab, each line on the columns, named first +2", async () => {
+		const today = presetLayout("standard");
+		const three = (
+			side: "below" | "beside",
+			joinSize?: GridLayout["items"][number]["joinSize"]
+		): GridLayout => ({
+			...today,
+			items: today.items
+				.filter(
+					(i) => !["material-io-totals", "planet"].includes(i.els[0])
+				)
+				.map((i) =>
+					i.els[0] === "material-io"
+						? {
+								...i,
+								x: 0,
+								w: 12,
+								els: [
+									"material-io",
+									"material-io-totals",
+									"planet",
+								],
+								join: {
+									"material-io-totals": side,
+									planet: side,
+								},
+								...(joinSize && { joinSize }),
+							}
+						: i
+				),
+		});
+		const beside = await mountGrid({
+			layout: three("beside", { "material-io-totals": 4, planet: 4 }),
+		});
+		const io = box(beside.wrapper, "i-material-io");
+		// key-only i18n here: the "first +2" name, the full list on hover
+		expect(io.find("h2").text()).toBe("plan.layout.more");
+		expect(io.find("h2").attributes("title")).toBe("plan.layout.list");
+		expect(
+			io.find("[data-tab-body='material-io']").attributes("data-pair")
+		).toBe("row");
+		const col = (1440 - 11 * 16) / 12;
+		const at = (n: number) => n * col + (n - 1) * 16 + 8;
+		const flex = io
+			.findAll("[data-tab-body='material-io'] [data-element]")
+			.map((e) => (e.element as HTMLElement).style.flex);
+		expect(parseFloat(flex[0].split(" ")[2])).toBeCloseTo(at(4));
+		expect(parseFloat(flex[1].split(" ")[2])).toBeCloseTo(at(8) - at(4));
+		expect(flex[2]).toBe("1 1 0px");
+
+		// too narrow for all three: stacked, the column sizes no heights
+		const narrow = await mountGrid({
+			layout: three("beside", { "material-io-totals": 4, planet: 4 }),
+			width: 600,
+		});
+		const stacked = box(narrow.wrapper, "i-material-io");
+		expect(
+			stacked
+				.find("[data-tab-body='material-io']")
+				.attributes("data-pair")
+		).toBe("col");
+		expect(
+			stacked
+				.findAll("[data-tab-body='material-io'] [data-element]")
+				.map((e) => (e.element as HTMLElement).style.height)
+		).toEqual(["", "", ""]);
+
+		// below: each part's own height
+		const below = await mountGrid({
+			layout: three("below", { planet: 320 }),
+		});
+		const heights = box(below.wrapper, "i-material-io")
+			.findAll("[data-tab-body='material-io'] [data-element]")
+			.map((e) => (e.element as HTMLElement).style.height);
+		expect(heights).toEqual(["", "320px", ""]);
 	});
 
 	it("says where a folded part stands after its title, only folded", async () => {

@@ -130,7 +130,7 @@ export function normaliseLayout(
 			!items.some((o) => o.id === it.id)
 				? it.id
 				: freeItemId(items, els[0]);
-		// two parts in one tab: known sides of its own elements, tidied below
+		// parts in one tab: known sides of its own elements, tidied below
 		const join: Partial<Record<ElementId, JoinSide>> = {};
 		if (it.join && typeof it.join === "object")
 			for (const [e, side] of Object.entries(it.join))

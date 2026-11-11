@@ -44,7 +44,7 @@ describe("normaliseLayout", () => {
 			});
 	});
 
-	it("keeps two shown in one tab as stored, two at most, never the first", () => {
+	it("keeps parts shown in one tab as stored, all on the first part's side, never the first", () => {
 		const g = normaliseLayout({
 			items: [
 				{
@@ -56,8 +56,8 @@ describe("normaliseLayout", () => {
 						"housing",
 						"empire",
 					],
-					// the first can't join, nor one after a joined one; an
-					// unknown side or element is dropped
+					// the first can't join; a part after a joined one takes
+					// its side; an unknown side or element is dropped
 					join: {
 						production: "below",
 						planet: "beside",
@@ -70,7 +70,7 @@ describe("normaliseLayout", () => {
 			],
 		});
 		const it = g.items[0];
-		expect(it.join).toEqual({ planet: "beside" });
+		expect(it.join).toEqual({ planet: "beside", experts: "beside" });
 		// the tab shown is the one Planet is shown in
 		expect(it.active).toBe("production");
 		expect(normaliseLayout(g)).toEqual(g);
@@ -79,6 +79,35 @@ describe("normaliseLayout", () => {
 			normaliseLayout({ items: [{ ...prod, join: { x: "below" } }] })
 				.items[0]
 		).not.toHaveProperty("join");
+	});
+
+	it("fits a tab's beside sizes in its width, the last part keeping a column", () => {
+		const g = normaliseLayout({
+			cols: 12,
+			items: [
+				{
+					...prod,
+					w: 6,
+					els: ["production", "planet", "workforce", "experts"],
+					join: {
+						planet: "beside",
+						workforce: "below",
+						experts: "beside",
+					},
+					joinSize: { planet: 3, workforce: 4, experts: 9 },
+				},
+			],
+		});
+		const it = g.items[0];
+		// one side for the tab, its first part's
+		expect(it.join).toEqual({
+			planet: "beside",
+			workforce: "beside",
+			experts: "beside",
+		});
+		// 3 + 2 of the 5 a 6-column tab can give; nothing left for the third
+		expect(it.joinSize).toEqual({ planet: 3, workforce: 2 });
+		expect(normaliseLayout(g)).toEqual(g);
 	});
 
 	it("keeps a pair's size: columns within the item, px within limits", () => {

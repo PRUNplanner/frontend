@@ -36,6 +36,7 @@
 		GAPS,
 		PHONE_EDIT_WIDTH,
 	} from "@/features/planning/layout/planLayout.constants";
+	import { hostOf, sideOf, tabEls } from "@/features/planning/layout/tabs";
 
 	// Components
 	import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
@@ -76,6 +77,20 @@
 	function onGridPointerDown(e: PointerEvent): void {
 		const target = e.target as HTMLElement;
 		const head = target.closest<HTMLElement>("[data-item-head]");
+		// a part of a tab of several: dragged by its body, it alone, out
+		// or to a new place in its tab
+		const part = head
+			? null
+			: target.closest<HTMLElement>("[data-element]");
+		const el = part?.dataset.element as ElementId | undefined;
+		if (
+			el &&
+			!target.closest("[data-split]") &&
+			editor.draft.value.items.some(
+				(i) => i.els.includes(el) && tabEls(i, hostOf(i, el)).length > 1
+			)
+		)
+			return editor.startMove(e, { el, part: true });
 		if (!head) return;
 		const tab = target.closest<HTMLElement>("[data-tab]");
 		if (tab && head.contains(tab))
@@ -142,6 +157,7 @@
 			? editor.draft.value.items.find((i) => i.id === d.tabTo)
 			: undefined;
 		if (!target) return editor.label(d.el);
+		if (d.blocked) return d.blocked;
 		if (d.join)
 			return t(`plan.layout.drop_join_${d.join}`, {
 				el: editor.label(d.el),
@@ -497,6 +513,11 @@
 						:folded="[]"
 						:width="gridWidth"
 						editing
+						:drop="
+							drag?.tabTo && drag.at !== undefined
+								? { item: drag.tabTo, at: drag.at }
+								: null
+						"
 						@tab="editor.setTab"
 						@split="editor.startSplit">
 						<template #region="{ region, pack: p }">
@@ -769,6 +790,7 @@
 								<div
 									v-if="
 										drag?.tabTo === item.id &&
+										drag.at === undefined &&
 										!drag.joinable
 									"
 									class="absolute inset-x-0 top-0 flex items-center justify-center h-10 pointer-coarse:h-11 px-2 rounded-t bg-surface ring-2 ring-inset ring-link text-sm font-medium text-link truncate"
@@ -782,7 +804,10 @@
 								</div>
 								<!-- or three: a tab, below or beside the tab it shows -->
 								<div
-									v-else-if="drag?.tabTo === item.id"
+									v-else-if="
+										drag?.tabTo === item.id &&
+										drag.at === undefined
+									"
 									class="absolute inset-x-0 top-0 grid grid-cols-3 h-10 pointer-coarse:h-11 rounded-t bg-surface ring-2 ring-inset ring-link text-sm font-medium text-muted-strong overflow-hidden"
 									data-tab-target>
 									<span
@@ -794,9 +819,13 @@
 										:key="zone"
 										class="flex items-center justify-center px-1 truncate border-l border-line first:border-l-0"
 										:class="
-											(drag.join ?? 'tab') === zone
-												? 'bg-link/15 text-link'
-												: ''
+											zone !== 'tab' &&
+											sideOf(item, item.active) &&
+											sideOf(item, item.active) !== zone
+												? 'opacity-50 line-through'
+												: (drag.join ?? 'tab') === zone
+													? 'bg-link/15 text-link'
+													: ''
 										"
 										:data-zone="zone">
 										{{ t(`plan.layout.zone.${zone}`) }}

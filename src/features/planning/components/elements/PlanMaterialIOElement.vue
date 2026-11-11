@@ -1,4 +1,12 @@
 <script setup lang="ts">
+	import {
+		computed,
+		inject,
+		onBeforeUnmount,
+		onMounted,
+		ref,
+		useTemplateRef,
+	} from "vue";
 	import { useI18n } from "vue-i18n";
 	const { t } = useI18n();
 
@@ -14,6 +22,7 @@
 
 	// Util
 	import { FILTER_BAR } from "@/features/planning/planView.util";
+	import { partRoomKey } from "@/features/planning/layout/planGrid.util";
 
 	/**
 	 * The plan's material flow: source, filter and value, the table with
@@ -33,14 +42,40 @@
 	} = io;
 	const { view: planCheckView } = usePlanCheckView();
 
-	// a mouse keeps the table in a box as high as the window; a touch
-	// screen shows it whole (no scroll box inside the scrolling page), and
-	// the item's own height mode can still cap it
-	const maxHeight =
+	// in a part set to a height, the table scrolls in a box filling what is
+	// left of it, its header in view; fitting its content, or on a touch
+	// screen (no scroll box inside the scrolling page), it shows whole
+	const room = inject(partRoomKey, null);
+	const coarse =
 		typeof window.matchMedia === "function" &&
-		window.matchMedia("(pointer: coarse)").matches
+		window.matchMedia("(pointer: coarse)").matches;
+	const root = useTemplateRef<HTMLElement>("root");
+	// px of it that aren't rows: all but the table box (the filter bar,
+	// which wraps, and the note below), and the table's header
+	const above = ref(0);
+	const measure = (): void => {
+		const box = root.value?.querySelector<HTMLElement>(".p-data-table-box");
+		if (!root.value || !box) return;
+		above.value =
+			root.value.offsetHeight -
+			box.offsetHeight +
+			(box.querySelector("thead")?.offsetHeight ?? 0);
+	};
+	let observer: ResizeObserver | undefined;
+	onMounted(() => {
+		measure();
+		if (typeof ResizeObserver === "undefined" || !root.value) return;
+		// the box's own size cancels out: a change of it settles at once
+		observer = new ResizeObserver(measure);
+		observer.observe(root.value);
+	});
+	onBeforeUnmount(() => observer?.disconnect());
+	// the room less the part's padding (24), all but the rows, the border
+	const maxHeight = computed(() =>
+		coarse || room?.value == null
 			? undefined
-			: "calc(100dvh - 20rem)";
+			: `${Math.max(120, room.value - 24 - above.value - 2)}px`
+	);
 
 	function openPlanCheck(): void {
 		planCheckView.value = "market";
@@ -49,7 +84,7 @@
 </script>
 
 <template>
-	<div data-io>
+	<div ref="root" data-io>
 		<!-- the same filter bar as the Supply Cart's: which materials, then
 			which way and what value; it wraps where it doesn't fit -->
 		<div :class="FILTER_BAR" class="px-3 pb-2">

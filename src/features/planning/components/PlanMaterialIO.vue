@@ -90,7 +90,8 @@
 			sorter: (a: IMaterialIO, b: IMaterialIO) =>
 				(share(a, days) ?? -1) - (share(b, days) ?? -1),
 		});
-		// the fixed table shares the width equally: the tile (and its flag)
+		// in a box of its own height the table is fixed and shares the width
+		// equally (whole, the widths are hints): the tile (and its flag)
 		// needs less, the value per day (+2,480,862.73) more
 		return [
 			{ key: "ticker", title: "", sorter: true, width: 84 },
@@ -153,10 +154,16 @@
 	<!-- numbers never break mid-digit in the narrow side column; titles
 		wrap there instead of running into their sort arrows. In, Out and Δ
 		always show: a box narrower than the columns scrolls sideways,
-		on a phone too. The scroll box fades out at the
-		bottom, so a cut-off row reads as more to scroll -->
+		on a phone too. In a box of its own height (a
+		part set to a height), it fades out at the bottom, so a cut-off row
+		reads as more to scroll -->
 	<PDataTable
-		class="[&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)] [&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		class="[&_td.numeric]:whitespace-nowrap [&_td.numeric]:[word-break:normal] [&_.p-data-table-title-text]:whitespace-normal! [&_th]:[overflow-wrap:normal] pointer-coarse:[&_th]:h-11 pointer-coarse:[&_td]:h-11"
+		:class="
+			maxHeight
+				? '[&_.p-data-table-box]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-0.75rem),transparent)]'
+				: ''
+		"
 		:columns="columns"
 		:data="localMaterialIOData"
 		:max-height="maxHeight"

@@ -17,7 +17,7 @@ import {
 	ELEMENTS,
 	minHeightOf,
 } from "@/features/planning/layout/elements";
-import { tabsOf } from "@/features/planning/layout/tabs";
+import { partsOf, tabsOf } from "@/features/planning/layout/tabs";
 import { GAPS } from "@/features/planning/layout/planLayout.constants";
 import {
 	ctx,
@@ -810,11 +810,15 @@ describe("layoutOps", () => {
 			).toBe("nothing");
 		});
 
-		it("holds two at most, joined one at a time; says why not", () => {
+		it("takes more only on its side, joined one at a time; says why not", () => {
 			const g = paired().layout;
-			expect(ops.joinBlocked(g, ["planet"], "i-material-io")).toBe(
-				"plan.layout.why.join_full"
-			);
+			expect(ops.joinBlocked(g, ["planet"], "i-material-io")).toBeNull();
+			expect(
+				ops.joinBlocked(g, ["planet"], "i-material-io", "below")
+			).toBeNull();
+			expect(
+				ops.joinBlocked(g, ["planet"], "i-material-io", "beside")
+			).toBe("plan.layout.why.join_side");
 			expect(
 				ann(
 					ops.joinTab(
@@ -1016,6 +1020,251 @@ describe("layoutOps", () => {
 					ELEMENTS["material-io-totals"].minH
 				)
 			);
+		});
+	});
+
+	describe("several parts in one tab", () => {
+		// Material I/O, its totals and Planet below each other, in one item
+		const three = () => {
+			const g = today();
+			const a = ops.joinTab(
+				g,
+				{ item: "i-material-io-totals" },
+				"i-material-io",
+				"below",
+				packed(g)
+			).layout;
+			return ops.joinTab(
+				a,
+				{ item: "i-planet" },
+				"i-material-io",
+				"below",
+				packed(a)
+			).layout;
+		};
+
+		it("joins any number on one side, last by default", () => {
+			const g = three();
+			const io = item(g, "material-io");
+			expect(io.els.slice(0, 3)).toEqual([
+				"material-io",
+				"material-io-totals",
+				"planet",
+			]);
+			expect(io.join).toEqual({
+				"material-io-totals": "below",
+				planet: "below",
+			});
+			expect(tabsOf(io)).toEqual(["material-io"]);
+			expect(minHeightOf(io)).toBe(
+				ELEMENTS["material-io"].minH +
+					ELEMENTS["material-io-totals"].minH +
+					ELEMENTS.planet.minH
+			);
+			// a fourth, on the same side; the other is blocked
+			const four = ops.joinTab(
+				g,
+				{ item: "i-empire" },
+				"i-material-io",
+				"below",
+				ctx()
+			);
+			expect(partsOf(item(four.layout, "empire"), "material-io")).toEqual(
+				["material-io-totals", "planet", "empire"]
+			);
+		});
+
+		it("drops a part at a place among them; at 0 it becomes the tab's own", () => {
+			const g = three();
+			const mid = ops.joinTab(
+				g,
+				{ item: "i-empire" },
+				"i-material-io",
+				"below",
+				ctx(),
+				1
+			).layout;
+			expect(item(mid, "empire").els.slice(0, 4)).toEqual([
+				"material-io",
+				"empire",
+				"material-io-totals",
+				"planet",
+			]);
+			const first = ops.joinTab(
+				g,
+				{ item: "i-empire" },
+				"i-material-io",
+				"below",
+				ctx(),
+				0
+			).layout;
+			const io = item(first, "empire");
+			expect(io.els.slice(0, 4)).toEqual([
+				"empire",
+				"material-io",
+				"material-io-totals",
+				"planet",
+			]);
+			expect(io.join).toEqual({
+				"material-io": "below",
+				"material-io-totals": "below",
+				planet: "below",
+			});
+			expect(io.active).toBe("empire");
+		});
+
+		it("moves a part within its tab, each part keeping its height", () => {
+			const g = ops.setJoinSize(
+				three(),
+				"i-material-io",
+				"material-io-totals",
+				320,
+				ctx()
+			).layout;
+			// Material I/O (320 px) goes last
+			const c = ops.moveInTab(
+				g,
+				"i-material-io",
+				"material-io",
+				3,
+				ctx()
+			);
+			expect(ann(c)).toBe("moved_in_tab");
+			const io = item(c.layout, "material-io");
+			expect(io.els.slice(0, 3)).toEqual([
+				"material-io-totals",
+				"planet",
+				"material-io",
+			]);
+			expect(io.join).toEqual({
+				planet: "below",
+				"material-io": "below",
+			});
+			expect(io.active).toBe("material-io-totals");
+			// the last part's height has no line after it: dropped
+			expect(io.joinSize).toBeUndefined();
+			// the totals (300 px) after Planet: their height on the line after them
+			const back = ops.moveInTab(
+				ops.setJoinSize(c.layout, io.id, "planet", 300, ctx()).layout,
+				io.id,
+				"material-io-totals",
+				2,
+				ctx()
+			).layout;
+			const b = item(back, "material-io");
+			expect(b.els.slice(0, 3)).toEqual([
+				"planet",
+				"material-io-totals",
+				"material-io",
+			]);
+			expect(b.joinSize).toEqual({ "material-io": 300 });
+			// where it is already: nothing
+			expect(
+				ann(ops.moveInTab(g, "i-material-io", "planet", 2, ctx()))
+			).toBe("nothing");
+			expect(
+				ann(ops.moveInTab(g, "i-material-io", "planet", 3, ctx()))
+			).toBe("nothing");
+		});
+
+		it("switches the whole tab to the other side", () => {
+			const c = ops.setSide(
+				three(),
+				"i-material-io",
+				"planet",
+				"beside",
+				ctx()
+			);
+			expect(item(c.layout, "planet").join).toEqual({
+				"material-io-totals": "beside",
+				planet: "beside",
+			});
+			expect(
+				ops.joinBlocked(c.layout, ["empire"], "i-material-io", "below")
+			).toBe("plan.layout.why.join_side");
+		});
+
+		it("resizes only the pair at a line beside; the others stay", () => {
+			const g = ops.fullWidth(
+				ops.setSide(three(), "i-material-io", "planet", "beside", ctx())
+					.layout,
+				"i-material-io",
+				ctx()
+			).layout;
+			const id = item(g, "planet").id;
+			const now = (l: GridLayout) =>
+				ops.besideNow(item(l, "planet"), "material-io", l, ctx())!;
+			const s0 = now(g);
+			expect(s0.cols).not.toBeNull();
+			const [a, b] = s0.cols!;
+			// a column more for the totals: Planet gives it, Material I/O stays
+			const c = ops.setJoinSize(g, id, "planet", b + 1, ctx());
+			expect(ann(c)).toBe("share_cols");
+			expect(item(c.layout, "planet").joinSize).toEqual({
+				"material-io-totals": a,
+				planet: b + 1,
+			});
+			expect(now(c.layout).cols).toEqual([a, b + 1]);
+			// and again: the first line stays where it is
+			const c2 = ops.setJoinSize(c.layout, id, "planet", b, ctx());
+			const s2 = now(c2.layout);
+			expect(s2.cols).toEqual([a, b]);
+			expect(s2.px[0]).toBeCloseTo(now(c.layout).px[0]);
+			// held to the neighbours' minimums
+			const far = ops.setJoinSize(g, id, "planet", 99, ctx());
+			expect(item(far.layout, "planet").joinSize!.planet).toBe(
+				s0.range[1]![1]
+			);
+			// Auto: shared by their minimums again, all lines
+			// the line between the first two: both named, Planet keeps its columns
+			const first = ops.setJoinSize(
+				c.layout,
+				id,
+				"material-io-totals",
+				a + 1,
+				ctx()
+			);
+			expect(ann(first)).toBe("share_cols_pair");
+			expect(first.announcement.params).toMatchObject({
+				name: "material-io",
+				el: "material-io-totals",
+				n: a + 1,
+				m: b,
+			});
+			const auto = ops.setJoinSize(c.layout, id, "planet", null, ctx());
+			expect(item(auto.layout, "planet").joinSize).toBeUndefined();
+			expect(ann(auto)).toBe("share_auto_all");
+			// an auto split already sits on the columns: a first drag moves
+			// only its own line
+			const fresh = ops.setJoinSize(g, id, "planet", b + 1, ctx());
+			expect(now(fresh.layout).px[0]).toBeCloseTo(s0.px[0]);
+		});
+
+		it("takes a part out and leaves the rest; the first alone makes the next the tab's own", () => {
+			const g = three();
+			const mid = ops.takeOut(
+				g,
+				"i-material-io",
+				"material-io-totals",
+				ctx()
+			);
+			expect(item(mid.layout, "material-io").join).toEqual({
+				planet: "below",
+			});
+			const first = ops.takeOut(
+				g,
+				"i-material-io",
+				"material-io",
+				ctx(),
+				true
+			);
+			expect(item(first.layout, "material-io").els).toEqual([
+				"material-io",
+			]);
+			const io = item(first.layout, "material-io-totals");
+			expect(io.join).toEqual({ planet: "below" });
+			expect(io.els[0]).toBe("material-io-totals");
+			expect(tabsOf(io)).toContain("material-io-totals");
 		});
 	});
 

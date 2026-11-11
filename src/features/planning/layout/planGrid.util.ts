@@ -1,16 +1,29 @@
-import type { InjectionKey } from "vue";
+import type { InjectionKey, Ref } from "vue";
 
 // Types & Interfaces
 import type {
+	ElementId,
 	GridItem,
 	IFollow,
 	IPackResult,
 } from "@/features/planning/layout/planLayout.types";
 
+// Util
+import { ELEMENTS } from "@/features/planning/layout/elements";
+import { partsOf, sideOf, tabEls } from "@/features/planning/layout/tabs";
+
 /** PlanGrid's measuring: an item hands its title row and content */
 export const gridMeasureKey: InjectionKey<
 	(id: string, els: HTMLElement[]) => () => void
 > = Symbol("PlanGridMeasure");
+
+/**
+ * A part set to a height ("cap" or "fixed"): the px its body has, so a
+ * table inside can scroll in a box of its own, its header in view; null
+ * when it fits its content (then everything shows, the page scrolls)
+ */
+export const partRoomKey: InjectionKey<Readonly<Ref<number | null>>> =
+	Symbol("PlanPartRoom");
 
 /**
  * The parts that follow while scrolling: each following part of the page
@@ -65,61 +78,133 @@ export function followStacks(
 	return out;
 }
 
-/** Where a tab's two parts beside each other split */
+/** Where a tab's parts beside each other split */
 export interface IBesideSplit {
-	// width of the first part in px
-	px: number;
-	// its columns: the ones set, or the nearest to the shared split
-	cols: number | null;
-	// the columns the first part may have, both keeping their minimums
-	range: [number, number] | null;
-	// not set: shared by the parts' minimum widths
+	// width of each part in px
+	px: number[];
+	// columns of each part but the last: the ones set, or the nearest to
+	// the shared split; null where no column split fits them all
+	cols: number[] | null;
+	// per part but the last: the columns it may have with the lines
+	// beside it held, both neighbours keeping their minimums
+	range: ([number, number] | null)[];
+	// none set: shared by the parts' minimum widths, on the nearest columns
 	auto: boolean;
 }
 
 /**
- * Two parts beside each other in a box `cols` columns wide: the first
- * gets the columns set (and half the gap after them, so the line between
- * them sits where the grid's columns meet), held to where both keep their
- * minimum widths; not set, the room beyond both minimums is shared in
- * proportion. Null: narrower than both minimums, so they stack.
+ * Parts beside each other in a box `cols` columns wide: each line between
+ * two sits where the grid's columns meet (half the gap on each side), at
+ * the columns set, held to where every part keeps its minimum width; none
+ * set, at the columns nearest a share in proportion to the minimums (so a
+ * first drag moves only its line). Where no column split fits them all,
+ * shared in proportion. Null: narrower than all minimums together, so
+ * they stack.
  * @author jplacht
  *
  * @param {number} width Box width in px
  * @param {number} cols Box width in columns
  * @param {number} gap The grid's gap in px
- * @param {number | undefined} set Columns of the first part, if set
- * @param {number} minA First part's minimum width
- * @param {number} minB Second part's minimum width
+ * @param {(number | undefined)[]} sets Columns of each part but the last, if set
+ * @param {number[]} mins Each part's minimum width
  * @returns {IBesideSplit | null} The split, or null to stack
  */
 export function besideSplit(
 	width: number,
 	cols: number,
 	gap: number,
-	set: number | undefined,
-	minA: number,
-	minB: number
+	sets: (number | undefined)[],
+	mins: number[]
 ): IBesideSplit | null {
-	if (width < minA + minB) return null;
+	const total = mins.reduce((a, b) => a + b, 0);
+	if (width < total) return null;
+	const n = mins.length;
 	const col = (width - (cols - 1) * gap) / cols;
-	const at = (n: number) => n * col + (n - 1) * gap + gap / 2;
-	const fits: number[] = [];
-	for (let n = 1; n < cols; n++)
-		if (at(n) >= minA && width - at(n) >= minB) fits.push(n);
-	const range: [number, number] | null = fits.length
-		? [fits[0], fits.at(-1)!]
-		: null;
-	const nearest = (px: number) =>
-		range
-			? fits.reduce((a, n) =>
-					Math.abs(at(n) - px) < Math.abs(at(a) - px) ? n : a
-				)
-			: null;
-	if (set === undefined || !range) {
-		const px = (width * minA) / (minA + minB);
-		return { px, cols: nearest(px), range, auto: true };
+	// the line after `k` columns, in px from the box's left
+	const at = (k: number) =>
+		k <= 0 ? 0 : k >= cols ? width : k * col + (k - 1) * gap + gap / 2;
+	const share = mins.map((m) => (width * m) / total);
+	// lines in columns from the left: as set, else nearest the shared split
+	const lines: number[] = [];
+	let px = 0;
+	for (let i = 0; i < n - 1; i++) {
+		px += share[i];
+		const s = sets[i];
+		lines.push(
+			s === undefined
+				? Math.round((px + gap / 2) / (col + gap))
+				: (lines[i - 1] ?? 0) + s
+		);
 	}
-	const n = Math.min(Math.max(set, range[0]), range[1]);
-	return { px: at(n), cols: n, range, auto: false };
+	const bound = (i: number) => (i < 0 ? 0 : i >= n - 1 ? cols : lines[i]);
+	// fit: forward so each part keeps its minimum, back so the rest fit
+	for (let i = 0; i < n - 1; i++) {
+		while (
+			lines[i] < cols &&
+			(lines[i] <= bound(i - 1) ||
+				at(lines[i]) - at(bound(i - 1)) < mins[i])
+		)
+			lines[i]++;
+	}
+	for (let i = n - 2; i >= 0; i--) {
+		while (
+			lines[i] > 0 &&
+			(lines[i] >= bound(i + 1) ||
+				at(bound(i + 1)) - at(lines[i]) < mins[i + 1])
+		)
+			lines[i]--;
+	}
+	const fits = lines.every(
+		(l, i) =>
+			l > bound(i - 1) &&
+			l < bound(i + 1) &&
+			at(l) - at(bound(i - 1)) >= mins[i] &&
+			at(bound(i + 1)) - at(l) >= mins[i + 1]
+	);
+	const auto = !fits || sets.every((s) => s === undefined);
+	const range = lines.map((_, i): [number, number] | null => {
+		if (!fits) return null;
+		const ok: number[] = [];
+		for (let k = bound(i - 1) + 1; k < bound(i + 1); k++)
+			if (
+				at(k) - at(bound(i - 1)) >= mins[i] &&
+				at(bound(i + 1)) - at(k) >= mins[i + 1]
+			)
+				ok.push(k - bound(i - 1));
+		return ok.length ? [ok[0], ok.at(-1)!] : null;
+	});
+	return {
+		px: fits ? mins.map((_, i) => at(bound(i)) - at(bound(i - 1))) : share,
+		cols: fits ? lines.map((l, i) => l - bound(i - 1)) : null,
+		range,
+		auto,
+	};
+}
+
+/**
+ * Where a tab's parts split, beside each other in a box this wide; null
+ * when they sit below each other (set so, or too narrow for all)
+ *
+ * @param {GridItem} it Item
+ * @param {ElementId} host The tab's own element
+ * @param {number} width Box width in px
+ * @param {number} cols Box width in columns
+ * @param {number} gap The grid's gap in px
+ * @returns {IBesideSplit | null} The split, or null
+ */
+export function tabBeside(
+	it: Pick<GridItem, "els" | "join" | "joinSize">,
+	host: ElementId,
+	width: number,
+	cols: number,
+	gap: number
+): IBesideSplit | null {
+	if (sideOf(it, host) !== "beside") return null;
+	return besideSplit(
+		width,
+		cols,
+		gap,
+		partsOf(it, host).map((e) => it.joinSize?.[e]),
+		tabEls(it, host).map((e) => ELEMENTS[e].minW)
+	);
 }

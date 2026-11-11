@@ -5,7 +5,7 @@ import type {
 } from "@/features/planning/layout/planLayout.types";
 
 // Util
-import { tabEls, tabsOf } from "@/features/planning/layout/tabs";
+import { sideOf, tabEls, tabsOf } from "@/features/planning/layout/tabs";
 
 /** What the grid knows of an element: its name, its minimum size, its group */
 export interface IElementMeta {
@@ -149,15 +149,14 @@ export const isElementId = (id: unknown): id is ElementId =>
 export const minWidthOf = (item: Pick<GridItem, "els">): number =>
 	Math.max(...item.els.map((e) => ELEMENTS[e].minW));
 
-/** A tab group's minimum height: its tallest tab, two below each other added */
+/** A tab group's minimum height: its tallest tab, parts below each other added */
 export const minHeightOf = (item: Pick<GridItem, "els" | "join">): number =>
 	Math.max(
 		...tabsOf(item).map((host) => {
-			const [a, b] = tabEls(item, host);
-			if (!b) return ELEMENTS[a].minH;
-			return item.join?.[b] === "below"
-				? ELEMENTS[a].minH + ELEMENTS[b].minH
-				: Math.max(ELEMENTS[a].minH, ELEMENTS[b].minH);
+			const mins = tabEls(item, host).map((e) => ELEMENTS[e].minH);
+			return sideOf(item, host) === "below"
+				? mins.reduce((a, b) => a + b, 0)
+				: Math.max(...mins);
 		})
 	);
 

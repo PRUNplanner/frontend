@@ -5,6 +5,7 @@
 		inject,
 		onBeforeUnmount,
 		onMounted,
+		provide,
 		ref,
 		useTemplateRef,
 		watch,
@@ -28,10 +29,16 @@
 	import { ELEMENTS, isKpiItem } from "@/features/planning/layout/elements";
 	import { elementView } from "@/features/planning/layout/elementComponents";
 	import {
-		besideSplit,
 		gridMeasureKey,
+		partRoomKey,
+		tabBeside,
 	} from "@/features/planning/layout/planGrid.util";
-	import { partnerOf, tabEls, tabsOf } from "@/features/planning/layout/tabs";
+	import {
+		tabEls,
+		tabFullName,
+		tabName,
+		tabsOf,
+	} from "@/features/planning/layout/tabs";
 
 	// Components
 	import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
@@ -58,6 +65,7 @@
 		summary = "",
 		fresh = false,
 		gap = 16,
+		dropAt = null,
 	} = defineProps<{
 		item: GridItem;
 		pos: IPackedItem;
@@ -70,14 +78,16 @@
 		summary?: string;
 		// new to the layout this session: tagged "New" after its title
 		fresh?: boolean;
-		// the grid's gap: a pair beside each other splits where columns meet
+		// the grid's gap: parts beside each other split where columns meet
 		gap?: number;
+		// customising: where a part dragged over the tab shown would land
+		dropAt?: number | null;
 	}>();
 
 	const emit = defineEmits<{
 		(e: "fold", value: boolean): void;
 		(e: "tab", el: ElementId): void;
-		// customising: the line between a tab's two pressed, by the second
+		// customising: a line between a tab's parts pressed, by the part after it
 		(e: "split", el: ElementId, ev: PointerEvent): void;
 	}>();
 
@@ -85,66 +95,60 @@
 
 	const kpi = computed(() => isKpiItem(item));
 	const label = (el: ElementId): string => t(ELEMENTS[el].label);
-	// its tabs, each with the element shown with it, if any
+	// its tabs, each with the elements shown with it
 	const hosts = computed(() => tabsOf(item));
-	const partners = computed(
+	const els = computed(
 		() =>
 			Object.fromEntries(
-				hosts.value.map((h) => [h, partnerOf(item, h)])
-			) as Partial<Record<ElementId, ElementId>>
+				hosts.value.map((h) => [h, tabEls(item, h)])
+			) as Record<ElementId, ElementId[]>
 	);
 	/**
-	 * Where a tab's two split, side by side: the first part's width, from
-	 * its columns or shared by their minimums; null when it's below, or the
-	 * box is too narrow for both (then they stack)
+	 * Where a tab's parts split, side by side: each part's width, from
+	 * their columns or shared by their minimums; null when they are below,
+	 * or the box is too narrow for all (then they stack)
 	 */
-	const besideOf = (host: ElementId): IBesideSplit | null => {
-		const partner = partners.value[host];
-		if (!partner || item.join?.[partner] !== "beside") return null;
-		return besideSplit(
-			pos.width,
-			pos.w,
-			gap,
-			item.joinSize?.[partner],
-			ELEMENTS[host].minW,
-			ELEMENTS[partner].minW
-		);
-	};
+	const besideOf = (host: ElementId): IBesideSplit | null =>
+		tabBeside(item, host, pos.width, pos.w, gap);
 	/**
-	 * How a tab lays out its two: side by side ("row") where it is beside
-	 * and the box fits both minimums, else below each other ("col"); one
-	 * element: nothing
+	 * How a tab lays out its parts: side by side ("row") where they are
+	 * beside and the box fits all minimums, else below each other ("col");
+	 * one element: nothing
 	 */
 	const layoutOf = (host: ElementId): "row" | "col" | undefined => {
-		if (!partners.value[host]) return undefined;
+		if (els.value[host].length < 2) return undefined;
 		return besideOf(host) ? "row" : "col";
 	};
 	/**
-	 * A part's size in its tab: beside, the first one's width (the second
-	 * takes the rest); below, the first one's height when set, scrolling
-	 * inside when its content is taller
+	 * A part's size in its tab: beside, its width (the last takes the
+	 * rest); below, its height when set, scrolling inside when its content
+	 * is taller
 	 */
 	function partStyle(host: ElementId, el: ElementId): CSSProperties {
+		const tab = els.value[host];
+		const i = tab.indexOf(el);
 		const split = besideOf(host);
 		if (split)
-			return el === host
-				? { flex: `0 0 ${split.px}px` }
+			return i < tab.length - 1
+				? { flex: `0 0 ${split.px[i]}px` }
 				: { flex: "1 1 0" };
-		const h = item.joinSize?.[partners.value[host]!];
-		return el === host && h ? { height: `${h}px`, overflowY: "auto" } : {};
+		// below only: beside sizes are columns, meaningless when stacked
+		const next = tab[i + 1];
+		const h =
+			item.join?.[next] === "below" ? item.joinSize?.[next] : undefined;
+		return h ? { height: `${h}px`, overflowY: "auto" } : {};
 	}
-	/** A tab's name: "Material I/O & Material I/O totals" for two */
+	/** A tab's name: "Material I/O & Material I/O totals" for two, "A +2" for more */
 	const tabLabel = (host: ElementId): string =>
-		partners.value[host]
-			? t("plan.layout.pair", {
-					a: label(host),
-					b: label(partners.value[host]!),
-				})
-			: label(host);
+		tabName(els.value[host] ?? [host], label, t);
 	const tabs = computed(() =>
 		hosts.value.map((el) => ({
 			key: el,
 			label: tabLabel(el),
+			name:
+				els.value[el].length > 2
+					? tabFullName(els.value[el], label, t)
+					: undefined,
 			dot:
 				tabEls(item, el).includes("plan-check") && flagCount.value > 0
 					? t(
@@ -166,6 +170,19 @@
 	// the grid measures the title row and the content's natural height
 	const register = inject(gridMeasureKey, undefined);
 	const head = useTemplateRef<HTMLElement>("head");
+	// set to a height: the room its body has (by the height it is set to,
+	// so a part filling it never shrinks what it measures); null on fit
+	provide(
+		partRoomKey,
+		computed(() =>
+			folded || item.hm === "fit"
+				? null
+				: (item.hm === "fixed"
+						? pos.height
+						: Math.max(pos.height, item.h)) -
+					(head.value?.offsetHeight ?? 40)
+		)
+	);
 	const inner = useTemplateRef<HTMLElement>("inner");
 	let unregister: (() => void) | undefined;
 	onMounted(() => {
@@ -212,7 +229,7 @@
 				width: `${pos.width}px`,
 				height: `${pos.height}px`,
 			}"
-			:aria-label="tabLabel(active)"
+			:aria-label="tabFullName(els[active] ?? [active], label, t)"
 			tabindex="-1"
 			:data-item="item.id"
 			:data-folded="folded || undefined"
@@ -247,7 +264,12 @@
 					:class="[
 						editing ? 'text-sm' : '',
 						folded && summary ? 'shrink-0 max-w-2/3' : 'flex-1',
-					]">
+					]"
+					:title="
+						(els[active]?.length ?? 0) > 2
+							? tabFullName(els[active], label, t)
+							: undefined
+					">
 					{{ tabLabel(active) }}
 				</h2>
 				<PTag
@@ -300,11 +322,11 @@
 				"
 				data-body>
 				<div ref="inner" :class="kpi ? '' : 'py-3'">
-					<!-- a tab: its element, or two with a line between them,
-					below each other or beside (where the box fits both
-					minimums; otherwise below), split as set; each adapts to
+					<!-- a tab: its element, or several with a line between
+					each two, below each other or beside (where the box fits
+					all minimums; otherwise below), split as set; each adapts to
 					its own width. Customising, the parts can't be used, the
-					line between them can be dragged. -->
+					lines between them can be dragged. -->
 					<template v-for="host in hosts" :key="host">
 						<div
 							v-if="mounted.has(host)"
@@ -319,9 +341,14 @@
 							:data-tab-body="host"
 							:data-pair="layoutOf(host)">
 							<div
-								v-for="el in tabEls(item, host)"
+								v-for="(el, i) in els[host]"
 								:key="el"
 								class="@container relative min-w-0"
+								:class="
+									editing && els[host].length > 1
+										? 'cursor-grab touch-none'
+										: ''
+								"
 								:style="partStyle(host, el)"
 								:data-element="el">
 								<div
@@ -331,7 +358,7 @@
 										:is="elementView(el).component"
 										v-bind="elementView(el).props" />
 								</div>
-								<!-- on the line before the second part: a
+								<!-- on the line before each part but the first: a
 								wide grip, the line lit while over it -->
 								<div
 									v-if="
@@ -360,6 +387,34 @@
 												: 'h-0.5 w-full'
 										" />
 								</div>
+								<!-- customising, a part dragged over the tab: where
+								it lands, before this part or after the last -->
+								<div
+									v-for="at in host === active &&
+									dropAt !== null &&
+									(dropAt === i ||
+										(dropAt === i + 1 &&
+											i === els[host].length - 1))
+										? [dropAt]
+										: []"
+									:key="at"
+									class="pointer-events-none absolute z-20 rounded-full bg-link"
+									:class="
+										layoutOf(host) === 'row'
+											? [
+													'inset-y-0 w-1',
+													at === i
+														? '-left-0.5'
+														: '-right-0.5',
+												]
+											: [
+													'inset-x-0 h-1',
+													at === i
+														? '-top-0.5'
+														: '-bottom-0.5',
+												]
+									"
+									:data-drop-at="at" />
 							</div>
 						</div>
 					</template>
