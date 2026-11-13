@@ -1,8 +1,8 @@
-# Almacenamiento del navegador
+## Browser Storage {#browser-storage}
 
 Para reducir la carga de la API del backend y mejorar el rendimiento, PRUNplanner guarda los datos del juego directamente en tu navegador. This allows for faster access and a smoother user experience. La herramienta también actualiza automáticamente los datos guardados tras un periodo fijo para que sigan al día.
 
-## Categorías de almacenamiento
+### Storage Categories {#storage-categories}
 
 - **Datos del juego**
   Incluye información mayormente estática, como materiales, edificios, recetas, datos planetarios y detalles de las bolsas. It is sourced from FIO or, in the case of exchange data, calculated by PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
@@ -15,7 +15,7 @@ Para reducir la carga de la API del backend y mejorar el rendimiento, PRUNplanne
 
 ---
 
-# Preferencias
+## Preferences {#preferences}
 
 Las preferencias te permiten guardar ajustes y configuraciones que usas a menudo, para que tu planificación sea más eficiente y personalizada.
 
