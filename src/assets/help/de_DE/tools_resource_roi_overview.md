@@ -2,7 +2,7 @@ Die Ressourcen-ROI-Übersicht baut auf den optimalen Planeten-Setups auf, die ge
 
 **Hinweis**: Die Ressourcen-ROI-Übersicht geht davon aus, dass das COGC-Programm „Ressourcengewinnung“ aktiv ist. Prüfe in der Planetensuche, ob auf dem Planeten tatsächlich dieses Programm läuft oder ein anderes.
 
-# Optimale Setups
+## Optimal Setups {#optimal-setups}
 
 Die optimalen Setups wurden mit einem linearen Modell erstellt, um die optimale Anzahl an Produktionsgebäuden und benötigten Wohnmodulen zu berechnen, mit der eine Basis mit 500 Fläche bestmöglich genutzt wird.
 
