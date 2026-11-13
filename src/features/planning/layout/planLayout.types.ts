@@ -41,6 +41,8 @@ export interface GridItem {
 	pin: boolean;
 	// follows while scrolling, in its columns, with the parts below it
 	follow?: boolean;
+	// no title bar, like a results tile (only with one tab; never folded)
+	bare?: boolean;
 	// elements shown in the tab of the element before them, below or beside it
 	join?: Partial<Record<ElementId, JoinSide>>;
 	// per joined element, how much of the tab the part before it takes:

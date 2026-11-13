@@ -49,8 +49,9 @@
 
 	/**
 	 * One box of the plan grid: a title row with its tabs and the fold
-	 * chevron (not on a results tile; customising, every item has one and
-	 * the editor's controls sit in it), and the element's body, which
+	 * chevron (not on a results tile or a card set without one; customising,
+	 * every item has one and the editor's controls sit in it), and the
+	 * element's body, which
 	 * scrolls when the box is lower than its content
 	 *
 	 * @author jplacht
@@ -170,6 +171,11 @@
 	// the grid measures the title row and the content's natural height
 	const register = inject(gridMeasureKey, undefined);
 	const head = useTemplateRef<HTMLElement>("head");
+	// every item but a lone results tile or a card set without one;
+	// customising, that too, and tabs always live there
+	const hasHead = computed(
+		() => (!kpi.value && !item.bare) || editing || hosts.value.length > 1
+	);
 	// set to a height: the room its body has (by the height it is set to,
 	// so a part filling it never shrinks what it measures); null on fit
 	provide(
@@ -180,17 +186,22 @@
 				: (item.hm === "fixed"
 						? pos.height
 						: Math.max(pos.height, item.h)) -
-					(head.value?.offsetHeight ?? 40)
+					(hasHead.value ? (head.value?.offsetHeight ?? 40) : 0)
 		)
 	);
 	const inner = useTemplateRef<HTMLElement>("inner");
 	let unregister: (() => void) | undefined;
-	onMounted(() => {
+	function measure(): void {
+		unregister?.();
 		unregister = register?.(
 			item.id,
 			[head.value, inner.value].filter((e): e is HTMLElement => !!e)
 		);
-	});
+	}
+	onMounted(measure);
+	// the title row comes or goes (a card without one in only one
+	// arrangement, a change from another tab): measure what is there now
+	watch(hasHead, measure, { flush: "post" });
 	onBeforeUnmount(() => unregister?.());
 </script>
 
@@ -234,10 +245,11 @@
 			:data-item="item.id"
 			:data-folded="folded || undefined"
 			:data-auto="pos.auto || undefined">
-			<!-- every item but a lone results tile; customising, that too: the editor
-			puts its grip, size and menu here, the tabs stay clickable -->
+			<!-- every item but a lone results tile or a card without title bar;
+			customising, those too: the editor puts its grip, size and menu
+			here, the tabs stay clickable -->
 			<div
-				v-if="!kpi || editing || hosts.length > 1"
+				v-if="hasHead"
 				ref="head"
 				class="flex items-center gap-1 shrink-0 min-h-10 pointer-coarse:min-h-11 pr-1"
 				:class="[

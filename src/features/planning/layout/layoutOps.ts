@@ -483,6 +483,24 @@ export const toggleFollow = (
 		});
 	});
 
+/**
+ * Without a title bar (only the body shows, like a results tile) or with
+ * one; a card of several tabs keeps it, its tabs live there
+ */
+export const setBare = (
+	layout: GridLayout,
+	id: string,
+	on: boolean,
+	ctx: ILayoutOpsContext
+): ILayoutChange =>
+	edit(layout, id, ctx, (it, g) => {
+		if (!!it.bare === on || (on && tabsOf(it).length > 1))
+			return done(g, "nothing");
+		if (on) it.bare = true;
+		else delete it.bare;
+		return done(g, on ? "bare" : "titled", { item: ctx.title(it) });
+	});
+
 /** A tab's name: its element, or the parts shown in it */
 const tabName = (
 	it: GridItem,

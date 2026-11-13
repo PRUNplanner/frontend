@@ -1550,6 +1550,46 @@ describe("PlanLayoutEditor", () => {
 			});
 		});
 
+		it("drops a card's title bar from its menu, undoably, saved with the layout", async () => {
+			const m = await mountEditor();
+			const state = (id: string, k: string) =>
+				m.wrapper.find(`[data-item="i-${id}"] [data-state="${k}"]`);
+			expect(option(m, "material-io", "title_bar")).toMatchObject({
+				label: "Title bar",
+				checked: true,
+				disabled: false,
+			});
+			// the results tiles have none anyway; tabs live in the title bar
+			expect(option(m, "kpi-profit", "title_bar")).toBeUndefined();
+			expect(option(m, "production", "title_bar")).toMatchObject({
+				disabled: true,
+				hint: "Cards with tabs keep their title bar",
+			});
+
+			await pick(m, "material-io", "title_bar");
+			expect(draft(m, "material-io").bare).toBe(true);
+			expect(option(m, "material-io", "title_bar")).toMatchObject({
+				checked: false,
+			});
+			expect(announce(m)).toBe("Material I/O shows without title bar");
+			// customising, the title row stays, marked with an icon
+			expect(
+				m.wrapper.find("[data-item-head='i-material-io']").exists()
+			).toBe(true);
+			expect(state("material-io", "bare").attributes("title")).toBe(
+				"No title bar"
+			);
+			await button(m, "[data-undo]").trigger("click");
+			expect(draft(m, "material-io").bare).toBeUndefined();
+
+			await pick(m, "material-io", "title_bar");
+			await button(m, "[data-save]").trigger("click");
+			expect(
+				m.pref.layout.value.items.find((i) => i.id === "i-material-io")
+					?.bare
+			).toBe(true);
+		});
+
 		it("notes items rearranged at a narrow page", async () => {
 			pageWidth = 1024;
 			stageWidth = 1024;

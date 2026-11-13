@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { flushPromises } from "@vue/test-utils";
-import { h } from "vue";
+import { h, inject } from "vue";
 
 import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
 import PlanToolTabs from "@/features/planning/components/PlanToolTabs.vue";
@@ -16,6 +16,7 @@ import {
 } from "@/tests/features/planning/layout/layout.fixtures";
 import { PRESET_KEYS } from "@/features/planning/layout/presets";
 import { ELEMENTS } from "@/features/planning/layout/elements";
+import { partRoomKey } from "@/features/planning/layout/planGrid.util";
 
 // Types & Interfaces
 import type {
@@ -23,12 +24,23 @@ import type {
 	GridLayout,
 } from "@/features/planning/layout/planLayout.types";
 
-// every element has its own test: a line of its id
+// every element has its own test: a line of its id, and the room it's given
 vi.mock("@/features/planning/layout/elementComponents", () => ({
 	elementView: (id: string) => ({
 		component: {
 			name: `El-${id}`,
-			render: () => h("p", { "data-el": id }, id),
+			setup() {
+				const room = inject(partRoomKey, null);
+				return () =>
+					h(
+						"p",
+						{
+							"data-el": id,
+							"data-room": room?.value ?? undefined,
+						},
+						id
+					);
+			},
 		},
 		props: {},
 	}),
@@ -590,6 +602,76 @@ describe("PlanGrid", () => {
 				.find("[data-tab='supply-cart']")
 				.exists()
 		).toBe(true);
+	});
+
+	describe("a card without title bar", () => {
+		// Material I/O bare at a fixed 480 px; Production keeps its tabs
+		const bare = (): GridLayout => {
+			const g = presetLayout("standard");
+			g.items = g.items.map((i) =>
+				i.id === "i-material-io"
+					? { ...i, bare: true, hm: "fixed", h: 480 }
+					: i
+			);
+			return g;
+		};
+
+		it("shows only its body, never folded, and its title row while customising", async () => {
+			const { wrapper } = await mountGrid({
+				layout: bare(),
+				folded: ["material-io"],
+			});
+			const io = box(wrapper, "i-material-io");
+			expect(io.find("[data-item-head]").exists()).toBe(false);
+			expect(io.find("h2").exists()).toBe(false);
+			expect(io.find("[data-fold]").exists()).toBe(false);
+			expect(io.attributes("data-folded")).toBeUndefined();
+			expect(io.find("[data-el='material-io']").isVisible()).toBe(true);
+			// the others keep theirs
+			expect(box(wrapper, "i-planet").find("h2").exists()).toBe(true);
+
+			const editing = await mountComponent(
+				PlanGrid,
+				{ layout: bare(), folded: [], width: 1440, editing: true },
+				{ setup: provideContext(planViewContext()) }
+			);
+			expect(
+				box(editing.wrapper, "i-material-io")
+					.find("[data-item-head='i-material-io']")
+					.exists()
+			).toBe(true);
+		});
+
+		it("measures a title row that comes back while it is on screen", async () => {
+			// bare in one arrangement only, or a change from another tab
+			const { wrapper, setProps } = await mountGrid({ layout: bare() });
+			const titled = bare();
+			delete titled.items.find((i) => i.id === "i-material-io")!.bare;
+			await setProps({ layout: titled });
+			await flushPromises();
+			const head = box(wrapper, "i-material-io").find("h2");
+			expect(head.exists()).toBe(true);
+			const row = head.element.parentElement!;
+			expect(observers.some((o) => o.els.includes(row))).toBe(true);
+		});
+
+		it("gives its body the whole box: no title row to take off", async () => {
+			// every title row 40 px
+			const height = vi
+				.spyOn(HTMLElement.prototype, "offsetHeight", "get")
+				.mockReturnValue(40);
+			const room = (g: GridLayout) =>
+				mountGrid({ layout: g }).then((m) =>
+					box(m.wrapper, "i-material-io")
+						.find("[data-el='material-io']")
+						.attributes("data-room")
+				);
+			const titled = bare();
+			delete titled.items.find((i) => i.id === "i-material-io")!.bare;
+			expect(await room(bare())).toBe("480");
+			expect(await room(titled)).toBe("440");
+			height.mockRestore();
+		});
 	});
 
 	it("scrolls only a box lower than its content, clips nothing else", async () => {

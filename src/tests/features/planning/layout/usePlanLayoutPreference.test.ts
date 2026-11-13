@@ -156,6 +156,33 @@ describe("usePlanLayoutPreference", () => {
 		expect(pref.folded.value).toEqual(["planet"]);
 	});
 
+	it("unfolds a card saved without title bar, per arrangement", () => {
+		const store = memoryStore();
+		const pref = usePlanLayoutPreference(store);
+		pref.setFolded("planet", true);
+		pref.setFolded("experts", true);
+		pref.arrangement.value = "phone";
+		pref.setFolded("planet", true);
+		pref.setFolded("experts", true);
+		const wide = wideLayout();
+		wide.items.find((i) => i.els[0] === "planet")!.bare = true;
+		// no Phone arrangement: a phone shows Wide, so its fold goes too
+		pref.saveCustom({ wide, phone: null });
+		expect(store.load()?.folded).toEqual({
+			wide: ["experts"],
+			phone: ["experts"],
+		});
+		// with one, each by its own
+		pref.setFolded("planet", true);
+		const phone = stackedLayout();
+		phone.items.find((i) => i.els[0] === "experts")!.bare = true;
+		pref.saveCustom({ wide: wideLayout(), phone });
+		expect(store.load()?.folded).toEqual({
+			wide: ["experts"],
+			phone: ["planet"],
+		});
+	});
+
 	it("turns Tinted parts on and off, for every layout", () => {
 		const store = memoryStore();
 		const pref = usePlanLayoutPreference(store);

@@ -573,6 +573,44 @@ describe("layoutOps", () => {
 			).toBeUndefined();
 		});
 
+		it("drops the title bar of a card of one tab, and brings it back", () => {
+			const g = today();
+			const on = ops.setBare(g, "i-material-io", true, ctx());
+			expect(item(on.layout, "material-io").bare).toBe(true);
+			expect(ann(on)).toBe("bare");
+			expect(
+				ann(ops.setBare(on.layout, "i-material-io", true, ctx()))
+			).toBe("nothing");
+			const off = ops.setBare(on.layout, "i-material-io", false, ctx());
+			expect(item(off.layout, "material-io").bare).toBeUndefined();
+			expect(ann(off)).toBe("titled");
+			// a card of several tabs keeps it
+			expect(ann(ops.setBare(g, "i-production", true, ctx()))).toBe(
+				"nothing"
+			);
+
+			// a second part in its tab keeps it bare, a second tab brings the bar back
+			const w = ops.setBare(wideLayout(), "i-material-io", true, ctx());
+			const pair = ops.joinTab(
+				w.layout,
+				{ item: "i-material-io-totals" },
+				"i-material-io",
+				"below",
+				ctx()
+			);
+			expect(item(pair.layout, "material-io").els).toHaveLength(2);
+			expect(tabsOf(item(pair.layout, "material-io"))).toHaveLength(1);
+			expect(item(pair.layout, "material-io").bare).toBe(true);
+			const tabbed = ops.makeTab(
+				w.layout,
+				{ item: "i-supply-cart" },
+				"i-material-io",
+				ctx()
+			);
+			expect(tabsOf(item(tabbed.layout, "material-io"))).toHaveLength(2);
+			expect(item(tabbed.layout, "material-io").bare).toBeUndefined();
+		});
+
 		it("shows an element as a table or as cards", () => {
 			const g = today();
 			const tbl = ops.setView(g, "workforce", "table", ctx());

@@ -103,7 +103,7 @@ export function removeEl(it: GridItem, el: ElementId): void {
  * on the first element, one side per tab (its first part's), none on
  * elements it no longer has; sizes only of joins it keeps, within limits,
  * a tab's beside sizes leaving its last part a column; the tab shown is
- * a host
+ * a host; a card of several tabs keeps its title bar (they live there)
  *
  * @param {GridItem} it Item, changed in place
  * @returns {GridItem} The same item
@@ -137,5 +137,6 @@ export function tidyJoin(it: GridItem): GridItem {
 	else delete it.joinSize;
 	const active = it.els.includes(it.active) ? it.active : it.els[0];
 	it.active = hostOf(it, active);
+	if (it.bare && tabsOf(it).length > 1) delete it.bare;
 	return it;
 }

@@ -22,11 +22,11 @@ import {
 	minWidthOf,
 } from "@/features/planning/layout/elements";
 
-/** An item folded: its first element is listed, a results tile never */
+/** An item folded: its first element is listed, a results tile or a card without title bar never */
 export const isFolded = (
-	item: Pick<GridItem, "els">,
+	item: Pick<GridItem, "els" | "bare">,
 	folded: ReadonlySet<ElementId>
-): boolean => folded.has(item.els[0]) && !isKpiItem(item);
+): boolean => folded.has(item.els[0]) && !isKpiItem(item) && !item.bare;
 
 /**
  * The box height of an item: its mode, never below its minimum; a folded

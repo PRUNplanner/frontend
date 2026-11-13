@@ -305,6 +305,32 @@ describe("normaliseLayout", () => {
 		expect(follow("experts")).toBeUndefined();
 	});
 
+	it("keeps `bare` only when true on a card of one tab", () => {
+		const out = normaliseLayout({
+			items: [
+				{ ...prod, bare: true },
+				// parts shown in one tab count as one
+				{
+					...prod,
+					id: "b",
+					els: ["workforce", "experts"],
+					join: { experts: "beside" },
+					bare: true,
+				},
+				// its tabs live in the title bar
+				{ ...prod, id: "c", els: ["planet", "housing"], bare: true },
+				{ ...prod, id: "d", els: ["empire"], bare: false },
+			],
+		});
+		const bare = (el: string) =>
+			out.items.find((i) => i.els[0] === el)!.bare;
+		expect(bare("production")).toBe(true);
+		expect(bare("workforce")).toBe(true);
+		expect(bare("planet")).toBeUndefined();
+		expect(bare("empire")).toBeUndefined();
+		expect(normaliseLayout(out)).toEqual(out);
+	});
+
 	it("keeps at most 40 element ids", () => {
 		// the registry has fewer, so all of them survive
 		const items = presetLayout("standard").items;
