@@ -2,7 +2,7 @@ The Resource Overview tool builds upon the optimal planetary setups developed co
 
 **Please note**: The Resource ROI Overview assumes the COGC being active as "Resource Extraction". Please check with Planet Search if the planet is actually running that program or another one.
 
-# Optimal Setups
+## Optimal Setups {#optimal-setups}
 
 Optimal setups were created with a linear model to calculate the optimal number of production buildings and required habitations to maximize the use of a 500-area base.
 
