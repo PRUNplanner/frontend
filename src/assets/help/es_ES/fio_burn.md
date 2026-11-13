@@ -1,8 +1,8 @@
-# Cálculos
+## Calculations {#calculations}
 
 Los cálculos de los planes se basan en los datos de producción y almacenamiento de tus planes. Para obtener resultados precisos, necesitas tener tus datos sincronizados mediante FIO. Ten en cuenta que la degradación no se incluye en estos cálculos.
 
-# Thresholds
+## Thresholds {#thresholds}
 
 PRUNplanner usa umbrales de color para resaltar los valores importantes:
 
