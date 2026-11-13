@@ -54,6 +54,7 @@
 		UnfoldMoreSharp,
 		RemoveSharp,
 		UndoSharp,
+		VerticalAlignTopSharp,
 		VisibilityOffSharp,
 	} from "@vicons/material";
 
@@ -220,6 +221,7 @@
 		return [
 			{ key: "pinned", icon: PushPinSharp, on: it.pin },
 			{ key: "follows", icon: MoveDownSharp, on: !!it.follow },
+			{ key: "bare", icon: VerticalAlignTopSharp, on: !!it.bare },
 			{
 				key: "open",
 				icon: UnfoldMoreSharp,

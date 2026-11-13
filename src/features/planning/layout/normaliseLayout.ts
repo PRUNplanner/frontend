@@ -161,6 +161,8 @@ export function normaliseLayout(
 			...(it.follow === true &&
 				it.pin !== true &&
 				!phone && { follow: true }),
+			// tidyJoin drops it from a card of several tabs
+			...(it.bare === true && { bare: true }),
 			join,
 			joinSize,
 		};

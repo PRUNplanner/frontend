@@ -168,6 +168,10 @@ describe("packLayout", () => {
 		expect(isFolded({ els: ["production", "popr"] }, folded)).toBe(true);
 		expect(isFolded({ els: ["popr", "production"] }, folded)).toBe(false);
 		expect(isFolded({ els: ["kpi-area"] }, folded)).toBe(false);
+		// nor a card without title bar
+		expect(isFolded({ els: ["production"], bare: true }, folded)).toBe(
+			false
+		);
 	});
 
 	describe("automatic reflow", () => {

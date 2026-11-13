@@ -42,6 +42,7 @@ import * as ops from "@/features/planning/layout/layoutOps";
 import {
 	ELEMENT_IDS,
 	ELEMENTS,
+	isKpiItem,
 	minHeightOf,
 	minWidthOf,
 	OPENABLE,
@@ -655,6 +656,23 @@ export function usePlanLayoutEditor(
 				tip: t("plan.layout.follow_hint"),
 				checked: !!it.follow,
 			},
+			// a results tile has none anyway
+			...(isKpiItem(it)
+				? []
+				: [
+						{
+							key: "title_bar",
+							label: t("plan.layout.title_bar"),
+							tip: t("plan.layout.title_bar_hint"),
+							checked: !it.bare,
+							// its tabs live in the title bar
+							disabled: tabsOf(it).length > 1,
+							hint:
+								tabsOf(it).length > 1
+									? t("plan.layout.title_bar_tabs")
+									: undefined,
+						},
+					]),
 			{ type: "divider" },
 			// how the tab shown displays: cards or a table, everything open;
 			// for each of its elements, named when it shows two
@@ -957,6 +975,8 @@ export function usePlanLayoutEditor(
 		else if (key === "pin") togglePin(id);
 		else if (key === "follow")
 			apply(ops.toggleFollow(draft.value, id, ctx()), id);
+		else if (key === "title_bar")
+			apply(ops.setBare(draft.value, id, !it.bare, ctx()), id);
 		else if (key.startsWith("open:")) toggleOpen(key.slice(5) as ElementId);
 		else if (key.startsWith("view:")) {
 			const [, view, el] = key.split(":");

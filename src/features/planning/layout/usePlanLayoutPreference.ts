@@ -166,12 +166,23 @@ export function usePlanLayoutPreference(
 		persist();
 	}
 
-	/** Saves Custom Layout (Wide, and Phone or none) and uses it */
+	/**
+	 * Saves Custom Layout (Wide, and Phone or none) and uses it; a card
+	 * without title bar can't fold, so it is unfolded
+	 */
 	function saveCustom(next: IArrangements): void {
-		custom.value = {
+		const saved = (custom.value = {
 			wide: normaliseLayout(next.wide),
 			...(next.phone && { phone: normaliseLayout(next.phone, "phone") }),
 			known: [...ELEMENT_IDS],
+		});
+		const bare = (g: GridLayout) =>
+			new Set(g.items.filter((i) => i.bare).map((i) => i.els[0]));
+		const wideBare = bare(saved.wide);
+		const phoneBare = bare(saved.phone ?? saved.wide);
+		foldedBy.value = {
+			wide: foldedBy.value.wide.filter((e) => !wideBare.has(e)),
+			phone: foldedBy.value.phone.filter((e) => !phoneBare.has(e)),
 		};
 		choice.value = "custom";
 		persist();

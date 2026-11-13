@@ -925,9 +925,13 @@
 		"display_of": "Display · {name}",
 		"follow": "Follow while scrolling",
 		"follow_hint": "Stays in view in its column while you scroll, with the parts below it",
+		"title_bar": "Title bar",
+		"title_bar_hint": "Off: only the content shows, like the results tiles, and it can't fold. Customising always shows the title bar",
+		"title_bar_tabs": "Cards with tabs keep their title bar",
 		"state": {
 			"pinned": "Pinned to top",
 			"follows": "Follows while scrolling",
+			"bare": "No title bar",
 			"open": "Everything open",
 			"table": "Shown as a table"
 		},
@@ -1046,6 +1050,8 @@
 			"pinned": "{item} pinned to top",
 			"unpinned": "{item} scrolls with the page again",
 			"followed": "{item} follows while scrolling",
+			"bare": "{item} shows without title bar",
+			"titled": "{item} shows its title bar again",
 			"unfollowed": "{item} stays in place again",
 			"tab": "{el} is now a tab of {item}",
 			"taken_out": "{el} is its own item now",
