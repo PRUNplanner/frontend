@@ -15,7 +15,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import AlertManager from "@/features/market_live/components/AlertManager.vue";
 	import AlertFeed from "@/features/market_live/components/AlertFeed.vue";
 	import CXPointTable from "@/features/market_live/components/CXPointTable.vue";
@@ -107,7 +107,7 @@
 							}}
 						</span>
 					</div>
-					<HelpDrawer file-name="tools_market_live" />
+					<HelpPanel article="tools_market_live" />
 				</div>
 			</div>
 		</div>

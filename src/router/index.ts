@@ -8,6 +8,9 @@ import { trackPageview } from "@/lib/analytics/useAnalytics";
 import { setClientErrorRoute } from "@/lib/clientErrors";
 import { setCalcDebug } from "@/lib/debugMode";
 import { markNavigationStart } from "@/lib/perf/navigationStart";
+import { i18n } from "@/lib/i18n";
+import { toast } from "@/ui/useToast";
+import { getArticle } from "@/features/help/helpArticles";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -36,10 +39,18 @@ const router = createRouter({
 				savedPosition
 			);
 		if (to.path === from.path) return false;
+		// a help article scrolls to its own section once it is there
+		if (to.name === "help-article" && to.hash) return false;
 		if (to.hash)
-			return when(() => !!document.querySelector(to.hash), {
-				el: to.hash,
-			});
+			// by id, as vue-router finds it: a release anchor (#0-36-0) is no
+			// valid CSS selector
+			return when(
+				() =>
+					!!document.getElementById(
+						decodeURIComponent(to.hash.slice(1))
+					),
+				{ el: to.hash }
+			);
 		return { top: 0 };
 	},
 	routes: [
@@ -147,10 +158,18 @@ const router = createRouter({
 			component: () => import("@/views/ImprintToSView.vue"),
 		},
 		{
+			// public: the app layout logged in, the homepage header logged out
 			name: "help",
 			path: "/help",
-			meta: { requiresAuth: true },
+			meta: { indexable: true },
 			component: () => import("@/views/HelpView.vue"),
+		},
+		{
+			// one page per article of features/help/helpArticles.ts
+			name: "help-article",
+			path: "/help/:article",
+			meta: { indexable: true },
+			component: () => import("@/views/HelpArticleView.vue"),
 		},
 		{
 			name: "roi-overview",
@@ -247,6 +266,14 @@ router.beforeEach((to) => {
 
 	const { debug: _debug, ...query } = to.query;
 	return { path: to.path, query, hash: to.hash, replace: true };
+});
+
+// an unknown help article: the help centre's home, with a note
+router.beforeEach((to) => {
+	if (to.name !== "help-article" || getArticle(String(to.params.article)))
+		return;
+	toast(i18n.global.t("help.article.not_found"), { type: "error" });
+	return { name: "help" };
 });
 
 router.beforeEach((to, _) => {

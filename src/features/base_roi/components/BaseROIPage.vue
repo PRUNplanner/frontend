@@ -15,7 +15,7 @@
 	import { matchesSearch } from "@/features/base_roi/baseROIMetrics";
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import BaseROISettingsPanel from "@/features/base_roi/components/BaseROISettingsPanel.vue";
 	import BaseROITable from "@/features/base_roi/components/BaseROITable.vue";
@@ -141,7 +141,7 @@
 					{{ t("base_roi.universe_prices") }} ·
 					{{ t("base_roi.universe_prices_hint") }}
 				</span>
-				<HelpDrawer file-name="tools_base_roi" />
+				<HelpPanel article="tools_base_roi" />
 				<PButton
 					:pressed="chartOpen && hasRows"
 					:disabled="!hasRows"

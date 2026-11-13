@@ -12,7 +12,7 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import UpkeepPriceCalculator from "@/features/government/components/UpkeepPriceCalculator.vue";
 
@@ -48,8 +48,8 @@
 										v-model:cx-uuid="refSelectedCXUuid" />
 								</PFormItem>
 							</PForm>
-							<HelpDrawer
-								file-name="tools_upkeep_price_calculator" />
+							<HelpPanel
+								article="tools_upkeep_price_calculator" />
 						</div>
 					</div>
 

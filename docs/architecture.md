@@ -17,7 +17,7 @@
 | `ui/` | In-house component kit (`P*`, barrel `ui/index.ts`) and `ui/charts/` |
 | `layout/` | Navigation, header, footer, progress indicators |
 | `locales/<locale>/*.json` | i18n messages, one file per namespace |
-| `assets/help/<locale>/*.md` | Help drawer pages; `assets/help/changelog.md` is the changelog |
+| `assets/help/<locale>/*.md` | Help centre articles (parsed at build time, `vite.help.ts`); `assets/help/changelog.md` is What's new |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
 | `util/` | Small pure helpers (`data.ts` clone/redact, `numbers.ts`, `date.ts`, `planetName.ts`, …) and `axiosSetup.ts` (auth interceptors) |
 | `tests/` | Vitest suites mirroring `src/`, plus `test_data/` fixtures |
@@ -37,8 +37,8 @@
    (`lib/seo/prerenderMount.ts`). This chain is **not awaited**: lazy chunks
    import from `main.ts`, which must finish evaluating first.
 
-vue-showdown isn't installed globally: `HelpView` and `HelpDrawer` render
-through `HelpMarkdown`, which sanitises (docs/security.md). The auth interceptors register when `apiService`
+Help markdown is parsed at build time (`vite.help.ts`), so no markdown
+library is in the client (docs/features/help.md). The auth interceptors register when `apiService`
 is created, so a visitor's first page doesn't load axios.
 
 ## Routing (`src/router/index.ts`)

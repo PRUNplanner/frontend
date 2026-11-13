@@ -107,7 +107,7 @@
 			identifyUser(userStore.profile, userStore.hasFIO);
 
 		if (userStore.isLoggedIn) {
-			announceRelease(() => router.push("/help#changelog"));
+			announceRelease(() => router.push("/help/whats-new"));
 			// start user activity monitor if logged in
 			const _activity = userActivity;
 			// changed in another browser or device since this one stored them

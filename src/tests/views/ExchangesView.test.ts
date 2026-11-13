@@ -80,7 +80,7 @@ vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 	passThrough("WrapperGameDataLoader")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/features/exchanges/components/CXOverview.vue", () =>
 	stub("CXOverview")
 );

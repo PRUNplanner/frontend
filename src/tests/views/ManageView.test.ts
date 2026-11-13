@@ -66,7 +66,7 @@ const state = vi.hoisted(() => ({
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 	passThrough("WrapperPlanningDataLoader")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => fake("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => fake("HelpPanel"));
 vi.mock("@/features/manage/components/ManageCX.vue", async () => {
 	const { useManageData } = await import("@/features/manage/useManageData");
 	return fake("ManageCX", () => (state.data = useManageData()));

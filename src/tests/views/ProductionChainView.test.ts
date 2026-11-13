@@ -57,8 +57,8 @@ vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 	passThrough("WrapperGameDataLoader")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
-	default: { name: "HelpDrawer", render: () => null },
+vi.mock("@/features/help/components/HelpPanel.vue", () => ({
+	default: { name: "HelpPanel", render: () => null },
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

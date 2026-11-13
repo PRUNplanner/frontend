@@ -84,7 +84,7 @@
 	import PlanMoreMenu from "@/features/planning/components/PlanMoreMenu.vue";
 	import PlanGrid from "@/features/planning/components/layout/PlanGrid.vue";
 	import PlanLayoutMenu from "@/features/planning/components/layout/PlanLayoutMenu.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import PlanAnalyticsBox from "@/features/plan_analytics/components/PlanAnalyticsBox.vue";
 	import SharedPlanBanner from "@/features/sharing/components/SharedPlanBanner.vue";
 	import SharedPlanDeltas from "@/features/sharing/components/SharedPlanDeltas.vue";
@@ -743,7 +743,7 @@
 					:debug="calcDebug"
 					@csv="downloadMaterialIO"
 					@debug="toggleCalcDebug('button')" />
-				<HelpDrawer file-name="plan" />
+				<HelpPanel article="plan_layout" />
 			</div>
 		</header>
 		<!-- an older version, read-only until restored -->

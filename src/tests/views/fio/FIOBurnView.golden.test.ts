@@ -88,7 +88,7 @@ vi.mock("@/features/fio/components/FIOBurnPlanTable.vue", () =>
 vi.mock("@/features/fio/components/FIOBurnTable.vue", () =>
 	stub("FIOBurnTable", ["burnTable"])
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),
 	trackEvent: vi.fn(),

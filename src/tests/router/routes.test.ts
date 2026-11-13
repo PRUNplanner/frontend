@@ -4,6 +4,7 @@ import type { RouteLocationNormalized } from "vue-router";
 import { createPinia, setActivePinia } from "pinia";
 
 import router from "@/router";
+import { toasts } from "@/ui/useToast";
 
 // every route loads its view lazily; stub them so loading stays cheap
 const stub = vi.hoisted(() => ({ default: { template: "<div />" } }));
@@ -12,6 +13,7 @@ vi.mock("@/views/APIKeyView.vue", () => stub);
 vi.mock("@/views/EmpireView.vue", () => stub);
 vi.mock("@/views/ExchangesView.vue", () => stub);
 vi.mock("@/views/HelpView.vue", () => stub);
+vi.mock("@/views/HelpArticleView.vue", () => stub);
 vi.mock("@/views/HomepageView.vue", () => stub);
 vi.mock("@/views/ImprintToSView.vue", () => stub);
 vi.mock("@/views/ManageView.vue", () => stub);
@@ -47,6 +49,14 @@ describe("router routes", () => {
 		const search = router.getRoutes().find((r) => r.name === "search")!;
 		expect(search.meta.requiresAuth).toBeUndefined();
 		expect(search.meta.indexable).toBe(true);
+	});
+
+	it("opens the help centre to visitors and search engines", () => {
+		for (const name of ["help", "help-article"]) {
+			const route = router.getRoutes().find((r) => r.name === name)!;
+			expect(route.meta.requiresAuth, name).toBeUndefined();
+			expect(route.meta.indexable, name).toBe(true);
+		}
 	});
 
 	it("registers the kit page in dev builds", () => {
@@ -86,6 +96,24 @@ describe("router scrollBehavior", () => {
 		await expect(
 			scroll(at("/help", "#changelog"), at("/"), null)
 		).resolves.toEqual({ el: "#changelog" });
+		document.body.innerHTML = "";
+	});
+
+	it("leaves a help article's section to the article", () => {
+		const to = {
+			...at("/help/plan_check", "#flags"),
+			name: "help-article",
+		};
+		expect(scroll(to as RouteLocationNormalized, at("/"), null)).toBe(
+			false
+		);
+	});
+
+	it("finds a release anchor that is no valid CSS selector", async () => {
+		document.body.innerHTML = '<div id="0-36-0"></div>';
+		await expect(
+			scroll(at("/help/whats-new", "#0-36-0"), at("/"), null)
+		).resolves.toEqual({ el: "#0-36-0" });
 		document.body.innerHTML = "";
 	});
 
@@ -157,5 +185,18 @@ describe("router scrollBehavior", () => {
 			await vi.advanceTimersByTimeAsync(300);
 			expect(done).toHaveBeenCalledWith(saved);
 		});
+	});
+});
+
+// pushes load the views: after "loads the view of every route"
+describe("help article guard", () => {
+	it("sends an unknown help article to the help home, with a note", async () => {
+		setActivePinia(createPinia());
+		await router.push("/help/plan_check");
+		expect(router.currentRoute.value.name).toBe("help-article");
+
+		await router.push("/help/nope");
+		expect(router.currentRoute.value.name).toBe("help");
+		expect(toasts.value.at(-1)?.type).toBe("error");
 	});
 });

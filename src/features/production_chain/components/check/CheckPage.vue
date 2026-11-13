@@ -4,7 +4,7 @@
 	const { t } = useI18n();
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import ChainModeSwitch from "@/features/production_chain/components/ChainModeSwitch.vue";
 	import CheckBar from "@/features/production_chain/components/check/CheckBar.vue";
 	import CheckResults from "@/features/production_chain/components/check/CheckResults.vue";
@@ -144,7 +144,9 @@
 					@click="copyLink">
 					{{ $t("production_chains.check.copy_link") }}
 				</PButton>
-				<HelpDrawer file-name="tools_production_chain" />
+				<HelpPanel
+					article="tools_production_chain"
+					section="check-an-empire" />
 			</div>
 		</header>
 

@@ -24,3 +24,20 @@ interface ImportMetaEnv {
 interface ImportMeta {
 	readonly env: ImportMetaEnv;
 }
+
+// help markdown parsed at build time (vite.help.ts); null: a translation
+// that lags behind the English section ids
+declare module "*.md?help" {
+	const doc: import("@/features/help/help.types").IHelpDoc | null;
+	export default doc;
+}
+
+declare module "virtual:help-search" {
+	const indexes: Record<
+		string,
+		() => Promise<{
+			default: import("@/features/help/help.types").IHelpSearchEntry[];
+		}>
+	>;
+	export default indexes;
+}

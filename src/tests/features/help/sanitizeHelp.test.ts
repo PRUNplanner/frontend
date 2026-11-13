@@ -1,10 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { showdown } from "vue-showdown";
 
-import {
-	sanitizeExtension,
-	sanitizeHelpHtml,
-} from "@/features/help/sanitizeHelp";
+import { parseHelp } from "@/features/help/helpMarkdown";
+import { sanitizeHelpHtml } from "@/features/help/sanitizeHelp";
+import hostileBuilt from "./fixtures/hostile.md?help";
 
 // every help page: all locales (Crowdin) and the changelog
 const HELP_FILES = import.meta.glob("@/assets/help/**/*.md", {
@@ -13,23 +11,12 @@ const HELP_FILES = import.meta.glob("@/assets/help/**/*.md", {
 	eager: true,
 }) as Record<string, string>;
 
-// HelpMarkdown's options
-function converter(sanitize: boolean): showdown.Converter {
-	const c = new showdown.Converter({
-		tables: true,
-		emoji: true,
-		extensions: sanitize ? [sanitizeExtension] : [],
-	});
-	c.setFlavor("github");
-	return c;
-}
-
-// what innerHTML makes of showdown's raw output: the DOM it renders today
-function asRendered(html: string): string {
-	const div = document.createElement("div");
-	div.innerHTML = html;
-	return div.innerHTML;
-}
+// the same files as the build parses them (vite.help.ts)
+const HELP_DOCS = import.meta.glob("@/assets/help/**/*.md", {
+	query: "?help",
+	import: "default",
+	eager: true,
+}) as Record<string, { html: string } | null>;
 
 const ALLOWED_TARGET = /^(https?:|\/|#)/;
 
@@ -61,31 +48,38 @@ const HOSTILE = [
 	'<a href="javascript:alert(4)">a</a>',
 ].join("\n\n");
 
+function expectInert(html: string): void {
+	const div = document.createElement("div");
+	div.innerHTML = html;
+	expect(div.querySelector("script, img[onerror], [onclick]")).toBeNull();
+	for (const a of div.querySelectorAll("a"))
+		expect(a.getAttribute("href") ?? "").not.toMatch(/javascript:/i);
+	// raw HTML is escaped to text: no element carries a handler
+	for (const el of div.querySelectorAll("*"))
+		for (const attr of el.getAttributeNames())
+			expect(attr).not.toMatch(/^on/i);
+}
+
 describe("help markdown sanitising", () => {
 	it("finds the help files", () => {
 		expect(Object.keys(HELP_FILES).length).toBeGreaterThan(100);
 	});
 
-	it.each(Object.entries(HELP_FILES))(
-		"renders %s as before",
-		(_path, markdown) => {
-			expect(converter(true).makeHtml(markdown)).toBe(
-				asRendered(converter(false).makeHtml(markdown))
-			);
-		}
-	);
-
-	it("drops script, event handlers and javascript: links", () => {
-		const div = document.createElement("div");
-		div.innerHTML = converter(true).makeHtml(HOSTILE);
-
-		expect(div.querySelector("h1")?.textContent).toBe("Title");
-		expect(div.querySelector("script")).toBeNull();
-		expect(div.querySelector("img")?.hasAttribute("onerror")).toBe(false);
-		for (const a of div.querySelectorAll("a"))
-			expect(a.getAttribute("href") ?? "").not.toMatch(/javascript:/i);
-		expect(div.innerHTML).not.toMatch(/onerror|<script|javascript:/i);
+	it("leaves a hostile file inert on the client", () => {
+		const doc = parseHelp(HOSTILE, sanitizeHelpHtml);
+		expect(doc.toc[0]?.title).toBe("Title");
+		expectInert(doc.html);
 	});
+
+	it("leaves a hostile file inert at build time", () => {
+		expectInert(hostileBuilt!.html);
+		expectInert(sanitizeHelpHtml(hostileBuilt!.html));
+	});
+
+	it.each(Object.entries(HELP_DOCS).filter(([, d]) => d))(
+		"%s builds to inert HTML",
+		(_path, doc) => expectInert(doc!.html)
+	);
 
 	it("drops style elements", () => {
 		expect(sanitizeHelpHtml("<style>p{}</style><p>a</p>")).toBe("<p>a</p>");

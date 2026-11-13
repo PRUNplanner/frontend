@@ -1,76 +1,187 @@
 <script setup lang="ts">
-	import { onMounted, type Ref, ref } from "vue";
-
+	/**
+	 * /help: the help centre's home. Search, most read, every area, the
+	 * latest release and where to ask. Public, no login needed.
+	 *
+	 * @author jplacht
+	 */
+	import { computed, ref, type Ref } from "vue";
 	import { useI18n } from "vue-i18n";
-	const { t } = useI18n();
-
-	// Unhead
 	import { useHead } from "@unhead/vue";
+	const { t, locale } = useI18n({ useScope: "global" });
+
+	// Components
+	import HelpLayout from "@/features/help/components/HelpLayout.vue";
+
+	// Util
+	import {
+		articlesByArea,
+		getArticle,
+		POPULAR_ARTICLES,
+		WHATS_NEW,
+	} from "@/features/help/helpArticles";
+	import { loadArticle } from "@/features/help/helpContent";
+	import { markHelpSource } from "@/features/help/helpSource";
+	import { sanitizeHelpHtml } from "@/features/help/sanitizeHelp";
+	import {
+		HELP_DISCORD_URL,
+		HELP_GITHUB_URL,
+	} from "@/features/help/help.constants";
+
+	// Types & Interfaces
+	import type { IHelpDoc } from "@/features/help/help.types";
+
 	useHead({
 		title: t("help.view_title"),
+		meta: [{ name: "description", content: t("help.home.description") }],
 	});
 
-	import HelpTutorial from "@/features/help/components/HelpTutorial.vue";
-	import HelpMarkdown from "@/features/help/components/HelpMarkdown.vue";
+	const areas = articlesByArea().filter((a) => a.area !== "reference");
 
-	// markdown loader from changelog
-	async function loadMarkdown(): Promise<string> {
-		const markdownFiles = import.meta.glob("@/assets/help/*.md", {
-			query: "?raw",
-			import: "default",
-		}) as Record<string, () => Promise<string>>;
+	const layout: Ref<InstanceType<typeof HelpLayout> | null> = ref(null);
 
-		const path = `/src/assets/help/changelog.md`;
-		const loader = markdownFiles[path];
-		if (!loader) throw new Error(`Markdown file "changelog" not found.`);
+	// the latest release: the changelog up to its second release heading
+	const changelog: Ref<IHelpDoc | null> = ref(null);
+	const latest = computed(() => {
+		const doc = changelog.value;
+		if (!doc) return null;
+		const html = doc.html.split(/(?=<h2[ >])/)[0] ?? "";
+		return {
+			title: doc.toc[0]?.title ?? "",
+			id: doc.toc[0]?.id ?? "",
+			html: sanitizeHelpHtml(html),
+		};
+	});
 
-		return await loader();
-	}
-
-	const markdownContent: Ref<string> = ref("");
-
-	onMounted(async () => (markdownContent.value = await loadMarkdown()));
-
-	// one release per h1, divided by a line
-	const changelogClass = [
-		"text-sm leading-relaxed text-muted-strong",
-		"[&_h1]:text-base [&_h1]:font-bold [&_h1]:text-ink-strong [&_h1]:mb-3",
-		"[&_h1]:mt-6 [&_h1]:pt-6 [&_h1]:border-t [&_h1]:border-line",
-		"[&_h1:first-child]:mt-0 [&_h1:first-child]:pt-0 [&_h1:first-child]:border-t-0",
-		"[&_p]:mb-3 [&_strong]:text-ink-strong",
-		"[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_ul]:space-y-2 [&_li]:marker:text-muted",
-		"[&_a]:text-link-primary [&_a:hover]:underline",
-	].join(" ");
+	changelog.value =
+		(await loadArticle(getArticle(WHATS_NEW)!, locale.value))?.doc ?? null;
 </script>
 
 <template>
-	<div class="min-h-screen flex flex-col">
-		<div
-			class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
-			<h1 class="text-2xl font-bold my-auto">{{ $t("help.title") }}</h1>
-		</div>
+	<HelpLayout ref="layout">
+		<div class="flex flex-col gap-10">
+			<section class="flex flex-col gap-4">
+				<h1 class="text-3xl leading-tight font-bold text-ink-strong">
+					{{ t("help.home.title") }}
+				</h1>
+				<p class="text-base text-muted-strong max-w-2xl">
+					{{ t("help.home.lead") }}
+				</p>
+				<button
+					type="button"
+					class="flex items-center gap-3 h-12 px-4 max-w-2xl border border-line-strong rounded-control bg-surface text-left text-base text-muted hover:bg-hover cursor-pointer"
+					data-testid="help-home-search"
+					@click="layout?.openSearch()">
+					<span class="flex-1">{{
+						t("help.search.placeholder")
+					}}</span>
+					<kbd
+						class="font-mono text-xs border border-line rounded-control px-1.5"
+						>/</kbd
+					>
+				</button>
+				<div class="flex flex-wrap items-center gap-2 text-sm">
+					<span class="text-muted">{{
+						t("help.home.most_read")
+					}}</span>
+					<RouterLink
+						v-for="id in POPULAR_ARTICLES"
+						:key="id"
+						:to="`/help/${id}`"
+						class="px-2.5 py-1 rounded-control border border-line text-ink hover:bg-hover"
+						@click="markHelpSource('nav')">
+						{{ t(`help.articles.${id}.title`) }}
+					</RouterLink>
+				</div>
+			</section>
 
-		<div class="grow flex flex-col lg:flex-row">
-			<div class="flex-1 min-w-0 px-6 py-8">
-				<HelpTutorial />
-			</div>
-			<aside
-				class="lg:w-md shrink-0 border-t lg:border-t-0 lg:border-l border-line"
-				aria-labelledby="changelog">
-				<div class="lg:sticky lg:top-0 lg:h-screen flex flex-col">
-					<h2
-						id="changelog"
-						class="shrink-0 px-6 pt-8 pb-4 text-lg font-bold">
-						{{ $t("help.changelog.title") }}
-					</h2>
+			<section>
+				<h2 class="text-lg font-bold text-ink-strong mb-4">
+					{{ t("help.home.browse") }}
+				</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 					<div
-						v-if="markdownContent != ''"
-						class="flex-1 min-h-0 overflow-auto px-6 pb-8"
-						:class="changelogClass">
-						<HelpMarkdown :markdown="markdownContent" />
+						v-for="a in areas"
+						:key="a.area"
+						class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
+						<h3 class="font-bold text-ink-strong">
+							{{ t(`help.areas.${a.area}`) }}
+						</h3>
+						<ul class="flex flex-col gap-1 text-sm">
+							<li v-for="art in a.articles" :key="art.id">
+								<RouterLink
+									:to="`/help/${art.id}`"
+									class="text-link-primary hover:underline"
+									@click="markHelpSource('nav')">
+									<span v-if="art.parent">
+										{{ t(`help.parents.${art.parent}`) }}:
+									</span>
+									{{ t(`help.articles.${art.id}.title`) }}
+								</RouterLink>
+							</li>
+						</ul>
 					</div>
 				</div>
-			</aside>
+			</section>
+
+			<div
+				class="grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-3 items-start">
+				<section
+					v-if="latest"
+					class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface"
+					data-testid="help-whats-new">
+					<div class="flex items-baseline justify-between gap-3">
+						<h2 class="text-lg font-bold text-ink-strong">
+							{{ t("help.home.whats_new") }}
+						</h2>
+						<span class="text-xs text-muted">{{
+							latest.title
+						}}</span>
+					</div>
+					<!-- sanitised at build time and again here (docs/security.md) -->
+					<!-- eslint-disable vue/no-v-html -->
+					<div
+						class="text-sm leading-relaxed text-ink [&_h2]:hidden [&_p]:mb-2 [&_strong]:text-ink-strong [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mt-1 [&_li]:marker:text-muted [&_a]:text-link-primary"
+						v-html="latest.html" />
+					<!-- eslint-enable vue/no-v-html -->
+					<RouterLink
+						:to="`/help/${WHATS_NEW}`"
+						class="text-sm text-link-primary hover:underline"
+						@click="markHelpSource('nav')">
+						{{ t("help.home.all_releases") }}
+					</RouterLink>
+				</section>
+
+				<section
+					class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
+					<h2 class="text-lg font-bold text-ink-strong">
+						{{ t("help.home.stuck_title") }}
+					</h2>
+					<i18n-t
+						keypath="help.home.stuck_text"
+						tag="p"
+						class="text-sm text-ink">
+						<template #discord>
+							<a
+								:href="HELP_DISCORD_URL"
+								target="_blank"
+								rel="noopener"
+								class="text-link-primary hover:underline">
+								{{ t("help.home.discord") }}
+							</a>
+						</template>
+						<template #github>
+							<a
+								:href="HELP_GITHUB_URL"
+								target="_blank"
+								rel="noopener"
+								class="text-link-primary hover:underline">
+								{{ t("help.home.github") }}
+							</a>
+						</template>
+					</i18n-t>
+				</section>
+			</div>
 		</div>
-	</div>
+	</HelpLayout>
 </template>

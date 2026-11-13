@@ -22,7 +22,7 @@
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 	const AsyncManagePlanEmpireAssignments = defineAsyncComponent(
 		() =>
@@ -104,7 +104,7 @@
 			<h1 class="text-2xl font-bold my-auto">
 				{{ $t("management.title") }}
 			</h1>
-			<HelpDrawer file-name="management" />
+			<HelpPanel article="management" />
 		</div>
 		<div
 			class="border-b border-white/10 grid grid-cols-1 xl:grid-cols-[60%_auto] divide-x divide-white/10 child:px-6 child:py-3">

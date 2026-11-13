@@ -67,7 +67,7 @@ vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 	passThrough("WrapperPlanningDataLoader")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () =>
 	stub("CXPreferenceSelector", ["cxUuid"])
 );

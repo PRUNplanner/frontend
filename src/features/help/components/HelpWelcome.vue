@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	/**
-	 * Help page intro: getting started steps, core concepts and key features
+	 * The Welcome article: getting started steps, core concepts and key features
 	 *
 	 * @author jplacht
 	 */
@@ -16,7 +16,7 @@
 </script>
 
 <template>
-	<div class="@container flex flex-col gap-12 max-w-5xl">
+	<div class="@container flex flex-col gap-12 max-w-3xl">
 		<p class="text-lg leading-relaxed text-ink-strong max-w-3xl">
 			{{ $t("help.tutorial.intro") }}
 		</p>
@@ -26,7 +26,7 @@
 				{{ $t("help.getting_started.title") }}
 			</h2>
 			<div
-				class="grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] gap-8 items-start">
+				class="grid grid-cols-1 @4xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] gap-8 items-start">
 				<ol class="flex flex-col gap-5">
 					<li
 						v-for="(step, i) in steps"

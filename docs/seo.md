@@ -25,8 +25,9 @@ index.
 - `titleTemplate` appends "· PRUNplanner"; the landing page sets
   `titleTemplate: "%s"` for its full title.
 - Description `homepage.seo.description`; views may override it
-  (`/imprint-tos`, `/market`, `/search`).
-- Routes with `meta.indexable` (`/`, `/imprint-tos`, `/market`, `/search`)
+  (`/imprint-tos`, `/market`, `/search`, `/help`, `/help/:article`).
+- Routes with `meta.indexable` (`/`, `/imprint-tos`, `/market`, `/search`,
+  `/help`, `/help/:article`)
   get a canonical URL; all others, including `NotFoundView`, get
   `robots: noindex`.
 - `<html lang>` follows the locale.
@@ -48,7 +49,8 @@ description and canonical before mount, so there is only one of each.
      module entry replaced by a loader that starts it after the first
      contentful paint (1 s fallback; at once under `skip-prerender`), once
      the page is parsed so `/env.js` has run;
-   - writes `dist/sitemap.xml` from the indexable routes, plus `.gz`/`.br`
+   - writes `dist/sitemap.xml` from the indexable routes (one entry per
+     help article), plus `.gz`/`.br`
      of both files;
    - `checkLanding` (`lib/seo/checkLanding.ts`) fails the build if the h1,
      positioning line, player count, FAQ, example plan / GitHub links,
@@ -89,5 +91,7 @@ Every hard load of another path also downloads the hidden landing HTML
   `lib/seo/checkLanding.ts`.
 - **Share image**: replace `public/images/og/prunplanner.jpg` (1200 × 630,
   under 300 kB); alt text is `og:image:alt` in `index.html`.
+- **New help article**: no SEO step; the sitemap lists every registry
+  entry ([features/help.md](features/help.md)).
 - **New public page**: `meta: { indexable: true }` on its route, title and
   description via `useHead`.

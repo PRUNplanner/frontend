@@ -16,8 +16,12 @@ vi.mock("vue-router", async (original) => ({
 	...(await original<typeof import("vue-router")>()),
 	useRouter: () => ({ push }),
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
-	default: { name: "HelpDrawer", props: ["fileName"], render: () => null },
+vi.mock("@/features/help/components/HelpPanel.vue", () => ({
+	default: {
+		name: "HelpPanel",
+		props: ["article", "section"],
+		render: () => null,
+	},
 }));
 // the file reading is tested in useCXImportExport.test.ts
 vi.mock("@/features/exchanges/useCXImportExport", async (original) => {
@@ -112,7 +116,7 @@ describe("CXHeader", () => {
 		const { wrapper } = await mountHeader();
 
 		expect(
-			wrapper.getComponent({ name: "HelpDrawer" }).props("fileName")
+			wrapper.getComponent({ name: "HelpPanel" }).props("article")
 		).toBe("exchanges");
 	});
 

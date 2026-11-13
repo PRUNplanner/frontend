@@ -168,7 +168,7 @@ vi.mock("@/features/plan_analytics/components/PlanAnalyticsBox.vue", () => ({
 		},
 	},
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/ui/useToast", () => ({
 	useToast: () => mocks.toast,
 	toast: vi.fn(),

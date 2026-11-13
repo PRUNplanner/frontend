@@ -16,7 +16,7 @@
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 
 	const AsyncWrapperGameDataLoader = defineAsyncComponent(
 		() => import("@/features/wrapper/components/WrapperGameDataLoader.vue")
@@ -78,7 +78,7 @@
 						})
 					}}
 				</span>
-				<HelpDrawer file-name="fio_repair" />
+				<HelpPanel article="fio_repair" />
 			</div>
 		</div>
 

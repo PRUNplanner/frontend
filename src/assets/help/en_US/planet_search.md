@@ -1,33 +1,65 @@
 **Planet Search** finds a planet you already know, or places for new production. Every change to a filter updates the results right away.
 
-**Name or ID.** Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. *Apply filters* combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. *Show all* pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
+## Name or ID {#name-or-id}
 
-**Materials.** Each group matches *any of* or *all of* its materials, and the groups combine with *all groups* or *any group*. That covers searches like "(FEO and H2O) or (MAG and O)". Every material can have a minimum daily extraction in units per day.
+Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. *Apply filters* combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. *Show all* pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
 
-**Planet conditions.** Pick Rocky and/or Gaseous planets, and whether they must be fertile. A new search starts with Rocky planets only. Gravity, pressure and temperature only matter through the extra building materials they require (MGC, BL, SEA, HSE, INS, TSH). Tick the ones you are willing to ship in; planets needing any other one are hidden, so with none ticked you only see planets that need no extra material.
+## Materials {#materials}
 
-**COGC and infrastructure.** *Active COGC program* keeps planets running one of the ticked programs right now. *Infrastructure* is a separate filter and stricter: a planet must have every ticked building (LM Local Market, COGC Chamber of Commerce, WAR Warehouse, ADM Administration Center, SHY Shipyard).
+Each group matches *any of* or *all of* its materials, and the groups combine with *all groups* or *any group*. That covers searches like "(FEO and H2O) or (MAG and O)". Every material can have a minimum daily extraction in units per day.
 
-**Counts and Any.** The number next to an option that isn't ticked is how many planets you would get by ticking it. The *Any* button in the header of Planet conditions, Accept extra building materials, Active COGC program and Infrastructure sets that section to the state that hides the fewest planets, and shows how many planets that gives: both surfaces and no fertility requirement, all extra building materials accepted, no COGC program ticked, no infrastructure ticked. It is highlighted and can no longer be clicked when the section is already there.
+## Planet conditions {#planet-conditions}
 
-**Distance.** Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
+Pick Rocky and/or Gaseous planets, and whether they must be fertile. A new search starts with Rocky planets only. Gravity, pressure and temperature only matter through the extra building materials they require (MGC, BL, SEA, HSE, INS, TSH). Tick the ones you are willing to ship in; planets needing any other one are hidden, so with none ticked you only see planets that need no extra material.
 
-**Active filters and Reset.** Every active filter shows as a chip above the results; × on a chip removes just that filter. *Reset* at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
+## COGC and infrastructure {#cogc-and-infrastructure}
 
-**Filter panel.** On larger screens the double arrow at the top of the panel collapses it to a narrow rail, and expands it again. On small screens the filters open in a drawer with the *Filters* button; *Show n planets* at its bottom closes it.
+*Active COGC program* keeps planets running one of the ticked programs right now. *Infrastructure* is a separate filter and stricter: a planet must have every ticked building (LM Local Market, COGC Chamber of Commerce, WAR Warehouse, ADM Administration Center, SHY Shipyard).
 
-**List and Matrix.** The List shows the searched materials as tiles next to the other resources. The Matrix gives every material found in the results its own column, searched ones first, with stronger shading for higher daily extraction.
+## Counts and Any {#counts-and-any}
 
-**Chart.** The Chart plots every result by distance and output: across, the jumps to your *Distance* picks (the farthest one when you picked several), or to the nearest exchange without a pick; up, the daily extraction of a searched material you choose (fertility when you search no material). Bigger dots are more fertile. The **best trade-off** planets are the ones no other result beats on both: none is closer *and* richer. They are highlighted, joined by a dashed line, and everything below and right of that line is beaten by one of them. *Colour by COGC* colours the dots by their active COGC program instead. Hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan. The list beside the chart ranks the same planets by output. Up to 300 results are plotted, the first ones by the current sort.
+The number next to an option that isn't ticked is how many planets you would get by ticking it. The *Any* button in the header of Planet conditions, Accept extra building materials, Active COGC program and Infrastructure sets that section to the state that hides the fewest planets, and shows how many planets that gives: both surfaces and no fertility requirement, all extra building materials accepted, no COGC program ticked, no infrastructure ticked. It is highlighted and can no longer be clicked when the section is already there.
 
-**Reading the results.** The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. The column with the construction icon lists the extra building materials a planet needs; hover one to see why (e.g. "Low gravity"). *COGC · Infra* shows the running COGC program and the planet's infrastructure as LM, COGC, WAR, ADM and SHY. A "—" in a jumps column means there is no jump route: hover it to read "Colony Ship Required".
+## Distance {#distance}
 
-**Plots.** Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The *Plots* column, which you turn on in the *Columns* menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red *Full*. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber *Full · ghost sites*. Full planets keep their place in the results. *plots unknown* means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
 
-**Sorting.** Click a column header to sort by it, click again to reverse. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. The *Sort* menu does the same without a keyboard. Without a sort of your own, the results are ordered by the first searched material (highest first), otherwise by the jumps to the first distance pick, otherwise by name.
+## Active filters and Reset {#active-filters-and-reset}
 
-**Columns.** The *Columns* menu hides and shows columns. In the Matrix it also lists every found material with *All* and *None* to show or hide them at once. *Reset* goes back to the default columns.
+Every active filter shows as a chip above the results; × on a chip removes just that filter. *Reset* at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
 
-**Compare.** On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
+## Filter panel {#filter-panel}
 
-**Saving and sharing.** The address bar always holds the whole search, so *Copy link* shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. *Save search* stores named searches in this browser; *Manage* renames, loads or deletes them.
+On larger screens the double arrow at the top of the panel collapses it to a narrow rail, and expands it again. On small screens the filters open in a drawer with the *Filters* button; *Show n planets* at its bottom closes it.
+
+## List and Matrix {#list-and-matrix}
+
+The List shows the searched materials as tiles next to the other resources. The Matrix gives every material found in the results its own column, searched ones first, with stronger shading for higher daily extraction.
+
+## Chart {#chart}
+
+The Chart plots every result by distance and output: across, the jumps to your *Distance* picks (the farthest one when you picked several), or to the nearest exchange without a pick; up, the daily extraction of a searched material you choose (fertility when you search no material). Bigger dots are more fertile. The **best trade-off** planets are the ones no other result beats on both: none is closer *and* richer. They are highlighted, joined by a dashed line, and everything below and right of that line is beaten by one of them. *Colour by COGC* colours the dots by their active COGC program instead. Hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan. The list beside the chart ranks the same planets by output. Up to 300 results are plotted, the first ones by the current sort.
+
+## Reading the results {#reading-the-results}
+
+The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. The column with the construction icon lists the extra building materials a planet needs; hover one to see why (e.g. "Low gravity"). *COGC · Infra* shows the running COGC program and the planet's infrastructure as LM, COGC, WAR, ADM and SHY. A "—" in a jumps column means there is no jump route: hover it to read "Colony Ship Required".
+
+## Plots {#plots}
+
+Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The *Plots* column, which you turn on in the *Columns* menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red *Full*. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber *Full · ghost sites*. Full planets keep their place in the results. *plots unknown* means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+
+## Sorting {#sorting}
+
+Click a column header to sort by it, click again to reverse. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. The *Sort* menu does the same without a keyboard. Without a sort of your own, the results are ordered by the first searched material (highest first), otherwise by the jumps to the first distance pick, otherwise by name.
+
+## Columns {#columns}
+
+The *Columns* menu hides and shows columns. In the Matrix it also lists every found material with *All* and *None* to show or hide them at once. *Reset* goes back to the default columns.
+
+## Compare {#compare}
+
+On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
+
+## Saving and sharing {#saving-and-sharing}
+
+The address bar always holds the whole search, so *Copy link* shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. *Save search* stores named searches in this browser; *Manage* renames, loads or deletes them.

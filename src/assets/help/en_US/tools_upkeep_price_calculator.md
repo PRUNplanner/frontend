@@ -1,6 +1,6 @@
 The Upkeep Price Calculator helps you find the most cost-effective materials and buildings to fulfill population upkeep needs (Safety, Health, Comfort, Culture, and Education) on governed planets.
 
-## Material Details
+## Material Details {#material-details}
 
 Lists all materials consumed by buildings for the selected need, sorted by cost efficiency.
 
