@@ -2,7 +2,7 @@ L'outil Aperçu des ressources s'appuie sur les configurations planétaires opti
 
 **Note** : l'Aperçu ROI des ressources suppose que le COGC actif est « Extraction de ressources ». Vérifie avec la Recherche de planètes si la planète applique vraiment ce programme ou un autre.
 
-# Configurations optimales
+## Optimal Setups {#optimal-setups}
 
 Les configurations optimales ont été créées avec un modèle linéaire qui calcule le nombre optimal de bâtiments de production et d'habitations nécessaires pour exploiter au mieux une base de 500 de surface.
 
