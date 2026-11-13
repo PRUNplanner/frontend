@@ -2,13 +2,13 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 
 **Note** : toutes les lignes supposent le COGC et les experts définis ici ; les lignes de recette tournent sur une planète standard.
 
-# Types de lignes
+## Row kinds {#row-kinds}
 
 - **Ressource** : une ressource sur une planète, avec RIG, EXT ou COL et les matériaux d'environnement de la planète. Shows "@ planet · N jumps" (to the nearest exchange).
 - **Agriculture** : une recette FRM ou ORC sur une planète fertile, avec la fertilité de la planète dans le rendement.
 - **Recette** : une recette de n'importe quel autre bâtiment de production, sur une planète standard (rocheuse, gravité, pression et température normales). Utilise **Essayer sur une planète** dans les détails de la ligne pour la voir sur une vraie planète.
 
-# Metrics
+## Metrics {#metrics}
 
 - **Bénéfice quotidien** : recettes moins intrants, consommables et dégradation (construction des bâtiments de production ÷ 180), à 5 experts avec la montée progressive, sinon au nombre fixe.
 - **Absolu** : toutes les lignes sur une même échelle en ȼ, pour voir leurs rapports. Indicateurs Avec **Progression depuis 0**, une nouvelle base démarre sans experts : les paliers à 0, 1, 2, 3 et 4 experts durent 10, 12.5, 57.57, 276.5 et 915.1 jours, chacun divisé par le nombre de bâtiments de production, et les recettes et intrants augmentent avec le bonus des experts. « jamais » quand la base ne fait pas de bénéfice.
@@ -23,7 +23,7 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 - **Bénéfice, 30 jours** : le bénéfice quotidien avec le VWAP quotidien de l'échange de chaque matériau sur les 30 derniers jours. Les jours sans transaction gardent le dernier prix. Les prix ASK, BID et fixes n'ont pas d'historique.
 - **⚠** : un matériau évalué avec un VWAP 7j ou 30j dont le bid ou l'ask s'écarte de plus de 30% de ce prix. La fenêtre contextuelle indique le bénéfice quotidien avec ces prix.
 
-# Réglages
+## Settings {#settings}
 
 - **Ship visits**: how often the ship comes; it has to carry this many days of cargo, in and out, so rows that need more than the ship holds are hidden.
 - **Stock tampon** : du stockage pour ce nombre de jours de cargaison ; des STO ou STA sont ajoutés, et un bâtiment de production est retiré quand la base ne tiendrait plus.
@@ -31,7 +31,7 @@ Base ROI classe toutes les façons de faire tourner une base : chaque ressource 
 - **Afficher les planètes sans travailleurs ni parcelles** : désactivé par défaut, donc les lignes de planète sont masquées quand aucune nouvelle base ne tient (toutes les parcelles prises et aucun site fantôme) ou quand le dernier rapport de population ne peut pas pourvoir les emplois de la base, en comptant les travailleurs libres moins les emplois déjà ouverts. Une planète sans rapport de population compte comme n'ayant aucun travailleur. Active-le pour voir ces lignes ; la colonne Main-d'œuvre montre ce qui manque. Recipe rows are not checked. Recipe rows are not checked. If the reports can't be loaded, the page says so and nothing is hidden.
 - **Run setup again** opens the first-visit setup with its presets: Rookie (SCB) and Standard (WCB) without weekly return, running cost, plots and workforce, and Veteran (any ship or no limit) with all of them but running cost. Weekly return, running cost, plots and workforce are also hidden for new visitors; turn them on in Columns.
 
-# Graphique des bénéfices
+## Profit chart {#profit-chart}
 
 Au-dessus du tableau, un graphique montre le bénéfice quotidien des 30 derniers jours pour chaque industrie. Each base counts by how much of its material the market trades (7-day average), and the many planets of one resource recipe count as one: the mean of the 3 planets with the highest daily profit, so poor planets don't drag the line down. Click the title to collapse the chart; it stays collapsed. Search to drill in:
 
@@ -43,12 +43,12 @@ Le graphique suit les réglages et les limites du tableau. Il affiche les 7 lign
 
 Every history chart has a time range (7, 30 or 90 days) and an aggregation (1, 3 or 7 days per point) at its top right, like the game's charts. A longer aggregation smooths out daily noise. The choice applies to all charts and is remembered.
 
-# Recherche et info-bulles
+## Search and tooltips {#search-and-tooltips}
 
 - The search above the table filters by industry, building or material ticker.
 - Survole un en-tête de colonne pour voir sa signification, et un nombre pour le calcul rapide qui se cache derrière.
 
-# Détails
+## Details {#details}
 
 Expand a row to see two 30-day charts of revenue, running cost and daily profit, then the full math below them. Tu peux aussi copier le calcul sous forme de texte, ou ouvrir la ligne comme nouveau plan avec la même disposition (connecté).
 
