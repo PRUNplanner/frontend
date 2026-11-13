@@ -1,8 +1,8 @@
-# Stockage du navigateur
+## Browser Storage {#browser-storage}
 
 Pour réduire la charge sur l'API du backend et améliorer les performances, PRUNplanner stocke les données du jeu directement dans ton navigateur. This allows for faster access and a smoother user experience. The tool also automatically refreshes stored data after a set period to ensure it remains up to date.
 
-## Catégories de stockage
+### Storage Categories {#storage-categories}
 
 - **Données du jeu**
   Elles comprennent surtout des informations statiques comme les matériaux, les bâtiments, les recettes, les données planétaires et les détails des échanges. Elles proviennent de FIO ou, pour les données d'échange, sont calculées par PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
@@ -15,7 +15,7 @@ Pour réduire la charge sur l'API du backend et améliorer les performances, PRU
 
 ---
 
-# Préférences
+## Preferences {#preferences}
 
 Les préférences te permettent d'enregistrer les réglages et configurations que tu utilises souvent, pour une planification plus efficace et personnalisée.
 
