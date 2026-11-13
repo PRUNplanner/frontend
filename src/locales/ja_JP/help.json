@@ -1,9 +1,5 @@
 {
 	"view_title": "Help",
-	"title": "Help & Changelog",
-	"changelog": {
-		"title": "Changelog"
-	},
 	"tutorial": {
 		"intro": "PRUNplanner helps you design bases, organize empires, and calculate profits — without wasting in-game resources. It mirrors nearly every aspect of Prosperous Universe so you can plan smarter and play more confidently."
 	},
@@ -73,5 +69,133 @@
 			"p": "Dive into historical prices, optimize habitation layouts, estimate visitation frequencies, and fine-tune production efficiency. PRUNplanner is packed with utilities to give you the edge."
 		}
 	},
-	"load_error": "Unable to load '{file_name}'"
+	"areas": {
+		"start": "Start here",
+		"planning": "Planning",
+		"prices": "Prices",
+		"tools": "Tools",
+		"fio": "FIO",
+		"account": "Account",
+		"reference": "Reference"
+	},
+	"articles": {
+		"help_welcome": {
+			"title": "Welcome"
+		},
+		"plan_layout": {
+			"title": "Layout"
+		},
+		"plan_results": {
+			"title": "Results"
+		},
+		"plan_production": {
+			"title": "Production & recipes"
+		},
+		"plan_saving": {
+			"title": "Saving & versions"
+		},
+		"plan_check": {
+			"title": "Plan check"
+		},
+		"empire": {
+			"title": "Empire"
+		},
+		"management": {
+			"title": "Management"
+		},
+		"exchanges": {
+			"title": "Exchanges & CX preferences"
+		},
+		"planet_search": {
+			"title": "Planet Search"
+		},
+		"tools_production_chain": {
+			"title": "Production Chains"
+		},
+		"tools_base_roi": {
+			"title": "Base ROI"
+		},
+		"tools_roi_overview": {
+			"title": "ROI Overview"
+		},
+		"tools_resource_roi_overview": {
+			"title": "Resource ROI Overview"
+		},
+		"tools_market_live": {
+			"title": "Market Live"
+		},
+		"tools_market_exploration": {
+			"title": "Market Exploration"
+		},
+		"tools_hq_upgrade_calculator": {
+			"title": "HQ Upgrade Calculator"
+		},
+		"tools_upkeep_price_calculator": {
+			"title": "Upkeep Price Calculator"
+		},
+		"fio_repair": {
+			"title": "FIO Repair"
+		},
+		"fio_burn": {
+			"title": "FIO Burn"
+		},
+		"profile": {
+			"title": "Profile & preferences"
+		},
+		"whats-new": {
+			"title": "What's new"
+		}
+	},
+	"parents": {
+		"plan": "Plan page"
+	},
+	"home": {
+		"title": "How can we help?",
+		"lead": "A reference for every page of PRUNplanner, and what changed in each release.",
+		"most_read": "Most read:",
+		"browse": "Browse by area",
+		"whats_new": "What's new",
+		"all_releases": "All releases",
+		"stuck_title": "Still stuck?",
+		"stuck_text": "Ask other players on {discord}, or report a bug on {github}.",
+		"discord": "Discord",
+		"github": "GitHub issues",
+		"description": "PRUNplanner help: how plans, empires, exchanges and every tool work, and what changed in each release."
+	},
+	"article": {
+		"root": "Help",
+		"updated_in": "Updated in {version}",
+		"read_time": "{minutes} min read",
+		"on_this_page": "On this page",
+		"related": "Related",
+		"previous": "Previous",
+		"next": "Next",
+		"fallback": "This page isn't translated yet, so it is shown in English.",
+		"not_found": "That help page doesn't exist.",
+		"menu": "Help pages",
+		"breadcrumb": "Breadcrumb"
+	},
+	"feedback": {
+		"question": "Was this page helpful?",
+		"yes": "Yes",
+		"no": "No",
+		"thanks": "Thanks for the feedback.",
+		"missing": "What was missing or unclear on this page?",
+		"send": "Send",
+		"sent": "Thanks, we read every answer."
+	},
+	"search": {
+		"open": "Search help",
+		"placeholder": "Search help",
+		"label": "Search the help pages",
+		"move": "to move",
+		"pick": "to open",
+		"close": "to close",
+		"no_results": "Nothing found for “{query}”.",
+		"ask": "Ask other players on {discord}.",
+		"results": "{count} results"
+	},
+	"panel": {
+		"open_in_centre": "Open in Help centre"
+	}
 }
