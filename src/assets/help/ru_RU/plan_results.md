@@ -1,0 +1,4 @@
+- **Profit / day**: the value of the plan's output minus inputs, workforce consumables and building degradation, with revenue and cost below it. Construction includes the core module.
+- **Payback**: the build cost of the plan divided by its profit per day.
+- **Profit / area**: profit per day divided by the area the base uses. It uses the actual base as the denominator, while ȼ / area of a recipe uses a standardized one for comparison. When the empire page has calculated your empire, its average is shown below.
+- **Storage**: days until the base storage is full, from what the base exports per day.
