@@ -1,6 +1,6 @@
 Der Instandhaltungskosten-Rechner hilft dir, die kostengünstigsten Materialien und Gebäude zu finden, um die Bedürfnisse der Bevölkerung (Sicherheit, Gesundheit, Komfort, Kultur und Bildung) auf verwalteten Planeten zu erfüllen.
 
-## Materialdetails
+## Material Details {#material-details}
 
 Listet alle Materialien, die Gebäude für das gewählte Bedürfnis verbrauchen, sortiert nach Kosteneffizienz.
 
