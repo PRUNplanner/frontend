@@ -165,7 +165,19 @@ interface ICase {
 async function mountView(input: ICase): Promise<VueWrapper> {
 	const pinia = createPinia();
 	setActivePinia(pinia);
-	usePlanningStore().setCXs(cx_list as unknown as CX[]);
+	// the view prices with the CX the list assigns to the empire: the
+	// case's CX, or none
+	usePlanningStore().setCXs(
+		(cx_list as unknown as CX[]).map((c) => ({
+			...c,
+			empires: [
+				...c.empires.filter((e) => e.uuid !== input.empireUuid),
+				...(c.uuid === input.cxUuid
+					? [{ uuid: input.empireUuid } as CX["empires"][number]]
+					: []),
+			],
+		}))
+	);
 
 	const { wrapper } = await mountComponent(
 		EmpireView,
@@ -180,7 +192,6 @@ async function mountView(input: ICase): Promise<VueWrapper> {
 	const loader = wrapper.findComponent(WrapperPlanningDataLoader);
 	loader.vm.$emit("data:empire:list", structuredClone(empire_list));
 	loader.vm.$emit("data:empire:plans", structuredClone(PLANS));
-	loader.vm.$emit("update:cx-uuid", input.cxUuid);
 	await nextTick();
 
 	await vi.waitFor(() =>

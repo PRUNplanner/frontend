@@ -11,6 +11,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import PSelect from "@/ui/components/PSelect.vue";
 import { usePreferences } from "@/features/preferences/usePreferences";
 import empire from "@/locales/en_US/empire.json";
+import { usePlanningStore } from "@/stores/planningStore";
+import type { CX } from "@/features/api/schemas/cxData.schemas";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -141,6 +143,14 @@ vi.mock("vue-router", async (importOriginal) => ({
 	useRouter: () => ({ replace }),
 }));
 
+// a CX preference assigned to the given empires
+const cx = (uuid: string, empires: string[]): CX =>
+	({
+		uuid,
+		cx_name: uuid,
+		empires: empires.map((e) => ({ uuid: e })),
+	}) as never;
+
 // the planning loader hands over the empire and its plans
 async function mountView(
 	props: Record<string, unknown> = {}
@@ -158,7 +168,7 @@ async function mountView(
 	loader.vm.$emit("data:empire:plans", [
 		{ uuid: "P1", planet_natural_id: "OT-580b" },
 	]);
-	loader.vm.$emit("update:cx-uuid", "CX1");
+	usePlanningStore().setCXs([cx("CX1", ["E1"])]);
 	await nextTick();
 
 	await vi.waitFor(() =>
@@ -304,6 +314,32 @@ describe("EmpireView", () => {
 			await vi.waitFor(() =>
 				expect(calculatePlan).toHaveBeenCalledTimes(2)
 			);
+			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
+				false
+			);
+		});
+
+		// PRUNplanner/frontend#745: a stale CX made every price lookup throw
+		it("loads the CX list and follows the empire's CX in it", async () => {
+			const wrapper = await mountView();
+			const cxOf = (call: number) =>
+				(createContext.mock.calls[call] as unknown[] | undefined)?.[2];
+			expect(loader(wrapper).vm.$attrs["load-c-x"]).toBe("");
+			expect(cxOf(0)).toBe("CX1");
+
+			// deleted elsewhere: the next list load no longer has it
+			usePlanningStore().setCXs([cx("CX2", [])]);
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(2)
+			);
+			expect(cxOf(1)).toBeUndefined();
+
+			// assigned elsewhere
+			usePlanningStore().setCXs([cx("CX2", ["E1"])]);
+			await vi.waitFor(() =>
+				expect(createContext).toHaveBeenCalledTimes(3)
+			);
+			expect(cxOf(2)).toBe("CX2");
 			expect(wrapper.findComponent(ComputingProgress).exists()).toBe(
 				false
 			);
