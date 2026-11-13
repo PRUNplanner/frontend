@@ -1,8 +1,8 @@
-# Calculations
+## Calculations {#calculations}
 
 Plan calculations are based on the production and storage data of your plans. To get accurate results, you’ll need to have your data synced via FIO. Please note that degradation is not included in these calculations.
 
-# Thresholds
+## Thresholds {#thresholds}
 
 PRUNplanner uses color thresholds to highlight important values:
 
