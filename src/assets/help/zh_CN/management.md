@@ -1,17 +1,17 @@
-# 核心概念
+## Core Concepts {#core-concepts}
 
 PRUNplanner 由三个主要组件组成，帮助你规划并管理 Prosperous Universe 中的帝国：
 
-## 规划
+### Plans {#plans}
 
 规划是 PRUNplanner 中一切内容的核心。它们包含你可以在 Prosperous Universe 中建立的一个基地的所有建筑、生产和加成。你可以通过搜索想要建立基地的行星来创建新规划。此外，规划还应分配一个商品交易所偏好设置，并归属于一个帝国。请注意，每份规划都可以分配给多个帝国，因此可以重复使用。
 
 To delete several Plans at once, tick them in the Plan ↔ Empire Assignments table and press "Delete selected…". The box in the table header ticks every Plan the search and filters show, for example all unassigned ones.
 
-## 帝国
+### Empires {#empires}
 
 帝国是一组规划的集合（例如你当前已在 Prosperous Universe 中建立的所有基地，或你未来想建立并相互连接的基地)。每个帝国都像一个容器，包含多份规划。此外，每个帝国都可以分配一个 CX 交易所偏好设置。
 
-## 交易所偏好
+### CX {#cx}
 
 交易所偏好设置允许你为物资定价定义市场偏好。每个交易所偏好设置都可以用于多个帝国。但是，每个帝国只能分配一个交易所偏好设置。这可以确保该帝国下各个规划的价格得以正确计算。
