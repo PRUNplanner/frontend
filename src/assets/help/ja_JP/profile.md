@@ -1,8 +1,8 @@
-# Browser Storage
+## Browser Storage {#browser-storage}
 
 To reduce the load on the backend API and improve performance, PRUNplanner stores game data directly in your browser. This allows for faster access and a smoother user experience. The tool also automatically refreshes stored data after a set period to ensure it remains up to date.
 
-## Storage Categories
+### Storage Categories {#storage-categories}
 
 - **Game Data**
   This includes mostly static information such as materials, buildings, recipes, planetary data, and exchange details. It is sourced from FIO or, in the case of exchange data, calculated by PRUNplanner. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
@@ -15,7 +15,7 @@ To reduce the load on the backend API and improve performance, PRUNplanner store
 
 ---
 
-# Preferences
+## Preferences {#preferences}
 
 Preferences allow you to save frequently used settings and configurations, making your planning process more efficient and personalized.
 
