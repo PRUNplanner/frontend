@@ -1,8 +1,8 @@
-# 计算
+## Calculations {#calculations}
 
 规划计算基于你规划中的生产和仓储数据。为了获得准确结果，你需要通过 FIO 同步数据。请注意，这些计算不包含建筑损耗。
 
-# 阈值
+## Thresholds {#thresholds}
 
 PRUNplanner 使用颜色阈值来突出显示重要数值：
 
