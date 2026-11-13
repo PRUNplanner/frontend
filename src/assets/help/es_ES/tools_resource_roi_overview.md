@@ -2,7 +2,7 @@ La herramienta Resumen de recursos se basa en las configuraciones planetarias ó
 
 **Ten en cuenta**: El Resumen de ROI de recursos supone que el COGC activo es «Extracción de recursos». Comprueba en Búsqueda de planetas si el planeta ejecuta realmente ese programa u otro.
 
-# Configuraciones óptimas
+## Optimal Setups {#optimal-setups}
 
 Las configuraciones óptimas se crearon con un modelo lineal para calcular el número óptimo de edificios de producción y de habitaciones necesarias para aprovechar al máximo una base de 500 de área.
 
