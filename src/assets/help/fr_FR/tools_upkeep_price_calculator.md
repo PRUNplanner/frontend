@@ -1,6 +1,6 @@
 Le Calculateur de prix d'entretien t'aide à trouver les matériaux et les bâtiments les plus rentables pour couvrir les besoins d'entretien de la population (Sécurité, Santé, Confort, Culture et Éducation) sur les planètes gouvernées.
 
-## Détails des matériaux
+## Material Details {#material-details}
 
 Liste tous les matériaux consommés par les bâtiments pour le besoin choisi, triés par rentabilité.
 
