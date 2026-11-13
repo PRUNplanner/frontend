@@ -1,8 +1,8 @@
-# Calculs
+## Calculations {#calculations}
 
 Les calculs des plans reposent sur les données de production et de stockage de tes plans. Pour obtenir des résultats précis, tes données doivent être synchronisées via FIO. Note que la dégradation n'est pas incluse dans ces calculs.
 
-# Seuils
+## Thresholds {#thresholds}
 
 PRUNplanner utilise des seuils de couleur pour mettre en évidence les valeurs importantes :
 
