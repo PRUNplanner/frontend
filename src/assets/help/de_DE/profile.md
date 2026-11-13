@@ -1,8 +1,8 @@
-# Browser-Speicher
+## Browser Storage {#browser-storage}
 
 Um die Last auf der Backend-API zu verringern und die Performance zu verbessern, speichert PRUNplanner Spieldaten direkt in deinem Browser. This allows for faster access and a smoother user experience. Das Tool aktualisiert gespeicherte Daten außerdem automatisch nach einer festgelegten Zeit, damit sie aktuell bleiben.
 
-## Speicherkategorien
+### Storage Categories {#storage-categories}
 
 - **Spieldaten**
   Dazu gehören überwiegend statische Informationen wie Materialien, Gebäude, Aufträge, Planetendaten und Marktplatzdetails. Sie stammen von FIO oder werden, im Fall der Marktplatzdaten, von PRUNplanner berechnet. Exchange data is refreshed more frequently to ensure accurate profit and cost calculations.
@@ -15,7 +15,7 @@ Um die Last auf der Backend-API zu verringern und die Performance zu verbessern,
 
 ---
 
-# Einstellungen
+## Preferences {#preferences}
 
 In den Einstellungen kannst du häufig genutzte Optionen und Konfigurationen speichern, damit deine Planung effizienter und persönlicher wird.
 
