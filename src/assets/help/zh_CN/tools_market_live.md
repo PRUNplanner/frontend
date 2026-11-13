@@ -1,38 +1,38 @@
 该系统通过 FIO API Webhooks 近实时监控商品交易所（CX），并由 PRUNplanner 处理后推送到你的浏览器。它用于帮助你监控市场变动，并创建提醒，以便自动响应变化。
 
-# 数据流机制
+## Data Stream Mechanics {#data-stream-mechanics}
 
 当有用户在 Prosperous Universe 中看到变化时，FIO API 会接收数据，并每30秒批量发送给 PRUNplanner。 PRUNplanner 本身会保留最近500个数据点，因此你打开此视图时不必从零开始。
 
 请注意：系统不会拥有全部商品和交易所的数据点，只有那些在变动发生时正好有用户在游戏内查看它们的数据点。实时概览会随着接收到更多数据而持续累积完善。
 
-# 实时视图
+## Live View {#live-view}
 
 此视图右侧会按物资代码与交易所组合显示接收到的数据点，包括当前成交价、买价和卖价、买卖价差，以及当前活跃的买入量和卖出量。
 
 价格旁还会显示一个指标，表示最新百分比变化。
 
-# 提醒引擎
+## Alert Engine {#alert-engine}
 
 该系统使用递归逻辑引擎，将传入数据与此前接收的数据以及你的自定义提醒配置进行比对。
 
-## 设置
+### Setup {#setup}
 
-### 逻辑运算符
+#### Logical Operators {#logical-operators}
 
 你可以串联多个条件来减少噪音：
 
 - **AND**：必须满足所有条件（例如 Price > 100 AND Volume != Previous Volume）
 - **OR**：任一条件满足即可触发提醒
 
-### 比较方式：
+#### Comparisons: {#comparisons}
 
 - **GT**：大于
 - **LT**：小于
 - **EQ**：等于
 - **NEQ**：不等于
 
-## 比较目标：
+### Comparison Targets: {#comparison-targets}
 
 - **值**：将字段与固定数字/文本进行比较。
   - 用于硬性价格下限或突破上限，也可按特定物资或交易所筛选。
@@ -41,7 +41,7 @@
 - **百分比偏移**：按百分比偏移与上一条 tick 数据进行比较。
   - 用于监控波动（例如“价格上涨超过 2% 时提醒”）。你可以使用 GT / LT 组合正向和负向变化，设置 OR 条件。
 
-## 设置提醒
+### Setting up Alerts {#setting-up-alerts}
 
 - 定义范围：选择一个字段
 - 选择严重程度：低、中、高
