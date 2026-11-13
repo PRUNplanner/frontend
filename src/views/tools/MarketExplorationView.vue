@@ -25,7 +25,7 @@
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import MarketExplorationChart from "@/ui/charts/MarketExplorationChart.vue";
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import MaterialExchangeTable from "@/features/material_tile/components/MaterialExchangeTable.vue";
@@ -295,7 +295,7 @@
 							class="w-30"
 							@update:value="fetch()" />
 
-						<HelpDrawer file-name="tools_market_exploration" />
+						<HelpPanel article="tools_market_exploration" />
 					</div>
 				</div>
 			</div>

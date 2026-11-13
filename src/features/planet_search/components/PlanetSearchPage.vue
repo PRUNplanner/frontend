@@ -59,7 +59,7 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import PlanetSearchHeader from "@/features/planet_search/components/PlanetSearchHeader.vue";
 	import PlanetSearchFilterPanel from "@/features/planet_search/components/PlanetSearchFilterPanel.vue";
@@ -113,6 +113,12 @@
 	const initial = decodeSearch(route.query);
 	const filter: Ref<PlanetSearchFilter> = ref(initial.filter);
 	const sort: Ref<IPlanetSearchSort[]> = ref(initial.sort);
+	// the Help panel opens at the view shown; the list is the article's top
+	const HELP_SECTIONS: Record<PlanetSearchView, string | undefined> = {
+		list: undefined,
+		matrix: "list-and-matrix",
+		chart: "chart",
+	};
 	const view: Ref<PlanetSearchView> = ref(
 		hasParams(route.query) ? initial.view : prefs.value.view
 	);
@@ -564,7 +570,7 @@
 					{{ intro }}
 				</p>
 			</div>
-			<HelpDrawer file-name="planet_search" />
+			<HelpPanel article="planet_search" :section="HELP_SECTIONS[view]" />
 		</div>
 
 		<PlanetSearchHeader

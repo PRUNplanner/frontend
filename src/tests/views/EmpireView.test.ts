@@ -132,7 +132,7 @@ vi.mock("@/features/empire/components/EmpireEmpty.vue", () =>
 vi.mock("@/features/empire/components/EmpireOnboarding.vue", () =>
 	stub("EmpireOnboarding")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),
 	trackEvent,

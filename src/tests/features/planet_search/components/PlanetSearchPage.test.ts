@@ -101,7 +101,7 @@ vi.mock(
 vi.mock("@/database/services/useMaterialData", () => ({
 	useMaterialData: () => ({ getMaterialClass: () => "" }),
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
+vi.mock("@/features/help/components/HelpPanel.vue", () => ({
 	default: { render: () => h("div") },
 }));
 // the game data gate has its own tests: it lets the body through

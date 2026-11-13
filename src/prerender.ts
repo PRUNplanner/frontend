@@ -7,6 +7,7 @@ import AppProvider from "@/AppProvider.vue";
 import router from "@/router";
 import { i18n } from "@/lib/i18n";
 import { buildSitemap } from "@/lib/seo/site";
+import { HELP_ARTICLES } from "@/features/help/helpArticles";
 
 // The build-time prerender of "/" (scripts/prerender.mjs runs this bundle):
 // English, logged out, tours on their first step, panel closed. No
@@ -38,7 +39,13 @@ export function renderSitemap(date: Date): string {
 		router
 			.getRoutes()
 			.filter((r) => r.meta.indexable)
-			.map((r) => r.path),
+			// one entry per help article; the app renders them from the
+			// markdown the build parsed (vite.help.ts)
+			.flatMap((r) =>
+				r.name === "help-article"
+					? HELP_ARTICLES.map((a) => `/help/${a.id}`)
+					: [r.path]
+			),
 		date
 	);
 }

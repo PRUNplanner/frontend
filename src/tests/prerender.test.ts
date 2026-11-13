@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 
 import { apiService } from "@/lib/apiService";
 import { trackEvent, trackPageview } from "@/lib/analytics/useAnalytics";
+import { HELP_ARTICLES } from "@/features/help/helpArticles";
 import {
 	checkLanding,
 	injectLanding,
@@ -180,12 +181,18 @@ describe("prerender", () => {
 
 		expect(
 			[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).sort()
-		).toEqual([
-			"https://prunplanner.org/",
-			"https://prunplanner.org/imprint-tos",
-			"https://prunplanner.org/market",
-			"https://prunplanner.org/search",
-		]);
+		).toEqual(
+			[
+				"https://prunplanner.org/",
+				"https://prunplanner.org/help",
+				"https://prunplanner.org/imprint-tos",
+				"https://prunplanner.org/market",
+				"https://prunplanner.org/search",
+				...HELP_ARTICLES.map(
+					(a) => `https://prunplanner.org/help/${a.id}`
+				),
+			].sort()
+		);
 	});
 
 	it("exports the build check", () => {

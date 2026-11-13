@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RouterLinkStub } from "@vue/test-utils";
 
-import HelpTutorial from "@/features/help/components/HelpTutorial.vue";
+import HelpWelcome from "@/features/help/components/HelpWelcome.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // keys render as is, <i18n-t> needs messages to render its link slot
@@ -15,9 +15,9 @@ const messages = {
 	},
 };
 
-describe("HelpTutorial", () => {
+describe("HelpWelcome", () => {
 	it("lists the five steps in order, numbered", async () => {
-		const { wrapper } = await mountComponent(HelpTutorial);
+		const { wrapper } = await mountComponent(HelpWelcome);
 
 		const steps = wrapper.findAll("ol > li");
 		expect(steps).toHaveLength(5);
@@ -33,11 +33,7 @@ describe("HelpTutorial", () => {
 	});
 
 	it("links the steps that name a page and leaves the others plain", async () => {
-		const { wrapper } = await mountComponent(
-			HelpTutorial,
-			{},
-			{ messages }
-		);
+		const { wrapper } = await mountComponent(HelpWelcome, {}, { messages });
 
 		const steps = wrapper.findAll("ol > li");
 		const target = (i: number) =>
@@ -56,7 +52,7 @@ describe("HelpTutorial", () => {
 	});
 
 	it("explains the core concepts and key features", async () => {
-		const { wrapper } = await mountComponent(HelpTutorial);
+		const { wrapper } = await mountComponent(HelpWelcome);
 
 		const headings = wrapper.findAll("h3").map((h) => h.text());
 		expect(headings).toEqual([
@@ -73,7 +69,7 @@ describe("HelpTutorial", () => {
 	});
 
 	it("shows the management screenshot with its caption", async () => {
-		const { wrapper } = await mountComponent(HelpTutorial);
+		const { wrapper } = await mountComponent(HelpWelcome);
 
 		const figure = wrapper.find("figure");
 		expect(figure.find("img").attributes("src")).toBe(

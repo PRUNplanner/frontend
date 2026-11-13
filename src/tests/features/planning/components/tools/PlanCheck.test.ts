@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import PlanCheck from "@/features/planning/components/tools/PlanCheck.vue";
-import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+import HelpPanel from "@/features/help/components/HelpPanel.vue";
 import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
@@ -96,9 +96,15 @@ describe("PlanCheck", () => {
 			// only Market check's own "what this means" help, none next to the views
 			expect(
 				wrapper
-					.findAllComponents(HelpDrawer)
+					.findAllComponents(HelpPanel)
 					.map((h) => h.props("buttonTitle"))
 			).toEqual(["plan.tools.plan_check.market.means.help"]);
+			// opened at the flags of the Plan check article
+			const help = wrapper.getComponent(HelpPanel);
+			expect([help.props("article"), help.props("section")]).toEqual([
+				"plan_check",
+				"flags",
+			]);
 		});
 
 		it("shows no real prices without a CX preference, with a hint to set one", async () => {
@@ -124,7 +130,7 @@ describe("PlanCheck", () => {
 			});
 			expect(wrapper.find("[data-real-prices]").exists()).toBe(false);
 			// the plan's help is in the plan header, not in the tool
-			expect(wrapper.findComponent(HelpDrawer).exists()).toBe(false);
+			expect(wrapper.findComponent(HelpPanel).exists()).toBe(false);
 		});
 
 		it("names a UNIVERSE preference as the plan's, without a hint to set one", async () => {

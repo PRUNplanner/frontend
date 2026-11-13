@@ -216,8 +216,9 @@ Beyond the layout and formatting in [AGENTS.md](../AGENTS.md):
    English.
 2. Use it through `t("namespace.path.key")`.
 
-Help pages: `src/assets/help/en_US/<name>.md`, rendered with
-`<HelpDrawer file-name="<name>" />` (see [features/help.md](features/help.md)).
+Help pages: `src/assets/help/en_US/<name>.md` with `{#id}` headings, a
+registry entry and a title key, opened with
+`<HelpPanel article="<id>" section="<id>" />` (see [features/help.md](features/help.md)).
 `src/assets/help/changelog.md` is not translated. Debug tooling is English
 only ([hard rules](../AGENTS.md#hard-rules)).
 

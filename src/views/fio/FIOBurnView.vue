@@ -31,7 +31,7 @@
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 
 	const AsyncWrapperGameDataLoader = defineAsyncComponent(
@@ -166,7 +166,7 @@
 									})
 								}}
 							</div>
-							<HelpDrawer file-name="fio_burn" />
+							<HelpPanel article="fio_burn" />
 						</div>
 					</div>
 

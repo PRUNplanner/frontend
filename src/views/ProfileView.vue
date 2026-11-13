@@ -10,7 +10,7 @@
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import ProfileSection from "@/features/profile/components/ProfileSection.vue";
 	import FIOConnection from "@/features/profile/components/FIOConnection.vue";
 	import ProfileEmail from "@/features/profile/components/ProfileEmail.vue";
@@ -28,7 +28,7 @@
 					<h1 class="text-2xl font-bold">
 						{{ $t("profile.title") }}
 					</h1>
-					<HelpDrawer file-name="profile" />
+					<HelpPanel article="profile" />
 				</div>
 
 				<ProfileSection

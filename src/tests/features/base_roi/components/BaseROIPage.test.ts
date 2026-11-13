@@ -42,7 +42,7 @@ vi.mock("@/features/base_roi/useBaseROI", () => ({
 const stub = vi.hoisted(() => (name: string) => ({
 	default: { name, render: () => null },
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () =>
 	stub("CXPreferenceSelector")
 );

@@ -200,7 +200,7 @@ describe("App", () => {
 			const open = mocks.announceRelease.mock.calls[0][0] as () => void;
 			open();
 
-			expect(mocks.push).toHaveBeenCalledWith("/help#changelog");
+			expect(mocks.push).toHaveBeenCalledWith("/help/whats-new");
 		});
 	});
 

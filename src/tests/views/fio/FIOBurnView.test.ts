@@ -74,7 +74,7 @@ vi.mock("@/features/fio/components/FIOBurnPlanTable.vue", () =>
 vi.mock("@/features/fio/components/FIOBurnTable.vue", () =>
 	stub("FIOBurnTable")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 
 const empires = [
 	{ uuid: "E1", empire_name: "one" },

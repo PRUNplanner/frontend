@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { compression } from "vite-plugin-compression2";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
+import { helpMarkdown } from "./vite.help";
 
 // read package.json
 import pkg from "./package.json" with { type: "json" };
@@ -118,6 +119,7 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		tailwindcss(),
+		helpMarkdown(),
 		buildVersion(),
 		apiPreconnect(),
 		preloadBodyFont(),
@@ -153,7 +155,6 @@ export default defineConfig({
 		include: ["vue", "vue-router", "pinia"],
 		exclude: [],
 	},
-	assetsInclude: ["**/*.md"],
 	build: {
 		target: "esnext",
 		cssCodeSplit: true,

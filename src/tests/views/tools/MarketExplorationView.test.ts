@@ -106,7 +106,7 @@ vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () => ({
 		},
 	},
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/ui/charts/MarketExplorationChart.vue", () =>
 	stub("MarketExplorationChart")
 );

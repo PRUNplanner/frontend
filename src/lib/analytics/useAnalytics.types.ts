@@ -472,6 +472,19 @@ export interface IAnalyticsEventProperties {
 	"app:db_blocked": undefined;
 	"debug:calc_open": { source: Trigger };
 
+	// help centre: article and panel views, search, feedback; the
+	// "what was missing?" text goes to its PostHog survey only
+	"help:article_view": {
+		article: string;
+		section?: string;
+		source: HelpViewSource;
+		is_fallback_locale: boolean;
+	};
+	"help:panel_open": { article: string; section?: string };
+	"help:search": { query_length: number; result_count: number };
+	"help:search_no_results": { query_length: number };
+	"help:feedback": { article: string; is_helpful: boolean };
+
 	"onboarding:step_click": {
 		step: "empire_save" | "planet_search" | "exchanges";
 	};
@@ -499,5 +512,8 @@ export interface IGameDataLoadProperties {
 	ms_fetch?: number;
 	ms_idb_write?: number;
 }
+
+/** how a help article was reached */
+export type HelpViewSource = "nav" | "panel" | "search" | "link" | "direct";
 
 export type ANALYTICS_EVENT_TYPE = keyof IAnalyticsEventProperties;

@@ -42,7 +42,7 @@
 	import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
 	import EmailNudgeBanner from "@/features/account/components/EmailNudgeBanner.vue";
 
@@ -471,7 +471,7 @@
 									},
 								]"
 								:label="t('empire.views.label')" />
-							<HelpDrawer file-name="empire" />
+							<HelpPanel article="empire" />
 						</div>
 					</div>
 

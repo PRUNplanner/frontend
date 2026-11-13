@@ -6,13 +6,18 @@ front of `spa-to-http` should send. `spa-to-http` itself sends none.
 ## Help markdown
 
 Help pages (`src/assets/help/<locale>/`) are Crowdin translations, merged
-from bot PRs. They render only through `HelpMarkdown.vue`: showdown, then
-`sanitizeHelpHtml` (`features/help/sanitizeHelp.ts`, DOMPurify) as an output
-extension, so script, event handlers, `<style>` and `javascript:` links never
-reach the DOM. `src/tests/features/help/sanitizeHelp.test.ts` checks that
-every help file renders as it did before the sanitiser, and fails on a help
-file with raw HTML or a link target other than `https:`, `http:`, `/` or `#`.
-Autolinks (`<https://…>`) count as raw HTML there: write `[text](url)`.
+from bot PRs. They are parsed at build time (`vite.help.ts`,
+`features/help/helpMarkdown.ts`): markdown-it with raw HTML off (it comes
+out as text) and its link check (no `javascript:`), then DOMPurify on jsdom
+with `HELP_PURIFY_CONFIG`. On the client `HelpArticle` and the help home run
+`sanitizeHelpHtml` (`features/help/sanitizeHelp.ts`) again before `v-html`,
+so script, event handlers, `<style>` and `javascript:` links never reach
+the DOM. `src/tests/features/help/sanitizeHelp.test.ts` checks a hostile
+fixture at build and on the client and every built help file, and fails on
+a help file with raw HTML or a link target other than `https:`, `http:`,
+`/` or `#`. Autolinks (`<https://…>`) count as raw HTML there: write
+`[text](url)`. Only `> [!tip]` and `> [!warning]` are directives; a
+translation can't add others.
 
 ## Redirects
 
@@ -53,8 +58,8 @@ X-Frame-Options: DENY
   (session recording) after consent.
 - `connect-src` names the production API; a deployment with another
   `VITE_API_BASE_URL` puts that origin there.
-- `style-src 'unsafe-inline'`: the prerendered landing page and showdown
-  tables carry `style` attributes.
+- `style-src 'unsafe-inline'`: the prerendered landing page carries
+  `style` attributes.
 - `font-src data:`: the built CSS inlines the small woff/woff2 subsets
   (under Vite's 4 KB inline limit).
 - Expected report: `script-src` `eval` from the `schemas` chunk. Zod probes

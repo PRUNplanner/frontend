@@ -3,6 +3,7 @@ import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 import pkg from "./package.json";
+import { helpMarkdown } from "./vite.help";
 
 const alias = { "@": path.resolve(__dirname, "./src") };
 
@@ -78,5 +79,5 @@ export default defineConfig({
 	resolve: {
 		alias,
 	},
-	plugins: [vue()],
+	plugins: [vue(), helpMarkdown()],
 });

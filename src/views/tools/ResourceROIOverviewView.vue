@@ -18,7 +18,7 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import { PProgressBar } from "@/ui";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import ResourceROITable from "@/features/resource_roi_overview/components/ResourceROITable.vue";
@@ -133,7 +133,7 @@
 							<template #icon><InsightsSharp /></template>
 							{{ $t("resource_roi.chart.button") }}
 						</PButton>
-						<HelpDrawer file-name="tools_resource_roi_overview" />
+						<HelpPanel article="tools_resource_roi_overview" />
 					</div>
 				</div>
 

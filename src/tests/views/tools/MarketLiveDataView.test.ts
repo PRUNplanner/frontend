@@ -32,7 +32,7 @@ vi.mock("@/features/market_live/useExchangeSSE", () => ({
 		...sse,
 	}),
 }));
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 vi.mock("@/features/market_live/components/AlertManager.vue", () =>
 	stub("AlertManager")
 );

@@ -41,7 +41,7 @@ vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 vi.mock("@/features/fio_repair/components/FIORepairOverview.vue", () =>
 	stub("FIORepairOverview")
 );
-vi.mock("@/features/help/components/HelpDrawer.vue", () => stub("HelpDrawer"));
+vi.mock("@/features/help/components/HelpPanel.vue", () => stub("HelpPanel"));
 
 const messages = { fio };
 let pinia: Pinia;

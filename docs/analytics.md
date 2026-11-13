@@ -245,6 +245,21 @@ with input count only results for input the user chose:
 | `debug:calc_open` | `source` (`button`, `shortcut`) | calculation debug panel opened |
 | `onboarding:step_click` | `step` (`empire_save`, `planet_search`, `exchanges`) | first-run card on the Empire page |
 
+### Help
+
+The "what was missing?" text of a No goes to the PostHog survey
+"Help article: what was missing?" (`01a1d485-e276-0000-cb5a-3ac257d59f29`,
+API type) as `survey shown`, `survey sent` (with `article`) and
+`survey dismissed`, never in a `help:*` event.
+
+| Event | Properties | When |
+| --- | --- | --- |
+| `help:article_view` | `article`, `section`, `source` (`nav`, `panel`, `search`, `link`, `direct`), `is_fallback_locale` | an article rendered, on `/help/:article` or in the panel |
+| `help:panel_open` | `article`, `section` | a page's Help panel opened (`route_name` is a super property) |
+| `help:search` | `query_length`, `result_count` | 600 ms after typing stops |
+| `help:search_no_results` | `query_length` | a search with no results |
+| `help:feedback` | `article`, `is_helpful` | Yes or No under an article |
+
 ### Performance
 
 | Event | Properties | When |

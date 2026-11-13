@@ -4,7 +4,7 @@
 	const { t } = useI18n();
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import ChainModeSwitch from "@/features/production_chain/components/ChainModeSwitch.vue";
 	import ChainTargets from "@/features/production_chain/components/ChainTargets.vue";
 	import ChainSettings from "@/features/production_chain/components/ChainSettings.vue";
@@ -310,7 +310,7 @@
 					@click="showCreate = true">
 					{{ $t("production_chains.header.create_plans") }}
 				</PButton>
-				<HelpDrawer file-name="tools_production_chain" />
+				<HelpPanel article="tools_production_chain" />
 			</div>
 		</header>
 

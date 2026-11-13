@@ -17,7 +17,7 @@
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -132,7 +132,7 @@
 					<h1 class="text-2xl font-bold my-auto">
 						{{ $t("hq_upgrade_calculator.title") }}
 					</h1>
-					<HelpDrawer file-name="tools_hq_upgrade_calculator" />
+					<HelpPanel article="tools_hq_upgrade_calculator" />
 				</div>
 				<div
 					class="border-b border-white/10 grid grid-cols-1 xl:grid-cols-2 divide-x divide-white/10">

@@ -32,8 +32,12 @@ const { nav, trackEvent, execute, copy } = vi.hoisted(() => ({
 	copy: vi.fn(async (_value: string) => true),
 }));
 
-vi.mock("@/features/help/components/HelpDrawer.vue", () => ({
-	default: { name: "HelpDrawer", render: () => null },
+vi.mock("@/features/help/components/HelpPanel.vue", () => ({
+	default: {
+		name: "HelpPanel",
+		props: ["article", "section"],
+		render: () => null,
+	},
 }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),
@@ -142,6 +146,12 @@ describe("CheckPage", () => {
 			execute.mock.calls.filter(([n]) => n === "GetEmpirePlans")
 		).toHaveLength(1);
 		expect(find("check-empty").exists()).toBe(true);
+		// the help opens at the check's own section
+		const help = wrapper.getComponent({ name: "HelpPanel" });
+		expect([help.props("article"), help.props("section")]).toEqual([
+			"tools_production_chain",
+			"check-an-empire",
+		]);
 
 		await find("check-empty-all").trigger("click");
 		await flushPromises();

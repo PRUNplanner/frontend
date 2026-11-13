@@ -7,7 +7,7 @@
 	import { useCXImportExport } from "@/features/exchanges/useCXImportExport";
 
 	// Components
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 
 	// Util
 	import { downloadFile } from "@/util/download";
@@ -194,7 +194,7 @@
 					<template #icon><MoreHorizSharp /></template>
 				</PButton>
 			</PDropdown>
-			<HelpDrawer file-name="exchanges" />
+			<HelpPanel article="exchanges" />
 		</div>
 
 		<PModal

@@ -28,7 +28,7 @@
 
 	// Components
 	import PlanCheckTile from "@/features/planning/components/tools/PlanCheckTile.vue";
-	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import MarketFlagIcon from "@/features/cx/components/MarketFlagIcon.vue";
 	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 
@@ -717,8 +717,9 @@
 					<p class="text-xs text-muted-strong">
 						{{ t("plan.tools.plan_check.market.means.caveat") }}
 					</p>
-					<HelpDrawer
-						file-name="plan"
+					<HelpPanel
+						article="plan_check"
+						section="flags"
 						button-size="sm"
 						button-class="self-start"
 						:button-title="
