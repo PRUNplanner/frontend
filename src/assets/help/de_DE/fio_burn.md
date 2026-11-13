@@ -1,8 +1,8 @@
-# Berechnungen
+## Calculations {#calculations}
 
 Die Plan-Berechnungen basieren auf den Produktions- und Lagerdaten deiner Pläne. Für genaue Ergebnisse müssen deine Daten über FIO synchronisiert sein. Please note that degradation is not included in these calculations.
 
-# Grenzwerte
+## Thresholds {#thresholds}
 
 PRUNplanner verwendet farbige Grenzwerte, um wichtige Werte hervorzuheben:
 
