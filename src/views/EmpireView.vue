@@ -25,6 +25,7 @@
 	import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	import { useEmpireProfits } from "@/features/empire/useEmpireProfits";
+	import { useCXData } from "@/features/cx/useCXData";
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
@@ -34,6 +35,7 @@
 		empireMaterialIOState,
 	} = useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
+	const { findEmpireCXUuid } = useCXData();
 
 	// Components
 	import RenderingProgress from "@/layout/components/RenderingProgress.vue";
@@ -112,7 +114,11 @@
 		if (uuid) internalEmpireUuid.value = uuid;
 	});
 
-	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
+	// the empire's CX as the CX list has it now: a CX deleted or unassigned
+	// elsewhere drops out with the list's next load
+	const selectedCXUuid: ComputedRef<string | undefined> = computed(() =>
+		findEmpireCXUuid(selectedEmpireUuid.value)
+	);
 	const refEmpireList: Ref<PlanEmpireElement[]> = ref([]);
 
 	const planData: Ref<Plan[]> = ref([]);
@@ -160,6 +166,12 @@
 			);
 		}
 	);
+
+	// the same empire's CX changed after its prices were calculated
+	watch([selectedEmpireUuid, selectedCXUuid], ([empire], [oldEmpire]) => {
+		if (empire === oldEmpire && !isCalculating.value)
+			recalculateRefreshed();
+	});
 
 	/**
 	 * Reloads empires forcefully by triggering store reload
@@ -368,11 +380,9 @@
 	<WrapperPlanningDataLoader
 		empire-list
 		:empire-uuid="selectedEmpireUuid"
+		load-c-x
 		@data:empire:plans="(value: Plan[]) => (planData = value)"
 		@update:empire-uuid="selectLoadedEmpire"
-		@update:cx-uuid="
-			(value: string | undefined) => (selectedCXUuid = value)
-		"
 		@data:empire:list="
 			(value: PlanEmpireElement[]) => (refEmpireList = value)
 		"

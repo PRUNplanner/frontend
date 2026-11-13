@@ -34,6 +34,12 @@ I/O and production opportunities.
 ## Gotchas
 
 - Results depend on empire and CX (cache keys, see planning-engine.md).
+- `EmpireView` loads the CX list (`load-c-x`) and derives the empire's CX
+  from it (`findEmpireCXUuid`), so a CX deleted or reassigned elsewhere
+  drops out with the list's next load and the empire recalculates quietly.
+  Don't keep a copy of the CX uuid: after a logout clears the planning
+  store, the still-mounted page re-renders and a stale uuid makes every
+  price lookup fail ([#745](https://github.com/PRUNplanner/frontend/issues/745)).
 - Only the latest calculation run writes: each run uses the plans, empire,
   CX and empire list it started with; an older run stops at its next yield
   (no results, progress or `PatchEmpireState`). Results keep the plan list
