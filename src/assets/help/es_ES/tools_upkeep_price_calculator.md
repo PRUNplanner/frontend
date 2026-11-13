@@ -1,6 +1,6 @@
 La Calculadora de precios de mantenimiento te ayuda a encontrar los materiales y edificios más rentables para cubrir las necesidades de mantenimiento de la población (Seguridad, Salud, Comodidad, Cultura y Educación) en los planetas gobernados.
 
-## Detalles del material
+## Material Details {#material-details}
 
 Enumera todos los materiales que consumen los edificios para la necesidad seleccionada, ordenados por rentabilidad.
 
