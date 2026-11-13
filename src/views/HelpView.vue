@@ -58,7 +58,7 @@
 </script>
 
 <template>
-	<HelpLayout ref="layout">
+	<HelpLayout ref="layout" wide>
 		<div class="flex flex-col gap-10">
 			<section class="flex flex-col gap-4">
 				<h1 class="text-3xl leading-tight font-bold text-ink-strong">
@@ -99,11 +99,12 @@
 				<h2 class="text-lg font-bold text-ink-strong mb-4">
 					{{ t("help.home.browse") }}
 				</h2>
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<!-- columns, not a grid: each card as tall as its links -->
+				<div class="columns-1 sm:columns-2 2xl:columns-3 gap-3">
 					<div
 						v-for="a in areas"
 						:key="a.area"
-						class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
+						class="break-inside-avoid mb-3 flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
 						<h3 class="font-bold text-ink-strong">
 							{{ t(`help.areas.${a.area}`) }}
 						</h3>

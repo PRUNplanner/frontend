@@ -95,7 +95,11 @@
 		"market",
 		"request-password-reset",
 		"password-reset",
+		"help",
+		"help-article",
 	]);
+	// the help centre is public: its link is marked on all its pages
+	const isHelp = computed(() => String(route.name).startsWith("help"));
 	const showSections = computed(() => SECTION_ROUTES.has(String(route.name)));
 	const sections = ["how", "features", "tools"] as const;
 
@@ -217,6 +221,13 @@
 						{{ $t("homepage.navigation.planet_search") }}
 					</RouterLink>
 				</template>
+				<RouterLink
+					to="/help"
+					data-help-link
+					:class="navLink"
+					:aria-current="isHelp ? 'page' : undefined">
+					{{ $t("homepage.navigation.help") }}
+				</RouterLink>
 				<a
 					:href="GITHUB_URL"
 					target="_blank"
@@ -331,6 +342,12 @@
 						}}
 					</RouterLink>
 				</template>
+				<RouterLink
+					to="/help"
+					:class="menuLink"
+					:aria-current="isHelp ? 'page' : undefined">
+					{{ $t("homepage.navigation.help") }}
+				</RouterLink>
 				<a
 					:href="GITHUB_URL"
 					target="_blank"

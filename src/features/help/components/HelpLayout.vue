@@ -26,7 +26,11 @@
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
 
-	const { current = undefined } = defineProps<{ current?: string }>();
+	const { current = undefined, wide = false } = defineProps<{
+		current?: string;
+		/** the home: cards, no reading column */
+		wide?: boolean;
+	}>();
 
 	const searchOpen: Ref<boolean> = ref(false);
 	// the dialog's chunk loads with the first search
@@ -58,10 +62,13 @@
 </script>
 
 <template>
-	<!-- logged out, a section heading stops below the sticky homepage header -->
+	<!-- logged in, flush with the app sidebar; logged out, centred under the
+	homepage header, with headings stopping below it -->
 	<div
-		class="w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-start"
-		:class="userStore.isLoggedIn ? '' : '[--help-anchor-offset:6.5rem]'">
+		class="w-full max-w-[1440px] flex flex-col lg:flex-row lg:items-start"
+		:class="
+			userStore.isLoggedIn ? '' : 'mx-auto [--help-anchor-offset:6.5rem]'
+		">
 		<!-- wide: a sticky column -->
 		<div
 			class="hidden lg:block w-64 shrink-0 self-stretch border-r border-line">
@@ -87,7 +94,9 @@
 
 		<div
 			class="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-start gap-8 xl:gap-12 px-4 sm:px-6 lg:px-12 pt-6 lg:pt-8 pb-16">
-			<div class="flex-1 min-w-0 max-w-[760px]">
+			<div
+				class="flex-1 min-w-0"
+				:class="wide ? 'max-w-[1040px]' : 'max-w-[760px]'">
 				<slot :open-search="openSearch" />
 			</div>
 			<aside

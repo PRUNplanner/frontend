@@ -139,11 +139,13 @@ describe("HomepageHeader", () => {
 	});
 
 	it.each([
-		["homepage", 6],
-		["market", 6],
-		["search", 6],
-		["request-password-reset", 6],
-		["password-reset", 6],
+		["homepage", 7],
+		["market", 7],
+		["search", 7],
+		["request-password-reset", 7],
+		["password-reset", 7],
+		["help", 7],
+		["help-article", 7],
 		["shared-plan", 0],
 	])("on %s shows %i section links", async (name, links) => {
 		route.name = name;
@@ -184,6 +186,24 @@ describe("HomepageHeader", () => {
 		expect(trackEvent).toHaveBeenCalledWith("landing:planet_search_click", {
 			target: "header",
 		});
+	});
+
+	it("links the help centre, marked on its pages", async () => {
+		const { wrapper } = await mountComponent(HomepageHeader);
+		const link = wrapper.find("nav [data-help-link]");
+		expect(link.text()).toBe("homepage.navigation.help");
+		expect(
+			wrapper
+				.findAllComponents(RouterLinkStub)
+				.some((l) => l.props("to") === "/help")
+		).toBe(true);
+		expect(link.attributes("aria-current")).toBeUndefined();
+
+		route.name = "help-article";
+		const help = (await mountComponent(HomepageHeader)).wrapper;
+		expect(
+			help.find("nav [data-help-link]").attributes("aria-current")
+		).toBe("page");
 	});
 
 	it("spans the full width on Planet Search, at the height its frame expects", async () => {
@@ -227,6 +247,7 @@ describe("HomepageHeader", () => {
 				"homepage.navigation.how",
 				"homepage.navigation.features",
 				"homepage.navigation.all_tools",
+				"homepage.navigation.help",
 				"homepage.navigation.github",
 			]);
 			expect(menu.find("[data-menu-login]").classes()).toContain(
