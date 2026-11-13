@@ -1,8 +1,56 @@
+The [Exchanges](/exchanges) page is where you decide which prices your plans use. Set a home exchange, pick a price basis, add fixed prices for materials you make yourself, and make exceptions for single planets. Every profit, cost and ROI number in PRUNplanner depends on these prices.
+
 ## Exchange Preferences {#exchange-preferences}
 
-An exchange preference sets the prices your plans use: which exchange and price basis, and fixed prices for materials you get at your own cost or from a partner. Assign a preference to an empire in Management; every plan of that empire then uses it.
+An [[exchange-preference|exchange preference]] sets the prices your plans use: which [[cx|exchange]] and price basis, and [[fixed-price|fixed prices]] for materials you get at your own cost or from a partner.
 
-The page opens on the **Overview**: every material your plans buy or sell, the price it gets and where that price comes from. Expand a row to see the full cascade for each planet. Notes above the table point to rules that need a look.
+- A preference belongs to your account. You assign it to an [[empire]] in [Management](/manage) (column CX of **Empire Configuration**). An empire has one preference; one preference can serve several empires.
+- A [[plan]] has no preference of its own. It uses the preference of the empire it is opened in. A plan that is in two empires can show different prices in each.
+- An empire without a preference ("None") prices everything at **Universe · VWAP 30D**.
+- Every new account starts with "My Exchange Preference", set to Universe · VWAP 30D for buying and selling and assigned to "My Empire".
+
+You create, rename and delete preferences in [Management](/help/management#cx). This page edits the rules of one preference at a time: pick it under **Switch Preference**. Below the select you see which empires use it, or that no empire does.
+
+## The Rules List {#rules-list}
+
+The column on the left (a **Rules for** select on screens narrower than 1024 px) lists the parts of the preference you can open:
+
+| Entry | What it shows |
+| --- | --- |
+| **Overview** | Every price your plans use, see [Overview](#overview) |
+| **All planets** | Your home exchange and fixed prices for every planet |
+| **Planets with their own rules** | Planets with an [exception](#planet-exceptions) |
+| **Using all-planets rules** | Planets in your plans that follow the all-planets rules (grouped by empire when several empires use the preference) |
+| **Planets of other empires** | Planets of empires that don't use this preference; shown after you press the button to show them |
+| **Not in any plan** | Planets with saved rules that none of your plans uses |
+
+Each entry shows how many rules it has. An entry with a warning note gets an amber tag. From 10 planets on, a **Filter planets** box appears.
+
+## Overview {#overview}
+
+The page opens on the **Overview**: every material that the plans of the empires using this preference buy or sell, the price it gets and the rule behind it. It includes unsaved changes, so you see the effect of an edit before you save. Materials a plan neither buys nor sells (net 0) are left out.
+
+- The summary on top shows the **All planets** rule, how many planets have their own rules, and how many fixed prices there are.
+- **Search material** and **Show materials** (**All**, **Fixed**, **No price (0 ȼ)**, **Varies by planet**) narrow the table.
+- The table lists **Material**, **Buy ȼ**, **Sell ȼ** and **Used on** (the first three planets, the rest as "+n"). When planets get different prices, you see the range and a "varies by planet" tag.
+- A tag shows each price's source, for example "NC1 · VWAP 30D", **Fixed · all planets**, **Fixed · this planet**, or **No price data**. Prices of 0 ȼ without a fixed price are amber.
+- Expand a row to see, for each side and planet, the full ladder of [how the price is found](#how-a-price-is-found). **Open the rule** jumps to the rule that set it.
+
+While your plans are calculated, the table shows **Calculating your plans…** with a progress bar.
+
+### Notes {#notes}
+
+Notes above the table point to rules that need a look. Warnings come first; **Open** takes you to the rule.
+
+| Note | Kind | What to do |
+| --- | --- | --- |
+| A rule has no buy or sell price for some materials | Warning | Those materials count as 0 ȼ. Set a fixed price or pick another exchange or basis. |
+| A material has no price on any exchange | Warning | It counts as 0 ȼ. Set a fixed price if you know one. |
+| A material is fixed at 0 ȼ | Info | Fine if it's your own supply and free to you. |
+| Fixed buy prices differ from their COGM | Info | Overview only. See [Fixed prices and COGM](#fixed-prices-and-cogm). |
+| A planet's exchange rule is the same as all planets' | Info | It can be removed. |
+| **No empire uses this preference** | Info | Assign it in Management. |
+| Rules for planets in no plan | Info | Delete them under **Not in any plan** if you don't need them. |
 
 ## How a Price Is Found {#how-a-price-is-found}
 
@@ -22,37 +70,110 @@ A rule can apply to buying, selling or both. If a level has no rule for the side
 
 ### Exchanges Without a Price {#exchanges-without-a-price}
 
-When an exchange rule matches but its exchange has no price for a material (no trades, no asks or no bids), the price is **0 ȼ**. It does not fall through to the next level. The page shows these prices in amber and lists them in the notes, so you can set a fixed price or pick another exchange or basis.
+When an exchange rule matches but its exchange has no price for a material, the price is 0 ȼ. It does not fall through to the next level. This happens with Ask when nobody offers the material, with Bid when nobody wants it, and with VWAP when the exchange had no trade in the last 30 days. A material that has no exchange data at all shows **No price data** and also counts as 0 ȼ.
+
+The page shows these prices in amber and lists them in the [notes](#notes), so you can set a fixed price or pick another exchange or basis.
 
 ## Price Basis: VWAP, Ask and Bid {#price-basis-vwap-ask-and-bid}
 
-PRUNplanner can use a Volume-Weighted Average Price (VWAP) over 7 or 30 days. VWAP gives more weight to trades with higher volumes, so it reflects where most of the trading happened instead of single outlier orders.
+| Basis | What it is |
+| --- | --- |
+| VWAP 7D, VWAP 30D | The [[vwap\|volume-weighted average price]] of the last 7 or 30 days. Trades with higher volume count more, so one odd trade moves it little. |
+| Ask | The cheapest offer in the order book right now: what you pay when you buy at once. |
+| Bid | The highest buy order in the order book right now: what you get when you sell at once. |
 
-Ask and Bid are today's order book: the cheapest offer and the highest bid. They change daily and can be missing for materials with little trading. Universe only has VWAP prices.
+[[Ask]] and [[Bid]] are the live order book, so they can change at any time and can be missing for materials with little trading. When an exchange had no trade in the 7 or 30 days, VWAP uses the last day it was traded; only without any trade in the last 30 days is it 0.
+
+[[Universe]] combines all four exchanges and only has VWAP prices. PRUNplanner refreshes exchange prices about every 30 minutes.
+
+## Setting an Exchange Rule {#exchange-rule}
+
+The **Exchange price** box on **All planets** and on each planet sets the exchange rule. Under **How buy and sell prices are set** pick:
+
+- **Same for buy and sell**: one exchange and basis for both sides.
+- **Separate buy and sell**: its own exchange and basis per side. A side can stay **Not set**; that side then falls through to the next level.
+- **Use all-planets rule** (planets only): the planet follows the all-planets rule, shown as "Uses the all-planets rule: …".
+
+For each side you choose **Exchange for {side}** (AI1, CI1, IC1, NC1 or Universe) and **Price basis for {side}** (VWAP 7D, VWAP 30D, Ask, Bid; Universe offers only the two VWAPs). When you switch a planet from the all-planets rule to its own, it starts with the choice it inherited.
 
 ## Presets {#presets}
 
-- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
-- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe.
+Two presets fill the rule in one click:
 
-Presets work on the scope's exchange, else the all-planets exchange, else NC1.
+- **Average · VWAP 30D** uses the VWAP 30D of the exchange for buying and selling.
+- **Trade now · buy Ask, sell Bid** buys at the exchange's Ask and sells at its Bid. Not available for Universe, which has no order book.
+
+Presets work on the exchange of the rule you are editing, else the all-planets exchange, else NC1. The box says which ("Presets on NC1:").
 
 ## Fixed Prices and COGM {#fixed-prices-and-cogm}
 
-Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Leave a side empty to use the exchange price for it.
+Fixed prices suit materials you make yourself and use at cost, or prices agreed with a corporation or partner. Add one with **Add material**, then type a buy price, a sell price or both. Leave a side empty to use the exchange price for it.
 
-On **All planets**, the fixed price table shows the market price without the fixed one and, for materials your plans make, the lowest COGM (cost of goods manufactured) among the plans that use the preference. **Use** sets the buy price to that COGM. In a plan's COGM tool, **Use as buy price** does the same. A note tells you when a fixed buy price is more than 2 % off the COGM.
+The **Fixed prices** table shows:
+
+| Column | Meaning |
+| --- | --- |
+| **Buy ȼ**, **Sell ȼ** | Your fixed prices |
+| **Market** | The price the material would get without the fixed price (buy side, unless only sell is fixed), with the difference in % |
+| **COGM in your plans** | All planets only. For materials your plans make: the lowest [[cogm\|COGM]] (cost of goods manufactured) among the plans of the empires that use this preference, and in how many plans it is made. "in use" marks a buy price equal to it. |
+| **Actions** | **Use** sets the buy price to that COGM (rounded to 2 decimals); the other button removes the row |
+
+From 10 rows on, you can search and sort the table by **Material** or **% vs market**.
+
+In a plan's COGM tool, **Use as buy price on all planets** sets an all-planets fixed buy price to *that plan's* COGM, not the lowest one. See [Plan tools](/help/plan_tools#cogm-buy-price).
+
+The Overview shows a note when an all-planets fixed buy price is more than 2 % off the lowest COGM. Its table has a **Use COGM** button per material.
+
+> [!tip]
+> A fixed buy price at your own COGM makes the plans that use the material show the profit of the whole chain in the plan that sells the end product. Keep it in step with the COGM when your production changes.
 
 ## Planet Exceptions {#planet-exceptions}
 
 Most players use one home exchange for all planets. When one planet needs something else, open it in the list and set its own exchange rule or fixed prices. Its rules win over the all-planets rules on that planet, except all-planets fixed prices, which still win over the planet's exchange.
 
-Planets with stored rules that no plan uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them.
+On a planet, the all-planets fixed prices are listed muted as **All-planets price**. **Override** gives the planet its own fixed price for that material. Below, **Prices on {planet}** shows what that planet's plans buy and sell and the price each gets.
+
+Planets with stored rules that none of your plans uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them with **Delete rules**.
 
 ## Saving {#saving}
 
-Changes are not used by your plans until you save them. The save bar counts the changed scopes; Discard goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+Changes are not used by your plans until you save them. The save bar at the bottom counts your changes (each changed part of the preference, plus one for a rename). **Save changes** saves them and re-prices every plan you have open; **Discard** goes back to the saved rules. The page asks before you leave or switch preference with unsaved changes.
+
+**Rename…** in the **More actions** menu changes the preference's name; the new name is saved with the save bar. **Manage preferences** opens Management.
+
+If the same preference was saved in another tab or on another device after you opened it, the page says so and keeps your edits. When you save, you choose **Overwrite** (your version replaces the other) or **Reload** (drop your edits and load the saved version).
 
 ## CSV Import and Export {#csv-import-and-export}
 
-**Export CSV** downloads every rule of the preference, including unsaved changes. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
+**Export CSV** downloads every rule of the preference, including unsaved changes, as `PRUNPlannerExchangePreferences.csv`. **Import CSV** reads such a file and asks before it replaces all rules of the preference. An import is unsaved until you save it.
+
+The file is separated by semicolons and has the columns `Location;Type;CX;Ticker;Price`:
+
+| Column | Values |
+| --- | --- |
+| Location | `EMPIRE` for all planets, or a planet's natural ID |
+| Type | `BUY`, `SELL` or `BOTH` |
+| CX | Exchange rules only: exchange and basis, e.g. `NC1_30D`, `CI1_7D`, `AI1_ASK`, `IC1_BID`, `UNIVERSE_30D` |
+| Ticker, Price | Fixed prices only: the material's ticker and its price |
+
+A file with a missing column or an invalid row is rejected as a whole, and nothing changes.
+
+```
+Location;Type;CX;Ticker;Price
+EMPIRE;BOTH;NC1_30D;;
+EMPIRE;BUY;;RAT;45
+```
+
+## Material Market Card {#market-card}
+
+Every material [[ticker]] in PRUNplanner opens a market card: hover it (or focus it with the keyboard) and the card appears. On a touch screen or a narrow window, tapping opens it as a sheet from the bottom.
+
+The card shows one row per exchange plus Universe: Ask, Bid, [[spread|Spread]], VWAP 7D and VWAP 30D, the change of 7D against 30D, a 30-day price line and the units traded per day (30-day average). Below are short lines on the trend across exchanges, the order books (units offered and wanted) and how far the exchanges' prices are apart. A material traded less than one unit per day on all four exchanges together is marked as rarely traded.
+
+When the ticker belongs to a plan, an empire or a setup, the card also shows how much of the material it buys or sells per day and its [[share-of-volume|share of the daily volume]]: Fine below 10 %, Watch from 10 %, Too big from 50 %, the same limits as [Plan check](/help/plan_check#market-check).
+
+- Click the ticker to pin the card; Esc or × closes it. In a plan's Material I/O and in the HQ Calculator, a click opens the details right away.
+- **Market details →** opens a drawer with the material's weight and volume, the data date, a table per exchange (**Prices**, **Order books**, **Volume**), a 30-day chart and **Market health** (breadth, volume-weighted trend, order book balance, price cohesion).
+- **Market Exploration ↗** opens the material in [Market Exploration](/help/tools_market_exploration).
+
+In [Profile](/help/profile#preferences), **Market card** sets how the card opens: **On hover** (default) or **On click only**, where hovering shows nothing and a click pins the card.

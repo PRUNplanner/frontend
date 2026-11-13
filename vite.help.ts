@@ -3,7 +3,7 @@
 //   sections), or null for a translation that lacks one of the English
 //   section ids (it lags behind; the app shows English instead);
 // - `virtual:help-search` exports one lazy search index per locale.
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import createDOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
@@ -24,8 +24,31 @@ const purify = createDOMPurify(new JSDOM("").window);
 const sanitize = (html: string) =>
 	purify.sanitize(html, HELP_PURIFY_CONFIG) as string;
 
+const GLOSSARY = path.join(HELP_DIR, FALLBACK, "glossary.md");
+
+let glossary: { mtime: number; ids: Set<string> } | undefined;
+
+/**
+ * The English glossary's term ids, the targets of `[[term]]` links; read
+ * again only when the file changed (dev server)
+ */
+function glossaryIds(): Set<string> {
+	if (!existsSync(GLOSSARY)) return new Set();
+	const mtime = statSync(GLOSSARY).mtimeMs;
+	if (glossary?.mtime !== mtime) {
+		const md = readFileSync(GLOSSARY, "utf8");
+		const ids = [...md.matchAll(/^#{1,6} .*\{#([a-z0-9-]+)\}\s*$/gm)];
+		glossary = { mtime, ids: new Set(ids.map((m) => m[1]!)) };
+	}
+	return glossary.ids;
+}
+
+// an unknown term fails the build in English, translations show it as text
 const parseFile = (file: string): IHelpDoc =>
-	parseHelp(readFileSync(file, "utf8"), sanitize);
+	parseHelp(readFileSync(file, "utf8"), sanitize, {
+		ids: glossaryIds(),
+		strict: path.basename(path.dirname(file)) === FALLBACK,
+	});
 
 /**
  * The parsed help file, or null when it is a translation without every
@@ -105,6 +128,8 @@ export function helpMarkdown(): Plugin {
 			const english = path.join(HELP_DIR, FALLBACK, path.basename(file!));
 			if (english !== file && existsSync(english))
 				this.addWatchFile(english);
+			// its [[term]] links are checked against the glossary
+			if (existsSync(GLOSSARY)) this.addWatchFile(GLOSSARY);
 			return `export default ${JSON.stringify(loadHelpDoc(file!))};`;
 		},
 	};

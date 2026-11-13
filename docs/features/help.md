@@ -5,9 +5,15 @@ article, section anchors), search, and the Help panel every page opens at
 its article. Public and indexable (in the sitemap); the app renders every
 page from the markdown the build parsed, no per-page files.
 
-**Used by.** `HelpPanel` on 18 pages (plan, Plan check, empire, exchanges,
-manage, planet search, profile, FIO burn/repair, every tool page);
-`HelpView` (`/help`) and `HelpArticleView` (`/help/:article`).
+**Used by.** `HelpPanel` on 20 pages (plan, Plan check, empire, exchanges,
+manage, planet search, profile, API keys, FIO burn/repair, every tool page
+incl. the Market report); `HelpView` (`/help`) and `HelpArticleView`
+(`/help/:article`).
+
+**Content rule.** Help follows the code on `main`: every number, default,
+limit and label in an article comes from the code (the 0.36.0 audit and its
+review list: workspace `specs/assets/help-centre/audit.md`). A change to
+user-visible behaviour updates its article and `updatedIn` in the same PR.
 
 ## Key files
 
@@ -52,6 +58,25 @@ manage, planet search, profile, FIO burn/repair, every tool page);
 2. Add a registry entry in `helpArticles.ts` and `help.articles.<id>.title`
    in `src/locales/en_US/help.json`.
 3. Link it from a page with `<HelpPanel article="<id>" section="<id>" />`.
+
+Writing rules:
+
+- `**bold**` only for exact `en_US` UI labels;
+  `helpLabels.test.ts` checks every bold span against the locale strings
+  (`{placeholders}` match anything; deliberate exceptions go on its
+  allow list). Use *italic* for other emphasis.
+- Glossary links: `[[id|text]]`, or `[[Text]]` when the text slugifies to
+  the id, on a term's first use in an article. They render as
+  `<a class="help-term">` to `/help/glossary#id`; `HelpTermPopover` shows the
+  entry's first paragraph on hover, focus or a first tap. An unknown id
+  fails the English build; in a translation it renders as text, so Crowdin
+  can't break it. `[[x]](url)` stays an ordinary link (changelog PR links).
+- `glossary.md`: one `## Term {#id}` per term, alphabetical, starting with
+  one short plain paragraph (the popover text). `helpGlossary.ts` reads it.
+- Guides (`guide_*`, area Start here, `GUIDES` in `helpArticles.ts`) are
+  the home page's "Start here" cards; a card's text is
+  `help.guides.<id>`.
+- Style: "you", "10 %", "ȼ / day"; "exchange preference".
 
 `src/tests/features/help/helpArticles.test.ts` fails on an English file
 without an entry (or the reverse), a missing title key, a heading without

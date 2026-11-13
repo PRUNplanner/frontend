@@ -16,6 +16,7 @@
 	// Components
 	import HelpFeedback from "@/features/help/components/HelpFeedback.vue";
 	import HelpWelcome from "@/features/help/components/HelpWelcome.vue";
+	import HelpTermPopover from "@/features/help/components/HelpTermPopover.vue";
 
 	// Util
 	import { getArticle } from "@/features/help/helpArticles";
@@ -105,6 +106,8 @@
 		"[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3",
 		"[&_li]:mt-1.5 [&_li]:marker:text-muted [&_li>ul]:mb-0",
 		"[&_a]:text-link-primary [&_a:hover]:underline",
+		// glossary terms: dotted underline, the popover on hover or focus
+		"[&_a.help-term]:text-ink-strong [&_a.help-term]:border-b [&_a.help-term]:border-dotted [&_a.help-term]:border-link-primary [&_a.help-term]:cursor-help [&_a.help-term:hover]:no-underline",
 		"[&_code]:font-mono [&_code]:text-xs [&_code]:bg-surface-sunken [&_code]:px-1 [&_code]:rounded-control",
 		"[&_table]:w-full [&_table]:mb-4 [&_table]:border-collapse",
 		"[&_th]:text-left [&_th]:font-medium [&_th]:text-ink-strong [&_th]:border-b [&_th]:border-line [&_th]:px-3 [&_th]:py-1.5",
@@ -148,6 +151,10 @@
 			@click="onClick"
 			v-html="html" />
 		<!-- eslint-enable vue/no-v-html -->
+		<HelpTermPopover
+			v-if="article.file"
+			:root="body"
+			@navigate="emit('navigate')" />
 
 		<nav
 			v-if="!inPanel && related.length"

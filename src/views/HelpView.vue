@@ -17,9 +17,11 @@
 	import {
 		articlesByArea,
 		getArticle,
+		GUIDES,
 		POPULAR_ARTICLES,
 		WHATS_NEW,
 	} from "@/features/help/helpArticles";
+	import { GLOSSARY } from "@/features/help/helpGlossary";
 	import { loadArticle } from "@/features/help/helpContent";
 	import { markHelpSource } from "@/features/help/helpSource";
 	import { sanitizeHelpHtml } from "@/features/help/sanitizeHelp";
@@ -53,8 +55,28 @@
 		};
 	});
 
-	changelog.value =
-		(await loadArticle(getArticle(WHATS_NEW)!, locale.value))?.doc ?? null;
+	// the glossary card's terms, titled as in the glossary
+	const CHIP_TERMS = [
+		"cogm",
+		"vwap",
+		"bid",
+		"ask",
+		"cogc",
+		"payback",
+		"workforce",
+		"ghost-sites",
+		"xit",
+	];
+	const chips: Ref<{ id: string; title: string }[]> = ref([]);
+
+	const [whatsNew, glossary] = await Promise.all([
+		loadArticle(getArticle(WHATS_NEW)!, locale.value),
+		loadArticle(getArticle(GLOSSARY)!, locale.value),
+	]);
+	changelog.value = whatsNew?.doc ?? null;
+	chips.value = (glossary?.doc.toc ?? []).filter((e) =>
+		CHIP_TERMS.includes(e.id)
+	);
 </script>
 
 <template>
@@ -91,6 +113,44 @@
 						class="px-2.5 py-1 rounded-control border border-line text-ink hover:bg-hover"
 						@click="markHelpSource('nav')">
 						{{ t(`help.articles.${id}.title`) }}
+					</RouterLink>
+				</div>
+			</section>
+
+			<section
+				class="flex flex-col gap-3.5"
+				aria-labelledby="help-start"
+				data-testid="help-guides">
+				<div
+					class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+					<h2
+						id="help-start"
+						class="text-lg font-bold text-ink-strong">
+						{{ t("help.home.start") }}
+					</h2>
+					<span class="text-sm text-muted">
+						{{ t("help.home.start_note") }}
+					</span>
+				</div>
+				<div
+					class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+					<RouterLink
+						v-for="(id, i) in GUIDES"
+						:key="id"
+						:to="`/help/${id}`"
+						class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface text-ink hover:border-line-strong"
+						@click="markHelpSource('nav')">
+						<span
+							class="flex items-center justify-center size-[26px] rounded-full bg-prunplanner/10 text-prunplanner text-sm font-bold tabular-nums"
+							aria-hidden="true">
+							{{ i + 1 }}
+						</span>
+						<span class="text-[15px] font-bold text-ink-strong">
+							{{ t(`help.articles.${id}.title`) }}
+						</span>
+						<span class="text-sm text-muted-strong">
+							{{ t(`help.guides.${id}`) }}
+						</span>
 					</RouterLink>
 				</div>
 			</section>
@@ -147,41 +207,78 @@
 					<!-- eslint-enable vue/no-v-html -->
 					<RouterLink
 						:to="`/help/${WHATS_NEW}`"
-						class="text-sm text-link-primary hover:underline"
+						class="inline-flex items-center min-h-6 self-start text-sm text-link-primary hover:underline"
 						@click="markHelpSource('nav')">
 						{{ t("help.home.all_releases") }}
 					</RouterLink>
 				</section>
 
-				<section
-					class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
-					<h2 class="text-lg font-bold text-ink-strong">
-						{{ t("help.home.stuck_title") }}
-					</h2>
-					<i18n-t
-						keypath="help.home.stuck_text"
-						tag="p"
-						class="text-sm text-ink">
-						<template #discord>
-							<a
-								:href="HELP_DISCORD_URL"
-								target="_blank"
-								rel="noopener"
-								class="text-link-primary hover:underline">
-								{{ t("help.home.discord") }}
-							</a>
-						</template>
-						<template #github>
-							<a
-								:href="HELP_GITHUB_URL"
-								target="_blank"
-								rel="noopener"
-								class="text-link-primary hover:underline">
-								{{ t("help.home.github") }}
-							</a>
-						</template>
-					</i18n-t>
-				</section>
+				<div class="flex flex-col gap-3">
+					<section
+						class="flex flex-col gap-2 p-4 rounded-panel border border-line"
+						aria-labelledby="help-glossary"
+						data-testid="help-glossary">
+						<h2
+							id="help-glossary"
+							class="text-lg font-bold text-ink-strong">
+							<RouterLink
+								:to="`/help/${GLOSSARY}`"
+								class="inline-flex items-center min-h-6 hover:underline"
+								@click="markHelpSource('nav')">
+								{{ t("help.home.glossary_title") }}
+							</RouterLink>
+						</h2>
+						<p class="text-sm text-muted-strong">
+							{{ t("help.home.glossary_text") }}
+						</p>
+						<div class="flex flex-wrap gap-1.5">
+							<RouterLink
+								v-for="c in chips"
+								:key="c.id"
+								:to="`/help/${GLOSSARY}#${c.id}`"
+								class="inline-flex items-center min-h-6 px-2 rounded-control bg-surface-sunken font-mono text-xs text-ink hover:bg-hover"
+								@click="markHelpSource('nav')">
+								{{ c.title }}
+							</RouterLink>
+						</div>
+						<RouterLink
+							:to="`/help/${GLOSSARY}`"
+							class="inline-flex items-center min-h-6 self-start text-sm text-link-primary hover:underline"
+							@click="markHelpSource('nav')">
+							{{ t("help.home.glossary_all") }}
+						</RouterLink>
+					</section>
+
+					<section
+						class="flex flex-col gap-2 p-4 rounded-panel border border-line bg-surface">
+						<h2 class="text-lg font-bold text-ink-strong">
+							{{ t("help.home.stuck_title") }}
+						</h2>
+						<i18n-t
+							keypath="help.home.stuck_text"
+							tag="p"
+							class="text-sm text-ink">
+							<template #discord>
+								<a
+									:href="HELP_DISCORD_URL"
+									target="_blank"
+									rel="noopener"
+									class="text-link-primary hover:underline">
+									{{ t("help.home.discord") }}
+								</a>
+							</template>
+							<template #github>
+								<a
+									:href="HELP_GITHUB_URL"
+									target="_blank"
+									rel="noopener"
+									class="text-link-primary hover:underline">
+									{{ t("help.home.github") }}
+								</a>
+							</template>
+						</i18n-t>
+					</section>
+				</div>
 			</div>
 		</div>
 	</HelpLayout>

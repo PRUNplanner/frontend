@@ -1,72 +1,99 @@
 {
 	"view_title": "Help",
 	"tutorial": {
-		"intro": "PRUNplanner helps you design bases, organize empires, and calculate profits — without wasting in-game resources. It mirrors nearly every aspect of Prosperous Universe so you can plan smarter and play more confidently."
+		"intro": "PRUNplanner helps you plan bases and empires for Prosperous Universe before you build them: what a base earns, needs and pays back, at the prices you choose. It runs in your browser and needs neither a game session nor FIO to plan."
 	},
 	"getting_started": {
 		"title": "Getting Started",
 		"image_label": "Management",
 		"image_alt": "Management Screenshot",
 		"l1": {
-			"title": "Create an Empire in {link}:",
+			"title": "Check your empire in {link}:",
 			"link": "Management",
-			"p": "By default, you'll already have one. But you can add more for different factions or regions. Assign a name and faction, and save."
+			"p": "Every new account already has one, \"My Empire\". Set its faction and permits on the Empire page, as your in-game HQ shows them: they change the production bonus of every plan in it. Create more empires in Management with New Empire, for example one to test an expansion."
 		},
 		"l2": {
-			"title": "Setup an {link}:",
-			"link": "Exchange",
-			"p": "Go into Management and create your exchange. Switch to the Exchanges view to modify it. For most players, set it to Both (buying and selling) and choose the exchange your bases will use (e.g., CI1 for Benten). Save it."
+			"title": "Set your home exchange, starting in {link}:",
+			"link": "Management",
+			"p": "A new account also has an exchange preference, \"My Exchange Preference\", already used by My Empire and set to Universe · VWAP 30D. Click its name under CX Configuration (or open Exchanges in the side menu), open All planets, pick your home exchange, for example CI1 near Benten Station, click the preset Average · VWAP 30D and press Save changes."
 		},
 		"l3": {
-			"title": "Search for a {link}:",
+			"title": "Find a {link}:",
 			"link": "Planet",
-			"p": "Use the planet search to filter by resources, programs, or proximity to a CX. Select your target planet and view its modifiers, extraction rates, and infrastructure."
+			"p": "Planet Search filters every planet by resources, surface and fertility, COGC program, infrastructure and jumps to an exchange or to your plans. Turn on the Plots column to see free plots. The + on a result opens a new plan for that planet."
 		},
 		"l4": {
-			"title": "Create a Plan:",
-			"p": "Choose your Empire, give it a name, then add buildings. For example: add a Refinery, set a production order, and save the plan. You can modify all aspects like COGC, expert bonuses and dive into optimizations."
+			"title": "Create a plan:",
+			"p": "Check the empire the plan calculates with, add production buildings and pick their recipes, or click a planet resource to extract it. Habitations follow your workforce on their own while Auto is on. Name the plan and press Create."
 		},
 		"l5": {
-			"title": "Check ROI:",
-			"p": "Once set up, you'll see daily profits, inputs and outputs, and return on investment for each production line. Adjust, experiment, and optimize."
+			"title": "Check the numbers:",
+			"p": "The tiles on top show Profit / day, Payback, Workforce, Area and Storage, and Material I/O lists what the base makes and buys. Plan check tests the amounts against the market. Every change updates the numbers at once, so try a recipe or a building count and compare."
 		}
 	},
 	"core_concepts": {
 		"title": "Core Concepts",
 		"p1": {
 			"title": "Plans",
-			"p": "A plan represents a single base: its buildings, productions, and bonuses. Create a plan by choosing a planet, placing buildings, and assigning it to an Empire with a CX preference."
+			"p": "A plan is one base on one planet: its buildings, recipes, workforce, habitation and bonuses. A plan can be in several empires or in none, and it is priced with the exchange preference of the empire it calculates with."
 		},
 		"p2": {
 			"title": "Empires",
-			"p": "An Empire is a container of multiple plans - essentially your entire network of bases. Empires keep your supply chains organized and allow you to manage multiple bases together."
+			"p": "An empire groups plans, for example all the bases you run, and holds your faction and permits. The Empire page adds its plans up, nets what one plan makes and another uses, and checks the rest against the market."
 		},
 		"p3": {
-			"title": "Exchanges",
-			"p": "Exchange settings define how prices are calculated. Each Empire uses one Exchange for consistency. You can reuse the same Exchange setup across empires if needed."
+			"title": "Exchange preferences",
+			"p": "An exchange preference sets the prices your plans use. An empire uses one preference, but one preference can mix exchanges: its own exchange and price basis for buying and for selling, exceptions for single planets and fixed prices for single materials. Several empires can share one."
 		}
 	},
 	"key_features": {
 		"title": "Key Features",
 		"p1": {
 			"title": "Base Simulation",
-			"p": "Design and test bases without spending resources. From habitation to production to planet-specific modifiers and bonuses — PRUNplanner simulates it all."
+			"p": "Design and test a base before you build it: buildings and recipes, workforce and habitation, experts, COGC program, area, planet resources, construction cost and production fees, with profit and payback at your prices."
 		},
 		"p2": {
 			"title": "Empire Planning",
-			"p": "Manage your empire across multiple bases and supply chains. Keep your materials flowing, prevent bottlenecks, and run smoothly at scale. Always see what is going on and where the next best expansion starts."
+			"p": "See several bases as one empire: what they make, use, buy and sell together, how much of each market they would take, and which recipes could use what is left over. Production Chains lays a whole chain out into bases and creates the plans."
 		},
 		"p3": {
 			"title": "Game Data",
-			"p": "Market information is integrated directly from FIO, the community API. Plan expansions, check ROI, and make informed trade decisions. Explore historic market data or let PRUNplanner calculate production or resource extraction ROIs."
+			"p": "Game data and exchange prices come from FIO, the community API; prices refresh about every 30 minutes. Explore price history, read the daily market report, or rank recipes and planet resources by return on investment."
 		},
 		"p4": {
 			"title": "Burn & Repair",
-			"p": "Track consumables and building wear. Avoid shortages and downtime by seeing exactly what your colony needs and when it needs it."
+			"p": "With FIO connected, FIO Burn shows how many days the stock of each base lasts and FIO Repair when its buildings are due for repair. Both end in an XIT package that Refined PrUn runs in the game."
 		},
 		"p5": {
 			"title": "A Wealth of Additional Tools",
-			"p": "Dive into historical prices, optimize habitation layouts, estimate visitation frequencies, and fine-tune production efficiency. PRUNplanner is packed with utilities to give you the edge."
+			"p": "Construction and supply carts, visit frequency, repair intervals, COGM, price sensitivity, plan versions and sharing, the HQ Calculator, Upkeep Prices, and an API for your own sheets and scripts."
+		}
+	},
+	"navigation": {
+		"title": "Getting around",
+		"n1": {
+			"title": "Side menu",
+			"p": "Once you are logged in, the side menu holds Planning (Planet Search, Management, Exchanges), your empire with its plans, and Tools, grouped as Market, Calculators and FIO. FIO Burn and FIO Repair appear once FIO is connected. Click Tools to fold the list; this browser remembers it."
+		},
+		"n2": {
+			"title": "Your empire and its plans",
+			"p": "The menu shows one empire: its name opens the Empire page, and Plans lists its plans A to Z with their planet. Switch picks another empire, which also becomes your default empire. The + next to Plans opens Planet Search for a new plan. From 15 plans on, Filter plans finds one by name or planet ID. An open plan that isn't in this empire shows on top, marked \"not in this empire\"."
+		},
+		"n3": {
+			"title": "Narrow rail",
+			"p": "The double arrow at the top folds the side menu into a narrow rail of icons; hover one for its name. Plans and Tools open from the rail as small lists, and the double arrow at the bottom expands the menu again. Your choice is saved with your preferences."
+		},
+		"n4": {
+			"title": "On a phone",
+			"p": "On screens narrower than 768 px a bar at the bottom replaces the side menu: Empire, Plans, Planet Search and More. Plans opens a sheet with your empire's plans and Switch; once the Empire page has calculated them, it shows each plan's daily profit too. More holds Management, Exchanges, the tools, Profile, API, Help and Logout."
+		},
+		"n5": {
+			"title": "FIO status",
+			"p": "The FIO icon at the bottom of the side menu shows your FIO connection with a coloured dot: FIO Active, FIO Syncing, FIO Waiting for Data, FIO Inactive or FIO Key Rejected. Hover it to see when FIO last updated and when PRUNplanner fetched the data. When it isn't active, a click opens your Profile to set it up."
+		},
+		"n6": {
+			"title": "Help and search",
+			"p": "Each page of the app has a Help button that opens its help article in a panel beside the page, so your unsaved work stays; Open in Help centre shows the full article. The ? at the bottom of the side menu (Help in More on a phone) opens the Help centre, where / opens the search."
 		}
 	},
 	"areas": {
@@ -82,8 +109,44 @@
 		"help_welcome": {
 			"title": "Welcome"
 		},
+		"guide_first_base": {
+			"title": "Your first base"
+		},
+		"guide_find_planet": {
+			"title": "Find a planet for a material"
+		},
+		"guide_cx_prices": {
+			"title": "Set up your prices"
+		},
+		"guide_chain_to_bases": {
+			"title": "From a chain to bases"
+		},
+		"guide_empire": {
+			"title": "Grow to an empire"
+		},
+		"guide_hand_off": {
+			"title": "Hand off to the game"
+		},
 		"plan_layout": {
 			"title": "Layout"
+		},
+		"plan_base": {
+			"title": "Base setup"
+		},
+		"plan_tools": {
+			"title": "Plan tools"
+		},
+		"plan_sharing": {
+			"title": "Sharing a plan"
+		},
+		"tools_market_report": {
+			"title": "Market report"
+		},
+		"api_keys": {
+			"title": "API keys"
+		},
+		"glossary": {
+			"title": "Glossary"
 		},
 		"plan_results": {
 			"title": "Results"
@@ -104,7 +167,7 @@
 			"title": "Management"
 		},
 		"exchanges": {
-			"title": "Exchanges & CX preferences"
+			"title": "Exchanges & exchange preferences"
 		},
 		"planet_search": {
 			"title": "Planet Search"
@@ -116,10 +179,10 @@
 			"title": "Base ROI"
 		},
 		"tools_roi_overview": {
-			"title": "ROI Overview"
+			"title": "Recipe ROI"
 		},
 		"tools_resource_roi_overview": {
-			"title": "Resource ROI Overview"
+			"title": "Resource ROI"
 		},
 		"tools_market_live": {
 			"title": "Market Live"
@@ -128,10 +191,10 @@
 			"title": "Market Exploration"
 		},
 		"tools_hq_upgrade_calculator": {
-			"title": "HQ Upgrade Calculator"
+			"title": "HQ Calculator"
 		},
 		"tools_upkeep_price_calculator": {
-			"title": "Upkeep Price Calculator"
+			"title": "Upkeep Prices"
 		},
 		"fio_repair": {
 			"title": "FIO Repair"
@@ -151,7 +214,7 @@
 	},
 	"home": {
 		"title": "How can we help?",
-		"lead": "A reference for every page of PRUNplanner, and what changed in each release.",
+		"lead": "Guides for your first plans, a reference for every page of PRUNplanner and its terms, and what changed in each release.",
 		"most_read": "Most read:",
 		"browse": "Browse by area",
 		"whats_new": "What's new",
@@ -160,7 +223,24 @@
 		"stuck_text": "Ask other players on {discord}, or report a bug on {github}.",
 		"discord": "Discord",
 		"github": "GitHub issues",
-		"description": "PRUNplanner help: how plans, empires, exchanges and every tool work, and what changed in each release."
+		"description": "PRUNplanner help: guides, how plans, empires, exchanges and every tool work, a glossary, and what changed in each release.",
+		"start": "Start here",
+		"start_note": "Task guides, each a few steps with links into the app",
+		"glossary_title": "Glossary",
+		"glossary_text": "Game and planning terms in one place, also shown when you hover a term in an article.",
+		"glossary_all": "All terms"
+	},
+	"guides": {
+		"guide_first_base": "Your empire, prices, a planet and your first saved plan.",
+		"guide_find_planet": "Filter by resource, distance to your exchange and free plots.",
+		"guide_cx_prices": "Presets, buy and sell rules, planet exceptions and fixed prices.",
+		"guide_chain_to_bases": "Plan a production chain, split it into bases, create the plans.",
+		"guide_empire": "Several bases in one empire: totals, market check and opportunities.",
+		"guide_hand_off": "Supply and construction carts, XIT packages, FIO Burn and Repair."
+	},
+	"term": {
+		"eyebrow": "Glossary",
+		"open": "Open in glossary"
 	},
 	"article": {
 		"root": "Help",

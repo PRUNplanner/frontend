@@ -75,12 +75,15 @@ describe("HelpPanel", () => {
 		];
 		expect(chips.map((c) => c.textContent?.trim())).toEqual([
 			"help.articles.plan_layout.title",
+			"help.articles.plan_base.title",
 			"help.articles.plan_results.title",
 			"help.articles.plan_production.title",
+			"help.articles.plan_tools.title",
 			"help.articles.plan_saving.title",
+			"help.articles.plan_sharing.title",
 			"help.articles.plan_check.title",
 		]);
-		expect(chips[4]!.getAttribute("aria-current")).toBe("page");
+		expect(chips[7]!.getAttribute("aria-current")).toBe("page");
 
 		(chips[0] as HTMLButtonElement).click();
 		await flushPromises();

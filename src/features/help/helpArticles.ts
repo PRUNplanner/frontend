@@ -19,158 +19,92 @@ export const HELP_AREAS: HelpArea[] = [
 
 export const WHATS_NEW = "whats-new";
 
+// the release every article was last checked against the code
+const CHECKED = "0.36.0";
+
+/** a plan-page article: its panel shows the others as chips */
+const plan = (id: string, related: string[]): IHelpArticle => ({
+	id,
+	area: "planning",
+	parent: "plan",
+	file: id,
+	related,
+	updatedIn: CHECKED,
+});
+
+const entry = (
+	id: string,
+	area: HelpArea,
+	related: string[]
+): IHelpArticle => ({ id, area, file: id, related, updatedIn: CHECKED });
+
+/** the task guides, in the order of the home page's "Start here" cards */
+export const GUIDES = [
+	"guide_first_base",
+	"guide_find_planet",
+	"guide_cx_prices",
+	"guide_chain_to_bases",
+	"guide_empire",
+	"guide_hand_off",
+];
+
 export const HELP_ARTICLES: IHelpArticle[] = [
 	{
 		id: "help_welcome",
 		area: "start",
-		related: ["plan_layout", "management", "planet_search"],
-		updatedIn: "0.28.0",
+		related: ["guide_first_base", "plan_layout", "glossary"],
+		updatedIn: CHECKED,
 	},
-	{
-		id: "plan_layout",
-		area: "planning",
-		parent: "plan",
-		file: "plan_layout",
-		related: ["plan_results"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "plan_results",
-		area: "planning",
-		parent: "plan",
-		file: "plan_results",
-		related: ["plan_check", "exchanges"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "plan_production",
-		area: "planning",
-		parent: "plan",
-		file: "plan_production",
-		related: ["plan_results", "exchanges"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "plan_saving",
-		area: "planning",
-		parent: "plan",
-		file: "plan_saving",
-		related: ["management"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "plan_check",
-		area: "planning",
-		parent: "plan",
-		file: "plan_check",
-		related: ["exchanges", "tools_market_live"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "empire",
-		area: "planning",
-		file: "empire",
-		related: ["management", "plan_check"],
-		updatedIn: "0.28.0",
-	},
-	{
-		id: "management",
-		area: "planning",
-		file: "management",
-		related: ["empire", "exchanges"],
-		updatedIn: "0.31.1",
-	},
-	{
-		id: "exchanges",
-		area: "prices",
-		file: "exchanges",
-		related: ["plan_check", "management"],
-		updatedIn: "0.31.1",
-	},
-	{
-		id: "planet_search",
-		area: "tools",
-		file: "planet_search",
-		related: ["plan_layout", "tools_base_roi"],
-		updatedIn: "0.35.1",
-	},
-	{
-		id: "tools_production_chain",
-		area: "tools",
-		file: "tools_production_chain",
-		related: ["empire", "exchanges"],
-		updatedIn: "0.35.0",
-	},
-	{
-		id: "tools_base_roi",
-		area: "tools",
-		file: "tools_base_roi",
-		related: ["tools_roi_overview", "planet_search"],
-		updatedIn: "0.36.0",
-	},
-	{
-		id: "tools_roi_overview",
-		area: "tools",
-		file: "tools_roi_overview",
-		related: ["tools_resource_roi_overview", "tools_base_roi"],
-		updatedIn: "0.28.0",
-	},
-	{
-		id: "tools_resource_roi_overview",
-		area: "tools",
-		file: "tools_resource_roi_overview",
-		related: ["tools_roi_overview", "planet_search"],
-		updatedIn: "0.28.0",
-	},
-	{
-		id: "tools_market_live",
-		area: "tools",
-		file: "tools_market_live",
-		related: ["tools_market_exploration", "plan_check"],
-		updatedIn: "0.31.0",
-	},
-	{
-		id: "tools_market_exploration",
-		area: "tools",
-		file: "tools_market_exploration",
-		related: ["tools_market_live", "exchanges"],
-		updatedIn: "0.31.0",
-	},
-	{
-		id: "tools_hq_upgrade_calculator",
-		area: "tools",
-		file: "tools_hq_upgrade_calculator",
-		related: ["exchanges"],
-		updatedIn: "0.28.0",
-	},
-	{
-		id: "tools_upkeep_price_calculator",
-		area: "tools",
-		file: "tools_upkeep_price_calculator",
-		related: ["exchanges"],
-		updatedIn: "0.30.0",
-	},
-	{
-		id: "fio_repair",
-		area: "fio",
-		file: "fio_repair",
-		related: ["fio_burn"],
-		updatedIn: "0.31.1",
-	},
-	{
-		id: "fio_burn",
-		area: "fio",
-		file: "fio_burn",
-		related: ["fio_repair"],
-		updatedIn: "0.28.0",
-	},
-	{
-		id: "profile",
-		area: "account",
-		file: "profile",
-		related: ["exchanges"],
-		updatedIn: "0.28.0",
-	},
+	entry("guide_first_base", "start", ["management", "plan_base"]),
+	entry("guide_find_planet", "start", ["planet_search", "glossary"]),
+	entry("guide_cx_prices", "start", ["exchanges", "plan_check"]),
+	entry("guide_chain_to_bases", "start", [
+		"tools_production_chain",
+		"plan_saving",
+	]),
+	entry("guide_empire", "start", ["empire", "management"]),
+	entry("guide_hand_off", "start", ["plan_tools", "fio_burn"]),
+	plan("plan_layout", ["plan_base", "plan_results"]),
+	plan("plan_base", ["plan_production", "glossary"]),
+	plan("plan_results", ["plan_check", "exchanges"]),
+	plan("plan_production", ["plan_results", "exchanges"]),
+	plan("plan_tools", ["fio_burn", "fio_repair"]),
+	plan("plan_saving", ["management", "plan_sharing"]),
+	plan("plan_sharing", ["plan_saving"]),
+	plan("plan_check", ["exchanges", "tools_market_live"]),
+	entry("empire", "planning", ["management", "plan_check"]),
+	entry("management", "planning", ["empire", "exchanges"]),
+	entry("exchanges", "prices", ["plan_check", "management"]),
+	entry("planet_search", "tools", ["plan_layout", "tools_base_roi"]),
+	entry("tools_production_chain", "tools", ["empire", "exchanges"]),
+	entry("tools_base_roi", "tools", ["tools_roi_overview", "planet_search"]),
+	entry("tools_roi_overview", "tools", [
+		"tools_resource_roi_overview",
+		"tools_base_roi",
+	]),
+	entry("tools_resource_roi_overview", "tools", [
+		"tools_roi_overview",
+		"planet_search",
+	]),
+	entry("tools_market_report", "tools", [
+		"tools_market_exploration",
+		"tools_market_live",
+	]),
+	entry("tools_market_live", "tools", [
+		"tools_market_exploration",
+		"plan_check",
+	]),
+	entry("tools_market_exploration", "tools", [
+		"tools_market_live",
+		"exchanges",
+	]),
+	entry("tools_hq_upgrade_calculator", "tools", ["exchanges"]),
+	entry("tools_upkeep_price_calculator", "tools", ["exchanges"]),
+	entry("fio_repair", "fio", ["fio_burn"]),
+	entry("fio_burn", "fio", ["fio_repair"]),
+	entry("profile", "account", ["api_keys", "exchanges"]),
+	entry("api_keys", "account", ["profile"]),
+	entry("glossary", "reference", []),
 	{
 		id: WHATS_NEW,
 		area: "reference",
