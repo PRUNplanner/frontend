@@ -181,7 +181,7 @@ The **Plan check →** link under Material I/O does the same for Plan check. If 
 
 ## Plan suggestions {#suggestions}
 
-PRUNplanner shows what other players plan on the same planet. The numbers come from plans of players active in the last 90 days, and PRUNplanner updates them daily. A planet needs at least 15 such plans from at least 10 players. Buildings and recipes only show when at least 5 % of the plans and at least 10 players use them. On a planet with fewer plans, none of the suggestions below appear.
+PRUNplanner shows what other players plan on the same planet. The numbers come from plans changed in the last 180 days by players active in the last 90 days, and PRUNplanner updates them several times a day. A planet needs at least 15 such plans from at least 10 players. Buildings and recipes only show when at least 5 % of the plans and at least 10 players use them. On a planet with fewer plans, none of the suggestions below appear.
 
 For example, take a planet with 40 such plans from 25 players. A building in 4 of them (10 %), from 4 players, doesn't show, because fewer than 10 players use it. A building in 12 of them (30 %), from 11 players, does.
 

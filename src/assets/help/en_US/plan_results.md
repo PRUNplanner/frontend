@@ -102,11 +102,11 @@ The tile uses the whole Material I/O. It doesn't follow the "excluded materials"
 
 Three controls above the table choose what you see. They aren't saved, so the page always opens with Whole base, All and ȼ. Whole base is the view the profit is calculated from, so its Δ is what the base would buy and sell.
 
-| Control | Options | What it does |
+| Switch | Options | What it does |
 | --- | --- | --- |
-| **Show materials for** | **Whole base** (default), **Production**, **Workforce** | Whole base nets production and workforce together. Production shows only the buildings' inputs and outputs, Workforce only what your workers consume. |
-| **Filter** | **All** (default), **Exports**, **Imports** | Exports keeps rows with a positive Δ, Imports rows with a negative Δ. |
-| **Value shown** | ȼ (default), t, m³, % | The last column: **ȼ / day** (Δ at the sell price for exports, the buy price for imports), **Δ t**, **Δ m³**, or **7d share** and **30d share**. |
+| Which materials | **Whole base** (default), **Production**, **Workforce** | Whole base nets production and workforce together. Production shows only the buildings' inputs and outputs, Workforce only what your workers consume. |
+| Direction | **All** (default), **Exports**, **Imports** | Exports keeps rows with a positive Δ, Imports rows with a negative Δ. |
+| Value | ȼ (default), t, m³, % | The last column: **ȼ / day** (Δ at the sell price for exports, the buy price for imports), **Δ t**, **Δ m³**, or **7d share** and **30d share**. |
 
 The % view shows Δ as a share of the average daily volume traded in the last 7 and 30 days. It tells you whether the market can take what you sell or supply what you buy (see [Plan check](/help/plan_check#flags)).
 
@@ -120,13 +120,13 @@ The Material I/O totals part sums up the table per day:
 - **Imports**: the value of all rows with a negative Δ, as a negative number.
 - With **Whole base** only: **Degradation**, **Production fees** and **Profit / day** (in bold).
 
-The totals follow **Show materials for** but not **Filter**. With Whole base, Exports + Imports + Degradation + Production fees = Profit / day, the same figure as the tile.
+The totals follow the Whole base, Production or Workforce choice, but not the All, Exports or Imports one. With Whole base, Exports + Imports + Degradation + Production fees = Profit / day, the same figure as the tile.
 
 > [!tip]
-> Switch **Show materials for** to **Workforce** to see what feeding your workers costs per day. Turning a luxury off in Workforce lowers it, but it also lowers the workers' efficiency (see [Base setup](/help/plan_base#workforce)).
+> Switch Material I/O to **Workforce** to see what feeding your workers costs per day. Turning a luxury off in Workforce lowers it, but it also lowers the workers' efficiency (see [Base setup](/help/plan_base#workforce)).
 
 ### Download as CSV {#csv}
 
 **More** in the plan header has **Download Material I/O (CSV)**. The file has one row per material with the columns ticker, input, output, delta, value, weight and volume, all per day. Value is in ȼ, and weight and volume are of Δ. A CSV file opens in any spreadsheet program, so you can work with the numbers outside PRUNplanner.
 
-The download covers the current **Show materials for** choice and ignores **Filter**. The file is named after the plan, or after the planet's ID while the plan has no name, followed by "-material-io.csv".
+The download covers the current Whole base, Production or Workforce choice and ignores the All, Exports or Imports one. The file is named after the plan, or after the planet's ID while the plan has no name, followed by "-material-io.csv".

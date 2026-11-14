@@ -15,7 +15,7 @@ You create, rename and delete preferences in [Management](/help/management#cx). 
 
 ## The Rules List {#rules-list}
 
-The column on the left lists the parts of the preference you can open. On screens narrower than 1024 px it's a **Rules for** select instead.
+The column on the left lists the parts of the preference you can open. On screens narrower than 1024 px it's a select instead.
 
 | Entry | What it shows |
 | --- | --- |
@@ -34,7 +34,7 @@ The page opens on the **Overview**. It lists every material that the plans of th
 
 - The summary on top shows the **All planets** rule, how many planets have their own rules, and how many fixed prices there are.
 - **Search material** and **Show materials** (**All**, **Fixed**, **No price (0 ȼ)**, **Varies by planet**) narrow the table.
-- The table lists **Material**, **Buy ȼ**, **Sell ȼ** and **Used on** (the first three planets, the rest as "+n"). When planets get different prices, you see the range and a "varies by planet" tag.
+- The table lists **Material**, **Buy ȼ**, **Sell ȼ** and **Used on** (the first three planets, the rest as "+n"). When planets get different prices, you see the range and a "varies by planet" tag. On screens narrower than 1024 px the table shows one side at a time, buy prices first, with a switch for the sell side, and leaves out **Used on**.
 - A tag shows where each price comes from, for example "NC1 · VWAP 30D", **Fixed · all planets**, **Fixed · this planet** or **No price data**. Prices of 0 ȼ without a fixed price are amber.
 - Expand a row to see the full ladder of [how the price is found](#how-a-price-is-found), for each side and planet. **Open the rule** jumps to the rule that set it.
 
@@ -102,7 +102,7 @@ What the basis does to your plans: VWAP is one price for both sides, so with the
 
 ## Setting an Exchange Rule {#exchange-rule}
 
-The **Exchange price** box on **All planets** and on each planet sets the exchange rule. Under **How buy and sell prices are set**, pick one of these:
+The **Exchange price** box on **All planets** and on each planet sets the exchange rule. Then pick one of these:
 
 - **Same for buy and sell**: one exchange and basis for both sides.
 - **Separate buy and sell**: its own exchange and basis per side. A side can stay **Not set**, and then falls through to the next level.

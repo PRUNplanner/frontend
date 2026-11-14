@@ -113,7 +113,7 @@
 		"[&_th]:text-left [&_th]:font-medium [&_th]:text-ink-strong [&_th]:border-b [&_th]:border-line [&_th]:px-3 [&_th]:py-1.5",
 		"[&_td]:border-b [&_td]:border-line [&_td]:px-3 [&_td]:py-1.5",
 		"[&_blockquote]:border-l-2 [&_blockquote]:border-line-strong [&_blockquote]:pl-4 [&_blockquote]:mb-3 [&_blockquote]:text-muted-strong",
-		"[&_.help-callout]:border-l-0 [&_.help-callout]:rounded-panel [&_.help-callout]:p-3 [&_.help-callout]:bg-surface [&_.help-callout]:border [&_.help-callout_p:last-child]:mb-0",
+		"[&_.help-callout]:rounded-panel [&_.help-callout]:p-3 [&_.help-callout]:bg-surface [&_.help-callout]:border [&_.help-callout_p:last-child]:mb-0",
 		"[&_.help-callout-tip]:border-prunplanner/40 [&_.help-callout-warning]:border-warning/50",
 	].join(" ");
 </script>

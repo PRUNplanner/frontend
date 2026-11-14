@@ -83,6 +83,12 @@ Writing rules:
   sentence; label-first lines only in tables and short reference lists.
   No filler words (seamless, robust, crucial, ensure, simply, just, "note
   that"), no hype, exclamation marks, em dashes or closing summaries.
+- Explain, don't only describe: say why a setting matters, what a warning
+  or empty state means and what to do, and give worked examples with
+  recomputed numbers. Every statement is backed by the code or an
+  owner-confirmed game fact; no recommendations the owner hasn't made.
+  Screen-reader-only labels (a group's `aria-label`) aren't named: point
+  to what's visible instead.
 
 `src/tests/features/help/helpArticles.test.ts` fails on an English file
 without an entry (or the reverse), a missing title key, a heading without

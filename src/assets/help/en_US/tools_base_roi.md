@@ -26,7 +26,7 @@ A preset only fills in settings you can also change later in [Settings](#setting
 
 ## What every base assumes {#assumptions}
 
-Every row is a full 500-area base (one [[area-permits|permit]]) with the building's optimal layout. PRUNplanner calculates it with the same engine as your [[plan|plans]] and prices it with the selected [[exchange-preference|exchange preference]], or with Universe 30D prices when you're not logged in. Each base also assumes:
+Every row is a full 500-area base (one [[area-permits|permit]]) with the building's optimal layout. PRUNplanner calculates it with the same engine as your [[plan|plans]] and prices it with the selected [[exchange-preference|exchange preference]], or with Universe 30D prices when you're not logged in or have "None - Universe 30D" selected. Each base also assumes:
 
 - Both [[luxuries]] for every tier.
 - [[experts|Experts]] only in the building's own [[expertise]], as set in Settings.
@@ -38,7 +38,7 @@ The bottom of Settings says the same: "All rows assume the COGC and experts set 
 ## Row kinds {#row-kinds}
 
 - **Resource**: one resource on one planet, with RIG, EXT or COL and the planet's environment materials in the construction. PRUNplanner only calculates planets within **Max jumps (planet rows)** and resources with a daily [[extraction]] above 0. The row shows "@ planet · N jumps", the [[jumps]] to the nearest exchange of your exchange preference, or of all four exchanges if you have none.
-- **Farming**: one FRM or ORC recipe on one fertile planet, with the planet's fertility in the yield. It shows "@ planet · N jumps" too.
+- **Farming**: one FRM or ORC recipe on one fertile planet, with the planet's fertility in the yield. It shows "@ planet · N jumps" too. The **Resources** box in **Row kinds** shows or hides these rows along with the resource rows.
 - **Recipe**: one recipe of any other production building, on the standard planet. Use **Try on a planet** in the row's details to see it on a real planet.
 
 ## Metrics {#metrics}

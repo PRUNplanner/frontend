@@ -4,7 +4,7 @@ The [Market report](/market) shows how prices and turnover moved on the four com
 
 Daily prices come from the daily trading data [[fio|FIO]] delivers for AI1, CI1, IC1 and NC1. The report covers the 90 complete UTC days up to yesterday. It updates daily (UTC) from the previous day's trading, so today's trading only shows up once the day is over. The header gives the last day as "Daily prices to" a date.
 
-The order books are current. The biggest open gap, the "Order books now" gaps and the book figures on the exchange cards all use the latest books PRUNplanner has, refreshed about every 30 minutes.
+The order books are current. The biggest open gap, the "Order books now" gaps and the book figures on the exchange cards all use the latest books PRUNplanner has, kept up to date from FIO, at least every 30 minutes.
 
 Money is in ȼ. Each exchange has its own [[currency]] (AIC, CIS, ICA, NCC), and the report adds them up at par, one to one. That works because the same material trades at close to the same price everywhere.
 
@@ -66,7 +66,7 @@ If a material in the basket has no price on a day, the chart has no value for th
 
 ## Where the money moves {#treemap}
 
-**Where the money moves** is a treemap. Each box is a material, sized by its 30-day turnover on all four exchanges and grouped by sector. The colour compares VWAP 7D with VWAP 30D: green when it's rising, red when it's falling, deepest at ±12 % and beyond. [Flat](#flat) materials are hatched and marked **flat** ("Held at one price, likely a market maker").
+**Where the money moves** is a treemap. Each box is a material, sized by its 30-day turnover on all four exchanges and grouped by sector. The colour compares VWAP 7D with VWAP 30D: green when it's rising, red when it's falling, deepest at ±12 % and beyond. With the **Color-blind (blue / orange)** palette in your Profile, rising is blue and falling orange. [Flat](#flat) materials are hatched and marked **flat** ("Held at one price, likely a market maker").
 
 Hover a box to see **Turnover, 30 days**, **VWAP 7D**, **VWAP 30D** and **7D against 30D**. When there's no change to show, it says **too few trades**. That happens when the material traded in the last 30 days but not in the last 7, so there's no VWAP 7D to compare.
 

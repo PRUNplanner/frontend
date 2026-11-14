@@ -53,7 +53,7 @@ If the empire was saved in another tab or on another device in the meantime, you
 
 ## Material I/O {#material-io}
 
-**Material I/O** (under **View**) lists every material of the empire with these columns:
+**Material I/O** (one of the page's views) lists every material of the empire with these columns:
 
 - **Delta**: made minus used per day. Above zero, the empire sells the rest, and below zero, it buys what's missing.
 - **Production** and **Consumption**.

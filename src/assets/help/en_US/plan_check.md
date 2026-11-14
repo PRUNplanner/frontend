@@ -1,4 +1,4 @@
-Plan check tests a plan against the market before you build it. It tells you whether you can really buy and sell these amounts, which prices the profit hangs on, and how the plan compares with your other plans. You'll find it as a tool tab of Production (see [Plan layout](/help/plan_layout#parts)), with three views under **View**: **Market check** (the default), **Price sensitivity** and **Compare plans**. **Compare plans** only shows up when you're logged in.
+Plan check tests a plan against the market before you build it. It tells you whether you can really buy and sell these amounts, which prices the profit hangs on, and how the plan compares with your other plans. You'll find it as a tool tab of Production (see [Plan layout](/help/plan_layout#parts)), with three views you switch between next to its title: **Market check** (the default), **Price sensitivity** and **Compare plans**. **Compare plans** only shows up when you're logged in.
 
 The view and the price change you pick stay put for this browser tab, even when you switch plans or close and reopen the tool. Clicking a flag in [[material-io|Material I/O]] opens a popover, and its **Open Plan check →** opens Plan check on the Market check.
 
@@ -54,9 +54,9 @@ The flag thresholds are fixed:
 
 Red is a filled circle (*can't trade as planned*), amber a triangle, grey a ring. *No offers* and *No buyers* need a real exchange, so they never show when all exchanges are counted. Spreads show up in the table but never get a flag.
 
-Volumes, bid and ask come from the exchange data PRUNplanner loads from [[fio|FIO]], refreshed about every 30 minutes.
+Volumes, bid and ask come from the exchange data PRUNplanner loads from [[fio|FIO]], kept up to date at least every 30 minutes.
 
-You can also watch the shares while you change counts and recipes. Set Material I/O's **Value shown** to %, and it shows each material's Δ as a share of the average daily volume of the last 7 and 30 days (**7d share**, **30d share**), amber from 10 % and red from 50 %. With **Show materials for** set to **Whole base**, Material I/O shows the flag icons too, and its summary ("2 materials can't trade as planned, …") links to **Plan check →**. The Plan check tab carries a dot while the plan has market flags.
+You can also watch the shares while you change counts and recipes. Switch Material I/O's value from ȼ to %, and it shows each material's Δ as a share of the average daily volume of the last 7 and 30 days (**7d share**, **30d share**), amber from 10 % and red from 50 %. On **Whole base**, Material I/O shows the flag icons too, and its summary ("2 materials can't trade as planned, …") links to **Plan check →**. The Plan check tab carries a dot while the plan has market flags.
 
 > [!tip]
 > A red or amber flag on an output doesn't mean the plan is bad. It means you sell more than the market takes. Fewer buildings, a second output or another exchange can fix that: try them and watch the share drop.

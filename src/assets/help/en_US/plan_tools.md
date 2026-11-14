@@ -55,11 +55,11 @@ There are two XIT buttons. The one at the top of the tool ships everything in **
 
 | Setting | Default | What it does |
 |---|---|---|
-| **Supply for** | **Whole base** | **Whole base**, **Production** or **Workforce**: which materials are listed. |
+| Which materials | **Whole base** | **Whole base**, **Production** or **Workforce**: which materials are listed. |
 | **Stock Duration (days)** | 20 | How many days the supply lasts. Decimals work. It's one value for all plans, saved with your preferences. |
 | **Storage** | the base on the plan's planet | The FIO storage whose stock is taken off. Only with FIO. |
 
-**Supply for** picks which materials are listed. A material shows under **Workforce** when the workforce uses it, and under **Production** when a recipe uses or makes it. The amounts are still the whole base's net need.
+The **Whole base**, **Production** or **Workforce** switch picks which materials are listed. A material shows under **Workforce** when the workforce uses it, and under **Production** when a recipe uses or makes it. The amounts are still the whole base's net need.
 
 ### Columns and totals {#supply-columns}
 
@@ -83,7 +83,7 @@ Below the table you get **Daily Cost**, **Total Cost** (**Final Need** at the pl
 ### XIT and XIT Initial {#supply-xit}
 
 - The XIT button ships the **Final Need** of the listed materials: what the running base still needs once its own production covers part of it.
-- **XIT Initial** (its drawer is titled **Supply Cart (Initial)**) is for the first supply, when nothing is produced yet. It ships each material's full input × days, rounded up, minus stock, and that includes the materials the plan makes itself. It follows **Supply for**, so it ships the workforce's or production's own inputs, or both.
+- **XIT Initial** (its drawer is titled **Supply Cart (Initial)**) is for the first supply, when nothing is produced yet. It ships each material's full input × days, rounded up, minus stock, and that includes the materials the plan makes itself. It follows the **Whole base**, **Production** or **Workforce** choice, so it ships the workforce's or production's own inputs, or both.
 
 > [!tip]
 > Starting a new base? Use **XIT Initial** for the first flight. The plain XIT nets out what the base makes, so a base that makes its own DW or RAT would arrive without any.
@@ -123,10 +123,10 @@ The table shows, in t and m³ per day:
 - **Larger leg**: the larger of the two, which is what a ship carries on its fuller leg. Weight and volume are compared separately.
 - **Storage Filled**: capacity ÷ **Larger leg**, in days, for whichever of weight and volume runs out first.
 
-**Excluded materials** leaves materials out of this tool, for the ones you sell or buy on the planet itself (local market, contracts). Search for tickers and pick them. The list is saved per plan with your preferences. On a new or shared plan it lasts for the visit.
+The exclusion list leaves materials out of this tool, for the ones you sell or buy on the planet itself (local market, contracts). Search for tickers and pick them. The list is saved per plan with your preferences. On a new or shared plan it lasts for the visit.
 
 > [!warning]
-> The **Storage** results tile counts every material and ignores your **Excluded materials**. Once you set exclusions, its days and **Storage Filled** here differ.
+> The **Storage** results tile counts every material and ignores your excluded materials. Once you set exclusions, its days and **Storage Filled** here differ.
 
 ### Shipping {#visits-shipping}
 
@@ -164,7 +164,7 @@ The plan's own numbers ([Results](/help/plan_results)) charge [[degradation]] as
 
 - At the top you see "**Profit with these repairs**" for the whole plan in ȼ / day, with "**all at best**" or how far it is from all at best. Next to it are **Repair cost** in ȼ / day (or **Next repair due** with FIO, see below) and "**One repair of every building**" in ȼ, t and m³.
 - **Buildings** lists each type, most expensive repair first: **Best (good)** (the best interval and its good range), **Interval (d)** (yours, starting at the best), **ȼ/day** at that interval, and **Good range** (or **Next due** with FIO).
-- Click a building to open its detail. It shows the profit at your interval and how it compares with the best, the **Repair bill**, **Condition at repair** and the average output. **Repair every** has a field, a slider (1–180 days) and **Presets** (**Best · {n} d**, 30, 60 and 90 days). The detail also lists the materials of one repair of all buildings of that type.
+- Click a building to open its detail. It shows the profit at your interval and how it compares with the best, the **Repair bill**, **Condition at repair** and the average output. **Repair every** has a field, a slider (1–180 days) and quick picks (**Best · {n} d**, 30, 60 and 90 days). The detail also lists the materials of one repair of all buildings of that type.
 - In the charts, **Profit per day, by repair interval** marks the good range, and in **Why {best} days: repair cost vs. lost output** the lowest total is the best interval. There's also **Building condition**.
 
 Intervals you set aren't saved. **Reset all to best** goes back to the best intervals.
@@ -182,7 +182,7 @@ With FIO connected, the detail lists your buildings of that type on the plan's p
 
 **Profit Breakdown** shows where each day's output value goes, in ȼ / day at the plan's exchange preference. It adds nothing new: its steps end at the plan's [[profit]] per day.
 
-**Break down** switches between **By cost type** (default) and **By building**. PRUNplanner keeps your choice until you reload the page.
+A switch picks **By cost type** (default) or **By building**. PRUNplanner keeps your choice until you reload the page.
 
 ### By cost type {#profit-cost-type}
 

@@ -220,7 +220,7 @@ The link holds the whole chain: targets, settings, sources, recipes, planets, ba
 
 ## Check an empire {#check-an-empire}
 
-Switch the **Mode** at the top to **Check an empire** to see how one of your empires makes what it sells, and what would make it better. Each mode keeps its own state while you switch between them.
+Switch from **Plan a chain** to **Check an empire** at the top to see how one of your empires makes what it sells, and what would make it better. Each mode keeps its own state while you switch between them.
 
 1. Pick the **Empire**. It starts at your default empire.
 2. Pick the chains. Each material the empire sells (makes more of than it uses, with a CX sell price) is a chain, shown with its amount per day. "+ Add a chain" adds one, and "All the empire sells" or **Check everything the empire sells** adds all of them. **Clear** removes them.
