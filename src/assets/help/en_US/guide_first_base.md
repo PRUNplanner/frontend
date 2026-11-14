@@ -1,16 +1,27 @@
-New to PRUNplanner? This guide takes about 15 minutes. By the end your [[empire]] is set up, your prices come from your home exchange, and you have a first saved [[plan]] whose profit and payback you can read.
+New to PRUNplanner? This guide takes about 15 minutes. By the end you'll have:
+
+- your [[empire]] set up with your faction and permits,
+- prices that come from the exchange you pick,
+- a first saved [[plan]] whose profit and payback you can read.
+
+It's a short walkthrough. The pages linked at the end of each step go deeper when you want the details.
 
 You need an account. A new one already comes with an empire and an [[exchange-preference|exchange preference]], so most of this is checking and adjusting.
 
 ## 1. Check your empire {#step-1}
 
+An empire is a group of plans that shares a faction, permits and an exchange preference, so what you set here applies to every plan in it.
+
 Open [Empire](/empire). A new account has one empire, "My Empire", with no [[faction]] and 1 of 2 permits used. While it has no plans, the page shows three steps. The first one, **Your empire**, holds its settings.
 
 1. Pick your **Faction**. It gives the buildings of its [[expertise]] a bonus in every plan of the empire.
-2. Set **Permits Total** and **Permits Used** to what your in-game HQ shows. The fewer permits you use, the larger the faction bonus.
+2. Set **Permits Total** and **Permits Used** to what your in-game `HQ` buffer shows. The fewer permits you use, the larger the faction bonus.
 3. Press **Save**.
 
 When the step shows **Saved**, you're done here. Once the empire has plans, you'll find the same fields in the **Configuration** box on the Empire page.
+
+> [!tip]
+> Once the empire has plans, the **Configuration** box warns "Mismatch Detected" when **Permits Used** differs from the permits your plans add up to. It checks as you type, so it can show up while you edit. Don't worry, it's only a reminder to match the numbers to the game. The first-run step above doesn't show it.
 
 > [!tip]
 > Want a second empire, for example to test an expansion without touching your real bases? Create it in [Management](/manage) with **New Empire**.
@@ -19,7 +30,7 @@ Read more: [Empire configuration](/help/empire#configuration), [Faction bonus](/
 
 ## 2. Set your home exchange {#step-2}
 
-Your prices come from your exchange preference. A new account has "My Exchange Preference", which "My Empire" already uses. It's set to **Universe · VWAP 30D**, the 30-day average across all four exchanges. Most players buy and sell on one home exchange instead.
+Your prices come from your exchange preference, and every plan's revenue, costs and profit are worked out at those prices. A new account has "My Exchange Preference", which is already linked to "My Empire". It's set to **Universe · VWAP 30D**, the 30-day average across all four exchanges. You can also take all prices from one exchange instead.
 
 1. Open [Exchanges](/exchanges). It opens your preference. If you have several, **Switch Preference** picks another one.
 2. In the list on the left, open **All planets**.
@@ -27,7 +38,14 @@ Your prices come from your exchange preference. A new account has "My Exchange P
 4. Pick a price basis, or click the preset **Average · VWAP 30D**.
 5. Press **Save changes** in the bar at the bottom.
 
-If the **Overview** shows the new rule under **All planets**, it worked. Once you have plans, the Overview lists every price they use, and amber prices mark materials that count as 0 ȼ.
+> [!tip]
+> [[vwap|VWAP]] is the volume-weighted average price: the credits paid for a material ÷ the units traded. As an example, say an exchange saw 30 units traded at 200 ȼ, 40 at 210 ȼ, 10 at 215 ȼ and 20 at 220 ȼ. The VWAP is (6,000 + 8,400 + 2,150 + 4,400) ÷ 100 = 20,950 ÷ 100 = 209.50 ȼ. Prices with more units behind them count more.
+>
+> VWAP 7D averages the trades of the last 7 days, VWAP 30D those of the last 30. A single exchange uses only the trades made there. Universe adds up the trades of AI1, CI1, IC1 and NC1 into one average.
+
+If the **Overview** shows the new rule under **All planets**, it worked. Once you have plans, the Overview lists every price they use, and amber prices mark materials that count as 0 ȼ. That only means the exchange you picked has no price for them, and PRUNplanner doesn't take one from another exchange. With VWAP, that happens only after 30 days without a trade on that exchange. Before that, VWAP 7D falls back to the price of the last day it was traded.
+
+Empires you create later start without a preference and price at Universe · VWAP 30D. You give them one in [Management](/manage), in column **CX** of **Empire Configuration**.
 
 Details: [Set up your prices](/help/guide_cx_prices), [Setting an exchange rule](/help/exchanges#exchange-rule).
 

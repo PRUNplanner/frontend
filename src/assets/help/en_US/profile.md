@@ -1,4 +1,4 @@
-Your [Profile](/profile) is where you manage your account, link your game data through FIO, and set the preferences that decide how PRUNplanner's tools start. This page also covers logging in, signing up and resetting a password.
+Your [Profile](/profile) is where you manage your account, link your game data through FIO, and set the preferences that decide how PRUNplanner's tools start. This page also covers logging in, signing up and resetting a password. Come here when you link FIO for the first time, when you want a tool to start with other settings, or to change your email or password.
 
 ## Your Account {#account}
 
@@ -17,7 +17,7 @@ An email is optional, and PRUNplanner only uses it to reset your password. Witho
 
 **Account recovery** shows where you stand: **Not set up** (no email), **Waiting for confirmation**, or **Ready** (resets go to this address). A new address only gets resets once you confirm it.
 
-While you have plans but no confirmed email, the Empire page shows a reminder. "Not now" hides it for 30 days, and "Don't remind me" hides it for good.
+Because a forgotten password can only be reset through a confirmed address, the Empire page shows a reminder while you have plans but no confirmed email. "Not now" hides it for 30 days, and "Don't remind me" hides it for good.
 
 ### Forgotten password {#password-reset}
 
@@ -66,13 +66,15 @@ PRUNplanner saves preferences to your account as soon as you change them, so the
 | **Plan suggestions** | on | Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans. |
 | **Usage analytics** | asked once, in a banner | Lets PRUNplanner collect usage events, error reports and session recordings. Stored in this browser only. It stays off when your browser sends Do-Not-Track or Global Privacy Control. |
 
-The burn thresholds are *days of supply left*, not stock amounts. You can also set them on the [FIO Burn](/help/fio_burn#thresholds) page, and the repair settings on [FIO Repair](/help/fio_repair). It's the same setting in both places.
+An [[exchange-preference|exchange preference]] is your set of rules for which exchange and price basis prices come from, so **Default CX** decides which prices the tools listed above start with.
+
+The burn thresholds are *days of supply left*, not stock amounts. For example, with **Red Threshold** at 5 and **Yellow Threshold** at 10, a base with 4 days left shows red, one with 7 days shows yellow, and one with 12 days shows no colour. You can also set them on the [FIO Burn](/help/fio_burn#thresholds) page, and the repair settings on [FIO Repair](/help/fio_repair). It's the same setting in both places.
 
 **Plan-Specific Settings** lists plans that have settings of their own, for example visitation exclusions, built buildings in the construction cart, or auto-optimize turned off. You change them inside each plan.
 
 ## Browser Storage {#browser-storage}
 
-To load fast and spare the server, PRUNplanner keeps a copy of game data and your planning data in your browser and refreshes it after set times. The **Browser Storage** table shows how much it holds.
+To load fast and spare the server, PRUNplanner keeps a copy of game data and your planning data in your browser and refreshes it after set times. The **Browser Storage** table shows how much it holds. Your plans, empires and preferences are saved in your account, so this copy isn't the only place they live.
 
 ### Storage Categories {#storage-categories}
 

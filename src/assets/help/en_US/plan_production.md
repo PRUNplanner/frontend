@@ -2,7 +2,9 @@ Production is where you add buildings, set how many you build, queue [[recipe|re
 
 ## Adding buildings {#adding-buildings}
 
-The building select above the list offers every production building that isn't in the plan yet. Picking one adds it with a count of 1 and no recipe.
+The building select above the list offers every production building that isn't in the plan yet. Picking one adds it with a count of 1 and no recipe. It makes nothing until you give it one with **+ Recipe** (see [Orders](#orders)).
+
+An empty plan shows "No buildings yet." and points you to the building select. With **Plan suggestions** on and planet insights available, it offers to start from a typical setup instead.
 
 **Match COGC** limits the select to buildings whose [[expertise]] matches the plan's [[cogc|COGC]] program. With the program set to **None** or to a workforce program (Pioneers to Scientists), no building matches and the list is empty. Untick it to see all buildings again.
 
@@ -34,7 +36,11 @@ A building's **ȼ / day** is:
 - minus its [[production-fees|production fees]],
 - all times the count.
 
+For example (made-up numbers), take a row of 2 buildings. Each one's outputs sell for 3,000 ȼ a day, its inputs cost 1,000 ȼ, its workers' consumables 400 ȼ, its degradation 100 ȼ and its fees 50 ȼ. The row's ȼ / day is (3,000 − 1,000 − 400 − 100 − 50) × 2 = 2,900 ȼ.
+
 Workforce costs follow the plan's habitations and luxuries, so workers without a bed and luxuries you've turned off cost nothing. A building always pays its own workers' consumables, even when the plan makes them itself.
+
+The plan's **Profit / day** works from the whole base's Material I/O instead, where what one building makes and another uses nets out. So on a base that makes its own consumables or inputs, the buildings' ȼ / day don't add up to **Profit / day**.
 
 Where the production part is narrow, efficiency and area move under ȼ / day as "ȼ/day · … · area …".
 
@@ -52,11 +58,13 @@ A building runs its orders one after another, then starts over. Each order row s
 - **COGM** (see [COGM](#cogm));
 - delete, which doesn't ask first ("Recipe removed", with Undo).
 
+For example (made-up numbers), at 100 % efficiency an order of 2 runs of a 4-hour recipe takes 8 h, and an order of 3 runs of an 8-hour recipe takes 24 h. Together that's 32 h, so the first order gets 8 ÷ 32 = 25 % of the building's time and the second 75 %. At 125 % efficiency the runtimes shrink to 6.4 h and 19.2 h, and the shares stay the same.
+
 An order's ȼ / day is the recipe's ȼ per building and day (as in the [recipe picker](#changing-a-recipe)) × its share of the time × the count. That way the orders split the building's figure by their time.
 
 When the orders don't use each other's outputs, their sum equals the building's figure. When they do, the building nets those materials and the orders don't, so the sums differ. An order that never runs (0 % of the time) shows "—". At 0 % efficiency all orders show "—", while the building still shows its fixed costs (degradation and any housed workforce) as a loss.
 
-**+ Recipe** adds a new order, and a building can order the same recipe twice. A building without orders shows **No Active Recipes**. With **Plan suggestions** on and planet insights, it also shows **Most planned here:** with the planet's most planned recipe mix, its share of plans and **Add**.
+**+ Recipe** adds a new order, and a building can order the same recipe twice. A building without orders shows **No Active Recipes**. Until you add one, it makes nothing but still pays its degradation and its housed workers' consumables, so its ȼ / day shows a loss. With **Plan suggestions** on and planet insights, it also shows **Most planned here:** with the planet's most planned recipe mix, its share of plans and **Add**.
 
 > [!tip]
 > Use the amounts to balance a chain inside one building: the share column shows how the building's time splits. Doubling an order's amount doubles its runtime, so it gets a larger share and the other orders a smaller one.
@@ -107,5 +115,7 @@ The amount is how much of that material the plan uses per day in total, taken fr
 - **Parameters**: the recipe's runtime at this efficiency, its share of a day (**% / day**), **Efficiency**, **Degradation** (the building's construction cost ÷ 180 per day) and **Production fee / run** (the weighted fee × the recipe's base time, independent of efficiency).
 - **Cost** of one run: each input at the buy price (**Input Total**), the **Workforce** share (the building's daily workforce cost × the run's share of a day), the degradation share and the production fee. Together they make **Total Cost**.
 - Per output: **Cost Total** puts the whole cost on that output (cost ÷ its amount), while **Cost Split** spreads it over all outputs by quantity (cost ÷ all outputs' amounts).
+
+The shares follow the run's time. For example, a 6-hour run at 100 % efficiency is 25 % of a day, so it carries 25 % of the building's daily workforce cost and degradation. And if one run costs 600 ȼ in all and makes 2 of one output and 1 of another, **Cost Total** is 600 ÷ 2 = 300 ȼ for the first and 600 ÷ 1 = 600 ȼ for the second, while **Cost Split** is 600 ÷ 3 = 200 ȼ for each. For a recipe with one output, both columns show the same figure.
 
 Prices come from the empire's [[exchange-preference|exchange preference]]. If it has one, **Use as buy price on all planets** turns the COGM into a fixed buy price for every plan that uses that preference (see [Exchanges](/help/exchanges#fixed-prices-and-cogm)).

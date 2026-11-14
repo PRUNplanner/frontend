@@ -1,5 +1,7 @@
 You can arrange the parts of the plan page to suit how you plan. Use the Standard layout or customise your own, fold parts, group them as tabs and set up how the page looks on a phone. The page also shows plan suggestions based on what other players plan.
 
+Use it, for example, to keep Material I/O in view beside a long Production list, or to fold the parts you set once. The layout holds only where the parts go, how big they are, what's folded and whether parts are tinted, so changing it never changes your plan's figures.
+
 ## The parts of the page {#parts}
 
 - **Base**: **Empire & prices**, **Planet**, **Workforce**, **Infrastructure** and **Experts**. See [Base setup](/help/plan_base).
@@ -14,7 +16,7 @@ Each part uses the room it gets. Give it more width and it shows more side by si
 The **Layout** button in the plan header picks the layout. You only see it when you're logged in, and below 768 px it shows as an icon only.
 
 - **Standard**: results on top, Base on the left, Production with its tools in the middle, Material I/O on the right. Standard never changes.
-- **Custom Layout**: your own arrangement. It appears once you've saved one. There's one Custom Layout, used for all your plans.
+- **Custom Layout**: your own arrangement. It appears once you've saved one. There's one Custom Layout, used for all your plans. Switching to Standard keeps it, so you can switch back at any time.
 
 Customising starts from a copy. Pick **Customise, starting from Standard…**, or **Customise Custom Layout…** while Custom Layout is in use. Below 768 px the customise item isn't offered, but you can still switch layouts there.
 
@@ -25,7 +27,7 @@ While you customise, the page shows its real content, but you can't click it. Ea
 The bar at the top has:
 
 - **Arrangement**: **Wide** or **Phone**, see [Wide and Phone](#phone).
-- **Columns** (4 to 24, Wide only) and **Gap** (8, 12, 16 or 24 px). Changing the columns keeps each part's share of the width.
+- **Columns** (4 to 24, Wide only) and **Gap** (8, 12, 16 or 24 px). Changing the columns keeps each part's share of the width. For example, going from 12 to 24 columns turns a part 4 columns wide into one 8 columns wide. Shares that don't divide evenly round to whole columns.
 - **Tinted parts**: gives every part a slightly lighter background for more contrast, in either layout and on every screen. It's kept as soon as you tick it.
 - **Elements · N**: N parts aren't placed in the arrangement shown.
 - **Undo** (also Ctrl/⌘+Z), **Reset to Standard** (Wide as Standard, Phone automatic, and you can undo it), **Cancel** and **Save**.
@@ -59,6 +61,8 @@ Each part has one of three height modes. You set it in the Height row of the ⋯
 | **Fit content** | Grows with its content. |
 | **Fit content, at most N px** | Grows with its content up to N px, then scrolls inside. |
 | **Fixed N px** | Keeps its height. Taller content scrolls inside. |
+
+For example, with a limit of 480 px, a part with 300 px of content is 300 px tall, and one with 600 px is 480 px tall and scrolls the rest inside. Set to **Fixed N px** at 480 px, both are 480 px tall.
 
 When a part has no height set yet, "at most" and "fixed" start from its current content height, at most 480 px.
 
@@ -95,6 +99,9 @@ You can use the keyboard too. Focus a part's grip, and the arrow keys move it, S
 - Production always stays on the page, and so does any tab that contains it.
 - The parts below move up into the gap, and **Undo** in the message brings the part back.
 - **Elements** lists every part, grouped as **Base**, **Production & tools**, **Material I/O** and **Results**, and says where each one is: **On the page**, **Pinned to top**, a tab or part of another, or **Hidden**. **Add** puts a hidden part at the bottom. Drag any part onto the page to place or move it (a tab leaves its group). **Show** switches to its tab, scrolls to it and highlights it.
+
+> [!tip]
+> Can't find a part on the page? While you customise, **Elements** says where each one is. A part you hid is marked **Hidden**, and **Add** brings it back.
 
 ### New parts {#new-parts}
 
@@ -175,6 +182,8 @@ The **Plan check →** link under Material I/O does the same for Plan check. If 
 ## Plan suggestions {#suggestions}
 
 PRUNplanner shows what other players plan on the same planet. The numbers come from plans of players active in the last 90 days, and PRUNplanner updates them daily. A planet needs at least 15 such plans from at least 10 players. Buildings and recipes only show when at least 5 % of the plans and at least 10 players use them. On a planet with fewer plans, none of the suggestions below appear.
+
+For example, take a planet with 40 such plans from 25 players. A building in 4 of them (10 %), from 4 players, doesn't show, because fewer than 10 players use it. A building in 12 of them (30 %), from 11 players, does.
 
 - **Planning Insights**: when the planet has enough plans, the **Planet** part shows a link "{n} plans on {planet} · what others build here". It opens a box with the [[experts]], production buildings and [[recipe|recipes]] those plans use, as shares.
 - **Building select**: in Production, the building select starts with a group "Popular on {planet} · {plans} plans". It lists up to 8 buildings with the share of plans that have them, then **All buildings**.

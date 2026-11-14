@@ -23,7 +23,7 @@ You'll find the full reference at [api.prunplanner.org/docs](https://api.prunpla
 5. Press **I've saved my key**.
 
 > [!warning]
-> PRUNplanner can't show the key again. If you lose it, revoke it and create a new one.
+> PRUNplanner can't show the key again, because it keeps only a hashed form of it, which can check a key but can't turn back into one. If you lose it, revoke it and create a new one.
 
 ## Using a Key {#using-keys}
 
@@ -35,6 +35,8 @@ Send the key with each request, in one of two ways:
 | Query parameter | `?api_key=<YOUR_KEY>` at the end of the URL | Google Sheets `IMPORTDATA`, tools that only take a URL |
 
 Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. Use a separate key per sheet or script, so you can revoke one without breaking the others.
+
+Both ways work for every request that needs a key. If a request carries both, PRUNplanner uses the header.
 
 ## URL Builder {#url-builder}
 
@@ -61,6 +63,8 @@ Until you fill in your key, the snippets show `<YOUR_KEY>` in its place.
 
 If you go over these limits, the request gets the answer *429 Too Many Requests*. Wait a minute and try again.
 
+These limits sit well above normal use: the 240 per minute is about four times, and the FIO storage limit about twice, the busiest minute of normal use.
+
 | Requests | Limit | Counted per |
 | --- | --- | --- |
 | Everything you request with a key or while logged in | 240 per minute | account |
@@ -70,9 +74,11 @@ If you go over these limits, the request gets the answer *429 Too Many Requests*
 
 A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. One request for many rows, such as **Market history, every material**, is better than one request per material.
 
+For example, if 40 **FIO storage** requests arrive within one minute, the first 30 go through and the other 10 get 429.
+
 ## Managing Keys {#manage-keys}
 
-**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, so you can tell them apart. Last Used shows **Never** until the key is used. After that, requests update it within a few minutes.
+**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
 
 **Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
 
@@ -83,6 +89,8 @@ Keys have no expiry date. A key stops working when:
 - you revoke it,
 - you change or reset your password (every key created before then stops at once, so create new ones and update your sheets and scripts),
 - your account is deactivated.
+
+So if someone else learnt your password and made a key with it, changing your password locks that key out too.
 
 A request with a key that no longer works gets *401* with "Invalid API Key". Keys stopped by a password change still appear in the list, and you can revoke them to tidy up.
 

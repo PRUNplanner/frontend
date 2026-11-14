@@ -16,7 +16,7 @@ A new plan starts with these settings:
 
 ## Empire & prices {#empire-and-prices}
 
-A plan calculates with one [[empire]]. It takes that empire's [[faction]] and permits, and its [[exchange-preference|exchange preference]] for every price.
+A plan calculates with one [[empire]]. It takes that empire's [[faction]] and permits, and its [[exchange-preference|exchange preference]] for every price. So the empire decides which of your buildings get a faction bonus and how large it is (see [Faction bonus](#faction)), and every price the plan buys and sells at.
 
 **Calculate with empire** lists your empires by name, and the ones the plan is in start with "»". It doesn't show on a read-only plan or when you have no empires.
 
@@ -69,7 +69,9 @@ Tick **Corp. HQ** when the [[corp-hq|corporation]] you belong to has its headqua
 
 ### Permits and area {#permits}
 
-**Permits** (1 to 3) sets how many base permits you use on this planet. The area next to it is 250 + 250 × permits: 500, 750 or 1,000. The **Area** result shows how much of it the base uses (see [Results](/help/plan_results#area)).
+**Permits** (1 to 3) sets how many base permits you use on this planet. The area next to it is 250 + 250 × permits: 500, 750 or 1,000. The **Area** result shows how much of it the base uses (see [Results](/help/plan_results#area)). The [[core-module|core module]] always takes 25 of it, and every production building, habitation and storage building takes its own area × count.
+
+In the game, each upgrade of your company HQ's level gives you one more base permit. This field only sets the plan's area. The faction bonus counts the empire's permits instead (see [Faction bonus](#faction)).
 
 ### Resources {#resources}
 
@@ -95,6 +97,8 @@ With **Plan suggestions** on and planet insights available, a link under the til
 - **Luxuries**: two buttons, one per [[luxuries|luxury]], with its ticker, ✓ when supplied;
 - "… free": spare beds, red and negative when the tier is short.
 
+A negative "… free" only means the tier has more workers than beds. Add habitations in [Infrastructure](#infrastructure), or turn on [Auto](#auto-habs) to have PRUNplanner pick them for you.
+
 Tiers the plan doesn't need stay behind "Show … (not needed)". In the layout's **Display** options you can show Workforce as a table (**Tier**, **Need / housed**, **Free**, **Luxuries**, **Efficiency %**) or with every tier open (see [Layout](/help/plan_layout)).
 
 ### How efficiency is worked out {#workforce-efficiency}
@@ -113,13 +117,15 @@ A tier's efficiency is:
 | Second only | 91.7 % |
 | Both | 100 % |
 
+Missing beds lower the first factor. For example (made-up numbers), a plan that needs 100 Pioneers but has beds for 50 houses half of them: without luxuries, the tier runs at 50 % × 79.4 % = 39.7 %, and with both luxuries at 50 % × 100 % = 50 %.
+
 A building's workforce factor is the average of its tiers' efficiencies, weighted by how many workers of each tier it employs.
 
 ### Needs and luxuries {#needs}
 
 Housed workers consume their needs every day. Workers without a bed consume nothing, but they don't work either. If you turn a luxury off, it isn't consumed or bought, and the tier's efficiency drops. Everything consumed shows in [Material I/O](/help/plan_results#material-io) and counts as cost.
 
-Consumption per 100 workers per day:
+Consumption per 100 workers per day, so 200 housed Pioneers drink 2 × 4 = 8 DW a day:
 
 | Tier | Needs | Luxury 1 | Luxury 2 |
 | --- | --- | --- | --- |
@@ -189,7 +195,7 @@ In the game, experts arrive over time from running buildings of that expertise. 
 
 ## How a building's efficiency comes together {#efficiency}
 
-A production building's efficiency is the product of its factors:
+A production building's efficiency is the product of its factors. Because they multiply, one factor of 0, such as no workers housed or a farm on a planet that isn't fertile, stops the building whatever the others are.
 
 | Factor | Value | Set in |
 | --- | --- | --- |

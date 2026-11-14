@@ -11,7 +11,11 @@ Market Live lets you watch prices and order books on the [[cx|CX]] while you tra
 > [!warning]
 > The stored changes arrive in a burst when you open the page. They get the time they arrived in your browser, not the time they happened, and they run through your active alerts like new ones.
 
-The status at the top right shows **Connected** (pulsing green), **Reconnecting** or **Disconnected**. If the connection drops, your browser reconnects by itself. If the server turns the stream away (for example when too many are open), the page tries again after 5 seconds, and waits longer after each failure, up to 60 seconds. The server accepts up to 5 open streams per IP address, so close Market Live in tabs you don't need.
+The status at the top right shows **Connected** (pulsing green), **Reconnecting** or **Disconnected**. If the connection drops, your browser reconnects by itself. If the server turns the stream away (for example when too many are open), the page tries again after 5 seconds, and waits longer after each failure, up to 60 seconds. The wait doubles each time, so the tries come after 5, 10, 20 and 40 seconds, then every 60 seconds. While the page waits, the status reads **Reconnecting**.
+
+Don't worry if it reads **Disconnected** for a moment. It shows that until the stream first opens, and while your browser reconnects a dropped one.
+
+The server accepts up to 5 open streams per IP address, so close Market Live in tabs you don't need.
 
 ## Live View {#live-view}
 
@@ -28,6 +32,8 @@ The overview on the right (under the feed on narrower screens) lists every mater
 | **Sell Vol.** | units in all open sell orders |
 
 Each change updates the fields it carries. When it has no price, bid or ask, the last value stays. Buy and sell volume are what sits in the order book, not what was traded.
+
+For example, a bid of 90 ȼ and an ask of 100 ȼ give a **Spread %** of (100 − 90) ÷ 100 × 100 = 10 %. When the change has no bid or ask, the spread uses the best buy or sell order in its book instead.
 
 ## Alert Feed {#alert-feed}
 
@@ -55,6 +61,8 @@ Until an alert fires, the feed shows **Waiting for market events triggering aler
 
 An alert is a set of conditions. Every time a change arrives for a material and exchange, PRUNplanner checks each active alert against the new values and the previous values of that same material and exchange. When the conditions match, the alert adds a row to the feed.
 
+A condition reads its field's new value from the change that arrives, not from the overview. If that change doesn't carry the field, for example it has no price, a condition on **Price** doesn't match.
+
 PRUNplanner stores alerts in this browser, for your account only: "Alerts are currently stored on this device only and are not synced to your account." Another browser or device starts without them.
 
 ### Setup {#setup}
@@ -79,6 +87,8 @@ A condition has three parts: a field, an operator and a target. For example, **P
 
 **Price Change**, **Bid Change**, **Ask Change** and **Price Change (Percent)** need a previous value, so they're empty on the first change of a material and exchange. The two volume change fields read 0 then.
 
+For example, when the previous price was 200 ȼ and the new one is 210 ȼ, **Price Change** is 210 − 200 = 10 and **Price Change (Percent)** is 10 ÷ 200 × 100 = 5.
+
 #### Comparisons {#comparisons}
 
 Number fields offer:
@@ -100,7 +110,7 @@ Number fields offer:
 
 **Previous** and **Offset %** never fire on the first change of a material and exchange, because there's nothing to compare with yet.
 
-For example, **Price** GT **Offset %** 2 fires when the price rises more than 2 % from the last change. **Price** LT **Offset %** −2 fires on a drop of more than 2 %.
+For example, **Price** GT **Offset %** 2 fires when the price rises more than 2 % from the last change. **Price** LT **Offset %** −2 fires on a drop of more than 2 %. With a previous price of 100 ȼ, the first example's target is 100 × (1 + 2 ÷ 100) = 102 ȼ, so a new price of 102.50 ȼ fires and 101.90 ȼ doesn't.
 
 #### Logical Operators {#logical-operators}
 
@@ -114,6 +124,8 @@ A group can hold other groups (**Group**). That lets you build something like (*
 An AND group without conditions counts as matched. So an active alert whose top group is still empty fires on every change.
 
 ### Setting up Alerts {#setting-up-alerts}
+
+Until you create one, the Alert Manager says "No alerts found. Start by creating your first detector signal".
 
 1. Press **Open Alert Manager**.
 2. Press **Create New Alert**. A paused alert named **New Alert** with severity **LOW** and an empty AND group appears in the list right away.

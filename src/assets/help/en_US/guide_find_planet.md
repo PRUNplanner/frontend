@@ -1,4 +1,10 @@
-Start with the material you want to make. In about 10 minutes this guide gets you to a short list of planets and a new [[plan]] on the best one. It's for anyone choosing where to put a base. [Planet Search](/search) works without an account. You only need to log in for distances to your own plans and to create the plan.
+Start with the material you want to make. This guide takes about 10 minutes, and by the end you'll have:
+
+- a short list of planets that have your material, close to your exchange,
+- a check of which of them still have free plots,
+- a new [[plan]] on the planet you pick.
+
+It's for anyone choosing where to put a base. The pages linked at the end of each step go deeper. [Planet Search](/search) works without an account. You only need to log in for distances to your own plans and to create the plan.
 
 ## 1. Pick the material {#step-1}
 
@@ -6,6 +12,8 @@ Open [Planet Search](/search). Under Materials, click **+ add material…** and 
 
 - Type a minimum in "min … /day" to hide planets that give too little. The "(max …)" next to it is the best any planet gives, so you know what's possible.
 - Need two resources on one planet? Add both to one group and switch it to **all of**. With **any of**, either one is enough.
+
+Each material tile in the list is filled by how the planet's output compares with the best planet's: green from 75 %, yellow from 50 %, orange from 25 % and red below that.
 
 You're set when the heading reads "n of total planets" and the list is short enough to scan by eye.
 
@@ -23,13 +31,13 @@ Read more: [Planet conditions](/help/planet_search#planet-conditions), [COGC and
 
 ## 3. Limit the distance {#step-3}
 
-Fewer [[jumps]] mean shorter flights for your supply and your sales, so stay close to your exchange and your other bases.
+[[jumps|Jumps]] count the system-to-system hops on the shortest route between two places. Fewer jumps mean shorter flights for your supply and your sales, so stay close to your exchange and your other bases.
 
 1. Under **Distance**, tick your home exchange under **Exchanges**.
 2. If you're logged in, you can also pick plans under **Plans from empire**. The planet then has to be near them too.
 3. Set **Max jumps** (0 to 30, starts at 10).
 
-Each picked plan gets its own jumps column, and the column of a picked exchange turns green. "—" means there's no jump route.
+Each picked plan gets its own jumps column, and the column of a picked exchange turns green. "—" means there's no jump route. A planet has to be within **Max jumps** of every exchange and plan you pick, so each extra pick can shorten the list.
 
 > [!tip]
 > Looking for a second base next to your first? Pick its plan under **Distance** and set **Max jumps** to 2 or 3.
@@ -44,7 +52,7 @@ A planet whose [[plots]] are all taken is no use to you. Turn on **Plots** under
 - **Full · ghost sites** in amber means only new players who start on that planet can still settle there.
 - **plots unknown** means PRUNplanner hasn't read the planet's plots yet. Check it in the game.
 
-Plots don't filter, so full planets stay in the list.
+Plots don't filter, so full planets stay in the list. You still see their numbers, and the Plots column shows which ones are full.
 
 More: [Plots](/help/planet_search#plots).
 

@@ -1,5 +1,7 @@
 A share link lets anyone look at one of your [[plan|plans]], with or without a PRUNplanner account. Use it to show a base in a Discord thread, ask for feedback or hand a setup to a corp mate. Viewers can try changes on their own copy and save it as a plan of their own, but your plan never changes.
 
+This page covers creating and stopping a link, what people see and can do when they open it, and how the link looks when you paste it into a chat.
+
 ## Sharing a plan {#share-link}
 
 Open your plan and click **Share link** in the header. The button shows on your own plans once they're saved. In [Management](/manage), the ⋯ menu of a plan's row opens the same dialog under **Share…**.
@@ -9,7 +11,7 @@ The **Share Plan** dialog works in two steps:
 1. Before the plan is shared, it explains what the link does. **Create Sharing Link** creates it.
 2. Once it's shared, the dialog shows the link itself, `https://prunplanner.org/shared/…`, and how often it was viewed. **Copy URL** copies it, and **Stop Sharing** ends it.
 
-Each plan has one link, so opening the dialog again shows the same link and its view count. Every time someone opens the link counts as a view, reloads included. In Management, a small eye with the count marks every shared plan.
+Each plan has one link, so opening the dialog again shows the same link and its view count. Every time someone opens the link counts as a view, reloads included. Your own clicks count too: opening your own link counts as a view before PRUNplanner switches to your plan. In Management, a small eye with the count marks every shared plan.
 
 ### What viewers see {#what-viewers-see}
 
@@ -20,7 +22,7 @@ The link always shows your plan as it's saved: its active version, without the u
 
 ### Stopping a link {#stop-sharing}
 
-**Stop Sharing** ends the link at once, without asking. Anyone who opens it after that sees "**This shared plan is no longer available**". Deleting the plan ends its link too. If you share the plan again later, it gets a new link, and the old one stays dead.
+**Stop Sharing** ends the link at once, without asking. Anyone who opens it after that sees "**This shared plan is no longer available**". Deleting the plan ends its link too. If you share the plan again later, it gets a new link, and the old one stays dead. Copies that people already saved to their own plans aren't affected, because they're separate plans.
 
 ## Opening a shared plan {#shared-view}
 
@@ -30,7 +32,7 @@ A shared link opens the plan page with a banner on top: "**Shared plan**", "Try 
 
 What you see is a working copy. You can change anything you could change in your own plan, such as buildings, recipes, experts, habitations or the [[empire]] it's calculated with. Undo and Redo work as usual.
 
-- The copy lives only in this browser tab. Leaving the page drops it without asking.
+- The copy lives only in this browser tab. Leaving the page drops it without asking. Logged in, you keep your changes with **Save to my plans** (see [Reset, copy, save](#shared-actions)).
 - Habitations stay as the owner set them. Auto-optimising is off until you turn on **Auto** under Infrastructure.
 - The tools work on your copy. Built counts in [Construction](/help/plan_tools#construction) and excluded materials in [Visits](/help/plan_tools#visits) only last for the visit, and Repair hides its FIO part. Any [[fio|FIO]] stock the tools use is your own.
 - Logged out, you see the plan in the Standard layout and without the POPR tab. Logged in, you see it in your own layout.
@@ -55,6 +57,8 @@ As soon as your copy differs from the shared plan, the banner says "**Changed fr
 | Profit | the change in ȼ / day, green when it rose, red when it fell |
 | [[ROI]] | the payback before → after, green when it got shorter |
 | Area, Workforce, Buildings | the change in area used, workers needed and building count |
+
+For example (made-up numbers), if the shared plan makes 10,000 ȼ a day and your copy makes 12,000 ȼ, Profit shows the rise of 2,000 ȼ/day in green.
 
 The line lists only the figures that changed. In Production, changed buildings are tagged **new**, **amount changed** or **recipe changed**, and recipes the shared building didn't have are tagged **new**. Removed buildings stay in the list, struck through, as **removed**.
 

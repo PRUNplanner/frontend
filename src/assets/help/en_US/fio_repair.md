@@ -1,5 +1,7 @@
 [FIO Repair](/fio/repair) tells you when each of your real bases is due for [[repair]], what the repair costs and what to load on the ship. It reads your buildings from [[FIO]], so you'll need a [FIO connection](/help/profile#fio-connection) first.
 
+Use it before a repair trip: it shows which bases are due, and it builds the load and an XIT package for the flight. Where one of your plans matches a base, it takes the repair days from that plan's Repair Analysis.
+
 ## Due Dates {#due-dates}
 
 FIO Repair reads each base's production buildings from FIO, with their condition and the day they were last repaired (or built, if they never were). Habitations, storage and the core module age too, but they need no repair materials, so they're left out.
@@ -9,7 +11,7 @@ Each building type comes due at a target day:
 - **With a matched plan**, the target is the type's best repair day from that plan's Repair Analysis (see [Plan tools](/help/plan_tools#repair)), priced with the exchange preference of the plan's empire. A building type the plan doesn't have uses the interval below.
 - **Without a plan**, the target is the interval from the settings (**Repair every** n days, default 60).
 
-The oldest building of a type sets when that type is due, and a base comes due with its first building type. A base is *due soon* when its target is at most **Due soon** days away (default 7). If a building has no date at all, its base shows **No repair date**. It counts as overdue and gets billed as a new building.
+The oldest building of a type sets when that type is due, and a base comes due with its first building type. A base is *due soon* when its target is at most **Due soon** days away (default 7). If a building has no date at all, its base shows **No repair date**. It counts as overdue and gets billed as a new building. Don't worry, this only means FIO sent no date for one of its buildings, and the bill counts that building at the most its repair can cost.
 
 ## Settings {#settings}
 
@@ -28,7 +30,7 @@ The interval, the due soon days and the exchange preference are the same setting
 
 - **Overdue**, **Due within n d** and **Later** count your bases. Click one to filter the list. Overdue includes bases without a repair date.
 - **Repair what's due, today** is the cost, weight and volume of repairing every overdue and due-soon base today.
-- **Waiting costs** is how much more that repair costs for each day you wait. Each of those buildings younger than 180 days adds 1/180 of its construction cost.
+- **Waiting costs** is how much more that repair costs for each day you wait. Each of those buildings younger than 180 days adds 1/180 of its construction cost. For example (made-up numbers), two such buildings that cost 90,000 ȼ and 180,000 ȼ to build add 500 + 1,000 = 1,500 ȼ for each day you wait.
 - **When bases come due** is a timeline that runs from the most overdue base to the last one due. Click a base to open it.
 - The **Bases** list shows each base's buildings, lowest condition, days since repair (or since built), next repair, and **Repair now**, the bill for repairing every production building today. Under the name you can see which plan sets the targets: "plan …", "likely plan …", "plan … (your choice)" or "no plan · every n d".
 
@@ -37,6 +39,8 @@ When your FIO data is more than a day old, a note tells you so. The buildings ha
 ## Matched Plans {#matched-plans}
 
 A plan matches a base when it's on the same planet and its production buildings match FIO well enough. Per building type, PRUNplanner counts the buildings both have and divides by the larger total (FIO's or the plan's). The plan matches from 80 %, so extra buildings in the plan lower the score too.
+
+For example, a base has 4 FRM and 2 FP, and a plan on its planet has the same plus 1 PP1. They have 6 buildings in common, and the larger total is the plan's 7, so the score is 6 ÷ 7, about 86 %: a likely match. A plan with only the 4 FRM scores 4 ÷ 6, about 67 %, and doesn't match.
 
 - **Matched**: all buildings match.
 - **Likely**: at least 80 % match. Check that it's the plan you run.

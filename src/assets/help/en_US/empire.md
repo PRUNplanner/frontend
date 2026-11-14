@@ -1,5 +1,7 @@
 The [Empire](/empire) page lets you check that your bases work as a whole before you build them. It puts all plans of one [[empire]] together and shows what they earn and cost per day, which materials the empire makes and needs, how much of a market it would take, and which recipes could use what's left over.
 
+A plan on its own page only knows its own base. Here, what one base makes and another one uses is counted once, so you see what the empire as a whole buys and sells.
+
 ## Getting Started {#getting-started}
 
 An empire groups your base [[plan|plans]] and holds your [[faction]] and [[area-permits|permits]]. Every new account has one, "My Empire". You create more, delete them and assign plans in [Management](/help/management).
@@ -23,6 +25,8 @@ The tiles on top sum up the empire per day:
 
 *Netting:* the empire isn't a plain sum of its plans. For each material, what one plan makes and another uses cancels out first. Only the rest is sold or bought, at the average of the plans' prices for that material, weighted by each plan's amount. Workforce consumables count as materials here.
 
+For example (made-up numbers), plan A makes 100 units of a material a day at 80 ȼ each, and plan B uses 60 of them at 100 ȼ each. The empire sells only the 40 left over, at (100 × 80 + 60 × 100) ÷ (100 + 60) = 14,000 ÷ 160 = 87.50 ȼ each, so they add 40 × 87.50 = 3,500 ȼ a day to **Revenue**.
+
 The bar below splits the revenue into production inputs, workforce, degradation, production fees and profit, each in % of revenue. When the empire makes a loss, the bar shows the parts as a share of cost instead, with a hatched part for the cost that revenue doesn't cover.
 
 **Shipping** shows the tonnes and cubic metres per day your plans ship in (import) and out (export), added up over the plans.
@@ -35,9 +39,15 @@ The plan list shows every plan of the empire with its planets, [[cogc|COGC]], pe
 
 The **Configuration** box holds the empire's **Name**, **Faction**, **Permits Total** (at least 2) and **Permits Used** (at least 1). **Save** stores them, and **Reload** drops your edits and loads the saved values.
 
+**Permits Total** is how many base permits your company has, and **Permits Used** is how many of them your bases take up. In the game, each [[hq-level|HQ level]] upgrade gives you one more permit.
+
 Faction and permits change your production. A building whose expertise your faction favours gets a bonus of `1 + bonus × 2 × (3 − 2 × Permits Used ÷ Permits Total)`, so fewer used permits mean a larger bonus. The [glossary](/help/glossary#faction) explains factions.
 
-When **Permits Used** differs from the permits your plans add up to, a warning tells you ("Mismatch Detected"). Take the right values from your in-game HQ buffer.
+For example (made-up numbers), with a base bonus of 0.05 and 2 of 4 permits used, PRUNplanner calculates 1 + 0.05 × 2 × (3 − 2 × 2 ÷ 4) = 1 + 0.05 × 2 × 2 = 1.20, so +20 %. With all 4 used, it calculates 1 + 0.05 × 2 × 1 = 1.10, so +10 %. The page calculates every plan with the saved values, so the numbers change once you **Save**.
+
+When **Permits Used** differs from the permits your plans add up to, a warning tells you ("Mismatch Detected"). The box compares **Permits Used** with the total in the plan list's footer, where each plan counts the permits set in its own [Base setup](/help/plan_base#permits), and it checks again as you type. For example, three plans with 1, 1 and 2 permits add up to 4, so with **Permits Used** at 3 the warning reads "Mismatch Detected: 3 configured vs. 4 planned permits".
+
+Don't worry, the warning doesn't block anything: you can still save, and your plans still calculate. It's there because the faction bonus uses **Permits Used**, so a value that doesn't match the bases you'll run gives the wrong bonus. Change **Permits Used**, or the permits in your plans, until they agree. Take the right values from your in-game HQ buffer. The first-run "Your empire" step doesn't show the warning.
 
 If the empire was saved in another tab or on another device in the meantime, you choose whether to overwrite it or reload the saved version.
 
@@ -45,7 +55,7 @@ If the empire was saved in another tab or on another device in the meantime, you
 
 **Material I/O** (under **View**) lists every material of the empire with these columns:
 
-- **Delta**: made minus used per day.
+- **Delta**: made minus used per day. Above zero, the empire sells the rest, and below zero, it buys what's missing.
 - **Production** and **Consumption**.
 - **ȼ Delta**: the delta's value per day.
 - **Produced by** and **Consumed by**: which plans make and use the most of it.
@@ -98,6 +108,8 @@ The three tiles count them:
 | **Material Missing** | At least one input isn't in surplus |
 
 **Potential Batches** is how many runs of the recipe per day your surplus covers. For each input, PRUNplanner divides the daily surplus by the amount the recipe needs and takes the lowest result. It doesn't account for recipe time, how many buildings you'd need, or their efficiency. Read it as "how much input is there", not "how much you can make".
+
+For example (made-up numbers), a recipe needs 10 of one input and 5 of another per run, and the empire has 30 and 10 of them left over a day. That's 30 ÷ 10 = 3 and 10 ÷ 5 = 2 runs, so **Potential Batches** is 2, because the second input runs out first.
 
 For full matches, **Sell Inputs** and **Sell Outputs** compare selling the inputs as they are with selling what the recipe would make from them (sell price × amount × batches). The better one is green. Prices are sell prices from the empire's exchange preference, all-planets rules only. The list uses the unfiltered Material I/O.
 

@@ -1,11 +1,13 @@
 PRUNplanner keeps your work on a [[plan]] with saves, drafts of unsaved changes, undo, copies and named versions you can go back to. When the same plan changes in two places, it asks before it overwrites anything. To show a plan to someone else, see [Sharing a plan](/help/plan_sharing).
 
+Read it when you want to know whether your changes are safe, how to get back to an earlier state of a plan, or what a save message means.
+
 ## Saving and Undo {#saving-and-undo}
 
 Name your plan with the pencil next to its name. Enter or clicking away keeps the name, and Esc cancels. Save it with **Save** (**Create** for a new plan) or Ctrl+S (Cmd+S on a Mac).
 
 - **Save** only shows while there's something to save, and it stays disabled until the plan has a name.
-- A new plan gets its own address once it's created, and your empires and links use that.
+- A new plan gets its own address once it's created, and your empires and links use that. Until then, PRUNplanner keeps nothing of it, not even a [draft](#drafts).
 - Undo, Redo, the plan's state and Save sit together in one control. On a phone, Undo and Redo stay in the header, and the state with Save sits above the bottom navigation.
 
 The state tells you where the plan stands:
@@ -29,7 +31,9 @@ Click the state of a saved plan to open its [versions](#versions).
 
 Once a plan is created, PRUNplanner keeps its unsaved changes as a draft about 3 seconds after each change. A reload, a closed tab or a crash won't lose them.
 
-When you open the plan again, it always shows as saved. A message ("You have unsaved changes from …") offers **Restore**. Your next change, or opening a version, closes the message, and your new changes replace the draft.
+A draft isn't a save. It's kept with your account, but your empires and the plan's share link keep using the saved version until you save. That's why the versions list marks a draft "not in empires yet".
+
+When you open the plan again, it always shows as saved. A message ("You have unsaved changes from …") offers **Restore**. Your next change, or opening a version, closes the message, and your new changes replace the draft. If you want those changes back, click **Restore** before you edit anything.
 
 The page only warns you before you leave when the draft can't hold your changes. That happens when the plan isn't created yet, the last change is less than about 3 seconds old, or the draft failed.
 
@@ -59,6 +63,8 @@ Every save keeps a version of the plan. Click the state of a saved plan to open 
 - If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept … · not in empires yet" or "Not kept in a draft".
 - **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
 - Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
+
+For example, when a plan is created and then saved 14 times without a name, the newest 10 of those 15 unnamed versions stay and the 5 oldest are gone, while every named version stays. To keep a state of the plan for good, give its version a name.
 
 ### Naming versions {#naming-versions}
 
@@ -91,7 +97,7 @@ The same plan can be open in two tabs or on two devices. PRUNplanner never overw
 
 If another tab in this browser saves the plan and you have no unsaved changes here, this tab loads the new save. If you do have unsaved changes, a message says "Saved in another tab. Your edits are kept." with **Reload**.
 
-If you save after the plan was saved elsewhere (another tab or another device), **Saved in another tab** opens. It lists what changed there and what you changed, and offers:
+If you save after the plan was saved elsewhere (another tab or another device), **Saved in another tab** opens. Don't worry, when it opens nothing has been overwritten yet. It lists what changed there and what you changed, and offers:
 
 | Option | What it does |
 | --- | --- |

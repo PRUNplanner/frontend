@@ -16,6 +16,8 @@ Every plan uses the same setup:
 | Workforce | fully housed by the layout's [[habs\|habitations]] |
 | Prices | your exchange preference (see below) |
 
+Because every row shares this planet, these experts and these prices, the rows differ only in the building, its layout and its program, and the recipe. That's what makes them comparable with each other.
+
 Montem's production fees are part of every profit on this page, so a recipe can earn more on a planet whose governor charges less. Fertility only matters for ORC, which PRUNplanner calculates at Montem's fertility.
 
 The page leaves out the extraction buildings RIG, EXT and COL and the farm FRM, because their output depends on the planet. For RIG, EXT and COL, use [Resource ROI](/help/tools_resource_roi_overview). FRM has no page like this.
@@ -54,7 +56,7 @@ The table shows 50 rows per page. Click a numeric column's header to sort by it.
 | **Profit/Area (ȼ)** | daily profit per unit of area used |
 | **Plan ROI (d)** | days until the profit has paid for the build |
 
-The daily amount on a material tile is the recipe amount × buildings × runs per day × 1.25 (the COGC bonus). It leaves out the experts and workforce efficiency, so it's lower than the flow behind the profit next to it.
+The daily amount on a material tile is the recipe amount × buildings × runs per day × 1.25 (the COGC bonus). It leaves out the experts and workforce efficiency, so it's lower than the flow behind the profit next to it. For example, a recipe that makes 4 units in 12 hours runs 2 times a day, so a layout of 10 buildings shows 4 × 10 × 2 × 1.25 = 100 a day.
 
 ## How the numbers are made {#calculation}
 
@@ -62,6 +64,8 @@ The daily amount on a material tile is the recipe amount × buildings × runs pe
 - **Plan Cost (ȼ)** = construction materials of the whole layout at the buy price: production buildings, habitations, storage and the core module.
 - **Profit/Area (ȼ)** = Daily Profit ÷ area used, core module included.
 - **Plan ROI (d)** = Plan Cost ÷ Daily Profit. It's green when the plan pays back. When it never does (no profit), the column shows **never** in red.
+
+A made-up example: a layout with production buildings worth 900,000 ȼ loses 900,000 ÷ 180 = 5,000 ȼ a day to degradation. If the whole layout costs 1,500,000 ȼ to build, uses 500 area and makes a Daily Profit of 30,000 ȼ, its Profit/Area is 30,000 ÷ 500 = 60 ȼ and its Plan ROI is 1,500,000 ÷ 30,000 = 50 days.
 
 Your plans run the same formulas. For the base view of [[profit]] and [[roi|ROI]], see [Plan results](/help/plan_results).
 

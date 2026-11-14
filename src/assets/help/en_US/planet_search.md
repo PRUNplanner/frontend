@@ -30,11 +30,13 @@ You can search for one or more groups of materials.
 
 That covers searches like "(FEO and H2O) or (MAG and O)": two **all of** groups, combined with **any group**.
 
-You can give every material a minimum daily [[extraction]] ("min … /day"). The "(max …)" next to it is the highest daily extraction of that material on any planet, so you know what's possible. A minimum belongs to the material, not the group. If the same material is in two groups, they share one minimum.
+You can give every material a minimum daily [[extraction]] ("min … /day"). That's the planet's daily rate for the material, and a plan builds its EXT, RIG or COL recipe there from it, so a higher minimum keeps the planets where each extractor yields more. The "(max …)" next to it is the highest daily extraction of that material on any planet, so you know what's possible. A minimum belongs to the material, not the group. If the same material is in two groups, they share one minimum.
 
 ## Planet conditions {#planet-conditions}
 
 Pick **Rocky** and/or **Gaseous** planets, and whether they must be **Fertile** (allow farming). A new search starts with Rocky planets only. One surface always stays ticked.
+
+[[fertility|Fertility]] only matters for farms (FRM and ORC). On a planet without it, PRUNplanner sets their efficiency to 0, so they produce nothing there.
 
 Gravity, pressure and temperature only matter through the [[extra-building-materials|extra building materials]] they require. Under **Accept extra building materials**, tick the ones you're willing to ship in:
 
@@ -47,11 +49,15 @@ Gravity, pressure and temperature only matter through the [[extra-building-mater
 | INS | **Low temperature** |
 | TSH | **High temperature** |
 
+These materials matter because a plan on that planet adds them to the construction of every building, so they raise its construction cost. For example, a building with an area of 20 needs 20 × 4 = 80 MCG on a rocky planet, and on a low-temperature planet another 20 × 10 = 200 INS.
+
 Planet Search hides planets that need any material you didn't tick. With none ticked, you only see planets that need none of them. The surface material (MCG on rocky planets, AEF on gaseous ones) is always needed and isn't part of this filter.
 
 ## COGC and infrastructure {#cogc-and-infrastructure}
 
 **Active COGC program** keeps planets that run one of the ticked programs right now, meaning at the moment you opened the page. The list has every program: the advertising programs for each industry and the workforce programs for each tier.
+
+A program matters because it speeds up production in a plan: an advertising program speeds up buildings of its expertise by 25 %, and a workforce program speeds up buildings that employ that tier by 10 %. In the game, the residents (players with a base on the planet) vote on the program, and the winning program runs for a week, so the program you see here can change later.
 
 **Infrastructure** is a separate filter, and a stricter one. A planet must have every ticked building.
 
@@ -80,7 +86,7 @@ When the section is already there, the button is highlighted and can't be clicke
 
 ## Distance {#distance}
 
-Under **Distance**, pick **Exchanges** and/or plans from one of your [[empire|empires]]. A planet must be within **Max jumps** of every pick. Max jumps runs from 0 to 30 and starts at 10. It only matters once you pick something.
+Under **Distance**, pick **Exchanges** and/or plans from one of your [[empire|empires]]. A planet must be within **Max jumps** of every pick. Jumps count between star systems, so every planet of a system has the same distance, and a planet with no jump route to a pick doesn't pass. For example, with NC1 and one of your plans picked and Max jumps at 5, a planet 3 jumps from NC1 and 6 from your plan is hidden. Max jumps runs from 0 to 30 and starts at 10. It only matters once you pick something.
 
 - **Plans from empire** picks the empire whose plans you can choose. It starts at the empire that holds most of the plans in your search, otherwise your current or default empire. Changing the empire drops the plans you picked.
 - The plan list has a filter box where you can type a plan name, planet ID or planet name.
@@ -105,6 +111,8 @@ When no planet matches, the page says **No planets match these filters. Try one 
 - **Include gaseous planets**;
 - **Accept all extra building materials**;
 - a higher Max jumps (3 more, up to 30), when you picked a distance.
+
+Don't worry, this only means your filters together leave no planet. Click a suggestion to apply it.
 
 If two changes give the same result, only one shows. A name search's note can also offer "Any surface, fertile or not", "Any COGC program" and "Any infrastructure".
 
@@ -137,6 +145,8 @@ The **Chart** plots the results by distance and output.
 
 The **best trade-off** planets are the ones no other result beats on both counts: none is closer *and* richer. The chart highlights them and joins them with a dashed line. Everything below and right of that line is beaten by one of them.
 
+For example, say planet A is 2 jumps away with 10 /day, B is 4 jumps away with 25 /day, and C is 5 jumps away with 20 /day. A and B are best trade-offs: no result is closer than A, and none within 4 jumps is richer than B. C isn't, because B is both closer and richer.
+
 **Colour by** switches between **Best trade-off** and **COGC**. With COGC, the six most common running programs get their own colours, and the rest share one colour: "other or no COGC program", or "no COGC program" when no other program runs.
 
 On screens 1,024 px and wider, hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan (when you're logged out, you log in first). On touch and narrow screens, tap a dot for its details.
@@ -145,7 +155,7 @@ The list beside the chart ranks the same planets by Y, with "+" and ☆ on each 
 
 ## Reading the results {#reading-the-results}
 
-- **Material tiles**: the colour bar compares the planet's daily extraction with the highest of that material on any planet. Red is below a quarter, then orange, then yellow, and green above three quarters. Hover the bar for the value, the maximum and the percentage.
+- **Material tiles**: the colour bar compares the planet's daily extraction with the highest of that material on any planet. Red is below a quarter, then orange, then yellow, and green above three quarters. Hover the bar for the value, the maximum and the percentage. For example, if the richest planet has 40 FEO /day, a planet with 25 is at 25 ÷ 40 = 62.5 %, so its bar is yellow.
 - **Fert. %**: fertility as the game shows it, or "—" when the planet isn't fertile. Sorting puts planets that aren't fertile last.
 - **Extra building materials** (the construction icon): the materials a base on this planet needs. It always lists MCG ("Rocky surface") or AEF ("Gaseous surface"). Hover any one to see why, e.g. "Low gravity".
 - **COGC · Infra**: the running COGC program ("—" for none) and the planet's infrastructure as LM, COGC, WAR, ADM and SHY.
@@ -191,7 +201,9 @@ These rows are coloured from best to worst, with the best value in bold:
 - fertility;
 - the daily extraction of each searched material;
 - the jumps to each of your distance picks;
-- **Free {tier} workers** for each of the five tiers: free workers minus the jobs already open, from the planet's latest [[popr|population report]].
+- **Free {tier} workers** for each of the five tiers: free workers minus the jobs already open, from the planet's latest [[popr|population report]], which the game publishes weekly.
+
+For example, 1,000 free technicians with 400 open jobs show as 600. The figure never goes below 0, even when there are more open jobs than free workers.
 
 A planet without a value ranks worst. The other rows (extra building materials, other resources, COGC, infrastructure, and the jumps to AI1 / CI1 / IC1 / NC1) are plain text, and a row where the planets differ is tinted blue.
 

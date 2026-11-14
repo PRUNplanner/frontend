@@ -1,12 +1,14 @@
 Use the Upkeep Price Calculator to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at the prices of your exchange preference. It compares the materials that [[upkeep]] buildings consume by what one unit of a need costs with each of them.
 
+Use it when you want to compare what a need costs to supply with each building and material, at your prices. It doesn't look at your plans or bases: the building figures are built in, and the prices come from your exchange preference.
+
 ## How to use it {#how-to-use}
 
 1. Check **CX Preference**, which decides the prices (see [Prices](#prices)).
 2. Pick the need under **Need**: **Safety** (default), **Health**, **Comfort**, **Culture** or **Education**.
 3. Read the **Material Details** table, cheapest first.
 
-The page calculates all five needs when you open it ("Calculating Upkeep Material Prices"), and again when you change the exchange preference.
+The page calculates all five needs when you open it ("Calculating Upkeep Material Prices"), and again when you change the exchange preference. Until it's done, you see a progress bar with that line. After that, switching **Need** is instant, because all five needs are already calculated.
 
 ## Buildings and needs {#buildings}
 
@@ -34,7 +36,7 @@ For the selected need, the table has one row per building and material. It shows
 | **CX Price (ȼ)** | the material's buy price under your exchange preference |
 | **Qty/Day** | how many the building consumes per day |
 
-By default the rows are sorted by **ȼ/Need**, lowest first. Materials without a price show "—" and sit at the bottom.
+By default the rows are sorted by **ȼ/Need**, lowest first. Materials without a price show "—" in **ȼ/Need** and **CX Price (ȼ)** and sit at the bottom. Don't worry, that only means your exchange preference gives no buy price for them, so there's nothing to compare.
 
 ## How ȼ/Need is calculated {#price-per-need}
 
@@ -42,14 +44,16 @@ By default the rows are sorted by **ȼ/Need**, lowest first. Materials without a
 
 For a building that serves two needs, PRUNplanner counts the need it provides twice, because the same materials pay for both needs. That's why its rows look cheaper than a one-need building with the same costs.
 
-Each row looks at one material on its own, as if that material alone bought the building's whole need. A building consumes all of its materials, so its full cost per unit of need is the sum of its rows.
+For example, with made-up numbers: a building consumes 10 units a day of a material at 50 ȼ and provides 500 of one need. Its row shows 50 × 10 ÷ (500 × 1) = 1 ȼ/Need. A building that consumes the same and provides 500 of each of two needs shows 50 × 10 ÷ (500 × 2) = 0.5 ȼ/Need.
+
+Each row looks at one material on its own, as if that material alone bought the building's whole need. A building consumes all of its materials, so its full cost per unit of need is the sum of its rows. If the one-need building above also consumed a second material whose row shows 0.5, its full cost would be 1 + 0.5 = 1.5 ȼ/Need.
 
 > [!tip]
 > Compare buildings by adding up their rows. A building with one cheap material and one expensive one can cost more per need than a building whose materials are all middling.
 
 ## Prices {#prices}
 
-**CX Preference** picks the [[exchange-preference|exchange preference]], and "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet, so planet exceptions in your exchange preference don't apply here.
+**CX Preference** picks the [[exchange-preference|exchange preference]], and "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet, so planet exceptions in your exchange preference don't apply here. The prices decide the order, so another exchange preference can put a different material or building first.
 
 > [!warning]
 > Picking an exchange preference here also makes it your default exchange preference, so other pages that follow your default switch with it.

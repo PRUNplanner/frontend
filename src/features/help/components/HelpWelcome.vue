@@ -5,7 +5,7 @@
 	 * @author jplacht
 	 */
 	const steps: { key: string; to?: string }[] = [
-		{ key: "l1", to: "/manage" },
+		{ key: "l1", to: "/empire" },
 		{ key: "l2", to: "/manage" },
 		{ key: "l3", to: "/search" },
 		{ key: "l4" },

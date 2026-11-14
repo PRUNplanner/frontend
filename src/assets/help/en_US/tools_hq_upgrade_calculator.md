@@ -1,5 +1,7 @@
 Use the HQ Upgrade Calculator to plan an [[hq-level|HQ level]] upgrade. It lists the materials you need to raise your company headquarters from one level to another, what you already have, and what the rest costs, so you can buy or ship exactly what's missing.
 
+In the game, each HQ level upgrade gives you one more base [[area-permits|permit]]. Use the calculator when you get ready for an upgrade, or to see what several upgrades in a row take.
+
 ## Choosing the levels {#levels}
 
 | Setting | What it does |
@@ -9,7 +11,7 @@ Use the HQ Upgrade Calculator to plan an [[hq-level|HQ level]] upgrade. It lists
 | **CX Preference** | the [[exchange-preference\|exchange preference]] for the prices |
 | **Show Locations** | shows the **Storage Locations** column (on by default) |
 
-The calculator adds up the materials of every upgrade from the level after **From HQ Level** up to **To HQ Level**, so you can plan several upgrades at once. With From 1 and To 3 it shows the upgrades to level 2 and level 3.
+The calculator adds up the materials of every upgrade from the level after **From HQ Level** up to **To HQ Level**, so you can plan several upgrades at once. With From 1 and To 3 it shows the upgrades to level 2 and level 3. For example, level 2 takes 6 BBH and level 3 takes 16, so **Amount** shows 22 BBH. With **From HQ Level** and **To HQ Level** the same, there's no upgrade to add up and the table stays empty.
 
 The materials per level come from a table built into PRUNplanner, which covers levels 1 to 50.
 
@@ -37,9 +39,13 @@ Prices don't depend on a planet, so planet exceptions in your exchange preferenc
 
 ## Your stock {#stock}
 
-With FIO connected, **Storage** is the sum of the material in all your bases, warehouses and ships that FIO reports. Without FIO it's 0.
+With FIO connected, **Storage** is the sum of the material in all your bases, warehouses and ships that FIO reports. Without FIO it's 0. Don't worry if every material then shows its full **Amount** as **Required**: that only means PRUNplanner doesn't know your stock. Connect FIO in your [Profile](/help/profile), or type your stock into **Override Stock**.
 
-To replace the FIO figure for a material, type a number into **Override Stock**, for example for stock that's already on its way. 0 counts as 0. Clear the field to use the FIO figure again. Overrides last until you leave the page.
+FIO counts the material wherever it is, in a base, a warehouse or on a ship, so **Storage Locations** tells you where it sits.
+
+For example, with the 22 BBH from above and 10 in storage, **Required** is 22 − 10 = 12, and at a made-up 100 ȼ a unit **Total Cost (ȼ)** is 1,200 ȼ. With 30 in storage, **Required** is 0, never below.
+
+To replace the FIO figure for a material, type a number into **Override Stock**, for example for stock that's already on its way. 0 counts as 0. Clear the field to use the FIO figure again. The table and the totals update as soon as you change an override. Overrides last until you leave the page.
 
 ## Totals {#totals}
 

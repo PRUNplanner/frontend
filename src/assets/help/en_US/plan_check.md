@@ -6,6 +6,8 @@ The view and the price change you pick stay put for this browser tab, even when 
 
 A plan's [[profit]] assumes you can buy and sell every material at its price, in any amount. The Market check shows where that isn't true. It lists every material the plan buys or sells per day, worst first: red, then amber, then grey notes, and by share within each.
 
+A plan that doesn't buy or sell anything yet shows "This plan doesn't buy or sell anything yet." instead of the table. Add buildings and recipes in [Production](/help/plan_production) first, and the check fills in.
+
 | Column | What it shows |
 | --- | --- |
 | **Material**, **Side** | The material and whether the plan buys or sells it. |
@@ -19,7 +21,7 @@ A plan's [[profit]] assumes you can buy and sell every material at its price, in
 - If you buy at once, you pay the ask. If you sell at once, you take the bid.
 - PRUNplanner checks each material on the exchange your [[exchange-preference|exchange preference]] uses for buying or selling it, and the caption names those exchanges (for example "Exchanges AI1, NC1"). Without an exchange preference, the check uses the volume of all exchanges together. The caption then says "no CX preference set" and, on your own plan, links to where you set one.
 - With an exchange preference, a flagged row names the price rule it uses. On your own plan, that's a link to the rule in Exchanges (see [Exchanges](/help/exchanges#how-a-price-is-found)).
-- **What this means** puts the worst material into one sentence. It also counts the materials that **Can't trade as planned**, have a **Large share of the market** or are **Fine**. Its button opens this page.
+- **What this means** puts the worst material into one sentence. It also counts the materials that **Can't trade as planned**, have a **Large share of the market** or are **Fine**. Its button opens this page. When nothing is red or amber, it reads "Every material fits its market." A material with only a grey note counts as **Fine** here, since grey notes are about the data the check used, not about your amounts.
 - On a phone, the table turns into cards: the first 6 and every flagged one, then "+ n more materials, all ok".
 
 ### At real prices {#real-prices}
@@ -29,6 +31,8 @@ A plan's [[profit]] assumes you can buy and sell every material at its price, in
 It needs an exchange preference. Without one, it isn't calculated and says "Set a CX preference to see the plan at real ask and bid prices."
 
 A material keeps its plan price in three cases: nobody offers or bids on it right now, no exchange is set for it, or it's priced at the [[universe|Universe]] average, which has no ask or bid. The section lists those materials. A material with a [[fixed-price|fixed price]] in your exchange preference does get the ask or bid here.
+
+Here's an example with made-up numbers. Say the plan sells 100 units a day at a plan price of 50 ȼ, and the best bid right now is 45 ȼ. Selling at the bid brings in 100 × 5 = 500 ȼ a day less. If that's the only price that changes, the **Difference** is −500 ȼ a day.
 
 > [!tip]
 > The plan's prices usually come from averages such as [[vwap|VWAP]]. At real prices shows your profit if you trade at once instead of waiting for your orders to fill. A big difference means the plan's profit depends on patient trading.
@@ -71,7 +75,9 @@ Chips above the table count the flagged materials by level, such as "3 can't tra
 
 Price sensitivity shows which prices the profit hangs on. Pick **Change each price by** ±10 %, ±20 % (the default), ±30 % or ±50 %.
 
-Every material the plan buys or sells gets a row, as long as its price moves the profit. PRUNplanner recalculates the plan once per material with that price doubled, and the profit change is the material's impact. If a material is also a building material, it moves the [[degradation]] cost too, and that counts in its row. [[production-fees|Production fees]] don't depend on prices.
+Every material the plan buys or sells gets a row, as long as its price moves the profit. PRUNplanner recalculates the plan once per material with that price doubled, and the profit change is the material's impact. If a material is also a building material, it moves the [[degradation]] cost too, and that counts in its row. [[production-fees|Production fees]] don't depend on prices. The profit changes in a straight line with any one price, so this one recalculation gives the effect of whichever % you pick in **Change each price by**.
+
+Until the plan buys or sells something whose price moves the profit, the view says "Add production to see which prices this plan depends on."
 
 | Column | What it shows |
 | --- | --- |
@@ -82,7 +88,9 @@ Every material the plan buys or sells gets a row, as long as its price moves the
 
 PRUNplanner sorts the rows by impact, and the bars' centre line is today's profit. It shows the top 10 and sums up the rest in one line, "+ n more materials … move profit by less than ±…", with a **Show all ({n})** button to list them.
 
-**Break-even** turns red within ±60 % and amber within ±200 %. It reads **never** when the price would have to fall below 0. It reads **> +500 %** when the price would have to rise more than 500 %.
+**Break-even** turns red within ±60 % and amber within ±200 %. It reads **never** when the price would have to fall below 0. It reads **> +500 %** when the price would have to rise more than 500 %. Don't worry about **never** on a material you sell while the plan makes a profit: it means the plan stays profitable even if that price drops to 0.
+
+Here's how the figures fit together, with made-up numbers. A plan makes 2,000 ȼ a day, and its main output, which it only sells and doesn't build with, brings in 8,000 ȼ a day. Doubling that price adds 8,000 ȼ a day. At ±20 %, the output's **Profit range ȼ/day** is 2,000 − 1,600 = 400 to 2,000 + 1,600 = 3,600. Its **Break-even** is −2,000 ÷ 8,000 = −25 %: if that price falls by a quarter, the plan makes nothing. It shows red, because −25 % is within ±60 %.
 
 ### What this means {#sensitivity-means}
 
@@ -111,7 +119,7 @@ PRUNplanner sorts the rows by impact, and the bars' centre line is today's profi
 
 **Compare plans** puts this plan next to another of your plans. You need to be logged in.
 
-**Compare with** lists your other plans, **This planet** first, then **Other planets**. It starts with the first plan in that list and remembers your pick for this plan while the tab is open.
+**Compare with** lists your other plans, **This planet** first, then **Other planets**. It starts with the first plan in that list and remembers your pick for this plan while the tab is open. If you don't have another plan yet, it says "You have no other plan to compare with yet."
 
 PRUNplanner takes this plan as it is on screen, unsaved changes included. It calculates the other plan as saved, with its own empire, and prices it with that empire's exchange preference (or the Universe 30-day average). A line next to **Compare with** says which.
 
@@ -144,3 +152,5 @@ The glossary has more on [[roi|ROI]] and [[payback]].
 ### Payback of the difference {#payback-difference}
 
 This is the other plan's extra build cost divided by its extra profit per day, in days: "{cost} ȼ more to build ÷ {profit} ȼ/day more profit". **never** means it costs more to build and earns no more. When the other plan doesn't cost more to build, you see "–".
+
+For example (made-up numbers), if the other plan costs 200,000 ȼ more to build and earns 2,000 ȼ a day more, its extra build cost pays back in 200,000 ÷ 2,000 = 100 days.

@@ -41,7 +41,7 @@ describe("HelpWelcome", () => {
 				? steps[i].findComponent(RouterLinkStub).props("to")
 				: undefined;
 		expect([0, 1, 2, 3, 4].map(target)).toEqual([
-			"/manage",
+			"/empire",
 			"/manage",
 			"/search",
 			undefined,

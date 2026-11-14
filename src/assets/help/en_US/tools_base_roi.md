@@ -1,5 +1,7 @@
 **Base ROI** ranks every way to run one base, so you can see which bases pay back fastest before you plan one. Each row is a full base: one resource on one planet, one farming recipe on one fertile planet, or one recipe of any other production building. You don't need an account for it.
 
+You'd use it when you're looking for your next base and want to compare the options side by side. When a row looks interesting and you're logged in, **Open as plan** turns it into a plan you can change in every detail.
+
 > [!warning]
 > Base ROI is in a test phase and has no entry in the navigation yet. Open it at [/base-roi](/base-roi).
 
@@ -18,6 +20,8 @@ The first time you open the page, **Set up Base ROI** asks a few questions so th
 | **Standard** | WCB (3,000 t / 1,000 m³) | 0.7 | 10 days | Weekly return, running cost, plots, workforce |
 | **Veteran** | your ship, or no limit | 0 (any) | 10 days | Running cost |
 
+A preset only fills in settings you can also change later in [Settings](#settings), so nothing you pick here is final. The ship and **Ship visits** matter because they set the logistics limit: the table hides bases that move more cargo between two visits than the ship carries. The minimum market capacity hides bases the market can take fewer of than that number, for example fewer than 0.7 bases.
+
 **Skip**, or closing the dialog, keeps the current settings. Either way the dialog won't open by itself again, but **Run setup again** in Settings brings it back. All settings live in this browser only, not in your account.
 
 ## What every base assumes {#assumptions}
@@ -26,7 +30,7 @@ Every row is a full 500-area base (one [[area-permits|permit]]) with the buildin
 
 - Both [[luxuries]] for every tier.
 - [[experts|Experts]] only in the building's own [[expertise]], as set in Settings.
-- The COGC from Settings, never the planet's real program. The details show the planet's real program as "(not applied)".
+- The COGC from Settings, never the planet's real program. The details show the planet's real program as "(not applied)". In the game the planet's residents vote on the program, and the winner runs for a week, so the real program can change from week to week.
 - Recipe rows run on a standard planet: rocky, normal gravity, pressure and temperature, not fertile, and without production fees.
 
 The bottom of Settings says the same: "All rows assume the COGC and experts set here; recipe rows run on a standard planet."
@@ -40,7 +44,7 @@ The bottom of Settings says the same: "All rows assume the COGC and experts set 
 ## Metrics {#metrics}
 
 - **Daily profit**: revenue minus inputs, consumables, [[degradation]] and [[production-fees|production fees]]. Degradation is the construction of the production buildings ÷ 180. Planet rows pay their planet's fees (the planet's fee per day × efficiency × buildings). Recipe rows on the standard planet pay none. With **Ramp from 0** this is the profit at 5 experts, otherwise at the fixed count.
-- **Break-even**: days until the building cost is paid back. With **Ramp from 0** a new base starts without experts. The stages with 0, 1, 2, 3 and 4 experts last 10, 12.5, 57.57, 276.5 and 915.1 days, each divided by the number of production buildings. Revenue, inputs and production fees grow with the expert bonus, while consumables and degradation stay the same. It shows "never" when the base makes no profit (with the ramp: at 5 experts).
+- **Break-even**: days until the building cost is paid back. With **Ramp from 0** a new base starts without experts. The stages with 0, 1, 2, 3 and 4 experts last 10, 12.5, 57.57, 276.5 and 915.1 days, each divided by the number of production buildings. Revenue, inputs and production fees grow with the expert bonus, while consumables and degradation stay the same. It shows "never" when the base makes no profit (with the ramp: at 5 experts). Don't worry if you rarely see it: those rows have a daily profit of 0 or less, so they only show while **Show negative** is on.
 - **Weekly return**: 7 × daily profit ÷ building cost.
 - **Building cost**: construction plus the options in Settings, which are the buffer stock (buffer days × (inputs + consumables + revenue) ÷ 2) and the HQ upgrade for one more permit.
 - **Daily running cost**: inputs + consumables + degradation + production fees. It's hidden until you turn it on in **Columns**, because the buffer stock in the building cost already covers the running cost to start with.
@@ -50,7 +54,17 @@ The bottom of Settings says the same: "All rows assume the COGC and experts set 
 - **Plots**: free [[plots]] on the planet, for planet rows. Sort by it to find the emptiest planets. Recipe rows show a dash.
 - **Workforce**: the workers the base needs per tier (PIO, SET, TEC, ENG, SCI). When the planet can't staff the base, an amber line says how many are free, or "No population report".
 - **Profit, 30 days**: daily profit with the daily [[vwap|VWAP]] of each material's exchange over the last 30 days, as a small chart. Days without trades keep the last price, and materials without history keep today's price. ASK, BID and fixed prices have no history.
-- **⚠**: a material priced from a 7D or 30D VWAP whose [[bid]] or [[ask]] is more than 30 % off that price. The popover lists the daily profit for each combination of bid and ask of those materials, lowest first. With more than 100 combinations it shows only the two extremes: buying at the ask and selling at the bid, and the other way round.
+- **⚠**: a material priced from a 7D or 30D VWAP whose [[bid]] or [[ask]] is more than 30 % off that price. It's a hint that the daily profit can look quite different when you trade at the order book instead of at the average. The popover lists the daily profit for each combination of bid and ask of those materials, lowest first. With more than 100 combinations it shows only the two extremes: buying at the ask and selling at the bid, and the other way round.
+
+### Worked example {#metrics-example}
+
+The numbers here are made up and round, with a fixed expert count, so the arithmetic stays easy to follow.
+
+- A base has a building cost of 700,000 ȼ and makes 20,000 ȼ a day. Break-even is 700,000 ÷ 20,000 = 35 days, and the weekly return is 7 × 20,000 ÷ 700,000 = 20 %.
+- Part of that building cost is the stock buffer. With 10 buffer days, inputs of 3,000 ȼ, consumables of 1,000 ȼ and revenue of 8,000 ȼ a day, it's 10 × (3,000 + 1,000 + 8,000) ÷ 2 = 60,000 ȼ.
+- The base makes 300 units of its output a day, and the market trades 900 a day on average over 7 days: 900 ÷ 300 = 3 bases. Its recipe needs 200 units of one input a day, which trades 400 a day: 400 ÷ 200 = 2 bases. The lower value counts, so the market capacity is 2 (I), and one base's share of that input's traded volume is 1 ÷ 2 = 50 %.
+
+With **Ramp from 0**, break-even is longer than building cost ÷ daily profit, because the early stages run with fewer experts. In the game, experts arrive over time from running that expertise's production buildings, and more buildings bring them faster. The ramp follows that: each stage is divided by the number of production buildings.
 
 > [!tip]
 > A short break-even with a market capacity below 1 is a trap, because one base already floods the market. Sort by break-even, then check that the market capacity is well above the number of bases you plan.
@@ -70,9 +84,9 @@ The Settings panel sits above the table. When it's closed, it shows a one-line s
 | **Min market capacity** | 0.7 bases | 0.0 to 1.0 in steps of 0.1 |
 | **Row kinds** | **Resources** and **Recipes** on; **Show negative** and **Show planets without workers or plots** off | |
 
-- **Logistics limit**: **By ship** picks a ship (TCB to HCB, each with its t and m³) and how often it comes ("Every … days"). The ship has to carry that many days of cargo, in and out, by weight and by volume. The table hides rows that need more. **Manual** sets the limit per day, and **None** limits nothing.
+- **Logistics limit**: **By ship** picks a ship (TCB to HCB, each with its t and m³) and how often it comes ("Every … days"). The ship has to carry that many days of cargo, in and out, by weight and by volume. The table hides rows that need more. **Manual** sets the limit per day, and **None** limits nothing. For example, the default WCB (3,000 t / 1,000 m³) every 3 days allows a base that moves up to 3,000 ÷ 3 = 1,000 t and 1,000 ÷ 3 ≈ 333 m³ a day, counting the larger of in and out.
 - **Stock buffer**: storage for this many days of cargo. PRUNplanner adds STO or STA. When the base would no longer fit in 500 area, it drops a production building until it does.
-- **Target permit (HQ cost)**: adds the materials for that HQ level, at CX buy prices, to every row's building cost. The cost counts from 3 on, so 2 adds nothing.
+- **Target permit (HQ cost)**: adds the materials for that HQ level, at CX buy prices, to every row's building cost. The cost counts from 3 on, so 2 adds nothing. In the game each HQ level upgrade gives you one more base permit, so this shows what the base on that permit costs, including the upgrade to that HQ level.
 - **Max jumps (planet rows)**: counted to the nearest exchange of your exchange preference, which the setting names. Planets without a route count as too far.
 - **Min market capacity** sits next to the search above the table and hides rows below it.
 - **Show negative**: when it's off, the table hides rows with a daily profit of 0 or less.
@@ -90,6 +104,8 @@ Only COGC, experts, stock buffer, max jumps and the exchange preference make PRU
 ### Hidden rows {#hidden-rows}
 
 The line above the table counts the rows, and the hidden ones per limit: "max jumps", "logistics", "market capacity", "no plots", "no workers" and "negative profit". Each row counts once, at its first limit in that order. "no plots" and "no workers" only count while **Show planets without workers or plots** is off, and "negative profit" only while **Show negative** is off. The search isn't a limit and isn't counted.
+
+When no row is left, the table says "No base passes these settings." Don't worry: unless the page says a request failed, this only means your settings or your search leave nothing to show. The counts above the table tell you which limits hid rows, so you know which setting to change.
 
 ## Profit chart {#profit-chart}
 
@@ -147,4 +163,4 @@ Both charts follow the time range and aggregation of the history charts. The mat
 
 ## Loading {#loading}
 
-Recipe rows appear first, then the planet rows ("Loading planet rows…"). A progress line shows each step. If a request fails, the page says so. Change a setting or reload the page to try again.
+Recipe rows appear first, then the planet rows ("Loading planet rows…"). A progress line shows each step. If a request fails, the page says so. Change a setting or reload the page to try again. On the first load the recipe rows show as soon as they're ready, so you can look at those while the planet rows are still being calculated.

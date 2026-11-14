@@ -24,6 +24,8 @@ How many days a base's stock of a material lasts: the stock in your FIO storage 
 
 FIO Burn colours a material red at or below 5 days and yellow at or below 10 days by default. You can change both on the FIO Burn page or in your Profile. Burn needs your FIO data. See [FIO Burn](/help/fio_burn#calculations).
 
+For example, a base with 300 units of a material in stock that uses 40 a day and makes 10 a day burns 30 net a day, so the stock lasts 300 ÷ 30 = 10 days. At the default thresholds (red 5, yellow 10 days) that's yellow, not yet red.
+
 ## Byproduct {#byproduct}
 
 A second output of a recipe, made alongside the material the recipe is run for.
@@ -57,7 +59,13 @@ In the game, the residents (players with a base on the planet) vote on the progr
 
 Cost of goods manufactured: what one unit of a recipe's output costs in a plan, from input prices, workforce, wear, production fees, runtime and efficiency.
 
+The cost of one run is the run's share of the building's daily wear and workforce cost, plus its inputs and its production fee. The share is how long the run takes at the building's efficiency ÷ 24 h.
+
+A made-up example: a recipe runs 12 h at 100 % efficiency, so its share is 12 ÷ 24 = 0.5. The building cost 18,000 ȼ to build, so its wear is 18,000 ÷ 180 = 100 ȼ a day, and the run's part is 50 ȼ. Its workforce costs 400 ȼ a day, so the run's part is 200 ȼ. With 1,000 ȼ of inputs and a 50 ȼ fee, the run costs 50 + 200 + 1,000 + 50 = 1,300 ȼ. If it makes 10 units, the COGM is 1,300 ÷ 10 = 130 ȼ a unit.
+
 When a recipe has several outputs, PRUNplanner either splits the cost by quantity or charges it in full to each output. A COGM can also become a fixed price in your exchange preference. See [Plan tools](/help/plan_tools) and [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm).
+
+If the same run made 10 units of one output and 5 of a byproduct, splitting charges 1,300 ÷ 15 ≈ 86.67 ȼ to every unit of both. Charging in full gives 1,300 ÷ 10 = 130 ȼ a unit to the first output and 1,300 ÷ 5 = 260 ȼ a unit to the byproduct.
 
 ## Construction cart {#construction-cart}
 
@@ -93,6 +101,8 @@ AI1 is at Antares, CI1 at Benten, IC1 at Hortus and NC1 at Moria. Market Live al
 
 Buildings wear out over time. Plans charge this as a daily cost of 1 ⁄ 180 of the production buildings' construction cost.
 
+For example, production buildings that cost 180,000 ȼ to build add 180,000 ÷ 180 = 1,000 ȼ a day to the plan's cost.
+
 Degradation counts in a plan's cost and profit, and in COGM. It's also called wear. See Repair for how condition and repair costs work.
 
 ## Efficiency {#efficiency}
@@ -100,6 +110,8 @@ Degradation counts in a plan's cost and profit, and in COGM. It's also called we
 How fast a building produces compared to its recipe's base time. At 100 % it runs a recipe in its base time, and at 125 % in 80 % of that time.
 
 A building's efficiency is the product of its factors: fertility (farms only), Corp. HQ, COGC, experts, workforce and faction. A plan shows each factor for each building. See [Base setup](/help/plan_base).
+
+For example, a building with the COGC advertising program for its expertise (× 1.25), a Corp. HQ (× 1.1) and fully housed workers with both luxuries (× 1), and no other factors, runs at 1.25 × 1.1 × 1 = 1.375, so 137.5 %. A recipe with a base time of 10 h then takes 10 ÷ 1.375 ≈ 7.3 h.
 
 ## Empire {#empire}
 
@@ -155,6 +167,8 @@ They raise a plan's construction cost. Planet Search shows them for every planet
 Taking a planet's resource with an EXT (minerals), RIG (liquids) or COL (gases). The amount per run depends on the planet's daily rate for that resource.
 
 A run yields the planet's daily rate × a share of the day (12 h for EXT, 4.8 h for RIG, 6 h for COL), rounded up to whole units. It takes as long as that amount needs at the daily rate. So a run can be a little longer than its share, and the output per day matches the planet's rate.
+
+For example, with a daily rate of 7 for a mineral, an EXT run yields 7 × 12 ÷ 24 = 3.5, rounded up to 4 units, and takes 4 ÷ 7 of a day, about 13.7 h. Four units every 13.7 h add up to the planet's 7 a day.
 
 ## Faction {#faction}
 
@@ -223,6 +237,8 @@ Workers housed without luxuries work at about 79 %. The first luxury raises that
 
 In Base ROI, how many bases like this one the market can take: the exchange's average traded volume per day ÷ what one base sells or needs per day.
 
+For example, if the exchange trades 1,000 units of an output a day and one base sells 250 a day, the capacity is 1,000 ÷ 250 = 4 bases.
+
 Base ROI checks it for every output and recipe input over 7 days, and the lowest one counts. Below 1, one base makes or needs more than the market trades. See [Base ROI](/help/tools_base_roi#metrics).
 
 ## Market maker {#market-maker}
@@ -248,6 +264,8 @@ Profit per area on this setup lets you compare buildings with each other. See [R
 How many days a plan's daily profit takes to pay for its construction: construction cost ÷ profit per day. A plan that makes no profit never pays back.
 
 Base ROI's Break-even can also count a stock buffer, the HQ upgrade and the time until the experts arrive. See [Base ROI](/help/tools_base_roi#metrics).
+
+For example, a plan that costs 1,200,000 ȼ to build and makes 30,000 ȼ profit a day pays back in 1,200,000 ÷ 30,000 = 40 days. Base ROI's Break-even adds its extra costs to the construction cost. With a fixed expert count, no stock buffer and a 300,000 ȼ HQ upgrade, the same base breaks even after 1,500,000 ÷ 30,000 = 50 days.
 
 ## Plan {#plan}
 
@@ -307,6 +325,8 @@ What a plan or empire buys or sells of a material per day ÷ what the exchange t
 
 Plan check flags a share amber from 10 % and red from 50 %. See [Market check](/help/plan_check#market-check).
 
+For example, if a plan buys 50 units a day and the exchange traded 6,000 units in the last 30 days, that's 200 a day, so the share is 50 ÷ 200 = 25 %, amber.
+
 ## Shared plan {#shared-plan}
 
 A link to one of your plans. Anyone with it sees the plan and can try changes on their own copy. Your plan never changes.
@@ -316,6 +336,8 @@ The link stops working when you stop sharing or delete the plan. See [Sharing a 
 ## Spread {#spread}
 
 The gap between ask and bid on an exchange, as a share of the ask: (ask − bid) ÷ ask. A wide spread means trading at once costs more.
+
+For example, an ask of 100 ȼ and a bid of 80 ȼ give a spread of (100 − 80) ÷ 100 = 20 %.
 
 Plan check shows the spread but doesn't flag it. See [Plan check](/help/plan_check#market-check).
 
@@ -365,7 +387,11 @@ You can leave materials out of the calculation. See [Plan tools](/help/plan_tool
 
 Volume-weighted average price: the credits traded for a material on an exchange ÷ the units traded, over the last 7 or 30 days.
 
-With no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded. After 30 days without a trade, both are 0. See [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
+For example, if an exchange trades 100 units at 10 ȼ on one day (1,000 ȼ) and 300 units at 12 ȼ on another (3,600 ȼ), the VWAP over those days is 4,600 ÷ 400 = 11.5 ȼ. The busier day weighs more, so it's above the plain average of 11 ȼ.
+
+With no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded, as long as that day is within the last 30 days. After 30 days without a trade, both are 0. See [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
+
+A VWAP of 0 means the material hasn't traded on that exchange for 30 days. A plan using that price counts it at 0 ȼ, and Plan check flags it as "No price". See [Plan check](/help/plan_check#flags).
 
 ## Workforce {#workforce}
 

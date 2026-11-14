@@ -2,7 +2,7 @@ Before you plan around a price or trade on it, check Market Exploration to see w
 
 ## Price history {#history}
 
-The game only shows the last 365 days of price history. PRUNplanner keeps every day it has stored, back to July 2023.
+The game only shows the last 365 days of price history. PRUNplanner keeps every day it has stored, back to July 2023. So the **All** range of the [All exchanges](#all-exchanges) chart can reach further back than the game does.
 
 PRUNplanner builds the history from the daily price data [[fio|FIO]] delivers. A day FIO delivered nothing for is missing, and PRUNplanner doesn't correct any day's prices. So a single trade at an extreme price shows as it happened, for example as a long wick on one candle.
 
@@ -21,6 +21,13 @@ The tiles at the top describe the material across all four exchanges ([[universe
 | **Universe Market Delta** | supply − demand: units in all sell orders minus units in all buy orders of the four books. It reads **Shortage** when negative and **Surplus** when positive, with **Supply:** and **Demand:** below |
 | **Weighted Trend** (**Volume-Adjusted Delta**) | each exchange's % Trend, weighted by its share of the 7-day traded units |
 | **Price Cohesion** (**Variance Index**) | how far apart the four exchanges' VWAP 7D are: standard deviation ÷ mean, in % |
+
+A positive % Trend means the last 7 days traded dearer on average than the last 30, and a negative one cheaper. Some made-up examples:
+
+- **% Trend**: a VWAP 7D of 105 ȼ against a VWAP 30D of 100 ȼ gives (105 − 100) ÷ 100 = +5 %.
+- **Universe Market Delta**: a supply of 1,000 against a demand of 1,500 gives 1,000 − 1,500 = −500, so it reads **Shortage**.
+- **Weighted Trend**: of 1,000 units traded in 7 days, AI1 traded 500 at +10 %, CI1 250 at +4 %, IC1 150 at −2 % and NC1 100 at 0 %. That gives 0.5 × 10 + 0.25 × 4 + 0.15 × (−2) + 0.1 × 0 = +5.7 %.
+- **Price Cohesion**: VWAP 7D of 98, 100, 100 and 102 ȼ have a mean of 100 and a standard deviation of √((4 + 0 + 0 + 4) ÷ 4) ≈ 1.41, so it reads about 1.4 %.
 
 A low Price Cohesion means the exchanges trade at nearly the same price, and a high one means there are gaps between them. An exchange without trades counts in it with a price of 0.
 

@@ -1,5 +1,7 @@
 On the [Exchanges](/exchanges) page you decide which prices your plans use. Set a home exchange, pick a price basis, add fixed prices for materials you make yourself, and make exceptions for single planets. Every profit, cost and ROI number in PRUNplanner depends on these prices.
 
+Come here when you want to know where a price in your plans comes from, or to change it. The [Overview](#overview) shows every price your plans use and the rule behind it, and nothing you change reaches your plans until you save.
+
 ## Exchange Preferences {#exchange-preferences}
 
 An [[exchange-preference|exchange preference]] sets the prices your plans use. It picks the [[cx|exchange]] and price basis, and holds [[fixed-price|fixed prices]] for materials you get at your own cost or from a partner.
@@ -64,6 +66,12 @@ For every material, PRUNplanner looks for a buy price (for what a plan consumes)
 
 So an all-planets fixed price wins over a planet's exchange rule.
 
+An example: **All planets** has NC1 · VWAP 30D for buying and selling and a fixed buy price of 45 ȼ for RAT. One planet has its own exchange rule, CI1 · Ask, for buying only. On that planet:
+
+- Buying RAT gets 45 ȼ: the planet has no fixed price of its own, so the all-planets fixed price (level 2) matches first.
+- Buying H2O gets the CI1 Ask: no fixed price matches, so the planet's exchange rule (level 3) does.
+- Selling RAT gets the NC1 VWAP 30D: there's no fixed sell price, and the planet's rule is for buying only, so the all-planets exchange (level 4) matches.
+
 ### Buy, Sell or Both {#buy-sell-or-both}
 
 A rule can apply to buying, selling or both. If a level has no rule for the side a plan needs, PRUNplanner skips that level and checks the next one, down to Universe · VWAP 30D. That happens, for example, when a level only has a buy rule and the plan sells the material.
@@ -71,6 +79,8 @@ A rule can apply to buying, selling or both. If a level has no rule for the side
 ### Exchanges Without a Price {#exchanges-without-a-price}
 
 When an exchange rule matches but its exchange has no price for a material, the price is 0 ȼ. It doesn't fall through to the next level. This happens with Ask when nobody offers the material, with Bid when nobody wants it, and with VWAP when the exchange had no trade in the last 30 days. A material with no exchange data at all shows **No price data** and also counts as 0 ȼ.
+
+A 0 ȼ price changes your plan's numbers: a material it buys at 0 ȼ costs nothing, and one it sells at 0 ȼ earns nothing. So a plan's profit can look better or worse than it would be on the market.
 
 The page shows these prices in amber and lists them in the [notes](#notes), so you can set a fixed price or pick another exchange or basis.
 
@@ -83,6 +93,10 @@ The page shows these prices in amber and lists them in the [notes](#notes), so y
 | Bid | The highest buy order in the order book right now: what you get when you sell at once. |
 
 [[Ask]] and [[Bid]] come from the live order book, so they can change at any time and can be missing for materials with little trading. When an exchange had no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded. Both VWAPs are only 0 when there was no trade at all in the last 30 days.
+
+An example of VWAP with made-up numbers: on one day 100 units trade for 5,000 ȼ in total (50 ȼ each), and on another 10 units trade for 1,000 ȼ (100 ȼ each). The VWAP is the credits ÷ the units, (5,000 + 1,000) ÷ (100 + 10) ≈ 54.55 ȼ. A plain average of the two prices would be 75 ȼ, so the small, pricier day moves the VWAP far less.
+
+What the basis does to your plans: VWAP is one price for both sides, so with the same VWAP rule for buying and selling a material gets the same buy and sell price. With Ask for buying and Bid for selling, a plan buys at the cheapest offer and sells to the highest buy order, and the gap between the two, the [[spread]], shows in its profit.
 
 [[Universe]] combines all four exchanges and only has VWAP prices. PRUNplanner refreshes exchange prices about every 30 minutes.
 
@@ -122,7 +136,7 @@ From 10 rows on, you can search and sort the table by **Material** or **% vs mar
 
 In a plan's COGM tool, **Use as buy price on all planets** sets an all-planets fixed buy price to *that plan's* COGM, not the lowest one. See [Plan tools](/help/plan_tools#cogm-buy-price).
 
-The Overview shows a note when an all-planets fixed buy price is more than 2 % off the lowest COGM. Its table has a **Use COGM** button per material.
+The Overview shows a note when an all-planets fixed buy price is more than 2 % off the lowest COGM. Its table has a **Use COGM** button per material. For example, with a fixed buy price of 45 ȼ and a lowest COGM of 40 ȼ, the gap is (45 − 40) ÷ 40 = 12.5 %, so the note shows. At 40.50 ȼ it's 1.25 %, and there's no note. Don't worry about this note: it's for information, and the fixed price keeps working as it is.
 
 > [!tip]
 > A fixed buy price at your own COGM makes the plans that use the material show the profit of the whole chain in the plan that sells the end product. Keep it in step with the COGM when your production changes.
@@ -137,7 +151,7 @@ Planets with stored rules that none of your plans uses any more are listed under
 
 ## Saving {#saving}
 
-Your plans only use your changes once you save them. The save bar at the bottom counts your changes: each changed part of the preference, plus one for a rename. **Save changes** saves them and re-prices every plan you have open, and **Discard** goes back to the saved rules. If you have unsaved changes, the page asks before you leave or switch preference.
+Your plans only use your changes once you save them. The save bar at the bottom counts your changes: each changed part of the preference, plus one for a rename. **Save changes** saves them and re-prices every plan you have open, and **Discard** goes back to the saved rules. Since the [Overview](#overview) already shows unsaved changes, you can try a rule, look at the prices it gives, and discard it if it's not what you wanted. If you have unsaved changes, the page asks before you leave or switch preference.
 
 **Rename…** in the **More actions** menu changes the preference's name. You save the new name with the save bar. **Manage preferences** opens Management.
 
@@ -170,7 +184,7 @@ Every material [[ticker]] in PRUNplanner opens a market card. Hover it (or focus
 
 The card shows one row per exchange plus Universe, with Ask, Bid, [[spread|Spread]], VWAP 7D and VWAP 30D, the change of 7D against 30D, a 30-day price line and the units traded per day (30-day average). Below that, short lines cover the trend across exchanges, the order books (units offered and wanted) and how far apart the exchanges' prices are. If a material trades less than one unit per day on all four exchanges together, the card marks it as rarely traded.
 
-When the ticker belongs to a plan, an empire or a setup, the card also shows how much of the material it buys or sells per day and its [[share-of-volume|share of the daily volume]]: Fine below 10 %, Watch from 10 %, Too big from 50 %. These are the same limits as [Plan check](/help/plan_check#market-check).
+When the ticker belongs to a plan, an empire or a setup, the card also shows how much of the material it buys or sells per day and its [[share-of-volume|share of the daily volume]]: Fine below 10 %, Watch from 10 %, Too big from 50 %. These are the same limits as [Plan check](/help/plan_check#market-check). For example, if a plan sells 60 units a day and the exchange traded 9,000 units in the last 30 days, that's 300 a day, and the plan's share is 60 ÷ 300 = 20 %: Watch.
 
 - Click the ticker to pin the card. Esc or × closes it. In a plan's Material I/O and in the HQ Calculator, a click opens the details right away.
 - **Market details →** opens a drawer with the material's weight and volume, the data date, a table per exchange (**Prices**, **Order books**, **Volume**), a 30-day chart and **Market health** (breadth, volume-weighted trend, order book balance, price cohesion).

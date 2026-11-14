@@ -1,4 +1,11 @@
-Every profit, cost and payback in PRUNplanner depends on the prices you choose. In about 15 minutes this guide walks you through your [[exchange-preference|exchange preference]]: a home exchange, how you buy and sell, exceptions for single planets, and [[fixed-price|fixed prices]] for what you make yourself. It's for anyone who wants their plans to match how they really trade. You need an account.
+Every profit, cost and payback in PRUNplanner depends on the prices you choose. In about 15 minutes this guide walks you through your [[exchange-preference|exchange preference]]. By the end you'll have:
+
+- a home exchange and a price basis for all your planets,
+- separate buy and sell rules, if you buy and sell on different exchanges,
+- exceptions for single planets, and [[fixed-price|fixed prices]] for what you make yourself,
+- an Overview of every price your plans use and the rule behind it.
+
+It's for anyone who wants their plans to match how they really trade. You need an account. The pages linked at the end of each step go deeper.
 
 ## 1. Open your exchange preference {#step-1}
 
@@ -13,7 +20,7 @@ Read more: [Exchange preferences](/help/exchanges#exchange-preferences), [Manage
 1. Open **All planets** in the list on the left. Its rules apply to every planet that doesn't have its own.
 2. In the **Exchange price** box, pick your home exchange: AI1, CI1, IC1 or NC1.
 3. Click a preset:
-   - **Average · VWAP 30D** buys and sells at the 30-day [[vwap|VWAP]] of that exchange, a steady average of what was traded.
+   - **Average · VWAP 30D** buys and sells at the 30-day [[vwap|VWAP]] of that exchange, a steady average of what was traded. [Your first base](/help/guide_first_base#step-2) works through a VWAP example.
    - **Trade now · buy Ask, sell Bid** buys at the cheapest offer and sells to the highest buyer right now. That's the price of trading at once.
 
 The box tells you which exchange the presets work on ("Presets on NC1:").
@@ -37,6 +44,8 @@ In the **Exchange price** box:
 
 > [!warning]
 > When the chosen exchange has no price for a material (nobody offers it, nobody bids, or for VWAP no trade there in the last 30 days), it counts as 0 ȼ. PRUNplanner doesn't fall back to another exchange. The page shows such prices in amber and lists them in its notes.
+>
+> Without a trade in the last 7 days, VWAP 7D uses the price of the last day within those 30 days that the material was traded. If an amber material is one your plans buy or sell, you can set a planet rule on another exchange for the planet that uses it (step 4) or give it a fixed price (step 5).
 
 Details: [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid), [Buy, sell or both](/help/exchanges#buy-sell-or-both).
 
@@ -62,6 +71,8 @@ Leave a side empty to keep the exchange price for it.
 
 > [!tip]
 > Keep fixed prices in step with your production. The Overview notes when a fixed buy price is more than 2 % off the lowest COGM, and the COGM dialog offers to update it.
+>
+> As an example, say your lowest COGM for RAT is 95 ȼ and its fixed buy price is 100 ȼ. That's 5 ÷ 95 ≈ 5.3 % off, so the Overview notes it. At 96 ȼ it'd be 1 ÷ 95 ≈ 1.1 % off, and there's no note.
 
 More: [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm), [Using COGM as a buy price](/help/plan_tools#cogm-buy-price).
 

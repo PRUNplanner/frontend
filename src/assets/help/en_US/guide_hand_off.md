@@ -1,4 +1,10 @@
-PRUNplanner plans your bases. You build and run them in the game. This guide covers the hand-over: what to buy and ship to build a base, its first supply, the [[xit|XIT]] packages that do the shopping and shipping for you, and the FIO tools that keep running bases supplied and repaired. It's for players about to build a planned base. It takes about 15 minutes, plus a one-time FIO setup.
+PRUNplanner plans your bases. You build and run them in the game. This guide covers the hand-over, and by the end you'll have:
+
+- FIO connected, so PRUNplanner sees your bases and stores,
+- the materials to build a base and its first supply, as [[xit|XIT]] packages that do the shopping and shipping for you,
+- FIO Burn and FIO Repair set up to keep running bases supplied and repaired.
+
+It's for players about to build a planned base. It takes about 15 minutes, plus a one-time FIO setup. The pages linked at the end of each step go deeper.
 
 ## 1. Connect FIO {#step-1}
 
@@ -17,7 +23,7 @@ More: [FIO connection](/help/profile#fio-connection).
 Open the plan of the base (from the side menu or the plan list on [Empire](/empire)) and go to its **Construction** tab, the [[construction-cart|construction cart]].
 
 - **Built** starts at what FIO sees on the planet, and **Amount** is what's left to build.
-- **Materials to buy** takes off the stock of the storage you pick under **Storage**, so **Need** is what you still have to get.
+- **Materials to buy** takes off the stock of the storage you pick under **Storage**, so **Need** is what you still have to get. As an example, with an **Amount** of 120 BSE and 40 in storage, **Need** is 80. With 150 in storage it's 0, never below.
 - A warning next to **Amount** tells you when the buildings would need more workers than their habitations house.
 
 The XIT button next to **Storage** ships only **Need**. The one at the top of the tool ships everything and ignores stock.
@@ -50,7 +56,7 @@ Details: [XIT actions](/help/plan_tools#xit).
 
 Open [FIO Burn](/fio/burn) and pick the empire. For each plan, it divides the stock of your base store on that planet by the plan's net daily use and shows how many days each material lasts.
 
-- Red and yellow mark materials at or below your thresholds (5 and 10 days by default).
+- Red and yellow mark materials at or below your thresholds (5 and 10 days by default). As an example, 160 RAT in store and a net use of 20 a day last 160 ÷ 20 = 8 days. That's at or below 10 but above 5, so it shows yellow.
 - The XIT button on a plan opens its XIT resupply. Set **Target Days** or let **Fit Ship** pick the most days that fit a ship size, then **Copy XIT JSON**.
 
 > [!warning]

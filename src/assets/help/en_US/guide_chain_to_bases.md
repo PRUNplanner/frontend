@@ -1,4 +1,10 @@
-Start from a goal like "make 50 RAT a day". This guide turns it into a whole production chain, splits that chain into bases you could build, and creates one [[plan]] per base in a new [[empire]]. It's for players planning a new line of production across several bases, and it takes about 20 minutes. You need an account, and you should set up your prices first (see [Set up your prices](/help/guide_cx_prices)).
+Start from a goal like "make 50 RAT a day". This guide takes about 20 minutes, and by the end you'll have:
+
+- the whole production chain behind your goal, with its profit and construction cost,
+- that chain split into bases you could build, each on a planet,
+- one [[plan]] per base, in a new [[empire]] if you like.
+
+It's for players planning a new line of production across several bases. The pages linked at the end of each step go deeper. You need an account, and you should set up your prices first (see [Set up your prices](/help/guide_cx_prices)).
 
 ## 1. Set your targets {#step-1}
 
@@ -31,7 +37,7 @@ Read more: [Settings](/help/tools_production_chain#settings), [Own production](/
 **Steps** lists every material of the chain once. For each one, **Source** says whether you **Make**, **Buy** or **Extract** it, and **Make or buy** says whether making it saves money.
 
 - The chips above the steps sum up what to look at. **Cheaper to buy** lists steps you make for more than the exchange price, and **Buy all** switches them to buying.
-- **Thin market** lists bought materials where the chain needs 10 % or more of what the exchange trades a day. Buying that much will likely move the price.
+- **Thin market** lists bought materials where the chain needs 10 % or more of what the exchange trades a day. Buying that much will likely move the price. It also lists materials that didn't trade there in 30 days. As an example, if an exchange traded 30,000 units of a material in the last 30 days, that's 1,000 a day. A chain that buys 120 a day needs 120 ÷ 1,000 = 12 %, so it's listed.
 - If a material has several [[recipe|recipes]], click "n recipes ▾" to compare their effect on the chain.
 
 More: [Steps](/help/tools_production_chain#steps), [Warnings](/help/tools_production_chain#warnings).
@@ -43,6 +49,8 @@ The strip at the top adds up the whole chain:
 - **Profit / day** is the output value minus bought inputs, workforce [[upkeep]], wear and production fees.
 - **Buildings**, **Area** and **Workforce** show what it takes.
 - **Construction** is what it costs to build, with its [[payback]].
+
+Payback is construction ÷ profit per day. As an example, a chain that costs 3,000,000 ȼ to build and makes 25,000 ȼ a day pays back in 3,000,000 ÷ 25,000 = 120 days. Without a profit, the strip shows "no payback".
 
 You want a profit that pays the construction back in a time you accept. If it doesn't, change a target or switch steps between make and buy, and watch the strip.
 

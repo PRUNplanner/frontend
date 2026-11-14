@@ -48,7 +48,9 @@ The table shows 50 rows per page. The planet column stays pinned, and on narrow 
 
 Daily Profit and Plan Cost follow the same rules as [Recipe ROI](/help/tools_roi_overview#calculation). Outputs count at the sell price and consumables at the buy price, with [[degradation]] and the planet's production fees included.
 
-**Plan ROI (d)** shows the raw number. A negative value means the plan loses money and never pays back. Its bar fills up as the payback approaches 20 days, so a longer bar means a slower payback.
+**Plan ROI (d)** shows the raw number. A negative value means the plan loses money and never pays back. Its bar fills up as the payback approaches 20 days, so a longer bar means a slower payback. For example, a 10-day payback fills half the bar, and 20 days or more fill all of it.
+
+**% Max.** compares each row with the best one. For example, if the best layout extracts 200 units a day, a row with a Daily of 150 shows 150 ÷ 200 = 75 %.
 
 ## Filters {#filters}
 
@@ -64,11 +66,11 @@ After a search, **Chart** opens the **Payback vs. distance** chart under the tab
 
 - The horizontal axis is the plan ROI in days. The vertical axis is the jumps to the nearest exchange, or to the one you pick in **Distance to** (**Nearest CX** by default).
 - A dot's size is its daily profit, and its colour is the exchange its jumps count to (the nearest one by default).
-- Highlighted dots are the best trade-offs: no other planet both pays back faster and is closer.
+- Highlighted dots are the best trade-offs: no other planet both pays back faster and is closer. For example, a planet with 10 days at 4 jumps and one with 12 days at 2 jumps are both highlighted, since neither beats the other on both. A planet with 14 days at 5 jumps isn't, because the first one beats it on both.
 - A line under the chart names the highlighted planets and their jumps. It also names the planet that earns the most per day, if that one isn't among them.
 - Hover a dot to scroll its row into view.
 
-Not every row becomes a dot. The chart leaves out rows that never pay back, have no route to the exchange, or take more than twice the fastest payback, and it counts them below the chart.
+Not every row becomes a dot. The chart leaves out rows that never pay back, have no route to the exchange, or take more than twice the fastest payback, and it counts them below the chart. So if the fastest row pays back in 10 days, rows over 20 days are counted but not drawn. Don't worry when dots seem missing: they're still in the table.
 
 > [!tip]
 > A planet a few jumps further out that pays back almost as fast is often the better base, since shipping to and from an exchange costs time and fuel every week.

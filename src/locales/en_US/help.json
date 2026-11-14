@@ -9,13 +9,13 @@
 		"image_alt": "Management Screenshot",
 		"l1": {
 			"title": "Check your empire in {link}:",
-			"link": "Management",
-			"p": "Every new account already has one, \"My Empire\". On the Empire page, set its faction and permits to what your in-game HQ shows. They change the production bonus of every plan in it. You can create more empires in Management with New Empire, for example one to test an expansion."
+			"link": "Empire",
+			"p": "Every new account already has one, \"My Empire\". On the Empire page, set its faction and permits to what your in-game HQ buffer shows. They change the production bonus of every plan in it. You can create more empires in Management with New Empire, for example one to test an expansion."
 		},
 		"l2": {
 			"title": "Set your home exchange, starting in {link}:",
 			"link": "Management",
-			"p": "A new account also has an exchange preference, \"My Exchange Preference\". My Empire already uses it, and it's set to Universe · VWAP 30D. Click its name under CX Configuration (or open Exchanges in the side menu) and open All planets. Pick your home exchange, for example CI1 near Benten Station, click the preset Average · VWAP 30D and press Save changes."
+			"p": "A new account also has an exchange preference, \"My Exchange Preference\". My Empire already uses it, and it's set to Universe · VWAP 30D, the 30-day volume-weighted average price across all four exchanges. Click its name under CX Configuration (or open Exchanges in the side menu) and open All planets. Pick your home exchange, for example CI1 near Benten Station, click the preset Average · VWAP 30D and press Save changes."
 		},
 		"l3": {
 			"title": "Find a {link}:",
@@ -28,7 +28,7 @@
 		},
 		"l5": {
 			"title": "Check the numbers:",
-			"p": "The tiles on top show Profit / day, Payback, Workforce, Area and Storage. Material I/O lists what the base makes and buys, and Plan check tests the amounts against the market. Every change updates the numbers at once, so try a recipe or a building count and compare."
+			"p": "The tiles on top show Profit / day, Payback, Workforce, Area and Storage. Payback reads never while the base makes no profit. Material I/O lists what the base makes and buys, and Plan check tests the amounts against the market. Every change updates the numbers at once, so try a recipe or a building count and compare."
 		}
 	},
 	"core_concepts": {
@@ -43,7 +43,7 @@
 		},
 		"p3": {
 			"title": "Exchange preferences",
-			"p": "An exchange preference sets the prices your plans use. Each empire uses one preference, but a preference can mix exchanges. It can have its own exchange and price basis for buying and for selling, exceptions for single planets and fixed prices for single materials. Several empires can share one."
+			"p": "An exchange preference sets the prices your plans use. Each empire uses one preference, but a preference can mix exchanges. It can have its own exchange and price basis for buying and for selling, exceptions for single planets and fixed prices for single materials. Several empires can share one. A material the chosen exchange has no price for counts as 0 ȼ, shown in amber on Exchanges."
 		}
 	},
 	"key_features": {
