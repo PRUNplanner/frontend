@@ -6,8 +6,10 @@
 
 	import { useUserStore } from "@/stores/userStore";
 	import { useAuthPanel } from "@/features/account/useAuthPanel";
+	import { reportError } from "@/lib/analytics/useAnalytics";
 
 	const userStore = useUserStore();
+	const { next, entering } = useAuthPanel();
 	import router from "@/router";
 
 	// UI
@@ -45,38 +47,55 @@
 
 		isLoggingIn.value = true;
 		loginError.value = null;
-		// read first: the header and its panel leave once logged in
-		const next = useAuthPanel().next.value;
+		const target = loginTarget();
+		// a page follows: this one keeps the visitor's layout until it shows,
+		// so nothing here moves while it loads; the layout and the page change
+		// in one render, when the navigation is done
+		entering.value = target !== null;
 
 		const result = await userStore.performLogin(
 			inputUsername.value!,
 			inputPassword.value!
 		);
 
-		isLoggingIn.value = false;
-
-		if (result !== "ok") loginError.value = result;
+		if (result !== "ok") {
+			entering.value = false;
+			isLoggingIn.value = false;
+			loginError.value = result;
+		} else if (target === null) isLoggingIn.value = false;
 		else {
-			const redirectTo = new URLSearchParams(window.location.search).get(
-				"redirectTo"
-			);
-
-			// successfull login should redirect back to origin, if present; only
-			// a path on this site, "//host" and "/\host" would leave it
-			if (redirectTo) {
-				router.push({
-					path: /^\/(?![/\\])/.test(redirectTo)
-						? redirectTo
-						: "/empire",
-				});
-			} else if (next) {
-				router.push({ path: next });
-			} else if (
-				!STAY_ON.includes(String(router.currentRoute.value.name))
-			) {
-				router.push({ path: "/empire" });
-			}
+			// in the navigation's own render: the next page mounts once, in
+			// the app's layout
+			const release = (): void => {
+				off();
+				entering.value = false;
+				isLoggingIn.value = false;
+			};
+			const off = router.afterEach(release);
+			router.push({ path: target }).catch((err: unknown) => {
+				release();
+				reportError(err);
+			});
 		}
+	}
+
+	/**
+	 * Where a login leads: back to where it was asked for, the page the
+	 * panel was opened for, or the empire; null stays on this page
+	 *
+	 * @returns {string | null} Path, or null to stay
+	 */
+	function loginTarget(): string | null {
+		const redirectTo = new URLSearchParams(window.location.search).get(
+			"redirectTo"
+		);
+		// only a path on this site, "//host" and "/\host" would leave it
+		if (redirectTo)
+			return /^\/(?![/\\])/.test(redirectTo) ? redirectTo : "/empire";
+		if (next.value) return next.value;
+		return STAY_ON.includes(String(router.currentRoute.value.name))
+			? null
+			: "/empire";
 	}
 </script>
 

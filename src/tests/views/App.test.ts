@@ -8,6 +8,7 @@ import { dbBlocked } from "@/database/dbBlocked";
 import { sessionReplaced } from "@/lib/crossTab";
 import { toasts } from "@/ui/useToast";
 import { useUserStore } from "@/stores/userStore";
+import { useAuthPanel } from "@/features/account/useAuthPanel";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
@@ -162,6 +163,25 @@ describe("App", () => {
 			expect(has(w, "AppFooter")).toBe(true);
 			// phones keep the page clear of the bottom bar
 			expect(w.find(".min-h-screen").classes()).toContain("pb-16");
+		});
+
+		it("keeps the visitor's layout until the page after a login shows", async () => {
+			mocks.route.name = "homepage";
+			useAuthPanel().entering.value = true;
+			const w = await mountApp(true);
+
+			expect(has(w, "HomepageHeader")).toBe(true);
+			expect(has(w, "AppSidebar")).toBe(false);
+			expect(has(w, "MobileNavBar")).toBe(false);
+			const column = w.find(".flex-1.min-w-0").element;
+
+			// the navigation is done: layout and page change in one render
+			useAuthPanel().entering.value = false;
+			await flushPromises();
+			expect(has(w, "HomepageHeader")).toBe(false);
+			expect(has(w, "AppSidebar")).toBe(true);
+			// a new column beside the sidebar, not the old one moved over
+			expect(w.find(".flex-1.min-w-0").element).not.toBe(column);
 		});
 
 		it("keeps the consent dialog off the terms it links to", async () => {

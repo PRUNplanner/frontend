@@ -9,7 +9,11 @@ import { mountComponent } from "@/tests/mountComponent";
 
 const route = vi.hoisted(() => ({ value: { name: "homepage" } }));
 vi.mock("@/router", () => ({
-	default: { push: vi.fn(), currentRoute: route },
+	default: {
+		push: vi.fn(() => Promise.resolve()),
+		afterEach: vi.fn(() => vi.fn()),
+		currentRoute: route,
+	},
 }));
 import router from "@/router";
 
@@ -31,7 +35,44 @@ describe("LoginComponent", () => {
 	beforeEach(() => {
 		useAuthPanel().close();
 		vi.mocked(router.push).mockClear();
+		vi.mocked(router.afterEach).mockClear();
 		window.history.replaceState({}, "", "/");
+	});
+
+	it("keeps the visitor's layout until the page after the login shows", async () => {
+		route.value = { name: "homepage" };
+		const off = vi.fn();
+		vi.mocked(router.afterEach).mockReturnValueOnce(off);
+		await login();
+		// performLogin is mocked: the token it sets
+		useUserStore().setToken("access", "refresh");
+		// logged in, the empire still on its way: the homepage stays as it is
+		expect(useUserStore().isLoggedIn).toBe(true);
+		expect(useAuthPanel().entering.value).toBe(true);
+		expect(useAuthPanel().loggedInLayout.value).toBe(false);
+
+		// the navigation is done: its own render switches the layout
+		const [[hook]] = vi.mocked(router.afterEach).mock.calls;
+		(hook as () => void)();
+		expect(off).toHaveBeenCalledOnce();
+		expect(useAuthPanel().entering.value).toBe(false);
+		expect(useAuthPanel().loggedInLayout.value).toBe(true);
+	});
+
+	it("lets go of the layout when the navigation fails", async () => {
+		route.value = { name: "homepage" };
+		vi.mocked(router.push).mockRejectedValueOnce(new Error("guard"));
+		await login();
+		expect(useAuthPanel().entering.value).toBe(false);
+	});
+
+	it.each([
+		["a failed login", "homepage", "failed"],
+		["a login that stays on the page", "search", "ok"],
+	] as const)("holds no layout after %s", async (_, name, result) => {
+		route.value = { name };
+		await login(result);
+		expect(useAuthPanel().entering.value).toBe(false);
 	});
 
 	it("goes to the empire after a login on the homepage", async () => {
@@ -124,6 +165,7 @@ describe("LoginComponent", () => {
 	});
 
 	it("disables and spins the button while the login runs", async () => {
+		route.value = { name: "homepage" };
 		const pinia = createPinia();
 		setActivePinia(pinia);
 		let answer!: (r: "ok") => void;
@@ -144,6 +186,11 @@ describe("LoginComponent", () => {
 		expect(button().attributes("disabled")).toBeDefined();
 
 		answer("ok");
+		await flushPromises();
+		// on to the empire: busy until it shows
+		expect(button().attributes("aria-busy")).toBe("true");
+		const [[hook]] = vi.mocked(router.afterEach).mock.calls;
+		(hook as () => void)();
 		await flushPromises();
 		expect(button().attributes("aria-busy")).toBe("false");
 	});

@@ -51,6 +51,7 @@
 		reportError,
 	} from "@/lib/analytics/useAnalytics";
 	import { useAnalyticsConsent } from "@/lib/analytics/useAnalyticsConsent";
+	import { useAuthPanel } from "@/features/account/useAuthPanel";
 	import { getPostHogKey } from "@/lib/analytics/usePostHog";
 	import { dbBlocked } from "@/database/dbBlocked";
 	import { sessionReplaced } from "@/lib/crossTab";
@@ -83,7 +84,9 @@
 		})
 	);
 
-	const isLoggedIn = computed(() => userStore.isLoggedIn);
+	// the app's layout (sidebar, no homepage header) arrives with the page
+	// after a login, not before it: the page the login was on never moves
+	const { loggedInLayout: isLoggedIn } = useAuthPanel();
 
 	// the banner's chunk loads only for a visitor who still has to choose;
 	// not before mount, so the prerendered landing page hydrates as rendered
@@ -130,7 +133,11 @@
 	<div class="flex w-full text-white/80">
 		<AppSidebar v-if="isLoggedIn" class="hidden md:flex" />
 
-		<div class="flex-1 min-w-0 flex flex-col">
+		<!-- a column of its own per layout: switching inserts a new one, the
+			page never slides over for the sidebar -->
+		<div
+			:key="isLoggedIn ? 'app' : 'visitor'"
+			class="flex-1 min-w-0 flex flex-col">
 			<!-- logged in, phones keep the page clear of the bottom bar -->
 			<div
 				class="h-full min-h-screen"
