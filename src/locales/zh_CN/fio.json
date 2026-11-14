@@ -4,12 +4,12 @@
 		"title": "FIO 消耗：",
 		"fio_last_update": "FIO 数据更新：{last_updated}",
 		"states": {
-			"no_empire_title": "No empire yet",
-			"no_empire": "FIO Burn shows how long the stock of each base in an empire lasts. Create an empire in Management and assign your plans to it.",
+			"no_empire_title": "还没有帝国",
+			"no_empire": "FIO Burn 显示帝国里每座基地的库存还能撑多久。先在「管理」里创建帝国，再把你的规划分配到它。",
 			"create_empire": "@:empire.empty.create",
-			"no_fio_title": "Connect FIO to see your burn",
-			"no_fio": "FIO Burn reads your bases' stock from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile"
+			"no_fio_title": "连接 FIO 才能看到后勤消耗",
+			"no_fio": "FIO Burn 会从 FIO 读取你基地的库存。先在{link}里设置好 FIO，再回到这里。",
+			"profile": "个人资料"
 		},
 		"form": {
 			"empire": "@:terms.empire",
@@ -20,29 +20,29 @@
 		"components": {
 			"overview": {
 				"title": "规划消耗概览",
-				"axis": "0 – {max} d",
+				"axis": "0 – {max} 天",
 				"table": {
 					"plan": "@:terms.plan",
-					"strip": "Days left per material",
+					"strip": "每种材料还能用几天",
 					"burn": "日消耗"
 				},
 				"summary": {
-					"red": "{n} red",
-					"yellow": "{n} yellow",
-					"materials": "no materials | {n} material | {n} materials"
+					"red": "{n} 个红",
+					"yellow": "{n} 个黄",
+					"materials": "无材料|{n} 种材料|{n} 种材料"
 				},
-				"strip_label": "Days left per material of {plan_name}",
-				"caption": "One dot per consumed material; hover or tap a dot to see which. The axis ends at 3 × the yellow threshold; materials beyond it are counted as \"+n\"."
+				"strip_label": "{plan_name} 每种材料还能用几天",
+				"caption": "每种消耗材料一个点；悬停或点一下就能看到是哪种。坐标轴到黄色阈值的 3 倍为止，超出的材料计为「+n」。"
 			},
 			"plans": {
 				"xit_title": "XIT 补给：{plan_name}",
-				"expand_row": "Show materials of {plan_name}",
-				"runs_out_first": "runs out first, in {days} days",
-				"more_under": "{n} more under {days} d",
-				"produced": "{n} produced here",
-				"produced_here": "produced here",
-				"days_left": "{days} days left",
-				"runway_label": "{ticker}: {days} days left",
+				"expand_row": "显示 {plan_name} 的材料",
+				"runs_out_first": "最先耗尽，还有 {days} 天",
+				"more_under": "另有 {n} 种低于 {days} 天",
+				"produced": "这里有 {n} 种自产",
+				"produced_here": "本地自产",
+				"days_left": "还剩 {days} 天",
+				"runway_label": "{ticker}：还剩 {days} 天",
 				"table": {
 					"ticker": "@:terms.material_ticker",
 					"consumption": "@:terms.consumption",
@@ -52,7 +52,7 @@
 					"plan": "@:terms.plan",
 					"burn": "日消耗",
 					"exhaustion": "耗尽",
-					"runway": "Runway"
+					"runway": "续航"
 				}
 			}
 		}
@@ -62,105 +62,105 @@
 		"title": "FIO 维修",
 		"fio_last_update": "FIO 数据更新：{last_updated}",
 		"states": {
-			"no_fio_title": "Connect FIO to see your bases' repair status",
-			"no_fio": "FIO Repair reads your buildings' condition and last repair from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile",
-			"no_sites": "FIO has no bases for you yet. Once FIO has your sites, they show up here.",
-			"stale": "FIO data was updated {when}. Buildings have aged since then, so conditions are lower and repair amounts higher than shown. Ages are counted to today."
+			"no_fio_title": "连接 FIO 才能看到基地的维修状态",
+			"no_fio": "FIO Repair 会从 FIO 读取建筑的耐久和上次维修时间。先在{link}里设置好 FIO，再回到这里。",
+			"profile": "个人资料",
+			"no_sites": "FIO 里还没有你的基地。等 FIO 有了你的站点，它们就会出现在这里。",
+			"stale": "FIO 数据更新于 {when}。此后建筑又老化了，所以实际耐久更低、维修用量比显示的高。老化按到今天计算。"
 		},
 		"settings": {
-			"title": "Settings",
-			"target": "Repair target",
-			"use_plans": "Use matched plans",
-			"match_summary": "{matched} matched · {likely} likely · {none} without",
-			"interval_plans": "Without a plan, every",
-			"interval": "Repair every",
-			"interval_note_plans": "for bases without a matched plan",
-			"interval_note": "for every base",
-			"days": "days",
-			"due_soon": "Due soon",
-			"due_soon_note": "days before the target day",
-			"exchange": "Exchange Preference",
-			"exchange_note": "empire exchange and tickers only",
-			"footer": "Saved as your preferences, also in {link}. The Exchange Preference is your default one, the same setting as in Profile."
+			"title": "设置",
+			"target": "维修目标",
+			"use_plans": "使用匹配的规划",
+			"match_summary": "{matched} 匹配 · {likely} 可能 · {none} 无匹配",
+			"interval_plans": "没有匹配规划时，每",
+			"interval": "每",
+			"interval_note_plans": "（无匹配规划的基地）",
+			"interval_note": "（所有基地）",
+			"days": "天维修一次",
+			"due_soon": "即将到期",
+			"due_soon_note": "目标日之前的天数",
+			"exchange": "交易所偏好",
+			"exchange_note": "只看帝国交易所和代号",
+			"footer": "会保存为你的偏好，{link}里也有。交易所偏好就是你的默认偏好，和个人资料里是同一个设置。"
 		},
 		"stats": {
-			"overdue": "Overdue",
-			"soon": "Due within {n} d",
-			"later": "Later",
-			"bases": "bases | base | bases",
-			"due_cost": "Repair what's due, today",
-			"due_cargo": "{weight} t · {volume} m³ · no bases | {weight} t · {volume} m³ · {n} base | {weight} t · {volume} m³ · {n} bases",
-			"waiting": "Waiting costs",
-			"waiting_value": "+{cost} ȼ / day",
-			"waiting_note": "more repair material per day, for what's due"
+			"overdue": "已逾期",
+			"soon": "{n} 天内到期",
+			"later": "稍后",
+			"bases": "座基地|座基地|座基地",
+			"due_cost": "今天该修的今天修",
+			"due_cargo": "{weight} 吨 · {volume} m³ · 无基地|{weight} 吨 · {volume} m³ · {n} 座基地|{weight} 吨 · {volume} m³ · {n} 座基地",
+			"waiting": "拖延的代价",
+			"waiting_value": "+{cost} ȼ/天",
+			"waiting_note": "每天多出的维修材料（针对到期的）"
 		},
 		"timeline": {
-			"title": "When bases come due",
-			"hint": "next repair by base, from the most overdue to the last one due · click a base to open it",
-			"today": "today",
-			"tick": "{n} d",
-			"unknown": "{n} without repair date",
-			"more": "{n} more: {names}"
+			"title": "基地到期时",
+			"hint": "按基地列出下次维修，从最逾期的排到最后到期的 · 点基地即可展开",
+			"today": "今天",
+			"tick": "{n} 天",
+			"unknown": "{n} 个没有维修日期",
+			"more": "还有 {n} 个：{names}"
 		},
 		"list": {
-			"title": "Bases",
-			"hint": "click a base for its buildings and repair flight",
-			"filter": "Filter",
+			"title": "基地",
+			"hint": "点一座基地，查看它的建筑和维修航程",
+			"filter": "筛选",
 			"filters": {
-				"all": "All",
-				"overdue": "Overdue",
-				"soon": "Due soon",
-				"later": "Later"
+				"all": "全部",
+				"overdue": "已逾期",
+				"soon": "即将到期",
+				"later": "稍后"
 			},
 			"columns": {
-				"base": "Base",
-				"buildings": "Buildings",
-				"condition": "Condition",
-				"since": "Since repair",
-				"next": "Next repair",
-				"cost": "Repair now"
+				"base": "基地",
+				"buildings": "建筑",
+				"condition": "耐久",
+				"since": "距今维修",
+				"next": "下次维修",
+				"cost": "现在维修"
 			},
 			"plan": {
-				"match": "plan {name}",
-				"likely": "likely plan {name}",
-				"picked": "plan {name} (your choice)",
-				"none": "no plan · every {n} d"
+				"match": "规划 {name}",
+				"likely": "可能是规划 {name}",
+				"picked": "规划 {name}（你选的）",
+				"none": "无规划 · 每 {n} 天"
 			},
-			"since": "{n} d",
-			"built": "built {n} d",
-			"no_date": "No repair date",
-			"empty": "No base in this filter.",
-			"footer": "Production buildings only. Habitations, storage and the core module age too, but need no repair materials. \"Repair now\" is the repair bill for every production building; it grows each day until day 180, when it equals a new building."
+			"since": "{n} 天",
+			"built": "建成 {n} 天",
+			"no_date": "没有维修日期",
+			"empty": "这个筛选下没有基地。",
+			"footer": "只算生产建筑。居住舱、仓库和核心模块也会老化，但不需要维修材料。「现在维修」是算上全部生产建筑的维修账单；它每天增长，到第 180 天时等于新建一座建筑。"
 		},
 		"due": {
-			"overdue": "Overdue {n} d",
-			"today": "Due today",
-			"soon": "Due in {n} d",
-			"later": "In {n} d",
-			"unknown": "No repair date"
+			"overdue": "逾期 {n} 天",
+			"today": "今天到期",
+			"soon": "{n} 天后到期",
+			"later": "{n} 天后",
+			"unknown": "没有维修日期"
 		},
 		"panel": {
-			"close": "Close base details",
-			"back": "Bases",
-			"buildings": "no production buildings | {n} production building | {n} production buildings",
-			"target": "Repair target",
-			"option_plan": "{plan} · {score} % match · {empire}",
-			"option_plan_loose": "{plan} · {score} % match",
-			"option_none": "No plan · every {n} days",
-			"needs_refresh": "Needs a FIO refresh",
+			"close": "关闭基地详情",
+			"back": "基地",
+			"buildings": "无生产建筑|{n} 座生产建筑|{n} 座生产建筑",
+			"target": "维修目标",
+			"option_plan": "{plan} · {score}% 匹配 · {empire}",
+			"option_plan_loose": "{plan} · {score}% 匹配",
+			"option_none": "无规划 · 每 {n} 天",
+			"needs_refresh": "需要刷新 FIO",
 			"confidence": {
-				"match": "Matched",
-				"likely": "Likely",
-				"picked": "Your choice",
-				"nopick": "No plan",
-				"none": "No plan"
+				"match": "已匹配",
+				"likely": "可能",
+				"picked": "你选的",
+				"nopick": "无规划",
+				"none": "无规划"
 			},
 			"reason": {
-				"match": "Same planet, all production buildings match FIO. Best day per building type from Repair Analysis.",
-				"likely": "{score} % of the buildings match FIO. Check that this is the plan you run.",
-				"picked": "Saved for this base in your preferences, on every device.",
-				"nopick": "You chose no plan for this base. Repairs every {n} days.",
+				"match": "同一行星上，所有生产建筑都与 FIO 匹配。每种建筑的最佳日期取自维修分析。",
+				"likely": "{score}% 的建筑与 FIO 匹配。确认一下你跑的是不是这份规划。",
+				"picked": "已保存到你的偏好里，对所有设备生效。",
+				"nopick": "你为这座基地选择了无规划。每 {n} 天维修一次。",
 				"none_candidates": "No plan here matches FIO well enough. Pick one, or keep every {n} days.",
 				"none": "No plan on this planet. Repairs every {n} days.",
 				"off": "Matched plans are off. Repairs every {n} days."
