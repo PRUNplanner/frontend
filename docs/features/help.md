@@ -13,7 +13,13 @@ incl. the Market report); `HelpView` (`/help`) and `HelpArticleView`
 **Content rule.** Help follows the code on `main`: every number, default,
 limit and label in an article comes from the code (the 0.36.0 audit and its
 review list: workspace `specs/assets/help-centre/audit.md`). A change to
-user-visible behaviour updates its article and `updatedIn` in the same PR.
+user-visible behaviour updates its article in the same PR, but not its
+version: feature PRs merge before their release is known. The release PR
+(`chore(release): x.y.z`, the last PR of a release) bumps `package.json`,
+adds the changelog entry and sets `updatedIn` to x.y.z for every article
+changed since the previous release. `CHECKED` in `helpArticles.ts` is the
+version for articles last checked as a whole; one article can carry its
+own (`{ ...plan("plan_base", [...]), updatedIn: "0.37.0" }`).
 
 ## Key files
 
