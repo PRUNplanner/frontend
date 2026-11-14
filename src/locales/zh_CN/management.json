@@ -8,15 +8,15 @@
 			"new_empire": "新帝国"
 		},
 		"deletion": {
-			"title": "Confirm Empire Deletion",
-			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+			"title": "确认删除帝国",
+			"content": "确定吗？删除帝国不会删掉分配给它的规划。"
 		},
 		"form": {
 			"empire_name": "@:{'terms.empire'}名称",
 			"faction": "@:terms.faction",
 			"permits_total": "@:{'terms.permits_plural'}总数",
 			"permits_used": "已用@:{'terms.permits_plural'}",
-			"empire_placeholder": "max. 100 characters"
+			"empire_placeholder": "最多 100 个字符"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -35,8 +35,8 @@
 			"new_cx": "新@:{'terms.cx'}"
 		},
 		"deletion": {
-			"title": "Confirm CX Deletion",
-			"content": "Are you sure? Deleting the CX will delete all preferences."
+			"title": "确认删除交易所",
+			"content": "确定吗？删除该交易所会一并删掉所有偏好设置。"
 		},
 		"form": {
 			"cx_name": "@:{'terms.cx'}名称",
@@ -78,23 +78,23 @@
 		"remove_all_shown": "将全部已显示的规划移除出{empire}",
 		"no_match": "无匹配搜索和筛选条件的规划。",
 		"selection": {
-			"select_all_shown": "Select all shown plans",
-			"clear_all_shown": "Deselect all shown plans",
-			"select_label": "Select {plan}",
-			"count": "{count} plan selected | {count} plans selected",
-			"delete": "Delete selected…",
-			"clear": "Clear selection",
-			"deleting": "Deleting {done} of {total}…",
-			"confirm_title": "Delete {count} plan? | Delete {count} plans?",
-			"confirm_content": "{names} will be deleted. This can't be reversed.",
-			"more": "{names} and {count} more",
-			"failed": "{count} plan couldn't be deleted and stays selected. | {count} plans couldn't be deleted and stay selected."
+			"select_all_shown": "选中所有显示的规划",
+			"clear_all_shown": "取消选中所有显示的规划",
+			"select_label": "选中 {plan}",
+			"count": "已选中 {count} 个规划",
+			"delete": "删除所选…",
+			"clear": "清除选择",
+			"deleting": "正在删除 {done}/{total}…",
+			"confirm_title": "删除 {count} 个规划？",
+			"confirm_content": "{names} 将被删除，此操作无法撤销。",
+			"more": "{names} 以及另外 {count} 个",
+			"failed": "{count} 个规划无法删除，仍保持选中。"
 		},
 		"menu": {
 			"clone": "复制",
 			"share": "分享…",
 			"delete": "删除…",
-			"clone_name": "{name} (Clone)"
+			"clone_name": "{name}（副本）"
 		}
 	},
 	"save_bar": {
