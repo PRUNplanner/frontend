@@ -1,8 +1,11 @@
 import { describe, it, expect } from "vitest";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 import {
 	articlesByArea,
 	getArticle,
+	GUIDES,
 	HELP_ARTICLES,
 	prevNext,
 	siblings,
@@ -85,23 +88,35 @@ describe("help article registry", () => {
 		const check = getArticle("plan_check")!;
 		expect(siblings(check).map((a) => a.id)).toEqual([
 			"plan_layout",
+			"plan_base",
 			"plan_results",
 			"plan_production",
+			"plan_tools",
 			"plan_saving",
+			"plan_sharing",
 			"plan_check",
 		]);
 		expect(siblings(getArticle("empire")!)).toEqual([]);
-		expect(prevNext(check).prev?.id).toBe("plan_saving");
+		expect(prevNext(check).prev?.id).toBe("plan_sharing");
 		expect(prevNext(check).next?.id).toBe("empire");
 		expect(prevNext(HELP_ARTICLES[0]!).prev).toBeUndefined();
+	});
+
+	it("lists every guide in Start here", () => {
+		for (const id of GUIDES) expect(getArticle(id)?.area, id).toBe("start");
+		expect(
+			HELP_ARTICLES.filter((a) => a.id.startsWith("guide_")).map(
+				(a) => a.id
+			)
+		).toEqual(GUIDES);
 	});
 });
 
 describe("help links resolve in every locale", () => {
 	const sites = callSites();
 
-	it("finds the 18 Help buttons", () => {
-		expect(sites).toHaveLength(18);
+	it("finds the 20 Help buttons", () => {
+		expect(sites).toHaveLength(20);
 	});
 
 	it.each([...SUPPORTED_LOCALES])(
@@ -136,4 +151,103 @@ describe("help links resolve in every locale", () => {
 			}
 		}
 	);
+});
+
+describe("links inside the English articles", () => {
+	// the app's paths, from the router source: "/plan/:planet/:plan?"
+	const ROUTER = Object.values(
+		import.meta.glob("@/router/index.ts", {
+			query: "?raw",
+			import: "default",
+			eager: true,
+		}) as Record<string, string>
+	)[0]!;
+	const routes = [...ROUTER.matchAll(/path: "([^"]+)"/g)]
+		.map((m) => m[1]!)
+		.filter((p) => !p.includes("pathMatch"))
+		.map(
+			(p) =>
+				new RegExp(
+					`^${p
+						.replace(/\/:\w+\?/g, "(/[^/]+)?")
+						.replace(/:\w+/g, "[^/]+")}$`
+				)
+		);
+
+	const tocs = new Map<string, string[]>();
+	async function ids(id: string): Promise<string[] | undefined> {
+		const article = getArticle(id);
+		if (!article?.file) return article ? [] : undefined;
+		if (!tocs.has(id))
+			tocs.set(
+				id,
+				(await loadArticle(article, "en_US"))!.doc.toc.map((t) => t.id)
+			);
+		return tocs.get(id);
+	}
+
+	it.each(Object.keys(EN_FILES))("%s: every link resolves", async (path) => {
+		const own = fileName(path);
+		const broken: string[] = [];
+		for (const [, href] of EN_FILES[path]!.matchAll(
+			/\]\(([/#][^)\s]*)\)/g
+		)) {
+			// screenshots: see "screenshots in the English articles"
+			if (href!.startsWith("/images/")) continue;
+			const [route, hash] = href!.split("#") as [string, string?];
+			const help = route.match(/^\/help\/([\w-]+)$/);
+			const article = help ? help[1]! : route ? undefined : own;
+			if (article) {
+				const sections = await ids(article);
+				if (!sections || (hash && !sections.includes(hash)))
+					broken.push(href!);
+			} else if (!routes.some((r) => r.test(route.split("?")[0]!)))
+				broken.push(href!);
+		}
+		expect(broken).toEqual([]);
+	});
+});
+
+describe("the English articles as rendered", () => {
+	it.each(HELP_ARTICLES.filter((a) => a.file && a.file !== "changelog"))(
+		"$id: keeps every heading id and leaves no [[term]] raw",
+		async (article) => {
+			const { doc } = (await loadArticle(article, "en_US"))!;
+			const page = document.createElement("div");
+			page.innerHTML = doc.html;
+			// the sanitiser drops ids that clash with DOM properties (method…)
+			const missing = doc.toc
+				.map((t) => t.id)
+				.filter((id) => !page.querySelector(`[id="${id}"]`));
+			expect(missing).toEqual([]);
+			expect(page.textContent).not.toContain("[[");
+		}
+	);
+});
+
+describe("screenshots in the English articles", () => {
+	// public/images/help/guides, taken by the workspace's help-shots script
+	const GUIDES = "/images/help/guides/";
+	const publicFile = (src: string) => join(process.cwd(), "public", src);
+	const images = Object.values(EN_FILES).flatMap((md) =>
+		[...md.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map((m) => ({
+			alt: m[1]!,
+			src: m[2]!,
+		}))
+	);
+
+	it("exist in public/, are local and have alt text", () => {
+		expect(images.length).toBeGreaterThan(0);
+		for (const { alt, src } of images) {
+			expect(src, src).toMatch(/^\/images\/help\//);
+			expect(existsSync(publicFile(src)), src).toBe(true);
+			expect(alt.trim(), src).not.toBe("");
+		}
+	});
+
+	it("leave no unused file in the guides folder", () => {
+		const used = new Set(images.map((i) => i.src));
+		const files = readdirSync(publicFile(GUIDES)).map((f) => GUIDES + f);
+		expect(files.filter((f) => !used.has(f))).toEqual([]);
+	});
 });

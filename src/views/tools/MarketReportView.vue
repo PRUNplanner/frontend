@@ -28,6 +28,12 @@
 	import MarketInShort from "@/features/market_report/components/MarketInShort.vue";
 	import MarketKpis from "@/features/market_report/components/MarketKpis.vue";
 	import MarketIndexChart from "@/features/market_report/components/MarketIndexChart.vue";
+	// public page: the help button and the kit it uses load on their own,
+	// without holding back the frame (not suspensible)
+	const HelpPanel = defineAsyncComponent({
+		loader: () => import("@/features/help/components/HelpPanel.vue"),
+		suspensible: false,
+	});
 	const MarketWorkforce = defineAsyncComponent(
 		() => import("@/features/market_report/components/MarketWorkforce.vue")
 	);
@@ -174,7 +180,12 @@
 <template>
 	<div class="w-full max-w-[1240px] mx-auto px-6 py-6 flex flex-col gap-6">
 		<header class="flex flex-col gap-2">
-			<h1 class="text-2xl font-bold">{{ t("market_report.title") }}</h1>
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h1 class="text-2xl font-bold">
+					{{ t("market_report.title") }}
+				</h1>
+				<HelpPanel article="tools_market_report" />
+			</div>
 			<p
 				class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted"
 				data-as-of>

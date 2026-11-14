@@ -6,7 +6,7 @@
  * @author jplacht
  */
 import MarkdownIt from "markdown-it";
-import type { Token } from "markdown-it";
+import type { StateInline, Token } from "markdown-it";
 
 import type { IHelpDoc, IHelpSection, IHelpTocEntry } from "./help.types";
 
@@ -38,18 +38,73 @@ function plainText(inline: Token): string {
 		.join("");
 }
 
+/** the glossary's term ids, and whether an unknown term fails the parse */
+export interface IHelpTerms {
+	ids: ReadonlySet<string>;
+	strict: boolean;
+}
+
+/**
+ * A glossary link: `[[id|text]]`, or `[[Text]]` when the text slugifies to
+ * the id; in a table cell `[[id\|text]]`, as a bare `|` ends the cell.
+ * `[[x]](url)` is left to the link rule (the changelog's PR links). A known
+ * term becomes `<a class="help-term">` to its glossary entry; an unknown one
+ * plain text, or an error when strict (English, at build).
+ */
+function termRule(state: StateInline, silent: boolean): boolean {
+	const { src, pos } = state;
+	if (!src.startsWith("[[", pos)) return false;
+	const end = src.indexOf("]]", pos + 2);
+	if (end < 0 || src[end + 2] === "(") return false;
+	const inner = src.slice(pos + 2, end).replace("\\|", "|");
+	if (!inner.trim() || /[[\]]/.test(inner)) return false;
+
+	if (!silent) {
+		const [first, label] = inner.split("|", 2) as [string, string?];
+		const text = (label ?? first).trim();
+		const id = label === undefined ? slugify(first) : first.trim();
+		const terms = (state.env as { terms?: IHelpTerms }).terms;
+		if (terms?.ids.has(id)) {
+			const open = state.push("link_open", "a", 1);
+			open.attrs = [
+				["href", `/help/glossary#${id}`],
+				["class", "help-term"],
+				["data-term", id],
+			];
+			state.push("text", "", 0).content = text;
+			state.push("link_close", "a", -1);
+		} else if (terms?.strict) {
+			throw new Error(`Unknown glossary term "${id}" in [[${inner}]]`);
+		} else state.push("text", "", 0).content = text;
+	}
+	state.pos = end + 2;
+	return true;
+}
+
 const md = new MarkdownIt({ html: false, linkify: true });
+md.inline.ruler.before("link", "help_term", termRule);
+
+// screenshots load when they scroll near, not with the page
+const renderImage = md.renderer.rules.image!;
+md.renderer.rules.image = (tokens, i, options, env, self) => {
+	tokens[i]!.attrSet("loading", "lazy");
+	tokens[i]!.attrSet("decoding", "async");
+	return renderImage(tokens, i, options, env, self);
+};
 
 /**
  * @param {string} markdown A help file
  * @param {(html: string) => string} sanitize DOMPurify (browser or jsdom)
+ * @param {IHelpTerms} [terms] The glossary ids for `[[term]]` links;
+ * without them every term renders as plain text
  * @returns {IHelpDoc} Sanitised HTML, contents, word count and sections
  */
 export function parseHelp(
 	markdown: string,
-	sanitize: (html: string) => string
+	sanitize: (html: string) => string,
+	terms?: IHelpTerms
 ): IHelpDoc {
-	const tokens = md.parse(markdown, {});
+	const tokens = md.parse(markdown, { terms });
 
 	// the top level renders as h2: the page's h1 is the article title
 	const levels = tokens

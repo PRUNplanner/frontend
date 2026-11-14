@@ -68,6 +68,18 @@ describe("parseHelp", () => {
 		expect(doc.html).toContain('<a href="https://example.com">');
 	});
 
+	it("renders a screenshot lazily, with its alt text", () => {
+		const doc = parse("![The plan page](/images/help/guides/x.webp)");
+		const img = document.createElement("div");
+		img.innerHTML = doc.html;
+		const el = img.querySelector("img")!;
+		expect(el.getAttribute("src")).toBe("/images/help/guides/x.webp");
+		expect(el.getAttribute("alt")).toBe("The plan page");
+		expect(el.getAttribute("loading")).toBe("lazy");
+		// the alt text isn't counted as words or searched
+		expect(doc.words).toBe(0);
+	});
+
 	it("leaves a hostile file inert", () => {
 		const doc = parse(
 			[
@@ -89,6 +101,51 @@ describe("parseHelp", () => {
 		expect(slugify("Price Basis: VWAP, Ask & Bid")).toBe(
 			"price-basis-vwap-ask-bid"
 		);
+	});
+});
+
+describe("[[term]] glossary links", () => {
+	const ids = new Set(["cogm", "ghost-sites"]);
+	const terms = (md: string, strict = true) =>
+		parseHelp(md, sanitizeHelpHtml, { ids, strict });
+
+	it("links [[Text]] and [[id|text]] to the glossary entry", () => {
+		const doc = terms("Your [[COGM]] on [[ghost-sites|a ghost site]].");
+		expect(doc.html).toContain(
+			'<a href="/help/glossary#cogm" class="help-term" data-term="cogm">COGM</a>'
+		);
+		expect(doc.html).toContain(
+			'<a href="/help/glossary#ghost-sites" class="help-term" data-term="ghost-sites">a ghost site</a>'
+		);
+		// search and word count see the text
+		expect(doc.sections[0]!.text).toBe("Your COGM on a ghost site.");
+	});
+
+	it("fails on an unknown term when strict, else shows its text", () => {
+		expect(() => terms("A [[Nope]] here")).toThrow(/"nope"/);
+		expect(terms("A [[Nope]] here", false).html).toContain(
+			"<p>A Nope here</p>"
+		);
+		// without a glossary (the changelog): text only
+		expect(parse("A [[COGM]]").html).toContain("<p>A COGM</p>");
+	});
+
+	it("takes [[id\\|text]] in a table cell, where | ends the cell", () => {
+		const doc = terms("| a | b |\n| - | - |\n| [[cogm\\|the COGM]] | 2 |");
+		expect(doc.html).toContain(
+			'<td><a href="/help/glossary#cogm" class="help-term" data-term="cogm">the COGM</a></td>'
+		);
+	});
+
+	it("leaves [[x]](url) links and lone brackets alone", () => {
+		const doc = terms(
+			"Fixed [[PR-733]](https://github.com/x/pull/733) and [a] [[ ]]"
+		);
+		expect(doc.html).toContain(
+			'<a href="https://github.com/x/pull/733">[PR-733]</a>'
+		);
+		expect(doc.html).toContain("[a] [[ ]]");
+		expect(doc.html).not.toContain("help-term");
 	});
 });
 
