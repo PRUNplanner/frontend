@@ -1,10 +1,10 @@
 Plan check tests a plan against the market before you build it. It tells you whether you can really buy and sell these amounts, which prices the profit hangs on, and how the plan compares with your other plans. You'll find it as a tool tab of Production (see [Plan layout](/help/plan_layout#parts)), with three views under **View**: **Market check** (the default), **Price sensitivity** and **Compare plans**. **Compare plans** only shows up when you're logged in.
 
-The view and the price change you pick stay put for this browser tab, even when you switch plans or close and reopen the tool. Clicking a flag in [[material-io|Material I/O]] opens Plan check on the Market check.
+The view and the price change you pick stay put for this browser tab, even when you switch plans or close and reopen the tool. Clicking a flag in [[material-io|Material I/O]] opens a popover, and its **Open Plan check →** opens Plan check on the Market check.
 
 ## Market check {#market-check}
 
-A plan's [[profit]] assumes you can buy and sell every material at its price, in any amount. The Market check shows where that isn't true. It lists every material the plan buys or sells per day, worst first: red, then amber, then by share.
+A plan's [[profit]] assumes you can buy and sell every material at its price, in any amount. The Market check shows where that isn't true. It lists every material the plan buys or sells per day, worst first: red, then amber, then grey notes, and by share within each.
 
 | Column | What it shows |
 | --- | --- |
@@ -17,8 +17,8 @@ A plan's [[profit]] assumes you can buy and sell every material at its price, in
 
 - For [[share-of-volume|share of daily volume]], selling 50 units a day into a market that trades 100 a day is a 50 % share.
 - If you buy at once, you pay the ask. If you sell at once, you take the bid.
-- PRUNplanner checks each material on the exchange your [[exchange-preference|exchange preference]] uses for buying or selling it, and the caption names those exchanges (for example "Exchanges AI1, NC1"). Without an exchange preference, the check uses the volume of all exchanges together. The caption then says "no CX preference set" and links to where you set one.
-- With an exchange preference, a flagged row links to the price rule it uses in [Exchanges](/help/exchanges#how-a-price-is-found).
+- PRUNplanner checks each material on the exchange your [[exchange-preference|exchange preference]] uses for buying or selling it, and the caption names those exchanges (for example "Exchanges AI1, NC1"). Without an exchange preference, the check uses the volume of all exchanges together. The caption then says "no CX preference set" and, on your own plan, links to where you set one.
+- With an exchange preference, a flagged row names the price rule it uses. On your own plan, that's a link to the rule in Exchanges (see [Exchanges](/help/exchanges#how-a-price-is-found)).
 - **What this means** puts the worst material into one sentence. It also counts the materials that **Can't trade as planned**, have a **Large share of the market** or are **Fine**. Its button opens this page.
 - On a phone, the table turns into cards: the first 6 and every flagged one, then "+ n more materials, all ok".
 
@@ -65,7 +65,7 @@ The volume only comes from the commodity exchanges ([[cx|CX]]). PRUNplanner does
 
 The [[empire]]'s Material I/O runs the same check on the empire's net flow. What one plan makes and another uses nets out, and only the rest reaches the market. Each plan's own Material I/O still flags its own amounts.
 
-Chips above the table count the flagged materials by level, such as "3 can't trade as planned", "2 large share of the market" and "1 other note". Click one, or tick **Show only flagged materials**, to see only the flagged materials. More in [Empire](/help/empire).
+Chips above the table count the flagged materials by level, such as "3 can't trade as planned", "2 large share of the market" and "1 other note". Click one to see only the materials at that level, and click it again to see them all. More in [Empire](/help/empire).
 
 ## Price sensitivity {#sensitivity}
 
@@ -82,7 +82,7 @@ Every material the plan buys or sells gets a row, as long as its price moves the
 
 PRUNplanner sorts the rows by impact, and the bars' centre line is today's profit. It shows the top 10 and sums up the rest in one line, "+ n more materials … move profit by less than ±…", with a **Show all ({n})** button to list them.
 
-**Break-even** turns red within ±60 % and amber within ±200 %. It reads **never** when the price would have to fall below 0 or when the price doesn't move the profit. It reads **> +500 %** when the price would have to rise more than 500 %.
+**Break-even** turns red within ±60 % and amber within ±200 %. It reads **never** when the price would have to fall below 0. It reads **> +500 %** when the price would have to rise more than 500 %.
 
 ### What this means {#sensitivity-means}
 
@@ -105,7 +105,7 @@ PRUNplanner sorts the rows by impact, and the bars' centre line is today's profi
 - **Target profit, ȼ/day** starts at today's profit, rounded up to the next 10,000.
 - The answer reads "{ticker} has to sell at" or "{ticker} has to be bought at" a price. When no price above 0 can reach the target, it says you can't reach that profit by changing this price.
 - **Plan price today** and the exchange's bid and ask right now show for comparison.
-- Once you change the material or the target, you also see the exchange's lowest and highest price of the last 30 trading days. It uses the daily lows and highs up to the last day with trades, and for all exchanges it covers all four. A note warns you when the price you'd need is above or below anything paid in those 30 days.
+- Once you change the material or the target, you also see the exchange's lowest and highest price in the 30 days up to its last day with trades. It uses the daily lows and highs of the days with trades, and for all exchanges it covers all four. A note warns you when the price you'd need is above or below anything paid in those 30 days.
 
 ## Compare plans {#compare}
 
@@ -113,7 +113,7 @@ PRUNplanner sorts the rows by impact, and the bars' centre line is today's profi
 
 **Compare with** lists your other plans, **This planet** first, then **Other planets**. It starts with the first plan in that list and remembers your pick for this plan while the tab is open.
 
-PRUNplanner takes this plan as it is on screen, unsaved changes included. It calculates the other plan as saved, with its own empire, and prices it with that empire's exchange preference (or the Universe 30-day average). A line under the table says which.
+PRUNplanner takes this plan as it is on screen, unsaved changes included. It calculates the other plan as saved, with its own empire, and prices it with that empire's exchange preference (or the Universe 30-day average). A line next to **Compare with** says which.
 
 The two plans' figures sit side by side, each with a bar:
 

@@ -51,7 +51,7 @@ Repairing gets more expensive every day. The bill grows until day 180, when it e
 
 - **Arrives in** n days (default 2, 0–30) sizes the bill for the day the ship unloads, and shows how much more that costs than repairing today. Add a day or two for long flights.
 - **Use what's already in the base store** takes off what the base already holds.
-- The load list shows every material with **Cargo weight** and **Cargo volume**, plus the total price.
+- **Cargo weight** and **Cargo volume** show the load's total, and the load list shows each material's amount and price, plus the total price.
 
 **XIT Repair** builds an [[xit|XIT]] ACT package with the load for Refined PrUn to run. It uses the same XIT origin and "Buy from CX" setting as FIO Burn (you set both in [Profile](/help/profile#preferences)). The ship gets picked when the XIT runs, and it needs the load's tonnes and cubic metres of free cargo. Fly to the base, unload and run BRA to repair all its buildings.
 

@@ -46,7 +46,7 @@ Each exchange gets its own line so you can compare them directly, with **Traded 
 - **Value**: **VWAP** (ȼ traded ÷ units traded that day), **Low** or **High**.
 - **Range**: **30 d**, **90 d** (default), **1 y** or **All**.
 
-A day without trades on an exchange leaves a gap in its line. If there are no trades at all in the range, the chart says **No trades in this range**.
+The range ends on the last day with trades on any exchange. A day without trades on an exchange leaves a gap in its line. If the material has no trades at all, the chart says **No trades in this range**.
 
 The button at the top right of the chart (**Toggle fullscreen**) gives the chart the full width.
 

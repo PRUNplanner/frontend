@@ -42,7 +42,7 @@ You can set both under **Burn Thresholds** on this page or in [Profile](/help/pr
 
 ## Plan Table {#plan-table}
 
-Further down, each plan has a row with its **Exhaustion** (lowest days left) and an XIT button. Expand the row to see which material runs out first, how many more are under the yellow threshold, and how many the plan makes itself. Its table lists every material with **Consumption**, **Production** (on wide screens), **Delta**, **Stock**, a **Runway** bar and its **Burn** in days.
+Beside the overview (below it on narrower screens), each plan has a row with its **Exhaustion** (lowest days left) and an XIT button. Expand the row to see which material runs out first, how many more are under the yellow threshold, and how many the plan makes itself. Its table lists every material with **Consumption** and **Production** (both on wide screens only), **Delta**, **Stock**, a **Runway** bar and its **Burn** in days.
 
 ## XIT Resupply {#xit-resupply}
 
@@ -56,7 +56,7 @@ The XIT button opens the resupply for that plan's base (**XIT Resupply: {plan_na
 | **Fit Ship** | 500, 1k, 2k, 3k/1k, 1k/3k or 5k (t / m³). Sets the largest number of days, up to 100, whose load fits. |
 | **Hide Infinite** | Hides materials that never run out. |
 
-**Origin**, **Target Days** and **Buy From CX** are your Profile preferences. A change here is saved to your account, and it also applies to FIO Repair's XIT origin and buying.
+**Origin**, **Target Days** and **Buy From CX** are your Profile preferences. A change here is saved to your account. Origin and buying also apply to the other XIT actions, such as FIO Repair's and the plan carts'.
 
 The amount per material is what tops the stock up to the target days: net daily consumption × days − stock, rounded up, never below 0. You can untick a material or override its amount. The totals show weight, volume and price. The price is an estimate at Universe · VWAP 30D buy prices, not your exchange preference.
 

@@ -29,7 +29,7 @@ The bar below splits the revenue into production inputs, workforce, degradation,
 
 ## Plan List and Configuration {#plan-list}
 
-The plan list shows every plan of the empire with its planets, [[cogc|COGC]], permits and **Profit (ȼ)**. Click a plan to open it. The footer adds up the permits your plans use. On wide screens, **Hide plan list** folds the list away.
+The plan list shows every plan of the empire with its planets, [[cogc|COGC]], permits and **Profit (ȼ)**. Click a plan to open it. The footer adds up the permits your plans use. On wide screens, **Hide plan list** folds away the whole left column: the tiles, the plan list and Configuration.
 
 ### Configuration {#configuration}
 
@@ -73,7 +73,7 @@ Above the table, **Market check on the empire's net flow** checks what the empir
 | Amber: "large share of the market" | 10 % or more of the average daily volume |
 | Muted: "other notes" | All exchanges, no exchange set; data older than 2 days |
 
-Click a chip to show only flagged materials (**Show only flagged materials**).
+Click a chip to see only the materials of that level, and click it again to see all of them.
 
 The empire check only uses the *all-planets* rules of the empire's exchange preference. A planet exception still counts for the empire's prices, but the check doesn't see it, so check those materials in each plan's Plan check.
 
@@ -82,7 +82,7 @@ The empire check only uses the *all-planets* rules of the empire's exchange pref
 **Analysis** shows charts. The material charts follow the filters, and the plan charts don't.
 
 - **Where each plan's revenue goes** shows the revenue split, margin and revenue per day for each plan. You see the top 10 plans by profit and every loss-making plan, and the rest go into "Other". These are each plan's own numbers, not netted.
-- **Materials moving the most ȼ** shows the top 10 materials the empire buys (left) and sells (right), in **ȼ / day** or **Units / day**. A button below shows all of them. Click a material to open it in Material I/O.
+- **Materials moving the most ȼ** shows the 10 materials with the most ȼ per day, what the empire buys on the left and what it sells on the right, in **ȼ / day** or **Units / day**. A button below shows all of them. Click a material to open it in Material I/O.
 - **More charts** stays open or closed the way you left it in this browser. It holds **Plan Profit (ȼ)**, **Material Profits (ȼ)**, **Material Costs (ȼ)**, **Net Production**, **Net Consumption**, **Exclusive Production** (made but never used in the empire) and **Exclusive Consumption** (used but never made).
 
 ## Production Opportunities {#production-opportunities}

@@ -38,7 +38,7 @@ Details: [Overview numbers](/help/empire#overview-numbers), [Plan list](/help/em
 
 ## 4. Balance the materials {#step-4}
 
-Under **View**, open **Material I/O**. It lists every material of the empire with its **Delta** (made minus used per day).
+At the top of the page, open **Material I/O**. It lists every material of the empire with its **Delta** (made minus used per day).
 
 - A positive Delta gets sold, a negative one bought. A large negative Delta of something you could make is a candidate for your next base.
 - With **Display** set to **Loadbalance**, you only see materials the empire both makes and uses. Check that supply and demand match.
@@ -60,7 +60,7 @@ Read more: [Market check](/help/empire#market-check), [Plan check: Empire](/help
 
 ## 6. Find production opportunities {#step-6}
 
-Under **View**, open **Production Opportunities** to see [[recipe|recipes]] that could use what your empire has left over.
+At the top of the page, open **Production Opportunities** to see [[recipe|recipes]] that could use what your empire has left over.
 
 - **Opportunities**: recipes where every input is in surplus, enough for at least one run a day.
 - **Potential Batches**: how many runs a day your surplus covers. It ignores recipe time, buildings and efficiency, so read it as "how much input there is", not "how much you can make".
@@ -70,7 +70,7 @@ More: [Production Opportunities](/help/empire#production-opportunities).
 
 ## 7. Check the chains behind your bases {#step-7}
 
-In [Production Chains](/production-chain), switch **Mode** to **Check an empire** and pick the empire. Add the chains to check, or pick **Check everything the empire sells**.
+In [Production Chains](/production-chain), switch from **Plan a chain** to **Check an empire** and pick the empire. Add the chains to check, or pick **Check everything the empire sells**.
 
 The check follows each sold material back through your plans and lists findings with their gain per day. A **Plan fix** means the plan counts a COGC program the planet doesn't run, or misses one it does. The other findings are a cheaper **Recipe**, **Make or buy**, a better **Location**, or a better **Setup** of luxuries and experts. It never changes a plan.
 

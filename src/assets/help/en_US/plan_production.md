@@ -69,7 +69,7 @@ Click a row or press Enter to pick it. ↑ and ↓ move through the list, and Es
 
 After a change, a line under the row says what changed ("Replaced … with …." or "Added … as a new order."), with **Undo**.
 
-Every figure in the picker is *per building and day*: it's for one building that runs only this recipe at its current efficiency. The footer says **ȼ per building and day**.
+The ȼ figures in the picker are *per building and day*: it's for one building that runs only this recipe at its current efficiency. The footer says **ȼ per building and day**.
 
 | Column | What it shows |
 | --- | --- |
@@ -106,6 +106,6 @@ The amount is how much of that material the plan uses per day in total, taken fr
 
 - **Parameters**: the recipe's runtime at this efficiency, its share of a day (**% / day**), **Efficiency**, **Degradation** (the building's construction cost ÷ 180 per day) and **Production fee / run** (the weighted fee × the recipe's base time, independent of efficiency).
 - **Cost** of one run: each input at the buy price (**Input Total**), the **Workforce** share (the building's daily workforce cost × the run's share of a day), the degradation share and the production fee. Together they make **Total Cost**.
-- Per output: **ȼ / Unit** puts the whole cost on that output (cost ÷ its amount), while **Cost Split** spreads it over all outputs by quantity (cost ÷ all outputs' amounts).
+- Per output: **Cost Total** puts the whole cost on that output (cost ÷ its amount), while **Cost Split** spreads it over all outputs by quantity (cost ÷ all outputs' amounts).
 
 Prices come from the empire's [[exchange-preference|exchange preference]]. If it has one, **Use as buy price on all planets** turns the COGM into a fixed buy price for every plan that uses that preference (see [Exchanges](/help/exchanges#fixed-prices-and-cogm)).

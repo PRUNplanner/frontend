@@ -4,11 +4,11 @@ Use **Planet Search** to find a planet you already know, or the best places for 
 
 Planet Search is in the Planning group of the navigation, and on the home page. When you're logged out, a line under the title says it's free and needs no account. You only need to log in for distances to your own plans and to create a plan from a result.
 
-Other pages lead here too. [Production Chains](/help/tools_production_chain) opens Planet Search for a step's planet and for a Location finding, and the Empire page links here while you set up your first plans.
+Other pages lead here too. [Production Chains](/help/tools_production_chain) opens Planet Search from an extraction step's planet picker and from a Location finding, and the Empire page links here while you set up your first plans.
 
 ## Name or ID {#name-or-id}
 
-Type part of a name or ID in the box at the top (**Planet or system name, or ID**). It matches the planet's natural ID ("OT-580"), its name ("Montem"), its in-game name ("Antares II e") and its system's name, so "Antares" lists every planet of that system.
+Type part of a name or ID in the box at the top (**Planet or system name, or ID**). It matches the planet's natural ID ("OT-580b"), its name ("Montem"), its in-game name ("Antares II e") and its system's name, so "Antares II" lists every planet of that system.
 
 A name search shows every planet that matches, even when your filters would hide some. A note above the results then says your filters are paused.
 
@@ -91,7 +91,7 @@ AI1, CI1, IC1 and NC1 have their own jumps columns too, and you can hide them un
 Distances to your own plans need a login. When you're logged out, the section says so and offers **Log in**. Planet Search drops plans in a link someone else shared, because they aren't yours.
 
 > [!tip]
-> To find a second base near your first, pick its plan under Distance and set Max jumps to 2 or 3. When nothing matches, the suggestions below the results offer a few more jumps.
+> To find a second base near your first, pick its plan under Distance and set Max jumps to 2 or 3. When nothing matches, the suggestions above the results offer a few more jumps.
 
 ## Active filters and Reset {#active-filters-and-reset}
 
@@ -137,7 +137,7 @@ The **Chart** plots the results by distance and output.
 
 The **best trade-off** planets are the ones no other result beats on both counts: none is closer *and* richer. The chart highlights them and joins them with a dashed line. Everything below and right of that line is beaten by one of them.
 
-**Colour by** switches between **Best trade-off** and **COGC**. With COGC, the six most common running programs get their own colours, and the rest share one colour as "other or no COGC program".
+**Colour by** switches between **Best trade-off** and **COGC**. With COGC, the six most common running programs get their own colours, and the rest share one colour: "other or no COGC program", or "no COGC program" when no other program runs.
 
 On screens 1,024 px and wider, hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan (when you're logged out, you log in first). On touch and narrow screens, tap a dot for its details.
 
@@ -145,7 +145,7 @@ The list beside the chart ranks the same planets by Y, with "+" and ☆ on each 
 
 ## Reading the results {#reading-the-results}
 
-- **Material tiles**: the colour bar compares the planet's daily extraction with the highest of that material on any planet. Red is below a quarter, then orange, then yellow, and green above three quarters. Hover a tile for the value, the maximum and the percentage.
+- **Material tiles**: the colour bar compares the planet's daily extraction with the highest of that material on any planet. Red is below a quarter, then orange, then yellow, and green above three quarters. Hover the bar for the value, the maximum and the percentage.
 - **Fert. %**: fertility as the game shows it, or "—" when the planet isn't fertile. Sorting puts planets that aren't fertile last.
 - **Extra building materials** (the construction icon): the materials a base on this planet needs. It always lists MCG ("Rocky surface") or AEF ("Gaseous surface"). Hover any one to see why, e.g. "Low gravity".
 - **COGC · Infra**: the running COGC program ("—" for none) and the planet's infrastructure as LM, COGC, WAR, ADM and SHY.

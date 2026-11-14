@@ -11,7 +11,7 @@ Market Live lets you watch prices and order books on the [[cx|CX]] while you tra
 > [!warning]
 > The stored changes arrive in a burst when you open the page. They get the time they arrived in your browser, not the time they happened, and they run through your active alerts like new ones.
 
-The status at the top right shows **Connected** (pulsing green), **Reconnecting** or **Disconnected**. If the connection drops, the page reconnects by itself. It waits 5 seconds first, and up to 60 seconds after repeated failures. The server accepts up to 5 open streams per IP address, so close Market Live in tabs you don't need.
+The status at the top right shows **Connected** (pulsing green), **Reconnecting** or **Disconnected**. If the connection drops, your browser reconnects by itself. If the server turns the stream away (for example when too many are open), the page tries again after 5 seconds, and waits longer after each failure, up to 60 seconds. The server accepts up to 5 open streams per IP address, so close Market Live in tabs you don't need.
 
 ## Live View {#live-view}
 
@@ -27,7 +27,7 @@ The overview on the right (under the feed on narrower screens) lists every mater
 | **Buy Vol.** | units in all open buy orders |
 | **Sell Vol.** | units in all open sell orders |
 
-Each change updates only the fields it carries, and the rest keep their last value. Buy and sell volume are what sits in the order book, not what was traded.
+Each change updates the fields it carries. When it has no price, bid or ask, the last value stays. Buy and sell volume are what sits in the order book, not what was traded.
 
 ## Alert Feed {#alert-feed}
 
@@ -41,7 +41,7 @@ The **Alert Feed** lists every alert that fired, newest first, up to 500. **Clea
 | **Event** | for number fields: the previous and the new value |
 | **Time** | when the change arrived, as HH:mm:ss |
 
-Hover a row to see the full state of that material. You get price, bid, ask, spread, buy and sell volume with their [[vwap|VWAP]] and change, and a bar of buy against sell volume. Narrow screens hide some columns.
+Hover a row to see the values of the change that fired it. You get price, bid, ask, spread, buy and sell volume with their [[vwap|VWAP]] and change, and a bar of buy against sell volume. Narrow screens hide some columns.
 
 The bell (**Alert notifications**) pauses and resumes checking alerts for this visit. It's on when you open the page, and changes that arrive while it's off never fire.
 
@@ -49,7 +49,7 @@ Until an alert fires, the feed shows **Waiting for market events triggering aler
 
 ## Data History {#data-history}
 
-**Data History** at the bottom groups the incoming changes by minute, showing how many arrived ("Ticker received") and which ones. It keeps the last 25 minutes that had data.
+**Data History**, under the Alert Feed, groups the incoming changes by minute, showing how many materials and exchanges sent one ("Ticker received") and which ones. It keeps the last 25 minutes that had data.
 
 ## Alert Engine {#alert-engine}
 
@@ -77,7 +77,7 @@ A condition has three parts: a field, an operator and a target. For example, **P
 | **Best Bid Price**, **Best Ask Price** | highest buy order, lowest sell order in the book |
 | **Spread**, **Spread (Percent)** | ask − bid, and that as a percentage of the ask |
 
-The change fields need a previous value, so they're empty on the first change of a material and exchange.
+**Price Change**, **Bid Change**, **Ask Change** and **Price Change (Percent)** need a previous value, so they're empty on the first change of a material and exchange. The two volume change fields read 0 then.
 
 #### Comparisons {#comparisons}
 

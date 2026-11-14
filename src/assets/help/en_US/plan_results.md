@@ -115,4 +115,4 @@ The totals follow **Show materials for** but not **Filter**. With Whole base, Ex
 
 **More** in the plan header has **Download Material I/O (CSV)**. The file has one row per material with the columns ticker, input, output, delta, value, weight and volume, all per day. Value is in ȼ, and weight and volume are of Δ.
 
-The download covers the current **Show materials for** choice and ignores **Filter**. The file is named after the plan, or after the planet while the plan has no name, followed by "-material-io.csv".
+The download covers the current **Show materials for** choice and ignores **Filter**. The file is named after the plan, or after the planet's ID while the plan has no name, followed by "-material-io.csv".

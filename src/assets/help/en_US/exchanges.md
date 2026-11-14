@@ -20,15 +20,15 @@ The column on the left lists the parts of the preference you can open. On screen
 | **Overview** | Every price your plans use, see [Overview](#overview) |
 | **All planets** | Your home exchange and fixed prices for every planet |
 | **Planets with their own rules** | Planets with an [exception](#planet-exceptions) |
-| **Using all-planets rules** | Planets in your plans that follow the all-planets rules (grouped by empire when several empires use the preference) |
+| **Using all-planets rules** | Planets of the empires using this preference that follow the all-planets rules (grouped by empire when several empires use the preference) |
 | **Planets of other empires** | Planets of empires that don't use this preference, shown after you press the button to show them |
 | **Not in any plan** | Planets with saved rules that none of your plans uses |
 
-Each entry shows how many rules it has, and an entry with a warning note gets an amber tag. From 10 planets on, a **Filter planets** box appears.
+**All planets** and every planet with saved rules show how many rules they have, and the count turns amber when the entry has a warning note. From 10 planets on, a **Filter planets** box appears.
 
 ## Overview {#overview}
 
-The page opens on the **Overview**. It lists every material that the plans of the empires using this preference buy or sell, the price it gets and the rule behind it. It includes unsaved changes, so you see the effect of an edit before you save. Materials a plan neither buys nor sells (net 0) are left out.
+The page opens on the **Overview**. It lists every material that the plans of the empires using this preference buy or sell, the price it gets and the rule behind it. While planets of other empires are shown, their plans count too. It includes unsaved changes, so you see the effect of an edit before you save. Materials a plan neither buys nor sells (net 0) are left out.
 
 - The summary on top shows the **All planets** rule, how many planets have their own rules, and how many fixed prices there are.
 - **Search material** and **Show materials** (**All**, **Fixed**, **No price (0 ȼ)**, **Varies by planet**) narrow the table.
@@ -82,7 +82,7 @@ The page shows these prices in amber and lists them in the [notes](#notes), so y
 | Ask | The cheapest offer in the order book right now: what you pay when you buy at once. |
 | Bid | The highest buy order in the order book right now: what you get when you sell at once. |
 
-[[Ask]] and [[Bid]] come from the live order book, so they can change at any time and can be missing for materials with little trading. When an exchange had no trade in the 7 or 30 days, VWAP uses the last day it was traded. It's only 0 when there was no trade at all in the last 30 days.
+[[Ask]] and [[Bid]] come from the live order book, so they can change at any time and can be missing for materials with little trading. When an exchange had no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded. Both VWAPs are only 0 when there was no trade at all in the last 30 days.
 
 [[Universe]] combines all four exchanges and only has VWAP prices. PRUNplanner refreshes exchange prices about every 30 minutes.
 
@@ -115,8 +115,8 @@ The **Fixed prices** table shows:
 | --- | --- |
 | **Buy ȼ**, **Sell ȼ** | Your fixed prices |
 | **Market** | The price the material would get without the fixed price (buy side, unless only sell is fixed), with the difference in % |
-| **COGM in your plans** | All planets only. For materials your plans make, the lowest [[cogm\|COGM]] (cost of goods manufactured) among the plans of the empires that use this preference, and in how many plans it's made. "in use" marks a buy price equal to it. |
-| **Actions** | **Use** sets the buy price to that COGM (rounded to 2 decimals). The other button removes the row |
+| **COGM in your plans** | All planets only. For materials your plans make, the lowest [[cogm\|COGM]] (cost of goods manufactured) among the plans of the empires that use this preference, and in how many plans it's made. "in use" marks a buy price equal to it, otherwise **Use** sets the buy price to that COGM (rounded to 2 decimals). |
+| Last column | The × button removes the row. On a planet, **Override** copies an all-planets price into a fixed price of its own |
 
 From 10 rows on, you can search and sort the table by **Material** or **% vs market**.
 

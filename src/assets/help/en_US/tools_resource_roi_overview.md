@@ -52,9 +52,9 @@ Daily Profit and Plan Cost follow the same rules as [Recipe ROI](/help/tools_roi
 
 ## Filters {#filters}
 
-- **Planet** and **Building** narrow the table to the planets or buildings you pick.
+- **Planet** and **Building** narrow the table to the one planet or building you pick.
 - **Positive ROI** hides the plans that lose money.
-- **Searched Material** shows the resource the table was calculated for.
+- **Searched Material** shows the resource picked under **Select Resource**. If you change it without pressing **Search & Calculate**, the rows are still those of the earlier resource.
 
 The chart below shows the same rows as the filtered table.
 
@@ -63,7 +63,7 @@ The chart below shows the same rows as the filtered table.
 After a search, **Chart** opens the **Payback vs. distance** chart under the table, and your browser remembers whether it's open. To make it taller or shorter, drag its top edge, or focus the edge and use the arrow keys.
 
 - The horizontal axis is the plan ROI in days. The vertical axis is the jumps to the nearest exchange, or to the one you pick in **Distance to** (**Nearest CX** by default).
-- A dot's size is its daily profit, and its colour is the nearest exchange.
+- A dot's size is its daily profit, and its colour is the exchange its jumps count to (the nearest one by default).
 - Highlighted dots are the best trade-offs: no other planet both pays back faster and is closer.
 - A line under the chart names the highlighted planets and their jumps. It also names the planet that earns the most per day, if that one isn't among them.
 - Hover a dot to scroll its row into view.
@@ -84,7 +84,7 @@ The **POPR** button loads the planet's latest population report ([[popr|POPR]]) 
 | **Free Population %** | free workers as a percentage |
 | **Unfilled Jobs** | jobs that bases on the planet have open |
 
-If a planet has no report, you'll see a red, disabled **No POPR** instead. Inside a plan, the POPR tool shows the same report with your plan's need next to it (see [Plan tools](/help/plan_tools)).
+If a planet has no report, the button turns into a red, disabled **No POPR** when you press it. Inside a plan, the POPR tool shows the same report with your plan's need next to it (see [Plan tools](/help/plan_tools)).
 
 ## Optimal Setups {#optimal-setups}
 
@@ -94,7 +94,7 @@ PRUNplanner uses a fixed table of layouts, the same one [Recipe ROI](/help/tools
 - EXT: 14 EXT, 8 HB1, 1 HBB, 1 STO
 - COL: 22 COL, 11 HB1, 1 STO
 
-Together with the core module, each one fills a base of 500 area.
+Together with the core module, each one fits a base of 500 area.
 
 ## Prices {#prices}
 

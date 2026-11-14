@@ -55,8 +55,8 @@ For a saved, named plan, the arrow next to Save (**Save options**) has **Save as
 Every save keeps a version of the plan. Click the state of a saved plan to open **Versions**.
 
 - **Named only** is on by default. The list shows your named versions and the active one, with "… unnamed hidden" at the bottom. Untick it to see them all.
-- **Active** marks the version your plan is now. "not in empires yet" marks one your empires don't use yet.
-- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept …" or "Not kept in a draft".
+- **Active** marks the version your plan is now.
+- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept … · not in empires yet" or "Not kept in a draft".
 - **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
 - Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
 
@@ -104,7 +104,7 @@ If the plan was deleted elsewhere, **Deleted in another tab** only offers **Save
 
 Drafts have their own checks:
 
-- **Draft saved elsewhere** means another tab or device kept a newer draft of this plan. Autosave pauses until you pick **Keep mine**, **Load the other draft** or **Decide later**.
+- **Draft saved elsewhere** means another tab or device kept a newer draft of this plan. Autosave pauses until you pick **Keep mine** or **Load the other draft**. **Decide later** closes the dialog and leaves autosave paused.
 - **Unsaved changes on an older version** means you left unsaved changes and the plan was saved again since. Pick **Keep my changes** (on top of the newer save), **Use the saved version** (deletes your unsaved changes) or **Decide later**.
 
 > [!tip]

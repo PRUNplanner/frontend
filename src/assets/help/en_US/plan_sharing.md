@@ -73,10 +73,10 @@ The line lists only the figures that changed. In Production, changed buildings a
 Paste a share link into Discord, or another chat app that shows link previews, and it unfolds into a card for the plan. The card is in English.
 
 - **Title**: the planet, then the plan's name, for example "Montem (OT-580b) · Iron base".
-- **Text**: who shared it, the profit per day, the payback when the plan pays back ("pays back in 42 days"), the planet's COGC program and the outputs it makes. Then the price basis of the top output (for example "CI1 30-day average", or "own prices" for a [[fixed-price|fixed price]]) and the date of those prices. It ends with "Open it to see the whole base and try changes, no account needed."
+- **Text**: who shared it, the profit per day, the payback when the plan pays back ("pays back in 42 days"), the plan's COGC program and the outputs it makes. Then the price basis of the top output (for example "CI1 30-day average", or "own prices" for a [[fixed-price|fixed price]]) and the date of those prices. It ends with "Open it to see the whole base and try changes, no account needed."
 - **Image**: the planet and plan name, who shared it, the profit per day in large figures, the payback, the area used of the area available, and up to four outputs with their amounts per day.
 
-The card uses the numbers PRUNplanner stored with the plan's last save. Creating a link also stores the current numbers if the plan has no unsaved changes. Each save gives the link a fresh card.
+The card uses the numbers PRUNplanner stored with the plan's last save. Creating a link from the plan page also stores the current numbers if the plan has no unsaved changes. Each save gives the link a fresh card.
 
 Sometimes no numbers are stored, for example for a plan last saved before previews existed, or right after you made an older version active. Then the card shows the planet, the COGC, the building count and what the plan makes, without profit or payback. Save the plan once to add them.
 

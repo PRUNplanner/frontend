@@ -14,9 +14,9 @@ Four tiles sit at the top:
 
 | Tile | What it shows |
 | --- | --- |
-| **CX index** | the combined [price index](#price-index) today, its change since the first of the 90 days, and a 90-day sparkline |
-| **Moved most** | the sector whose index rose most since the first of the 90 days (in a week where every sector fell, the one that fell least), with its change |
-| **Feeding 100 pioneers** | what 100 pioneers consume per day at today's VWAP 7D on all exchanges, and how that changed over the last 15 days |
+| **CX index** | the latest combined [price index](#price-index), its change since the first of the 90 days, and a 90-day sparkline |
+| **Moved most** | the sector whose index rose most since the first of the 90 days (when every sector fell, the one that fell least), with its change |
+| **Feeding 100 pioneers** | what 100 pioneers consume per day at the latest VWAP 7D on all exchanges, and how that changed over the last two weeks |
 | **Biggest open gap right now** | the largest [price gap](#price-gaps) in the order books now: buy on one exchange, sell on another |
 
 The pioneer basket holds every pioneer need, [[luxuries]] included. If no material has an open gap of 15 % or more, the last tile tells you so.
@@ -50,7 +50,7 @@ This section prices the consumables 100 workers of a tier need for one day, all 
 
 - There's one card per [[workforce]] tier, pioneer to scientist. It shows the cost per 100 workers a day on all exchanges, and its change over 90 days.
 - Pick a tier to see its chart, with one line per exchange over 90 days.
-- "Cheapest today" names the exchange where that tier's basket costs least right now.
+- "Cheapest today" names the exchange where that tier's basket costs least at the latest prices.
 - **Moved most** names the two materials that changed the tier's cost most, in ȼ, over the 90 days.
 
 If a material in the basket has no price on a day, the chart has no value for that day.

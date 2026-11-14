@@ -73,7 +73,7 @@
 		"title": "Getting around",
 		"n1": {
 			"title": "Side menu",
-			"p": "Once you're logged in, the side menu holds Planning (Planet Search, Management, Exchanges), your empire with its plans, and Tools, grouped as Market, Calculators and FIO. FIO Burn and FIO Repair appear once FIO is connected. Click Tools to fold the list, and this browser remembers it."
+			"p": "Once you're logged in, the side menu holds Planning (Planet Search, Management, Exchanges), your empire with its plans, and Tools, grouped as Market, Calculators and FIO. FIO Burn and FIO Repair appear once you've saved your FIO key and username. Click Tools to fold the list, and this browser remembers it."
 		},
 		"n2": {
 			"title": "Your empire and its plans",
@@ -232,7 +232,7 @@
 	},
 	"guides": {
 		"guide_first_base": "Your empire, prices, a planet and your first saved plan.",
-		"guide_find_planet": "Filter by resource, distance to your exchange and free plots.",
+		"guide_find_planet": "Filter by resource and distance to your exchange, check free plots.",
 		"guide_cx_prices": "Presets, buy and sell rules, planet exceptions and fixed prices.",
 		"guide_chain_to_bases": "Plan a production chain, split it into bases, create the plans.",
 		"guide_empire": "Several bases in one empire: totals, market check and opportunities.",

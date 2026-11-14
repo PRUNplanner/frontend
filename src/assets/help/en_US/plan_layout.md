@@ -33,7 +33,7 @@ The bar at the top has:
 If you changed something, **Cancel** (or Esc) asks "Discard your layout changes?". **Discard changes** drops them and **Keep editing** takes you back. During a drag, Esc cancels only that drag. **Save** saves both arrangements as your Custom Layout. If you save Standard's copy over an existing Custom Layout, PRUNplanner asks first: **Replace Custom Layout** or **Keep editing**.
 
 > [!tip]
-> Hiding a part, changing a tab or resetting shows a message with **Undo**. You can also press Ctrl/⌘+Z at any time while you customise. There's no redo for the layout.
+> Hiding a part, joining parts, taking them out again or resetting shows a message with **Undo**. You can also press Ctrl/⌘+Z at any time while you customise. There's no redo for the layout.
 
 ### Moving {#moving}
 
@@ -60,14 +60,14 @@ Each part has one of three height modes. You set it in the Height row of the ⋯
 | **Fit content, at most N px** | Grows with its content up to N px, then scrolls inside. |
 | **Fixed N px** | Keeps its height. Taller content scrolls inside. |
 
-"At most" and "fixed" start from the part's current content height, at most 480 px.
+When a part has no height set yet, "at most" and "fixed" start from its current content height, at most 480 px.
 
 Dragging the bottom edge sets **Fixed N px** at the new height. A part set to "at most" stays "at most", with the new limit. When the edge snaps to the part's own content, the part goes back to **Fit content**. **Shorter, −40 px** and **Taller, +40 px** in the Height row work the same way.
 
 ### Pin to top and Follow while scrolling {#pin-follow}
 
 - **Pin to top** puts a part into the band at the top of the page. The band stays put while you scroll the rest. If it would cover more than 40 % of the window and the page below needs the room, it's cut there and scrolls inside. With nothing left on the page, the band is the page.
-- **Follow while scrolling** keeps a part in view in its own columns. As you scroll past it, it moves down with you, along with the parts below it in those columns, until the first part below that is wider, or until the page ends.
+- **Follow while scrolling** keeps a part in view in its own columns. As you scroll past it, it moves down with you, along with the parts below it in those columns, until the first part below that reaches outside those columns, or until the page ends.
 - A part either pins or follows, not both. Pinning a part stops it following, and following unpins it. Follow doesn't work in the Phone arrangement.
 
 > [!tip]

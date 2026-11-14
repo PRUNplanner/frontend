@@ -22,7 +22,7 @@ More: [Presets](/help/exchanges#presets).
 
 ## 3. Choose buy, sell or both, and the price basis {#step-3}
 
-Under **How buy and sell prices are set**:
+In the **Exchange price** box:
 
 - **Same for buy and sell** uses one exchange and basis for both sides.
 - **Separate buy and sell** gives each side its own exchange and basis, for example buy on CI1 and sell on NC1. A side left **Not set** falls through to the next rule, down to Universe · VWAP 30D.
@@ -36,7 +36,7 @@ Under **How buy and sell prices are set**:
 [[Universe]] only has the two VWAPs.
 
 > [!warning]
-> When the chosen exchange has no price for a material (nobody offers it, nobody bids, or there's been no trade in 30 days), it counts as 0 ȼ. PRUNplanner doesn't fall back to another exchange. The page shows such prices in amber and lists them in its notes.
+> When the chosen exchange has no price for a material (nobody offers it, nobody bids, or for VWAP no trade there in the last 30 days), it counts as 0 ȼ. PRUNplanner doesn't fall back to another exchange. The page shows such prices in amber and lists them in its notes.
 
 Details: [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid), [Buy, sell or both](/help/exchanges#buy-sell-or-both).
 
@@ -55,7 +55,7 @@ Read more: [Planet exceptions](/help/exchanges#planet-exceptions), [How a price 
 
 A material you make in one base and use in another shouldn't cost the market price. It costs what you pay to make it, your [[cogm|COGM]].
 
-- In a plan, open **COGM** on the order that makes the material and click **Use as buy price on all planets** (offered while the material has no fixed price). This sets a fixed buy price at *that plan's* COGM for every planet of the preference.
+- In a plan, open **COGM** on the order that makes the material and click **Use as buy price on all planets** (offered while the material has no fixed price), then **Save changes**. This sets a fixed buy price at *that plan's* COGM for every planet of the preference.
 - Or, on **All planets** in Exchanges, add the material to **Fixed prices** with **Add material** and type a price. For materials your plans make, the **COGM in your plans** column shows the lowest COGM, and **Use** copies it into the buy price.
 
 Leave a side empty to keep the exchange price for it.

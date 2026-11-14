@@ -8,7 +8,7 @@ PRUNplanner plans your bases. You build and run them in the game. This guide cov
 2. On the FIO website, create an API key for PRUNplanner.
 3. In your [Profile](/profile), under **FIO connection**, enter the **FIO API Key** and your **PrUn Username** and press **Save**.
 
-Once it works, the FIO icon at the bottom of the side menu shows **FIO Active**. Hover it to see when FIO last updated. **FIO Burn** and **FIO Repair** now appear under Tools. While you use PRUNplanner, your FIO data is at most about 30 to 45 minutes old.
+Once it works, the FIO icon at the bottom of the side menu gets a green dot. Hover it to see **FIO Active** and when FIO last updated. **FIO Burn** and **FIO Repair** now appear under Tools. While you use PRUNplanner, your FIO data is at most about 30 to 45 minutes old.
 
 More: [FIO connection](/help/profile#fio-connection).
 

@@ -1,4 +1,4 @@
-Use the Upkeep Price Calculator to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at today's prices. It compares the materials that [[upkeep]] buildings consume by what one unit of a need costs with each of them.
+Use the Upkeep Price Calculator to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at the prices of your exchange preference. It compares the materials that [[upkeep]] buildings consume by what one unit of a need costs with each of them.
 
 ## How to use it {#how-to-use}
 
@@ -52,4 +52,4 @@ Each row looks at one material on its own, as if that material alone bought the 
 **CX Preference** picks the [[exchange-preference|exchange preference]], and "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet, so planet exceptions in your exchange preference don't apply here.
 
 > [!warning]
-> Picking an exchange preference here also makes it your default exchange preference for every page.
+> Picking an exchange preference here also makes it your default exchange preference, so other pages that follow your default switch with it.

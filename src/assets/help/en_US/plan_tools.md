@@ -21,7 +21,7 @@ The **Buildings** table has one row per building type in the plan, including hab
 - PRUNplanner saves typed built counts per plan, with your preferences, for plans you own and have saved. On a new plan, a shared plan or an older version you're looking at, they last only while you stay on the page, and the tool says "**Built counts aren't saved for this plan.**"
 - A **Built** count above **Planned** turns amber.
 - Typed **Amount** values aren't saved. Changing **Built** for a row sets its **Amount** back to **Planned** − **Built**.
-- When the buildings (built plus still to build) need more workers of a tier than their habitations house, a warning appears next to **Amount**: "**Insufficient habitation will reduce production efficiency.**" The habitation rows that house the short tier turn red.
+- When the buildings (built plus still to build) need more workers of a tier than their habitations house, a warning appears next to **Amount**: "**Insufficient habitation will reduce production efficiency.**" The **Amount** fields of the habitations that house the short tier turn red.
 - With FIO, a warning icon next to the title lists buildings FIO has on the planet that the plan doesn't. Demolish them in the game, or the base's area, housing and materials won't match the plan.
 
 Under the table, **Total Cost**, **Total Weight** and **Total Volume** cover everything in the **Amount** column, before stock, at the plan's buy prices.
@@ -57,7 +57,7 @@ There are two XIT buttons. The one at the top of the tool ships everything in **
 | **Stock Duration (days)** | 20 | How many days the supply lasts. Decimals work. It's one value for all plans, saved with your preferences. |
 | **Storage** | the base on the plan's planet | The FIO storage whose stock is taken off. Only with FIO. |
 
-**Supply for** picks which materials are listed. A material shows under **Workforce** when the workforce uses it, and under **Production** when a recipe uses it. The amounts are still the whole base's net need.
+**Supply for** picks which materials are listed. A material shows under **Workforce** when the workforce uses it, and under **Production** when a recipe uses or makes it. The amounts are still the whole base's net need.
 
 ### Columns and totals {#supply-columns}
 
@@ -72,7 +72,7 @@ Supply Cart only lists materials the base buys in, meaning those it uses more of
 | **Full Need** | **Daily Need** × days, rounded up. |
 | **Final Need** | **Full Need** − **Stock**, never below 0. |
 | t, m³ | Weight and volume of **Final Need**. |
-| **Workforce**, **Production** | Whether the workforce or a recipe uses the material. |
+| **Workforce**, **Production** | Whether the workforce uses the material, or a recipe uses or makes it. |
 
 Below the table you get **Daily Cost**, **Total Cost** (**Final Need** at the plan's buy price), **Total Weight** and **Total Volume**. "More options in FIO Burn" opens [FIO Burn](/fio/burn) ([help](/help/fio_burn)), which plans supply for all bases of an empire at once.
 
@@ -240,7 +240,7 @@ The **COGM** button on each recipe row in [Production](/help/plan_production) op
 | Recipe runtime and its "% / day" | The recipe's time ÷ the building's efficiency, and its share of a day (*runtime share*). |
 | **Efficiency** | The building's efficiency in this plan. |
 | **Degradation** | Construction cost ÷ 180 × runtime share. |
-| **Production fee / run** | The building's production fee per day × the recipe's base time ÷ 1 day. It ignores efficiency. |
+| **Production fee / run** | The building's production fee per day at 100 % × the recipe's base time ÷ 1 day. It ignores efficiency. |
 | Inputs, **Input Total** | Each input's amount × the plan's buy price. A tag says where each price comes from and opens that rule in [Exchanges](/help/exchanges). |
 | **Workforce** | The building's daily workforce cost × runtime share. Workers without housing and luxuries turned off cost nothing. |
 | **Total Cost** | Degradation + production fee + inputs + workforce. |

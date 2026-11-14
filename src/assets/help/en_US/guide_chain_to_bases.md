@@ -87,7 +87,7 @@ Read more: [Create plans](/help/tools_production_chain#create-plans).
 
 The chain leaves some things to the plans, so open each new plan and check it as a base:
 
-- **Empire & prices**: the chain leaves HQ and faction bonuses to the plans. Tick **Corp. HQ** where it applies, and check the empire's faction and permits.
+- **Planet** and **Empire & prices**: the chain leaves HQ and faction bonuses to the plans. Tick **Corp. HQ** under **Planet** where it applies, and check the empire's faction and permits.
 - The results tiles: **Profit / day**, **Payback**, and **Area** within your permits.
 - **Plan check**: whether the market takes what this base sells and supplies what it buys.
 - **Construction**: what you still need to build it.

@@ -16,7 +16,7 @@ The materials per level come from a table built into PRUNplanner, which covers l
 If you raise **From HQ Level** above **To HQ Level**, the table keeps the previous result. To recalculate, pick a **To HQ Level** at or above the new **From HQ Level**.
 
 > [!warning]
-> Picking an exchange preference here also makes it your default exchange preference for every page.
+> Picking an exchange preference here also makes it your default exchange preference, so other pages that follow your default switch with it.
 
 ## The table {#table}
 

@@ -22,7 +22,7 @@ A plan calculates with one [[empire]]. It takes that empire's [[faction]] and pe
 
 When you open a plan, it picks your current empire if the plan is in it, otherwise the first empire the plan is in. A plan in no empire uses your first empire. Your current empire is the default empire from [Profile](/profile), and switching empires on the [Empire](/empire) page changes it.
 
-Picking another empire only changes how this page calculates. It doesn't add the plan to that empire or remove it from another, and it isn't saved. You set which empires hold a plan in [Management](/manage).
+On a saved plan, picking another empire only changes how this page calculates. It doesn't add the plan to that empire or remove it from another, and it isn't saved. A new plan joins the empire you picked when you first save it. You set which empires hold a plan in [Management](/manage).
 
 The note underneath ("Faction …, permits from the empire. Plan is in … empires.") names the faction whose bonus applies and how many empires hold the plan.
 

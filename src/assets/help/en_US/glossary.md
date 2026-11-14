@@ -22,13 +22,13 @@ Plan check shows "No buyers" when a plan sells a material on an exchange without
 
 How many days a base's stock of a material lasts: the stock in your FIO storage ÷ what the base uses up per day. A material the base makes as much of as it uses never runs out.
 
-FIO Burn colours a material red at or below 5 days and yellow at or below 10 days. You can change both in your Profile. Burn needs your FIO data. See [FIO Burn](/help/fio_burn#calculations).
+FIO Burn colours a material red at or below 5 days and yellow at or below 10 days by default. You can change both on the FIO Burn page or in your Profile. Burn needs your FIO data. See [FIO Burn](/help/fio_burn#calculations).
 
 ## Byproduct {#byproduct}
 
 A second output of a recipe, made alongside the material the recipe is run for.
 
-Production Chains uses a byproduct for the chain's own needs first and sells the rest. See [Production Chains](/help/tools_production_chain#settings).
+By default, Production Chains uses a byproduct for the chain's own needs first and sells the rest. See [Production Chains](/help/tools_production_chain#settings).
 
 ## Cargo bays {#cargo-bays}
 
@@ -131,7 +131,7 @@ Specialists on a base who speed up its buildings of one expertise. They arrive o
 | 4 | 19.74 % |
 | 5 | 28.4 % |
 
-A plan takes at most 5 experts per expertise and 6 per base. See [Base setup](/help/plan_base).
+A plan takes at most 5 experts per expertise, and warns when a base has more than 6 in total. See [Base setup](/help/plan_base).
 
 ## Extra building materials {#extra-building-materials}
 
@@ -247,7 +247,7 @@ Profit per area on this setup lets you compare buildings with each other. See [R
 
 How many days a plan's daily profit takes to pay for its construction: construction cost ÷ profit per day. A plan that makes no profit never pays back.
 
-Base ROI's Break-even also counts its stock buffer, the HQ upgrade and the time until the experts arrive. See [Base ROI](/help/tools_base_roi#metrics).
+Base ROI's Break-even can also count a stock buffer, the HQ upgrade and the time until the experts arrive. See [Base ROI](/help/tools_base_roi#metrics).
 
 ## Plan {#plan}
 
@@ -365,7 +365,7 @@ You can leave materials out of the calculation. See [Plan tools](/help/plan_tool
 
 Volume-weighted average price: the credits traded for a material on an exchange ÷ the units traded, over the last 7 or 30 days.
 
-When a period has no trades, the last known price stays. See [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
+With no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded. After 30 days without a trade, both are 0. See [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
 
 ## Workforce {#workforce}
 

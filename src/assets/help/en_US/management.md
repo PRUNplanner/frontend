@@ -8,7 +8,7 @@ PRUNplanner keeps your planning in three kinds of things, and each one gets its 
 
 A [[plan]] is one base: its planet, buildings, recipes and bonuses. You create a plan from a planet in [Planet Search](/search). A plan can be in several empires at once, or in none. That way you can reuse it in an empire of your real bases and in one for a future expansion.
 
-A plan has no exchange preference of its own. It uses the [[exchange-preference|exchange preference]] of its empire. If it's in several empires, it uses the one of the empire you open it in.
+A plan has no exchange preference of its own. It uses the [[exchange-preference|exchange preference]] of its empire. If it's in several empires, it uses the one of the empire it calculates with, which you pick on the plan (see [Empire & prices](/help/plan_base#empire-and-prices)).
 
 ### Empires {#empires}
 

@@ -77,7 +77,7 @@ The Settings panel sits above the table. When it's closed, it shows a one-line s
 - **Min market capacity** sits next to the search above the table and hides rows below it.
 - **Show negative**: when it's off, the table hides rows with a daily profit of 0 or less.
 - **Show planets without workers or plots**: off by default. The table then hides planet rows when no new base fits (every plot taken and no [[ghost-sites|ghost sites]]) or when the latest [[popr|population report]] can't fill the base's jobs, counting free workers less the jobs already open. A planet with no population report counts as having no workers. Turn it on to see these rows, and turn on the **Workforce** column to see what's missing. Recipe rows aren't checked. If the reports can't be loaded, the page says so and nothing is hidden.
-- **Reset to defaults** resets the settings, but keeps your columns, the open or closed panels and charts, and the chart range.
+- **Reset to defaults** resets the settings, but keeps your columns, the open or closed panels and charts, and the charts' time range and aggregation.
 - **Run setup again** opens the first-visit dialog.
 
 A planet that's full but has ghost sites stays in the table. In the game, ghost sites only let new players who start on that planet settle there, so check the **Plots** column if your company started elsewhere.
@@ -93,7 +93,7 @@ The line above the table counts the rows, and the hidden ones per limit: "max ju
 
 ## Profit chart {#profit-chart}
 
-Above the table, **Daily profit by industry** shows the daily profit of the last 90 days for each industry. On screens 1,536 px and wider it sits beside the settings.
+Above the table, **Daily profit by industry** shows each industry's daily profit over the chosen time range (90 days unless you change it). On screens 1,536 px and wider it sits beside the settings.
 
 - Each base counts by how much of its material the market trades (7-day average of its outputs).
 - The many planets of one resource or farming recipe count as one: the mean of the 3 planets with the highest daily profit, so poor planets don't drag the line down.
@@ -126,15 +126,15 @@ Rows that never pay off or have no market capacity aren't drawn, but the drawer 
 ## Search and tooltips {#search-and-tooltips}
 
 - The search above the table filters by industry, building or output ticker.
-- The table orders rows by break-even, shortest first, and among equal break-evens by the higher daily profit. Click a column header to sort by it instead. The table shows 50 rows per page.
+- The table orders rows by break-even, shortest first, and among equal break-evens by the higher daily profit. Click a column header to sort by it instead (Material, Workforce and Profit, 30 days don't sort). The table shows 50 rows per page.
 - Hover a column header to see what it means, or a number for the napkin math behind it.
 
 ## Details {#details}
 
-Expand a row to see two charts, with the full math below them.
+Expand a row to see two charts under **Profit history**, with the full math below them.
 
-- **Profit**: revenue, running cost and daily profit, every line on one ȼ scale.
-- **Market volume**: how many bases the market carries each day, from the CX traded volume of that day. **Outputs** is the scarcest output's traded volume ÷ what one base sells per day. **Inputs (bottleneck)** is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
+- Profit: revenue, running cost and daily profit, every line on one ȼ scale.
+- Market volume: how many bases the market carries each day, from the CX traded volume of that day. **Outputs** is the scarcest output's traded volume ÷ what one base sells per day. **Inputs (bottleneck)** is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
 
 Both charts follow the time range and aggregation of the history charts. The math comes in eight sections: **Layout and building cost**, **Logistics and storage**, **Production efficiency**, **Line runs**, **Yield**, **Money per day** (with consumables, degradation and production fees), **Break-even** (each expert stage and the day it's paid off) and **Market capacity**. **Copy as text** copies it all.
 

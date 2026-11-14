@@ -56,7 +56,7 @@ If you already make part of a chain, pick one of your [[empire|empires]] under *
 - [Bases](#bases) lists which plan supplies what, in plan-name order, and which part of the surplus the chain doesn't use. The shipping table includes the routes from those plans.
 - Have rows aren't part of the plans **Create plans** makes.
 - If you change the empire's plans in another tab, the amounts update while this page is open.
-- The chain link keeps typed amounts but never the empire.
+- The chain link keeps the Have amounts the chain uses, also those from the empire, but never the empire itself.
 
 ## Results {#results}
 
@@ -64,10 +64,10 @@ The strip at the top adds up all your bases.
 
 | Tile | What it shows |
 | --- | --- |
-| **Profit / day** | Output value minus bought inputs, own production at CX price, upkeep, wear and production fees, also as a share of the output value |
+| **Profit / day** | Output value minus bought inputs, own production at CX price, upkeep, wear and production fees, also as a share of the output value (without Own production) |
 | **Output value / day** | The targets at the CX sell price, plus sold byproducts |
 | **Bought inputs / day** | What you buy, at the CX buy price |
-| **Upkeep, wear + fees / day** | Workforce [[upkeep]] with the luxuries, wear, and [[production-fees\|production fees]], split out below the value |
+| **Upkeep, wear + fees / day** | Workforce [[upkeep]] with the luxuries, wear, and [[production-fees\|production fees]], with the workforce upkeep and the fees below the value |
 | **Buildings** | Built and exact |
 | **Area** | Including habitation |
 | **Workforce** | Per tier |
@@ -104,7 +104,7 @@ Every material appears once. You can order the rows by **Chain**, where each tar
 **Make** is off for a material without a recipe, and **Buy** and **Have** are off for targets. A byproducts block at the bottom lists where each byproduct comes from, how much the chain uses and how much it sells. **CSV** downloads the table as `production-chain.csv`.
 
 - Click a material to see what it **Takes**, where it **Goes to**, its cost **Per unit** (inputs, upkeep and wear, production fees, chain cost against the CX price) and the spare capacity of its buildings: "Spare … up to + … / day".
-- Click a recipe ("n recipes ▾", only shown when there are several) to compare all recipes for that material. The one with the best effect on the chain comes first, with the change in profit per day and buildings. Badges mark the one **in use**, the **default** and those **with byproducts**.
+- Click a recipe ("n recipes ▾", only shown when there are several) to compare all recipes for that material. The one in use comes first, then the others by their effect on the profit, each with the change in profit per day and buildings. Badges mark the one **in use**, the **default** and those **with byproducts**.
 - Extracted rows use a typical planet: the top 10 % of all planets with the resource, meaning the 90th percentile of daily extraction, or the best planet when fewer than 10 planets have it. It's a planning default, not a real base, and it pays no production fees. Click it to pick a real planet in **Where to extract**. You can filter by extractor, surface, jumps to an exchange, **No extra materials**, **Resource Extraction COGC** and **Local market**, or use **Open in Planet Search**. When the step's base has a planet with the resource, that planet's own rate wins.
 
 ## Warnings {#warnings}
@@ -130,8 +130,8 @@ A chain can run on up to 26 bases (A to Z), each on one planet. The Bases tab st
 
 - Each base gets one [[expertise]], up to the size in **Bases up to**: 500 area (default), 750 or 1,000. When an expertise needs more than one base at that size, it fills bases up to 1,000 instead, so you run one full base rather than several alike.
 - Auto layout splits a step that doesn't fit by whole buildings. As many as fit go into the current base and the rest into the next one, so 6 CHP can become 4 + 2. A step can span more than two bases. Extraction steps stay whole.
-- Small groups of steps (under 1.5 buildings, or without an expertise) join the base they ship the most tonnes with, if they fit there. Otherwise they get a mixed base.
-- Auto layout buys steps under 0.2 building that cost more per unit with a whole building than on the CX. They show a **Buy** tag in Steps. You can switch them back to Make, but the next Auto layout or Fit buys them again.
+- Small groups of steps (under 1.5 buildings, or without an expertise) join the base they ship the most tonnes with that has room for them. If none has, they get a mixed base.
+- Auto layout buys steps under 0.2 building that cost more per unit with a whole building than on the CX. While such a step is made, it shows a **Buy** tag in Steps. You can switch them back to Make, but the next Auto layout or Fit buys them again.
 - Each base gets a planet, as described in [How planets are picked](#planet-picking).
 - Afterwards, it merges bases of the same expertise when the merged base fits 1,000 area and loses no resource or fertility.
 
@@ -143,10 +143,10 @@ A chain can run on up to 26 bases (A to Z), each on one planet. The Bases tab st
 Auto layout only uses a planet that:
 
 - has a free [[plots|plot]], or plots PRUNplanner hasn't read yet (a full planet with [[ghost-sites|ghost sites]] isn't used)
-- has no plan of yours in any empire
+- has none of your plans, in an empire or not
 - can run the base: every extracted resource is there, farms can run, and the base fits within the size.
 
-Among those, planets running a COGC program that helps the base's buildings come first. After that, closeness counts: to the other bases, weighted by the tonnes shipped, and to the empire's planets if you picked one under Own production. On a tie, the planet where the base needs the least area wins. The largest base is placed first.
+Among those, planets running a COGC program that helps the base's buildings come first. After that, closeness counts: to the other bases, weighted by the tonnes shipped, and to the empire's planets if you picked one under Own production. On a tie, the planet where the base needs the least area wins. The largest base is placed first. If no planet can run the base, it takes the first one by COGC and closeness anyway, so check the base card's warnings.
 
 ### 2. Fit the rate to your bases {#fit}
 
@@ -181,7 +181,7 @@ The card shows its buildings, area (core module, one STO and habitation), [[area
 
 The **Base** column in Steps moves a step, or one piece of a split step, to another base. "+ new base" starts a new one.
 
-The planet picker for a base solves the base's steps on every planet, so you can compare buildings and area. It marks planets where you already have a plan ("your plan"). **Only planets that** filters for planets that have the resources and allow farming (on by default), run a COGC program for the base, are fertile, or have one of your plans. You can also filter by extra materials, local market, jumps and name. The picker doesn't show plots.
+The planet picker for a base solves the base's steps on every planet, so you can compare buildings and area. It marks planets where you already have a plan ("your plan"). **Only planets that** filters for planets that have the resources and allow farming (on by default), run a COGC program for the base, are fertile, or have one of your plans. You can also filter by extra materials, local market, jumps and name. It shows each planet's plots but doesn't filter by them.
 
 **Shipping per day** lists what moves between bases and the CX, in tonnes and m³, with the [[jumps]]. That's what you hand over to your logistics.
 
@@ -255,4 +255,4 @@ Each chain is listed material by material: how much is made (**Made / day**), wh
 
 ### Sharing {#check-an-empire-sharing}
 
-**Copy check link** copies the empire, the chains and the settings, but not the prices. Whoever opens it sees the empire's own exchange preference. Only you can open your own empires. For anyone else, the page says the empire isn't theirs.
+**Copy check link** copies the empire, the chains, the settings and your picked locations, but not the prices. Whoever opens it sees the empire's own exchange preference. Only you can open your own empires. For anyone else, the page says the empire isn't theirs.

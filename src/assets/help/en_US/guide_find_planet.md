@@ -2,7 +2,7 @@ Start with the material you want to make. In about 10 minutes this guide gets yo
 
 ## 1. Pick the material {#step-1}
 
-Open [Planet Search](/search). Under Materials, click **+ add material…** and pick the resource you want to [[extraction|extract]]. Each option shows how many planets have it.
+Open [Planet Search](/search). Under Materials, click **+ add material…** and pick the resource you want to [[extraction|extract]]. Each option shows how many planets you'd get with it.
 
 - Type a minimum in "min … /day" to hide planets that give too little. The "(max …)" next to it is the best any planet gives, so you know what's possible.
 - Need two resources on one planet? Add both to one group and switch it to **all of**. With **any of**, either one is enough.
@@ -29,7 +29,7 @@ Fewer [[jumps]] mean shorter flights for your supply and your sales, so stay clo
 2. If you're logged in, you can also pick plans under **Plans from empire**. The planet then has to be near them too.
 3. Set **Max jumps** (0 to 30, starts at 10).
 
-Each pick gets its own jumps column. "—" means there's no jump route.
+Each picked plan gets its own jumps column, and the column of a picked exchange turns green. "—" means there's no jump route.
 
 > [!tip]
 > Looking for a second base next to your first? Pick its plan under **Distance** and set **Max jumps** to 2 or 3.
@@ -62,7 +62,7 @@ Details: [List and Matrix](/help/planet_search#list-and-matrix), [Chart](/help/p
 
 ## 6. Pin and compare up to four {#step-6}
 
-On screens 1,024 px and wider, click ☆ on up to four planets. The tray at the bottom puts them side by side and colours each row from best to worst. It compares fertility, the output of each searched material, jumps to your picks, and the free workers of each tier from the planet's latest [[popr|population report]].
+On screens 1,024 px and wider, click ☆ on up to four planets. The tray at the bottom puts them side by side and colours the rows it ranks from best to worst: fertility, the output of each searched material, jumps to your picks, and the free workers of each tier from the planet's latest [[popr|population report]].
 
 > [!tip]
 > If there are few free workers of a tier you need, your base will compete for them. Prefer a planet that covers your workforce.

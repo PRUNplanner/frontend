@@ -23,7 +23,7 @@ Your prices come from your exchange preference. A new account has "My Exchange P
 
 1. Open [Exchanges](/exchanges). It opens your preference. If you have several, **Switch Preference** picks another one.
 2. In the list on the left, open **All planets**.
-3. In the **Exchange price** box, under **How buy and sell prices are set**, keep **Same for buy and sell** and pick your home exchange: AI1 at Antares Station, CI1 at Benten, IC1 at Hortus or NC1 at Moria.
+3. In the **Exchange price** box, keep **Same for buy and sell** and pick your home exchange: AI1 at Antares Station, CI1 at Benten, IC1 at Hortus or NC1 at Moria.
 4. Pick a price basis, or click the preset **Average · VWAP 30D**.
 5. Press **Save changes** in the bar at the bottom.
 
