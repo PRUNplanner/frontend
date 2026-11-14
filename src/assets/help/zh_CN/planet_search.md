@@ -1,65 +1,250 @@
-**行星搜索** 可以找到你已经知道的行星，或用于新生产的地点。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。每次更改筛选条件都会立即更新结果。
+用 **星球搜索** 找你已知的星球，或者找新生产的最佳地点。这是做一个 [[plan]] 之前该从哪儿开始。你可以按资源、条件、[[COGC]]、基础设施和 [[jumps|跳跃数]] 筛选所有星球，再把最好的几个并排对比。不登录也能用，一改筛选条件结果就立刻更新。
 
-## Name or ID {#name-or-id}
+## 在哪里找到它 {#where-to-find-it}
 
-Type part of a planet's name or natural ID (e.g. "OT-580" or "Montem") in the box at the top. **名称或编号**。在顶部框中输入行星名称或自然编号的一部分（例如“OT-580”或“Montem”）。 A name search shows every planet that matches it, even when the filters set in the panel would hide some: a note above the results says the filters are paused. _Apply filters_ combines the name with them again; the note then says how many matching planets the filters hide and offers up to three changes that would show more of them, each with the number of planets it adds. _Show all_ pauses the filters again. Your filters are kept either way; once the name is cleared, the next search starts with them paused again.
+星球搜索在导航的「规划」分组里，首页也有。没登录时，标题下面会有一行说是免费的、不需要账号。只有要看和你的规划之间的距离、或者从结果里创建规划时，才需要登录。
 
-## Materials {#materials}
+其他页面也会引到这里。[生产链](/help/tools_production_chain) 会从采集步骤的星球选择器和「定位」结果里打开星球搜索；在你搭第一批规划的时候，帝国页面也会链到这里。
 
-Each group matches _any of_ or _all of_ its materials, and the groups combine with _all groups_ or _any group_. 这覆盖了诸如“(FEO 与 H2O) 或者 (MAG 与 O)”这样的搜索。每种材料都可以按“单位/天”设置最低每日开采量。
+## 名称或 ID {#name-or-id}
 
-## Planet conditions {#planet-conditions}
+在顶部的输入框里输入名称或 ID 的一部分（**星球或星系名称，或 ID**）。它会匹配星球的自然 ID（"OT-580b"）、名字（"Montem"）、游戏内名称（"Antares II e"）以及它所属星系的名称，所以输入 "Antares II" 会列出那个星系的所有星球。
 
-Pick Rocky and/or Gaseous planets, and whether they must be fertile. 新搜索默认仅限岩质行星。重力、压强和温度只影响其是否需要额外建材（MGC、BL、SEA、HSE、INS、TSH）。勾选你愿意运送的那些；任何需要其他建材的行星都会被隐藏，因此在都不勾选时，你只会看到不需要额外建材的行星。
+按名称搜索会显示所有匹配的星球，即使你的筛选会把其中一些藏起来。这时结果上方会有一条提示，说筛选已暂停。
 
-## COGC and infrastructure {#cogc-and-infrastructure}
+- 点 _应用筛选_ 会把名称和筛选条件重新一起用上。之后这条提示会说明筛选藏掉了多少个匹配的星球。它还会给出最多三处改动，能多显示一些，每处都标出能多出几个星球。
+- _Show all_ pauses the filters again.
 
-_Active COGC program_ keeps planets running one of the ticked programs right now. **全球商会和基础设施**。_生效的全球商会项目_ 只保留当前正在运行的已勾选某个项目的行星。_基础设施_ 是单独的筛选条件，并且更严格：行星必须拥有所有已勾选的建筑（LM 本地市场、COGC 全球商会、WAR 仓库、ADM 行星监管中心、SHY 船厂）。
+两种情况下你的筛选都会保留。你把名称清空之后，下次按名称搜索又会从「筛选暂停」开始。如果筛选一个匹配都没藏掉，就不会有这条提示。
 
-## Counts and Any {#counts-and-any}
+> [!tip] 想查别人在聊天里提到的星球？直接输入它的名字就行。不用先把筛选清掉。
 
-The number next to an option that isn't ticked is how many planets you would get by ticking it. _任意_ 按钮位于“行星条件、接受额外建筑材料、生效的全球商会项目和基础设施”的标题栏中；点击后，会切换该部分状态以隐藏最少的行星，并显示这样可得到多少颗星球：不限地表、不限肥沃、不限建材、不限全球商会、不限基础设施。当该部分已经处于任意状态时，按钮会被高亮且无法再点击。
+## 材料 {#materials}
 
-## Distance {#distance}
+你可以按一组或多组材料来搜。
 
-Pick exchanges and/or plans from one of your empires. A planet must be within the max jumps of every pick, and each picked plan gets its own jumps column. AI1, CI1, IC1 and NC1 are always sortable columns. Planet Search works without an account; distances to your own plans need a login.
+- 每一组按 **任一** 或 **全部** 材料来匹配。新建的组默认是 **任一**。
+- 各组之间用 **所有组**（默认）或 **任一组** 来组合。
+- **+ 添加材料…** 会给一个组加材料，每个选项都会显示加上它能得到多少个星球。 × 删掉一种材料，**移除** 删掉整组，**+ 添加组** 新增一组。
 
-## Active filters and Reset {#active-filters-and-reset}
+这样就能表达「(FEO 和 H2O) 或 (MAG 和 O)」这类搜索：两个 **全部** 组，用 **任一组** 组合。
 
-Every active filter shows as a chip above the results; × on a chip removes just that filter. _Reset_ at the top right goes back to the starting filters and the default order. When no planet matches, up to three suggestions appear, each with the number of planets it would give.
+你可以给每种材料设一个每日最低 [[extraction|采集]]量（"min … /day"）。这就是该星球这种材料的日产量，规划会据此在那里跑 EXT、RIG 或 COL 配方，所以最低值设得越高，留下的就是每个采集器产得越多的星球。旁边的「(max …)」是这种材料在所有星球上最高的日采集量，让你知道上限在哪。最低值是绑在材料上的，不是绑在组上的。同一种材料出现在两个组里时，它们共用一个最低值。
 
-## Filter panel {#filter-panel}
+## 星球条件 {#planet-conditions}
 
-On larger screens the double arrow at the top of the panel collapses it to a narrow rail, and expands it again. On small screens the filters open in a drawer with the _Filters_ button; _Show n planets_ at its bottom closes it.
+选 **岩石** 和/或 **气态** 星球，以及是否必须是 **肥沃**（允许农业）。新搜索默认仅限岩质行星。总会有一种地表类型保持勾选。
 
-## List and Matrix {#list-and-matrix}
+[[fertility|肥沃度]] 只对农场（FRM 和 ORC）有影响。在没有肥沃度的星球上，PRUNplanner 会把它们的效率设成 0，所以它们在那里什么都产不出。
 
-The List shows the searched materials as tiles next to the other resources. The Matrix gives every material found in the results its own column, searched ones first, with stronger shading for higher daily extraction.
+重力、气压和温度只通过它们所需的 [[extra-building-materials|额外建筑材料]] 产生影响。在 **接受额外建筑材料** 下面，勾上你愿意运过去的那些：
 
-## Chart {#chart}
+| 材料  | 用于      |
+| --- | ------- |
+| MGC | **低重力** |
+| BL  | **高重力** |
+| SEA | **低气压** |
+| HSE | **高气压** |
+| INS | **低温**  |
+| TSH | **高温**  |
 
-The Chart plots every result by distance and output: across, the jumps to your _Distance_ picks (the farthest one when you picked several), or to the nearest exchange without a pick; up, the daily extraction of a searched material you choose (fertility when you search no material). Bigger dots are more fertile. The **best trade-off** planets are the ones no other result beats on both: none is closer _and_ richer. They are highlighted, joined by a dashed line, and everything below and right of that line is beaten by one of them. _Colour by COGC_ colours the dots by their active COGC program instead. Hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan. The list beside the chart ranks the same planets by output. Up to 300 results are plotted, the first ones by the current sort.
+这些材料之所以重要，是因为在那个星球上的规划会把它们算进每栋建筑的建造里，所以会抬高建造成本。例如，面积 20 的建筑在岩石星球上需要 20 × 4 = 80 MCG，在低温星球上还要再加 20 × 10 = 200 INS。
 
-## Reading the results {#reading-the-results}
+星球搜索会隐藏需要你没勾的材料的星球。一个都不勾，就只会看到一样都不需要的星球。地表材料（岩石星球是 MCG，气态星球是 AEF）总是需要的，不属于这个筛选范围。
 
-The colour bar on a material tile compares the planet's daily extraction with the highest of that material on any planet: red is below a quarter, then orange, yellow, and green above three quarters. The column with the construction icon lists the extra building materials a planet needs; hover one to see why (e.g. "Low gravity"). _COGC · Infra_ shows the running COGC program and the planet's infrastructure as LM, COGC, WAR, ADM and SHY. A "—" in a jumps column means there is no jump route: hover it to read "Colony Ship Required".
+## COGC 与基础设施 {#cogc-and-infrastructure}
 
-## Plots {#plots}
+**当前 COGC 项目** 只留下此刻正在跑你勾选项目的星球——「此刻」是指你打开页面的那一刻。列表里项目很全：每个产业的宣传项目和每个劳动力档位的人力项目。
 
-Every base takes one plot of its planet, and so do HQs and planetary projects (COGC, warehouse, local market and the others). A planet that can't be settled anymore, with every plot taken and no ghost sites, carries a red ⊘ icon next to its name; hover it for the details. The _Plots_ column, which you turn on in the _Columns_ menu, shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks such a planet red _Full_. Some planets allow **ghost sites**: once every plot is taken, new bases still fit without one, so a full planet that allows them shows an amber _Full · ghost sites_. Full planets keep their place in the results. _plots unknown_ means PRUNplanner hasn't read the planet's plots yet. Sort by the column to see the planets with the most free plots first.
+项目之所以重要，是因为它能加快规划里的生产：宣传项目让它所属专精的建筑快 25 %，人力项目让雇用该档位劳动力的建筑快 10 %。在游戏里，居民（在这个星球上有基地的玩家）投票选项目，胜出的项目运行一周，所以你在这里看到的项目之后可能会变。
 
-## Sorting {#sorting}
+**基础设施** 是另一个筛选，而且更严格。星球必须拥有你勾选的每一栋建筑。
 
-Click a column header to sort by it, click again to reverse. Shift+click another header to add it as a tiebreaker (the headers show 1, 2, 3), up to four columns: "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. The _Sort_ menu does the same without a keyboard. Without a sort of your own, the results are ordered by the first searched material (highest first), otherwise by the jumps to the first distance pick, otherwise by name.
+| 代码   | 建筑       |
+| ---- | -------- |
+| LM   | **本地市场** |
+| COGC | **商会**   |
+| WAR  | **仓库**   |
+| ADM  | **行政中心** |
+| SHY  | **船坞**   |
 
-## Columns {#columns}
+这些圆角标签显示的是代码。悬停一下就能看到名字。
 
-The _Columns_ menu hides and shows columns. In the Matrix it also lists every found material with _All_ and _None_ to show or hide them at once. _Reset_ goes back to the default columns.
+## 计数与「任意」 {#counts-and-any}
 
-## Compare {#compare}
+未勾选选项旁边的数字，是勾上它之后会剩下多少个星球。添加材料列表、交易所旁边、以及你的规划旁边，也会看到同样的计数。
 
-On larger screens, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Fertility, the searched materials and the jumps to your distance picks are coloured from best to worst, with the best value in bold. Rows where the planets differ in anything else are tinted blue.
+星球条件、接受额外建筑材料、当前 COGC 项目和基础设施，每一块的标题里都有一个 _任意_ 按钮。它会把那一块设成「藏掉的星球最少」的状态，并显示这样能得到多少个星球：
 
-## Saving and sharing {#saving-and-sharing}
+- 星球条件：两种地表都要，不要求肥沃。
+- 接受额外建筑材料：全部接受。
+- 当前 COGC 项目：一个都不勾。
+- 基础设施：一个都不勾。
 
-The address bar always holds the whole search, so _Copy link_ shares it. "+" opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan. _Save search_ stores named searches in this browser; _Manage_ renames, loads or deletes them.
+那一块已经处于这个状态时，按钮会高亮，也点不了。
+
+## 距离 {#distance}
+
+在 **距离** 下面，勾选 **交易所** 和/或你某个 [[empire|帝国]] 里的规划。星球必须在每一个已选目标的 **最大跳跃数** 之内。跳跃数是按星系之间算的，所以同一个星系的星球距离都一样；和某个已选目标没有跳跃路线的星球不算。例如，选了 NC1 和你的一个规划、最大跳跃数设为 5，某个星球离 NC1 有 3 跳、离你的规划有 6 跳，就会被隐藏。最大跳跃数的范围是 0 到 30，默认 10。只有在你选了目标之后它才起作用。
+
+- **规划来自帝国** 用来选你想从哪个帝国里挑规划。默认是搜索结果里规划最多的那个帝国，否则就是你当前或默认的帝国。换帝国会清掉你已选的规划。
+- 规划列表有一个筛选框，可以输入规划名、星球 ID 或星球名。
+- 每个已选的规划都会显示成一个可以移除的标签，并在结果里各占一列跳跃数。
+
+AI1、CI1、IC1 和 NC1 也各有自己的跳跃数一列，可以在 **列** 里把它们藏起来。
+
+要看和你的规划之间的距离，需要登录。没登录时，这一块会说明，并给出 **登录**。星球搜索会丢掉别人分享的链接里的规划，因为它们不是你的。
+
+> [!tip] 想在第一个基地附近找第二个基地，就在「距离」里选它的规划，把最大跳跃数设成 2 或 3。一个都不匹配时，结果上方的建议会给出多几跳的选项。
+
+## 生效的筛选与重置 {#active-filters-and-reset}
+
+每个生效的筛选都会在结果上方显示成一个标签，点标签上的 × 只会去掉那一个。每组材料一个标签（用 **任一组** 组合时，所有组合成一个），每栋基础设施建筑一个标签。所有 COGC 项目共用一个标签，接受额外建筑材料一个，所有距离目标合起来一个。地表类型只有在不是「仅岩石」时才会出一个标签。只改最大跳跃数不会出标签。
+
+右上角的 **重置** 会回到初始筛选和默认排序。它会保留你固定的对比项、视图和列设置。在手机上它在「⋯」菜单里。
+
+一个星球都不匹配时，页面会说 **No planets match these filters. Try one of these:**，并给出最多三处改动，每处带上能得到多少星球，多的在前：
+
+- 去掉你其中一个标签；
+- **包含气态星球**；
+- **接受全部额外建筑材料**；
+- 把最大跳跃数调高（多 3 跳，最多 30），这个只在你选了距离目标时出现。
+
+别担心，这只能说明你的筛选合起来一个星球都没剩。点一条建议就会应用它。
+
+两处改动的结果一样时，只会显示一条。按名称搜索的提示里还可能给出「任意地表，肥沃与否」「任意 COGC 项目」和「任意基础设施」。
+
+## 筛选面板 {#filter-panel}
+
+面板标题里会显示生效的筛选数量。屏幕宽 1,024 px 及以上时，面板在结果旁边。它顶部的双箭头可以把它收成一条窄栏，再点展开。宽度小于 1,440 px 时，每次进来它都是收起的，好把地方让给结果。 1,440 px 及以上时，浏览器会记住你是否收起过它。
+
+在窄屏上，_筛选_ 按钮会把筛选打开在一个抽屉里，抽屉底部的 _显示 n 个星球_ 可以把它关掉。
+
+## 结果 {#results}
+
+结果上方的标题写的是「n / 星球总数」。旁边可以在 **列表**、**矩阵** 和 **图表** 之间切换。长列表会随着滚动一次加载 100 行。
+
+## 列表与矩阵 {#list-and-matrix}
+
+**列表** 会把搜索的材料以卡片形式和其他资源排在一起显示。它还有肥沃度、额外建筑材料、COGC 与基础设施，以及跳跃数的列。
+
+**矩阵** 会给结果里出现的每种材料一列。搜索的那些排在前面（按字母序），然后是蓝色分隔线，再是其他的。某个格子的底色越深，代表日采集量越高——是拿它和这种材料在所有星球上的最高值比的。顶部的色条表示这种材料的类别。悬停表头会显示「on n of total results」，悬停格子会显示它的数值和它占最高值的比例。
+
+> [!tip] 想一眼找出同时有两三种有用资源的星球，矩阵是最快的办法。搜一种材料，再看别的列就行。
+
+## 图表 {#chart}
+
+**图表** 会按距离和产量把结果画出来。
+
+- **横轴 (X)**：到你在「距离」里选的目标的跳跃数；选了多个时，取最远的那个。没选目标时，用到一个交易所的跳跃数：整体上离这些被画的星球最近的那个（总跳跃数最少的）。轴标题会写出是哪一个，比如「jumps to IC1 · nearest exchange」。
+- **纵轴 (Y)**：搜索的那种材料的日采集量。搜了两种以上材料时，有个选择器选用哪一种（默认第一个）。没搜材料时，Y 轴是肥沃度。
+- **点的大小**：肥沃度，按图注里给出的范围缩放。这只在搜索材料时有效。
+
+**最佳权衡** 星球指的是没有别的结果能在两项上都胜过它的那些：没有谁既更近 _又_ 更富。图表会高亮它们，并用虚线连起来。这条线右下方的一切都被它们中的某一个压过。
+
+例如，星球 A 距离 2 跳、10 /天，B 距离 4 跳、25 /天，C 距离 5 跳、20 /天。 A 和 B 是最佳权衡：没有结果比 A 更近，4 跳之内也没有比 B 更富的。C 不是，因为 B 既更近又更富。
+
+**着色依据** 可以在 **最佳权衡** 和 **COGC** 之间切换。选 COGC 时，最常见的六个正在运行的项目各有自己的颜色，其余共用一个色：「其他或没有 COGC 项目」；如果连别的项目也没有，就是「没有 COGC 项目」。
+
+屏幕宽 1,024 px 及以上时，悬停点能看到详情，点一下会把它固定到对比里，双击可以直接创建规划（没登录的话会先让你登录）。在触摸屏和窄屏上，点一下点就能看详情。
+
+图表旁边的列表会按 Y 轴给同样的星球排名，每行都有「+」和 ☆。图表最多画 300 个结果，取当前排序的前面那些，所以 **排序** 决定了哪些星球能进图。图表下面会统计放不进图的星球：没有路线的、没有该材料的，以及不肥沃的。
+
+## 怎么看结果 {#reading-the-results}
+
+- **材料卡片**：色条是把该星球的日采集量和这种材料在所有星球上的最高值比出来的。低于四分之一是红色，然后是橙色，再是黄色，超过四分之三是绿色。悬停色条会显示数值、最高值和百分比。例如最富的星球有 40 FEO /天，某星球 25，就是 25 ÷ 40 = 62.5 %，色条显示黄色。
+- **肥沃度 %**：游戏里显示的肥沃度；星球不肥沃时显示「—」。排序会把不肥沃的星球放在最后。
+- **额外建筑材料**（建造图标）：在这个星球上建基地需要的材料。总会列出 MCG（「岩石地表」）或 AEF（「气态地表」）。悬停任意一个就能看到原因，比如「低重力」。
+- **COGC · 基建**：正在运行的 COGC 项目（没有就是「—」），以及星球的基础设施，用 LM、COGC、WAR、ADM、SHY 表示。
+- **跳跃数列**：「—」表示没有跳跃路线。悬停它会显示「Colony Ship Required」（需要殖民船）。
+
+## 地块 {#plots}
+
+每个基地都会占用所在星球的一个 [[plots|地块]]，总部和 [[planetary-projects|星球工程]]（COGC、仓库、本地市场等等）也一样。
+
+- 地块全部占满、而且没有 [[ghost-sites|幽灵地块]] 的星球，名字旁边会有一个红色的 ⊘ 图标，不管「地块」列开没开。悬停它就能看到详情和日期。
+- **地块** 列默认是关的，在 **列** 里打开。它显示星球总地块里还剩多少空闲，数据是 FIO 最后一次看到这个星球时的（悬停能看到日期）；满的星球会用红字标 **满**。
+- 有些星球允许幽灵地块。允许幽灵地块的满星球会显示琥珀色的 **满 · 幽灵地块**，提示框里会给出到目前为止的幽灵地块数量。
+- **plots unknown** 表示 PRUNplanner 还没读到这个星球的地块数据。
+- 按这一列排序，就能先看到空闲地块最多的星球。地块未知的星球排在最后。
+
+满的星球仍然保留在结果里。地块不是筛选条件。
+
+> [!warning] 幽灵地块是给新玩家的。在游戏里，它们出现在新手星球上。在那里开局的新玩家，即使地块全被占满也还能落户。如果你的起始星球在别处，就不能在标着 **满 · 幽灵地块** 的星球上落户。
+
+## 排序 {#sorting}
+
+点列标题就按它排序，再点一次反过来。材料、肥沃度和地块都是高的在前。名称和跳跃数是低的在前。
+
+Shift+点另一个标题，可以把它加成次级排序，最多四列（标题上会显示 1、2、3）。例如「先按到 NC1 的跳跃数，再按 FEO /天」会把每个距离上 FEO 最富的星球排出来。对已经在排序链里的列 Shift+点可以把它反过来，再点一次就移出。
+
+**排序** 菜单不用键盘也能做同样的事：**排序依据**、**其次按**、**低的在前** 和 **高的在前**。如果你没自己设过排序，菜单会显示默认顺序：第一种搜索的材料（高的在前）；没搜材料就按到第一个距离目标的跳跃数；都没有就按名称。排序用的列消失时（比如你不再搜那种材料了、或者取消了某个规划），页面会去掉那条排序。
+
+## 列 {#columns}
+
+**列** 菜单用来开关各列：**肥沃度**、**地块**、**其他资源**（仅列表）、**额外建筑材料**、**COGC · 基础设施**，以及四个交易所的跳跃数列。图表里不显示它。
+
+在矩阵里，它还会列出所有找到的材料（搜索的那些除外，它们总是显示），每种都带上出现它的结果数量。**全部** 和 **无** 可以一次全开或全关。
+
+菜单里的 **重置** 会回到默认的列，也就是除了「地块」以外的全部。
+
+## 对比 {#compare}
+
+屏幕宽 1,024 px 及以上时，可以用 ☆ 固定最多四个星球，在底部托盘里并排对比。点它的标题可以收起或展开表格。
+
+下面这些行会按好坏着色，最好的值加粗：
+
+- 肥沃度；
+- 每种搜索材料的日采集量；
+- 到每个距离目标的跳跃数；
+- 五个档位各一行 **空闲 {tier} 工人**：空闲工人减去已经开放的空缺，数据来自星球最新的 [[popr|人口报告]]，游戏每周发布一次。
+
+例如 1,000 个空闲技术工人、400 个开放空缺，就显示 600。即使开放空缺比空闲工人还多，这个数也不会低于 0。
+
+没有这个值的星球排在最差。其他行（额外建筑材料、其他资源、COGC、基础设施，以及到 AI1 / CI1 / IC1 / NC1 的跳跃数）是纯文本，如果一行里各星球不一样，就会着色成蓝色。
+
+固定的星球会算进链接里，但托盘只在较大屏幕上显示。
+
+> [!tip] 空闲工人这几行告诉你，按最新的人口报告，新基地在每个星球上能招到多少工人。
+
+## 保存与分享 {#saving-and-sharing}
+
+- **复制链接**：地址栏里始终带着整个搜索（筛选、排序、视图和对比固定的星球），所以链接分享的就是你看到的。
+- **保存搜索**：把当前的筛选和视图起个名字存在这个浏览器里。名字默认是各标签的文字，或者「All planets」。保存的搜索不保存排序，也不保存固定的星球。
+- **已保存** 用来加载保存过的搜索。在 **管理** 里可以重命名、加载或删除它们。删除前不会先问你。
+- 行上的「+」会在新标签页里为那个星球新建规划，你的搜索还留在原处。没有账号时，「+」会让你先登录，然后再打开规划。
+
+在手机上，已保存的搜索、**复制链接** 和 **重置** 都在「⋯」菜单里。
+
+### 这个浏览器会记住什么 {#what-the-browser-remembers}
+
+有些东西只存在这个浏览器里，不进你的账号：保存的搜索、隐藏的列和材料、「地块」列是否打开、筛选面板是否收起（1,440 px 及以上）、以及最后用的视图。不带链接进来时，会用你上次的视图打开。带链接进来时，用它自己的视图。
+
+> [!tip] 想在另一台设备上保留搜索、或者分享给你的公司，用 **复制链接** 而不是 **保存搜索**。
+
+### 链接参数 {#link-parameters}
+
+链接里只带和默认值不同的部分。你也可以手写：
+
+| 参数      | 含义                 | 示例                            |
+| ------- | ------------------ | ----------------------------- |
+| `q`     | 名称或 ID             | `q=Montem`                    |
+| `m`     | 材料组                | `m=any:FEO\|MAG,all:H2O`      |
+| `g`     | 各组之间按「任一组」组合       | `g=any`                       |
+| `d`     | 每日最低量              | `d=FEO:15`                    |
+| `cogc`  | COGC 项目            | `cogc=ADVERTISING_METALLURGY` |
+| `infra` | 基础设施               | `infra=LM,WAR`                |
+| `fert`  | 仅肥沃                | `fert=1`                      |
+| `surf`  | 地表类型，r 和/或 g       | `surf=rg`                     |
+| `x`     | 接受的额外材料            | `x=INS,SEA`                   |
+| `ref`   | 距离目标               | `ref=cx:NC1`                  |
+| `j`     | 最大跳跃数              | `j=5`                         |
+| `sort`  | 排序链                | `sort=mat:FEO:desc`           |
+| `view`  | `matrix` 或 `chart` | `view=chart`                  |
+| `pin`   | 对比固定的星球            | `pin=OT-580b`                 |
+
+页面会丢掉它不认识的值。
+
+## 星球加载不出来的时候 {#errors}
+
+加载失败时，页面会说「The planets couldn't be loaded.」，并显示一个 **重试** 按钮。请求太频繁时，它会让你等几秒再试。
