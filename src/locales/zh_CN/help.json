@@ -1,137 +1,200 @@
 {
 	"view_title": "帮助",
 	"tutorial": {
-		"intro": "PRUNplanner 帮助你设计基地、管理帝国并计算利润，而无需浪费游戏内资源。它几乎模拟了 Prosperous Universe 的各个方面，让你能够更明智地规划，更自信地游玩。"
+		"intro": "在动手建造之前，先规划你在《Prosperous Universe》里的基地和帝国。PRUNplanner 会按你选定的价格，显示一座基地赚多少、需要什么、何时回本。它跑在浏览器里，规划时不用开着游戏，也不需要 FIO。"
 	},
 	"getting_started": {
 		"title": "入门指南",
 		"image_label": "管理",
-		"image_alt": "Management Screenshot",
+		"image_alt": "「管理」界面截图",
 		"l1": {
-			"title": "在{link}中创建帝国：",
-			"link": "管理",
-			"p": "默认情况下，你已经拥有一个帝国。但你也可以为不同派系或区域添加更多帝国。填写名称和派系后保存即可。"
+			"title": "在{link}检查你的帝国：",
+			"link": "帝国",
+			"p": "每个新账号都已经有一个帝国「My Empire」。在帝国页面把它的阵营和许可数量设成你游戏里 HQ 缓冲显示的数值。这两项会改变其中每个规划的生产加成。你可以在「管理」里用「新建帝国」再建几个，比如专门用来测试扩建。"
 		},
 		"l2": {
-			"title": "设置{link}：",
-			"link": "交易所",
-			"p": "进入“管理”并创建你的交易所偏好设置。切换到“交易所”页面进行修改。对大多数玩家来说，建议设为“买入和卖出”，并选择你的基地会使用的交易所（例如 Benten 使用 CI1）。完成后保存。"
+			"title": "设置你的主场交易所，先从{link}开始：",
+			"link": "管理",
+			"p": "新账号还会自带一个交易所偏好「My Exchange Preference」，My Empire 已经在用它，默认是 Universe · VWAP 30D，即四个交易所合并计算的 30 日成交量加权均价。在 CX 配置下点它的名字（或在侧边菜单打开「交易所」），再打开「所有星球」。选好你的主场交易所，比如 Benten Station 附近的 CI1，点预设「Average · VWAP 30D」，再按「保存更改」。"
 		},
 		"l3": {
-			"title": "搜索{link}：",
+			"title": "找一个{link}：",
 			"link": "行星",
-			"p": "使用行星搜索，按资源、项目或与交易所的距离进行筛选。选择目标行星后，可以查看其修正值、开采率和基础设施。"
+			"p": "星球搜索可以按资源、地表与肥沃度、COGC 计划、基础设施，以及到交易所或到你规划的跳跃数来筛选每一颗星球。打开「地块」列就能看到空闲地块。在结果上点 + 就会为该星球打开一个新规划。"
 		},
 		"l4": {
 			"title": "创建规划：",
-			"p": "选择你的帝国，为规划命名，然后添加建筑。例如：添加一座精炼厂，设置生产订单并保存规划。你可以修改诸如全球商会、专家加成等各项参数，并进一步进行优化。"
+			"p": "先确认这个规划按哪个帝国计算。然后添加生产建筑并选好配方，或者点一种星球资源去开采它。开着 Auto 时，居住建筑会自己跟着劳动力走。给规划起个名字，按「创建」。"
 		},
 		"l5": {
-			"title": "检查 ROI：",
-			"p": "设置完成后，你可以查看每条生产线的每日利润、输入与输出，以及投资回报率。然后进行调整、测试和优化。"
+			"title": "检查数字：",
+			"p": "顶部的方块显示每日利润、回本、劳动力、面积和仓储。基地不赚钱时，回本会显示为 never。材料 I/O 列出基地生产和买入的东西，「规划检查」会把数量拿去和市场比对。任何改动都会立刻更新数字，所以换个配方或改改建筑数量再对比一下。"
 		}
 	},
 	"core_concepts": {
 		"title": "核心概念",
 		"p1": {
 			"title": "规划",
-			"p": "一份规划代表一座单独基地，包括建筑、生产和加成。你可以通过选择行星、放置建筑，并将其分配到带有交易所偏好设置的帝国来创建计规划。"
+			"p": "一个规划就是一颗星球上的一座基地：它的建筑、配方、劳动力、居住和加成。它可以属于多个帝国，也可以不属于任何帝国。PRUNplanner 用它计算时所依附的那个帝国的交易所偏好来定价。"
 		},
 		"p2": {
 			"title": "帝国",
-			"p": "帝国是多份规划的容器，本质上代表你的整个基地网络。帝国可以帮助你整理供应链，并统一管理多座基地。"
+			"p": "帝国把若干规划归成一组，比如你正在运营的所有基地，并保存你的阵营和许可。帝国页面会把其中的规划加总，把一个规划产出、另一个规划消耗的部分对冲掉，剩下的再和市场比对。"
 		},
 		"p3": {
-			"title": "交易所",
-			"p": "交易所设置决定价格的计算方式。同一帝国会使用同一个交易所偏好设置以保持内部一致。如有需要，你可以在多个帝国之间复用同一套交易所设置。"
+			"title": "交易所偏好",
+			"p": "交易所偏好决定了规划使用的价格。每个帝国用一个偏好，但一个偏好里可以混用多个交易所。它可以为买入和卖出分别设定交易所和价格基准，可以给单颗星球设例外，也可以给单个材料设固定价格。多个帝国可以共用一个偏好。所选交易所没有价格的材料按 0 ȼ 计，在「交易所」页面会显示成琥珀色。"
 		}
 	},
 	"key_features": {
 		"title": "核心功能",
 		"p1": {
 			"title": "基地模拟",
-			"p": "无需消耗游戏资源即可设计和测试基地。从居住需求、生产，到行星专属的特定修正值和加成，PRUNplanner 都可以进行模拟。"
+			"p": "在建造之前先设计和测试一座基地。PRUNplanner 涵盖建筑与配方、劳动力与居住、专家、COGC 计划、面积、星球资源、建造成本和生产费用，并按你的价格算出利润与回本。"
 		},
 		"p2": {
 			"title": "帝国规划",
-			"p": "跨多个基地和供应链管理你的帝国。保持物资流动，避免瓶颈，并让规模化运营更加顺畅。你可以随时了解当前状况，并判断下一步最适合从哪里扩张。"
+			"p": "把多座基地当作一个帝国来看：它们合计生产什么、消耗什么、买入什么、卖出什么，各自会吃掉对应市场多大份额，以及哪些配方能用掉剩余的东西。生产链会把一整条链拆成若干基地，并直接生成规划。"
 		},
 		"p3": {
 			"title": "游戏数据",
-			"p": "市场信息直接集成自社区 API：FIO。你可以规划扩张、检查 ROI，并做出更有依据的交易决策。探索历史市场数据，或让 PRUNplanner 计算生产与资源开采的 ROI。"
+			"p": "游戏数据和交易所价格来自社区 API FIO，价格大约每 30 分钟刷新一次。你可以查看价格历史、读每日市场报告，或按投资回报率给配方和星球资源排名。"
 		},
 		"p4": {
 			"title": "消耗与维修",
-			"p": "跟踪消耗品和建筑折旧情况。清楚了解你的基地在何时需要什么，从而避免短缺和停摆。"
+			"p": "接上 FIO 后，FIO Burn 会显示每座基地的库存还能撑几天，FIO Repair 会显示它的建筑什么时候该修。两者最后都会生成一个 XIT 包，交给 Refined PrUn 在游戏里执行。"
 		},
 		"p5": {
 			"title": "丰富的附加工具",
-			"p": "深入查看历史价格，优化居住布局，估算访问频率，并微调生产效率。PRUNplanner 提供了丰富的实用工具，帮助你获得优势。"
+			"p": "建造与补给清单、到访频率、维修间隔、COGM、价格敏感度、规划版本与分享、HQ 计算器、维护价格，以及供你自己的表格和脚本使用的 API。"
+		}
+	},
+	"navigation": {
+		"title": "界面导航",
+		"n1": {
+			"title": "侧边菜单",
+			"p": "登录后，侧边菜单里有「规划」（星球搜索、管理、交易所）、你的帝国及其规划，以及「工具」——工具分为市场、计算器和 FIO 三组。保存了 FIO 密钥和用户名之后，FIO Burn 与 FIO Repair 才会出现。点击「工具」可以折叠列表，浏览器会记住这个选择。"
+		},
+		"n2": {
+			"title": "你的帝国及其规划",
+			"p": "菜单一次只显示一个帝国。点它的名字会打开帝国页面，「规划」按 A 到 Z 列出它的规划和对应星球。「切换」可以选另一个帝国，它同时也会变成你的默认帝国。「规划」旁边的 + 会打开星球搜索来建新规划。帝国满 15 个规划后，会出现「筛选规划」，可按名字或星球 ID 查找。当前打开但不属于这个帝国的规划会显示在最上面，标注「不属于此帝国」。"
+		},
+		"n3": {
+			"title": "窄栏",
+			"p": "顶部的双向箭头能把侧边菜单折成一条图标窄栏。悬停在图标上可以看到名字。「规划」和「工具」会从窄栏里以小列表展开，底部的双向箭头可以把菜单再展开。PRUNplanner 会把你的选择存进偏好设置。"
+		},
+		"n4": {
+			"title": "在手机上",
+			"p": "屏幕窄于 768 px 时，底部的一条栏会取代侧边菜单：帝国、规划、星球搜索和更多。「规划」会弹出一张面板，里面是帝国规划和「切换」。帝国页面算完这些规划后，面板里还会显示每个规划的日利润。「更多」里放着管理、交易所、各种工具、个人资料、API、帮助和退出登录。"
+		},
+		"n5": {
+			"title": "FIO 状态",
+			"p": "侧边菜单底部的 FIO 图标用一个小圆点表示你的 FIO 连接状态：FIO 已启用、FIO 同步中、FIO 等待数据、FIO 未启用或 FIO 密钥被拒。悬停可以看到 FIO 上次更新和 PRUNplanner 上次抓取数据的时间。如果它没启用，点一下会打开你的个人资料方便你设置。"
+		},
+		"n6": {
+			"title": "帮助与搜索",
+			"p": "应用每一页都有「帮助」按钮。它会在页面旁边的面板里打开该页的帮助文章，这样未保存的内容不会丢；「在帮助中心打开」可以看到完整文章。侧边菜单底部的 ?（手机上在「更多」里的「帮助」）会打开帮助中心，在里面按 / 就能搜索。"
 		}
 	},
 	"areas": {
-		"start": "Start here",
-		"planning": "Planning",
-		"prices": "Prices",
-		"tools": "Tools",
+		"start": "从这里开始",
+		"planning": "规划",
+		"prices": "价格",
+		"tools": "工具",
 		"fio": "FIO",
-		"account": "Account",
-		"reference": "Reference"
+		"account": "账户",
+		"reference": "参考"
 	},
 	"articles": {
 		"help_welcome": {
-			"title": "Welcome"
+			"title": "欢迎"
+		},
+		"guide_first_base": {
+			"title": "你的第一座基地"
+		},
+		"guide_find_planet": {
+			"title": "为一种材料找星球"
+		},
+		"guide_cx_prices": {
+			"title": "设置你的价格"
+		},
+		"guide_chain_to_bases": {
+			"title": "从一条链到若干基地"
+		},
+		"guide_empire": {
+			"title": "扩张成一个帝国"
+		},
+		"guide_hand_off": {
+			"title": "交给游戏执行"
 		},
 		"plan_layout": {
-			"title": "Layout"
+			"title": "界面布局"
+		},
+		"plan_base": {
+			"title": "基地设置"
+		},
+		"plan_tools": {
+			"title": "规划工具"
+		},
+		"plan_sharing": {
+			"title": "分享规划"
+		},
+		"tools_market_report": {
+			"title": "市场报告"
+		},
+		"api_keys": {
+			"title": "API 密钥"
+		},
+		"glossary": {
+			"title": "术语表"
 		},
 		"plan_results": {
-			"title": "Results"
+			"title": "结果"
 		},
 		"plan_production": {
-			"title": "Production & recipes"
+			"title": "生产与配方"
 		},
 		"plan_saving": {
-			"title": "Saving & versions"
+			"title": "保存与版本"
 		},
 		"plan_check": {
-			"title": "Plan check"
+			"title": "规划检查"
 		},
 		"empire": {
-			"title": "Empire"
+			"title": "帝国"
 		},
 		"management": {
-			"title": "Management"
+			"title": "管理"
 		},
 		"exchanges": {
-			"title": "Exchanges & CX preferences"
+			"title": "交易所与交易所偏好"
 		},
 		"planet_search": {
-			"title": "Planet Search"
+			"title": "星球搜索"
 		},
 		"tools_production_chain": {
-			"title": "Production Chains"
+			"title": "生产链"
 		},
 		"tools_base_roi": {
-			"title": "Base ROI"
+			"title": "基地 ROI"
 		},
 		"tools_roi_overview": {
-			"title": "ROI Overview"
+			"title": "配方 ROI"
 		},
 		"tools_resource_roi_overview": {
-			"title": "Resource ROI Overview"
+			"title": "资源 ROI"
 		},
 		"tools_market_live": {
-			"title": "Market Live"
+			"title": "实时市场"
 		},
 		"tools_market_exploration": {
-			"title": "Market Exploration"
+			"title": "市场探索"
 		},
 		"tools_hq_upgrade_calculator": {
-			"title": "HQ Upgrade Calculator"
+			"title": "HQ 计算器"
 		},
 		"tools_upkeep_price_calculator": {
-			"title": "Upkeep Price Calculator"
+			"title": "维护价格"
 		},
 		"fio_repair": {
 			"title": "FIO Repair"
@@ -140,62 +203,79 @@
 			"title": "FIO Burn"
 		},
 		"profile": {
-			"title": "Profile & preferences"
+			"title": "个人资料与偏好"
 		},
 		"whats-new": {
-			"title": "What's new"
+			"title": "更新内容"
 		}
 	},
 	"parents": {
-		"plan": "Plan page"
+		"plan": "规划页面"
 	},
 	"home": {
-		"title": "How can we help?",
-		"lead": "A reference for every page of PRUNplanner, and what changed in each release.",
-		"most_read": "Most read:",
-		"browse": "Browse by area",
-		"whats_new": "What's new",
-		"all_releases": "All releases",
-		"stuck_title": "Still stuck?",
-		"stuck_text": "Ask other players on {discord}, or report a bug on {github}.",
+		"title": "需要什么帮助？",
+		"lead": "可以从初次规划的指南开始，也可以查 PRUNplanner 的任意页面或某个术语，或者看看每个版本改了什么。",
+		"most_read": "阅读最多：",
+		"browse": "按板块浏览",
+		"whats_new": "更新内容",
+		"all_releases": "所有版本",
+		"stuck_title": "还是卡住？",
+		"stuck_text": "到 {discord} 上问其他玩家，或在 {github} 上报告问题。",
 		"discord": "Discord",
 		"github": "GitHub issues",
-		"description": "PRUNplanner help: how plans, empires, exchanges and every tool work, and what changed in each release."
+		"description": "PRUNplanner 帮助：指南，规划、帝国、交易所和各工具的用法，术语表，以及每个版本的变化。",
+		"start": "从这里开始",
+		"start_note": "任务指南，每篇几步，都带进应用的链接",
+		"glossary_title": "术语表",
+		"glossary_text": "游戏与规划术语都集中在这里。文章里把鼠标悬停在术语上也能看到。",
+		"glossary_all": "全部术语"
+	},
+	"guides": {
+		"guide_first_base": "你的帝国、价格、一颗星球，还有你第一个保存下来的规划。",
+		"guide_find_planet": "按资源和到交易所的距离筛选，查看空闲地块。",
+		"guide_cx_prices": "预设、买卖规则、星球例外和固定价格。",
+		"guide_chain_to_bases": "规划一条生产链，拆成若干基地，生成规划。",
+		"guide_empire": "一个帝国里的多座基地：合计、市场核对与机会。",
+		"guide_hand_off": "补给与建造清单、XIT 包、FIO Burn 与 FIO Repair。"
+	},
+	"term": {
+		"eyebrow": "术语表",
+		"open": "在术语表中打开"
 	},
 	"article": {
-		"root": "Help",
-		"updated_in": "Updated in {version}",
-		"read_time": "{minutes} min read",
-		"on_this_page": "On this page",
-		"related": "Related",
-		"previous": "Previous",
-		"next": "Next",
-		"fallback": "This page isn't translated yet, so it is shown in English.",
-		"not_found": "That help page doesn't exist.",
-		"menu": "Help pages",
-		"breadcrumb": "Breadcrumb"
+		"root": "帮助",
+		"updated_in": "在 {version} 中更新",
+		"read_time": "阅读约 {minutes} 分钟",
+		"on_this_page": "本页内容",
+		"related": "相关",
+		"previous": "上一篇",
+		"next": "下一篇",
+		"fallback": "本页尚未翻译，因此以英文显示。",
+		"not_found": "该帮助页面不存在。",
+		"menu": "帮助页面",
+		"breadcrumb": "面包屑导航"
 	},
 	"feedback": {
-		"question": "Was this page helpful?",
-		"yes": "Yes",
-		"no": "No",
-		"thanks": "Thanks for the feedback.",
-		"missing": "What was missing or unclear on this page?",
-		"send": "Send",
-		"sent": "Thanks, we read every answer."
+		"question": "这个页面对你有帮助吗？",
+		"yes": "是",
+		"no": "否",
+		"thanks": "感谢反馈。",
+		"missing": "这一页缺了什么，或者哪里不清楚？",
+		"send": "发送",
+		"sent": "谢谢，每一条我们都会看。"
 	},
 	"search": {
-		"open": "Search help",
-		"placeholder": "Search help",
-		"label": "Search the help pages",
-		"move": "to move",
-		"pick": "to open",
-		"close": "to close",
-		"no_results": "Nothing found for “{query}”.",
-		"ask": "Ask other players on {discord}.",
-		"results": "{count} results"
+		"open": "搜索帮助",
+		"placeholder": "搜索帮助",
+		"label": "搜索帮助页面",
+		"move": "移动",
+		"pick": "打开",
+		"close": "关闭",
+		"no_results": "没有找到「{query}」。",
+		"ask": "到 {discord} 上问其他玩家。",
+		"results": "{count} 条结果"
 	},
 	"panel": {
-		"open_in_centre": "Open in Help centre"
+		"open_in_centre": "在帮助中心打开"
 	}
 }
