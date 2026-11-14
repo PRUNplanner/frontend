@@ -88,13 +88,18 @@
 				</p>
 				<h3 class="text-lg py-3">Information Storage</h3>
 				<p class="pb-3">
+					PRUNplanner runs on our own server at Hetzner Online GmbH in
+					Falkenstein, Germany, which serves both the website and the
+					API. Your account and planning data are stored in Germany.
 					PRUNplanner stores information in your browsers LocalStorage
 					(gamedata, backend responses, your analytics choice) as well
 					as SessionStorage (authentication information) and
-					IndexedDB. PRUNplanner does not use any cookies. Only after
-					you have consented to usage analytics, PostHog stores an
-					identifier and session information in your browsers
-					LocalStorage and SessionStorage; it sets no cookies either.
+					IndexedDB. PRUNplanner does not use any cookies, and
+					Cloudflare, which delivers our website and API (see below),
+					sets none on our site either. Only after you have consented
+					to usage analytics, PostHog stores an identifier and session
+					information in your browsers LocalStorage and
+					SessionStorage; it sets no cookies either.
 				</p>
 				<h3 class="text-lg py-3">3rd-Party Interactions</h3>
 				<p>
@@ -103,6 +108,35 @@
 					storage data. The connection with FIO is done through the
 					API Key you provide which itself is stored in the
 					PRUNplanner database.
+				</p>
+				<p class="pt-3">
+					Our server is hosted by Hetzner Online GmbH, Germany, in its
+					data centre in Falkenstein. Hetzner provides the server and
+					its network connection and so processes the data stored on
+					and sent to our server, including IP addresses, on our
+					behalf. Hetzner's privacy policy applies:
+					https://www.hetzner.com/legal/privacy-policy
+				</p>
+				<p class="pt-3">
+					Our website and API are delivered through the network of
+					Cloudflare, Inc. (USA). Cloudflare works as a reverse proxy
+					and content delivery network: it handles DNS and the
+					encrypted (HTTPS) connection, keeps copies of the website's
+					files (HTML, JavaScript, CSS, images) at locations near you
+					so pages load faster, and protects PRUNplanner against
+					attacks. To do this, Cloudflare processes your IP address
+					and the technical data of each request, such as the
+					requested address (URL), the time, your browser's user agent
+					and the request headers. We use Cloudflare for the secure
+					and fast delivery of our service, which is our legitimate
+					interest (Art. 6 (1) f GDPR). Cloudflare, Inc. is certified
+					under the EU-U.S. Data Privacy Framework, and Standard
+					Contractual Clauses are part of Cloudflare's Data Processing
+					Addendum. We do not use Cloudflare Web Analytics.
+					Cloudflare's responses also ask your browser to report
+					failed connections to our site, never successful ones, to
+					Cloudflare. Cloudflare's privacy policy applies:
+					https://www.cloudflare.com/privacypolicy/
 				</p>
 				<p class="py-3">
 					To ensure the technical stability and security of our
@@ -147,22 +181,34 @@
 					logs, so an error can be matched to its session recording.
 				</p>
 				<p class="py-3">
-					In the event that you opt to provide your email address for
-					heightened account security, it is imperative to acknowledge
-					that PRUNplanner utilizes Mailjet for the facilitation of
-					all email communications, whether for verification or
-					password reset functionalities. The privacy policy outlined
-					in https://www.mailjet.com/legal/privacy-policy/ is
-					applicable, and your agreement to all stipulated terms is
-					hereby expressly implied.
+					If you choose to add your email address for extra account
+					security, PRUNplanner sends its emails (verification codes,
+					password reset codes and a notice when your email address
+					changes) through Resend (Resend, Inc., USA). For this,
+					Resend receives your email address and the content of the
+					email. Resend's privacy policy applies:
+					https://resend.com/legal/privacy-policy
 				</p>
 				<h3 class="text-lg py-3">Security & User Rights</h3>
 				<p class="pb-3">
-					PRUNplanner only stores your login / account information
-					containing your encrypted password. If you want to be
-					deleted from PRUNplanner please reach out on Discord. This
-					document may change. Please check it periodically to stay
-					up-to-date about changes.
+					PRUNplanner stores your account (your username and, if you
+					add one, your email address), your password only as a
+					one-way hash that cannot be turned back into the password,
+					the plans, empires, exchange preferences, settings and API
+					keys you create, and, if you add them, your Prosperous
+					Universe username, your FIO API key and the game data FIO
+					returns for it. Your browser's connection to PRUNplanner is
+					encrypted (HTTPS). You have the right to ask which of your
+					data we hold, to have it corrected or deleted, to restrict
+					or object to its processing, to receive it in a portable
+					format, and to complain to a data protection supervisory
+					authority. To use these rights or to have your account
+					deleted, reach out on Discord
+					(https://discord.gg/2MDR5DYSfY) or by mail (see Imprint).
+					Deleting your account also deletes your plans, empires and
+					all other data stored with it in the PRUNplanner database.
+					This document may change. Please check it periodically to
+					stay up-to-date about changes.
 				</p>
 			</div>
 		</div>
