@@ -11,6 +11,8 @@ It's for anyone who wants their plans to match how they really trade. You need a
 
 Open [Exchanges](/exchanges). It shows one preference at a time, and **Switch Preference** picks another. Below the select you see which [[empire|empires]] use it.
 
+![Exchanges: Switch Preference and the empires that use it on the left, the Overview of the prices your plans use on the right](/images/help/guides/cx-prices-overview.webp)
+
 A new account has "My Exchange Preference", which "My Empire" uses, set to **Universe · VWAP 30D**. A [[plan]] has no prices of its own. It uses the preference of the empire it calculates with. Each empire uses one preference, and several empires can share one. To give an empire another preference, pick it in column CX of **Empire Configuration** in [Management](/manage).
 
 Read more: [Exchange preferences](/help/exchanges#exchange-preferences), [Management](/help/management#cx-configuration).
@@ -22,6 +24,8 @@ Read more: [Exchange preferences](/help/exchanges#exchange-preferences), [Manage
 3. Click a preset:
    - **Average · VWAP 30D** buys and sells at the 30-day [[vwap|VWAP]] of that exchange, a steady average of what was traded. [Your first base](/help/guide_first_base#step-2) works through a VWAP example.
    - **Trade now · buy Ask, sell Bid** buys at the cheapest offer and sells to the highest buyer right now. That's the price of trading at once.
+
+![All planets on Exchanges: the Exchange price box with the presets, and the Fixed prices table below](/images/help/guides/cx-prices-rule.webp)
 
 The box tells you which exchange the presets work on ("Presets on NC1:").
 

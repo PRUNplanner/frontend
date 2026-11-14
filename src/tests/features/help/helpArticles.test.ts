@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 import {
 	articlesByArea,
@@ -190,6 +192,8 @@ describe("links inside the English articles", () => {
 		for (const [, href] of EN_FILES[path]!.matchAll(
 			/\]\(([/#][^)\s]*)\)/g
 		)) {
+			// screenshots: see "screenshots in the English articles"
+			if (href!.startsWith("/images/")) continue;
 			const [route, hash] = href!.split("#") as [string, string?];
 			const help = route.match(/^\/help\/([\w-]+)$/);
 			const article = help ? help[1]! : route ? undefined : own;
@@ -219,4 +223,31 @@ describe("the English articles as rendered", () => {
 			expect(page.textContent).not.toContain("[[");
 		}
 	);
+});
+
+describe("screenshots in the English articles", () => {
+	// public/images/help/guides, taken by the workspace's help-shots script
+	const GUIDES = "/images/help/guides/";
+	const publicFile = (src: string) => join(process.cwd(), "public", src);
+	const images = Object.values(EN_FILES).flatMap((md) =>
+		[...md.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map((m) => ({
+			alt: m[1]!,
+			src: m[2]!,
+		}))
+	);
+
+	it("exist in public/, are local and have alt text", () => {
+		expect(images.length).toBeGreaterThan(0);
+		for (const { alt, src } of images) {
+			expect(src, src).toMatch(/^\/images\/help\//);
+			expect(existsSync(publicFile(src)), src).toBe(true);
+			expect(alt.trim(), src).not.toBe("");
+		}
+	});
+
+	it("leave no unused file in the guides folder", () => {
+		const used = new Set(images.map((i) => i.src));
+		const files = readdirSync(publicFile(GUIDES)).map((f) => GUIDES + f);
+		expect(files.filter((f) => !used.has(f))).toEqual([]);
+	});
 });

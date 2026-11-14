@@ -12,6 +12,8 @@ You need an account. A new one already comes with an empire and an [[exchange-pr
 
 An empire is a group of plans that shares a faction, permits and an exchange preference, so what you set here applies to every plan in it.
 
+![The Your empire step on the Empire page of a new account, with Faction, Permits Total, Permits Used and Save](/images/help/guides/first-base-empire.webp)
+
 Open [Empire](/empire). A new account has one empire, "My Empire", with no [[faction]] and 1 of 2 permits used. While it has no plans, the page shows three steps. The first one, **Your empire**, holds its settings.
 
 1. Pick your **Faction**. It gives the buildings of its [[expertise]] a bonus in every plan of the empire.
@@ -31,6 +33,8 @@ Read more: [Empire configuration](/help/empire#configuration), [Faction bonus](/
 ## 2. Set your home exchange {#step-2}
 
 Your prices come from your exchange preference, and every plan's revenue, costs and profit are worked out at those prices. A new account has "My Exchange Preference", which is already linked to "My Empire". It's set to **Universe · VWAP 30D**, the 30-day average across all four exchanges. You can also take all prices from one exchange instead.
+
+![Exchanges with All planets open: the Exchange price box with its presets, Same for buy and sell and the exchange buttons](/images/help/guides/first-base-exchange.webp)
 
 1. Open [Exchanges](/exchanges). It opens your preference. If you have several, **Switch Preference** picks another one.
 2. In the list on the left, open **All planets**.
@@ -53,6 +57,8 @@ Details: [Set up your prices](/help/guide_cx_prices), [Setting an exchange rule]
 
 Open [Planet Search](/search).
 
+![Planet Search with an FEO filter and a 5-jump limit from NC1, the filters on the left and the matching planets on the right](/images/help/guides/first-base-search.webp)
+
 1. Under Materials, use **+ add material…** to add what you want to make or extract. Each option shows how many planets you'd get.
 2. Under **Distance**, tick your home exchange under **Exchanges** and lower **Max jumps**, so supply flights stay short.
 3. Turn on **Plots** under **Columns** to see which planets still have free [[plots]].
@@ -64,6 +70,8 @@ More: [Find a planet for a material](/help/guide_find_planet), [Planet Search](/
 ## 4. Create the plan {#step-4}
 
 Click "+" on the planet's row. A new plan for that planet opens in a new tab, so you don't lose your search.
+
+![A new plan with the results tiles at the top, Empire & prices, Planet and Production](/images/help/guides/first-base-plan.webp)
 
 1. **Empire & prices**: **Calculate with empire** shows the empire the plan calculates with. A new plan starts with your first empire, and when you create the plan it joins the empire selected there. **Prices** names the exchange preference it uses.
 2. **Planet**: the **COGC** select starts with the program the planet runs now. For a first base, leave **Permits** at 1 (500 area).
@@ -78,6 +86,8 @@ Read more: [Base setup](/help/plan_base), [Production & recipes](/help/plan_prod
 ## 5. Read the results {#step-5}
 
 The tiles at the top update with every edit.
+
+![The results tiles of a plan: Profit / day, Payback, Workforce, Area and Storage, here with a loss and too much area in red](/images/help/guides/first-base-results.webp)
 
 | Tile | What to look for |
 | --- | --- |

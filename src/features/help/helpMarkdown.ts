@@ -84,6 +84,14 @@ function termRule(state: StateInline, silent: boolean): boolean {
 const md = new MarkdownIt({ html: false, linkify: true });
 md.inline.ruler.before("link", "help_term", termRule);
 
+// screenshots load when they scroll near, not with the page
+const renderImage = md.renderer.rules.image!;
+md.renderer.rules.image = (tokens, i, options, env, self) => {
+	tokens[i]!.attrSet("loading", "lazy");
+	tokens[i]!.attrSet("decoding", "async");
+	return renderImage(tokens, i, options, env, self);
+};
+
 /**
  * @param {string} markdown A help file
  * @param {(html: string) => string} sanitize DOMPurify (browser or jsdom)

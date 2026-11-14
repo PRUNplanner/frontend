@@ -34,6 +34,8 @@ More: [Configuration](/help/empire#configuration), [Area and permits](/help/glos
 
 The tiles on top sum up the empire per day: **Revenue**, **Cost**, **Profit** and **Profit / Area**.
 
+![The Empire page: revenue, cost and profit, the cost split, shipping and the plan list](/images/help/guides/empire-overview.webp)
+
 The empire isn't a plain sum of its plans. What one plan makes and another uses cancels out first, and only the rest gets sold or bought, at the plans' average price. That's why the empire's numbers can differ from its plans' profits added up.
 
 As an example, plan A makes 100 DW a day and its Material I/O values them at 80 ȼ each. Plan B uses 60 DW a day at 100 ȼ each. The empire sells the 40 left over. Its price is the average weighted by each plan's amount: (100 × 80 + 60 × 100) ÷ 160 = 14,000 ÷ 160 = 87.50 ȼ, so the 40 DW count 3,500 ȼ a day. The two plans on their own count +8,000 and −6,000, which adds up to 2,000 ȼ.
@@ -47,6 +49,8 @@ Details: [Overview numbers](/help/empire#overview-numbers), [Plan list](/help/em
 ## 4. Balance the materials {#step-4}
 
 At the top of the page, open **Material I/O**. It lists every material of the empire with its **Delta** (made minus used per day).
+
+![The Material I/O view of the Empire page](/images/help/guides/empire-materials.webp)
 
 - A positive Delta gets sold, a negative one bought. A large negative Delta of something you could make is a candidate for your next base.
 - With **Display** set to **Loadbalance**, you only see materials the empire both makes and uses. Check that supply and demand match.
@@ -69,6 +73,8 @@ Read more: [Market check](/help/empire#market-check), [Plan check: Empire](/help
 ## 6. Find production opportunities {#step-6}
 
 At the top of the page, open **Production Opportunities** to see [[recipe|recipes]] that could use what your empire has left over.
+
+![The Production Opportunities view of the Empire page](/images/help/guides/empire-opportunities.webp)
 
 - **Opportunities**: recipes where every input is in surplus, enough for at least one run a day.
 - **Potential Batches**: how many runs a day your surplus covers. It ignores recipe time, buildings and efficiency, so read it as "how much input there is", not "how much you can make".

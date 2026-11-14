@@ -108,6 +108,8 @@
 		"[&_a]:text-link-primary [&_a:hover]:underline",
 		// glossary terms: dotted underline, the popover on hover or focus
 		"[&_a.help-term]:text-ink-strong [&_a.help-term]:border-b [&_a.help-term]:border-dotted [&_a.help-term]:border-link-primary [&_a.help-term]:cursor-help [&_a.help-term:hover]:no-underline",
+		// guide screenshots (public/images/help/guides): full column width
+		"[&_img]:block [&_img]:w-full [&_img]:h-auto [&_img]:rounded-panel [&_img]:border [&_img]:border-line",
 		"[&_code]:font-mono [&_code]:text-xs [&_code]:bg-surface-sunken [&_code]:px-1 [&_code]:rounded-control",
 		"[&_table]:w-full [&_table]:mb-4 [&_table]:border-collapse",
 		"[&_th]:text-left [&_th]:font-medium [&_th]:text-ink-strong [&_th]:border-b [&_th]:border-line [&_th]:px-3 [&_th]:py-1.5",

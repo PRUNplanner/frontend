@@ -89,6 +89,15 @@ Writing rules:
   sentence; label-first lines only in tables and short reference lists.
   No filler words (seamless, robust, crucial, ensure, simply, just, "note
   that"), no hype, exclamation marks, em dashes or closing summaries.
+- Screenshots: the guides show the app as
+  `![what it shows](/images/help/guides/<name>.webp)`, files in
+  `public/images/help/guides/` (one image for every locale; the alt text is
+  translated). They are taken from an e2e stack by the workspace script
+  `.claude/skills/e2e/ui-audit/help-shots.mjs`, which lists every shot with
+  its page, user and clicks in `help-shots.json`. A change to a page or
+  control a screenshot shows retakes it in the same PR
+  (`--only <name>`); `helpArticles.test.ts` fails on a missing file, a
+  missing alt text or an unused file.
 - Explain, don't only describe: say why a setting matters, what a warning
   or empty state means and what to do, and give worked examples with
   recomputed numbers. Every statement is backed by the code or an

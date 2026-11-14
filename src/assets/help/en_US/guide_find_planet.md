@@ -10,6 +10,8 @@ It's for anyone choosing where to put a base. The pages linked at the end of eac
 
 Open [Planet Search](/search). Under Materials, click **+ add material…** and pick the resource you want to [[extraction|extract]]. Each option shows how many planets you'd get with it.
 
+![Planet Search with an FEO filter: the Materials filter on the left, the planet list with the FEO column on the right](/images/help/guides/find-planet-materials.webp)
+
 - Type a minimum in "min … /day" to hide planets that give too little. The "(max …)" next to it is the best any planet gives, so you know what's possible.
 - Need two resources on one planet? Add both to one group and switch it to **all of**. With **any of**, either one is enough.
 
@@ -32,6 +34,8 @@ Read more: [Planet conditions](/help/planet_search#planet-conditions), [COGC and
 ## 3. Limit the distance {#step-3}
 
 [[jumps|Jumps]] count the system-to-system hops on the shortest route between two places. Fewer jumps mean shorter flights for your supply and your sales, so stay close to your exchange and your other bases.
+
+![The Distance filter with NC1 ticked, and the list limited to planets within 5 jumps of NC1](/images/help/guides/find-planet-distance.webp)
 
 1. Under **Distance**, tick your home exchange under **Exchanges**.
 2. If you're logged in, you can also pick plans under **Plans from empire**. The planet then has to be near them too.
@@ -59,6 +63,8 @@ More: [Plots](/help/planet_search#plots).
 ## 5. Compare the results {#step-5}
 
 Switch the view next to the heading:
+
+![The Chart view of Planet Search, with the dashed best trade-off line](/images/help/guides/find-planet-chart.webp)
 
 - **List**: one row per planet. Click a header to sort, and Shift+click another to add a tiebreaker, such as jumps first, then the most output.
 - **Matrix**: every material found gets a column, shaded by output. It's the quickest way to spot planets with two or three useful resources.

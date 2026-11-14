@@ -10,6 +10,8 @@ It's for players planning a new line of production across several bases. The pag
 
 Open [Production Chains](/production-chain) (Calculators in the side menu).
 
+![Production Chains with 100 RAT a day as the target, the settings and the results tiles](/images/help/guides/chain-targets.webp)
+
 1. Under **Produce per day**, pick a material in **Add material**.
 2. Type the amount you want per day. A new target starts at 10.
 3. Add more targets if you like, for example DW, RAT and OVE together. The chain shares the steps they have in common.
@@ -59,6 +61,8 @@ Details: [Results](/help/tools_production_chain#results), [How costs are calcula
 ## 5. Lay the chain out into bases {#step-5}
 
 Open the **Bases** tab. It shows three steps, and the next one is the main button.
+
+![The Bases tab of Production Chains with Auto layout, Fit rate and Create the plans](/images/help/guides/chain-bases.webp)
 
 1. Pick the size under **Bases up to**: 500 area (1 permit), 750 or 1,000.
 2. Press **Auto layout**. It groups the steps into bases of one [[expertise]] each and picks a planet for each base. That planet has a free plot, no plan of yours, and the resources and fertility the base needs. Auto layout prefers a helpful COGC program and short distances.

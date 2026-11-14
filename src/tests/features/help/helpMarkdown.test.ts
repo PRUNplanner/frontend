@@ -68,6 +68,18 @@ describe("parseHelp", () => {
 		expect(doc.html).toContain('<a href="https://example.com">');
 	});
 
+	it("renders a screenshot lazily, with its alt text", () => {
+		const doc = parse("![The plan page](/images/help/guides/x.webp)");
+		const img = document.createElement("div");
+		img.innerHTML = doc.html;
+		const el = img.querySelector("img")!;
+		expect(el.getAttribute("src")).toBe("/images/help/guides/x.webp");
+		expect(el.getAttribute("alt")).toBe("The plan page");
+		expect(el.getAttribute("loading")).toBe("lazy");
+		// the alt text isn't counted as words or searched
+		expect(doc.words).toBe(0);
+	});
+
 	it("leaves a hostile file inert", () => {
 		const doc = parse(
 			[
