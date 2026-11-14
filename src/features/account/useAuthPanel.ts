@@ -1,7 +1,8 @@
-import { ref, type Ref } from "vue";
+import { computed, type ComputedRef, ref, type Ref } from "vue";
 
 // Composables
 import { trackEvent } from "@/lib/analytics/useAnalytics";
+import { useUserStore } from "@/stores/userStore";
 
 // Types & Interfaces
 import type { IAnalyticsEventProperties } from "@/lib/analytics/useAnalytics.types";
@@ -22,12 +23,21 @@ const showLogin: Ref<boolean> = ref(false);
 const showRegistration: Ref<boolean> = ref(false);
 const next: Ref<string | undefined> = ref(undefined);
 const context: Ref<IAuthPanelOptions["context"]> = ref(undefined);
+// logged in, on the way to the page after the login: until that page shows,
+// the page the login was on keeps the visitor's layout (header, no
+// sidebar), so nothing on it moves while the next page loads
+const entering: Ref<boolean> = ref(false);
 
 /**
  * Login and registration panel of the homepage header, one form at a time.
  * @author jplacht
  */
 export function useAuthPanel() {
+	/** Logged in as the page shows it: the app's layout, not while entering */
+	const loggedInLayout: ComputedRef<boolean> = computed(
+		() => useUserStore().isLoggedIn && !entering.value
+	);
+
 	function show(panel: AuthPanel | null): void {
 		showLogin.value = panel === "login";
 		showRegistration.value = panel === "registration";
@@ -92,5 +102,7 @@ export function useAuthPanel() {
 		switchTo,
 		showLoginForm,
 		close,
+		entering,
+		loggedInLayout,
 	};
 }

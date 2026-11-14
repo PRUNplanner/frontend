@@ -18,9 +18,6 @@
 	import { SupportedLanguages } from "@/lib/i18n";
 	import { htmlLang } from "@/lib/seo/site";
 
-	// Stores
-	import { useUserStore } from "@/stores/userStore";
-
 	// Components
 	import HomepageLanguage from "@/layout/components/HomepageLanguage.vue";
 	import HomepageTour from "@/features/homepage/components/HomepageTour.vue";
@@ -65,9 +62,9 @@
 	} from "@/features/homepage/homepage.constants";
 
 	const { t } = useI18n();
-	const { open } = useAuthPanel();
+	// logged in as the page shows it: unchanged until the next page shows
+	const { open, loggedInLayout } = useAuthPanel();
 	const { locale } = usePreferences();
-	const userStore = useUserStore();
 
 	// the full title, without the "· PRUNplanner" of every other page
 	useHead({
@@ -171,7 +168,7 @@
 				</p>
 				<div class="flex flex-wrap justify-center gap-3 pt-1">
 					<router-link
-						v-if="userStore.isLoggedIn"
+						v-if="loggedInLayout"
 						to="/empire"
 						data-cta
 						:class="landingPrimaryButton">
@@ -196,7 +193,7 @@
 					</router-link>
 				</div>
 				<p
-					v-if="!userStore.isLoggedIn"
+					v-if="!loggedInLayout"
 					class="m-0 font-mono text-[13px] text-white/62">
 					{{ $t("homepage.hero.example_note") }}
 				</p>
@@ -300,7 +297,7 @@
 					<p class="m-0 text-white/78">
 						{{ $t("homepage.most_used.planet_search.lead") }}
 					</p>
-					<template v-if="!userStore.isLoggedIn" #after>
+					<template v-if="!loggedInLayout" #after>
 						<div class="mt-2 flex flex-col items-start gap-2">
 							<router-link
 								to="/search"
@@ -618,7 +615,7 @@
 						}}
 					</p>
 					<button
-						v-if="!userStore.isLoggedIn"
+						v-if="!loggedInLayout"
 						type="button"
 						data-closing-cta
 						:class="landingPrimaryButton"
