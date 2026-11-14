@@ -79,12 +79,12 @@
 					requires registration and authentication to store your
 					Prosperous Universe empire and base planning. Additionally
 					you may choose to integrate FIO data that will contain your
-					personal ingame Prosperous Universe data. All account and
-					login information is hashed and stored only in the
-					PRUNplanner database. Administrators have no way of
-					decrypting your passwords. PRUNplanner does not take
-					responsibility for the correctness or completeness of data
-					and information it provides.
+					personal ingame Prosperous Universe data. Your account
+					information is stored in the PRUNplanner database. Your
+					password is stored only as a one-way hash, so administrators
+					cannot read it. PRUNplanner does not take responsibility for
+					the correctness or completeness of data and information it
+					provides.
 				</p>
 				<h3 class="text-lg py-3">Information Storage</h3>
 				<p class="pb-3">
