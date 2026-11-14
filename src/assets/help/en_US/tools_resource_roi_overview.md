@@ -1,11 +1,106 @@
-The Resource Overview tool builds upon the optimal planetary setups developed collaboratively with the ROI Overview. The purpose of these ROI tools is to normalize the profitability of all buildings in the game to the profit per unit of area, as that is the only common shared metric. This is extrapolated out to "profit per 500 area" assuming a full base of these buildings. This allows one to compare the profitability of building A to building B purely on the merits of their recipes. This tool identifies planets where your selected resource is available and calculates its extraction using the required COL, RIG, or EXT. All calculations assume COGC alignment, 5 experts, and the planetary conditions provided, while also considering your chosen CX preference.
+Use Resource ROI to pick a planet for an extraction base. It finds every planet where a resource can be extracted and works out what a base full of RIG, EXT or COL earns there. When a planet looks good, open it as a plan to fine-tune it.
 
-**Please note**: The Resource ROI Overview assumes the COGC being active as "Resource Extraction". Please check with Planet Search if the planet is actually running that program or another one.
+## How to use it {#how-to-use}
+
+1. Pick the resource under **Select Resource** (36 planet resources, ALO through ZIR).
+2. Check **CX Preference**, which decides the prices (see [Prices](#prices)).
+3. Press **Search & Calculate**.
+
+PRUNplanner first searches every planet with that resource, showing "Awaiting backend response". Then it calculates each one, with a progress bar that reads **Calculating resource ROI for planets.** You get the results sorted by daily yield, highest first.
+
+If you change the resource or the exchange preference, the table doesn't recalculate on its own. Press **Search & Calculate** again.
+
+## What it calculates {#what-it-calculates}
+
+On each planet with the resource, PRUNplanner looks at every extraction building whose recipes there produce it. For each of those buildings it builds a plan from the building's stored layout (see [Optimal Setups](#optimal-setups)). So each row is one planet and one building that can extract the resource there.
+
+Every plan uses these settings:
+
+| Setting | Value |
+| --- | --- |
+| Planet | the real planet, with its resource concentration, [[extra-building-materials\|extra construction materials]] and [[production-fees\|production fees]] |
+| [[cogc\|COGC]] program | Resource Extraction, on every planet |
+| [[experts\|Experts]] | 5 in every expertise |
+| Workforce | fully housed by the layout's habitations |
+
+> [!warning]
+> Every plan assumes the planet runs the Resource Extraction program, whatever it really runs. The **COGC** column shows the program the planet has today. Where that's different, the real numbers are lower.
+
+## Columns {#columns}
+
+The table shows 50 rows per page. The planet column stays pinned, and on narrow screens the table scrolls sideways. Click a numeric column's header to sort by it.
+
+| Group | Column | What it shows |
+| --- | --- | --- |
+| | **Planet** | name and ID. The link opens a new plan on that planet |
+| **Production** | **Building** | RIG, EXT or COL |
+| | **Daily** | units of the resource the layout extracts per day |
+| | **% Max.** | Daily as a percentage of the best Daily in the results, with a bar |
+| **Cost / Profit** | **COGM** | opens the cost breakdown per unit ([[cogm\|COGM]]) |
+| | **Plan Cost (ȼ)** | what it costs to build the whole layout on that planet |
+| | **Daily Profit (ȼ)** | what the layout earns per day, with a bar scaled to the best row |
+| | **Plan ROI (d)** | Plan Cost ÷ Daily Profit, in days |
+| **Planet** | **POPR** | the planet's latest population report (see [POPR](#popr)) |
+| | **COGC** | the program the planet runs today, or "—" if it has none |
+| | **Environment** | the extra construction materials the planet needs, as tiles |
+| | **Infrastructure** | LM, COGC, WAR, ADM and SHY, where the planet has them |
+| **Distances** | AI1, CI1, IC1, NC1 | [[jumps]] to each exchange. The nearest one is bold in its exchange colour, and "—" means there's no route |
+
+Daily Profit and Plan Cost follow the same rules as [Recipe ROI](/help/tools_roi_overview#calculation). Outputs count at the sell price and consumables at the buy price, with [[degradation]] and the planet's production fees included.
+
+**Plan ROI (d)** shows the raw number. A negative value means the plan loses money and never pays back. Its bar fills up as the payback approaches 20 days, so a longer bar means a slower payback. For example, a 10-day payback fills half the bar, and 20 days or more fill all of it.
+
+**% Max.** compares each row with the best one. For example, if the best layout extracts 200 units a day, a row with a Daily of 150 shows 150 ÷ 200 = 75 %.
+
+## Filters {#filters}
+
+- **Planet** and **Building** narrow the table to the one planet or building you pick.
+- **Positive ROI** hides the plans that lose money.
+- **Searched Material** shows the resource picked under **Select Resource**. If you change it without pressing **Search & Calculate**, the rows are still those of the earlier resource.
+
+The chart below shows the same rows as the filtered table.
+
+## Payback vs. distance {#chart}
+
+After a search, **Chart** opens the **Payback vs. distance** chart under the table, and your browser remembers whether it's open. To make it taller or shorter, drag its top edge, or focus the edge and use the arrow keys.
+
+- The horizontal axis is the plan ROI in days. The vertical axis is the jumps to the nearest exchange, or to the one you pick in **Distance to** (**Nearest CX** by default).
+- A dot's size is its daily profit, and its colour is the exchange its jumps count to (the nearest one by default).
+- Highlighted dots are the best trade-offs: no other planet both pays back faster and is closer. For example, a planet with 10 days at 4 jumps and one with 12 days at 2 jumps are both highlighted, since neither beats the other on both. A planet with 14 days at 5 jumps isn't, because the first one beats it on both.
+- A line under the chart names the highlighted planets and their jumps. It also names the planet that earns the most per day, if that one isn't among them.
+- Hover a dot to scroll its row into view.
+
+Not every row becomes a dot. The chart leaves out rows that never pay back, have no route to the exchange, or take more than twice the fastest payback, and it counts them below the chart. So if the fastest row pays back in 10 days, rows over 20 days are counted but not drawn. Don't worry when dots seem missing: they're still in the table.
+
+> [!tip]
+> A planet a few jumps further out that pays back almost as fast is often the better base, since shipping to and from an exchange costs time and fuel every week.
+
+## POPR {#popr}
+
+The **POPR** button loads the planet's latest population report ([[popr|POPR]]) and opens it per workforce tier:
+
+| Row | What it shows |
+| --- | --- |
+| **Total Population** | the tier's population figure from the report |
+| **Free Population** | workers without a job |
+| **Free Population %** | free workers as a percentage |
+| **Unfilled Jobs** | jobs that bases on the planet have open |
+
+If a planet has no report, the button turns into a red, disabled **No POPR** when you press it. Inside a plan, the POPR tool shows the same report with your plan's need next to it (see [Plan tools](/help/plan_tools)).
 
 ## Optimal Setups {#optimal-setups}
 
-Optimal setups were created with a linear model to calculate the optimal number of production buildings and required habitations to maximize the use of a 500-area base.
+PRUNplanner uses a fixed table of layouts, the same one [Recipe ROI](/help/tools_roi_overview#layouts) uses:
 
-- **RIG**: 35 RIG, 11 HB1, 1 STO
-- **EXT**: 14 EXT, 8 HB1, 1 HBB, 1 STO
-- **COL**: 22 COL, 11 HB1, 1 STO
+- RIG: 35 RIG, 11 HB1, 1 STO
+- EXT: 14 EXT, 8 HB1, 1 HBB, 1 STO
+- COL: 22 COL, 11 HB1, 1 STO
+
+Together with the core module, each one fits a base of 500 area.
+
+## Prices {#prices}
+
+**CX Preference** picks the [[exchange-preference|exchange preference]] the prices come from. "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]].
+
+> [!warning]
+> Picking an exchange preference here also makes it your default exchange preference for every page.

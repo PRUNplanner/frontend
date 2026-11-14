@@ -53,6 +53,9 @@ async function mountSearch() {
 	return { ...mounted, input, type, key };
 }
 
+// the first search builds the index over every article, slow on a CI runner
+const INDEX_LOAD = { timeout: 5000 };
+
 describe("HelpSearch", () => {
 	it("finds COGM, highlights it and opens the section on Enter", async () => {
 		const { type, key, component } = await mountSearch();
@@ -61,7 +64,7 @@ describe("HelpSearch", () => {
 			expect(
 				document.querySelector("[data-testid=help-search-results]")
 			).not.toBeNull();
-		});
+		}, INDEX_LOAD);
 
 		const links = [
 			...document.querySelectorAll("[data-testid=help-search-results] a"),
@@ -96,7 +99,7 @@ describe("HelpSearch", () => {
 			expect(
 				document.querySelector("[data-testid=help-search-empty]")
 			).not.toBeNull();
-		});
+		}, INDEX_LOAD);
 		expect(trackEvent).not.toHaveBeenCalled();
 
 		// 600 ms after the last key
@@ -125,7 +128,7 @@ describe("HelpSearch", () => {
 			expect(
 				document.querySelector("[data-testid=help-search-results] a")
 			).not.toBeNull();
-		});
+		}, INDEX_LOAD);
 		const first = document.querySelector(
 			"[data-testid=help-search-results] a"
 		) as HTMLElement;

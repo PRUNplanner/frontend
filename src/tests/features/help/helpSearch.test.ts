@@ -15,17 +15,16 @@ describe("helpSearch", () => {
 		expect(Object.keys(indexes)).toContain("de_DE");
 	});
 
-	it("finds COGM in Exchanges and Plan production", async () => {
+	it("finds COGM in Exchanges, Plan production and the glossary", async () => {
 		const index = (await indexes.en_US!()).default;
 		const results = searchHelp(index, "cogm", titleOf, order);
 		const articles = results.map((r) => r.article);
 		expect(articles).toContain("exchanges");
 		expect(articles).toContain("plan_production");
-		// the section title match ranks first
-		expect(results[0]).toMatchObject({
-			article: "exchanges",
-			section: "fixed-prices-and-cogm",
-		});
+		expect(results).toContainEqual(
+			expect.objectContaining({ article: "glossary", section: "cogm" })
+		);
+		// section title matches rank first
 		expect(results[0]!.title.find((p) => p.mark)?.text).toBe("COGM");
 	});
 

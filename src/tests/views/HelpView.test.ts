@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { flushPromises } from "@vue/test-utils";
+import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 
 import HelpView from "@/views/HelpView.vue";
+import { GUIDES } from "@/features/help/helpArticles";
 import { mountComponent } from "@/tests/mountComponent";
 
 const head = vi.hoisted(() => ({ useHead: vi.fn() }));
@@ -56,6 +57,26 @@ describe("HelpView", () => {
 		expect(card.text()).toContain("0.36.0");
 		expect(card.text()).toContain("Plan layouts");
 		expect(card.text()).not.toContain("0.35.1");
+	});
+
+	it("starts with the guides and has a glossary card", async () => {
+		const { wrapper } = await mountView();
+		const linksIn = (testid: string) => {
+			const box = wrapper.find(`[data-testid=${testid}]`).element;
+			return wrapper
+				.findAllComponents(RouterLinkStub)
+				.filter((l) => box.contains(l.element));
+		};
+		const guides = linksIn("help-guides");
+		expect(guides.map((l) => l.props("to"))).toEqual(
+			GUIDES.map((id) => `/help/${id}`)
+		);
+		expect(guides[0]!.text()).toContain("help.guides.guide_first_base");
+
+		const chips = linksIn("help-glossary").map((l) => l.props("to"));
+		expect(chips).toContain("/help/glossary#cogm");
+		expect(chips).toContain("/help/glossary#ghost-sites");
+		expect(chips).toContain("/help/glossary");
 	});
 
 	it("opens the search from its box and on /", async () => {

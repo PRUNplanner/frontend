@@ -45,10 +45,9 @@
 	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 	import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
 	import EmailNudgeBanner from "@/features/account/components/EmailNudgeBanner.vue";
+	// above the plan list: in the first render, so the list never drops below it
+	import EmpireCostOverview from "@/features/empire/components/EmpireCostOverview.vue";
 
-	const AsyncEmpireCostOverview = defineAsyncComponent(
-		() => import("@/features/empire/components/EmpireCostOverview.vue")
-	);
 	const AsyncEmpirePlanList = defineAsyncComponent(
 		() => import("@/features/empire/components/EmpirePlanList.vue")
 	);
@@ -499,7 +498,7 @@
 								</PForm>
 							</div>
 							<div>
-								<AsyncEmpireCostOverview
+								<EmpireCostOverview
 									:cost-overview="costOverview"
 									:shipping-demand="shippingDemand"
 									:split="empireSplit" />

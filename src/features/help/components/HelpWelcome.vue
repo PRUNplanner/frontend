@@ -5,7 +5,7 @@
 	 * @author jplacht
 	 */
 	const steps: { key: string; to?: string }[] = [
-		{ key: "l1", to: "/manage" },
+		{ key: "l1", to: "/empire" },
 		{ key: "l2", to: "/manage" },
 		{ key: "l3", to: "/search" },
 		{ key: "l4" },
@@ -13,6 +13,7 @@
 	];
 	const concepts = ["p1", "p2", "p3"];
 	const features = ["p1", "p2", "p3", "p4", "p5"];
+	const navigation = ["n1", "n2", "n3", "n4", "n5", "n6"];
 </script>
 
 <template>
@@ -111,6 +112,22 @@
 					</p>
 				</div>
 			</div>
+		</section>
+
+		<section data-testid="help-welcome-navigation">
+			<h2 class="text-lg font-bold mb-4">
+				{{ $t("help.navigation.title") }}
+			</h2>
+			<dl class="grid grid-cols-1 @xl:grid-cols-2 gap-x-10 gap-y-6">
+				<div v-for="n in navigation" :key="n">
+					<dt class="font-bold text-ink-strong mb-1">
+						{{ $t(`help.navigation.${n}.title`) }}
+					</dt>
+					<dd class="text-sm leading-relaxed text-muted-strong">
+						{{ $t(`help.navigation.${n}.p`) }}
+					</dd>
+				</div>
+			</dl>
 		</section>
 	</div>
 </template>

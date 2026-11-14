@@ -41,7 +41,7 @@ describe("HelpWelcome", () => {
 				? steps[i].findComponent(RouterLinkStub).props("to")
 				: undefined;
 		expect([0, 1, 2, 3, 4].map(target)).toEqual([
-			"/manage",
+			"/empire",
 			"/manage",
 			"/search",
 			undefined,
@@ -77,6 +77,19 @@ describe("HelpWelcome", () => {
 		);
 		expect(figure.find("figcaption").text()).toBe(
 			"help.getting_started.image_label"
+		);
+	});
+});
+
+describe("HelpWelcome: getting around", () => {
+	it("explains the navigation in six items", async () => {
+		const { wrapper } = await mountComponent(HelpWelcome);
+		const nav = wrapper.find("[data-testid=help-welcome-navigation]");
+		expect(nav.find("h2").text()).toBe("help.navigation.title");
+		expect(nav.findAll("dt").map((d) => d.text())).toEqual(
+			["n1", "n2", "n3", "n4", "n5", "n6"].map(
+				(n) => `help.navigation.${n}.title`
+			)
 		);
 	});
 });

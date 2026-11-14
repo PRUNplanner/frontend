@@ -198,6 +198,42 @@ describe("PlanGrid", () => {
 		height.mockRestore();
 	});
 
+	it("measures parts and the page's width before the first paint", async () => {
+		// no animation frame ever runs: only what happens before paint counts
+		vi.stubGlobal(
+			"requestAnimationFrame",
+			vi.fn(() => 1)
+		);
+		const height = vi
+			.spyOn(HTMLElement.prototype, "offsetHeight", "get")
+			.mockReturnValue(100);
+		const width = vi
+			.spyOn(HTMLElement.prototype, "clientWidth", "get")
+			.mockReturnValue(1000);
+		const { wrapper } = await mountComponent(
+			PlanGrid,
+			{ layout: presetLayout("standard"), folded: [] },
+			{ setup: provideContext(planViewContext()) }
+		);
+		await flushPromises();
+		// the real heights, not the 180 px guess: the band is one tile high,
+		// so the page below it never moves when a frame measures it
+		expect(box(wrapper, "i-kpi-profit").attributes("style")).toContain(
+			"height: 102px"
+		);
+		expect(
+			wrapper.find("[data-grid='band']").attributes("style")
+		).toContain("height: 102px");
+		// laid out at the page's width, not the 1,280 px default
+		const last = box(wrapper, "i-kpi-storage").attributes("style")!;
+		const num = (re: RegExp) => Number(last.match(re)![1]);
+		expect(
+			num(/translate\(([\d.]+)px/) + num(/width: ([\d.]+)px/)
+		).toBeCloseTo(1000);
+		height.mockRestore();
+		width.mockRestore();
+	});
+
 	it("measures the page's width without a preview width", async () => {
 		const width = vi
 			.spyOn(HTMLElement.prototype, "clientWidth", "get")

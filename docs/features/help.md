@@ -5,9 +5,21 @@ article, section anchors), search, and the Help panel every page opens at
 its article. Public and indexable (in the sitemap); the app renders every
 page from the markdown the build parsed, no per-page files.
 
-**Used by.** `HelpPanel` on 18 pages (plan, Plan check, empire, exchanges,
-manage, planet search, profile, FIO burn/repair, every tool page);
-`HelpView` (`/help`) and `HelpArticleView` (`/help/:article`).
+**Used by.** `HelpPanel` on 20 pages (plan, Plan check, empire, exchanges,
+manage, planet search, profile, API keys, FIO burn/repair, every tool page
+incl. the Market report); `HelpView` (`/help`) and `HelpArticleView`
+(`/help/:article`).
+
+**Content rule.** Help follows the code on `main`: every number, default,
+limit and label in an article comes from the code (the 0.36.0 audit and its
+review list: workspace `specs/assets/help-centre/audit.md`). A change to
+user-visible behaviour updates its article in the same PR, but not its
+version: feature PRs merge before their release is known. The release PR
+(`chore(release): x.y.z`, the last PR of a release) bumps `package.json`,
+adds the changelog entry and sets `updatedIn` to x.y.z for every article
+changed since the previous release. `CHECKED` in `helpArticles.ts` is the
+version for articles last checked as a whole; one article can carry its
+own (`{ ...plan("plan_base", [...]), updatedIn: "0.37.0" }`).
 
 ## Key files
 
@@ -52,6 +64,46 @@ manage, planet search, profile, FIO burn/repair, every tool page);
 2. Add a registry entry in `helpArticles.ts` and `help.articles.<id>.title`
    in `src/locales/en_US/help.json`.
 3. Link it from a page with `<HelpPanel article="<id>" section="<id>" />`.
+
+Writing rules:
+
+- `**bold**` only for exact `en_US` UI labels;
+  `helpLabels.test.ts` checks every bold span against the locale strings
+  (`{placeholders}` match anything; deliberate exceptions go on its
+  allow list). Use *italic* for other emphasis.
+- Glossary links: `[[id|text]]`, or `[[Text]]` when the text slugifies to
+  the id, on a term's first use in an article. They render as
+  `<a class="help-term">` to `/help/glossary#id`; `HelpTermPopover` shows the
+  entry's first paragraph on hover, focus or a first tap. An unknown id
+  fails the English build; in a translation it renders as text, so Crowdin
+  can't break it. `[[x]](url)` stays an ordinary link (changelog PR links).
+- `glossary.md`: one `## Term {#id}` per term, alphabetical, starting with
+  one short plain paragraph (the popover text). `helpGlossary.ts` reads it.
+- Guides (`guide_*`, area Start here, `GUIDES` in `helpArticles.ts`) are
+  the home page's "Start here" cards; a card's text is
+  `help.guides.<id>`.
+- Style: "you", "10 %", "ȼ / day"; "exchange preference".
+- Tone: write like an experienced player explaining the app to a
+  corp-mate. Open with what the reader can do and why; full sentences with
+  contractions and a named actor ("PRUNplanner counts…"), one idea per
+  sentence; label-first lines only in tables and short reference lists.
+  No filler words (seamless, robust, crucial, ensure, simply, just, "note
+  that"), no hype, exclamation marks, em dashes or closing summaries.
+- Screenshots: the guides show the app as
+  `![what it shows](/images/help/guides/<name>.webp)`, files in
+  `public/images/help/guides/` (one image for every locale; the alt text is
+  translated). They are taken from an e2e stack by the workspace script
+  `.claude/skills/e2e/ui-audit/help-shots.mjs`, which lists every shot with
+  its page, user and clicks in `help-shots.json`. A change to a page or
+  control a screenshot shows retakes it in the same PR
+  (`--only <name>`); `helpArticles.test.ts` fails on a missing file, a
+  missing alt text or an unused file.
+- Explain, don't only describe: say why a setting matters, what a warning
+  or empty state means and what to do, and give worked examples with
+  recomputed numbers. Every statement is backed by the code or an
+  owner-confirmed game fact; no recommendations the owner hasn't made.
+  Screen-reader-only labels (a group's `aria-label`) aren't named: point
+  to what's visible instead.
 
 `src/tests/features/help/helpArticles.test.ts` fails on an English file
 without an entry (or the reverse), a missing title key, a heading without

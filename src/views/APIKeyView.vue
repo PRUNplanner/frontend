@@ -21,6 +21,7 @@
 
 	// Components
 	import APIURLBuilder from "@/features/api_keys/components/APIURLBuilder.vue";
+	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 
 	// Types & Interfaces
 	import type { APIKey } from "@/features/api/schemas/apiKeysData.schemas";
@@ -226,6 +227,7 @@
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row flex-wrap gap-x-6 gap-y-2 justify-between">
 			<h1 class="text-2xl font-bold">{{ $t("api_keys.title") }}</h1>
+			<HelpPanel article="api_keys" />
 		</div>
 		<div
 			class="grid grid-cols-1 lg:grid-cols-3 lg:divide-x divide-white/10 min-h-screen">

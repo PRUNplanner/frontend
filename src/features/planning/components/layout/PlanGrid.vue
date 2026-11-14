@@ -1,6 +1,7 @@
 <script setup lang="ts">
 	import {
 		computed,
+		nextTick,
 		onBeforeUnmount,
 		onMounted,
 		provide,
@@ -91,7 +92,9 @@
 
 	/*
 	 * Measuring: the grid's width, and each item's natural content height,
-	 * from one ResizeObserver; updates land once per animation frame
+	 * from one ResizeObserver; updates land once per animation frame. A part
+	 * that mounts is measured before the browser paints, so the first frame
+	 * already shows its real height and nothing moves a frame later
 	 */
 	const root = useTemplateRef<HTMLElement>("root");
 	const pageWidth = ref(0);
@@ -126,6 +129,19 @@
 	function schedule(): void {
 		if (!frame) frame = requestAnimationFrame(flush);
 	}
+	// once the render that mounted the parts is done: the page's width
+	// first (rendered at it), then the parts' heights, all before paint
+	let measuring = false;
+	function measureBeforePaint(): void {
+		if (measuring) return;
+		measuring = true;
+		void nextTick(async () => {
+			if (root.value) pageWidth.value = root.value.clientWidth;
+			await nextTick();
+			measuring = false;
+			flush();
+		});
+	}
 
 	const observer =
 		typeof ResizeObserver === "undefined"
@@ -145,7 +161,7 @@
 			observer?.observe(el);
 		}
 		dirty.add(id);
-		schedule();
+		measureBeforePaint();
 		return () => {
 			for (const el of els) {
 				owners.delete(el);
