@@ -1,12 +1,12 @@
-The Upkeep Price Calculator compares the materials that [[upkeep]] buildings consume, by what one unit of a need costs with each of them. Use it to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at today's prices.
+Use the Upkeep Price Calculator to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at today's prices. It compares the materials that [[upkeep]] buildings consume by what one unit of a need costs with each of them.
 
 ## How to use it {#how-to-use}
 
-1. Check **CX Preference**: it decides the prices (see [Prices](#prices)).
+1. Check **CX Preference**, which decides the prices (see [Prices](#prices)).
 2. Pick the need under **Need**: **Safety** (default), **Health**, **Comfort**, **Culture** or **Education**.
 3. Read the **Material Details** table, cheapest first.
 
-The page calculates all five needs when you open it ("Calculating Upkeep Material Prices") and again when you change the exchange preference.
+The page calculates all five needs when you open it ("Calculating Upkeep Material Prices"), and again when you change the exchange preference.
 
 ## Buildings and needs {#buildings}
 
@@ -24,13 +24,13 @@ Four buildings serve two needs: EMC (Safety and Health), WCE (Health and Comfort
 
 ## Material Details {#material-details}
 
-One row per building and material for the selected need. The table shows 50 rows per page; click a header to sort by it.
+For the selected need, the table has one row per building and material. It shows 50 rows per page, and you can click a header to sort by it.
 
 | Column | What it shows |
 | --- | --- |
 | **Material** | the material the building consumes |
 | **Building** | the upkeep building, as its ticker |
-| **ȼ/Need** | the cost per unit of need (4 decimals); lower is better |
+| **ȼ/Need** | the cost per unit of need (4 decimals). Lower is better |
 | **CX Price (ȼ)** | the material's buy price under your exchange preference |
 | **Qty/Day** | how many the building consumes per day |
 
@@ -40,16 +40,16 @@ By default the rows are sorted by **ȼ/Need**, lowest first. Materials without a
 
 ȼ/Need = CX Price × Qty/Day ÷ (need provided × number of needs the building serves)
 
-For a building that serves two needs, the need it provides is counted twice, because the same materials pay for both needs. Its rows therefore look cheaper than a one-need building with the same costs.
+For a building that serves two needs, PRUNplanner counts the need it provides twice, because the same materials pay for both needs. That's why its rows look cheaper than a one-need building with the same costs.
 
-Each row looks at one material on its own, as if that material alone bought the building's whole need. A building consumes all of its materials, so the full cost of a building per unit of need is the sum of its rows.
+Each row looks at one material on its own, as if that material alone bought the building's whole need. A building consumes all of its materials, so its full cost per unit of need is the sum of its rows.
 
 > [!tip]
-> Compare buildings by adding up their rows: a building with one cheap material and one expensive one can cost more per need than a building whose materials are all middling.
+> Compare buildings by adding up their rows. A building with one cheap material and one expensive one can cost more per need than a building whose materials are all middling.
 
 ## Prices {#prices}
 
-**CX Preference** picks the [[exchange-preference|exchange preference]]; "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet: planet exceptions in your exchange preference don't apply here.
+**CX Preference** picks the [[exchange-preference|exchange preference]], and "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet, so planet exceptions in your exchange preference don't apply here.
 
 > [!warning]
 > Picking an exchange preference here also makes it your default exchange preference for every page.

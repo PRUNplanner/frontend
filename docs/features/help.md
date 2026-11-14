@@ -77,6 +77,12 @@ Writing rules:
   the home page's "Start here" cards; a card's text is
   `help.guides.<id>`.
 - Style: "you", "10 %", "ȼ / day"; "exchange preference".
+- Tone: write like an experienced player explaining the app to a
+  corp-mate. Open with what the reader can do and why; full sentences with
+  contractions and a named actor ("PRUNplanner counts…"), one idea per
+  sentence; label-first lines only in tables and short reference lists.
+  No filler words (seamless, robust, crucial, ensure, simply, just, "note
+  that"), no hype, exclamation marks, em dashes or closing summaries.
 
 `src/tests/features/help/helpArticles.test.ts` fails on an English file
 without an entry (or the reverse), a missing title key, a heading without

@@ -1,4 +1,4 @@
-An API key lets a spreadsheet, dashboard or script read your PRUNplanner data without your password. The [API Keys](/apikey) page (**API** in the account menu) creates and revokes keys and builds ready-to-paste URLs, Google Sheets formulas, curl and Python snippets.
+With an API key, a spreadsheet, dashboard or script can read your PRUNplanner data without your password. On the [API Keys](/apikey) page (**API** in the account menu) you create and revoke keys, and it builds ready-to-paste URLs, Google Sheets formulas, curl and Python snippets for you.
 
 ## What Keys Are For {#what-keys-are-for}
 
@@ -10,14 +10,14 @@ The PRUNplanner REST API serves your planning data (plans, empires, exchange pre
 
 Public game data and exchange prices need no key. Everything that belongs to you does.
 
-A key acts as you: it can do everything your login can do through the API, not only read. There are no read-only keys.
+A key acts as you. It can do everything your login can do through the API, not only read. There are no read-only keys.
 
-The full reference is at [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Its Authorize button takes a key, so you can try calls in the browser.
+You'll find the full reference at [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Its Authorize button takes a key, so you can try calls in the browser.
 
 ## Creating a Key {#create}
 
 1. Press **Create New Key**.
-2. Enter a **Key Name** that tells you later where you use it (for example the sheet's name). Use 50 characters at most; a longer name fails with a general error.
+2. Enter a **Key Name** that tells you later where you use it, for example the sheet's name. Keep it to 50 characters at most. A longer name fails with a general error.
 3. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**.
 4. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
 5. Press **I've saved my key**.
@@ -34,11 +34,11 @@ Send the key with each request, in one of two ways:
 | Header | `Authorization: Api-Key <YOUR_KEY>` | Scripts, curl, dashboards |
 | Query parameter | `?api_key=<YOUR_KEY>` at the end of the URL | Google Sheets `IMPORTDATA`, tools that only take a URL |
 
-A key in a URL is visible to everyone who can see that URL, for example everyone who can open your sheet. Use a separate key per sheet or script, so you can revoke one without breaking the others.
+Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. Use a separate key per sheet or script, so you can revoke one without breaking the others.
 
 ## URL Builder {#url-builder}
 
-The **URL builder** writes the request for you. Pick the **Data**, the **Format** (CSV or JSON, where both exist) and fill in the inputs the endpoint needs: **Empire**, **Plan** or **CX preference** (from your account), **Planet** (a natural ID such as OT-580b), **Material**, **Exchange** (AI1, CI1, IC1, NC1 or UNIVERSE) or **Days** (last day, 7, 14 or 31).
+The **URL builder** writes the request for you. Pick the **Data** and the **Format** (CSV or JSON, where both exist), then fill in the inputs the endpoint needs. Those can be **Empire**, **Plan** or **CX preference** (from your account), **Planet** (a natural ID such as OT-580b), **Material**, **Exchange** (AI1, CI1, IC1, NC1 or UNIVERSE) or **Days** (last day, 7, 14 or 31).
 
 | Group | Data |
 | --- | --- |
@@ -59,7 +59,7 @@ Until you fill in your key, the snippets show `<YOUR_KEY>` in its place.
 
 ## Rate Limits {#rate-limits}
 
-Requests above these limits get the answer *429 Too Many Requests*. Wait a minute and try again.
+If you go over these limits, the request gets the answer *429 Too Many Requests*. Wait a minute and try again.
 
 | Requests | Limit | Counted per |
 | --- | --- | --- |
@@ -68,11 +68,11 @@ Requests above these limits get the answer *429 Too Many Requests*. Wait a minut
 | **Market history** (one material) | 120 per minute | IP address |
 | **Market history, every material** | 30 per minute | IP address |
 
-A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. Prefer one request for many rows, such as **Market history, every material**, over one request per material.
+A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. One request for many rows, such as **Market history, every material**, is better than one request per material.
 
 ## Managing Keys {#manage-keys}
 
-**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix** (the first, non-secret part of the key, to tell them apart), **Created** and **Last Used**. Last Used shows **Never** until the key is used; after that, requests update it within a few minutes.
+**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, so you can tell them apart. Last Used shows **Never** until the key is used. After that, requests update it within a few minutes.
 
 **Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
 
@@ -81,10 +81,10 @@ A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. Prefer o
 Keys have no expiry date. A key stops working when:
 
 - you revoke it,
-- you change or reset your password: every key created before stops at once. Create new ones and update your sheets and scripts,
+- you change or reset your password (every key created before then stops at once, so create new ones and update your sheets and scripts),
 - your account is deactivated.
 
-A request with a key that no longer works gets *401* with "Invalid API Key". Keys stopped by a password change still appear in the list; revoke them to tidy up.
+A request with a key that no longer works gets *401* with "Invalid API Key". Keys stopped by a password change still appear in the list, and you can revoke them to tidy up.
 
 > [!warning]
 > Treat a key like your password. Don't put it in public repositories or share it with services you don't trust. If a key may have leaked, revoke it and create a new one.
