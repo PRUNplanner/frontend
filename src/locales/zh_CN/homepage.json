@@ -2,196 +2,196 @@
 	"navigation": {
 		"registration": "新建账户",
 		"login": "登录",
-		"sections": "Sections",
-		"how": "How it works",
-		"market": "Market",
-		"planet_search": "Planet Search",
-		"features": "Features",
-		"tools": "Tools",
-		"help": "Help",
+		"sections": "分区",
+		"how": "工作原理",
+		"market": "市场",
+		"planet_search": "星球搜索",
+		"features": "功能",
+		"tools": "工具",
+		"help": "帮助",
 		"github": "GitHub",
-		"menu": "Menu",
-		"menu_close": "Close menu",
-		"tools_group": "Tools",
-		"all_tools": "All tools"
+		"menu": "菜单",
+		"menu_close": "关闭菜单",
+		"tools_group": "工具",
+		"all_tools": "全部工具"
 	},
 	"auth_panel": {
-		"label": "Log in or create an account",
-		"switch": "Account",
-		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
+		"label": "登录或创建账号",
+		"switch": "账户",
+		"plan_context": "登录后即可在 {planet}（{id}）上开始规划，你会直接进入。第一次来？先免费注册，之后会回到 {name}。"
 	},
 	"hero": {
 		"eyebrow": "Prosperous Universe 的基地与帝国规划工具",
-		"title": "Plan a base {accent} you build it.",
-		"title_accent": "before",
-		"positioning": "The definitive Prosperous Universe companion for all who love to strategize and optimise.",
-		"lead": "Know what a base earns, what it needs and when it pays back, before you spend anything on it. Then group your bases into an empire and see what it makes, burns and has to ship.",
+		"title": "{accent}动手建造之前，先规划好一座基地。",
+		"title_accent": "在",
+		"positioning": "为所有热爱策略与优化的玩家打造的终极《Prosperous Universe》助手。",
+		"lead": "在投入任何成本之前，先弄清楚一座基地能赚多少、需要什么、何时回本。然后把你的基地编成一个帝国，看清它产出什么、消耗什么、要运走什么。",
 		"cta": "开始规划，免费使用",
 		"cta_logged_in": "掌管你的帝国",
-		"example": "Open an example plan",
-		"example_note": "The example needs no account. Registering takes a minute with the game open.",
-		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
-		"image_title": "prunplanner.org / plan / Montem iron"
+		"example": "打开示例规划",
+		"example_note": "示例无需账号。注册只要一分钟，开着游戏就能完成。",
+		"image_alt": "Montem 上一座铁矿基地的规划编辑器：结果栏里的利润、回本周期、劳动力与面积，带配方的生产清单，以及材料 I/O",
+		"image_title": "prunplanner.org / 规划 / Montem 铁矿"
 	},
 	"numbers": {
-		"label": "PRUNplanner in numbers",
-		"players": "players plan with it",
-		"plans": "plans created",
-		"free_value": "Free",
-		"free": "No ads, no paid tier.",
-		"languages_value": "{count} languages",
-		"languages": "Open source, translated by players and AI."
+		"label": "PRUNplanner 数据一览",
+		"players": "名玩家用它规划",
+		"plans": "个规划已创建",
+		"free_value": "免费",
+		"free": "没有广告，没有付费档。",
+		"languages_value": "{count} 种语言",
+		"languages": "开源，由玩家与 AI 共同翻译。"
 	},
 	"tour": {
-		"pause": "Pause",
-		"play": "Play",
-		"step_of": "Guided tour · step {step} of {total}",
+		"pause": "暂停",
+		"play": "播放",
+		"step_of": "引导导览 · 第 {step} 步，共 {total} 步",
 		"plan": {
-			"label": "Plan tour steps",
+			"label": "规划导览步骤",
 			"whole": {
-				"title": "The whole plan",
-				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
+				"title": "规划全貌",
+				"text": "一座基地，一屏看清：顶部是利润、回本、劳动力、面积与仓储，中间是生产，侧边是物料流，改动即时更新。"
 			},
 			"buildings": {
-				"title": "Add buildings",
-				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
+				"title": "添加建筑",
+				"text": "从星球可供的建筑与配方中挑选。每个建筑显示效率、日利润和面积；每个配方显示运行时间、占比和 COGM。"
 			},
 			"workforce": {
-				"title": "Staff it",
-				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
+				"title": "配置人力",
+				"text": "所需劳动力与可提供住房的对比，以及由此得到的效率；「基地」面板里是各阶层和你选择供给的奢侈品。"
 			},
 			"money": {
-				"title": "See the money",
-				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
+				"title": "看清收益",
+				"text": "Montem 上这座铁矿基地每天赚 21,938.67，63.56 天收回建造成本。"
 			},
 			"flow": {
-				"title": "Check the flow",
-				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
+				"title": "检查物料流",
+				"text": "材料 I/O 列出基地每天消耗与产出的东西、每项的金额，并标出在各自市场中占比很大的材料。"
 			},
 			"tabs": {
-				"title": "Go deeper",
-				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
+				"title": "深入一层",
+				"text": "建造、供应、到访、维修、利润、规划检查与 POPR，都只差一个标签页。"
 			}
 		},
 		"planet_search": {
-			"label": "Planet Search tour steps",
+			"label": "星球搜索导览步骤",
 			"materials": {
-				"title": "Pick your materials",
-				"text": "H2O, at least 21 a day. Add more materials, in any-of or all-of groups."
+				"title": "选择材料",
+				"text": "H2O，每天至少 21。可继续添加材料，按「任一满足」或「全部满足」分组。"
 			},
 			"conditions": {
-				"title": "Set the conditions",
-				"text": "Surface, fertility, gravity, pressure, temperature and the active COGC program."
+				"title": "设定条件",
+				"text": "地表、肥沃度、重力、气压、温度，以及当前生效的 COGC 计划。"
 			},
 			"matches": {
-				"title": "Read the matches",
-				"text": "9 of 4576 planets, with their other resources, COGC and infrastructure."
+				"title": "查看匹配结果",
+				"text": "4576 颗星球中的 9 颗，连同它们的其他资源、COGC 和基础设施。"
 			},
 			"create_plan": {
-				"title": "Start a plan",
-				"text": "The + button creates a plan on that planet."
+				"title": "开始规划",
+				"text": "「+」按钮会在该星球上创建规划。"
 			},
 			"compare": {
-				"title": "Compare up to four",
-				"text": "Pin planets with the star and see them side by side."
+				"title": "最多对比四个",
+				"text": "用星标固定星球，并排对比。"
 			}
 		},
 		"empire": {
-			"label": "Empire tour steps",
+			"label": "帝国导览步骤",
 			"totals": {
-				"title": "One bottom line",
-				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
+				"title": "一行总账",
+				"text": "所有基地合计的收入、成本与利润：这个帝国每天赚 104,290.08。"
 			},
 			"plans": {
-				"title": "Every plan side by side",
-				"text": "Each base with its planet, COGC and daily profit, and how many permits the empire uses."
+				"title": "所有规划并排看",
+				"text": "每座基地连同它的星球、COGC 与日利润，以及帝国用掉了多少许可。"
 			},
 			"material_io": {
-				"title": "Short or spare",
-				"text": "Material I/O across all bases shows what the empire has to buy or ship in, and what it can sell."
+				"title": "缺什么、余什么",
+				"text": "全基地的材料 I/O 显示帝国需要买入或运进什么，又能卖出什么。"
 			},
 			"tabs": {
-				"title": "Look further",
-				"text": "Analysis and Production Opportunities are one tab away."
+				"title": "再看一步",
+				"text": "分析与生产机会，都只差一个标签页。"
 			}
 		}
 	},
 	"most_used": {
-		"eyebrow": "What players use most",
-		"title": "Where to settle, what pays back, and when a base runs dry.",
+		"eyebrow": "玩家最常用的",
+		"title": "落哪儿、什么能回本、基地什么时候采空。",
 		"needs_fio": "需要 FIO",
 		"planet_search": {
 			"label": "行星搜索",
 			"title": "为你的下一座基地找到对的球。",
 			"lead": "筛遍整个宇宙仅为找到最适合您后续规划的那一颗。",
 			"alt": "行星搜索：左侧的筛选条件将行星依据资源、全球商会以及基础设施进行匹配",
-			"cta": "Try Planet Search",
-			"cta_note": "No account needed."
+			"cta": "试试星球搜索",
+			"cta_note": "无需账号。"
 		},
 		"empire": {
-			"label": "Empire",
-			"title": "Run every base as one empire.",
-			"lead": "Put your plans together and see what the whole operation earns, and which materials it is short of or has spare.",
-			"alt": "Empire view: revenue, cost and profit, the list of plans, and material I/O across all bases"
+			"label": "帝国",
+			"title": "把所有基地当作一个帝国来运营。",
+			"lead": "把规划合在一起，看清整体赚多少，以及哪些材料短缺、哪些有余。",
+			"alt": "帝国视图：收入、成本与利润，规划列表，以及全基地的材料 I/O"
 		},
 		"resource_roi": {
 			"label": "资源 ROI",
 			"title": "看看哪颗星球最会画K线。",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan: plan cost, daily profit and ROI in days, next to POPR, COGC, environment and infrastructure.",
+			"lead": "选一种资源和你偏好的交易所。每颗有这资源的星球都会得到一份算过成本的规划：规划成本、日利润和以天计的 ROI，旁边是 POPR、COGC、环境与基础设施。",
 			"alt": "ALO 的资源 ROI：行星依据日产量、规划成本、日利润和 ROI 天数排列"
 		},
 		"fio_burn": {
 			"label": "FIO 消耗",
 			"title": "提前知道基地何时停摆。",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses: days left per material, thresholds you set, and a resupply list per base exported as XIT actions.",
+			"lead": "绑定 FIO 账号后，Burn 会把你的实际库存和每个规划的用量对比：每种材料还能撑几天、你设定的阈值，以及按基地导出的、可直接作为 XIT 操作的补给清单。",
 			"alt": "FIO 消耗：每份规划的消耗数据，并可扩展查看一座基地的每种物料的消耗、库存量和库余天数"
 		},
 		"starter": {
-			"label": "New to the game",
-			"title": "Start from a typical setup, then make it yours.",
-			"text": "An empty plan offers what other players typically plan on that planet. It is a guideline, not a rule: change every building and recipe until you have found your own best setup."
+			"label": "刚入坑",
+			"title": "从一个典型配置起步，再改成你自己的。",
+			"text": "空白规划会给出其他玩家在该星球的常见配置。那只是参考，不是规则：建筑和配方尽管改，直到找到你自己的最佳方案。"
 		},
 		"shared": {
-			"label": "Shared plans",
-			"title": "Send a plan as a link.",
-			"text": "Anyone with the link can see the recipes and try changes, without an account. Good for asking your corporation for feedback."
+			"label": "分享规划",
+			"title": "用链接把规划发出去。",
+			"text": "拿到链接的人无需账号就能看到配方并试着改动。很适合拿去问你的公司要点意见。"
 		}
 	},
 	"market": {
-		"eyebrow": "Market today",
-		"title": "What the commodity exchanges did this week",
+		"eyebrow": "今日市场",
+		"title": "本周商品交易所的表现",
 		"lead": {
-			"index": "Prices on the four exchanges moved {change} since {start} and {change30} over the last 30 days.",
-			"sector": "{sector} lead ({change}).",
-			"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} since {start}.",
-			"source": "Straight from FIO, no account needed."
+			"index": "四个交易所的价格自 {start} 以来变动 {change}，近 30 天变动 {change30}。",
+			"sector": "{sector} 领涨（{change}）。",
+			"pioneer": "养活 100 名先驱每天要花 {cost}，自 {start} 以来变动 {change}。",
+			"source": "数据直接来自 FIO，无需账号。"
 		},
 		"index": {
-			"label": "PrUn CX Index · all exchanges",
-			"chip": "{days} d",
-			"caption": "VWAP 7D of a basket of {members} materials, weighted by what they trade. {start} = 100.",
-			"chart_label": "CX Index over 90 days"
+			"label": "PrUn CX 指数 · 全交易所",
+			"chip": "{days} 天",
+			"caption": "{members} 种材料一篮子组合的 7 日 VWAP，按成交量加权。{start} = 100。",
+			"chart_label": "90 天 CX 指数"
 		},
 		"movers": {
-			"title": "This week’s movers",
-			"caption": "VWAP 7D against VWAP 30D. Only materials with at least 5 M ȼ and 50 units traded in 7 days."
+			"title": "本周异动",
+			"caption": "7 日 VWAP 对比 30 日 VWAP。仅统计 7 天内成交额至少 5 M ȼ、成交量至少 50 单位的材料。"
 		},
 		"sectors": {
-			"title": "By sector, last 90 days",
-			"caption": "Bar: share of 30-day turnover",
-			"change30": "30 d {change}",
-			"share": "{share} % of turnover",
-			"label": "{sector}: {change} in 90 days",
-			"spark_label": "{sector}, index over 90 days"
+			"title": "按行业，近 90 天",
+			"caption": "柱：30 天成交额占比",
+			"change30": "30 天 {change}",
+			"share": "占成交额的 {share}%",
+			"label": "{sector}：90 天 {change}",
+			"spark_label": "{sector}，90 天指数"
 		},
-		"cta": "Open the market report",
-		"source": "Daily data to {date} · FIO"
+		"cta": "打开市场报告",
+		"source": "每日数据截至 {date} · FIO"
 	},
 	"setup": {
-		"eyebrow": "How it works",
-		"title": "From first base to empire.",
-		"lead": "Three things carry everything: plans, empires and exchange preferences.",
-		"label": "Set-up steps",
+		"eyebrow": "工作原理",
+		"title": "从第一座基地到帝国。",
+		"lead": "三样东西撑起一切：规划、帝国和交易所偏好。",
+		"label": "设置步骤",
 		"plan": {
 			"label": "规划",
 			"text": "一颗行星上一座基地：建筑、生产模板、住房、专家以及全球商会，都从行星搜索开始。",
@@ -209,9 +209,9 @@
 		}
 	},
 	"tools": {
-		"eyebrow": "And the tools around it",
-		"title": "Market data and calculators, priced from FIO.",
-		"lead": "FIO is the community service that reads your in-game data. Link your account and Repair uses your real bases too.",
+		"eyebrow": "还有周边工具",
+		"title": "市场数据与计算器，价格取自 FIO。",
+		"lead": "FIO 是读取你游戏内数据的社区服务。绑定账号后，Repair 也能用上你真实存在的基地。",
 		"with_fio": "使用 FIO",
 		"market_live": {
 			"label": "实时市场",
@@ -247,42 +247,42 @@
 		}
 	},
 	"faq": {
-		"eyebrow": "Questions",
-		"title": "Before you sign up.",
+		"eyebrow": "常见问题",
+		"title": "注册之前先看看。",
 		"what": {
-			"question": "What is PRUNplanner?",
-			"answer": "PRUNplanner is a free, open source planning tool for the browser game Prosperous Universe (PrUn). You plan bases and whole empires in it, find planets, compare what pays back and see when a base runs out of materials."
+			"question": "PRUNplanner 是什么？",
+			"answer": "PRUNplanner 是网页游戏《Prosperous Universe》（PrUn）的免费开源规划工具。你可以在里面规划基地和整个帝国、查找星球、比较什么能回本，还能看到一座基地什么时候把材料用光。"
 		},
 		"free": {
-			"question": "Is PRUNplanner free?",
-			"answer": "Yes. There are no ads and no paid tier. The code is on GitHub."
+			"question": "PRUNplanner 免费吗？",
+			"answer": "免费。没有广告，也没有付费档。源码在 GitHub 上。"
 		},
 		"fio": {
-			"question": "Do I need FIO to use it?",
-			"answer": "No. Plans, empires, Planet Search, Resource ROI and the calculators work without it. FIO Burn and Repair read your real in-game stock and buildings, so those two need a linked FIO account."
+			"question": "用它需要 FIO 吗？",
+			"answer": "不需要。规划、帝国、星球搜索、资源 ROI 和计算器都不依赖它。FIO Burn 和 Repair 要读你游戏里的真实库存和建筑，所以这两个功能需要绑定 FIO 账号。"
 		},
 		"try": {
-			"question": "Can I try it without an account?",
-			"answer": "Yes. Open the example plan: you can change buildings and recipes and see the numbers update. You need an account to save plans of your own."
+			"question": "能不注册就试试吗？",
+			"answer": "可以。打开示例规划，就能改建筑和配方、看数字实时更新。要保存自己的规划才需要账号。"
 		},
 		"official": {
-			"question": "Is it an official Prosperous Universe tool?",
-			"answer": "No. It is a community project made by a player and is not made by the game's developer."
+			"question": "它是《Prosperous Universe》的官方工具吗？",
+			"answer": "不是。它是由玩家制作的社区项目，并非游戏开发方出品。"
 		},
 		"languages": {
-			"question": "Which languages does it support?",
-			"answer": "English and {count} more, translated by players on Crowdin."
+			"question": "支持哪些语言？",
+			"answer": "英语以及另外 {count} 种语言，由玩家在 Crowdin 上翻译。"
 		}
 	},
 	"closing": {
-		"title": "Plan your next base {accent}",
-		"title_accent": "before you pay for it.",
-		"text": "Over {players} players already do. Free, open source and translated by players. Registering takes a minute with the game open.",
+		"title": "规划你的下一座基地，{accent}",
+		"title_accent": "在花钱之前。",
+		"text": "已有超过 {players} 名玩家这么做。免费、开源，由玩家翻译。开着游戏注册只要一分钟。",
 		"cta": "开始规划",
 		"github": "前往 GitHub 查看",
-		"github_text": "Read the code or contribute.",
-		"translate": "Translate on Crowdin",
-		"translate_text": "{count} languages so far."
+		"github_text": "读源码，或者来一起做。",
+		"translate": "在 Crowdin 上翻译",
+		"translate_text": "目前已有 {count} 种语言。"
 	},
 	"footer": {
 		"made_in": "汇聚四海之才华，于慕尼黑熔铸成器。",
@@ -291,9 +291,9 @@
 		"language": "语言"
 	},
 	"seo": {
-		"title": "PRUNplanner: Base and Empire Planner for Prosperous Universe",
-		"description": "Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players.",
-		"imprint_title": "Imprint and Terms of Service",
-		"imprint_description": "Imprint, terms of service and privacy policy of PRUNplanner, the free planning tool for Prosperous Universe."
+		"title": "PRUNplanner：《Prosperous Universe》的基地与帝国规划器",
+		"description": "《Prosperous Universe》（PrUn）的免费规划工具：规划基地与帝国、查找星球、对比 ROI，并用 FIO 追踪消耗。已有 6000 多名玩家在用。",
+		"imprint_title": "版权声明与服务条款",
+		"imprint_description": "PRUNplanner（《Prosperous Universe》的免费规划工具）的版权声明、服务条款与隐私政策。"
 	}
 }
