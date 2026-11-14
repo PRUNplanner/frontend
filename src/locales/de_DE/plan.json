@@ -419,7 +419,7 @@
 			"experts": "Experten in Plänen hier",
 			"expert_share": "{expert} in {percent} von Plänen",
 			"expert_added": "fügt {amount} hinzu",
-			"based_on": "Basierend auf Plänen von Spielern, die in den letzten 90 Tagen aktiv waren · täglich aktualisiert",
+			"based_on": "Based on plans changed in the last 180 days by players active in the last 90 · updated several times a day",
 			"turn_off": "Du kannst Planvorschläge im {link} deaktivieren",
 			"turn_off_link": "Profil & Präferenzen",
 			"start_empty": "Leer starten",
