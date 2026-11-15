@@ -161,46 +161,46 @@
 				"likely": "{score}% 的建筑与 FIO 匹配。确认一下你跑的是不是这份规划。",
 				"picked": "已保存到你的偏好里，对所有设备生效。",
 				"nopick": "你为这座基地选择了无规划。每 {n} 天维修一次。",
-				"none_candidates": "No plan here matches FIO well enough. Pick one, or keep every {n} days.",
-				"none": "No plan on this planet. Repairs every {n} days.",
-				"off": "Matched plans are off. Repairs every {n} days."
+				"none_candidates": "这里没有与 FIO 匹配得够好的规划。挑一个，或者保持每 {n} 天一次。",
+				"none": "这颗行星上没有规划。每 {n} 天维修一次。",
+				"off": "已关闭匹配规划。每 {n} 天维修一次。"
 			},
-			"auto": "Back to automatic match",
-			"create": "Create a plan for {planet}",
+			"auto": "回到自动匹配",
+			"create": "为 {planet} 创建规划",
 			"types": {
-				"building": "Building",
-				"target": "Target",
-				"since": "Since",
-				"condition": "Cond.",
-				"due": "Due",
-				"days": "{n} d"
+				"building": "建筑",
+				"target": "目标",
+				"since": "距今",
+				"condition": "耐久",
+				"due": "到期",
+				"days": "{n} 天"
 			},
 			"flight": {
-				"title": "Repair flight",
-				"arrives": "Arrives in",
-				"days": "days",
-				"extra": "+{cost} ȼ vs. repairing today",
-				"today": "amounts as of today",
-				"hint": "Add a day or two for long flights: the bill grows until the ship unloads.",
-				"weight": "Cargo weight",
-				"volume": "Cargo volume",
-				"store": "Use what's already in the base store",
-				"from_store": "From the base store: {materials}"
+				"title": "维修航程",
+				"arrives": "抵达",
+				"days": "天后",
+				"extra": "比今天就修多 +{cost} ȼ",
+				"today": "用量按今天算",
+				"hint": "长途的话再多留一两天：在飞船卸货之前，账单还会继续涨。",
+				"weight": "货重",
+				"volume": "货体积",
+				"store": "使用基地仓库里已有的",
+				"from_store": "从基地仓库出：{materials}"
 			},
 			"load": {
-				"title": "Load · all {n} buildings",
-				"summary": "{n} materials · {weight} t · {volume} m³",
-				"nothing": "Nothing to load: the base store covers the whole repair.",
-				"total": "Total · Exchange Preference {name}",
-				"no_preference": "none",
-				"footer": "Pick the ship when you run the XIT, fly to {base}, unload and run BRA."
+				"title": "装货 · 全部 {n} 座建筑",
+				"summary": "{n} 种材料 · {weight} 吨 · {volume} m³",
+				"nothing": "不用装货：基地仓库足够应付整个维修。",
+				"total": "合计 · 交易所偏好 {name}",
+				"no_preference": "无",
+				"footer": "运行 XIT 时选好飞船，飞到 {base}，卸货并运行 BRA。"
 			}
 		},
 		"xit": {
-			"button": "XIT Repair",
-			"title": "XIT Repair · {base}",
-			"note": "The ship is picked when the XIT runs. It needs {weight} t and {volume} m³ of free cargo."
+			"button": "XIT 维修",
+			"title": "XIT 维修 · {base}",
+			"note": "飞船在运行 XIT 时选择。需要 {weight} 吨和 {volume} m³ 的空余货舱。"
 		},
-		"computing": "Calculating the best repair days of your matched plans."
+		"computing": "正在计算匹配规划的最佳维修日期。"
 	}
 }
