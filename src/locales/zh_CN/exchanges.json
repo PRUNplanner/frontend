@@ -2,225 +2,225 @@
 	"view_title": "交易所",
 	"title": "交易所",
 	"empty": {
-		"title": "No exchange preferences yet",
-		"text": "An exchange preference sets which exchange and price your plans use for each material. Create your first one in Management.",
-		"create": "Create a preference"
+		"title": "还没有交易所偏好",
+		"text": "交易所偏好决定你的规划每种材料用哪个交易所、哪种价格。在「管理」里创建第一个。",
+		"create": "创建偏好"
 	},
 	"labels": {
-		"universe": "Universe",
+		"universe": "全宇宙",
 		"exchange_basis": "{exchange} · {basis}",
 		"basis": {
 			"vwap_7d": "VWAP 7D",
 			"vwap_30d": "VWAP 30D",
-			"ask": "Ask",
-			"bid": "Bid"
+			"ask": "卖价",
+			"bid": "买价"
 		},
-		"planet_rule": "{label} · planet",
-		"no_price": "{label} · no price",
-		"fixed_all": "Fixed · all planets",
-		"fixed_planet": "Fixed · this planet",
-		"unresolved": "No price data"
+		"planet_rule": "{label} · 按行星",
+		"no_price": "{label} · 无价格",
+		"fixed_all": "固定价 · 所有行星",
+		"fixed_planet": "固定价 · 本行星",
+		"unresolved": "无价格数据"
 	},
 	"rule": {
-		"title": "Exchange price",
-		"presets_on": "Presets on {exchange}:",
-		"preset_average": "Average · VWAP 30D",
-		"preset_trade_now": "Trade now · buy Ask, sell Bid",
-		"preset_trade_now_universe": "Universe has no order book, so no Ask or Bid. Pick an exchange first.",
-		"mode_label": "How buy and sell prices are set",
+		"title": "交易所价格",
+		"presets_on": "{exchange} 上的预设：",
+		"preset_average": "平均 · VWAP 30D",
+		"preset_trade_now": "立刻成交 · 买用卖价，卖用买价",
+		"preset_trade_now_universe": "全宇宙没有订单簿，所以没有卖价和买价。请先选一个交易所。",
+		"mode_label": "买入价和卖出价怎么定",
 		"mode": {
-			"inherit": "Use all-planets rule",
-			"same": "Same for buy and sell",
-			"separate": "Separate buy and sell"
+			"inherit": "使用全行星规则",
+			"same": "买入和卖出用同一套",
+			"separate": "买入和卖出分开"
 		},
 		"side": {
-			"both": "Both",
-			"buy": "Buy",
-			"sell": "Sell"
+			"both": "两边",
+			"buy": "买入",
+			"sell": "卖出"
 		},
-		"exchange_label": "Exchange for {side}",
-		"basis_label": "Price basis for {side}",
-		"not_set": "Not set",
-		"inherited": "Uses the all-planets rule:",
+		"exchange_label": "{side}的交易所",
+		"basis_label": "{side}的价格基准",
+		"not_set": "未设置",
+		"inherited": "使用全行星规则：",
 		"inherited_part": "{type} {rule}",
-		"inherited_none": "none set, Universe · VWAP 30D",
-		"help": "Ask and Bid are today's order book; VWAP is the traded average. A material the chosen exchange has no price for counts as 0 ȼ; the notes list them."
+		"inherited_none": "未设置，全宇宙 · VWAP 30D",
+		"help": "卖价和买价取今天的订单簿；VWAP 是成交均价。所选交易所没有价格的材料按 0 ȼ 计，提示里会列出来。"
 	},
 	"fixed": {
-		"title": "Fixed prices",
-		"hint": "Leave a side empty to use the exchange price.",
-		"material": "Material",
-		"buy": "Buy ȼ",
-		"sell": "Sell ȼ",
-		"market": "Market",
-		"cogm": "COGM in your plans",
-		"actions": "Actions",
-		"exchange_placeholder": "exchange",
-		"buy_label": "Fixed buy price for {ticker}",
-		"sell_label": "Fixed sell price for {ticker}",
-		"made_in": "made in {n} plan | made in {n} plans",
-		"in_use": "in use",
-		"use": "Use",
-		"remove": "Remove {ticker}",
-		"inherited": "All-planets price",
-		"override": "Override",
-		"empty": "No fixed prices. Plans use the exchange price.",
-		"search": "Search material",
-		"sort": "Sort by",
-		"sort_material": "Material",
-		"sort_diff": "% vs market",
-		"add_select": "Material",
-		"add": "Add material"
+		"title": "固定价格",
+		"hint": "某一边留空就用交易所价格。",
+		"material": "材料",
+		"buy": "买入 ȼ",
+		"sell": "卖出 ȼ",
+		"market": "市场",
+		"cogm": "你规划里的 COGM",
+		"actions": "操作",
+		"exchange_placeholder": "交易所",
+		"buy_label": "{ticker} 的固定买入价",
+		"sell_label": "{ticker} 的固定卖出价",
+		"made_in": "在 {n} 份规划里生产|在 {n} 份规划里生产",
+		"in_use": "使用中",
+		"use": "使用",
+		"remove": "移除 {ticker}",
+		"inherited": "全行星价格",
+		"override": "覆盖",
+		"empty": "没有固定价格。规划使用交易所价格。",
+		"search": "搜索材料",
+		"sort": "排序方式",
+		"sort_material": "材料",
+		"sort_diff": "相对市场 %",
+		"add_select": "材料",
+		"add": "添加材料"
 	},
 	"header": {
-		"import": "Import CSV",
-		"export": "Export CSV",
-		"more": "More actions",
-		"rename": "Rename…",
-		"manage": "Manage preferences",
-		"rename_title": "Rename preference",
-		"name": "Name",
-		"apply": "Apply"
+		"import": "导入 CSV",
+		"export": "导出 CSV",
+		"more": "更多操作",
+		"rename": "重命名…",
+		"manage": "管理偏好",
+		"rename_title": "重命名偏好",
+		"name": "名称",
+		"apply": "应用"
 	},
 	"csv": {
-		"confirm_title": "Replace all rules?",
-		"confirm": "Replace all rules in {preference} with {exchanges} and {fixed} from {file}? Nothing is saved until you save.",
-		"exchange_rules": "no exchange rules | 1 exchange rule | {n} exchange rules",
-		"fixed_prices": "no fixed prices | 1 fixed price | {n} fixed prices",
-		"replace": "Replace",
-		"error": "Couldn't import {file}: {reason}"
+		"confirm_title": "替换全部规则？",
+		"confirm": "要用 {file} 里的 {exchanges} 和 {fixed} 替换 {preference} 里的全部规则吗？在你保存之前不会写入任何东西。",
+		"exchange_rules": "没有交易所规则|1 条交易所规则|{n} 条交易所规则",
+		"fixed_prices": "没有固定价格|1 个固定价格|{n} 个固定价格",
+		"replace": "替换",
+		"error": "无法导入 {file}：{reason}"
 	},
 	"switch": {
-		"label": "Switch Preference",
-		"used_by": "Used by {empires} · assign in {management}",
-		"unused": "Not used by any empire · assign in {management}",
-		"management": "Management",
-		"confirm_title": "Discard unsaved changes?",
-		"confirm": "{preference} has unsaved changes. Switching discards them.",
-		"discard": "Discard and switch",
-		"keep": "Keep editing"
+		"label": "切换偏好",
+		"used_by": "被 {empires} 使用 · 在{management}里分配",
+		"unused": "没有任何帝国使用 · 在{management}里分配",
+		"management": "管理",
+		"confirm_title": "放弃未保存的更改？",
+		"confirm": "{preference} 有未保存的更改。切换会把它们丢掉。",
+		"discard": "放弃并切换",
+		"keep": "继续编辑"
 	},
 	"scopes": {
-		"label": "Rules for",
-		"overview": "Overview",
-		"overview_hint": "Prices your plans use",
-		"all": "All planets",
-		"all_hint": "Home exchange and fixed prices",
-		"own": "Planets with their own rules",
-		"inherit": "Using all-planets rules",
-		"others": "Planets of other empires",
-		"show_others": "Show planets from other empires ({n})",
-		"hide_others": "Hide planets from other empires",
-		"unplanned": "Not in any plan",
-		"delete": "Delete the rules of {planet}",
-		"filter": "Filter planets",
-		"rules_count": "{n} rule | {n} rules"
+		"label": "规则：",
+		"overview": "总览",
+		"overview_hint": "你的规划用的价格",
+		"all": "所有行星",
+		"all_hint": "主交易所和固定价格",
+		"own": "有自己规则的行星",
+		"inherit": "使用全行星规则",
+		"others": "其他帝国的行星",
+		"show_others": "显示其他帝国的行星（{n}）",
+		"hide_others": "隐藏其他帝国的行星",
+		"unplanned": "不在任何规划里",
+		"delete": "删除 {planet} 的规则",
+		"filter": "筛选行星",
+		"rules_count": "{n} 条规则|{n} 条规则"
 	},
 	"overview": {
-		"title": "Overview",
-		"description": "Every material your plans buy or sell, the price it gets, and the rule behind it. Includes unsaved changes.",
+		"title": "总览",
+		"description": "你的规划买或卖的每种材料、它拿到的价格，以及背后的规则。包含未保存的更改。",
 		"summary": {
-			"all": "All planets",
-			"own": "Planets with own rules",
-			"own_value": "{n} of {m}",
-			"fixed": "Fixed prices"
+			"all": "所有行星",
+			"own": "有自己规则的行星",
+			"own_value": "{n} / {m}",
+			"fixed": "固定价格"
 		},
-		"prices_title": "Prices your plans use",
-		"search": "Search material",
-		"filter_label": "Show materials",
+		"prices_title": "你的规划用的价格",
+		"search": "搜索材料",
+		"filter_label": "显示材料",
 		"filter": {
-			"all": "All",
-			"fixed": "Fixed",
-			"no_price": "No price (0 ȼ)",
-			"varies": "Varies by planet"
+			"all": "全部",
+			"fixed": "固定价",
+			"no_price": "无价格（0 ȼ）",
+			"varies": "按行星不同"
 		},
-		"side_label": "Price side",
+		"side_label": "价格方向",
 		"side": {
-			"BUY": "Buy",
-			"SELL": "Sell"
+			"BUY": "买入",
+			"SELL": "卖出"
 		},
 		"columns": {
-			"material": "Material",
-			"buy": "Buy ȼ",
-			"sell": "Sell ȼ",
-			"price": "Price ȼ",
-			"source": "Source",
-			"used_on": "Used on"
+			"material": "材料",
+			"buy": "买入 ȼ",
+			"sell": "卖出 ȼ",
+			"price": "价格 ȼ",
+			"source": "来源",
+			"used_on": "用于"
 		},
-		"varies": "varies by planet",
+		"varies": "按行星不同",
 		"used_on_more": "+{n}",
-		"calculating": "Calculating your plans…",
-		"empty": "No plan of an empire using this preference buys or sells anything yet.",
-		"no_match": "No material matches.",
-		"expand": "Show how the price of {ticker} is set",
+		"calculating": "正在计算你的规划…",
+		"empty": "使用这份偏好的帝国，还没有任何规划有买卖。",
+		"no_match": "没有匹配的材料。",
+		"expand": "查看 {ticker} 的价格是怎么定的",
 		"side_planet": "{side} · {planet}"
 	},
 	"ladder": {
-		"planet_ticker": "Planet fixed price",
-		"empire_ticker": "All-planets fixed price",
-		"planet_exchange": "Planet exchange",
-		"empire_exchange": "All-planets exchange",
-		"fallback": "Universe · VWAP 30D",
-		"no_price": "no price · {value}",
-		"unresolved": "No exchange has data for this material.",
-		"open": "Open the rule"
+		"planet_ticker": "行星固定价",
+		"empire_ticker": "全行星固定价",
+		"planet_exchange": "行星交易所",
+		"empire_exchange": "全行星交易所",
+		"fallback": "全宇宙 · VWAP 30D",
+		"no_price": "无价格 · {value}",
+		"unresolved": "没有任何交易所有这个材料的数据。",
+		"open": "打开规则"
 	},
 	"rules": {
-		"all_title": "All planets",
-		"all_description": "Your home exchange and fixed prices. They apply to every planet of every empire that uses this preference.",
-		"planet_description": "An exception for this planet. Its rules win over all-planets rules here, except all-planets fixed prices, which still win over this planet's exchange.",
-		"unplanned": "No plan uses this planet. Its rules stay saved until you delete them.",
-		"delete": "Delete rules",
-		"side": "Side",
-		"prices_on": "Prices on {planet}",
-		"prices_on_hint": "From this planet's plans",
-		"prices_empty": "No plan on this planet buys or sells anything."
+		"all_title": "所有行星",
+		"all_description": "你的主交易所和固定价格。它们对每个使用这份偏好的帝国的每颗行星都生效。",
+		"planet_description": "这是这颗行星的例外。这里它的规则优先于全行星规则，但全行星固定价除外——后者仍然优先于这颗行星的交易所。",
+		"unplanned": "没有规划用到这颗行星。它的规则会一直保存着，直到你删掉。",
+		"delete": "删除规则",
+		"side": "方向",
+		"prices_on": "{planet} 上的价格",
+		"prices_on_hint": "来自这颗行星的规划",
+		"prices_empty": "这颗行星上没有规划在买卖任何东西。"
 	},
 	"notes": {
-		"open": "Open",
-		"toggle": "{n} note | {n} notes",
-		"use_cogm": "Use COGM",
+		"open": "打开",
+		"toggle": "{n} 条提示|{n} 条提示",
+		"use_cogm": "使用 COGM",
 		"side": {
-			"BUY": "buy",
-			"SELL": "sell"
+			"BUY": "买入",
+			"SELL": "卖出"
 		},
 		"exchange_gap": {
-			"title": "{rule} has no {side} price for {tickers}",
-			"detail": "{planets} counts it as 0 ȼ. Set a fixed price or pick another exchange or basis. | {planets} count it as 0 ȼ. Set a fixed price or pick another exchange or basis."
+			"title": "{rule} 对 {tickers} 没有{side}价",
+			"detail": "{planets}按 0 ȼ 计算。请设一个固定价，或者换个交易所或价格基准。|{planets}按 0 ȼ 计算。请设一个固定价，或者换个交易所或价格基准。"
 		},
 		"no_price": {
-			"title": "{tickers} has no price on any exchange",
-			"detail": "{planets} counts it as 0 ȼ. Set a fixed price if you know one. | {planets} count it as 0 ȼ. Set a fixed price if you know one."
+			"title": "{tickers} 在任何交易所都没有价格",
+			"detail": "{planets}按 0 ȼ 计算。知道价格的话就设一个固定价。|{planets}按 0 ȼ 计算。知道价格的话就设一个固定价。"
 		},
 		"fixed_zero": {
-			"title_all": "{tickers} is fixed at 0 ȼ on all planets",
-			"title_planet": "{tickers} is fixed at 0 ȼ on {planet}",
-			"detail": "Fine if it's your own supply and free to you. Otherwise set a price."
+			"title_all": "{tickers} 在所有行星上都固定为 0 ȼ",
+			"title_planet": "{tickers} 在 {planet} 上固定为 0 ȼ",
+			"detail": "如果是你自产、对你是免费的，那没问题。否则就设个价格。"
 		},
 		"cogm_drift": {
-			"title": "{n} fixed buy price differs from its COGM | {n} fixed buy prices differ from their COGM",
-			"detail": "Use the COGM if it is your at-cost price.",
-			"material": "Material",
-			"fixed": "Fixed buy ȼ",
+			"title": "{n} 个固定买入价和它的 COGM 不一样|{n} 个固定买入价和它们的 COGM 不一样",
+			"detail": "如果 COGM 就是你的成本价，那就用它。",
+			"material": "材料",
+			"fixed": "固定买入 ȼ",
 			"cogm": "COGM ȼ",
-			"difference": "Difference",
-			"made_on": "Made on"
+			"difference": "差额",
+			"made_on": "产于"
 		},
 		"planet_redundant": {
-			"title": "{planet}'s exchange rule is the same as all planets'",
-			"detail": "It can be removed."
+			"title": "{planet} 的交易所规则和全行星的一样",
+			"detail": "可以删掉。"
 		},
 		"unused_preference": {
-			"title": "No empire uses this preference",
-			"detail": "Plans use it once an empire does. Assign it in Management."
+			"title": "没有帝国使用这份偏好",
+			"detail": "有帝国用上之后，规划才会用它。在「管理」里分配。"
 		},
 		"unplanned_planets": {
-			"title": "Rules for planets in no plan: {planets}",
-			"detail": "They stay saved. Delete them under Not in any plan if you don't need them."
+			"title": "没有规划的行星上的规则：{planets}",
+			"detail": "它们会一直保存着。不需要的话，在「不在任何规划里」下面删掉。"
 		}
 	},
 	"save_bar": {
-		"detail": "Plans keep the saved prices until you save",
-		"leave_unsaved": "This preference has unsaved changes. Leave without saving?"
+		"detail": "在你保存之前，规划仍用已保存的价格",
+		"leave_unsaved": "这份偏好有未保存的更改。不保存就离开？"
 	}
 }
