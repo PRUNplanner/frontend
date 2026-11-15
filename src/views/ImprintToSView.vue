@@ -132,11 +132,21 @@
 					interest (Art. 6 (1) f GDPR). Cloudflare, Inc. is certified
 					under the EU-U.S. Data Privacy Framework, and Standard
 					Contractual Clauses are part of Cloudflare's Data Processing
-					Addendum. We do not use Cloudflare Web Analytics.
-					Cloudflare's responses also ask your browser to report
-					failed connections to our site, never successful ones, to
-					Cloudflare. Cloudflare's privacy policy applies:
-					https://www.cloudflare.com/privacypolicy/
+					Addendum. For visitors outside the EU, we also use
+					Cloudflare Web Analytics; whether you are in the EU,
+					Cloudflare decides from your IP address. Cloudflare then
+					adds a small script to our pages that measures how fast they
+					load (Core Web Vitals and navigation timings) and reports
+					this through our own domain to Cloudflare, which processes
+					it on our behalf. The script sets no cookies and uses no
+					browser storage. We use it in our legitimate interest in
+					measuring and improving the performance of our site (Art. 6
+					(1) f GDPR). It is not covered by the usage analytics choice
+					in the app: neither that choice nor a Global Privacy Control
+					signal affects it. Cloudflare's responses also ask your
+					browser to report failed connections to our site, never
+					successful ones, to Cloudflare. Cloudflare's privacy policy
+					applies: https://www.cloudflare.com/privacypolicy/
 				</p>
 				<p class="py-3">
 					To ensure the technical stability and security of our
