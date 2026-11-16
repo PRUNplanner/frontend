@@ -13,9 +13,9 @@
 		}
 	},
 	"change_profile": {
-		"throttled": "Too many updates. Please wait a minute and try again.",
+		"throttled": "更新过于频繁。请等一分钟再试。",
 		"buttons": {
-			"enter_code": "Enter code",
+			"enter_code": "输入验证码",
 			"resend_code": "重新发送验证码"
 		},
 		"form": {
@@ -40,43 +40,43 @@
 			"fio_username_mismatch": "此 API 密钥属于另一 PrUn 用户。",
 			"unknown": "保存失败，请稍后重试。"
 		},
-		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
+		"code_sent_notice": "已保存。我们已向新地址发送验证码；确认后重置邮件会发到那里。",
 		"recovery": {
-			"label": "Account recovery",
-			"not_set_up": "Not set up",
-			"not_set_up_info": "Without an email, a forgotten password can't be reset.",
-			"waiting": "Waiting for confirmation",
-			"ready": "Ready",
-			"ready_info": "Password resets go to this address."
+			"label": "账号找回",
+			"not_set_up": "未设置",
+			"not_set_up_info": "没有邮箱，忘记密码就无法重置。",
+			"waiting": "等待确认",
+			"ready": "就绪",
+			"ready_info": "密码重置邮件会发到这个地址。"
 		}
 	},
 	"storage_data": {
 		"title": "浏览器存储",
 		"description": "PRUNplanner 会将数据本地存储在浏览器中，以减少 API 调用。数据会按设定间隔自动刷新。",
-		"total": "{size} MB in {records} records",
+		"total": "{records} 条记录，共 {size} MB",
 		"table": {
 			"storage": "存储",
 			"records": "记录",
 			"size": "约占空间"
 		},
 		"stores": {
-			"materials": "Materials",
-			"buildings": "Buildings",
-			"recipes": "Recipes",
-			"planets": "Planets",
-			"exchanges": "Exchanges",
-			"plans": "Plans",
-			"empires": "Empires",
-			"cxs": "Exchange Preferences",
-			"shared": "Sharings",
-			"fio_storage_planets": "FIO Storage Planets",
-			"fio_storage_ships": "FIO Storage Ships",
-			"fio_storage_warehouses": "FIO Storage Warehouses",
-			"fio_sites_planets": "FIO Sites Planets"
+			"materials": "材料",
+			"buildings": "建筑",
+			"recipes": "配方",
+			"planets": "星球",
+			"exchanges": "交易所",
+			"plans": "规划",
+			"empires": "帝国",
+			"cxs": "交易所偏好",
+			"shared": "分享",
+			"fio_storage_planets": "FIO 库存 · 星球",
+			"fio_storage_ships": "FIO 库存 · 飞船",
+			"fio_storage_warehouses": "FIO 库存 · 仓库",
+			"fio_sites_planets": "FIO 基地 · 星球"
 		}
 	},
 	"fio_information": {
-		"guide": "How to get a FIO API key",
+		"guide": "如何获取 FIO API 密钥",
 		"help": {
 			"p1": "FIO 是由社区开发的{link}，用于收集你的游戏数据，并让这些数据可在 Prosperous Universe 外部使用，而且完全免费。",
 			"steps": {
@@ -104,10 +104,10 @@
 			"color_palette": "调色板",
 			"palette_default": "默认（绿色/红色）",
 			"palette_colorblind": "色盲（蓝色/橙色）",
-			"market_card": "Market card",
-			"market_card_hover": "On hover",
-			"market_card_click": "On click only",
-			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
+			"market_card": "市场卡片",
+			"market_card_hover": "悬停时",
+			"market_card_click": "仅在点击时",
+			"market_card_help": "仅在点击时：悬停材料不显示内容；点击才看价格。",
 			"language_note": "我们希望让所有人都能使用 PRUNplanner。如果你希望看到自己的母语版本，或帮助我们完善现有翻译，欢迎加入我们的本地化项目：{link}。",
 			"default_empire": "默认帝国",
 			"default_cx": "默认交易所偏好",
@@ -118,10 +118,10 @@
 			"xit_origin": "XIT 来源",
 			"buy_from_cx": "XIT 从交易所购买",
 			"fio_repair": "FIO Repair",
-			"fio_repair_interval": "Repair every (no plan)",
-			"fio_repair_due_soon": "Due soon",
-			"fio_repair_arrival": "Arrival days",
-			"fio_repair_note": "The XIT origin and \"Buy from CX\" are shared with FIO Burn.",
+			"fio_repair_interval": "维修周期（无规划）",
+			"fio_repair_due_soon": "即将到期",
+			"fio_repair_arrival": "到达天数",
+			"fio_repair_note": "XIT 起点和「从 CX 买入」与 FIO Burn 共用。",
 			"plan_suggestions": "规划建议",
 			"plan_suggestions_help": "行星上受欢迎的建筑物和生产模板、 星球洞察和新规划的典型设置",
 			"privacy": "隐私",
@@ -132,26 +132,26 @@
 			"plan_specific_description": "这些设置在各个规划中单独管理。本部分展示你目前已自定义的偏好设置概览；如需修改，请前往对应的规划。",
 			"plan": "规划",
 			"preferences": "偏好设置",
-			"planning": "Planning",
-			"plan_specific_empty": "No plan has its own settings yet."
+			"planning": "规划",
+			"plan_specific_empty": "还没有任何规划有自己的设置。"
 		},
 		"plan_settings": {
-			"include_cm": "Include CM",
-			"visitation_exclusions": "Visitation Material Exclusions",
-			"construction_built": "Construction Cart: Built",
-			"auto_optimize_inactive": "Auto-Optimize Inactive"
+			"include_cm": "包含 CM",
+			"visitation_exclusions": "到访材料排除项",
+			"construction_built": "建造清单：已建成",
+			"auto_optimize_inactive": "自动优化未启用"
 		}
 	},
 	"buttons": {
-		"save": "Save"
+		"save": "保存"
 	},
 	"sections": {
 		"fio": {
-			"title": "FIO connection",
-			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+			"title": "FIO 连接",
+			"description": "从 FIO 导入你的库存、基地和飞船，PRUNplanner 会在后台刷新。"
 		},
 		"account": {
-			"title": "Account"
+			"title": "账户"
 		}
 	}
 }
