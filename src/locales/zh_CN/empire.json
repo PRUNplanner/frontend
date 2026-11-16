@@ -1,10 +1,10 @@
 {
 	"view_title": "帝国",
 	"switch_empire": "切换帝国",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"overview_hide": "隐藏规划列表",
+	"overview_show": "显示规划列表",
 	"views": {
-		"label": "View",
+		"label": "视图",
 		"material_io": "物料输入/输出",
 		"analysis": "分析",
 		"production_opportunities": "生产机会"
@@ -41,7 +41,7 @@
 		"expand_row": "显示与{ticker}关联的行星",
 		"view_sides": "生产端 · 消耗端",
 		"view_net": "每行星净值",
-		"view_label": "Detail view",
+		"view_label": "详细视图",
 		"surplus": "盈余",
 		"needs": "需求",
 		"plan_count": "{count}份规划",
@@ -68,49 +68,49 @@
 		"exclusive_production": "纯生产物资",
 		"exclusive_consumption": "纯消耗物资",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
-			"fees": "Production fees",
-			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"inputs": "生产投入",
+			"workforce": "劳动力",
+			"degradation": "折旧损耗",
+			"fees": "生产费用",
+			"profit": "利润",
+			"uncovered": "未覆盖成本"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
-			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
-			"fees": "Fees {pct}",
-			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"label": "收入构成：{parts}",
+			"inputs": "投入 {pct}",
+			"workforce": "劳动力 {pct}",
+			"degradation": "折旧 {pct}",
+			"fees": "费用 {pct}",
+			"profit": "利润 {pct}",
+			"uncovered": "未覆盖 {pct}",
+			"of_cost": "成本占比：收入不足以覆盖"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "各规划的收入去向",
+			"caption": "按利润排名前 {top} · 亏损的规划始终显示",
+			"split": "收入构成",
+			"margin": "利润率",
+			"revenue_day": "每日收入",
+			"other": "其他 · {n} 个规划",
+			"row_label": "{name}：利润率 {margin}，每日收入 {revenue} ȼ",
+			"empty": "暂无规划可拆分。"
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"metric_label": "Metric",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "货币流量最大的材料",
+			"price": "ȼ / 天",
+			"amount": "单位 / 天",
+			"metric_label": "指标",
+			"buy": "← 你买入（净消耗）",
+			"sell": "你卖出（净产出）→",
+			"caption": "{n} 种材料中的前 {top} · 点击一行在材料 I/O 中打开",
+			"row_label": "{ticker}：{direction} {value}，在材料 I/O 中打开",
+			"bought": "买入",
+			"sold": "卖出",
+			"empty": "没有买入或卖出的材料。"
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "更多图表",
+			"caption": "规划利润 · 材料利润与成本 · 净生产与消耗及独占生产与消耗"
 		}
 	},
 	"opportunities": {
@@ -132,7 +132,7 @@
 			"potential_batches": "潜在批次",
 			"delta_required": "需要缺口",
 			"missing_material": "缺少物料",
-			"missing": "Missing"
+			"missing": "缺失"
 		}
 	},
 	"onboarding": {
@@ -155,7 +155,7 @@
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "运输"
 	},
 	"empty": {
 		"title": "暂无帝国",
@@ -163,5 +163,5 @@
 		"create": "创建帝国",
 		"manage": "管理帝国"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "未知"
 }
