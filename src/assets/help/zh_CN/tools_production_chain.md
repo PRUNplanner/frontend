@@ -1,41 +1,263 @@
-Production Chains plans a whole chain per day. Add what you want to produce and how much of it a day, for one material or several at once (for example DW, RAT and OVE). The page works out every step: which recipe makes each material, how many buildings it takes, what to buy, and what the chain costs and earns at your CX prices.
+用 **生产链** 你可以按天规划整条生产链。告诉它你想生产什么、每天多少，可以是一种材料，也可以一次好几种（比如 DW、RAT 和 OVE）。它会替你算好每一步：每种材料用哪个 [[recipe]] 生产、需要多少建筑、要买什么，以及按你的 [[cx|CX]] 价格这条链要花多少、能赚多少。然后它把整条链分配到基地、挑好星球，并创建 [[plan|规划]]。它的第二种模式 **检查帝国**，用来看你已经在运营的帝国。
 
-**Settings.** Every base runs with both luxuries and the experts worth most for its buildings (see Bases). Efficiency is one more global percentage on top, for HQ or faction bonuses; 100 % adds nothing. Prices come from your default CX preference, and you can pick another. Raw resources are bought by default; switch to Extract to mine them, or set a single row to Extract. Byproducts first cover demand for the same material in the chain, and the rest is sold; switch to Sell to sell them all.
+建之前先用它：它会从原料开始，显示每天要产什么、要买什么、运营要多少，这样你在放下任何一栋建筑之前就知道这条链的投入和收益。
 
-**Own production.** If you already make part of a chain, pick one of your empires under Own production. Every material the chain needs that the empire makes more of than it uses (what its plans make minus what they use) is marked **Have**: the chain uses it first, after byproducts, and only makes, buys or extracts the rest. A material you have enough of moves to the first column of the Graph, and its inputs drop out of the chain, so the steps, buildings and construction show only what the new chain adds. You can also mark a material Have by hand and type how much you have per day (empty for all of it); a typed amount wins over the empire. Targets always come from the chain itself. What comes from your plans counts in the profit like a bought input at its CX price. Bases lists which plan supplies what and what of the surplus the chain doesn't use, and shipping includes the routes from those plans. Have rows aren't part of the plans Create plans makes. The amounts update while the page is open when you change the empire's plans in another tab. The chain link keeps the amounts, never the empire.
+## 上手 {#getting-started}
 
-**Results.** The strip at the top shows the profit per day, the output value, what you buy, upkeep and wear, the buildings (built and exact), area including habitation, workforce and construction cost with its payback. It adds up all bases, each with its core module and one STO. Buildings of one type share their capacity across recipes, as in the game, so 4.5 Food Processors make 5 built.
+使用生产链需要账号。登录后从计算器 → **生产链** 打开。
 
-**Steps.** Every material once, in chain order (each target with its inputs) or grouped by source. For each material: how much a day, whether it is made, bought or extracted, the recipe or supply, buildings, cost per unit in the chain against the CX price, and whether making it saves money. Click a material to see what it takes and where it goes, its cost per unit, and the spare capacity of its buildings. Click a recipe to compare all recipes for it, with their effect on the chain's profit and buildings. Extracted rows use a typical planet (top 10 % of all planets with the resource); click it to pick a real planet with the filters from Planet Search.
+1. 在 **每日产量** 下的 **添加材料** 里选一种材料。任何有配方的材料，或者能作为星球资源出现的材料都可以选。
+2. 每个目标初始都是每天 10。直接输入数量，或者用 − 和 +。 20 以下每次 1，20 起每次 5，100 起每次 10，而且 − 不会低于 1。
+3. × 会移除一个目标。想加多少就加多少，整条链会在它们之间共用步骤。
 
-**Warnings.** "Cheaper to buy" lists materials the chain makes for more than the CX price; "Buy all" switches them to buying. "Thin market" lists bought materials where the chain needs 10 % or more of what the CX trades a day, or that didn't trade in 30 days.
+你每次改动，结果、步骤和图都会跟着更新。在你添加材料之前，结果的位置会显示「你想生产什么？」。
 
-**Graph.** The same chain from raw materials on the left to the targets on the right. Line width follows tonnes, credits or nothing. Click a material to see only what it needs and feeds.
+星球加载期间会有一行「正在加载可采集的星球……」。如果加载不出来，采集类的行就不会显示建筑。点击 **重试** 重新加载。
 
-**Bases.** A chain can run on many bases, each on one planet. **Auto layout** lays the chain out into bases you could build: one expertise per base, up to the max size next to the button (500 area by default, or 750 or 1,000; an expertise that needs more than one base fills bases up to 1,000 instead, so you run one full base rather than several alike), with a step split over two bases when it doesn't fit into one (e.g. 6 CHP as 3 + 3). Small groups of steps join the base they ship the most with. Steps under 0.2 building that cost more with a whole building than on the CX are bought (marked **Buy** in Steps; switch them back to Make if you like). Each base gets a planet with a free plot and no plan of yours on it: first one running a COGC program the base benefits from, then the one closest to the other bases and, with an empire picked under Own production, to its planets. On a base, **Merge into…** moves all of it into another base (which keeps its planet) and **Separate** splits it by expertise, or in half, with planets for the new bases. The Base column in Steps moves a step, or one piece of a split step, and "+ new base" starts a new one. To size a chain to your bases, use **Fit into N bases** next to it: it sets the largest rate, all targets scaled alike, that auto layout puts into that many bases. On the Bases tab you name each base, pick its planet and its COGC program. The planet's running program is the default; you can pick any other to plan ahead of a vote. A base's buildings get the planet's bonuses as in a plan: +25 % from an advertising program for their expertise, +10 % from a workforce program for a tier they employ, and fertility for farms (FRM and ORC can't run without it). Extracted steps use the planet's own rate; a planet without the resource keeps the chain's rate and warns. Building types share capacity inside one base only. **Setup**: each base supplies both luxuries (100 % workforce; Lux 2 92 %, Lux 1 87 %, Essentials 79 %) and pays for them in the upkeep, and gets 5 experts in its main expertise, the sixth in the next one (at most 5 of a type and 6 per base); Auto picks the split worth most for the base's output. Change the luxuries or edit the experts per base; Auto goes back to the best split. Each base shows its buildings, area with the core module, one STO and habitation, permits, workforce and upkeep. The planet picker solves the base's steps on every planet, so you can compare buildings and area, and marks planets where you already have a plan. At the top of the Bases tab an overview shows how many bases the chain uses, how many have a planet, the largest base, permits and shipping, with one line per base. "Shipping per day" lists what moves between bases and the CX, in tonnes and m³, with the jumps.
+> [!tip] 先按你每天想卖的数量填，再看看利润和需要的建筑。然后用 **按基地调整产量**（见 [基地](#bases)）把这条链缩放到你真正建得出来的基地规模。
 
-**Create plans.** Once every base has a planet and fits 1,000 area, "Create plans" makes one plan per base with its buildings, recipes, habitation, one STO, the COGC program and permits, optionally in a new empire (with its faction) or an existing one. The plans get the base's luxuries and experts, so they produce what the chain shows; HQ and faction bonuses are left to the plans. The page stays on the chain and links the new plans and the empire.
+## 设置 {#settings}
 
-**Buy list.** What to buy for a number of days, grouped by the base that uses it, with weight and volume to haul, and one XIT action per base that buys it on the CX and moves it to that base.
+每个基地都按 [[luxuries]] 加上对其建筑最划算的 [[experts]] 来运行（详见 [基地](#bases)）。奢侈品是可选的消耗品，能提高工人的效率；专家则能加速基地里某一专业领域的建筑。这些设置位于结果上方：
 
-**Sharing.** The link holds the whole chain; "Copy chain link" copies it. The last chain you worked on opens again in this browser.
+- **效率**：额外叠加的一个全局百分比，用于 [[corp-hq|公司总部]] 或 [[faction]] 加成。 100 % 表示不额外加成，可填 1 到 1,000 %。它改变的是每栋建筑的产量，不是生产费用。例如 125 % 时，100 % 下需要 10 栋建筑的步骤正好只要 8 栋。
+- **价格**：给这条链定价用的 [[exchange-preference|交易所偏好]]。默认用你的默认交易所偏好；「无 - 全宇宙 30 天」则使用全宇宙的价格。这条链只用这个偏好里的价格，不用其中的星球例外。价格决定默认配方、各项成本和利润，所以换一个交易所偏好可能会改变整条链。
+- **原料**：**购买**（默认）或 **采集**。你也可以在步骤里单独把某一行设成采集。本身也是目标的原料，永远按采集处理。选 **采集** 时，这条链会规划采集建筑，并按维护、损耗和费用来算，而不是算交易所价格。
+- **副产物**：有些配方在产出目标材料的同时还会多出一个产出。**满足需求**（默认）会先拿每种 [[byproduct]] 去补链里需要同种材料的地方，剩下的卖掉。**出售** 会把它们全部卖掉。
 
-## Check an empire
+> [!warning] 在 **价格** 下选择交易所偏好，也会把它设成你的默认交易所偏好，所以其他跟随默认值的页面会跟着一起变。两种模式下都是这样。
 
-Switch the mode at the top to **Check an empire** to see how one of your empires makes what it sells, and what would make it better. Pick the empire and the chains to check: each material the empire sells (more made than used) is a chain, shown with its amount per day; "All the empire sells" adds every one. The check follows each chain back through your plans: which base makes each step, with which recipe and efficiency, and what is bought. It never changes a plan; it only points at them.
+### 默认值 {#defaults}
 
-**Bases.** Every base is marked: looks optimal, has improvements, needs a plan fix, or isn't in the chosen chains. Open a base to see its production as planned, its luxuries, experts and COGC against the chain planner's defaults, and its findings. Coverage on the side shows how many bases the chains reach; "Add …" adds what the other bases sell.
+| 设置         | 默认        |
+| ---------- | --------- |
+| **效率**     | 100 %     |
+| **价格**     | 你的默认交易所偏好 |
+| **原料**     | **购买**    |
+| **副产物**    | **满足需求**  |
+| **自有生产**   | **无**     |
+| 新增目标       | 10 / 天    |
+| **基地面积上限** | 500 面积    |
+| **基地数量**   | 2         |
+| **采购清单**   | 按 10 天    |
+| **行排序**    | **按链条**   |
+| **线宽**     | **吨 / 天** |
+| 基地的奢侈品     | 两种都用      |
+| 基地的专家      | **自动**    |
+| 基地的 COGC   | 星球正在运行的项目 |
 
-**Findings.** Each finding shows its gain per day, construction and payback:
+## 自有生产 {#own-production}
 
-- _Plan fix_: the plan counts a COGC program the planet doesn't run (−20 % for those buildings), or the planet runs one the plan doesn't count (+25 %).
-- _Recipe_: another recipe of the same building makes the material at least 3 % cheaper.
-- _Make or buy_: a material that isn't a target costs more to make than to buy.
-- _Location_: another planet suits the step at least 10 % better (its COGC program, fertility or extraction rate): one of your bases, or a new base. The suggestion is the best option that has room, a free plot (or ghost sites; unknown plots count as possible) and pays back within "Moves pay back within". "All n planets…" lists every option with filters and sorting; "Use" makes a planet your pick, "Back to suggested" undoes it.
-- _Setup_: both luxuries, or a better expert split. Experts come with time in game; "Setup gains: Hide" leaves these out.
+如果你已经在生产链里的某一部分，就在 **自有生产** 下选一个你的 [[empire|帝国]]。链里需要、而这个帝国产量大于自用的材料，会被标记为 **已有**。这部分盈余是它的规划产出减去消耗，包含劳动力的消耗。这条链会先用它（排在副产物之后），剩下的才自己生产、购买或采集。
 
-Findings below "Ignore below" are hidden, plan fixes always show. Gains on one step are alternatives, so a base's possible gain counts the best one per step. "Try in planner" opens Plan a chain with the chain's bases and the change applied.
+- 数量够的材料会移到图的第 1 列，它的上游原料就从链里退出了。这时步骤、建筑和建造只显示新链额外要加的部分，结果里也会告诉你少建了多少建筑、少花了多少建造量。
+- 你也可以在「来源」列里手动把某种材料标成 **已有**，并填入你每天有多少。留空表示全部用它，填 0 则关闭。手动填的数量优先于帝国。当它和帝国盈余不一样时，旁边的「使用 ……」可以切回帝国给的数量。
+- 如果某种材料你只有一部分，这一行会显示「剩余」，并让你选剩下的靠什么来补。
+- 目标永远来自这条生产链本身。
+- 如果你的规划在生产某种材料却显示不出 **已有**，不用奇怪：只有帝国产量大于自用的部分才算，用得一干二净的材料没有盈余。你还是可以手动把它标成 **已有**。
+- 来自你自己规划的部分，会按交易所买入价当作外购投入计入利润。这时投入卡片会显示 **投入 / 天**，并把它分成自产和外购两部分。
+- [基地](#bases) 会按规划名称排序，列出哪个规划供应什么，以及盈余里这条链没用到的部分。运输表里也会包含从这些规划出发的路线。
+- 标成 **已有** 的行不会出现在 **创建规划** 生成的规划里。
+- 如果你在另一个标签页改了帝国的规划，只要这个页面还开着，数量就会跟着更新。
+- 链的分享链接会保留这条链用到的 **已有** 数量，也包括来自帝国的那些，但不会带上帝国本身。
 
-**Chains.** Each chain material by material: how much is made, where, with which recipe, at what cost against the CX price, and what the chain planner would do.
+## 结果 {#results}
 
-**Sharing.** "Copy check link" copies the empire, the chains and the settings; only you can open your own empires.
+顶部这条把你在所有基地上的数据加起来。
+
+| 卡片                 | 显示内容                                                                                                                                                                                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **利润 / 天**         | 产出价值减去外购投入（自产部分按交易所价计入）、维护、损耗和生产费用；同时给出它占产出价值的比例（不计自有生产时）                                                                                                                                                                                                                          |
+| **产出价值 / 天**       | 目标材料按交易所卖出价计算，加上卖掉的副产物                                                                                                                                                                                                                                                             |
+| **外购投入 / 天**       | 你买的部分，按交易所买入价算                                                                                                                                                                                                                                                                     |
+| **维护、损耗 + 费用 / 天** | 含奢侈品的劳动力 [[upkeep]]、损耗和 [[production-fees\|生产费用]]，数值下面分别列出劳动力维护和费用 |
+| **建筑**             | 实际建造数和精确值                                                                                                                                                                                                                                                                          |
+| **面积**             | 包含居住单元                                                                                                                                                                                                                                                                             |
+| **劳动力**            | 按等级分列                                                                                                                                                                                                                                                                              |
+| **建造投入**           | 附 [[payback]] 回收周期；利润小于等于 0 时显示「无法回本」                                                                                                                                      |
+
+每个基地的面积都算上了核心模块和一栋 STO。建造投入只算建筑、居住单元和 STO，不算核心模块和星球附加建筑（MCG、AEF、SEA、HSE、INS、TSH）。没有步骤的基地不计入任何东西。
+
+和游戏里一样，同一种建筑会在不同配方之间共用产能，所以 4.5 栋食品加工机会按实建 5 栋计。这种共用只在同一个基地内部有效。
+
+举个例子（数字是编的）：每天产出价值 10,000 ȼ，外购投入 4,000 ȼ，维护、损耗和费用 2,500 ȼ，**利润 / 天** 就是 3,500 ȼ，占产出价值的 35 %。建造投入 700,000 ȼ 的话，回本要 700,000 ÷ 3,500 = 200 天。利润低于 0 会显示成红色，**建造投入** 那边则会显示「无法回本」。
+
+### 费用是怎么算的 {#how-costs-are-calculated}
+
+- **损耗** 是建筑的建造成本 ÷ 180 天。例如建造成本 90,000 ȼ 的建筑，每天产生 500 ȼ 损耗。
+- 一个生产步骤的**单位成本**，是把它的各项投入按链上成本相加，再加上该建筑一次运行的维护、损耗和一次运行的生产费用。自产的投入按它自己的单位成本计，外购的按交易所买入价计。效率越高，一次运行的时间越短。有多个产出的配方，按各产出的交易所卖出价值分摊成本；都没有价格时按数量分摊。
+- **采集步骤的单位成本** 是采集建筑的每日维护和损耗 ÷ 每日产量，再加上费用。
+- **生产费用** 按配方的基准时间、每次运行收取，所以效率不会改变它。生产步骤按它所在基地的星球付费用；被拆到多个基地的步骤，各部分按各自基地的星球付。采集步骤按采集地所在星球付。「典型星球」和不指定星球的基地不收这项费用，所以选了具体星球可能会让成本变高。
+- **默认配方**：你不指定时，链会按交易所价格选最便宜的单产出配方。只有在没有单产出配方时，才会用带副产物的配方。
+
+## 步骤 {#steps}
+
+每种材料只出现一次。行可以按 **链条** 排序——每个目标带着它的投入一起显示（点小三角可以收起），也可以按 **来源** 排序，分成「生产」「采集」「购买」和「来自你的规划」四组。
+
+| 列          | 显示内容                                               |
+| ---------- | -------------------------------------------------- |
+| **材料**     | 附带「目标」「用于 ……」（供给谁）或「已出售」                           |
+| **每天**     | 数量，以及「+ …」来自副产物」和「+ …」自产」                          |
+| **基地**     | 由哪个基地生产。用它可以把某个步骤或其中一部分挪到别的基地（见 [基地](#bases)）      |
+| **来源**     | **生产**、**购买**、**采集**（仅限星球资源）或 **已有**               |
+| **配方或来源**  | 所用配方、在哪个交易所买，或从哪个星球采集                              |
+| **建筑**     | 用什么建筑、几栋，以及占用已建建筑产能多少                              |
+| **单位成本**   | 它在这条链里的单位成本                                        |
+| **交易所价格**  | 交易所上的价格                                            |
+| **自产还是购买** | 自己造是不是更省钱（「自产，省 …」或「购买便宜 …」）更便宜」），购买行和目标行还会带一个市场标记 |
+
+没有配方的材料不能选 **生产**；目标材料不能选 **购买** 和 **已有**。底部的副产物区块列出每种副产物来自哪里、链里用掉多少、卖掉多少。 **CSV** 会把表格下载成 `production-chain.csv`。
+
+- 点某种材料可以看到它 **需要** 什么、**去向** 何处、它的**单位**成本（投入、维护和损耗、生产费用、链上成本与交易所价格的对比），以及它建筑的剩余产能：「剩余 …」最多可加 … / 天」。
+- 点配方（「n 个配方 ▾」，有多个时才会出现）可以比较这种材料的全部配方。正在用的排在前面，其余按对利润的影响排序，每条都标出每天利润的变化和建筑数的变化。徽章标出**使用中**、**默认**以及**带副产物**的那些。
+- 采集行使用的是一颗典型星球：所有拥有该资源的星球里前 10%，也就是日采集量的 90 分位；若拥有该资源的星球不足 10 颗，则取最好的那一颗。这是规划用的默认值，不是真实基地，也不付生产费用。点击它，可在**在哪里采集**里挑一颗真实星球。可以按采集器、地表、到交易所的跳跃数、**无额外材料**、**资源采集 COGC** 和**本地市场**筛选，也可以用**在星球搜索中打开**。当该步骤所在基地的星球就有这种资源时，以那颗星球自己的速率为准。
+
+## 警告 {#warnings}
+
+步骤上方的标签汇总了需要关注的事项。点击其中一个即可筛选步骤，**显示全部**会把它们都恢复。
+
+- **买更便宜**列出这条链自产或自采的成本高于 CX 价格的材料。目标从不计入其中。**全部购买**会把它们改成购买，提示条里提供**撤销**。
+- **市场稀薄**列出这样的购买材料：链上的需求达到 CX 日成交量（30 天平均）的 10% 及以上，或者 30 天内没有成交。举例：若 CX 在 30 天内成交 6,000 单位，即每天 200，那么每天买 30 就是 15%。在「步骤」里，[[share-of-volume|成交量占比]]标签从 10% 起变琥珀色，从 50% 起变红色。目标在卖出侧也有同样的标签。更多内容：[[thin-market|稀薄市场]]。
+- **基地跑不了的步骤**会标出建在没有肥力的星球上的农场，或建在没有该资源的星球上的采集。这个标签会跳到「基地」。
+- **配方循环**指某个配方在链的上游某处需要它自己的产物。链条会在重复处停止。
+
+如果既没有更便宜可买的、也没有稀薄市场或基地警告，「无警告」标签会代替它们显示。
+
+## 图表 {#graph}
+
+图表显示的是同一条链。原料在左侧（「购买 · 采集」，启用自有生产时再加上「已有」），目标在右侧。**线宽**可选按 **t / 天**（默认）、**ȼ / 天**或**相同**。用 −、**适应**和 + 缩放。每个节点都显示它在哪里购买，或由哪个基地、哪座建筑生产。点击一种材料可只看它需要的和它供给的，**显示全部**可以返回。
+
+## 基地 {#bases}
+
+一条链最多可以铺在 26 个基地上（A 到 Z），每个基地在一颗星球上。「基地」标签页以三个步骤开场，下一步该做什么就是那个主按钮。
+
+### 1. 分配到基地 {#auto-layout}
+
+**自动分配**会把链分配到你能建出来的基地里：
+
+- 每个基地只放一种[[expertise|专长]]（其生产建筑所属的领域，比如农业或冶金），大小不超过**基地最大面积**里设定的值：500 面积（默认）、750 或 1,000。当某种专长在该面积下需要不止一个基地时，它会改为按 1,000 面积填基地，让你跑一个满基地，而不是几个相似的。
+- 自动分配会把放不下的步骤按整栋建筑拆分。能放下的进当前基地，剩下的进下一个基地，所以 6 座 CHP 可能变成 4 + 2。一个步骤可以横跨两个以上的基地。采集步骤保持完整。
+- 小批步骤（不足 1.5 栋建筑，或没有专长）会并入与之吨位往来最多、且还有空位的那个基地。如果没有基地有空位，它们会得到一个混合基地。
+- 自动分配会把不足 0.2 栋建筑、且按整栋建筑算单位成本高于 CX 的步骤改为购买。这类步骤在被生产时，会在「步骤」里显示**购买**标签。你可以把它们切回生产，但下一次自动分配或适应又会把它们改成购买。
+- 每个基地都会分到一颗星球，具体见[如何挑选星球](#planet-picking)。
+- 之后，它会把同专长的基地合并起来——前提是合并后的基地能塞进 1,000 面积，且不丢失任何资源或肥力。
+
+> [!warning] 自动分配会从头重来。它会从零重建基地：新的名字和星球，COGC 设为正在运行的那个项目，奢侈品和专家都用默认值。你之前改过的名字、星球、COGC 选择、奢侈品和专家设置都会丢失。
+
+### 如何挑选星球 {#planet-picking}
+
+自动分配只会使用同时满足以下条件的星球：
+
+- 有一个空闲的[[plots|地块]]，或者有 PRUNplanner 还没读到状态的地块（已满且带[[ghost-sites|幽灵地块]]的星球不会被使用）
+- 上面没有你的任何规划，无论是否属于某个帝国
+- 跑得动这个基地：要采集的资源都在，农场能运行，且基地不超过面积上限。
+
+在这些星球当中，正在运行对该基地建筑有帮助的 COGC 项目的优先。其次是距离：到其他基地的距离（按运输吨位加权），以及你在「自有生产」里选过帝国时到帝国各星球的距离。并列时，基地所需面积最小的那颗星球胜出。最大的基地先安置。如果没有星球跑得动这个基地，它仍会按 COGC 和距离挑第一名的那个，所以记得看基地卡片上的警告。
+
+### 2. 把速率适配到你的基地 {#fit}
+
+设定**基地数量**（默认 2，范围 1 到 26），然后按**适配速率**。它会找出一个最大的速率——所有目标按同一比例缩放——使自动分配能塞进这么多基地，然后铺开这条链。它可以把速率调低，也可以调高（最多到 4,096 倍），步长是最大目标每天 0.01。如果连每天 0.01 都需要更多基地，它会告诉你。
+
+它在挑星球之前就先按布局核对基地数量。采集率偏低或肥力较差的星球之后可能还需要再多一点，所以请过一遍结果。
+
+> [!tip] 适配速率会用同一个系数缩放所有目标，所以它们之间的比例保持不变。如果你想要不同的配比，先改掉其中一个目标。例如 DW 每天 20、RAT 每天 10，当适配把速率减半时会变成 10 和 5。
+
+### 3. 创建规划 {#create-the-plans}
+
+一旦每个基地都有了星球、且都塞得进 1,000 面积，第三步就会说明这一点，并提供「创建…规划…」。否则它会告诉你还有多少个基地缺星球，或者超出了 1,000 面积。详情见[创建规划](#create-plans)。
+
+### 总览与基地卡片 {#base-cards}
+
+步骤下方有一个总览，显示**基地**（多少个已经分到星球）、**最大基地**、**许可**（以及在所有基地里的总面积）和**运输 t / 天**（以及航线）。每个基地还各有一行，写明它的专长和星球。**添加基地**可以再加一个基地。
+
+在每张基地卡片上，你可以：
+
+- 给基地命名并挑它的星球（「挑选星球」，或「更改」）
+- 选它的 COGC 项目：「正在运行：…」（默认）、**无项目**，或者选别的项目来提前为投票做准备。对基地有帮助的项目排在前面并显示加成；星球没在跑的项目会标「未运行」
+- 设定它的**奢侈品**：Both（劳动力效率 100%，默认）、Lux 2（92%）、Lux 1（87%）或 Essentials（79%）。维护费就是用来买它们的
+- **编辑**它的**专家**，或者切回**自动**。自动会挑对该基地产出最划算的分配：通常主专长放 5 个，第 6 个放到次一档的专长；同一类型最多 5 个，每个基地共 6 个
+- \*\*合并到…\*\*另一个基地，保留那个基地的星球
+- **拆分**它——按专长分，或对同一个专长对半拆——并为新基地挑好星球
+- 用 × 删除它，它的步骤会移到第一个基地。
+
+基地里的建筑会像在规划里一样吃到星球加成：广告项目给其专长 +25%，劳动力项目给它雇用的某个等级 +10%，农场还有肥力。 FRM 和 ORC 没有肥力就跑不了。采集步骤使用星球自己的速率。没有该资源的星球会沿用链上的速率并显示警告；超过 1,000 面积的基地也一样。
+
+卡片显示它的建筑、面积（核心模块、一个 STO 和居住区）、[[area-permits|许可]]、劳动力，以及含每日损耗的维护费。
+
+「步骤」里的**基地**列可以把一个步骤（或被拆分步骤的其中一段）移到别的基地。 「+ 新基地」会新开一个基地。
+
+基地的星球选择器会把该基地的各个步骤在每颗星球上试算一遍，方便你比较建筑和面积。它会给已经有你的规划的星球标上「你的规划」。**只显示满足**可以筛选出这样的星球：有需要的资源并且允许耕作（默认开启）、正在运行对该基地有用的 COGC 项目、有肥力，或者上面有你的某个规划。也可以按额外材料、本地市场、跳跃数和名称筛选。它会显示每颗星球的地块，但不按地块筛选。
+
+**每日运输**列出基地之间以及与 CX 之间要运的东西，按吨和 m³ 计，并带上[[jumps|跳跃数]]。这就是你要交给物流的那份东西。
+
+## 创建规划 {#create-plans}
+
+**创建规划**会给每个有步骤的基地建一个规划，包含它的建筑、配方、居住区、一个 STO、COGC 项目和许可。每个规划都会带上它基地的奢侈品和专家，因此产出与链上显示的一致。总部和阵营加成留给规划自己去算。
+
+- 每个规划的名字默认是「目标 + 基地名」，你可以改。
+- 选择**新帝国**（默认，按目标命名为「Chain …」，并带一个**阵营**）、**加入到**已有帝国，或者**无帝国**。会先创建新帝国，它的许可根据这些规划来设定。
+- 对话框会告诉你卡在哪里：没有任何基地有步骤、某个基地缺星球或超过 1,000 面积、名字没填，或者没选帝国。
+- 农场如果建在没有肥力的星球上，不会写进它的规划；采集如果建在没有该资源的星球上，只会放入采集器而不带配方。对话框会说明这一点。
+- 启用自有生产时，你的基地能供应的材料不会出现在新规划里。
+
+页面留在链上，并给出新建规划和帝国的链接。这些链接会一直留在「基地」标签页里，直到链发生变化。如果其中某个规划失败，在它之前创建好的规划会保留下来并列出。
+
+## 购买清单 {#buy-list}
+
+购买清单显示这条链在若干天里（默认 10 天）要买什么，基地不止一个时按基地分组。每行有数量（向上取整）、重量和费用。例如单基地的链，某种材料每天买 2.5，10 天就是 25 单位；每天 2.55 则是 26。清单还会显示合计、要运进来的 m³，以及目标运出去的吨数和 m³。
+
+**复制 XIT 购买动作**（按基地时是「复制 XIT 动作：…」）会复制一个 [[xit|XIT]] 动作，在清单上大多数行所取价的那个交易所的仓库里把清单买齐。如果基地已经有星球，这个动作还会把货送到那儿。
+
+清单只包含链上配方需要的投入。劳动力消耗品不在其中，请在链生成的规划里安排它们。
+
+## 分享 {#sharing}
+
+链接里装着整条链：目标、设置、来源、配方、星球、基地、已有数量以及 CX。**复制链链接**会把它复制下来。不带链接打开页面时，会重新打开你上次在弄的那条链，按浏览器、按账号各自记住。
+
+## 检查帝国 {#check-an-empire}
+
+在顶部从**规划一条链**切到**检查帝国**，可以看到你某个帝国是怎么生产它卖的东西的，以及怎样能让它更好。两个模式各自保留自己的状态，来回切换互不干扰。
+
+1. 选择**帝国**。默认是你那个帝国。
+2. 挑选要检查的链。帝国卖的每一种材料（产得比用得多，且有 CX 售价）就是一条链，显示为每天的数量。 「+ 添加一条链」可以加一条；「帝国卖的全部」或**检查帝国卖的全部**会把它们全加进来。**清空**会把它们移除。
+
+如果你还没有帝国，页面会提示这一点，并把你指向「规划一条链」或「管理」。
+
+检查会顺着每条链回溯到你的规划：每个步骤是哪个基地做的、用什么配方和效率，以及哪些是买来的。它从不改动规划，只会指出问题。
+
+| 设置         | 默认       |
+| ---------- | -------- |
+| **价格**     | 帝国的交易所偏好 |
+| **配置收益**   | **显示**   |
+| **忽略以下**   | 每天 200 ȼ |
+| **搬迁回本期限** | 100 天    |
+
+顶部那条横栏显示帝国按规划算的**每天利润**、**可能收益 / 天**、**已检查基地**、多少个**看起来最优**、**改进项**、**规划修正**、**配置收益 / 天**和**搬迁**。收益是与「链默认」相比算的：两种奢侈品、最划算的专家分配、星球正在运行的 COGC，按你的 CX 价格，自产投入按帝国自己的成本计。
+
+### 基地 {#check-an-empire-bases}
+
+每个基地都会得到一个标记：**看起来最优**、有改进项、**规划修正**，或者**不在这些链里**。展开一个基地，可以看到它**按规划的产出**、**规划**下的奢侈品/专家/COGC 与**链默认**的对比，以及它的**发现**。侧边的**覆盖**显示这些链触及了多少个基地；「添加…」会把其他基地卖的东西加进来。
+
+### 发现 {#findings}
+
+每条发现都显示每天收益、建造费和回本时间。可以按类型筛选它们：
+
+- **规划修正**：规划里算了一个星球其实没在跑的 COGC 项目，或者星球在跑某个项目而规划没算上。对于广告（专长）类项目，建筑的实际产出比规划说的少 20%，或者本可以多 25%。劳动力类项目则是少 9%，或多 10%。
+- **配方**：同一栋建筑的另一个配方能把这种材料做得便宜至少 3%。
+- **自产还是购买**：不是目标的某种材料，自产比购买更贵。
+- **选址**：另一颗星球通过它的 COGC 项目、肥力或采集率，能让这个步骤好至少 10%（对比的是星球实际在跑的那个项目）。这个选项要么是你已有的某个基地（只需建搬过去的建筑，且要有空面积），要么是一个新基地（建筑、居住区和核心模块）。 PRUNplanner 会推荐最合适的那个选项——它要有空位、有空闲地块（或幽灵地块；状态未知的地块按可能算），并且在**搬迁回本期限**内回本。「全部…星球…」会列出所有选项，带筛选和排序。**采用**会把某颗星球定为你的选择，**回到推荐**则撤销。
+- **配置**：两种奢侈品都上（仅当多出来的产出赚得比它们贵），或者更划算的专家分配。专家在游戏里是要花时间攒的。把**配置收益**设为**隐藏**就能把这些排除掉。
+
+检查会隐藏低于**忽略以下**的发现，但规划修正和你手动选定的选址永远显示。同一个步骤上的收益是互斥的选项，所以基地的可能收益每个步骤只算最好的那一条。例如同一步骤上一条价值每天 300 ȼ 的配方发现和一条每天 500 ȼ 的选址发现，只算每天 500 ȼ，不是 800。**在规划器里试**（出现在配方、自产还是购买、选址这三类发现上）会打开「规划一条链」，带上这条链的基地并把改动应用上去。
+
+> [!tip] 先修规划修正。它们不需要建造费，而在修好之前，规划上的数字都是偏的。
+
+> [!warning] 选址发现会把带幽灵地块的满星球也算作新基地的可能选项。在游戏里，幽灵地块只允许在该星球开局的新玩家在那里落户。
+
+### 链 {#chains}
+
+每条链都按材料逐条列出：做出多少（**每天产出**）、在哪里做（**生产地**）、用什么配方（**规划配方**）、成本相对 CX 价格如何，以及链规划器会怎么做（**链规划器**）。
+
+### 分享 {#check-an-empire-sharing}
+
+**复制检查链接**会复制帝国、链、设置和你选定的选址，但不含价格。打开的人看到的是该帝国自己的交易所偏好。只有你能打开你自己的帝国。换别人来，页面会说这个帝国不是他的。
