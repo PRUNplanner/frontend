@@ -1,17 +1,17 @@
 {
 	"view_title": "行星搜索",
 	"title": "行星搜索",
-	"description": "Search every planet of Prosperous Universe by resources, conditions, COGC, infrastructure and jumps to the exchanges. Free, no account needed.",
+	"description": "按资源、条件、COGC、基础设施以及与交易所的跳跃数，检索《Prosperous Universe》的每一颗星球。免费，无需账号。",
 	"intro": {
-		"lead": "Filter all {n} planets of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed.",
-		"lead_any": "Filter every planet of Prosperous Universe by resources, conditions, COGC and jumps to the exchanges. Free, no account needed."
+		"lead": "按资源、条件、COGC 和与交易所的跳跃数，筛选《Prosperous Universe》的全部 {n} 颗星球。免费，无需账号。",
+		"lead_any": "按资源、条件、COGC 和与交易所的跳跃数，筛选《Prosperous Universe》的每一颗星球。免费，无需账号。"
 	},
 	"loading": "加载行星中……",
 	"load_error": "加载行星失败，刷新页面重试。",
-	"load_throttled": "Too many requests, try again in {n} s.",
+	"load_throttled": "请求过于频繁，请在 {n} 秒后重试。",
 	"header": {
-		"search_label": "Planet or system name, or ID",
-		"search_placeholder": "Planet or system, e.g. KI-446, Harmonia or Antares II",
+		"search_label": "星球或星系名称，或 ID",
+		"search_placeholder": "星球或星系，例如 KI-446、Harmonia 或 Antares II",
 		"saved": "保存",
 		"load_saved": "加载保存的搜索……",
 		"manage": "管理",
@@ -31,7 +31,7 @@
 		"rename_label": "重命名已保存的搜索 {n}",
 		"load": "加载",
 		"delete": "删除",
-		"more": "Saved searches, copy link, reset"
+		"more": "保存的搜索、复制链接、重置"
 	},
 	"filters": {
 		"title": "筛选",
@@ -114,18 +114,18 @@
 		"exchanges": "交易所",
 		"max_jumps": "最大跃迁次数",
 		"max_jumps_value": "距每个选中项 ≤ {n}次跃迁",
-		"login_prompt": "Log in to count jumps from your own bases.",
-		"login": "Log in"
+		"login_prompt": "登录后可计算从你自己基地出发的跳跃数。",
+		"login": "登录"
 	},
 	"results": {
 		"count": "{total}颗星球中的{n}颗",
 		"view_label": "结果视图",
 		"list": "列表",
 		"matrix": "矩阵",
-		"chart": "Chart",
+		"chart": "图表",
 		"planet": "行星",
 		"fert": "肥沃度 %",
-		"plots": "Plots",
+		"plots": "地块",
 		"other": "其他资源",
 		"extras": "额外建材",
 		"cogc_infra": "全球商会 · 基础设施",
@@ -143,7 +143,7 @@
 		"sort": "按{column}排序",
 		"sort_hint": "点击按此列排序，按住 Shift 点击可添加为次级排序条件",
 		"loading_more": "正在加载更多的行星……",
-		"create_plan_login": "Log in to plan a base on {planet}"
+		"create_plan_login": "登录即可在 {planet} 上规划基地"
 	},
 	"sort": {
 		"button": "排序 ({n})",
@@ -161,7 +161,7 @@
 	"columns": {
 		"button": "列 ({shown}/{total})",
 		"fert": "肥沃",
-		"plots": "Plots",
+		"plots": "地块",
 		"other": "其他资源",
 		"extras": "额外建材",
 		"cogc": "全球商会 · 基础设施",
@@ -175,13 +175,13 @@
 		"reset": "重置"
 	},
 	"plots": {
-		"free": "{free} / {total} plots free",
-		"full": "Full",
-		"full_ghost": "Full · ghost sites",
-		"unknown": "plots unknown",
-		"full_tooltip": "Every plot is taken: this planet can't be settled anymore.",
-		"ghost_tooltip": "Every plot is taken. New bases go on ghost sites; {n} so far.",
-		"as_of": "As of {date}."
+		"free": "{free} / {total} 个地块空闲",
+		"full": "已满",
+		"full_ghost": "已满 · 幽灵地块",
+		"unknown": "地块数未知",
+		"full_tooltip": "地块已占满：这颗星球不能再建基地了。",
+		"ghost_tooltip": "地块已占满。新基地会建在幽灵地块上；目前有 {n} 个。",
+		"as_of": "截至 {date}。"
 	},
 	"chips": {
 		"name": "名称：“{text}”",
@@ -211,8 +211,8 @@
 	},
 	"name_note": {
 		"text": "另有{n}颗星球匹配“{text}”，但因筛选条件未显示： | 另有{n}颗星球匹配“{text}”，但因筛选条件未显示：",
-		"paused": "Showing every planet matching \"{text}\", your filters are paused.",
-		"apply": "Apply filters ({n})",
+		"paused": "正在显示所有匹配「{text}」的星球，你的筛选条件已暂停。",
+		"apply": "应用筛选（{n}）",
 		"relaxation": "{label}（+{n}）",
 		"show_all": "展示全部{n}颗行星"
 	},
@@ -232,35 +232,35 @@
 		"infrastructure": "基础设施",
 		"cx": "AI1 / CI1 / IC1 / NC1",
 		"jumps": "距{ref}的跃迁数",
-		"free_workers": "Free {tier} workers"
+		"free_workers": "空闲的 {tier} 工人"
 	},
 	"chart": {
-		"label": "Results chart: {y} against {x}",
+		"label": "结果图表：{y} 对 {x}",
 		"y": "Y",
 		"x": "X",
-		"y_select": "Y axis material",
-		"per_day": "{material} per day",
-		"fertility": "Fertility %",
-		"x_refs": "jumps to {target}",
-		"x_nearest": "jumps to {target} · nearest exchange",
-		"colour_by": "Colour by",
-		"colour_frontier": "Best trade-off",
+		"y_select": "Y 轴材料",
+		"per_day": "每日 {material}",
+		"fertility": "肥沃度 %",
+		"x_refs": "到 {target} 的跳跃数",
+		"x_nearest": "到 {target} 的跳跃数 · 最近的交易所",
+		"colour_by": "着色依据",
+		"colour_frontier": "最佳权衡",
 		"colour_cogc": "COGC",
-		"legend": "Legend",
-		"legend_frontier": "best trade-off",
-		"legend_other": "other results",
-		"legend_pinned": "pinned",
-		"no_program": "no COGC program",
-		"other_programs": "other or no COGC program",
-		"capped": "Showing the first {limit} of {total} results by the current sort.",
-		"no_route": "{n} planet without a route | {n} planets without a route",
-		"no_material": "{n} planet without {material} | {n} planets without {material}",
-		"not_fertile": "{n} planet not fertile | {n} planets not fertile",
-		"size": "Dot size = fertility ({min}–{max} %)",
-		"actions": "Click a dot to pin it for Compare · double-click to create a plan",
-		"actions_touch": "Tap a dot for details",
-		"ranked": "By {y}",
-		"tooltip_jumps": "jumps to {target}",
-		"tooltip_infra": "Infra"
+		"legend": "图例",
+		"legend_frontier": "最佳权衡",
+		"legend_other": "其他结果",
+		"legend_pinned": "已固定",
+		"no_program": "无 COGC 计划",
+		"other_programs": "其他 COGC 计划或无",
+		"capped": "按当前排序显示前 {limit} 条结果，共 {total} 条。",
+		"no_route": "{n} 颗星球没有航线",
+		"no_material": "{n} 颗星球没有 {material}",
+		"not_fertile": "{n} 颗星球不肥沃",
+		"size": "点的大小 = 肥沃度（{min}–{max} %）",
+		"actions": "单击一个点可固定以便对比 · 双击可创建规划",
+		"actions_touch": "点一下查看详情",
+		"ranked": "按 {y}",
+		"tooltip_jumps": "到 {target} 的跳跃数",
+		"tooltip_infra": "基础设施"
 	}
 }
