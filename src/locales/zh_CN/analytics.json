@@ -12,9 +12,9 @@
 		"deny": "算了吧"
 	},
 	"banner": {
-		"label": "Analytics consent",
-		"text": "Can we use PostHog to see how prunplanner.org is used? Optional, and only with your OK. {link}",
-		"details": "Details",
-		"footer_link": "Analytics"
+		"label": "分析数据许可",
+		"text": "我们可以用 PostHog 看看 prunplanner.org 是怎么被使用的吗？可选，只有你同意才会。{link}",
+		"details": "详情",
+		"footer_link": "数据分析"
 	}
 }
