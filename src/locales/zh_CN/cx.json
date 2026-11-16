@@ -1,67 +1,67 @@
 {
 	"market_flags": {
 		"flags": {
-			"no_price": "No price",
-			"no_trades": "No trades in 7 days",
-			"no_offers": "No offers",
-			"no_buyers": "No buyers",
-			"bigger": "Bigger than the market",
-			"large_share": "Large share of the market",
-			"all_exchanges": "All exchanges, no exchange set",
-			"stale": "Data older than 2 days"
+			"no_price": "没有价格",
+			"no_trades": "7 天内无成交",
+			"no_offers": "无人挂卖",
+			"no_buyers": "无人买",
+			"bigger": "超过市场容量",
+			"large_share": "占市场比例过大",
+			"all_exchanges": "全部交易所，未设置交易所",
+			"stale": "数据超过 2 天未更新"
 		},
-		"title": "{ticker}: {flag}",
+		"title": "{ticker}：{flag}",
 		"popover": {
-			"you_sell": "You sell",
-			"you_buy": "You buy",
-			"empire_sells": "The empire sells",
-			"empire_buys": "The empire buys",
-			"per_day": "{value} / day",
-			"traded": "Traded on {exchange}, last 30 days",
-			"traded_value": "{total} ({daily} / day)",
-			"share": "Your share of that",
-			"empire_share": "Empire share",
-			"bid_ask": "Bid · ask",
-			"spread": "{spread} % spread",
+			"you_sell": "你在卖",
+			"you_buy": "你在买",
+			"empire_sells": "帝国在卖",
+			"empire_buys": "帝国在买",
+			"per_day": "{value}/天",
+			"traded": "{exchange} 最近 30 天的成交量",
+			"traded_value": "{total}（每天 {daily}）",
+			"share": "你占的份额",
+			"empire_share": "帝国份额",
+			"bid_ask": "买价 · 卖价",
+			"spread": "价差 {spread}%",
 			"none": "—",
-			"caveat": "CX volume only. Sales on local markets or by contract aren't counted.",
-			"open": "Open Plan check →"
+			"caveat": "只算 CX 成交量。本地市场或合同销售不计入。",
+			"open": "打开规划检查 →"
 		},
-		"all_exchanges": "all exchanges",
+		"all_exchanges": "全部交易所",
 		"summary": {
-			"red": "{n} material can't trade as planned | {n} materials can't trade as planned",
-			"amber": "{n} is a large share of its market | {n} are a large share of their market",
-			"link": "Plan check →"
+			"red": "{n} 种材料无法按规划成交|{n} 种材料无法按规划成交",
+			"amber": "{n} 占其市场比例过大|{n} 占其市场比例过大",
+			"link": "规划检查 →"
 		},
 		"exchange": {
-			"one": "Exchange {exchange}",
-			"many": "Exchanges {exchange}",
-			"all": "All exchanges",
-			"from_plan": "from the plan's CX preference",
-			"from_empire": "from the empire's CX preference",
-			"no_cx": "no CX preference set",
-			"set_cx": "Set one"
+			"one": "交易所 {exchange}",
+			"many": "交易所 {exchange}",
+			"all": "全部交易所",
+			"from_plan": "来自规划的 CX 偏好",
+			"from_empire": "来自帝国的 CX 偏好",
+			"no_cx": "未设置 CX 偏好",
+			"set_cx": "去设置"
 		},
 		"means": {
-			"no_price": "The plan has no price for {ticker}, so it counts it at 0 ȼ.",
-			"no_trades": "Nobody traded {ticker} on {exchange} in the last 7 days.",
-			"no_offers": "Nobody offers {ticker} on {exchange} right now.",
-			"no_buyers": "Nobody bids for {ticker} on {exchange} right now.",
-			"bigger_sell": "You'd sell {share} of what {exchange} trades in {ticker}. Expect to wait for buyers or sell below the bid.",
-			"bigger_buy": "You'd buy {share} of what {exchange} trades in {ticker}. Expect to wait for sellers or pay above the ask.",
-			"large_share_sell": "You'd sell {share} of what {exchange} trades in {ticker}, enough to move its price.",
-			"large_share_buy": "You'd buy {share} of what {exchange} trades in {ticker}, enough to move its price."
+			"no_price": "规划里没有 {ticker} 的价格，所以按 0 ȼ 计算。",
+			"no_trades": "最近 7 天没有人在 {exchange} 交易 {ticker}。",
+			"no_offers": "现在没有人在 {exchange} 挂卖 {ticker}。",
+			"no_buyers": "现在没有人在 {exchange} 出价买 {ticker}。",
+			"bigger_sell": "你要卖的量相当于 {exchange} 上 {ticker} 成交量的 {share}。准备好等买家，或者低于买价卖出。",
+			"bigger_buy": "你要买的量相当于 {exchange} 上 {ticker} 成交量的 {share}。准备好等卖家，或者高于卖价买入。",
+			"large_share_sell": "你要卖的量相当于 {exchange} 上 {ticker} 成交量的 {share}，足以推动价格。",
+			"large_share_buy": "你要买的量相当于 {exchange} 上 {ticker} 成交量的 {share}，足以推动价格。"
 		},
 		"empire": {
-			"title": "Market check on the empire's net flow",
+			"title": "帝国净流量的市场检查",
 			"chip": {
-				"red": "{n} can't trade as planned",
-				"amber": "{n} large share of the market",
-				"muted": "{n} other note | {n} other notes"
+				"red": "{n} 项无法按规划成交",
+				"amber": "{n} 项占市场比例过大",
+				"muted": "另有 {n} 条提示|另有 {n} 条提示"
 			},
-			"filter_label": "Show only flagged materials",
-			"net_note": "Materials made and used inside the empire net out, so they are only flagged on what reaches the market. Each plan's own Material I/O still flags them.",
-			"plan_shares": "Each plan's share"
+			"filter_label": "只显示被标记的材料",
+			"net_note": "帝国自产自用的材料会相互抵消，所以只标记真正进入市场的部分。但每份规划自己的材料进出一栏仍会标记它们。",
+			"plan_shares": "每份规划的份额"
 		}
 	}
 }
