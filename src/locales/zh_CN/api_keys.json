@@ -7,125 +7,125 @@
 			"p2": "通过使用这些端点，你可以将规划操作与外部电子表格、自定义仪表板，甚至优化算法同步。",
 			"link": "PRUNplanner REST API",
 			"warning": "API 密钥使本工具可无限期完全访问你的账户数据。请像保护密码一样保护这些凭据。切勿将密钥提交到公开代码库，或分享给未经验证的第三方服务。如果密钥泄露，请立即撤销并生成新的密钥。",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet. Use a separate key per sheet so you can revoke it alone."
+			"warning_sheets": "放在 Google Sheets 链接里的密钥，能被所有打开该表格的人看到。建议每张表格用单独的密钥，这样能只吊销其中一把。"
 		}
 	},
 	"get_started": {
-		"title": "Get started",
-		"step_create": "Create a key below and save it somewhere safe.",
-		"step_pick": "Pick what you want in the URL builder, for example your empire's material I/O.",
-		"step_paste": "Copy the Google Sheets formula, the URL or a curl or Python snippet and paste it into your sheet or script."
+		"title": "开始使用",
+		"step_create": "在下面创建一把密钥，并存到安全的地方。",
+		"step_pick": "在 URL 构建器里选择你需要的数据，比如你的帝国材料 I/O。",
+		"step_paste": "复制 Google Sheets 公式、URL，或 curl / Python 片段，粘贴到你的表格或脚本里。"
 	},
 	"builder": {
-		"title": "URL builder",
-		"endpoint": "Data",
-		"format": "Format",
+		"title": "URL 构建器",
+		"endpoint": "数据",
+		"format": "格式",
 		"groups": {
-			"new": "Sheets-ready (CSV and JSON)",
-			"planning": "Your planning data (JSON)",
-			"public": "Public game data (JSON, no key)"
+			"new": "适配表格（CSV 与 JSON）",
+			"planning": "你的规划数据（JSON）",
+			"public": "公开游戏数据（JSON，无需密钥）"
 		},
 		"params": {
-			"empire": "Empire",
-			"plan": "Plan",
-			"cx": "CX preference",
-			"planet": "Planet",
-			"ticker": "Material",
-			"exchange": "Exchange",
-			"days": "Days"
+			"empire": "帝国",
+			"plan": "规划",
+			"cx": "交易所偏好",
+			"planet": "星球",
+			"ticker": "材料",
+			"exchange": "交易所",
+			"days": "天"
 		},
-		"days_option": "Last day | Last {n} days",
-		"planet_placeholder": "Natural ID, e.g. OT-580b",
+		"days_option": "最近一天 | 最近 {n} 天",
+		"planet_placeholder": "自然 ID，例如 OT-580b",
 		"empty": {
-			"empire": "You have no empires yet.",
-			"plan": "You have no plans yet.",
-			"cx": "You have no CX preferences yet."
+			"empire": "你还没有帝国。",
+			"plan": "你还没有规划。",
+			"cx": "你还没有交易所偏好。"
 		},
-		"empty_link": "Create one in Manage",
-		"incomplete": "Fill in every input above to build the URL.",
-		"placeholder_note": "{placeholder} stands for your key. Create a key and choose \"Use in URL builder\" to fill it in.",
+		"empty_link": "在「管理」里创建一个",
+		"incomplete": "填完上面的每一项即可生成 URL。",
+		"placeholder_note": "{placeholder} 代表你的密钥。创建一把密钥并选择「在 URL 构建器中使用」即可填入。",
 		"outputs": {
-			"sheets": "Google Sheets",
+			"sheets": "Google 表格",
 			"url": "URL",
 			"curl": "curl",
 			"python": "Python"
 		},
-		"copy": "Copy {what}",
-		"copied": "Copied",
-		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can use this key, with full access to your account. Use a separate key per sheet so you can revoke it alone.",
+		"copy": "复制{what}",
+		"copied": "已复制",
+		"freshness": "来自 PRUNplanner 上次计算该帝国时的数据。updated_at 列显示具体时间。",
+		"key_warning": "任何能打开这张表的人都能使用这把密钥，并拥有你账号的完整权限。建议每张表用单独的密钥，这样能只吊销其中一把。",
 		"endpoints": {
 			"empire_material_io": {
-				"label": "Empire material I/O",
-				"description": "Production, consumption and delta per material and day for one empire."
+				"label": "帝国材料 I/O",
+				"description": "某个帝国每天每种材料的生产、消耗与差额。"
 			},
 			"empire_plans_material_io": {
-				"label": "Plan material I/O (empire)",
-				"description": "Production, consumption and delta per plan and material for one empire."
+				"label": "规划材料 I/O（帝国）",
+				"description": "某个帝国每个规划、每种材料的生产、消耗与差额。"
 			},
 			"empire_plans": {
-				"label": "Empire plan list",
-				"description": "The plans of one empire with planet, COGC, permits and CorpHQ."
+				"label": "帝国规划列表",
+				"description": "某个帝国的所有规划，含星球、COGC、许可和 CorpHQ。"
 			},
 			"fio_storage": {
-				"label": "FIO storage",
-				"description": "Every material in your FIO storages, warehouses and ships."
+				"label": "FIO 库存",
+				"description": "你 FIO 中所有库存、仓库和飞船里的材料。"
 			},
 			"exchanges": {
-				"label": "Exchange prices",
-				"description": "Prices and calculated metrics of every material on every exchange."
+				"label": "交易所价格",
+				"description": "每个交易所上每种材料的价格与计算指标。"
 			},
 			"plans": {
-				"label": "All plans",
-				"description": "Every plan of your account with its full configuration."
+				"label": "所有规划",
+				"description": "你账号下的所有规划及其完整配置。"
 			},
 			"plan": {
-				"label": "One plan",
-				"description": "One plan with its full configuration."
+				"label": "单个规划",
+				"description": "单个规划及其完整配置。"
 			},
 			"empires": {
-				"label": "All empires",
-				"description": "Every empire of your account with its plans."
+				"label": "所有帝国",
+				"description": "你账号下的所有帝国及其规划。"
 			},
 			"empire": {
-				"label": "One empire",
-				"description": "One empire with its configuration."
+				"label": "单个帝国",
+				"description": "单个帝国及其配置。"
 			},
 			"cxs": {
-				"label": "CX preferences",
-				"description": "Every CX preference of your account."
+				"label": "交易所偏好",
+				"description": "你账号下的所有交易所偏好。"
 			},
 			"cx": {
-				"label": "One CX preference",
-				"description": "One CX preference with its rules."
+				"label": "单个交易所偏好",
+				"description": "单个交易所偏好及其规则。"
 			},
 			"materials": {
-				"label": "Materials",
-				"description": "Every material in the game."
+				"label": "材料",
+				"description": "游戏中的每种材料。"
 			},
 			"recipes": {
-				"label": "Recipes",
-				"description": "Every recipe in the game."
+				"label": "配方",
+				"description": "游戏中的每个配方。"
 			},
 			"buildings": {
-				"label": "Buildings",
-				"description": "Every building in the game."
+				"label": "建筑",
+				"description": "游戏中的每种建筑。"
 			},
 			"planet": {
-				"label": "One planet",
-				"description": "Resources, environment and infrastructure of one planet."
+				"label": "单颗星球",
+				"description": "单颗星球的资源、环境与基础设施。"
 			},
 			"planet_popr": {
-				"label": "Planet population report",
-				"description": "The latest population report of one planet."
+				"label": "星球人口报告",
+				"description": "单颗星球的最新人口报告。"
 			},
 			"market_history": {
-				"label": "Market history",
-				"description": "Daily price history of one material on one exchange."
+				"label": "市场历史",
+				"description": "某交易所上某种材料的每日价格历史。"
 			},
 			"market_daily": {
-				"label": "Market history, every material",
-				"description": "Daily prices of every material on one exchange for the last days, up to 31, in one request. Limited to 30 requests per minute."
+				"label": "市场历史，全部材料",
+				"description": "一次请求即可取得某个交易所上所有材料最近（最多 31 天）的每日价格。每分钟最多 30 次请求。"
 			}
 		}
 	},
@@ -133,8 +133,8 @@
 		"title": "PRUNplanner API 密钥",
 		"loading": "正在加载API密钥。",
 		"empty": "暂无API密钥。创建您的第一份API密钥。",
-		"never": "Never",
-		"last_used_hint": "Requests with this key update this within a few minutes.",
+		"never": "从未",
+		"last_used_hint": "用这把密钥发起的请求会在几分钟内更新这里。",
 		"buttons": {
 			"new_apikey": "创建新密钥",
 			"revoke_apikey": "撤销"
@@ -147,15 +147,15 @@
 		}
 	},
 	"confirm_revoke": {
-		"title": "Revoke {name}?",
-		"content": "Scripts and sheets using it stop working at once.",
+		"title": "吊销 {name}？",
+		"content": "使用它的脚本和表格会立刻失效。",
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
 	"implementation": {
 		"title": "授权执行情况",
 		"link": "查看REST API 参考值 →",
-		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
+		"authorize": "REST API 文档里有一个 Authorize 按钮：把密钥粘进去就能在浏览器里试调用。"
 	},
 	"create": {
 		"title": "创建API密钥",
@@ -171,9 +171,9 @@
 			"create": "@:common.butons.create",
 			"cancel": "@:common.butons.cancel",
 			"saved": "我已保存密钥",
-			"copy": "Copy key",
-			"use_in_builder": "Use in URL builder"
+			"copy": "复制密钥",
+			"use_in_builder": "在 URL 构建器中使用"
 		},
-		"copied": "Key copied"
+		"copied": "密钥已复制"
 	}
 }

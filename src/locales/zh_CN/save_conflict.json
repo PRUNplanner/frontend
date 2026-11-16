@@ -26,32 +26,32 @@
 		"save_as_new": "将您的修改创建为新规划。"
 	},
 	"draft": {
-		"title": "Draft saved elsewhere",
-		"text": "Another tab or device saved a draft of this plan after yours. Autosave is paused until you choose.",
-		"theirs": "In the other draft",
-		"mine": "Your changes",
+		"title": "草稿已保存到别处",
+		"text": "另一个标签页或设备在你之后保存了这份规划的草稿。在你做出选择之前，自动保存已暂停。",
+		"theirs": "另一份草稿里",
+		"mine": "你的改动",
 		"option": {
-			"overwrite": "Keep mine",
-			"reload": "Load the other draft",
-			"close": "Decide later"
+			"overwrite": "保留我的",
+			"reload": "载入另一份草稿",
+			"close": "稍后再决定"
 		},
 		"option_help": {
-			"overwrite": "Replaces the other draft with your changes.",
-			"reload": "Drops your changes here and loads the other draft."
+			"overwrite": "用你的改动覆盖另一份草稿。",
+			"reload": "放弃这里的改动，载入另一份草稿。"
 		}
 	},
 	"draft_base": {
-		"title": "Unsaved changes on an older version",
-		"text": "You left unsaved changes on this plan, and it was saved again since. Nothing changes until you choose.",
-		"mine": "Your unsaved changes",
+		"title": "旧版本上有未保存的改动",
+		"text": "你在这份规划上留下了未保存的改动，之后它又被保存过一次。在你选择之前，什么都不会变。",
+		"mine": "你未保存的改动",
 		"option": {
-			"overwrite": "Keep my changes",
-			"reload": "Use the saved version",
-			"close": "Decide later"
+			"overwrite": "保留我的改动",
+			"reload": "用已保存的版本",
+			"close": "稍后再决定"
 		},
 		"option_help": {
-			"overwrite": "Loads your unsaved changes on top of the saved version.",
-			"reload": "Deletes your unsaved changes and keeps the saved version."
+			"overwrite": "把你的未保存改动叠加到已保存的版本上。",
+			"reload": "删除你的未保存改动，保留已保存的版本。"
 		}
 	},
 	"type": {
@@ -65,20 +65,20 @@
 		"cogc": "COGC：{from} → {to}",
 		"corphq_on": "有集团总部",
 		"corphq_off": "无集团总部",
-		"added": "{label} added ({amount})",
-		"removed": "{label} removed",
+		"added": "{label} 新增（{amount}）",
+		"removed": "{label} 删除",
 		"amount": "{label} {from} → {to}",
-		"recipe": "{label}: recipe changed",
-		"experts": "{label} experts {from} → {to}",
-		"lux_on": "{label} luxury {n} on",
-		"lux_off": "{label} luxury {n} off",
-		"faction": "Faction {from} → {to}",
-		"permits_used": "Permits used {from} → {to}",
-		"permits_total": "Permits total {from} → {to}",
-		"exchange": "{type} exchange {from} → {to}",
-		"exchange_planet": "{type} exchange {from} → {to} on {planet}",
-		"ticker": "{ticker} {type} price {from} → {to}",
-		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
+		"recipe": "{label}：配方已更改",
+		"experts": "{label} 专家 {from} → {to}",
+		"lux_on": "{label} 奢侈品 {n} 开启",
+		"lux_off": "{label} 奢侈品 {n} 关闭",
+		"faction": "派系 {from} → {to}",
+		"permits_used": "已用许可 {from} → {to}",
+		"permits_total": "许可总数 {from} → {to}",
+		"exchange": "{type} 交易所 {from} → {to}",
+		"exchange_planet": "{type} 交易所 {from} → {to}（{planet}）",
+		"ticker": "{ticker} {type} 价格 {from} → {to}",
+		"ticker_planet": "{ticker} {type} 价格 {from} → {to}（{planet}）"
 	},
 	"notice": {
 		"saved_elsewhere": "已于另一标签页中保存。您的更改已保留。",

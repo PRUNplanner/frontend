@@ -1,11 +1,11 @@
 {
 	"view_title": "实时市场",
 	"title": "实时市场",
-	"connection_lost": "Connection lost. Reconnecting...",
+	"connection_lost": "连接断开，正在重连…",
 	"status": {
 		"connected": "已连接",
 		"disconnected": "已断开",
-		"reconnecting": "Reconnecting"
+		"reconnecting": "正在重连"
 	},
 	"severity_type": {
 		"LOW": "低",
@@ -77,7 +77,7 @@
 				"add_group": "分组",
 				"remove": "移除"
 			},
-			"operator_label": "Match",
+			"operator_label": "匹配",
 			"error": "错误：{value}",
 			"empty": "空分组"
 		},
@@ -86,7 +86,7 @@
 			"title_editing": "编辑提醒",
 			"info": "提醒目前仅存储在此设备上，不会同步到你的账户。",
 			"no_alerts": "未找到提醒。请先创建你的第一个检测信号",
-			"new_alert_name": "New Alert",
+			"new_alert_name": "新警报",
 			"buttons": {
 				"create_alert": "创建新提醒",
 				"discard": "@:common.butons.discard",

@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "Back to your empire.",
+			"title": "回到你的帝国。",
 			"error": "登录时出错。请检查您的用户名和密码。",
-			"throttled": "Too many login attempts. Please wait and try again later.",
+			"throttled": "登录尝试次数过多。请稍后再试。",
 			"buttons": {
-				"login": "Log in"
+				"login": "登录"
 			},
 			"form": {
 				"username": "用户名",
@@ -13,42 +13,42 @@
 			},
 			"tos": "使用 PRUNplanner 即表示您同意{tos_link}。",
 			"tos_link": "服务条款",
-			"forgot_link": "Forgot your password?"
+			"forgot_link": "忘记密码？"
 		},
 		"registration": {
-			"title": "Start planning, it's free.",
+			"title": "开始规划吧，免费。",
 			"tos": "PRUNplanner 可免费使用。创建账户即表示您已阅读并同意{tos_link}。",
 			"tos_link": "服务条款",
 			"result": {
 				"ok_header": "欢迎，{username}！",
-				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
+				"ok_message": "注册成功。现在可以登录 PRUNplanner 了。",
 				"error": "注册出错。",
-				"fix_fields": "Please fix the fields marked below.",
-				"throttled": "Too many registration attempts. Please wait a minute and try again.",
-				"unknown": "Unknown error. Please try again later."
+				"fix_fields": "请修正下面标出的字段。",
+				"throttled": "注册尝试次数过多。请等一分钟再试。",
+				"unknown": "未知错误。请稍后再试。"
 			},
 			"buttons": {
-				"register": "Create account"
+				"register": "创建账号"
 			},
 			"form": {
 				"username": "用户名",
-				"username_info": "At least 3 characters, no spaces.",
+				"username_info": "至少 3 个字符，不能有空格。",
 				"password": "密码",
 				"password_info": "至少8个字符。",
-				"email": "邮箱",
-				"email_info": "Not mandatory, but recommended. Increases your account security.",
-				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "Security question",
-				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
-				"planet_name": "Planet name",
-				"another_planet": "Use a different planet"
+				"email": "邮箱（选填）",
+				"email_info": "非必填，但建议填。能提高账号安全性。",
+				"email_invalid": "这看起来不像邮箱地址。留空或者改对才能创建账号。",
+				"security_question": "安全问题",
+				"question": "输入星球 {planet} 的名字。想知道它叫什么，用这条命令在 Prosperous Universe 里新开一个 buffer，然后看 \"Name\" 下面的星球名。",
+				"planet_name": "星球名",
+				"another_planet": "换一个星球"
 			}
 		},
 		"password_reset": {
 			"title": "重置密码",
 			"info": "请输入系统发送到邮箱的验证码及新密码。",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+			"throttled": "尝试次数过多。请等几分钟再试。",
+			"error": "出错了。检查一下邮箱、验证码和密码。确认密码足够安全。",
 			"buttons": {
 				"send": "发送重置密码"
 			},
@@ -62,8 +62,8 @@
 		"request_password_reset": {
 			"title": "重置密码请求",
 			"info": "输入与你的 PRUNplanner 账户绑定的已验证邮箱。如果识别成功，我们将发送验证码以重置密码。",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"error": "The request failed. Please try again later.",
+			"throttled": "尝试次数过多。请等几分钟再试。",
+			"error": "请求失败。请稍后再试。",
 			"form": {
 				"email_placeholder": "邮箱地址"
 			},
@@ -82,8 +82,8 @@
 			},
 			"result": {
 				"ok": "邮箱验证成功。",
-				"already_verified": "Your email address is already confirmed.",
-				"back": "Back to your empire"
+				"already_verified": "你的邮箱已经确认过了。",
+				"back": "回到你的帝国"
 			}
 		},
 		"hints": {
@@ -96,61 +96,61 @@
 	},
 	"email_nudge": {
 		"none": {
-			"title": "Add an email so you can't get locked out",
-			"body": "If you ever forget your password, an email is the only way back to your plan. It is only used for password resets: no newsletters, never shared. | If you ever forget your password, an email is the only way back to your {count} plans. It is only used for password resets: no newsletters, never shared.",
-			"body_plain": "If you ever forget your password, an email is the only way back to your plans. It is only used for password resets: no newsletters, never shared."
+			"title": "添加邮箱，免得自己被锁在外面",
+			"body": "万一忘了密码，邮箱是回到你规划的唯一条路。只用来重置密码：不发推广邮件，也绝不外传。 | 万一忘了密码，邮箱是回到你那 {count} 份规划的唯一条路。只用来重置密码：不发推广邮件，也绝不外传。",
+			"body_plain": "万一忘了密码，邮箱是回到你规划的唯一条路。它只用来重置密码：不发推广邮件，也绝不外传。"
 		},
 		"unconfirmed": {
-			"title": "Confirm your email",
-			"body": "Password resets only go to a confirmed address. Enter the code we sent to {email}, or ask for a new one."
+			"title": "确认你的邮箱",
+			"body": "密码重置只会发到已确认的地址。输入我们发到 {email} 的验证码，或者申请一个新的。"
 		},
 		"buttons": {
-			"add": "Add email",
-			"later": "Not now",
-			"never": "Don't remind me",
-			"enter_code": "Enter code",
-			"resend": "Send new code",
-			"undo": "Undo"
+			"add": "添加邮箱",
+			"later": "以后再说",
+			"never": "别再提醒我",
+			"enter_code": "输入验证码",
+			"resend": "发送新验证码",
+			"undo": "撤销"
 		},
-		"never_toast": "No more reminders. You can add an email any time in Profile.",
-		"code_sent": "Code sent. Check your inbox, and your spam folder."
+		"never_toast": "不再提醒。随时可以在「个人资料」里添加邮箱。",
+		"code_sent": "验证码已发出。查一下收件箱，也看看垃圾邮件。"
 	},
 	"email_dialog": {
 		"title": {
-			"email": "Add an email",
-			"code": "Confirm your email",
-			"done": "Email confirmed"
+			"email": "添加邮箱",
+			"code": "确认你的邮箱",
+			"done": "邮箱已确认"
 		},
-		"email_label": "Email address",
-		"password_label": "Current password",
+		"email_label": "邮箱地址",
+		"password_label": "当前密码",
 		"email_placeholder": "you{'@'}example.com",
-		"email_info": "Only used to reset your password. No newsletters, never shared. You can change or remove it any time in Profile.",
-		"email_code_info": "We'll send an 8-character code to confirm it's yours.",
-		"code_info": "We sent a code to {email}. It's valid for 24 hours. You can also click the link in the email, on any device.",
-		"code_label": "Code",
-		"code_placeholder": "8 characters",
-		"no_code": "Nothing arrived? Check spam, or",
-		"done_title": "You're covered",
-		"done_info": "If you forget your password, use “Forgot password” on the login screen and we'll send the reset to {email}.",
-		"confirmed_toast": "Email confirmed. Password resets now go to {email}.",
+		"email_info": "只用来重置密码。不发推广邮件，也绝不外传。随时可以在「个人资料」里修改或删除。",
+		"email_code_info": "我们会发一个 8 位验证码，确认这是你的邮箱。",
+		"code_info": "我们已把验证码发到 {email}，24 小时内有效。你也可以在任何设备上点邮件里的链接。",
+		"code_label": "验证码",
+		"code_placeholder": "8 个字符",
+		"no_code": "没收到？看看垃圾邮件，或者",
+		"done_title": "稳了",
+		"done_info": "忘了密码的话，在登录界面点「忘记密码」，我们就会把重置链接发到 {email}。",
+		"confirmed_toast": "邮箱已确认。以后密码重置会发到 {email}。",
 		"buttons": {
-			"cancel": "Cancel",
-			"save": "Save and send code",
-			"change_email": "Change email",
-			"later": "Later",
-			"confirm": "Confirm",
-			"resend": "send a new code",
-			"done": "Done"
+			"cancel": "取消",
+			"save": "保存并发送验证码",
+			"change_email": "更改邮箱",
+			"later": "稍后",
+			"confirm": "确认",
+			"resend": "发送新验证码",
+			"done": "完成"
 		},
 		"errors": {
-			"password_required": "Enter your current password to change your email.",
-			"password_invalid": "That password is not correct.",
-			"invalid_email": "This doesn't look like an email address.",
-			"invalid": "That code didn't work. Check it, or send a new one.",
-			"expired": "That code has expired. Send a new one.",
-			"no_code": "There is no code waiting for this account. Send a new one.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"unknown": "Something went wrong. Please try again."
+			"password_required": "输入当前密码才能更改邮箱。",
+			"password_invalid": "密码不正确。",
+			"invalid_email": "这看起来不像邮箱地址。",
+			"invalid": "验证码不对。检查一下，或者重新发一个。",
+			"expired": "验证码已过期。请重新发送。",
+			"no_code": "这个账号没有待用的验证码。请重新发送。",
+			"throttled": "尝试次数过多。请等几分钟再试。",
+			"unknown": "出问题了。请再试一次。"
 		}
 	}
 }

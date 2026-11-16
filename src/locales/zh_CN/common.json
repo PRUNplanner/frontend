@@ -6,7 +6,7 @@
 		"management": "管理",
 		"exchanges": "交易所",
 		"tools": "工具",
-		"market_report": "Market report",
+		"market_report": "市场报告",
 		"market_exploration": "市场探索",
 		"market_live": "实时市场",
 		"recipe_roi": "生产模板 ROI",
@@ -22,8 +22,8 @@
 		"help": "帮助",
 		"logout": "登出",
 		"fio": {
-			"fio_updated": "FIO updated",
-			"fetched": "PRUNplanner fetched",
+			"fio_updated": "FIO 更新于",
+			"fetched": "已从 PRUNplanner 获取",
 			"fio": "FIO",
 			"fio_active": "FIO 已启用",
 			"fio_inactive": "FIO 未启用",
@@ -33,20 +33,20 @@
 		},
 		"collapse": "折叠导航栏",
 		"expand": "展开导航栏",
-		"empire_switch": "Switch",
-		"plans": "Plans",
-		"plans_count": "{name} · {count} plans",
-		"new_plan": "New plan from Planet Search",
-		"create_empire": "Create an empire",
-		"no_plans": "No plans yet",
-		"not_in_empire": "not in this empire",
-		"plans_filter": "Filter plans",
-		"plans_filter_clear": "Clear filter",
-		"plans_filter_empty": "No plan matches",
-		"market": "Market",
-		"calculators": "Calculators",
-		"more": "More",
-		"account_menu": "Account menu"
+		"empire_switch": "切换",
+		"plans": "规划",
+		"plans_count": "{name} · {count} 个规划",
+		"new_plan": "从行星搜索新建规划",
+		"create_empire": "创建帝国",
+		"no_plans": "还没有规划",
+		"not_in_empire": "不在这个帝国中",
+		"plans_filter": "筛选规划",
+		"plans_filter_clear": "清除筛选",
+		"plans_filter_empty": "没有匹配的规划",
+		"market": "市场",
+		"calculators": "计算器",
+		"more": "更多",
+		"account_menu": "账户菜单"
 	},
 	"buttons": {
 		"create": "创建",
@@ -65,8 +65,8 @@
 		"add": "添加",
 		"fullscreen": "切换全屏",
 		"edit": "编辑",
-		"show_all": "Show all ({n})",
-		"show_fewer": "Show fewer"
+		"show_all": "显示全部（{n}）",
+		"show_fewer": "收起"
 	},
 	"ui": {
 		"placeholder": {
@@ -89,29 +89,29 @@
 			"more": "更多页面"
 		},
 		"table": {
-			"no_data": "No Data",
-			"expand_row": "Show details"
+			"no_data": "暂无数据",
+			"expand_row": "查看详情"
 		},
-		"close": "Close",
+		"close": "关闭",
 		"tag": {
-			"remove": "Remove {label}"
+			"remove": "移除 {label}"
 		},
 		"language": "语言",
 		"page_load_failed": "此页面无法加载。重新加载以获取最新版本。",
-		"save_failed": "Couldn't save that. Please try again.",
-		"session_ended": "Your session ended. Please log in again.",
-		"load_failed": "Couldn't load that. Please try again.",
-		"delete_failed": "Couldn't delete that. Please try again.",
-		"copy_failed": "Couldn't copy to the clipboard.",
+		"save_failed": "保存失败，请重试。",
+		"session_ended": "会话已结束，请重新登录。",
+		"load_failed": "加载失败，请重试。",
+		"delete_failed": "删除失败，请重试。",
+		"copy_failed": "无法复制到剪贴板。",
 		"meter": {
-			"used": "{label} {pct} % used"
+			"used": "{label} 已用 {pct}%"
 		},
 		"strip": {
-			"dot": "{label}: {value}",
-			"over": "{n} more beyond the axis"
+			"dot": "{label}：{value}",
+			"over": "坐标轴外还有 {n} 个"
 		},
 		"runway": {
-			"beyond": "beyond the axis"
+			"beyond": "坐标轴外"
 		}
 	},
 	"values": {
@@ -122,27 +122,27 @@
 		"empty": "无待显示内容"
 	},
 	"version_update": {
-		"ready_title": "A new version of PRUNplanner is ready",
-		"ready_body": "Reload to get it. Your saved work stays as it is.",
-		"unsaved_body": "Save your changes first, then reload.",
-		"outdated_title": "This tab is out of date",
-		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
-		"reload": "Reload",
-		"later": "Later",
-		"chip": "Update ready",
-		"whats_new_title": "PRUNplanner {version} is here",
-		"whats_new_action": "What's new"
+		"ready_title": "PRUNplanner 新版本已就绪",
+		"ready_body": "刷新即可更新，已保存的内容不受影响。",
+		"unsaved_body": "请先保存更改，再刷新。",
+		"outdated_title": "此标签页已过期",
+		"outdated_body": "另一个标签页已打开更新的 PRUNplanner，刷新后可继续使用。",
+		"reload": "刷新",
+		"later": "稍后",
+		"chip": "更新就绪",
+		"whats_new_title": "PRUNplanner {version} 来了",
+		"whats_new_action": "更新内容"
 	},
 	"not_found": {
-		"title": "Page not found",
-		"text": "There is no page at this address.",
-		"home": "Go to the start page"
+		"title": "页面未找到",
+		"text": "此地址没有页面。",
+		"home": "返回首页"
 	},
 	"not_implemented": {
-		"title": "Feature Not Yet Implemented",
-		"open_source": "PRUNplanner v2 is Open Source. Check out the {link}.",
-		"repository": "Github repository",
-		"contact": "Get in touch on the {link}.",
-		"discord": "PrUn Community Tools Discord"
+		"title": "功能尚未实现",
+		"open_source": "PRUNplanner v2 是开源的，看看 {link}。",
+		"repository": "GitHub 仓库",
+		"contact": "在 {link} 上联系我们。",
+		"discord": "PrUn 社区工具 Discord"
 	}
 }
