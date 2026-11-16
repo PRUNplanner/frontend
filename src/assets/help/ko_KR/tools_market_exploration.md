@@ -1,10 +1,82 @@
-APEX에는 최대 365일까지의 가격 기록만 표시되며, 그 이후의 기록은 삭제되어 남지 않습니다. This tool displays all recorded price data since June 27th, 2022. 데이터는 FIO에서 가져온 정보를 모아 수집하기 때문에 일부 기간이 비어 있거나 정보가 누락되어 있을 수 있습니다. 이런 한계가 있긴 하지만, FIO의 회복탄력성 덕분에 이 정보는 신뢰도가 높다고 볼 수 있습니다.
+Before you plan around a price or trade on it, check Market Exploration to see whether that price is normal, rising or falling. It shows the price history and the current market of one material on all four exchanges.
 
-기술적인 제약으로 인해 몇 가지 가정을 전제로 합니다. PRUNplanner가 받은 데이터는 갱신되지 않을 수 있으며, 이 경우 새 데이터가 들어올 때까지 전날과 같은 값이 반복해서 표시됩니다. 이 때문에 실제로는 거래가 전혀 없었는데도 차트에서 수십 일 연속으로 잘못된 데이터가 표시될 수 있습니다. 이로 인한 차트 문제를 줄이기 위해 받은 거래량이 전날 거래량과 같으면 해당 데이터는 자동으로 제외됩니다. Zero trading volume is assumed if this figure repeats, until a new different figure is traded.
+## Price history {#history}
 
-또 다른 가정으로, 터무니없는 수치는 차트에서 제외합니다. 가끔 시세 조작이 일어나 평소 ȼ100에 거래되던 시장에서 ȼ10,000,000짜리 거래가 체결되기도 합니다. 이런 데서 장난치는 사람들도 있거든요. 이런 거래는 차트를 크게 왜곡해서 알아보기 어렵게 만듭니다. 이 때문에 캔들이 이전 캔들 변동폭의 3배를 넘으면 값이 보정됩니다. 이렇게 하면 차트의 본래 의미는 유지하면서 실제로 무언가 일이 있었다는 것도 알려 줍니다. 다만 그래프의 시각적 형태는 깨지지 않습니다. 보정은 캔들의 4가지 값인 시가, 고가, 저가, 종가에 각각 따로 적용됩니다. 네 값마다 각가 3배 기준의 "현실성 검사"를 따로 거쳐, 그 결과에 맞게 값이 조정됩니다.
+The game only shows the last 365 days of price history. PRUNplanner keeps every day it has stored, back to July 2023. So the **All** range of the [All exchanges](#all-exchanges) chart can reach further back than the game does.
 
-캔들 차트를 읽고 해석하는 방법을 잘 설명한 자료입니다. https://www.investopedia.com/trading/candlestick-charting-what-is-it/
+PRUNplanner builds the history from the daily price data [[fio|FIO]] delivers. A day FIO delivered nothing for is missing, and PRUNplanner doesn't correct any day's prices. So a single trade at an extreme price shows as it happened, for example as a long wick on one candle.
 
-또한 캔들이 실제로 어떻게 움직이는지 직접 확인해 보고 싶다면, 아래 사이트에서 시간 가격을 1분으로 설정하고 실시간으로 변하는 모습을 지켜보는 것도 좋은 "실전" 방법입니다. https://bitcoinwisdom.io/markets/deribit/ethperpetual
+## Choosing a material {#material}
 
+**Switch Material** picks the material, and it starts on DW. Links from a material's market card open the page on that material, and so does **Explore** in the [overview table](#overview).
+
+## Key figures {#kpis}
+
+The tiles at the top describe the material across all four exchanges ([[universe|Universe]]):
+
+| Tile                                                              | What it shows                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Universe VWAP 7D**                                              | the [[vwap\|VWAP]] of the last 7 days in ȼ. Under it, **% Trend** = (VWAP 7D − VWAP 30D) ÷ VWAP 30D                       |
+| **Universe Traded Volume 7D**                                     | units traded in the last 7 days, with the 30-day units under it                                                                                                                                                                                                      |
+| **Universe Market Delta**                                         | supply − demand: units in all sell orders minus units in all buy orders of the four books. It reads **Shortage** when negative and **Surplus** when positive, with **Supply:** and **Demand:** below |
+| **Weighted Trend** (**Volume-Adjusted Delta**) | each exchange's % Trend, weighted by its share of the 7-day traded units                                                                                                                                                                                             |
+| **Price Cohesion** (**Variance Index**)        | how far apart the four exchanges' VWAP 7D are: standard deviation ÷ mean, in %                                                                                                                                                                       |
+
+A positive % Trend means the last 7 days traded dearer on average than the last 30, and a negative one cheaper. Some made-up examples:
+
+- **% Trend**: a VWAP 7D of 105 ȼ against a VWAP 30D of 100 ȼ gives (105 − 100) ÷ 100 = +5 %.
+- **Universe Market Delta**: a supply of 1,000 against a demand of 1,500 gives 1,000 − 1,500 = −500, so it reads **Shortage**.
+- **Weighted Trend**: of 1,000 units traded in 7 days, AI1 traded 500 at +10 %, CI1 250 at +4 %, IC1 150 at −2 % and NC1 100 at 0 %. That gives 0.5 × 10 + 0.25 × 4 + 0.15 × (−2) + 0.1 × 0 = +5.7 %.
+- **Price Cohesion**: VWAP 7D of 98, 100, 100 and 102 ȼ have a mean of 100 and a standard deviation of √((4 + 0 + 0 + 4) ÷ 4) ≈ 1.41, so it reads about 1.4 %.
+
+A low Price Cohesion means the exchanges trade at nearly the same price, and a high one means there are gaps between them. An exchange without trades counts in it with a price of 0.
+
+Weighted Trend shows "—" when any of the four exchanges had no trades in the last 30 days, because PRUNplanner can't calculate that exchange's trend.
+
+## Market Chart {#chart}
+
+**Chart view** switches between two charts. The page remembers your choice until you close the browser tab.
+
+### Candles {#candles}
+
+Here you see one exchange as a candlestick chart (open, high, low, close per period), with the traded units as bars below.
+
+- **Exchange**: AI1 (default), CI1, IC1 or NC1.
+- **Interval**: **Daily**, **Weekly** (weeks start on Monday) or **Monthly**, in UTC.
+
+A day without data shows as a flat candle at the last close with 0 volume, so a gap looks like a quiet day.
+
+### All exchanges {#all-exchanges}
+
+Each exchange gets its own line so you can compare them directly, with **Traded volume, all exchanges** (units / day) below.
+
+- **Value**: **VWAP** (ȼ traded ÷ units traded that day), **Low** or **High**.
+- **Range**: **30 d**, **90 d** (default), **1 y** or **All**.
+
+The range ends on the last day with trades on any exchange. A day without trades on an exchange leaves a gap in its line. If the material has no trades at all, the chart says **No trades in this range**.
+
+The button at the top right of the chart (**Toggle fullscreen**) gives the chart the full width.
+
+## Market Data {#market-data}
+
+**Market Data** is the per-exchange table from the material's market card, with the views **Prices**, **Order books** and **Volume**. [Exchanges & prices](/help/exchanges) explains what its columns mean.
+
+## Material Market Overview {#overview}
+
+**Material Market Overview** lists every material, sorted by ticker. Click a header to sort by it. That works on every column except **30 days** and **Details**.
+
+| Column                                      | What it shows                                                                                                           |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Material**                                | the material                                                                                                            |
+| **VWAP 7D**, **VWAP 30D**                   | Universe VWAP of the last 7 and 30 days                                                                                 |
+| **30 days**                                 | the daily Universe VWAP of the last 30 days. It shows direction only, since every row has its own scale |
+| **Trend**                                   | the Weighted Trend (see [Key figures](#kpis))                                                        |
+| **Traded Volume 7D**, **Traded Volume 30D** | Universe units traded                                                                                                   |
+| **Details**                                 | **Explore** loads the material into the page                                                                            |
+
+> [!tip]
+> Sort by **Trend** to find the materials whose price is moving most this week, then press **Explore** to see whether it's a blip or a longer move. For the whole market at a glance, see the [Market report](/help/tools_market_report).
+
+## Reading candlestick charts {#candlesticks}
+
+A candle covers one period. Its body runs from the open to the close price, and the thin lines (wicks) reach the period's high and low. A close above the open makes a rising candle, and a close below it a falling one. The bars under the chart show how many units traded, so you can tell a move on real volume from one on a single trade.
