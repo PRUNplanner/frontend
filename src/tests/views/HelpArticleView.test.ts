@@ -103,7 +103,8 @@ describe("HelpArticleView", () => {
 
 	it("shows English where the locale has no file", async () => {
 		reactiveRoute.params.article = "plan_check";
-		const { wrapper } = await mountView({ locale: "de_DE" });
+		// every real locale has every article, so use one without help files
+		const { wrapper } = await mountView({ locale: "xx_XX" });
 		expect(wrapper.findComponent(HelpArticle).props("isFallback")).toBe(
 			true
 		);

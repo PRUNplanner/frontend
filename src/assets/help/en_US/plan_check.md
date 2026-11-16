@@ -54,7 +54,7 @@ The flag thresholds are fixed:
 
 Red is a filled circle (*can't trade as planned*), amber a triangle, grey a ring. *No offers* and *No buyers* need a real exchange, so they never show when all exchanges are counted. Spreads show up in the table but never get a flag.
 
-Volumes, bid and ask come from the exchange data PRUNplanner loads from [[fio|FIO]], kept up to date at least every 30 minutes.
+Volumes, bid and ask come from the exchange data PRUNplanner loads from [[fio|FIO]]. They are at most about 35 minutes old: PRUNplanner refreshes them about every 30 minutes, and the server may hand out a copy up to 5 minutes old.
 
 You can also watch the shares while you change counts and recipes. Switch Material I/O's value from ȼ to %, and it shows each material's Δ as a share of the average daily volume of the last 7 and 30 days (**7d share**, **30d share**), amber from 10 % and red from 50 %. On **Whole base**, Material I/O shows the flag icons too, and its summary ("2 materials can't trade as planned, …") links to **Plan check →**. The Plan check tab carries a dot while the plan has market flags.
 
