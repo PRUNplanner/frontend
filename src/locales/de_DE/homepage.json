@@ -8,7 +8,7 @@
 		"planet_search": "Planetensuche",
 		"features": "Funktionen",
 		"tools": "Werkzeuge",
-		"help": "Help",
+		"help": "Hilfe",
 		"github": "GitHub",
 		"menu": "Menü",
 		"menu_close": "Menü schließen",
@@ -40,7 +40,7 @@
 		"free_value": "Kostenlos",
 		"free": "Keine Werbung, keine Bezahlversion.",
 		"languages_value": "{count} Sprachen",
-		"languages": "Open source, translated by players and AI."
+		"languages": "Open Source, übersetzt von Spielern und KI."
 	},
 	"tour": {
 		"pause": "Pause",
@@ -62,7 +62,7 @@
 			},
 			"money": {
 				"title": "Das Geld im Blick",
-				"text": "Diese Eisenbasis auf Montem verdient 21,938.67 pro Tag und amortisiert ihre Baukosten in 63.56 Tagen."
+				"text": "Diese Eisenbasis auf Montem verdient 21.938,67 pro Tag und amortisiert ihre Baukosten in 63,56 Tagen."
 			},
 			"flow": {
 				"title": "Materialfluss prüfen",
@@ -100,7 +100,7 @@
 			"label": "Schritte der Imperium-Tour",
 			"totals": {
 				"title": "Unterm Strich",
-				"text": "Umsatz, Kosten und Profit aller Basen zusammen: Dieses Imperium verdient 104,290.08 pro Tag."
+				"text": "Umsatz, Kosten und Profit aller Basen zusammen: Dieses Imperium verdient 104.290,08 pro Tag."
 			},
 			"plans": {
 				"title": "Alle Pläne nebeneinander",
@@ -149,12 +149,12 @@
 		"starter": {
 			"label": "Neu im Spiel",
 			"title": "Starte mit einem typischen Setup und mach es zu deinem.",
-			"text": "Ein leerer Plan schlägt vor, was andere Spieler auf diesem Planeten typischerweise planen. Das ist eine Orientierung, keine Regel: Ändere jedes Gebäude und jeden Auftrag, bis du dein eigenes bestes Setup gefunden hast."
+			"text": "Ein leerer Plan schlägt vor, was andere Spieler auf diesem Planeten typischerweise planen. Das ist eine Orientierung, keine Regel: Ändere jedes Gebäude und jedes Rezept, bis du dein eigenes bestes Setup gefunden hast."
 		},
 		"shared": {
 			"label": "Geteilte Pläne",
 			"title": "Teile einen Plan als Link.",
-			"text": "Jeder mit dem Link sieht die Aufträge und kann Änderungen ausprobieren, ganz ohne Konto. Ideal, um deine Corporation um Feedback zu bitten."
+			"text": "Jeder mit dem Link sieht die Rezepte und kann Änderungen ausprobieren, ganz ohne Konto. Ideal, um deine Corporation um Feedback zu bitten."
 		}
 	},
 	"market": {
@@ -263,7 +263,7 @@
 		},
 		"try": {
 			"question": "Kann ich es ohne Konto ausprobieren?",
-			"answer": "Ja. Öffne den Beispielplan: Du kannst Gebäude und Aufträge ändern und siehst, wie sich die Zahlen aktualisieren. Ein Konto brauchst du nur, um eigene Pläne zu speichern."
+			"answer": "Ja. Öffne den Beispielplan: Du kannst Gebäude und Rezepte ändern und siehst, wie sich die Zahlen aktualisieren. Ein Konto brauchst du nur, um eigene Pläne zu speichern."
 		},
 		"official": {
 			"question": "Ist es ein offizielles Tool von Prosperous Universe?",
