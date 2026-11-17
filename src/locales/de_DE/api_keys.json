@@ -3,7 +3,7 @@
 	"title": "API Schlüssel",
 	"info": {
 		"description": {
-			"p1": "Der {link} bietet programmatischen Zugriff auf alle deine Planungsdaten, Spiel-Metadaten (Gebäude, Aufträge, Materialien) und berechnete Marktmetriken wie VWAP. Während öffentliche Endpunkte für die Community offen bleiben, erfordert der Zugriff auf private Planungsdaten - einschließlich deiner Plankonfigurationen - eine sichere Authentifizierung.",
+			"p1": "Die {link} bietet programmatischen Zugriff auf alle deine Planungsdaten, Spiel-Metadaten (Gebäude, Rezepte, Materialien) und berechnete Marktkennzahlen wie VWAP. Öffentliche Endpunkte bleiben für die Community offen, der Zugriff auf private Planungsdaten – einschließlich deiner Plankonfigurationen – erfordert dagegen eine sichere Authentifizierung.",
 			"p2": "Mithilfe dieser Endpunkte kannst du deine Planungsdaten mit externen Tabellen, eigenen Dashboards oder sogar Optimierungsalgorithmen synchronisieren.",
 			"link": "PRUNplanner REST API",
 			"warning": "API-Schlüssel gewähren vollen Zugriff auf deine Daten und bleiben unbegrenzt gültig. Diese Zugangsdaten sollten so sensibel wie dein Passwort behandelt werden. Übertrage niemals Schlüssel in öffentliche Repositories oder teile sie mit nicht überprüften Drittanbieterdiensten. Wenn ein Schlüssel kompromittiert ist, widerrufe ihn sofort und erzeuge einen Ersatz.",
