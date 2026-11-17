@@ -22,8 +22,8 @@
 		"burn": "@:terms.burn",
 		"amount": "@:terms.amount",
 		"override": "@:terms.override",
-		"weight_value": "@:{'terms.weight'}: {value}",
-		"volume_value": "@:{'terms.volume'}: {value}",
-		"price_value": "@:{'terms.price'}: {value}"
+		"weight_value": "@:{'terms.weight'} : {value}",
+		"volume_value": "@:{'terms.volume'} : {value}",
+		"price_value": "@:{'terms.price'} : {value}"
 	}
 }
