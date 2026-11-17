@@ -144,7 +144,7 @@
 			"gaps": "Mostrar las {count} diferencias"
 		},
 		"show_top": "Mostrar las {count} primeras",
-		"range": "{from}–{to} of {total}",
+		"range": "{from}–{to} de {total}",
 		"sort_by": "Ordenar por"
 	},
 	"exchanges": {
@@ -159,10 +159,10 @@
 		"no_ask": "Libros sin vendedor",
 		"bars_label": "{exchange}, volumen de negocio diario durante 90 días",
 		"name": {
-			"AI1": "Antares Station · AIC",
-			"CI1": "Benten Station · CIS",
-			"IC1": "Hortus Station · ICA",
-			"NC1": "Moria Station · NCC"
+			"AI1": "Estación Antares · AIC",
+			"CI1": "Estación Benten · CIS",
+			"IC1": "Estación Hortus · ICA",
+			"NC1": "Estación Moria · NCC"
 		}
 	},
 	"method": {
