@@ -8,7 +8,7 @@
 		"planet_search": "Búsqueda de planetas",
 		"features": "Funciones",
 		"tools": "Herramientas",
-		"help": "Help",
+		"help": "Ayuda",
 		"github": "GitHub",
 		"menu": "Menú",
 		"menu_close": "Cerrar menú",
@@ -40,7 +40,7 @@
 		"free_value": "Gratis",
 		"free": "Sin anuncios ni plan de pago.",
 		"languages_value": "{count} idiomas",
-		"languages": "Open source, translated by players and AI."
+		"languages": "Código abierto, traducido por jugadores y por IA."
 	},
 	"tour": {
 		"pause": "Pausa",
