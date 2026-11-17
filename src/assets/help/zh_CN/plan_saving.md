@@ -60,7 +60,7 @@ Every save keeps a version of the plan. Click the state of a saved plan to open 
 
 - **Named only** is on by default. The list shows your named versions and the active one, with "… unnamed hidden" at the bottom. Untick it to see them all.
 - **Active** marks the version your plan is now.
-- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept …· not in empires yet" or "Not kept in a draft".
+- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept …· not in empires yet" or "Not kept in a draft". · not in empires yet" or "Not kept in a draft".
 - **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
 - Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
 
