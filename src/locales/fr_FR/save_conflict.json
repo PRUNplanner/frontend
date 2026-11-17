@@ -69,7 +69,7 @@
 		"removed": "{label} retiré",
 		"amount": "{label} {from} → {to}",
 		"recipe": "{label} : recette modifiée",
-		"experts": "{label} experts {from} → {to}",
+		"experts": "Experts {label} {from} → {to}",
 		"lux_on": "{label} luxe {n} activé",
 		"lux_off": "{label} luxe {n} désactivé",
 		"faction": "Faction {from} → {to}",
