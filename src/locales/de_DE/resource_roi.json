@@ -3,7 +3,7 @@
 	"title": "Ressourcen ROI",
 	"info": "Wähle eine Ressource und drücke 'Suchen & Berechnen'",
 	"calculating": "Kalkuliere Ressourcen ROI für gefundene Planeten.",
-	"searching": "Suche nach '{resource}' auf @:terms.planet_plural und warte auf Antwort vom Backend",
+	"searching": "Suche @:terms.planet_plural mit „{resource}“. Warte auf Antwort vom Backend",
 	"resource_select": "@:terms.resources auswählen",
 	"cx_select": "@:terms.cx Präferenz",
 	"button_calculate": "Suche & Berechnen",
