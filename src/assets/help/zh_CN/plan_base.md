@@ -79,7 +79,7 @@ In the game, each upgrade of your company HQ's level gives you one more base per
 
 Click a tile to start extracting that resource. If the plan doesn't have the right extractor yet (EXT for minerals, COL for gases, RIG for liquids), PRUNplanner adds one with a count of 1. It also adds that resource's recipe as an order of 1, unless the extractor already runs it. Then you set the count in Production.
 
-With **Plan suggestions** on and planet insights available, a link under the tiles ("… plans on …· what others build here") opens what other players plan on this planet. More in [Layout](/help/plan_layout).
+With **Plan suggestions** on and planet insights available, a link under the tiles ("… plans on … plans on …· what others build here") opens what other players plan on this planet. More in [Layout](/help/plan_layout).
 
 ### Fertility {#fertility}
 
