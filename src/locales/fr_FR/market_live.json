@@ -46,11 +46,11 @@
 		},
 		"details": {
 			"price": "Prix",
-			"ask": "@:{'terms.ask'}: {value}",
-			"bid": "@:{'terms.bid'}: {value}",
+			"ask": "@:{'terms.ask'} : {value}",
+			"bid": "@:{'terms.bid'} : {value}",
 			"spread": "@:{'terms.spread'}",
 			"buy_volume": "Volume d'achat",
-			"vwap": "@:{'terms.vwap'}: {value}",
+			"vwap": "@:{'terms.vwap'} : {value}",
 			"change": "Variation : {value}",
 			"sell_volume": "Volume de vente",
 			"buy_volume_value": "Volume d'achat : {value}",
@@ -77,7 +77,7 @@
 				"add_group": "Groupe",
 				"remove": "Retirer"
 			},
-			"operator_label": "Match",
+			"operator_label": "Correspondance",
 			"error": "Erreur : {value}",
 			"empty": "Groupe vide"
 		},
