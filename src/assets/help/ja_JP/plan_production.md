@@ -42,7 +42,7 @@ Workforce costs follow the plan's habitations and luxuries, so workers without a
 
 The plan's **Profit / day** works from the whole base's Material I/O instead, where what one building makes and another uses nets out. So on a base that makes its own consumables or inputs, the buildings' ȼ / day don't add up to **Profit / day**.
 
-Where the production part is narrow, efficiency and area move under ȼ / day as "ȼ/day · …· area …".
+Where the production part is narrow, efficiency and area move under ȼ / day as "ȼ/day · …· area …". · area …".
 
 The trash icon deletes the building at once, without asking. You can undo it with Ctrl+Z (Cmd+Z on a Mac) or **Undo** in the "Building removed" message.
 
