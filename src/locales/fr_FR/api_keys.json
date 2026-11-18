@@ -6,8 +6,8 @@
 			"p1": "Le {link} permet d'accéder par programmation à toutes vos données de planification, aux métadonnées du jeu (bâtiments, recettes, matériaux) et aux indicateurs de marché calculés comme le VWAP. Bien que les points d'accès publics restent ouverts à l'usage de la communauté, l'accès aux données de planification privées — y compris vos configurations de plan — nécessite une authentification sécurisée.",
 			"p2": "En utilisant ces points de terminaison, vous pouvez synchroniser vos opérations de planification avec des feuilles de calcul externes, des tableaux de bord personnalisés, ou même des algorithmes d'optimisation.",
 			"link": "API REST PRUNplanner",
-			"warning": "Les clés API donnent un accès complet aux données de votre compte et restent valides indéfiniment. Traitez-les avec la même confidentialité que votre mot de passe. Ne les enregistrez jamais dans des bases de données publiques et ne les partagez jamais avec des services tiers non vérifiés. Si une clé est compromise, révoquez-la immédiatement et générez-en une nouvelle.",
-			"warning_sheets": "Une clé dans une URL Google Sheets est visible par toute personne qui peut ouvrir la feuille. Utilise une clé distincte par feuille pour pouvoir la révoquer séparément."
+			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
+			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
 		}
 	},
 	"get_started": {
@@ -53,7 +53,7 @@
 		"copy": "Copier {what}",
 		"copied": "Copié",
 		"freshness": "Issu du dernier calcul de cet empire par PRUNplanner. La colonne updated_at indique quand.",
-		"key_warning": "Toute personne qui peut ouvrir cette feuille peut utiliser cette clé, avec un accès complet à ton compte. Utilise une clé distincte par feuille pour pouvoir la révoquer séparément.",
+		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "E/S de matériaux de l'empire",
@@ -142,6 +142,7 @@
 		"table": {
 			"apikey_name": "Nom",
 			"apikey_prefix": "Préfixe",
+			"apikey_access": "Access",
 			"apikey_created": "Créée",
 			"apikey_lastused": "Dernièrement utilisée"
 		}
@@ -161,6 +162,7 @@
 		"title": "Créer clé API",
 		"form": {
 			"key_name": "Nom de la clé",
+			"access": "Access",
 			"key_description": "Donnez à votre clé un nom descriptif pour aider à l'identifier plus tard.",
 			"success_title": "Clé générée",
 			"success_key": "Votre clé sécrète (Sauvegarde la maintenant !)",
@@ -175,5 +177,13 @@
 			"use_in_builder": "Utiliser dans le générateur d'URL"
 		},
 		"copied": "Clé copiée"
+	},
+	"scope": {
+		"read": "Read-only",
+		"read_write": "Read & write",
+		"hint": {
+			"read": "Reads your plans, empires and other data. Can't change anything.",
+			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+		}
 	}
 }
