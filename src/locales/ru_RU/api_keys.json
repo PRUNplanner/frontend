@@ -6,8 +6,8 @@
 			"p1": "Интерфейс {link} обеспечивает программный доступ ко всем вашим данным планирования, игровым метаданным (здания, рецепты, материалы) и расчётным рыночным показателям, таким как VWAP. Публичные эндпоинты остаются открытыми для использования сообществом, однако доступ к приватным данным планирования — включая конфигурации ваших планов — требует безопасной аутентификации.",
 			"p2": "Используя эти эндпоинты, вы можете синхронизировать свои операции планирования с внешними таблицами, пользовательскими панелями управления или даже алгоритмами оптимизации.",
 			"link": "PRUNplanner REST API",
-			"warning": "API ключи предоставляют полный доступ к данным вашего аккаунта и действуют бессрочно. Относитесь к этим учётным данным так же серьёзно, как к своему паролю. Никогда не публикуйте ключи в общедоступных репозиториях и не передавайте их непроверенным сторонним сервисам. Если ключ был скомпрометирован — немедленно отзовите его и создайте новый.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet. Use a separate key per sheet so you can revoke it alone."
+			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
+			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
 		}
 	},
 	"get_started": {
@@ -53,7 +53,7 @@
 		"copy": "Copy {what}",
 		"copied": "Copied",
 		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can use this key, with full access to your account. Use a separate key per sheet so you can revoke it alone.",
+		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "Empire material I/O",
@@ -142,6 +142,7 @@
 		"table": {
 			"apikey_name": "Имя",
 			"apikey_prefix": "Префикс",
+			"apikey_access": "Access",
 			"apikey_created": "Создано",
 			"apikey_lastused": "Последнее использование"
 		}
@@ -161,6 +162,7 @@
 		"title": "Создать ключ API",
 		"form": {
 			"key_name": "Имя ключа",
+			"access": "Access",
 			"key_description": "Дайте ключу понятное название, чтобы легко его идентифицировать в будущем.",
 			"success_title": "Ключ успешно создан",
 			"success_key": "Ваш секретный ключ (Сохраните его сейчас!)",
@@ -175,5 +177,13 @@
 			"use_in_builder": "Use in URL builder"
 		},
 		"copied": "Key copied"
+	},
+	"scope": {
+		"read": "Read-only",
+		"read_write": "Read & write",
+		"hint": {
+			"read": "Reads your plans, empires and other data. Can't change anything.",
+			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+		}
 	}
 }
