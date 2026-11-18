@@ -6,8 +6,8 @@
 			"p1": "{link}提供对所有规划数据、游戏内元数据（建筑、配方、物资）以及 VWAP 等计算市场指标的程序化访问。公共端点仍可供社区使用，但访问私人规划数据（包括你的规划配置）则需要安全认证。",
 			"p2": "通过使用这些端点，你可以将规划操作与外部电子表格、自定义仪表板，甚至优化算法同步。",
 			"link": "PRUNplanner REST API",
-			"warning": "API 密钥使本工具可无限期完全访问你的账户数据。请像保护密码一样保护这些凭据。切勿将密钥提交到公开代码库，或分享给未经验证的第三方服务。如果密钥泄露，请立即撤销并生成新的密钥。",
-			"warning_sheets": "放在 Google Sheets 链接里的密钥，能被所有打开该表格的人看到。建议每张表格用单独的密钥，这样能只吊销其中一把。"
+			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
+			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
 		}
 	},
 	"get_started": {
@@ -53,7 +53,7 @@
 		"copy": "复制{what}",
 		"copied": "已复制",
 		"freshness": "来自 PRUNplanner 上次计算该帝国时的数据。updated_at 列显示具体时间。",
-		"key_warning": "任何能打开这张表的人都能使用这把密钥，并拥有你账号的完整权限。建议每张表用单独的密钥，这样能只吊销其中一把。",
+		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "帝国材料 I/O",
@@ -142,6 +142,7 @@
 		"table": {
 			"apikey_name": "名称",
 			"apikey_prefix": "前缀",
+			"apikey_access": "Access",
 			"apikey_created": "创建时间",
 			"apikey_lastused": "上次使用"
 		}
@@ -161,6 +162,7 @@
 		"title": "创建API密钥",
 		"form": {
 			"key_name": "密钥名称",
+			"access": "Access",
 			"key_description": "给你的密钥起一个便于识别的名称。",
 			"success_title": "密钥生成成功",
 			"success_key": "你的私人密钥（请立即保存！）",
@@ -175,5 +177,13 @@
 			"use_in_builder": "在 URL 构建器中使用"
 		},
 		"copied": "密钥已复制"
+	},
+	"scope": {
+		"read": "Read-only",
+		"read_write": "Read & write",
+		"hint": {
+			"read": "Reads your plans, empires and other data. Can't change anything.",
+			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+		}
 	}
 }
