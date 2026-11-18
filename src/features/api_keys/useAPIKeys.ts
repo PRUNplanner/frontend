@@ -1,7 +1,10 @@
 import { ref } from "vue";
 
 import { useQuery } from "@/lib/query_cache/useQuery";
-import type { APIKey } from "@/features/api/schemas/apiKeysData.schemas";
+import type {
+	APIKey,
+	APIKeyScope,
+} from "@/features/api/schemas/apiKeysData.schemas";
 
 export function useAPIKeys() {
 	const loaded = ref<boolean>(false);
@@ -9,6 +12,7 @@ export function useAPIKeys() {
 	const inDeletionId = ref<string | null>(null);
 
 	const lastCreatedKey = ref<string | null>(null);
+	const lastCreatedScope = ref<APIKeyScope | null>(null);
 
 	async function fetchAPIKeys(): Promise<void> {
 		await useQuery("GetAPIKeys")
@@ -19,12 +23,16 @@ export function useAPIKeys() {
 			});
 	}
 
-	async function createAPIKey(newAPIKey: string): Promise<boolean> {
+	async function createAPIKey(
+		newAPIKey: string,
+		scope: APIKeyScope
+	): Promise<boolean> {
 		try {
-			await useQuery("PostCreateAPIKey", { name: newAPIKey })
+			await useQuery("PostCreateAPIKey", { name: newAPIKey, scope })
 				.execute()
 				.then(async (data) => {
 					lastCreatedKey.value = data.api_key;
+					lastCreatedScope.value = data.scope;
 
 					await fetchAPIKeys();
 				});
@@ -48,12 +56,14 @@ export function useAPIKeys() {
 
 	function resetCreation(): void {
 		lastCreatedKey.value = null;
+		lastCreatedScope.value = null;
 	}
 
 	return {
 		loaded,
 		apiKeyData,
 		lastCreatedKey,
+		lastCreatedScope,
 		inDeletionId,
 		fetchAPIKeys,
 		createAPIKey,

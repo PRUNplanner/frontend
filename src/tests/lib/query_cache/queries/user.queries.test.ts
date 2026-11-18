@@ -140,8 +140,12 @@ describe("userQueries analytics", () => {
 	it("reports a created API key", async () => {
 		vi.mocked(callPostCreateAPIKey).mockResolvedValue({} as never);
 
-		await userQueries.PostCreateAPIKey.fetchFn({ name: "key" });
+		await userQueries.PostCreateAPIKey.fetchFn({
+			name: "key",
+			scope: "read_write",
+		});
 
+		expect(callPostCreateAPIKey).toHaveBeenCalledWith("key", "read_write");
 		expect(trackEvent).toHaveBeenCalledWith("account:api_key_create");
 	});
 
