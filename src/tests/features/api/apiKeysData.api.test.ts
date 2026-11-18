@@ -26,6 +26,7 @@ describe("API Keys Data API Calls", async () => {
 				id: "foo",
 				name: "foo",
 				prefix: "foo",
+				scope: "read",
 				created: new Date(),
 				last_used: new Date(),
 			},
@@ -33,6 +34,7 @@ describe("API Keys Data API Calls", async () => {
 				id: "moo",
 				name: "moo",
 				prefix: "moo",
+				scope: "read_write",
 				created: new Date(),
 				last_used: null,
 			},
@@ -51,12 +53,19 @@ describe("API Keys Data API Calls", async () => {
 			name: "foo",
 			api_key: "foo",
 			prefix: "foo",
+			scope: "read_write",
 		};
 
 		mock.onPost(`/user/api/keys/`).reply(200, mockData);
 
-		expect(await callPostCreateAPIKey("foo")).toStrictEqual(mockData);
+		expect(await callPostCreateAPIKey("foo", "read_write")).toStrictEqual(
+			mockData
+		);
 		expect(spyApiService).toHaveBeenCalledOnce();
+		expect(JSON.parse(mock.history.post.at(-1)!.data)).toStrictEqual({
+			name: "foo",
+			scope: "read_write",
+		});
 	});
 
 	it("callDeleteAPIKey", async () => {

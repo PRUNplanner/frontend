@@ -248,7 +248,7 @@ export const userQueries = {
 		fetchFn: async (
 			params: APIKeyCreatePayload
 		): Promise<APIKeyCreateResponse> => {
-			const key = await callPostCreateAPIKey(params.name);
+			const key = await callPostCreateAPIKey(params.name, params.scope);
 			trackEvent("account:api_key_create");
 			return key;
 		},

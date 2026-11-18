@@ -24,7 +24,10 @@
 	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 
 	// Types & Interfaces
-	import type { APIKey } from "@/features/api/schemas/apiKeysData.schemas";
+	import type {
+		APIKey,
+		APIKeyScope,
+	} from "@/features/api/schemas/apiKeysData.schemas";
 
 	// UI
 	import {
@@ -35,6 +38,7 @@
 		PInput,
 		PModal,
 		PNotice,
+		PSegmented,
 		PTable,
 		PTooltip,
 		useConfirm,
@@ -50,6 +54,7 @@
 		loaded,
 		apiKeyData,
 		lastCreatedKey,
+		lastCreatedScope,
 		inDeletionId,
 		fetchAPIKeys,
 		createAPIKey,
@@ -69,6 +74,14 @@
 	const showCreateModal = ref<boolean>(false);
 	const creationStep = ref<"start" | "key" | "error">("start");
 	const creationAPIKeyName = ref<string>("");
+	// new keys are read-only unless the user picks otherwise
+	const creationScope = ref<APIKeyScope>("read");
+	const scopeOptions = computed(() =>
+		(["read", "read_write"] as const).map((value) => ({
+			value,
+			label: t(`api_keys.scope.${value}`),
+		}))
+	);
 	const creationLoading = ref<boolean>(false);
 
 	const creationHasName = computed(
@@ -82,7 +95,8 @@
 		creationLoading.value = true;
 
 		const creationStatus: boolean = await createAPIKey(
-			creationAPIKeyName.value
+			creationAPIKeyName.value,
+			creationScope.value
 		).finally(() => {});
 
 		if (creationStatus) {
@@ -105,6 +119,7 @@
 	watch(showCreateModal, (open) => {
 		if (!open) return;
 		creationStep.value = "start";
+		creationScope.value = "read";
 		resetCreation();
 	});
 
@@ -149,6 +164,19 @@
 				<PFormItem :label="t('api_keys.create.form.key_name')">
 					<PInput v-model:value="creationAPIKeyName" class="w-full" />
 				</PFormItem>
+				<PFormItem :label="t('api_keys.create.form.access')">
+					<PSegmented
+						v-model:value="creationScope"
+						:options="scopeOptions"
+						:label="t('api_keys.create.form.access')"
+						data-testid="scope-choice" />
+					<!-- #info wraps; the control row is nowrap and clips -->
+					<template #info>
+						<span data-testid="scope-hint">
+							{{ $t(`api_keys.scope.hint.${creationScope}`) }}
+						</span>
+					</template>
+				</PFormItem>
 				<PFormSeparator>
 					<span class="py-1 text-muted text-xs">
 						{{ $t("api_keys.create.form.key_description") }}
@@ -176,6 +204,13 @@
 					class="ph-no-capture font-mono text-prunplanner break-all"
 					data-testid="created-key">
 					{{ lastCreatedKey }}
+				</span>
+				<span
+					v-if="lastCreatedScope"
+					class="text-xs text-white/80"
+					data-testid="created-scope">
+					{{ $t("api_keys.create.form.access") }}:
+					{{ $t(`api_keys.scope.${lastCreatedScope}`) }}
 				</span>
 				<PButton type="secondary" @click="copyKey">
 					<template #icon><ContentCopySharp /></template>
@@ -316,6 +351,13 @@
 										<th>
 											{{
 												$t(
+													"api_keys.manage.table.apikey_access"
+												)
+											}}
+										</th>
+										<th>
+											{{
+												$t(
 													"api_keys.manage.table.apikey_created"
 												)
 											}}
@@ -339,6 +381,13 @@
 										</td>
 										<td class="font-mono">
 											{{ apiKey.prefix }}
+										</td>
+										<td data-testid="key-access">
+											{{
+												$t(
+													`api_keys.scope.${apiKey.scope}`
+												)
+											}}
 										</td>
 										<td class="font-mono">
 											{{ formatDate(apiKey.created) }}
@@ -418,6 +467,18 @@
 									</dt>
 									<dd class="font-mono">
 										{{ apiKey.prefix }}
+									</dd>
+									<dt class="text-muted">
+										{{
+											$t(
+												"api_keys.manage.table.apikey_access"
+											)
+										}}
+									</dt>
+									<dd>
+										{{
+											$t(`api_keys.scope.${apiKey.scope}`)
+										}}
 									</dd>
 									<dt class="text-muted">
 										{{
