@@ -96,7 +96,7 @@ container `prunplanner-mcp`), not here.
 | `prompts.ts` | Ready-made workflows clients offer as commands (MCP prompts): `review_plan` (every lever without changing buildings), `review_empire`, `vertical_chain` (a material at a rate, split into bases near an exchange), `load_lists` (supply packages at the group's fastest visit interval). Each ends with the owner's rule: show options and trade-offs, the player decides, save nothing unasked |
 | compare, shared | `compare_plans` uses Plan check compare's `compareRows`, `materialChanges`, `paybackOfDifference` and the version compare's wording (`planVersions.ts` `planChanges`); `get_shared_plan` calculates `/planning/shared/<uuid>/` as the app shows it: someone else's plan in the user's default empire, else the first (`pickEmpire`, as `usePlanSharedCopy`), the user's own as its plan page |
 | `log.ts` | JSON lines on stdout: `mcp_session_started`, `mcp_tool_called`, `mcp_request_rejected` |
-| `bridge/` | The `.mcpb` extension: stdio ↔ Streamable HTTP with the user's key; `icon.png` (the favicon's lime square) is its icon and, inlined, the server's `icons` |
+| `bridge/` | The `.mcpb` extension: stdio ↔ Streamable HTTP with the user's key and, as `User-Agent`, the host's client name and version from its `initialize` (`userAgent.ts`, e.g. `claude-ai/0.1.0 (PRUNplanner .mcpb 0.37.0)`), so logs show the app, not `node`; `icon.png` (the favicon's lime square) is its icon and, inlined, the server's `icons` |
 
 ## Rules
 
