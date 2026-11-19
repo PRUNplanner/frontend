@@ -320,6 +320,28 @@ describe("baseROIRows", () => {
 		expect(input.outputs.every((o) => o.traded === 0)).toBe(true);
 	});
 
+	it("traded volume: the 7-day total ÷ 7, days without trades count", () => {
+		const ctx = ctxOn(STANDARD_PLANET);
+		const candidate = recipeCandidates(gameData).find(
+			(c) => c.building === "TNP"
+		)!;
+		// a thin market: 70 units on 2 of 7 days, avg_traded_7d says 35
+		const thin = (tickerId: string) => ({
+			...getExchange(tickerId),
+			sum_traded_7d: 70,
+			avg_traded_7d: 35,
+		});
+		const input = toRowInput(
+			candidate,
+			calculateBase(candidate, ctx, plain, undefined),
+			ctx,
+			thin
+		);
+		expect(input.outputs.length).toBeGreaterThan(0);
+		for (const o of [...input.outputs, ...input.recipeInputs])
+			expect(o.traded).toBe(10);
+	});
+
 	it("recipe inputs: what the recipe consumes per day, with traded volume", () => {
 		const ctx = ctxOn(STANDARD_PLANET);
 		const candidate = recipeCandidates(gameData).find(

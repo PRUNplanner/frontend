@@ -19,7 +19,9 @@ starter setup).
   keys of the same query (v1 rows default to empty) for the building
   picker's "Popular on" group, the recipe picker's "Plans here" column, the
   "Most planned here" hint (`typicalRecipes`), and `isAvailable` /
-  `totalPlans`.
+  `totalPlans`. The pure parts (`mostPlanned`, `typicalRecipes`,
+  `starterCandidates`) are in `planInsights.util.ts`, shared with the MCP
+  server's `suggest_base`.
 - `components/PlanStarterSetup.vue`: card shown by `PlanProduction` in an
   empty, editable plan with v2 insights. Lists the `STARTER_MAX_BUILDINGS`
   (8) most planned buildings, those in ≥ `STARTER_PRESELECT_PERCENTAGE` (20 %)

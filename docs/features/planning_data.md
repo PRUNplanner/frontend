@@ -11,11 +11,13 @@ save calls, the COGC mapping and plan diffs.
 
 - `usePlan.ts`: `usePlan()` returns `createBlankDefinition(planet, cogc)`
   (no uuid or name until saved), `mapPlanetToPlanType` (planet COGC →
-  `PlanCOGCProgram`), `createNewPlan(data)` (`CreatePlan` then `GetPlan`;
+  `PlanCOGCProgram`, from `planCOGC.util.ts`), `createNewPlan(data)` (`CreatePlan` then `GetPlan`;
   `IPlanSaved` or `undefined`), `saveExistingPlan(uuid, data,
   baseModifiedAt?, version?)` (`PatchPlan`; `IPlanSaved` or `{ error:
   "conflict" | "deleted" | "restored_from" | "failed" }`) and
   `getPlanNamePlanet`. Module export `cogcTextMapping`: COGC display names.
+- `planCOGC.util.ts`: the pure `mapPlanetToPlanType` and `cogcTextMapping`
+  (re-exported by `usePlan.ts`), so the MCP server can use them in Node.
 - `planDiff.ts`: `diffPlan(from, to)` → change lines (name, permits, COGC,
   CorpHQ, buildings, infrastructure, experts, workforce) for save conflicts,
   drafts, version preview and shared-plan summaries.

@@ -6,7 +6,7 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
-	import { formatShare } from "@/features/cx/marketCheck.util";
+	import { formatShare } from "@/features/cx/marketCheck.format";
 	import { formatNumber } from "@/util/numbers";
 
 	// Components

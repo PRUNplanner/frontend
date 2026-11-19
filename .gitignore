@@ -34,3 +34,6 @@ env.js
 .scratch
 .vitest
 .prerender
+
+# MCP server build (pnpm build:mcp)
+dist-mcp

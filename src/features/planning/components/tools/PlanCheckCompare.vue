@@ -21,7 +21,7 @@
 	} from "@/features/planning/usePlanContext";
 	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { planEmpireUuid } from "@/layout/components/navigation/navigation.util";
+	import { planEmpireUuid } from "@/features/empire/util/planEmpire.util";
 
 	// Engine
 	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
@@ -29,12 +29,13 @@
 	// Util
 	import {
 		compareRows,
-		compareVerdict,
 		materialChanges,
 		paybackOfDifference,
 	} from "@/features/planning/util/whatIf.util";
-	import { formatShare, marketCheck } from "@/features/cx/marketCheck.util";
-	import { paybackDays } from "@/features/sharing/sharedPlan.util";
+	import { compareVerdict } from "@/features/planning/util/whatIf.format";
+	import { marketCheck } from "@/features/cx/marketCheck.util";
+	import { formatShare } from "@/features/cx/marketCheck.format";
+	import { paybackDays } from "@/features/planning/util/whatIf.util";
 	import { compactNumber } from "@/ui/charts/charts.util";
 	import { formatNumber, formatPayback } from "@/util/numbers";
 	import { planetDisplayName } from "@/util/planetName";

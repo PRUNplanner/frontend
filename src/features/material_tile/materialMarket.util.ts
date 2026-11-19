@@ -1,9 +1,9 @@
 // Util
 import {
-	formatShare,
 	MARKET_SHARE_AMBER,
 	MARKET_SHARE_RED,
 } from "@/features/cx/marketCheck.util";
+import { formatShare } from "@/features/cx/marketCheck.format";
 import { compactNumber } from "@/ui/charts/charts.util";
 import { formatNumber } from "@/util/numbers";
 

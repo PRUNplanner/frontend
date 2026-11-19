@@ -1,5 +1,5 @@
 // Util
-import { boundaryDescriptor } from "@/util/numbers";
+import { boundaryDescriptor } from "@/util/boundary";
 import {
 	boundaryGravityHigh,
 	boundaryGravityLow,
@@ -7,7 +7,7 @@ import {
 	boundaryPressureLow,
 	boundaryTemperatureHigh,
 	boundaryTemperatureLow,
-} from "@/database/services/usePlanetData";
+} from "@/features/planning/engine/buildings";
 
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";

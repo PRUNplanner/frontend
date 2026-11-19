@@ -9,10 +9,8 @@
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
-	import {
-		formatMoney,
-		MARKET_EXCHANGES,
-	} from "@/features/market_report/marketReport.util";
+	import { MARKET_EXCHANGES } from "@/features/market_report/marketReport.util";
+	import { formatMoney } from "@/features/market_report/marketReport.format";
 	import { formatNumber } from "@/util/numbers";
 	import { formatMaterialName } from "@/util/text";
 

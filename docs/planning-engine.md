@@ -155,12 +155,15 @@ for (const plan of plans) {
 | `features/roi_overview/useROIOverview.ts` | Synthetic single-building plans per recipe, one context |
 | `features/resource_roi_overview/useResourceROIOverview.ts` | Synthetic extraction plans per planet (`p-limit`); picks extractors via `getBuildingRecipes` |
 | `features/base_roi/baseROIRows.ts` | `calculateBase`: one engine run per row, re-run while fitting storage and area |
+| `src/mcp/` (MCP server, [mcp.md](mcp.md)) | `mcp/context.ts` builds the context in Node; tools call the engine, `whatIf.util` and the empire aggregation |
 
 ## Empires
 
 An empire (`PlanEmpireElement`: plans, faction, permits) has **no engine of
 its own**: `useEmpireCalculation` runs each plan, `EmpireView` aggregates
-and pushes the material I/O to the backend (`PatchEmpireState`).
+with the pure `combineEmpireMaterialIO` and `empireCostOverview`
+(`features/empire/util/empireMaterialIO.util.ts`, shared with the MCP
+server) and pushes the material I/O to the backend (`PatchEmpireState`).
 
 ## Prices: `IPriceBook` and `usePrice`
 

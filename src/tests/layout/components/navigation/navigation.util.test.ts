@@ -1,15 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
-	breadcrumbEmpire,
 	FILTER_FROM,
 	filterPlans,
 	initials,
-	pickEmpire,
-	planEmpireUuid,
 	sortPlans,
 	trackNav,
 } from "@/layout/components/navigation/navigation.util";
+import {
+	breadcrumbEmpire,
+	pickEmpire,
+	planEmpireUuid,
+} from "@/features/empire/util/planEmpire.util";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces

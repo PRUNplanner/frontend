@@ -11,7 +11,7 @@ import {
 	siblings,
 } from "@/features/help/helpArticles";
 import { loadArticle } from "@/features/help/helpContent";
-import { SUPPORTED_LOCALES } from "@/lib/i18n";
+import { SUPPORTED_LOCALES } from "@/lib/i18n/locales";
 import help from "@/locales/en_US/help.json";
 
 // the English help files, as written

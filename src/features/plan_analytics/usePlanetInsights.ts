@@ -11,23 +11,18 @@ import {
 import { useQuery } from "@/lib/query_cache/useQuery";
 import { usePreferences } from "@/features/preferences/usePreferences";
 
+// Util
+import {
+	mostPlanned,
+	typicalRecipes,
+} from "@/features/plan_analytics/planInsights.util";
+
 // Types & Interfaces
 import type {
 	AnalyticsPlanetInsightsBuilding,
 	AnalyticsPlanetInsightsData,
 } from "@/features/api/schemas/analyticsData.schemas";
 import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
-
-/** highest percentage first, undefined for an empty list */
-function top<T extends { percentage: number }>(items: T[]): T | undefined {
-	return items.reduce<T | undefined>(
-		(best, item) =>
-			best === undefined || item.percentage > best.percentage
-				? item
-				: best,
-		undefined
-	);
-}
 
 /**
  * # Planet Insights
@@ -115,44 +110,13 @@ export function usePlanetInsights(planetNaturalId: MaybeRefOrGetter<string>) {
 	}
 
 	function mostPlannedRecipe(ticker: string): string | undefined {
-		return top(buildings.value.get(ticker)?.recipes ?? [])?.recipe_id;
+		return mostPlanned(buildings.value.get(ticker)?.recipes ?? [])
+			?.recipe_id;
 	}
 
-	/**
-	 * The recipes a building typically runs here: its most planned mix with
-	 * the median slots of each recipe, else its most planned recipe with
-	 * its median slots, else undefined
-	 *
-	 * @param {string} ticker Building Ticker
-	 * @returns {ITypicalRecipes | undefined} Typical recipes
-	 */
-	function typicalRecipes(ticker: string): ITypicalRecipes | undefined {
-		const building = buildings.value.get(ticker);
-		if (!building) return undefined;
-
-		const mix = top(building.mixes);
-		if (mix)
-			return {
-				percentage: mix.percentage,
-				recipes: mix.recipe_ids.map((recipeid) => ({
-					recipeid,
-					amount: Math.max(1, mix.recipe_amounts[recipeid] ?? 1),
-				})),
-			};
-
-		const recipe = top(building.recipes);
-		if (recipe)
-			return {
-				percentage: recipe.percentage,
-				recipes: [
-					{
-						recipeid: recipe.recipe_id,
-						amount: Math.max(1, recipe.median_amount),
-					},
-				],
-			};
-
-		return undefined;
+	/** see typicalRecipes in planInsights.util */
+	function typical(ticker: string): ITypicalRecipes | undefined {
+		return typicalRecipes(buildings.value.get(ticker));
 	}
 
 	return {
@@ -164,6 +128,6 @@ export function usePlanetInsights(planetNaturalId: MaybeRefOrGetter<string>) {
 		buildingPopularity,
 		recipePopularity,
 		mostPlannedRecipe,
-		typicalRecipes,
+		typicalRecipes: typical,
 	};
 }

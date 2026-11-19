@@ -1,0 +1,41 @@
+{
+	"manifest_version": "0.3",
+	"name": "prunplanner",
+	"display_name": "PRUNplanner",
+	"version": "0.1.0",
+	"description": "Plan with PRUNplanner from your AI assistant: read and calculate plans and empires, and save plans, empires and CX preferences.",
+	"long_description": "Lists your empires and plans, calculates plans and empires, tries plan variants, checks plans against the market, looks up prices, planets and materials. With a read-write API key it also saves plans (every save is a version you can restore), creates and changes empires and CX preferences, shares plans and sets your planning defaults; deleting asks first. A read-only key only reads. Needs a PRUNplanner API key (prunplanner.org/apikey).",
+	"author": { "name": "PRUNplanner", "url": "https://prunplanner.org" },
+	"homepage": "https://prunplanner.org",
+	"icon": "icon.png",
+	"server": {
+		"type": "node",
+		"entry_point": "server/index.js",
+		"mcp_config": {
+			"command": "node",
+			"args": ["${__dirname}/server/index.js"],
+			"env": {
+				"PRUNPLANNER_API_KEY": "${user_config.api_key}",
+				"PRUNPLANNER_MCP_URL": "${user_config.server_url}"
+			}
+		}
+	},
+	"user_config": {
+		"api_key": {
+			"type": "string",
+			"title": "API Key",
+			"description": "Your PRUNplanner API key, from prunplanner.org/apikey",
+			"sensitive": true,
+			"required": true
+		},
+		"server_url": {
+			"type": "string",
+			"title": "Server URL",
+			"description": "PRUNplanner MCP endpoint",
+			"default": "https://mcp.prunplanner.org/mcp",
+			"required": false
+		}
+	},
+	"keywords": ["prosperous universe", "prunplanner", "planning"],
+	"license": "MIT"
+}

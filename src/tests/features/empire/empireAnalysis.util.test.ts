@@ -7,7 +7,7 @@ import {
 	splitShares,
 	sumSplitParts,
 } from "@/features/empire/empireAnalysis.util";
-import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
+import { calculateEmpireCostOverview } from "@/features/empire/util/empireMaterialIO.util";
 
 // Types & Interfaces
 import type {
@@ -141,7 +141,6 @@ describe("empireSplitParts", () => {
 		{ deltaPrice: -400 },
 		{ deltaPrice: -30 },
 	] as IEmpireMaterialIO[];
-	const { calculateEmpireCostOverview } = useMaterialIOUtil();
 	// cost the split doesn't account for
 	const unaccounted = (overview: IEmpireCostOverview, of = plans) => {
 		const p = empireSplitParts(overview, io, of);

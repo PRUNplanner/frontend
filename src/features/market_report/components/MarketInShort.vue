@@ -6,13 +6,15 @@
 	import {
 		changeSign,
 		exchangeGaps,
-		formatBookPrice,
-		formatChange,
 		formatDate,
-		formatMoney,
 		GAP_MIN_PCT,
 		marketBrief,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatBookPrice,
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 	import { sparklineLayout } from "@/ui/charts/charts.util";
 	import { formatNumber } from "@/util/numbers";
 	import { formatMaterialName } from "@/util/text";

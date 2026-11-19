@@ -9,9 +9,9 @@
 	import {
 		bookStats,
 		exchangeCards,
-		formatMoney,
 		MARKET_EXCHANGES,
 	} from "@/features/market_report/marketReport.util";
+	import { formatMoney } from "@/features/market_report/marketReport.format";
 	import { formatNumber } from "@/util/numbers";
 
 	// UI

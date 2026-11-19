@@ -1,6 +1,6 @@
 // Util
 import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
-import { boundaryDescriptor } from "@/util/numbers";
+import { boundaryDescriptor } from "@/util/boundary";
 import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
 import { combineMaterialIOMinimal } from "@/features/planning/engine/materialIO";
 

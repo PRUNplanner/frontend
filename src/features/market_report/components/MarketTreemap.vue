@@ -5,10 +5,12 @@
 	// Util
 	import {
 		changeColor,
-		formatChange,
-		formatMoney,
 		squarify,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 	import { formatNumber } from "@/util/numbers";
 	import { formatMaterialName } from "@/util/text";
 

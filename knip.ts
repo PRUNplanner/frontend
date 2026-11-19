@@ -22,7 +22,11 @@ function getStyleImports(content: string): string {
 }
 
 const config = {
-	entry: ["src/prerender.ts!"],
+	entry: [
+		"src/prerender.ts!",
+		"src/mcp/server.ts!",
+		"src/mcp/bridge/index.ts!",
+	],
 	project: ["src/**/*.{ts,vue}!", "!src/tests/**!"],
 	compilers: {
 		vue: (text: string, filename: string) => {

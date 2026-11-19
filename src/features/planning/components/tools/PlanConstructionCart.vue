@@ -39,6 +39,10 @@
 	} from "@/features/planning/usePlanCalculation.types";
 	import type { Building } from "@/features/api/schemas/gameData.schemas";
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import {
+		constructionTotals,
+		plannedAmount,
+	} from "@/features/planning/util/carts.util";
 
 	// UI
 	import {
@@ -174,15 +178,11 @@
 		() => {
 			const r: Record<string, number> = {};
 			buildingTicker.value.forEach((bticker) => {
-				const planned: number | undefined =
-					bticker === "CM"
-						? 1
-						: (props.productionBuildingData.find(
-								(pf) => pf.name === bticker
-							)?.amount ??
-							props.infrastructureData[
-								bticker as InfrastructureType
-							]);
+				const planned: number | undefined = plannedAmount(
+					bticker,
+					props.productionBuildingData,
+					props.infrastructureData
+				);
 				if (planned !== undefined) r[bticker] = planned;
 			});
 			return r;
@@ -295,19 +295,9 @@
 		);
 	}
 
-	const totalMaterials = computed(() => {
-		const r: Record<string, number> = {};
-		uniqueMaterials.value.map((mat) => {
-			r[mat] = 0;
-			buildingTicker.value.forEach((bticker) => {
-				if (localBuildingMaterials.value[bticker][mat]) {
-					r[mat] += localBuildingMaterials.value[bticker][mat];
-				}
-			});
-		});
-
-		return r;
-	});
+	const totalMaterials = computed(() =>
+		constructionTotals(props.constructionData, localBuildingAmount.value)
+	);
 
 	const totalMaterialsSorted: ComputedRef<
 		{

@@ -12,10 +12,8 @@ import { useStoredFlag } from "@/lib/storage";
 
 // Util
 import { relativeFromDate } from "@/util/date";
-import {
-	pickEmpire,
-	sortPlans,
-} from "@/layout/components/navigation/navigation.util";
+import { sortPlans } from "@/layout/components/navigation/navigation.util";
+import { pickEmpire } from "@/features/empire/util/planEmpire.util";
 
 // Types & Interfaces
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";

@@ -17,10 +17,10 @@
 	import {
 		countLevels,
 		flaggedCheck,
-		formatShare,
 		MARKET_SHARE_AMBER,
 		MARKET_SHARE_RED,
 	} from "@/features/cx/marketCheck.util";
+	import { formatShare } from "@/features/cx/marketCheck.format";
 
 	import type { PDataTableColumn } from "@/ui/ui.types";
 

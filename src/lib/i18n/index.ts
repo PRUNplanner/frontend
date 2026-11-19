@@ -65,21 +65,8 @@ export function dropInvalidMessages(
 	return { messages: valid, dropped };
 }
 
-export const SUPPORTED_LOCALES = [
-	"de_DE",
-	"en_US",
-	"es_ES",
-	"fr_FR",
-	"it_IT",
-	"ja_JP",
-	"ko_KR",
-	"nl_NL",
-	"pt_PT",
-	"ru_RU",
-	"zh_CN",
-] as const;
-
-export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+import type { SupportedLocale } from "@/lib/i18n/locales";
+export type { SupportedLocale } from "@/lib/i18n/locales";
 export type AppLocale = SupportedLocale | "keymode";
 export type MessageSchema = typeof en_US;
 

@@ -9,7 +9,7 @@ touched.
 `ManagePlanEmpireAssignments` (one `SharingModal` for all rows),
 `PlanResultsBar` (`SharedPlanDeltas`), `planning/usePlanSharedCopy.ts` (the
 copy's logic), `PlanLoadView` (`isOwnPlan`), `usePlanningDataLoader`
-(`toWorkingCopy`), what-if and check compare (`paybackDays`).
+(`toWorkingCopy`).
 
 ## Key files
 
@@ -19,9 +19,10 @@ copy's logic), `PlanLoadView` (`isOwnPlan`), `usePlanningDataLoader`
 - **`components/`**: `SharingModal` (the dialog), `SharedPlanBanner`
   (changed or not, price source, Reset / Copy / Save; visitors get Sign up /
   Login via `account/useAuthPanel`), `SharedPlanDeltas` (copy vs shared
-  figures).
+  figures; payback compared with `paybackDays` from
+  `planning/util/whatIf.util.ts`).
 - **`sharedPlan.util.ts`**: `toWorkingCopy` (drops uuid, empires, save
-  version), `isOwnPlan`, `paybackDays`, `planFigures`, `buildingChanges`,
+  version), `isOwnPlan`, `planFigures`, `buildingChanges`,
   `buildChangeSummary` (cut to 2000 characters with "…and N more").
 
 ## Data

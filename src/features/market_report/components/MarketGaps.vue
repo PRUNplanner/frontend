@@ -10,13 +10,15 @@
 	// Util
 	import {
 		exchangeGaps,
-		formatBookPrice,
-		formatChange,
-		formatMoney,
 		GAP_MIN_PCT,
 		GAP_MIN_TURNOVER,
 		GAP_MIN_UNITS,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatBookPrice,
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 	import { formatMaterialName } from "@/util/text";
 
 	// Components

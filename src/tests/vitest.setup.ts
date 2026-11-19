@@ -68,5 +68,6 @@ globalThis.ResizeObserver ??= class {
 };
 
 // jsdom lays nothing out and has no scrollIntoView; a test that checks the
-// scroll spies on it
-Element.prototype.scrollIntoView ??= function () {};
+// scroll spies on it (Node-environment tests, src/tests/mcp, have no DOM)
+if (typeof Element !== "undefined")
+	Element.prototype.scrollIntoView ??= function () {};

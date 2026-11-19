@@ -25,7 +25,7 @@
 		translateRef,
 	} from "@/features/material_tile/materialMarket.util";
 	import { CX_DOT_COLOR } from "@/features/exchanges/exchangeLabel.util";
-	import { formatShare } from "@/features/cx/marketCheck.util";
+	import { formatShare } from "@/features/cx/marketCheck.format";
 	import { formatMaterialName } from "@/util/text";
 	import { formatNumber, formatSmallNumber } from "@/util/numbers";
 

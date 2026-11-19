@@ -69,8 +69,10 @@ These limits sit well above normal use: the 240 per minute is about four times, 
 | --- | --- | --- |
 | Everything you request with a key or while logged in | 240 per minute | account |
 | **FIO storage** | 30 per minute | account |
-| **Market history** (one material) | 120 per minute | IP address |
-| **Market history, every material** | 30 per minute | IP address |
+| **Market history** (one material) | 120 per minute | IP address, or account when the request carries your key |
+| **Market history, every material** | 30 per minute | IP address, or account when the request carries your key |
+
+Market history needs no key, but sending one counts your requests on your account instead of your IP address, so others sharing that address (for example a sheet host) don't use up your limit. An invalid or revoked key is ignored there: the request still goes through, counted by IP address.
 
 A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. One request for many rows, such as **Market history, every material**, is better than one request per material.
 
