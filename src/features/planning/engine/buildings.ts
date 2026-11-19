@@ -14,6 +14,12 @@ import type {
 } from "@/features/api/schemas/gameData.schemas";
 import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
+/** what extraction recipes need of a resource; Planet Search's index has no factor */
+type ExtractableResource = Pick<
+	PlanetResource,
+	"resource_type" | "daily_extraction" | "material_ticker"
+>;
+
 /**
  * Game data helpers of the planning engine: building lookup, construction
  * materials and recipes. Plain functions over plain data.
@@ -173,13 +179,13 @@ export const resourceBuildingTicker: Record<string, PlanetResourceType> = {
  *
  * @param {Readonly<Record<string, Recipe[]>>} recipesByBuilding Recipes
  * @param {string} buildingTicker Building Ticker
- * @param {PlanetResource[]} planetResources Planet Resources
+ * @param {ExtractableResource[]} planetResources Planet Resources (a planet's, or Planet Search's index entries)
  * @returns {Recipe[]} Recipes
  */
 export function getBuildingRecipes(
 	recipesByBuilding: Readonly<Record<string, Recipe[]>>,
 	buildingTicker: string,
-	planetResources: PlanetResource[] = []
+	planetResources: ExtractableResource[] = []
 ): Recipe[] {
 	/**
 	 * Resource extraction buildings can only hold recipe options if
@@ -192,7 +198,7 @@ export function getBuildingRecipes(
 
 		const searchType: PlanetResourceType =
 			resourceBuildingTicker[buildingTicker];
-		const relevantResources: PlanetResource[] = planetResources.filter(
+		const relevantResources = planetResources.filter(
 			(r) => r.resource_type === searchType
 		);
 

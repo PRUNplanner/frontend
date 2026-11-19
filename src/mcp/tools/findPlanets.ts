@@ -14,6 +14,10 @@ import {
 	sortPlanets,
 } from "@/features/planet_search/planetSearch.engine";
 import { encodeSearch } from "@/features/planet_search/planetSearchUrl.util";
+import {
+	getBuildingRecipes,
+	resourceBuildingTicker,
+} from "@/features/planning/engine/buildings";
 import { planetPlots } from "@/features/planet_search/planetPlots.util";
 
 // Util
@@ -52,7 +56,7 @@ export const findPlanets = defineTool({
 	name: "find_planets",
 	title: "Find planets",
 	description:
-		"Planet Search: planets with given resources, COGC program, infrastructure and conditions, as the app's Planet Search filters them. By default only rocky planets that need no special construction materials (MGC, BL, SEA, HSE, INS, TSH); list the ones you accept in accepted_extras. Sorted like Planet Search: by the first requested resource's daily extraction, highest first (or by jumps to near_exchange, nearest first, with sort \"jumps\"; plan_uuid ranks by profit instead). near_exchange with max_jumps keeps planets within that many jumps of the exchange, as Planet Search's exchange distance filter. Returns resources, active COGC program, fees, plots and a link to the same search in the app. To compare a setup on candidate planets, run calculate_new_plan on each.",
+		"Planet Search: planets with given resources, COGC program, infrastructure and conditions, as the app's Planet Search filters them. By default only rocky planets that need no special construction materials (MGC, BL, SEA, HSE, INS, TSH); list the ones you accept in accepted_extras. Sorted like Planet Search: by the first requested resource's daily extraction, highest first (or by jumps to near_exchange, nearest first, with sort \"jumps\"; plan_uuid keeps only planets where the plan's extraction can run and ranks them by profit instead). near_exchange with max_jumps keeps planets within that many jumps of the exchange, as Planet Search's exchange distance filter. Returns resources, active COGC program, fees, plots and a link to the same search in the app. To compare a setup on candidate planets, run calculate_new_plan on each.",
 	inputSchema: z.object({
 		name: z
 			.string()
@@ -112,7 +116,7 @@ export const findPlanets = defineTool({
 		plan_uuid: uuidArg()
 			.optional()
 			.describe(
-				"Rank the matching planets by what this saved plan would earn on each (its buildings and recipes moved there; up to 30 planets, in Planet Search order first)"
+				"Rank the matching planets by what this saved plan would earn on each (its buildings and recipes moved there; up to 30 planets, in Planet Search order first). Only planets where all its extraction recipes can run are kept (RIG needs the resource as liquid, COL gaseous, EXT mineral); the others are counted in not_possible_for_plan"
 			),
 		empire_uuid: uuidArg()
 			.optional()
@@ -203,8 +207,8 @@ export const findPlanets = defineTool({
 		const earnings = new Map<string, Record<string, unknown>>();
 		let priceBasis: ReturnType<typeof basisText> | undefined;
 		let planNote: string | undefined;
+		let notPossible: { count: number; needs: string[] } | undefined;
 		if (args.plan_uuid) {
-			shown = found.slice(0, Math.min(limit, 30));
 			const setup = await loadPlanSetup(
 				backend,
 				args.plan_uuid,
@@ -212,6 +216,34 @@ export const findPlanets = defineTool({
 			);
 			priceBasis = basisText(setup.basis, setup.cx);
 			planNote = setup.resolved.note;
+			// only planets where every extraction recipe can run (RIG liquid,
+			// COL gaseous, EXT mineral), the check moving the plan applies
+			// (dropUnavailableRecipes); other recipes don't depend on the planet
+			const extraction = setup.plan.plan_data.buildings
+				.filter((b) => b.name in resourceBuildingTicker)
+				.flatMap((b) =>
+					b.active_recipes.map((r) => ({
+						building: b.name,
+						recipe: r.recipeid,
+					}))
+				);
+			const canHost = (p: (typeof found)[number]) =>
+				extraction.every(({ building, recipe }) =>
+					getBuildingRecipes(
+						setup.gameData.recipesByBuilding,
+						building,
+						p.resources
+					).some((r) => r.recipe_id === recipe)
+				);
+			const hostable = found.filter(canHost);
+			notPossible = {
+				count: found.length - hostable.length,
+				needs: extraction.map(
+					({ building, recipe }) =>
+						`${recipe} (${resourceBuildingTicker[building].toLowerCase()})`
+				),
+			};
+			shown = hostable.slice(0, Math.min(limit, 30));
 			for (const p of shown) {
 				const v = await buildVariant(backend, setup, {
 					planet_natural_id: p.planet_natural_id,
@@ -238,9 +270,10 @@ export const findPlanets = defineTool({
 		).toString();
 
 		return {
-			text: `${plural(found.length, "planet")} match${hidden.needing_special_materials || hidden.gaseous ? ` (the default filter hid ${hidden.needing_special_materials} needing special construction materials and ${hidden.gaseous} gaseous; pass accepted_extras or surface to include them)` : ""}${found.length > shown.length ? `, showing ${shown.length}` : ""}${args.plan_uuid ? ", ranked by the plan's profit there" : ""}.`,
+			text: `${plural(found.length, "planet")} match${hidden.needing_special_materials || hidden.gaseous ? ` (the default filter hid ${hidden.needing_special_materials} needing special construction materials and ${hidden.gaseous} gaseous; pass accepted_extras or surface to include them)` : ""}${notPossible?.count ? `; ${notPossible.count} of them can't run the plan's extraction (${notPossible.needs.join(", ")}) and are left out` : ""}${found.length > shown.length ? `, showing ${shown.length}` : ""}${args.plan_uuid ? `${shown.length ? ", ranked by the plan's profit there" : ", none can host the plan"}` : ""}.`,
 			data: {
 				count: found.length,
+				not_possible_for_plan: notPossible?.count,
 				hidden_by_default_filter: hidden,
 				price_basis: priceBasis,
 				plan_note: planNote,
