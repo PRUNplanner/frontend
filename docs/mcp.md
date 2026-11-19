@@ -5,8 +5,9 @@ An [MCP](https://modelcontextprotocol.io) server that lets AI assistants
 calculate them with the app's own plan engine and price book, and, with a
 read-write API key, save plans, empires, CX preferences, shares and planning
 defaults.
-Local prototype for now (spec `2026-11-17-mcp-01-local`); it runs in the e2e
-stack, not in production.
+It runs at `https://mcp.prunplanner.org` (see [Production](#production)),
+open to anyone with an API key but not announced in the app yet, and in the
+e2e stack.
 
 ```
 pnpm build:mcp    # dist-mcp/server.js, one Node bundle
@@ -30,8 +31,48 @@ without `--target` still makes the app) runs `server.js` as `node` on port
 measured about 135 MB with game data, 0.25 MB per cached price history, caches
 capped at 1,000 entries and 200 histories, so about 140 MiB in use); `docker-build-latest.yml` pushes it to
 `ghcr.io/prunplanner/prunplanner-mcp` (`latest` and the release tag) next to
-the frontend image. Its deployment (compose service, DNS, Traefik) sets
-`PRUNPLANNER_API_URL` and `PRUNPLANNER_APP_URL` and is not in this repo.
+the frontend image.
+
+## Production
+
+Spec `2026-11-18-mcp-02-production`. The service lives in the private
+`PRUNplanner/infrastructure` repo (`docker-compose.yml`, service `mcp`,
+container `prunplanner-mcp`), not here.
+
+- **URL:** `https://mcp.prunplanner.org` and `https://mcp.prunplanner.org/mcp`
+  (both serve the MCP), `/healthz` answers `ok`. Cloudflare DNS `mcp`,
+  proxied, no cache rule (answers are per user).
+- **Env:** `PRUNPLANNER_API_URL=http://backend:8000` (the compose network,
+  so the backend's `DJANGO_ALLOWED_HOSTS` in the server's `.env` must contain
+  `backend`, or Django answers 400), `PRUNPLANNER_APP_URL=https://prunplanner.org`.
+  No secret: every request carries the user's API key.
+- **Limits:** memory 224M (the 160 MB heap plus Node overhead; the server had
+  about 2.1 GB available before it, 2026-11-19), 0.5 CPU. Traefik router `mcp`
+  with `mcp-ratelimit`, 10/s per client IP, burst 60 (the backend limits each
+  key on top), and `mcp-body`, request bodies up to 1 MB (`app.ts` reads a
+  body into memory before it checks the key).
+- **HTTPS redirect:** production Django redirects plain HTTP to HTTPS unless
+  `X-Forwarded-Proto` is `https` (`SECURE_SSL_REDIRECT`), so `backend.ts`
+  sends that header on every backend call. Without it every tool fails with
+  "PRUNplanner's API can't be reached"; the e2e stack's settings don't
+  redirect, so only production shows it.
+- **Deploy:** a release builds `ghcr.io/prunplanner/prunplanner-mcp:latest`.
+  A backend change the MCP needs deploys first. On the server: `git pull` in
+  the infrastructure clone, Komodo **Refresh**, then **Deploy only `mcp`**
+  (a whole-stack Deploy recreates `db` and `traefik`). A changed limit or
+  label of another service (e.g. `vector`) needs a Deploy of that service.
+- **Smoke test** after a deploy, with a read-only key: `GET /healthz`; an
+  MCP client lists the tools on `/` and `/mcp`; `get_plan` on a plan matches
+  its plan page (and carries no "[Test environment" marker); a write tool
+  returns the read-write hint; no key answers 401 with the API key link.
+- **Logs and monitors:** Axiom `prunplanner_prod`,
+  `container_name == "prunplanner-mcp"` (the JSON lines from `log.ts`),
+  dashboard *PRUNplanner · MCP server* (with server memory), monitors
+  *MCP unreachable at edge*, *MCP failed calls* and *Server memory low*
+  (`axiom/` in the workspace repo).
+- **Rollback:** set the `mcp` image to the previous release tag
+  (`ghcr.io/prunplanner/prunplanner-mcp:<x.y.z>`) and Deploy `mcp`; to take
+  it offline, stop the `mcp` container (nothing else depends on it).
 
 ## Layout (`src/mcp/`)
 

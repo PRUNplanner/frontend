@@ -232,7 +232,11 @@ describe("backend: error mapping", () => {
 		).toEqual([1]);
 		expect(global).toHaveBeenCalledWith("http://backend/data/materials/", {
 			method: "GET",
-			headers: { Accept: "application/json", "User-Agent": "agent" },
+			headers: {
+				Accept: "application/json",
+				"User-Agent": "agent",
+				"X-Forwarded-Proto": "https",
+			},
 			body: undefined,
 		});
 		expect(backend.stats.calls).toBe(1);

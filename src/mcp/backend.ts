@@ -106,6 +106,11 @@ export function createBackend(options: IBackendOptions): IBackend {
 		const headers: Record<string, string> = {
 			Accept: "application/json",
 			"User-Agent": options.userAgent,
+			// production Django redirects plain HTTP to HTTPS (SECURE_SSL_REDIRECT)
+			// unless the proxy says the client used HTTPS; on the compose network
+			// (http://backend:8000) the MCP is that proxy. Traefik sets its own
+			// value for requests that come through it.
+			"X-Forwarded-Proto": "https",
 		};
 		if (auth && options.apiKey)
 			headers.Authorization = `Api-Key ${options.apiKey}`;
