@@ -17,7 +17,7 @@
 		},
 		"registration": {
 			"title": "Leg los – es ist kostenlos.",
-			"tos": "PRUNplanner kann kostenlos verwendet werden. Mit der Erstellung eines Kontos bestätigst und stimmst du den {tos_link} zu.",
+			"tos": "PRUNplanner kann kostenlos verwendet werden. Mit der Erstellung eines Kontos stimmst du den {tos_link} zu.",
 			"tos_link": "Nutzungsbedingungen",
 			"result": {
 				"ok_header": "Willkommen {username}!",
@@ -37,7 +37,7 @@
 				"password_info": "Muss mindestens 8 Zeichen lang sein, keine gewöhnliche Zeichenkette.",
 				"email": "E-Mail (optional)",
 				"email_info": "Nicht verpflichtend, aber empfohlen. Erhöht die Sicherheit deines Kontos.",
-				"email_invalid": "Das sieht nicht wie eine E-Mail-Adresse aus. Lasse das Feld leer oder füge eine valide Adresse hinzu, um deinen Account zu erstellen.",
+				"email_invalid": "Das sieht nicht wie eine E-Mail-Adresse aus. Lass das Feld leer oder gib eine gültige Adresse ein, um dein Konto zu erstellen.",
 				"security_question": "Sicherheitsfrage",
 				"question": "Gib den Namen des Planeten {planet} ein. Öffne dazu mit diesem Befehl ein neues Fenster (Buffer) in Prosperous Universe und lies den Namen des Planeten unter „Name“ ab.",
 				"planet_name": "Planetenname",
@@ -46,7 +46,7 @@
 		},
 		"password_reset": {
 			"title": "Passwort zurücksetzen",
-			"info": "Bitte gib den an deine E-Mail gesendeten Code zusammen mit deinem neuen Passwort sein.",
+			"info": "Bitte gib den Code aus deiner E-Mail zusammen mit deinem neuen Passwort ein.",
 			"throttled": "Zu viele Versuche. Bitte warte einige Minuten und probiere es erneut.",
 			"error": "Ein Fehler ist aufgetreten. Prüfe deine E-Mail, den Code und das Passwort. Achte darauf, dass dein Passwort sicher ist.",
 			"buttons": {
@@ -102,7 +102,7 @@
 		},
 		"unconfirmed": {
 			"title": "Bestätige deine E-Mail-Adresse",
-			"body": "Passwort Zurücksetzen funktioniert nur mit einer bestätigten E-Mail-Adresse. Gib den Code ein, den wir an {email} gesendet haben oder fordere einen neuen an."
+			"body": "Das Zurücksetzen des Passworts funktioniert nur mit einer bestätigten E-Mail-Adresse. Gib den Code ein, den wir an {email} gesendet haben, oder fordere einen neuen an."
 		},
 		"buttons": {
 			"add": "E-Mail hinzufügen",
@@ -125,13 +125,13 @@
 		"password_label": "Aktuelles Passwort",
 		"email_placeholder": "du{'@'}beispiel.com",
 		"email_info": "Nur verwendet, um dein Passwort zurückzusetzen. Keine Newsletter, nie geteilt. Du kannst sie jederzeit im Profil ändern oder entfernen.",
-		"email_code_info": "Wir werden einen 8-Zeichen-Code schicken, um zu bestätigen, dass er dir gehört.",
+		"email_code_info": "Wir schicken dir einen 8-stelligen Code, um zu bestätigen, dass die Adresse dir gehört.",
 		"code_info": "Wir haben einen Code an {email} gesendet. Er ist 24 Stunden gültig. Du kannst auch auf den Link in der E-Mail auf deinem Gerät klicken.",
 		"code_label": "Code",
 		"code_placeholder": "8 Zeichen",
 		"no_code": "Nichts angekommen? Prüfe Spam oder",
 		"done_title": "Alles erledigt",
-		"done_info": "Wenn du dein Passwort vergessen hast, verwende \"Passwort vergessen\" auf dem Anmeldebildschirm und wir senden den Code zum Zurücksetzen an {email}.",
+		"done_info": "Wenn du dein Passwort vergisst, nutze „Passwort vergessen“ auf dem Anmeldebildschirm, und wir senden den Code zum Zurücksetzen an {email}.",
 		"confirmed_toast": "E-Mail bestätigt. Codes zum Zurücksetzen des Passworts gehen jetzt an {email}.",
 		"buttons": {
 			"cancel": "Abbrechen",

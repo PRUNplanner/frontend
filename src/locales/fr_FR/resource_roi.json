@@ -16,7 +16,7 @@
 		"popr": "@:terms.popr",
 		"cogc": "@:terms.cogc",
 		"environment": "Environnement",
-		"infrastructure": "Infrastructure",
+		"infrastructure": "Infrastructures",
 		"cost_profit": "Coût / Bénéfice",
 		"plan_cost": "@:terms.plan @:terms.cost (ȼ)",
 		"daily_profit": "@:terms.profit quotidien (ȼ)",

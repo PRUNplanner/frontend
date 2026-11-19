@@ -143,15 +143,15 @@
 			"label": "Orderbuch-Gleichgewicht",
 			"value": "gesucht pro angebotener Einheit",
 			"buyers": "Es wird mehr angeboten als gesucht: gut für Käufer, Verkäufer konkurrieren um wenige Bids.",
-			"sellers": "Es wird mehr gesucht als angeboten: gut für Verkäufer, Käufer konkurrieren um wenige Angebote.",
-			"even": "Angebote und Gebote halten sich etwa die Waage."
+			"sellers": "Es wird mehr gesucht als angeboten: gut für Verkäufer, Käufer konkurrieren um wenige Asks.",
+			"even": "Asks und Bids halten sich etwa die Waage."
 		},
 		"cohesion": {
 			"label": "Preiszusammenhalt",
 			"together": "Preise bewegen sich gemeinsam",
 			"little": "Preise weichen etwas ab",
 			"apart": "Preise weichen stark ab",
-			"text": "Wie weit die vier 7D-VWAPs um ihren Mittelwert streuen. Unter 1.5 % bewegen sie sich im Gleichschritt; über 5 % können die Lücken den Versand zwischen Marktplätzen bezahlen."
+			"text": "Wie weit die vier 7D-VWAPs um ihren Mittelwert streuen. Unter 1,5 % bewegen sie sich im Gleichschritt; über 5 % können die Lücken den Versand zwischen Marktplätzen bezahlen."
 		}
 	},
 	"chart": {

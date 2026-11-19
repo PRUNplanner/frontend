@@ -1,281 +1,281 @@
 {
 	"view_title": "Ayuda",
 	"tutorial": {
-		"intro": "Plan your Prosperous Universe bases and empires before you build them. PRUNplanner shows what a base earns, needs and pays back, at the prices you choose. It runs in your browser, and you don't need a game session or FIO to plan."
+		"intro": "Planifica tus bases e imperios de Prosperous Universe antes de construirlos. PRUNplanner muestra lo que gana una base, lo que necesita y cuándo se amortiza, a los precios que elijas. Funciona en tu navegador y no necesitas una sesión de juego ni FIO para planificar."
 	},
 	"getting_started": {
 		"title": "Primeros pasos",
 		"image_label": "Gestión",
 		"image_alt": "Captura de pantalla de Gestión",
 		"l1": {
-			"title": "Check your empire in {link}:",
-			"link": "Empire",
-			"p": "Every new account already has one, \"My Empire\". On the Empire page, set its faction and permits to what your in-game HQ buffer shows. They change the production bonus of every plan in it. You can create more empires in Management with New Empire, for example one to test an expansion."
+			"title": "Revisa tu imperio en {link}:",
+			"link": "Imperio",
+			"p": "Cada cuenta nueva ya tiene uno, «My Empire». En la página Imperio, ajusta su facción y sus permisos a lo que muestra el buffer de tu HQ en el juego. Cambian el bonus de producción de cada plan que contiene. Puedes crear más imperios en Gestión con Nuevo imperio, por ejemplo uno para probar una expansión."
 		},
 		"l2": {
-			"title": "Set your home exchange, starting in {link}:",
-			"link": "Management",
-			"p": "A new account also has an exchange preference, \"My Exchange Preference\". My Empire already uses it, and it's set to Universe · VWAP 30D, the 30-day volume-weighted average price across all four exchanges. Click its name under CX Configuration (or open Exchanges in the side menu) and open All planets. Pick your home exchange, for example CI1 near Benten Station, click the preset Average · VWAP 30D and press Save changes."
+			"title": "Elige tu bolsa principal, empezando en {link}:",
+			"link": "Gestión",
+			"p": "Una cuenta nueva también tiene una preferencia de bolsa, «My Exchange Preference». My Empire ya la usa, y está configurada en Universe · VWAP 30D, el precio medio ponderado por volumen de 30 días de las cuatro bolsas. Haz clic en su nombre bajo Configuración de CX (o abre Bolsas en el menú lateral) y abre Todos los planetas. Elige tu bolsa principal, por ejemplo CI1 cerca de la estación Benten, haz clic en el preajuste Media · VWAP 30D y pulsa Guardar cambios."
 		},
 		"l3": {
-			"title": "Find a {link}:",
+			"title": "Encuentra un {link}:",
 			"link": "Planeta",
-			"p": "Planet Search filters every planet by resources, surface and fertility, COGC program, infrastructure and jumps to an exchange or to your plans. Turn on the Plots column to see free plots. Click + on a result to open a new plan for that planet."
+			"p": "La Búsqueda de planetas filtra todos los planetas por recursos, superficie y fertilidad, programa COGC, infraestructura y saltos hasta una bolsa o hasta tus planes. Activa la columna Parcelas para ver las parcelas libres. Haz clic en + junto a un resultado para abrir un plan nuevo para ese planeta."
 		},
 		"l4": {
-			"title": "Create a plan:",
-			"p": "Check which empire the plan calculates with. Then add production buildings and pick their recipes, or click a planet resource to extract it. While Auto is on, habitations follow your workforce on their own. Name the plan and press Create."
+			"title": "Crea un plan:",
+			"p": "Comprueba con qué imperio calcula el plan. Después añade edificios de producción y elige sus recetas, o haz clic en un recurso del planeta para extraerlo. Mientras Auto esté activado, las habitaciones siguen a tu mano de obra por sí solas. Ponle nombre al plan y pulsa Crear."
 		},
 		"l5": {
-			"title": "Check the numbers:",
-			"p": "The tiles on top show Profit / day, Payback, Workforce, Area and Storage. Payback reads never while the base makes no profit. Material I/O lists what the base makes and buys, and Plan check tests the amounts against the market. Every change updates the numbers at once, so try a recipe or a building count and compare."
+			"title": "Revisa los números:",
+			"p": "Las tarjetas de arriba muestran Beneficio / día, Amortización, Mano de obra, Área y Almacenamiento. Amortización indica nunca mientras la base no dé beneficios. E/S de materiales lista lo que la base produce y compra, y Revisión del plan contrasta las cantidades con el mercado. Cada cambio actualiza los números al instante, así que prueba una receta o un número de edificios y compara."
 		}
 	},
 	"core_concepts": {
 		"title": "Conceptos básicos",
 		"p1": {
 			"title": "Planes",
-			"p": "A plan is one base on one planet: its buildings, recipes, workforce, habitation and bonuses. It can be in several empires or in none. PRUNplanner prices it with the exchange preference of the empire it calculates with."
+			"p": "Un plan es una base en un planeta: sus edificios, recetas, mano de obra, habitaciones y bonus. Puede estar en varios imperios o en ninguno. PRUNplanner le pone precio con la preferencia de bolsa del imperio con el que calcula."
 		},
 		"p2": {
 			"title": "Imperios",
-			"p": "An empire groups plans, for example all the bases you run, and holds your faction and permits. The Empire page adds its plans up, nets out what one plan makes and another uses, and checks the rest against the market."
+			"p": "Un imperio agrupa planes, por ejemplo todas las bases que gestionas, y guarda tu facción y tus permisos. La página Imperio suma sus planes, compensa lo que un plan produce y otro consume, y contrasta el resto con el mercado."
 		},
 		"p3": {
-			"title": "Exchange preferences",
-			"p": "An exchange preference sets the prices your plans use. Each empire uses one preference, but a preference can mix exchanges. It can have its own exchange and price basis for buying and for selling, exceptions for single planets and fixed prices for single materials. Several empires can share one. A material the chosen exchange has no price for counts as 0 ȼ, shown in amber on Exchanges."
+			"title": "Preferencias de bolsa",
+			"p": "Una preferencia de bolsa define los precios que usan tus planes. Cada imperio usa una preferencia, pero una preferencia puede combinar bolsas. Puede tener su propia bolsa y base de precio para comprar y para vender, excepciones para planetas concretos y precios fijos para materiales concretos. Varios imperios pueden compartir una. Un material sin precio en la bolsa elegida cuenta como 0 ȼ, marcado en ámbar en Bolsas."
 		}
 	},
 	"key_features": {
 		"title": "Funciones principales",
 		"p1": {
 			"title": "Simulación de bases",
-			"p": "Design and test a base before you build it. PRUNplanner covers buildings and recipes, workforce and habitation, experts, COGC program, area, planet resources, construction cost and production fees, and shows profit and payback at your prices."
+			"p": "Diseña y prueba una base antes de construirla. PRUNplanner cubre edificios y recetas, mano de obra y habitaciones, expertos, programa COGC, área, recursos del planeta, coste de construcción y tasas de producción, y muestra el beneficio y la amortización a tus precios."
 		},
 		"p2": {
 			"title": "Planificación del imperio",
-			"p": "See several bases as one empire: what they make, use, buy and sell together, how much of each market they'd take, and which recipes could use what's left over. Production Chains lays a whole chain out into bases and creates the plans."
+			"p": "Ve varias bases como un solo imperio: lo que producen, consumen, compran y venden juntas, qué parte de cada mercado tomarían y qué recetas podrían aprovechar lo que sobra. Cadenas de producción reparte una cadena entera en bases y crea los planes."
 		},
 		"p3": {
 			"title": "Datos del juego",
-			"p": "Game data and exchange prices come from FIO, the community API, and prices refresh about every 30 minutes. You can explore price history, read the daily market report, or rank recipes and planet resources by return on investment."
+			"p": "Los datos del juego y los precios de las bolsas vienen de FIO, la API de la comunidad, y los precios se actualizan cada 30 minutos aproximadamente. Puedes explorar el historial de precios, leer el informe de mercado diario o clasificar recetas y recursos planetarios por retorno de inversión."
 		},
 		"p4": {
 			"title": "Consumo y reparación",
-			"p": "With FIO connected, FIO Burn shows how many days the stock of each base lasts, and FIO Repair shows when its buildings are due for repair. Both end in an XIT package that Refined PrUn runs in the game."
+			"p": "Con FIO conectado, FIO Consumo muestra cuántos días dura el stock de cada base, y FIO Reparación muestra cuándo toca reparar sus edificios. Ambos terminan en un paquete XIT que Refined PrUn ejecuta en el juego."
 		},
 		"p5": {
 			"title": "Una gran variedad de herramientas adicionales",
-			"p": "Construction and supply carts, visit frequency, repair intervals, COGM, price sensitivity, plan versions and sharing, the HQ Calculator, Upkeep Prices, and an API for your own sheets and scripts."
+			"p": "Carritos de construcción y de suministro, frecuencia de visitas, intervalos de reparación, COGM, sensibilidad a precios, versiones y uso compartido de planes, la Calculadora de HQ, Precios de mantenimiento y una API para tus propias hojas de cálculo y scripts."
 		}
 	},
 	"navigation": {
-		"title": "Getting around",
+		"title": "Moverse por la app",
 		"n1": {
-			"title": "Side menu",
-			"p": "Once you're logged in, the side menu holds Planning (Planet Search, Management, Exchanges), your empire with its plans, and Tools, grouped as Market, Calculators and FIO. FIO Burn and FIO Repair appear once you've saved your FIO key and username. Click Tools to fold the list, and this browser remembers it."
+			"title": "Menú lateral",
+			"p": "Una vez que inicias sesión, el menú lateral contiene Planificación (Búsqueda de planetas, Gestión, Bolsas), tu imperio con sus planes y Herramientas, agrupadas en Mercado, Calculadoras y FIO. FIO Consumo y FIO Reparación aparecen cuando guardas tu clave y tu nombre de usuario de FIO. Haz clic en Herramientas para plegar la lista; este navegador lo recuerda."
 		},
 		"n2": {
-			"title": "Your empire and its plans",
-			"p": "The menu shows one empire. Its name opens the Empire page, and Plans lists its plans A to Z with their planet. Switch picks another empire, which also becomes your default empire. The + next to Plans opens Planet Search for a new plan. Once the empire has 15 plans or more, Filter plans finds one by name or planet ID. An open plan that isn't in this empire shows on top, marked \"not in this empire\"."
+			"title": "Tu imperio y sus planes",
+			"p": "El menú muestra un imperio. Su nombre abre la página Imperio, y Planes lista sus planes de la A a la Z con su planeta. Cambiar elige otro imperio, que también pasa a ser tu imperio predeterminado. El + junto a Planes abre la Búsqueda de planetas para un plan nuevo. Cuando el imperio tiene 15 planes o más, Filtrar planes encuentra uno por nombre o por ID de planeta. Un plan abierto que no está en este imperio se muestra arriba, marcado «no está en este imperio»."
 		},
 		"n3": {
-			"title": "Narrow rail",
-			"p": "The double arrow at the top folds the side menu into a narrow rail of icons. Hover one to see its name. Plans and Tools open from the rail as small lists, and the double arrow at the bottom expands the menu again. PRUNplanner saves your choice with your preferences."
+			"title": "Barra estrecha",
+			"p": "La doble flecha de arriba pliega el menú lateral en una barra estrecha de iconos. Pasa el ratón por encima de uno para ver su nombre. Planes y Herramientas se abren desde la barra como listas pequeñas, y la doble flecha de abajo vuelve a desplegar el menú. PRUNplanner guarda tu elección con tus preferencias."
 		},
 		"n4": {
-			"title": "On a phone",
-			"p": "On screens narrower than 768 px, a bar at the bottom replaces the side menu: Empire, Plans, Planet Search and More. Plans opens a sheet with your empire's plans and Switch. Once the Empire page has calculated the plans, the sheet shows each plan's daily profit too. More holds Management, Exchanges, the tools, Profile, API, Help and Logout."
+			"title": "En un teléfono",
+			"p": "En pantallas de menos de 768 px, una barra inferior sustituye al menú lateral: Imperio, Planes, Búsqueda de planetas y Más. Planes abre un panel con los planes de tu imperio y Cambiar. Cuando la página Imperio ha calculado los planes, el panel muestra también el beneficio diario de cada plan. Más contiene Gestión, Bolsas, las herramientas, Perfil, API, Ayuda y Cerrar sesión."
 		},
 		"n5": {
-			"title": "FIO status",
-			"p": "The FIO icon at the bottom of the side menu shows your FIO connection with a coloured dot: FIO Active, FIO Syncing, FIO Waiting for Data, FIO Inactive or FIO Key Rejected. Hover it to see when FIO last updated and when PRUNplanner fetched the data. If it isn't active, clicking it opens your Profile so you can set it up."
+			"title": "Estado de FIO",
+			"p": "El icono de FIO al pie del menú lateral muestra tu conexión a FIO con un punto de color: FIO activo, FIO sincronizando, FIO a la espera de datos, FIO inactivo o Clave FIO rechazada. Pasa el ratón por encima para ver cuándo se actualizó FIO y cuándo obtuvo PRUNplanner los datos. Si no está activo, al hacer clic se abre tu Perfil para que puedas configurarlo."
 		},
 		"n6": {
-			"title": "Help and search",
-			"p": "Every page of the app has a Help button. It opens that page's help article in a panel beside the page, so you keep your unsaved work, and Open in Help centre shows the full article. The ? at the bottom of the side menu (Help in More on a phone) opens the Help centre, where / opens the search."
+			"title": "Ayuda y búsqueda",
+			"p": "Cada página de la app tiene un botón Ayuda. Abre el artículo de ayuda de esa página en un panel junto a la página, para que no pierdas tu trabajo sin guardar, y Abrir en el centro de ayuda muestra el artículo completo. El ? al pie del menú lateral (Ayuda en Más en un teléfono) abre el centro de ayuda, donde / abre la búsqueda."
 		}
 	},
 	"areas": {
-		"start": "Start here",
-		"planning": "Planning",
-		"prices": "Prices",
-		"tools": "Tools",
+		"start": "Empieza aquí",
+		"planning": "Planificación",
+		"prices": "Precios",
+		"tools": "Herramientas",
 		"fio": "FIO",
-		"account": "Account",
-		"reference": "Reference"
+		"account": "Cuenta",
+		"reference": "Referencia"
 	},
 	"articles": {
 		"help_welcome": {
-			"title": "Welcome"
+			"title": "Bienvenida"
 		},
 		"guide_first_base": {
-			"title": "Your first base"
+			"title": "Tu primera base"
 		},
 		"guide_find_planet": {
-			"title": "Find a planet for a material"
+			"title": "Encontrar un planeta para un material"
 		},
 		"guide_cx_prices": {
-			"title": "Set up your prices"
+			"title": "Configurar tus precios"
 		},
 		"guide_chain_to_bases": {
-			"title": "From a chain to bases"
+			"title": "De una cadena a bases"
 		},
 		"guide_empire": {
-			"title": "Grow to an empire"
+			"title": "Crecer hasta un imperio"
 		},
 		"guide_hand_off": {
-			"title": "Hand off to the game"
+			"title": "Pasar al juego"
 		},
 		"plan_layout": {
-			"title": "Layout"
+			"title": "Diseño"
 		},
 		"plan_base": {
-			"title": "Base setup"
+			"title": "Configuración de la base"
 		},
 		"plan_tools": {
-			"title": "Plan tools"
+			"title": "Herramientas del plan"
 		},
 		"plan_sharing": {
-			"title": "Sharing a plan"
+			"title": "Compartir un plan"
 		},
 		"tools_market_report": {
-			"title": "Market report"
+			"title": "Informe de mercado"
 		},
 		"api_keys": {
-			"title": "API keys"
+			"title": "Claves API"
 		},
 		"glossary": {
-			"title": "Glossary"
+			"title": "Glosario"
 		},
 		"plan_results": {
-			"title": "Results"
+			"title": "Resultados"
 		},
 		"plan_production": {
-			"title": "Production & recipes"
+			"title": "Producción y recetas"
 		},
 		"plan_saving": {
-			"title": "Saving & versions"
+			"title": "Guardado y versiones"
 		},
 		"plan_check": {
-			"title": "Plan check"
+			"title": "Revisión del plan"
 		},
 		"empire": {
-			"title": "Empire"
+			"title": "Imperio"
 		},
 		"management": {
-			"title": "Management"
+			"title": "Gestión"
 		},
 		"exchanges": {
-			"title": "Exchanges & exchange preferences"
+			"title": "Bolsas y preferencias de bolsa"
 		},
 		"planet_search": {
-			"title": "Planet Search"
+			"title": "Búsqueda de planetas"
 		},
 		"tools_production_chain": {
-			"title": "Production Chains"
+			"title": "Cadenas de producción"
 		},
 		"tools_base_roi": {
-			"title": "Base ROI"
+			"title": "ROI de bases"
 		},
 		"tools_roi_overview": {
-			"title": "Recipe ROI"
+			"title": "ROI de recetas"
 		},
 		"tools_resource_roi_overview": {
-			"title": "Resource ROI"
+			"title": "ROI de recursos"
 		},
 		"tools_market_live": {
-			"title": "Market Live"
+			"title": "Mercado en vivo"
 		},
 		"tools_market_exploration": {
-			"title": "Market Exploration"
+			"title": "Exploración de mercado"
 		},
 		"tools_hq_upgrade_calculator": {
-			"title": "HQ Calculator"
+			"title": "Calculadora de HQ"
 		},
 		"tools_upkeep_price_calculator": {
-			"title": "Upkeep Prices"
+			"title": "Precios de mantenimiento"
 		},
 		"fio_repair": {
-			"title": "FIO Repair"
+			"title": "FIO Reparación"
 		},
 		"fio_burn": {
-			"title": "FIO Burn"
+			"title": "FIO Consumo"
 		},
 		"profile": {
-			"title": "Profile & preferences"
+			"title": "Perfil y preferencias"
 		},
 		"whats-new": {
-			"title": "What's new"
+			"title": "Novedades"
 		}
 	},
 	"parents": {
-		"plan": "Plan page"
+		"plan": "Página del plan"
 	},
 	"home": {
-		"title": "How can we help?",
-		"lead": "Start with a guide for your first plans, look up any page of PRUNplanner or a term, or see what changed in each release.",
-		"most_read": "Most read:",
-		"browse": "Browse by area",
-		"whats_new": "What's new",
-		"all_releases": "All releases",
-		"stuck_title": "Still stuck?",
-		"stuck_text": "Ask other players on {discord}, or report a bug on {github}.",
+		"title": "¿Cómo podemos ayudarte?",
+		"lead": "Empieza con una guía para tus primeros planes, consulta cualquier página de PRUNplanner o un término, o mira qué cambió en cada versión.",
+		"most_read": "Lo más leído:",
+		"browse": "Explorar por área",
+		"whats_new": "Novedades",
+		"all_releases": "Todas las versiones",
+		"stuck_title": "¿Sigues atascado?",
+		"stuck_text": "Pregunta a otros jugadores en {discord} o informa de un error en {github}.",
 		"discord": "Discord",
 		"github": "GitHub issues",
-		"description": "PRUNplanner help: guides, how plans, empires, exchanges and every tool work, a glossary, and what changed in each release.",
-		"start": "Start here",
-		"start_note": "Task guides, each a few steps with links into the app",
-		"glossary_title": "Glossary",
-		"glossary_text": "Game and planning terms in one place. You also see them when you hover a term in an article.",
-		"glossary_all": "All terms"
+		"description": "Ayuda de PRUNplanner: guías, cómo funcionan los planes, los imperios, las bolsas y cada herramienta, un glosario y qué cambió en cada versión.",
+		"start": "Empieza aquí",
+		"start_note": "Guías prácticas, cada una con unos pocos pasos y enlaces a la app",
+		"glossary_title": "Glosario",
+		"glossary_text": "Los términos del juego y de la planificación en un solo lugar. También los ves al pasar el ratón por un término en un artículo.",
+		"glossary_all": "Todos los términos"
 	},
 	"guides": {
-		"guide_first_base": "Your empire, prices, a planet and your first saved plan.",
-		"guide_find_planet": "Filter by resource and distance to your exchange, check free plots.",
-		"guide_cx_prices": "Presets, buy and sell rules, planet exceptions and fixed prices.",
-		"guide_chain_to_bases": "Plan a production chain, split it into bases, create the plans.",
-		"guide_empire": "Several bases in one empire: totals, market check and opportunities.",
-		"guide_hand_off": "Supply and construction carts, XIT packages, FIO Burn and Repair."
+		"guide_first_base": "Tu imperio, tus precios, un planeta y tu primer plan guardado.",
+		"guide_find_planet": "Filtra por recurso y por distancia a tu bolsa, revisa las parcelas libres.",
+		"guide_cx_prices": "Preajustes, reglas de compra y venta, excepciones por planeta y precios fijos.",
+		"guide_chain_to_bases": "Planifica una cadena de producción, repártela en bases y crea los planes.",
+		"guide_empire": "Varias bases en un imperio: totales, revisión de mercado y oportunidades.",
+		"guide_hand_off": "Carritos de suministro y de construcción, paquetes XIT, FIO Consumo y FIO Reparación."
 	},
 	"term": {
-		"eyebrow": "Glossary",
-		"open": "Open in glossary"
+		"eyebrow": "Glosario",
+		"open": "Abrir en el glosario"
 	},
 	"article": {
-		"root": "Help",
-		"updated_in": "Updated in {version}",
-		"read_time": "{minutes} min read",
-		"on_this_page": "On this page",
-		"related": "Related",
-		"previous": "Previous",
-		"next": "Next",
-		"fallback": "This page isn't translated yet, so it is shown in English.",
-		"not_found": "That help page doesn't exist.",
-		"menu": "Help pages",
-		"breadcrumb": "Breadcrumb"
+		"root": "Ayuda",
+		"updated_in": "Actualizado en {version}",
+		"read_time": "{minutes} min de lectura",
+		"on_this_page": "En esta página",
+		"related": "Relacionado",
+		"previous": "Anterior",
+		"next": "Siguiente",
+		"fallback": "Esta página aún no está traducida, así que se muestra en inglés.",
+		"not_found": "Esa página de ayuda no existe.",
+		"menu": "Páginas de ayuda",
+		"breadcrumb": "Ruta de navegación"
 	},
 	"feedback": {
-		"question": "Was this page helpful?",
-		"yes": "Yes",
+		"question": "¿Te ha resultado útil esta página?",
+		"yes": "Sí",
 		"no": "No",
-		"thanks": "Thanks for the feedback.",
-		"missing": "What was missing or unclear on this page?",
-		"send": "Send",
-		"sent": "Thanks, we read every answer."
+		"thanks": "Gracias por tu opinión.",
+		"missing": "¿Qué faltaba o no quedaba claro en esta página?",
+		"send": "Enviar",
+		"sent": "Gracias, leemos cada respuesta."
 	},
 	"search": {
-		"open": "Search help",
-		"placeholder": "Search help",
-		"label": "Search the help pages",
-		"move": "to move",
-		"pick": "to open",
-		"close": "to close",
-		"no_results": "Nothing found for “{query}”.",
-		"ask": "Ask other players on {discord}.",
-		"results": "{count} results"
+		"open": "Buscar en la ayuda",
+		"placeholder": "Buscar en la ayuda",
+		"label": "Buscar en las páginas de ayuda",
+		"move": "para moverte",
+		"pick": "para abrir",
+		"close": "para cerrar",
+		"no_results": "No se ha encontrado nada para «{query}».",
+		"ask": "Pregunta a otros jugadores en {discord}.",
+		"results": "{count} resultados"
 	},
 	"panel": {
-		"open_in_centre": "Open in Help centre"
+		"open_in_centre": "Abrir en el centro de ayuda"
 	}
 }

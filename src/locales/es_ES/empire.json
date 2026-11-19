@@ -4,7 +4,7 @@
 	"overview_hide": "Ocultar lista de planes",
 	"overview_show": "Mostrar lista de planes",
 	"views": {
-		"label": "View",
+		"label": "Vista",
 		"material_io": "E/S de materiales",
 		"analysis": "Análisis",
 		"production_opportunities": "Oportunidades de producción"
@@ -41,7 +41,7 @@
 		"expand_row": "Mostrar planetas de {ticker}",
 		"view_sides": "Productores · Consumidores",
 		"view_net": "Neto por planeta",
-		"view_label": "Detail view",
+		"view_label": "Vista detallada",
 		"surplus": "Excedente",
 		"needs": "Necesidades",
 		"plan_count": "{count} plan | {count} planes",
@@ -71,7 +71,7 @@
 			"inputs": "Insumos de producción",
 			"workforce": "Mano de obra",
 			"degradation": "Degradación",
-			"fees": "Production fees",
+			"fees": "Tasas de producción",
 			"profit": "Beneficio",
 			"uncovered": "Coste no cubierto"
 		},
@@ -80,7 +80,7 @@
 			"inputs": "Insumos {pct}",
 			"workforce": "Mano de obra {pct}",
 			"degradation": "Degradación {pct}",
-			"fees": "Fees {pct}",
+			"fees": "Tasas {pct}",
 			"profit": "Beneficio {pct}",
 			"uncovered": "No cubierto {pct}",
 			"of_cost": "Parte del coste: los ingresos no lo cubren"
@@ -99,7 +99,7 @@
 			"title": "Materiales que más ȼ mueven",
 			"price": "ȼ / día",
 			"amount": "Unidades / día",
-			"metric_label": "Metric",
+			"metric_label": "Métrica",
 			"buy": "← compras (consumo neto)",
 			"sell": "vendes (producción neta) →",
 			"caption": "Los {top} de {n} materiales · haz clic en una fila para abrirla en E/S de materiales",

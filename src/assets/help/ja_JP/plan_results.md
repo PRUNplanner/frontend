@@ -18,7 +18,7 @@ Every figure uses the prices of the empire the plan calculates with (see [Empire
 
 ### Profit / day {#profit}
 
-**Profit / day** is the base's [[profit]]: revenue minus cost, per day. The line under it reads "Revenue …· cost … incl. … degradation and … production fees".
+**Profit / day** is the base's [[profit]]: revenue minus cost, per day. The line under it reads "Revenue …· cost …· cost … incl. … degradation and … production fees".
 
 _Revenue_ is the value of every material the base makes more of than it uses (a positive Δ in [Material I/O](#material-io)), at the sell price.
 

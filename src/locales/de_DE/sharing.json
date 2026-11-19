@@ -45,7 +45,7 @@
 	},
 	"unavailable": {
 		"title": "Dieser geteilte Plan ist nicht mehr verfügbar",
-		"text": "Der Besitzer hat die Freigabe beendet, ihn gelöscht oder dein Link ist fehlerhaft.",
+		"text": "Der Besitzer hat das Teilen beendet oder den Plan gelöscht, oder der Link ist unvollständig.",
 		"home": "Zu PRUNplanner"
 	}
 }

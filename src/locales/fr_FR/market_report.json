@@ -144,7 +144,7 @@
 			"gaps": "Afficher les {count} écarts"
 		},
 		"show_top": "Afficher le top {count}",
-		"range": "{from}–{to} of {total}",
+		"range": "{from}–{to} sur {total}",
 		"sort_by": "Trier par"
 	},
 	"exchanges": {
@@ -159,10 +159,10 @@
 		"no_ask": "Carnets sans vendeur",
 		"bars_label": "{exchange}, volume quotidien sur 90 jours",
 		"name": {
-			"AI1": "Antares Station · AIC",
-			"CI1": "Benten Station · CIS",
-			"IC1": "Hortus Station · ICA",
-			"NC1": "Moria Station · NCC"
+			"AI1": "Station Antares · AIC",
+			"CI1": "Station Benten · CIS",
+			"IC1": "Station Hortus · ICA",
+			"NC1": "Station Moria · NCC"
 		}
 	},
 	"method": {

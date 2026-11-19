@@ -3,7 +3,7 @@
 	"title": "Verwaltung",
 	"empire": {
 		"title": "Imperium-Konfiguration",
-		"description": "Das Entfernen eines Imperiums löscht keine zugehörigen Pläne - sie sind diesem Imperium einfach nicht mehr zugewiesen. Du kannst bestehende Imperium auf der Imperium-Seite verwalten. Um die korrekte Plan-Kalkulation sicherzustellen, muss jedes Imperium die korrekte Fraktion und Flächen zugewiesen bekommen.",
+		"description": "Das Entfernen eines Imperiums löscht keine zugehörigen Pläne – sie sind dann einfach keinem Imperium mehr zugewiesen. Bestehende Imperien bearbeitest du auf der Imperium-Seite. Damit die Effizienz deiner Pläne korrekt berechnet wird, braucht jedes Imperium deine Fraktion und die passenden Genehmigungen.",
 		"buttons": {
 			"new_empire": "Neues Imperium"
 		},
@@ -12,7 +12,7 @@
 			"content": "Bist du sicher? Beim Löschen des Imperiums werden die ihm zugewiesenen Pläne nicht gelöscht."
 		},
 		"form": {
-			"empire_name": "@:terms.empire Name",
+			"empire_name": "Name des Imperiums",
 			"faction": "@:terms.faction",
 			"permits_total": "@:terms.permits_plural gesamt",
 			"permits_used": "@:terms.permits_plural benutzt",
@@ -30,7 +30,7 @@
 	},
 	"cx": {
 		"title": "Handelskammer-Konfiguration",
-		"description": "Das Entfernen einer Handelskammer-Konfiguration löscht alle Warenbörsen- und Materialeinstellungen. Zugewiesene Imperien bleiben davon unberührt, aber verlieren ihre Preisberechnungen. Stelle sicher, dass du dem Imperium eine neue Handelskammer zuweist.",
+		"description": "Das Entfernen einer Handelskammer-Präferenz löscht alle ihre Marktplatz- und Materialeinstellungen. Zugewiesene Imperien bleiben bestehen, nutzen die entfernte Präferenz aber nicht mehr. Weise ihnen eine neue Handelskammer-Präferenz zu.",
 		"buttons": {
 			"new_cx": "Neue @:terms.cx"
 		},
@@ -51,10 +51,10 @@
 	},
 	"assignments": {
 		"title": "Plan ↔ Imperium Zuweisung",
-		"description": "Jede geplante Basis kann mehreren Imperien zugewiesen werden. Das erlaubt dir, gleichzeitig den Überblick über dein existierendes Prosperous Universe Imperium, Allianz Produktionsketten und Erweiterungspläne zu behalten.",
+		"description": "Jede geplante Basis kann mehreren Imperien zugewiesen werden. So behältst du gleichzeitig dein bestehendes Imperium in Prosperous Universe, Produktionsketten deiner Allianz und Erweiterungspläne im Blick.",
 		"deletion": {
 			"title": "Löschen des Plans bestätigen",
-			"content": "Bist du sicher? Löschen des Plans kann nicht rückgängig gemacht werden."
+			"content": "Bist du sicher? Das Löschen des Plans kann nicht rückgängig gemacht werden."
 		},
 		"table": {
 			"plan": "@:terms.plan",

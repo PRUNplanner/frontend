@@ -6,8 +6,8 @@
 			"p1": "{link}에서는 모든 플래닝 데이터, 게임 내 메타데이터(건물, 레시피, 물자), VWAP 같은 시장 지표 계산값에 프로그래밍 방식으로 접근할 수 있습니다. 공개 엔드포인트는 커뮤니티가 자유롭게 사용할 수 있지만, 플랜 구성을 포함한 개인 플래닝 데이터에 접근하려면 보안 인증이 필요합니다.",
 			"p2": "이 엔드포인트를 활용하면 플래닝 작업을 외부 스프레드시트, 맞춤 대시보드, 또는 최적화 알고리즘과도 동기화할 수 있습니다.",
 			"link": "PRUNplanner REST API",
-			"warning": "API 키는 계정 데이터에 대한 전체 접근 권한을 가지며 기한 없이 유효합니다. 이 인증 정보를 비밀번호만큼 민감사헤 다루세요. 키를 공재 저장소에 커밋하거나 검증되지 않은 외부 서비스와 공유하지 마세요. 키가 유출되었다면 즉시 폐기하고 새 키를 발급하세요.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet. Use a separate key per sheet so you can revoke it alone."
+			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
+			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
 		}
 	},
 	"get_started": {
@@ -53,7 +53,7 @@
 		"copy": "Copy {what}",
 		"copied": "Copied",
 		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can use this key, with full access to your account. Use a separate key per sheet so you can revoke it alone.",
+		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "Empire material I/O",
@@ -142,6 +142,7 @@
 		"table": {
 			"apikey_name": "이름",
 			"apikey_prefix": "접두사",
+			"apikey_access": "Access",
 			"apikey_created": "생성됨",
 			"apikey_lastused": "마지막 사용"
 		}
@@ -161,6 +162,7 @@
 		"title": "API 키 생성",
 		"form": {
 			"key_name": "키 이름",
+			"access": "Access",
 			"key_description": "나중에 쉽게 알아볼 수 있도록 키에 구분하기 좋은 이름을 지어 주세요.",
 			"success_title": "키 생성 완료",
 			"success_key": "시크릿 키(지금 바로 저장하세요!)",
@@ -175,5 +177,13 @@
 			"use_in_builder": "Use in URL builder"
 		},
 		"copied": "Key copied"
+	},
+	"scope": {
+		"read": "Read-only",
+		"read_write": "Read & write",
+		"hint": {
+			"read": "Reads your plans, empires and other data. Can't change anything.",
+			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+		}
 	}
 }

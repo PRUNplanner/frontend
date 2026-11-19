@@ -4,7 +4,7 @@
 	"overview_hide": "Planliste ausblenden",
 	"overview_show": "Planliste einblenden",
 	"views": {
-		"label": "View",
+		"label": "Ansicht",
 		"material_io": "Material I/O",
 		"analysis": "Analyse",
 		"production_opportunities": "Produktionschancen"
@@ -19,13 +19,13 @@
 		},
 		"sync_warning": {
 			"title": "Unstimmigkeit erkannt:",
-			"body": "@:empire.configuration.sync_warning.title {configured} konfiguriert vs. {planned} geplante Flächen. Bitte synchronisiere diese Werte mit deinem In-Game {hq_buffer} , um eine genaue Fraktionsbonusberechnungen zu gewährleisten."
+			"body": "@:empire.configuration.sync_warning.title {configured} konfiguriert vs. {planned} geplante Genehmigungen. Bitte gleiche diese Werte mit deinem {hq_buffer} im Spiel ab, damit der Fraktionsbonus korrekt berechnet wird."
 		}
 	},
 	"plan_list": {
 		"no_plans": "Keine Pläne im @:terms.empire",
 		"profit": "@:terms.profit (ȼ)",
-		"setup_prompt": "Weise bestehende Pläne im {management} zu oder benutze die {search}, um neue zu erstellen.",
+		"setup_prompt": "Weise bestehende Pläne in der {management} zu oder nutze die {search}, um einen neuen zu erstellen.",
 		"links": {
 			"management": "Management",
 			"planet_search": "Planet Search"
@@ -41,7 +41,7 @@
 		"expand_row": "Planeten für {ticker} anzeigen",
 		"view_sides": "Produzenten · Verbraucher",
 		"view_net": "Netto pro Planet",
-		"view_label": "Detail view",
+		"view_label": "Detailansicht",
 		"surplus": "Überschuss",
 		"needs": "Bedarf",
 		"plan_count": "{count} Plan | {count} Pläne",
@@ -71,7 +71,7 @@
 			"inputs": "Produktions-Inputs",
 			"workforce": "Belegschaft",
 			"degradation": "Abnutzung",
-			"fees": "Production fees",
+			"fees": "Produktionsgebühren",
 			"profit": "Profit",
 			"uncovered": "Nicht gedeckte Kosten"
 		},
@@ -80,7 +80,7 @@
 			"inputs": "Inputs {pct}",
 			"workforce": "Belegschaft {pct}",
 			"degradation": "Abnutzung {pct}",
-			"fees": "Fees {pct}",
+			"fees": "Gebühren {pct}",
 			"profit": "Profit {pct}",
 			"uncovered": "Nicht gedeckt {pct}",
 			"of_cost": "Anteil der Kosten, den der Umsatz nicht deckt"
@@ -99,7 +99,7 @@
 			"title": "Materialien mit den größten ȼ-Flüssen",
 			"price": "ȼ / Tag",
 			"amount": "Einheiten / Tag",
-			"metric_label": "Metric",
+			"metric_label": "Kennzahl",
 			"buy": "← du kaufst (netto verbraucht)",
 			"sell": "du verkaufst (netto produziert) →",
 			"caption": "Top {top} von {n} Materialien · klicke auf eine Zeile, um sie in Material I/O zu öffnen",
@@ -115,9 +115,9 @@
 	},
 	"opportunities": {
 		"headline": "Produktionschancen",
-		"intro": "Finde Chancen, um überschüssige Materialien in andere Produkte umzuwandeln. Diese Ansicht identifiziert Produktionsmöglichkeiten, in denen das Material I/O ein positives Delta anzeigt, priorisiert durch die Verfügbarkeit der Produktionsvorlagen-Inputs.",
+		"intro": "Finde Rezepte, mit denen du überschüssige Materialien in andere Produkte umwandeln kannst. Diese Ansicht zeigt Produktionsmöglichkeiten, bei denen dein Material I/O ein positives Delta hat, sortiert nach der Verfügbarkeit der Inputs.",
 		"please_note": "Beachte bitte:",
-		"note": "Verlasse dich nicht auf die Produktionschance allein, sondern prüfe gegen das gehandelte Volumen und die Marktplatz-Übersicht, um die Marktliquidität zu verstehen. Verwende die Indikatoren, ob ein Material dein Engpass ist oder es profitabler ist, dass überschüssige Material direkt zu verkaufen statt in einem anderen Auftrag weiterzuverarbeiten.",
+		"note": "Verlass dich nicht allein auf die Produktionschance, sondern prüfe das gehandelte Volumen und die Marktplatz-Übersicht, um die Marktliquidität einzuschätzen. Nutze die Indikatoren, um zu sehen, ob ein Material dein Engpass ist oder ob es profitabler ist, das überschüssige Material direkt zu verkaufen, statt es in einem anderen Rezept weiterzuverarbeiten.",
 		"tiles": {
 			"opportunities": "Chancen",
 			"delta_required": "Delta benötigt",
@@ -140,7 +140,7 @@
 		"intro": "Drei Schritte zu deinem ersten Plan.",
 		"empire": {
 			"title": "Dein Imperium",
-			"help": "Fraktion und Erlaubnis beeinflussen den Fraktions-Bonus und den verfügbaren Bereich deiner Pläne.",
+			"help": "Fraktion und Genehmigungen beeinflussen den Fraktionsbonus und die verfügbare Fläche deiner Pläne.",
 			"saved": "Gespeichert"
 		},
 		"plan": {
