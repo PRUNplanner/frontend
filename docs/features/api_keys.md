@@ -9,7 +9,9 @@ Google Sheets formulas, curl and Python snippets with them.
 
 - `useAPIKeys.ts`: list/create/delete via `GetAPIKeys`, `PostCreateAPIKey`,
   `DeleteAPIKey`. `lastCreatedKey` is the full key, shown only once after
-  creation.
+  creation, `lastCreatedScope` its access. A key's `scope` is `read` (GET only)
+  or `read_write`; the backend enforces it (`user/auth_apikey.py`), and the
+  create dialog preselects `read`.
 - `apiEndpoints.ts`: `API_ENDPOINTS`, the `GET` endpoints the builder offers
   (path template, optional CSV path, group; `public` needs no key). Adding
   one: also add `api_keys.builder.endpoints.<id>.label/description` in

@@ -255,10 +255,10 @@ describe("Backend contract", () => {
 			},
 			{
 				name: "create api key",
-				call: () => callPostCreateAPIKey("key"),
+				call: () => callPostCreateAPIKey("key", "read"),
 				method: "post",
 				url: "/user/api/keys/",
-				body: { name: "key" },
+				body: { name: "key", scope: "read" },
 			},
 			{
 				name: "delete api key",

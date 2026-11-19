@@ -10,17 +10,47 @@ The PRUNplanner REST API serves your planning data (plans, empires, exchange pre
 
 Public game data and exchange prices need no key. Everything that belongs to you does.
 
-A key acts as you. It can do everything your login can do through the API, not only read. There are no read-only keys.
+Each key has an **Access**: **Read-only** or **Read & write**. See [Access](#access) for what each one allows.
 
 You'll find the full reference at [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Its Authorize button takes a key, so you can try calls in the browser.
+
+## Access {#access}
+
+Every key reads your data. Whether it can also change it depends on the access you picked when you created it:
+
+| Access | Reads your plans, empires and other data | Creates, changes and deletes them |
+| --- | --- | --- |
+| **Read-only** | yes | no |
+| **Read & write** | yes | yes, with the key in the header |
+
+New keys are **Read-only** unless you pick **Read & write**. A sheet, a dashboard or anything you build with the URL builder only reads, so a read-only key is all it needs. Give a key **Read & write** only when a script of yours changes your data. Keys you created before keys had an access are **Read & write**, so the scripts using them keep working.
+
+You can't change a key's access later. To change it, create a new key with the access you want, switch your sheet or script over, and revoke the old one.
+
+Some things no key can do, whatever its access. They need you logged in to PRUNplanner:
+
+- list, create or revoke keys,
+- change your email, your password, your PrUn username or your FIO API key,
+- request or confirm the email verification.
+
+A key can read your profile, but your FIO API key comes back empty: it's your key for FIO, and a script has no need for it.
+
+When a key tries something it may not do, the answer is *403 Forbidden* with a `code` that says why:
+
+- `api_key_read_only`: a **Read-only** key tried to change data.
+- `api_key_in_url`: a key sent as `?api_key=` tried to change data. Send it in the `Authorization` header.
+- `api_key_not_allowed`: a key tried one of the account actions above. Log in to do it.
+
+Nothing is changed when this happens.
 
 ## Creating a Key {#create}
 
 1. Press **Create New Key**.
 2. Enter a **Key Name** that tells you later where you use it, for example the sheet's name. Keep it to 50 characters at most. A longer name fails with a general error.
-3. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**.
-4. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
-5. Press **I've saved my key**.
+3. Pick the **Access**: **Read-only** (already selected) or **Read & write**. The line below it says what the key will be able to do.
+4. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**, together with its access.
+5. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
+6. Press **I've saved my key**.
 
 > [!warning]
 > PRUNplanner can't show the key again, because it keeps only a hashed form of it, which can check a key but can't turn back into one. If you lose it, revoke it and create a new one.
@@ -34,9 +64,9 @@ Send the key with each request, in one of two ways:
 | Header | `Authorization: Api-Key <YOUR_KEY>` | Scripts, curl, dashboards |
 | Query parameter | `?api_key=<YOUR_KEY>` at the end of the URL | Google Sheets `IMPORTDATA`, tools that only take a URL |
 
-Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. Use a separate key per sheet or script, so you can revoke one without breaking the others.
+Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. That's why a key in a URL can only read, even a **Read & write** one. Use a separate read-only key per sheet or script, so you can revoke one without breaking the others.
 
-Both ways work for every request that needs a key. If a request carries both, PRUNplanner uses the header.
+Both ways work for every request a key may make, except that changes need the header. If a request carries both, PRUNplanner uses the header.
 
 ## URL Builder {#url-builder}
 
@@ -80,7 +110,7 @@ For example, if 40 **FIO storage** requests arrive within one minute, the first 
 
 ## Managing Keys {#manage-keys}
 
-**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
+**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Access**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
 
 **Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
 

@@ -23,7 +23,11 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
 		execute: async () => {
 			calls.push({ name, params });
-			if (name === "PostCreateAPIKey") return { api_key: "secret-key" };
+			if (name === "PostCreateAPIKey")
+				return {
+					api_key: "secret-key",
+					scope: (params as { scope: string }).scope,
+				};
 			if (name === "DeleteAPIKey") {
 				keys.value = [];
 				return undefined;
@@ -44,9 +48,25 @@ const KEY: APIKey = {
 	id: "1",
 	name: "Sheet",
 	prefix: "abc",
+	scope: "read",
 	created: new Date("2026-01-01"),
 	last_used: null,
 };
+
+async function openCreateAndName(name: string) {
+	button("api_keys.manage.buttons.new_apikey").click();
+	await flushPromises();
+	const input = document.body.querySelector("form input") as HTMLInputElement;
+	input.value = name;
+	input.dispatchEvent(new Event("input"));
+	await flushPromises();
+	return input;
+}
+
+const pressed = () =>
+	document.body
+		.querySelector('[data-testid="scope-choice"] [aria-pressed="true"]')
+		?.textContent?.trim();
 
 async function mountView(data: APIKey[]) {
 	keys.value = data;
@@ -90,6 +110,69 @@ describe("APIKeyView", () => {
 			"api_keys.manage.never"
 		);
 		expect(wrapper.text()).not.toContain("api_keys.manage.empty");
+	});
+
+	it("shows each key's access in the table and the cards", async () => {
+		const { wrapper } = await mountView([
+			KEY,
+			{ ...KEY, id: "2", name: "Script", scope: "read_write" },
+		]);
+		expect(
+			wrapper.findAll('[data-testid="key-access"]').map((td) => td.text())
+		).toEqual(["api_keys.scope.read", "api_keys.scope.read_write"]);
+		expect(wrapper.find("ul li").text()).toContain(
+			"api_keys.manage.table.apikey_access"
+		);
+	});
+
+	it("preselects read-only and creates a read-only key", async () => {
+		await mountView([]);
+		const input = await openCreateAndName("Sheet");
+
+		expect(pressed()).toBe("api_keys.scope.read");
+		expect(
+			document.body.querySelector('[data-testid="scope-hint"]')
+				?.textContent
+		).toContain("api_keys.scope.hint.read");
+		input.form!.requestSubmit();
+		await flushPromises();
+
+		expect(calls).toContainEqual({
+			name: "PostCreateAPIKey",
+			params: { name: "Sheet", scope: "read" },
+		});
+		expect(
+			document.body.querySelector('[data-testid="created-scope"]')
+				?.textContent
+		).toContain("api_keys.scope.read");
+	});
+
+	it("creates a read & write key and resets to read-only on reopen", async () => {
+		await mountView([]);
+		const input = await openCreateAndName("Script");
+		button("api_keys.scope.read_write").click();
+		await flushPromises();
+		expect(pressed()).toBe("api_keys.scope.read_write");
+		expect(
+			document.body.querySelector('[data-testid="scope-hint"]')
+				?.textContent
+		).toContain("api_keys.scope.hint.read_write");
+
+		input.form!.requestSubmit();
+		await flushPromises();
+		expect(calls).toContainEqual({
+			name: "PostCreateAPIKey",
+			params: { name: "Script", scope: "read_write" },
+		});
+		expect(
+			document.body.querySelector('[data-testid="created-scope"]')
+				?.textContent
+		).toContain("api_keys.scope.read_write");
+
+		button("api_keys.create.buttons.saved").click();
+		await flushPromises();
+		await openCreateAndName("Next");
+		expect(pressed()).toBe("api_keys.scope.read");
 	});
 
 	it("revokes only after the confirm", async () => {

@@ -31,6 +31,7 @@ describe("useAPIKeys", async () => {
 				id: "foo",
 				name: "foo",
 				prefix: "foo",
+				scope: "read",
 				created: new Date(),
 				last_used: new Date(),
 			},
@@ -38,6 +39,7 @@ describe("useAPIKeys", async () => {
 				id: "moo",
 				name: "moo",
 				prefix: "moo",
+				scope: "read_write",
 				created: new Date(),
 				last_used: null,
 			},
@@ -59,6 +61,7 @@ describe("useAPIKeys", async () => {
 				id: "foo",
 				name: "foo",
 				prefix: "foo",
+				scope: "read",
 				created: new Date(),
 				last_used: new Date(),
 			},
@@ -66,6 +69,7 @@ describe("useAPIKeys", async () => {
 				id: "moo",
 				name: "moo",
 				prefix: "moo",
+				scope: "read_write",
 				created: new Date(),
 				last_used: null,
 			},
@@ -76,20 +80,34 @@ describe("useAPIKeys", async () => {
 			name: "foo",
 			api_key: "foo",
 			prefix: "foo",
+			scope: "read_write",
 		};
 
 		mock.onGet("/user/api/keys/").reply(200, mockData);
 		mock.onPost("/user/api/keys/").reply(200, mockCreateData);
 
-		const { loaded, apiKeyData, createAPIKey, lastCreatedKey } =
-			useAPIKeys();
+		const {
+			loaded,
+			apiKeyData,
+			createAPIKey,
+			lastCreatedKey,
+			lastCreatedScope,
+			resetCreation,
+		} = useAPIKeys();
 
-		const result = await createAPIKey("foo");
+		const result = await createAPIKey("foo", "read_write");
 
 		expect(result).toBeTruthy();
 		expect(loaded.value).toBeTruthy();
 		expect(apiKeyData.value?.length).toBe(mockData.length);
 		expect(lastCreatedKey.value).toBe(mockCreateData.api_key);
+		expect(lastCreatedScope.value).toBe("read_write");
+		expect(JSON.parse(mock.history.post.at(-1)!.data).scope).toBe(
+			"read_write"
+		);
+
+		resetCreation();
+		expect(lastCreatedScope.value).toBeNull();
 	});
 
 	it("createAPIKey: failure", async () => {
@@ -98,7 +116,7 @@ describe("useAPIKeys", async () => {
 		const { loaded, apiKeyData, createAPIKey, lastCreatedKey } =
 			useAPIKeys();
 
-		const result = await createAPIKey("foo");
+		const result = await createAPIKey("foo", "read");
 
 		expect(result).toBeFalsy();
 		expect(loaded.value).toBeFalsy();
