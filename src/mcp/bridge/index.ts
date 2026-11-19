@@ -1,5 +1,6 @@
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import { bridgeUserAgent } from "./userAgent";
 
 // Types & Interfaces
 import type { JSONRPCMessage } from "@modelcontextprotocol/server";
@@ -14,9 +15,17 @@ const url =
 	process.env.PRUNPLANNER_MCP_URL || "https://mcp.prunplanner.org/mcp";
 const key = process.env.PRUNPLANNER_API_KEY;
 
+// until the host's initialize arrives (it is the first message)
+let userAgent = bridgeUserAgent(undefined, __APP_VERSION__);
+
 const local = new StdioServerTransport();
 const remote = new StreamableHTTPClientTransport(new URL(url), {
 	requestInit: { headers: { Authorization: `Api-Key ${key ?? ""}` } },
+	fetch: (input, init) => {
+		const headers = new Headers(init?.headers);
+		headers.set("User-Agent", userAgent);
+		return fetch(input, { ...init, headers });
+	},
 });
 
 /** a failed forward still answers the request, so the client doesn't wait */
@@ -33,6 +42,12 @@ function fail(message: JSONRPCMessage, error: unknown): void {
 }
 
 local.onmessage = (message) => {
+	if ("method" in message && message.method === "initialize")
+		userAgent = bridgeUserAgent(
+			message.params?.["clientInfo"] as
+				Record<string, unknown> | undefined,
+			__APP_VERSION__
+		);
 	remote.send(message).catch((error: unknown) => fail(message, error));
 };
 remote.onmessage = (message) => void local.send(message);
