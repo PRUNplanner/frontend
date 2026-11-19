@@ -313,7 +313,10 @@ describe("MCP tools", () => {
 
 	it("get_plan: the engine's numbers with the empire's CX (parity)", async () => {
 		withDefaultEmpire(EMPIRE_UUID);
-		const data = await run("get_plan", { plan_uuid: PLAN_UUID });
+		const data = await run("get_plan", {
+			plan_uuid: PLAN_UUID,
+			detail: "full",
+		});
 		const app = appCalculation();
 		expect(data.per_day.profit).toBeCloseTo(app.result.profit, 2);
 		expect(data.per_day.revenue).toBeCloseTo(app.result.revenue, 2);
@@ -368,7 +371,10 @@ describe("MCP tools", () => {
 	});
 
 	it("get_plan: shipping as Visitation frequency, priced construction", async () => {
-		const data = await run("get_plan", { plan_uuid: PLAN_UUID });
+		const data = await run("get_plan", {
+			plan_uuid: PLAN_UUID,
+			detail: "full",
+		});
 		const app = appCalculation();
 		const v = calculateVisitation(app.result);
 		expect(data.shipping.import_weight_t).toBeCloseTo(

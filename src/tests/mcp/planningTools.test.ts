@@ -86,7 +86,10 @@ describe("MCP planning tools", () => {
 	});
 
 	it("get_plan: per-order economics and warnings", async () => {
-		const data = await run("get_plan", { plan_uuid: PLAN_UUID });
+		const data = await run("get_plan", {
+			plan_uuid: PLAN_UUID,
+			detail: "full",
+		});
 		const fp = data.buildings.find(
 			(b: { ticker: string }) => b.ticker === "FP"
 		);
@@ -174,6 +177,74 @@ describe("MCP planning tools", () => {
 		);
 		expect(profits.length).toBeGreaterThan(0);
 		expect([...profits].sort((a, b) => b - a)).toEqual(profits);
+	});
+
+	it("get_plan: a summary by default, the breakdown with detail full", async () => {
+		const summary = await run("get_plan", { plan_uuid: PLAN_UUID });
+		const full = await run("get_plan", {
+			plan_uuid: PLAN_UUID,
+			detail: "full",
+		});
+		// the same figures
+		expect(summary.per_day).toEqual(full.per_day);
+		expect(summary.shipping).toEqual(full.shipping);
+		expect(summary.warnings).toEqual(full.warnings);
+		expect(summary.material_io).toEqual(
+			full.material_io.map(
+				(m: { ticker: string; delta: number; value: number }) => ({
+					ticker: m.ticker,
+					delta: m.delta,
+					value: m.value,
+				})
+			)
+		);
+		// without the breakdown
+		expect(summary.construction_materials).toBeUndefined();
+		expect(summary.construction_materials_count).toBe(
+			full.construction_materials.length
+		);
+		expect(summary.buildings[0].recipes[0].per_run).toBeUndefined();
+		expect(full.buildings[0].recipes[0].per_run).toBeDefined();
+		expect(summary.detail).toContain('detail "full"');
+		expect(JSON.stringify(summary).length).toBeLessThan(
+			JSON.stringify(full).length / 2
+		);
+	});
+
+	it("get_planet and find_planets: a summary by default", async () => {
+		const planet = await run("get_planet", {
+			planet_natural_id: "KW-688c",
+		});
+		expect(planet.cogc_programs).toBeUndefined();
+		expect(planet.resources[0]).toEqual({
+			ticker: expect.any(String),
+			type: expect.any(String),
+			daily_extraction: expect.any(Number),
+		});
+		expect(planet.environment.surface).toBe("rocky");
+		expect(planet.construction_extras[0]).toEqual({
+			ticker: "MCG",
+			reason: "rocky",
+		});
+		expect(planet.nearest_exchanges.length).toBeGreaterThan(0);
+		const raw = await run("get_planet", {
+			planet_natural_id: "KW-688c",
+			detail: "full",
+		});
+		expect(raw.cogc_programs.length).toBeGreaterThan(0);
+
+		const search = await run("find_planets", {
+			resources: [{ ticker: "SIO" }],
+			limit: 3,
+		});
+		expect(search.planets[0].gravity).toBeUndefined();
+		expect(search.planets[0].surface).toBe("rocky");
+		const detailed = await run("find_planets", {
+			resources: [{ ticker: "SIO" }],
+			limit: 3,
+			detail: "full",
+		});
+		expect(detailed.planets[0].gravity).toBeDefined();
 	});
 
 	it("find_planets with a plan: only planets that can run its extraction", async () => {
@@ -721,6 +792,7 @@ describe("MCP planning tools", () => {
 	it("nearest exchanges by jumps, as the app's pathfinder", async () => {
 		const planet = await run("get_planet", {
 			planet_natural_id: "KW-688c",
+			detail: "full",
 		});
 		expect(planet.nearest_exchanges).toHaveLength(4);
 		const pf = pathfinder();

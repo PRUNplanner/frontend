@@ -133,6 +133,20 @@ container `prunplanner-mcp`), not here.
   `uuidArg()` (`tools/shared.ts`), not `z.uuid()`, whose pattern costs about
   2k tokens over the list. `app.test.ts` guards the size. List tools have
   default limits and say how to get more.
+- **Summary first.** `get_plan`, `get_shared_plan`, `calculate_new_plan`,
+  `get_planet` and `find_planets` take `detail` (`detailArg()`): `"summary"`
+  (default) returns the key figures, `"full"` what they returned before.
+  Plan results: `summarizeDetails()` (`tools/shared.ts`) keeps money,
+  buildings with efficiency and recipe ids, net material flow (`delta`,
+  `value`), workforce, area, infrastructure, shipping, COGC and warnings, and
+  drops per-order economics, per-material input/output, unit price and price
+  source, and the construction materials (counted). `get_planet`'s summary is
+  COGC, resources, fees, plots, exchange jumps, infrastructure, environment
+  buckets and its extra construction materials (`environmentExtras`), not the
+  raw record; `find_planets` drops gravity, pressure, temperature, fertility
+  and the COGC boost per planet. On the test data the summary is 37 % of the full size for `get_plan`
+  (4.0k of 10.7k characters) and 38 % for `get_planet`. A test that reads these fields
+  passes `detail: "full"`.
 - **Text carries the data.** A tool result's text block is a one-line summary
   plus the same JSON as `structuredContent`: Claude Desktop and others pass
   only the text to the model.

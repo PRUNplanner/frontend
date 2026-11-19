@@ -30,6 +30,7 @@ import {
 	amount,
 	cogcBoost,
 	defineTool,
+	detailArg,
 	exchangeJumps,
 	figures,
 	nearestExchanges,
@@ -51,6 +52,9 @@ import type {
 	PlanetSearchFilter,
 	PlanetSearchReference,
 } from "@/features/planet_search/planetSearch.schemas";
+
+const FIND_FULL =
+	"fertility, gravity, pressure, temperature and the COGC boost per planet";
 
 export const findPlanets = defineTool({
 	name: "find_planets",
@@ -113,6 +117,7 @@ export const findPlanets = defineTool({
 				'"resource" (default): the first requested resource\'s daily extraction, highest first; "jumps": jumps to near_exchange, nearest first, ties by resource'
 			),
 		limit: z.number().int().min(1).max(100).optional(),
+		detail: detailArg(FIND_FULL),
 		plan_uuid: uuidArg()
 			.optional()
 			.describe(
@@ -278,38 +283,51 @@ export const findPlanets = defineTool({
 				price_basis: priceBasis,
 				plan_note: planNote,
 				url: `${appUrl}/search${query ? `?${query}` : ""}`,
-				planets: shown.map((p) => ({
-					plan_there: earnings.get(p.planet_natural_id),
-					planet_natural_id: p.planet_natural_id,
-					name: p.planet_name,
-					resources: p.resources.map((r) => ({
-						ticker: r.material_ticker,
-						type: r.resource_type,
-						daily_extraction: amount(r.daily_extraction),
-					})),
-					fertility: p.fertility,
-					surface: p.surface ? "rocky" : "gaseous",
-					gravity: p.gravity_type,
-					pressure: p.pressure_type,
-					temperature: p.temperature_type,
-					infrastructure: planetInfrastructure(p),
-					exchange_jumps: Object.fromEntries(
-						nearestExchanges(p.system_id).map((e) => [
-							e.exchange,
-							e.jumps,
-						])
-					),
-					cogc_program: activeProgram(p, now),
-					cogc_boost: (() => {
-						const b = cogcBoost(
-							mapPlanetToPlanType(activeProgram(p, now)),
-							gameData.buildings
-						);
-						return b ? `+${b.bonus_pct} % for ${b.lifts}` : null;
-					})(),
-					production_fees: p.production_fees,
-					plots: planetPlots(p),
-				})),
+				planets: shown.map((p) => {
+					const full = args.detail === "full";
+					return {
+						plan_there: earnings.get(p.planet_natural_id),
+						planet_natural_id: p.planet_natural_id,
+						name: p.planet_name,
+						resources: p.resources.map((r) => ({
+							ticker: r.material_ticker,
+							type: r.resource_type,
+							daily_extraction: amount(r.daily_extraction),
+						})),
+						surface: p.surface ? "rocky" : "gaseous",
+						...(full && {
+							fertility: p.fertility,
+							gravity: p.gravity_type,
+							pressure: p.pressure_type,
+							temperature: p.temperature_type,
+						}),
+						infrastructure: planetInfrastructure(p),
+						exchange_jumps: Object.fromEntries(
+							nearestExchanges(p.system_id).map((e) => [
+								e.exchange,
+								e.jumps,
+							])
+						),
+						cogc_program: activeProgram(p, now),
+						...(full && {
+							cogc_boost: (() => {
+								const b = cogcBoost(
+									mapPlanetToPlanType(activeProgram(p, now)),
+									gameData.buildings
+								);
+								return b
+									? `+${b.bonus_pct} % for ${b.lifts}`
+									: null;
+							})(),
+						}),
+						production_fees: p.production_fees,
+						plots: planetPlots(p),
+					};
+				}),
+				detail:
+					args.detail === "full"
+						? undefined
+						: `summary; detail "full" adds ${FIND_FULL}`,
 			},
 		};
 	},

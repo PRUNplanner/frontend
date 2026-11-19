@@ -21,7 +21,10 @@ import { pickEmpire } from "@/features/empire/util/planEmpire.util";
 import {
 	defineTool,
 	figures,
+	detailArg,
 	planDetails,
+	PLAN_FULL_DETAIL,
+	summarizeDetails,
 	planUrl,
 	uuidArg,
 } from "@/mcp/tools/shared";
@@ -186,7 +189,7 @@ export const getSharedPlan = defineTool({
 	name: "get_shared_plan",
 	title: "Calculate a shared plan",
 	description:
-		"Calculates a plan someone shared (its link or share uuid) as get_plan does, without copying it into the account: buildings and recipes, workforce, area, material input/output with prices, profit per day, construction cost, shipping, ROI. It is calculated as the app shows it: someone else's plan in the user's default empire, else their first (its faction and CX preference), the user's own shared plan as its plan page opens it; empire_uuid picks another. Opening it counts a view, like opening the link. copy_shared_plan saves a copy.",
+		"Calculates a plan someone shared (its link or share uuid) as get_plan does, without copying it into the account: the same result as get_plan. It is calculated as the app shows it: someone else's plan in the user's default empire, else their first (its faction and CX preference), the user's own shared plan as its plan page opens it; empire_uuid picks another. Opening it counts a view, like opening the link. copy_shared_plan saves a copy.",
 	inputSchema: z.object({
 		share: z
 			.string()
@@ -196,8 +199,9 @@ export const getSharedPlan = defineTool({
 		empire_uuid: uuidArg()
 			.optional()
 			.describe("Empire to calculate in (faction, CX prices)"),
+		detail: detailArg(PLAN_FULL_DETAIL),
 	}),
-	async run({ share, empire_uuid }, { backend, appUrl }) {
+	async run({ share, empire_uuid, detail }, { backend, appUrl }) {
 		const uuid = shareUuid(share);
 		const shared = await backend.get(
 			`/planning/shared/${encodeURIComponent(uuid)}/`,
@@ -243,7 +247,8 @@ export const getSharedPlan = defineTool({
 			);
 		}
 		const plan = setup.plan;
-		const details = planDetails(setup, calculate(setup), appUrl);
+		const full = planDetails(setup, calculate(setup), appUrl);
+		const details = detail === "full" ? full : summarizeDetails(full);
 		const url = shareUrl(appUrl, uuid);
 		const d = details.per_day;
 		return {

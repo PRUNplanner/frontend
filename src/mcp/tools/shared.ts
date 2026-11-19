@@ -291,6 +291,50 @@ export function calculationDetails(
 	};
 }
 
+/** the detail argument of the tools that return a plan or a planet */
+export const detailArg = (full: string) =>
+	z
+		.enum(["summary", "full"])
+		.optional()
+		.describe(`"full" adds ${full}; default "summary"`);
+
+export const PLAN_FULL_DETAIL =
+	"per-order economics, material input/output with prices and sources, construction materials";
+
+/**
+ * A plan result's key figures (detail "summary"): money, buildings with
+ * their recipes, net material flows, workforce, area, shipping, COGC and
+ * warnings; per-order economics, prices per material and construction
+ * materials stay in detail "full" (the result as calculationDetails builds it)
+ * @author jplacht
+ */
+export function summarizeDetails<
+	T extends ReturnType<typeof calculationDetails>,
+>(details: T) {
+	const { construction_materials, ...rest } = details;
+	return {
+		...rest,
+		buildings: details.buildings.map((b) => ({
+			ticker: b.ticker,
+			amount: b.amount,
+			efficiency: b.efficiency,
+			efficiency_factors: b.efficiency_factors,
+			recipes: b.recipes.map((r) => ({
+				recipe_id: r.recipe_id,
+				amount: r.amount,
+			})),
+			per_day_profit: b.per_day_profit,
+		})),
+		material_io: details.material_io.map((m) => ({
+			ticker: m.ticker,
+			delta: m.delta,
+			value: m.value,
+		})),
+		construction_materials_count: construction_materials.length,
+		detail: `summary; detail "full" adds ${PLAN_FULL_DETAIL}`,
+	};
+}
+
 /**
  * The full plan result for get_plan
  * @author jplacht

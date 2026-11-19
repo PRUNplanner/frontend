@@ -5,7 +5,14 @@ import { loadEmpireCX } from "@/mcp/context";
 import { getPlanet, loadGameData } from "@/mcp/gameData";
 import { PriceBasisSchema } from "@/mcp/priceBasis";
 import { calculateWithHabs, type IVariant } from "@/mcp/variant";
-import { calculationDetails, defineTool, uuidArg } from "@/mcp/tools/shared";
+import {
+	calculationDetails,
+	defineTool,
+	detailArg,
+	PLAN_FULL_DETAIL,
+	summarizeDetails,
+	uuidArg,
+} from "@/mcp/tools/shared";
 import {
 	applyPlanFields,
 	BuildingChangeSchema,
@@ -83,10 +90,11 @@ export const calculateNewPlan = defineTool({
 	name: "calculate_new_plan",
 	title: "Calculate an unsaved base",
 	description:
-		"Calculates a base that isn't saved yet, on any planet, with PRUNplanner's plan engine: the same result as get_plan (money per day, per-order economics, warnings, workforce, area, material i/o, construction materials and cost, shipping, ROI). Use it to plan before committing, or to try one setup on candidate planets. Several recipes in one building: see Buildings in the server instructions. Like a new plan in the app: every luxury on, 1 permit, the planet's active COGC program, auto-habs, experts \"auto\" (all unless you set them); storage_days sizes storage. Priced in empire_uuid, else as the server instructions say (default, only empire, only CX preference; else Universe VWAP 30D with empire_choices). Nothing is saved (save_plan saves it with the same arguments); the url opens a new plan on that planet.",
+		"Calculates a base that isn't saved yet, on any planet, with PRUNplanner's plan engine: the same result as get_plan (money per day, buildings, warnings, workforce, area, construction cost, shipping, ROI). Use it to plan before committing, or to try one setup on candidate planets. Several recipes in one building: see Buildings in the server instructions. Like a new plan in the app: every luxury on, 1 permit, the planet's active COGC program, auto-habs, experts \"auto\" (all unless you set them); storage_days sizes storage. Priced in empire_uuid, else as the server instructions say (default, only empire, only CX preference; else Universe VWAP 30D with empire_choices). Nothing is saved (save_plan saves it with the same arguments); the url opens a new plan on that planet.",
 	inputSchema: NewPlanSchema.extend({
 		empire_uuid: uuidArg().optional(),
 		price_basis: PriceBasisSchema.optional(),
+		detail: detailArg(PLAN_FULL_DETAIL),
 	}),
 	async run(args, { backend, appUrl }) {
 		const v = await calculateNew(
@@ -95,7 +103,7 @@ export const calculateNewPlan = defineTool({
 			args.empire_uuid,
 			args.price_basis
 		);
-		const details = calculationDetails(
+		const full = calculationDetails(
 			v.calc,
 			v.ctx.prices,
 			v.cx,
@@ -107,6 +115,7 @@ export const calculateNewPlan = defineTool({
 			v.planet,
 			v.ctx.buildings
 		);
+		const details = args.detail === "full" ? full : summarizeDetails(full);
 		const d = details.per_day;
 		const habitation = v.notes.join(" ") || "as given";
 		return {

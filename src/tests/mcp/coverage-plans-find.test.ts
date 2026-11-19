@@ -72,6 +72,7 @@ describe("find_planets: surfaces, plots and programs", () => {
 		const { data } = await run({
 			name: "Zzplans",
 			surface: ["rocky", "gaseous"],
+			detail: "full",
 		});
 		expect(
 			data.planets.map(
