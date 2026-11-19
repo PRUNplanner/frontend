@@ -176,6 +176,28 @@ describe("MCP planning tools", () => {
 		expect([...profits].sort((a, b) => b - a)).toEqual(profits);
 	});
 
+	it("find_planets with a plan: only planets that can run its extraction", async () => {
+		// the plan extracts SIO with EXT (mineral) and H2O with RIG (liquid);
+		// the index also has mineral and gaseous H2O, which a RIG can't use
+		for (const filter of [{}, { resources: [{ ticker: "H2O" }] }]) {
+			const data = await run("find_planets", {
+				...filter,
+				plan_uuid: PLAN_UUID,
+				limit: 10,
+			});
+			expect(data.planets.length).toBeGreaterThan(0);
+			expect(data.not_possible_for_plan).toBeGreaterThan(0);
+			for (const p of data.planets) {
+				const types = (ticker: string) =>
+					p.resources
+						.filter((r: { ticker: string }) => r.ticker === ticker)
+						.map((r: { type: string }) => r.type);
+				expect(types("SIO")).toContain("MINERAL");
+				expect(types("H2O")).toContain("LIQUID");
+			}
+		}
+	});
+
 	it("calculate_empire_variant: no change equals get_empire; a change adds up", async () => {
 		const empire = await run("get_empire", { empire_uuid: EMPIRE_UUID });
 		const same = await run("calculate_empire_variant", {
