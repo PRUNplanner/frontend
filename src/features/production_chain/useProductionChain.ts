@@ -52,7 +52,7 @@ import {
 } from "@/features/production_chain/engine/chainAutoLayout";
 import {
 	decodeChain,
-	DEFAULT_EFFICIENCY,
+	emptyInput,
 	encodeChain,
 	firstBase,
 	type IChainState,
@@ -120,20 +120,6 @@ function writeStored(state: IChainState): void {
 		key,
 		state.input.targets.length ? JSON.stringify(encodeChain(state)) : null
 	);
-}
-
-function emptyInput(): IChainInput {
-	return {
-		targets: [],
-		efficiency: DEFAULT_EFFICIENCY,
-		rawSource: "buy",
-		byproducts: "cover",
-		source: {},
-		recipeId: {},
-		planetId: {},
-		bases: [firstBase()],
-		baseOf: {},
-	};
 }
 
 /**

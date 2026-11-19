@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SUPPORTED_LOCALES } from "@/lib/i18n";
+import { SUPPORTED_LOCALES } from "@/lib/i18n/locales";
 import { StoredLayoutSchema } from "@/features/planning/layout/planLayout.schemas";
 import { standardStoredLayout } from "@/features/planning/layout/planLayout.constants";
 

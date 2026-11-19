@@ -35,6 +35,7 @@ jobs:
         uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5.4.0
         with:
           context: .
+          target: production
           push: true
           platforms: linux/arm64
           no-cache: true
@@ -67,3 +68,62 @@ jobs:
             org.opencontainers.image.created=${{ github.event.release.published_at }}
           annotations: |
             org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
+
+      # The MCP server (docs/mcp.md): same source, its own image. Its runtime
+      # settings (PRUNPLANNER_API_URL, PRUNPLANNER_APP_URL) come from the deployment.
+      - name: Build and push MCP image
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5.4.0
+        with:
+          context: .
+          target: mcp
+          push: true
+          platforms: linux/arm64
+          no-cache: true
+          tags: |
+            ghcr.io/prunplanner/prunplanner-mcp:latest
+            ghcr.io/prunplanner/prunplanner-mcp:${{ github.ref_name }}
+          build-args: |
+            BUILD_CREATED=${{ github.event.release.published_at || github.run_started_at }}
+            BUILD_REVISION=${{ github.sha }}
+          labels: |
+            org.opencontainers.image.title="PRUNplanner MCP server"
+            org.opencontainers.image.description="Read-only MCP server running PRUNplanner's plan engine"
+            org.opencontainers.image.source="https://github.com/PRUNplanner/frontend"
+            org.opencontainers.image.licenses="MIT"
+            org.opencontainers.image.authors="Jan Placht <jplacht+prunplanner@gmail.com>"
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.release.published_at }}
+          annotations: |
+            org.opencontainers.image.description="Read-only MCP server running PRUNplanner's plan engine"
+
+  # The Claude Desktop extension (docs/mcp.md): built per release and attached
+  # to it, so https://github.com/PRUNplanner/frontend/releases/latest/download/prunplanner.mcpb
+  # is always the current one. Only this job may write to the release.
+  mcpb:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Install pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+      - name: Use Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      # the extension carries the app's version, so Claude Desktop shows which one is installed
+      - name: Stamp the manifest version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          jq --arg v "$version" '.version = $v' src/mcp/bridge/manifest.json > manifest.tmp
+          mv manifest.tmp src/mcp/bridge/manifest.json
+      - name: Build the extension
+        run: pnpm build:mcpb
+      - name: Attach it to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" dist-mcp/prunplanner.mcpb --clobber

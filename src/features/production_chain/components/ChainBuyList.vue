@@ -19,7 +19,7 @@
 	} from "@/features/production_chain/productionChain.util";
 	import { formatNumber } from "@/util/numbers";
 	import { copyToClipboard } from "@/util/data";
-	import { XITSTATIONWAREHOUSESTOCX } from "@/features/xit/xitConstants";
+	import { XITSTATIONWAREHOUSESTOCX } from "@/features/xit/xitAction.util";
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces

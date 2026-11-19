@@ -5,9 +5,9 @@ import {
 	checkMaterial,
 	countLevels,
 	flaggedCheck,
-	formatShare,
 	marketCheck,
 } from "@/features/cx/marketCheck.util";
+import { formatShare } from "@/features/cx/marketCheck.format";
 import { createPriceBook } from "@/features/cx/priceBook";
 
 // Types & Interfaces

@@ -8,8 +8,8 @@ import {
 	formatPercent,
 	signed,
 	clamp,
-	boundaryDescriptor,
 } from "@/util/numbers";
+import { boundaryDescriptor } from "@/util/boundary";
 
 describe("Util: text", () => {
 	describe("formatNumber", () => {

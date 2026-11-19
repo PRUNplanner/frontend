@@ -4,11 +4,13 @@
 	// Util
 	import {
 		changeClass,
-		formatChange,
 		formatDate,
-		formatMoney,
 		marketKpis,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces

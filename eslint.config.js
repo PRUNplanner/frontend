@@ -7,6 +7,7 @@ export default [
 	{
 		ignores: [
 			"**/dist/*",
+			"**/dist-mcp/**",
 			"**/coverage/**",
 			"tsconfig.json",
 			"tailwind.config.js",
@@ -125,6 +126,46 @@ export default [
 							],
 							message:
 								"The planning engine gets its data through IPlanContext.",
+						},
+					],
+				},
+			],
+		},
+	},
+
+	// MCP server and the price book it shares with the app: Node only, no
+	// Vue, i18n, stores, data layer or UI (docs/mcp.md)
+	{
+		files: ["src/mcp/**", "src/features/cx/priceBook.ts"],
+		rules: {
+			"no-restricted-imports": [
+				"error",
+				{
+					paths: ["vue", "pinia", "vue-i18n", "axios"].map(
+						(name) => ({
+							name,
+							message:
+								"The MCP server runs in Node without the app.",
+						})
+					),
+					patterns: [
+						{
+							group: [
+								"@vue/*",
+								"vue-*",
+								"@/lib/*",
+								"@/ui/*",
+								"@/util/numbers",
+								"**/*.vue",
+							],
+							message:
+								"The MCP server runs in Node without the app.",
+						},
+						{
+							// stores and the data layer, their *.types files allowed
+							regex: "^@/(stores|database)/(?!.*\\.types$)",
+							message:
+								"The MCP server runs in Node without the app.",
 						},
 					],
 				},

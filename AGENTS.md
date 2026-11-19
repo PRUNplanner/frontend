@@ -158,3 +158,4 @@ it describes.
 | [seo.md](docs/seo.md) | touch titles, `index.html`, the landing prerender or server config |
 | [security.md](docs/security.md) | touch help rendering, redirects, inline scripts or response headers |
 | [features/](docs/features/README.md) | work inside a `src/features/*` folder |
+| [mcp.md](docs/mcp.md) | touch `src/mcp/` (the Model Context Protocol server for AI assistants) or code it imports (engine, price book, planet search) |

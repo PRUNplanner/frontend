@@ -76,7 +76,7 @@
 		breadcrumbEmpire,
 		pickEmpire,
 		planEmpireUuid,
-	} from "@/layout/components/navigation/navigation.util";
+	} from "@/features/empire/util/planEmpire.util";
 
 	// Components
 	import PlanSaveControl from "@/features/planning/components/PlanSaveControl.vue";

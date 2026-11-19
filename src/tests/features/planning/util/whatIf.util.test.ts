@@ -11,7 +11,6 @@ import {
 	breakEven,
 	calculateScaled,
 	compareRows,
-	compareVerdict,
 	materialChanges,
 	paybackOfDifference,
 	priceSensitivity,
@@ -19,6 +18,7 @@ import {
 	sensitivityRows,
 	targetFactor,
 } from "@/features/planning/util/whatIf.util";
+import { compareVerdict } from "@/features/planning/util/whatIf.format";
 
 // Types & Interfaces
 import type { CXData } from "@/features/api/schemas/cxData.schemas";

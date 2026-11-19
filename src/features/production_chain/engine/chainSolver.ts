@@ -876,7 +876,11 @@ const FIRST_BASE: IChainBase = {
 };
 
 /**
- * Solves a chain
+ * Solves a chain. With raw resources extracted, a planet resource that also
+ * has a recipe (O, HE3, SIO) is extracted when that costs less per unit
+ * than making it: both unit costs come from the solver's own rows (upkeep,
+ * wear, fees, made inputs at their chain cost), as the "Cheaper to buy"
+ * check compares them. A material the user set keeps its source.
  * @author jplacht
  *
  * @param {IChainInput} input Targets, settings and per-material choices
@@ -887,6 +891,38 @@ export function solveChain(
 	input: IChainInput,
 	ctx: IChainContext
 ): IChainResult {
+	const made = solveOnce(input, ctx);
+	if (input.rawSource !== "extract" || !ctx.extraction) return made;
+	const candidates = made.order.filter(
+		(t) =>
+			made.rows[t].source === "make" &&
+			input.source[t] === undefined &&
+			ctx.resources.has(t) &&
+			ctx.extraction!.has(t)
+	);
+	if (!candidates.length) return made;
+	const withSource = (tickers: string[]): IChainInput => ({
+		...input,
+		source: {
+			...input.source,
+			...Object.fromEntries(tickers.map((t) => [t, "extract"])),
+		},
+	});
+	const extracted = solveOnce(withSource(candidates), ctx);
+	// a base whose planet lacks the resource can't extract it
+	const cheaper = candidates.filter(
+		(t) =>
+			extracted.rows[t] &&
+			!extracted.rows[t].notOnPlanet &&
+			extracted.rows[t].unitCost < made.rows[t].unitCost - EPS
+	);
+	if (!cheaper.length) return made;
+	return cheaper.length === candidates.length
+		? extracted
+		: solveOnce(withSource(cheaper), ctx);
+}
+
+function solveOnce(input: IChainInput, ctx: IChainContext): IChainResult {
 	const efficiency = Math.max(input.efficiency, 1) / 100;
 	const bases = input.bases.length ? input.bases : [FIRST_BASE];
 
@@ -914,11 +950,16 @@ export function solveChain(
 			(s === "buy" && isTarget)
 		)
 			s = undefined;
-		s ??= canMake(t)
-			? "make"
-			: canExtract(t) && (input.rawSource === "extract" || isTarget)
-				? "extract"
-				: "buy";
+		// with raw resources extracted and no planets loaded yet, a resource
+		// with a recipe waits for them (pending), so callers load the index
+		// and solveChain can compare extracting it with making it
+		s ??=
+			canMake(t) &&
+			!(input.rawSource === "extract" && canExtract(t) && !ctx.extraction)
+				? "make"
+				: canExtract(t) && (input.rawSource === "extract" || isTarget)
+					? "extract"
+					: "buy";
 		sources.set(t, s);
 		return s;
 	};

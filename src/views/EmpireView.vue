@@ -29,11 +29,11 @@
 	import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 	import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 	import { empireSplitParts } from "@/features/empire/empireAnalysis.util";
-	const {
-		calculateEmpireCostOverview,
+	import {
 		combineEmpireMaterialIO,
-		empireMaterialIOState,
-	} = useMaterialIOUtil();
+		empireCostOverview,
+	} from "@/features/empire/util/empireMaterialIO.util";
+	const { empireMaterialIOState } = useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 	const { findEmpireCXUuid } = useCXData();
 
@@ -323,25 +323,7 @@
 	);
 
 	const costOverview: ComputedRef<IEmpireCostOverview> = computed(() =>
-		calculateEmpireCostOverview(
-			combinedEmpireMaterialIO.value,
-			planResults.value.reduce(
-				(sum, element) => sum + element.area.areaUsed,
-				0
-			),
-			planResults.value.reduce(
-				(sum, planResult) =>
-					sum +
-					planResult.cost -
-					planResult.materialio.reduce(
-						(materialCost, material) =>
-							materialCost +
-							(material.delta < 0 ? -material.price : 0),
-						0
-					),
-				0
-			)
-		)
+		empireCostOverview(combinedEmpireMaterialIO.value, planResults.value)
 	);
 
 	const empireSplit: ComputedRef<IEmpireSplitParts> = computed(() =>

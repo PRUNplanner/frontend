@@ -5,11 +5,9 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Types & Interfaces
 import type {
 	Plan,
-	PlanCOGCProgram,
 	PlanCreateData,
 	PlanSaveCreateResponse,
 } from "@/features/api/schemas/planningData.schemas";
-import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IPlanDefinition,
 	IPlanSaved,
@@ -17,53 +15,16 @@ import type {
 	IPlanSaveVersion,
 } from "@/features/planning_data/usePlan.types";
 import { getSaveError } from "@/features/save_conflict/saveConflict.util";
+import { mapPlanetToPlanType } from "@/features/planning_data/planCOGC.util";
 import { apiFieldMessage, isApiError } from "@/lib/apiError";
 import { reportError } from "@/lib/analytics/useAnalytics";
 import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
-const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
-
-export const cogcTextMapping: Record<PlanCOGCProgram, string> = {
-	"---": "game.cogc_program_short.NONE",
-	AGRICULTURE: "game.cogc_program_short.ADVERTISING_AGRICULTURE",
-	CHEMISTRY: "game.cogc_program_short.ADVERTISING_CHEMISTRY",
-	CONSTRUCTION: "game.cogc_program_short.ADVERTISING_CONSTRUCTION",
-	ELECTRONICS: "game.cogc_program_short.ADVERTISING_ELECTRONICS",
-	FOOD_INDUSTRIES: "game.cogc_program_short.ADVERTISING_FOOD_INDUSTRIES",
-	FUEL_REFINING: "game.cogc_program_short.ADVERTISING_FUEL_REFINING",
-	MANUFACTURING: "game.cogc_program_short.ADVERTISING_MANUFACTURING",
-	METALLURGY: "game.cogc_program_short.ADVERTISING_METALLURGY",
-	RESOURCE_EXTRACTION:
-		"game.cogc_program_short.ADVERTISING_RESOURCE_EXTRACTION",
-	PIONEERS: "game.cogc_program_short.WORKFORCE_PIONEERS",
-	SETTLERS: "game.cogc_program_short.WORKFORCE_SETTLERS",
-	TECHNICIANS: "game.cogc_program_short.WORKFORCE_TECHNICIANS",
-	ENGINEERS: "game.cogc_program_short.WORKFORCE_ENGINEERS",
-	SCIENTISTS: "game.cogc_program_short.WORKFORCE_SCIENTISTS",
-};
+// moved to the pure planCOGC.util (the MCP server uses it), kept here for its importers
+export { cogcTextMapping } from "@/features/planning_data/planCOGC.util";
 
 export function usePlan() {
 	const planningStore = usePlanningStore();
-
-	/**
-	 * Maps planets COGC Program Type to Plans COGC Program Type
-	 *
-	 * @author jplacht
-	 *
-	 * @param {(PlanetCOGCProgramType | null | undefined)} input Planet COGC Type
-	 * @returns {PlanCOGCProgram} Plan COGC Type
-	 */
-	function mapPlanetToPlanType(
-		input: PlanetCOGCProgramType | null | undefined
-	): PlanCOGCProgram {
-		if (!input) return "---";
-		const parts = input.split("_");
-		const identifiedType = parts.slice(1).join("_").toUpperCase();
-
-		// value could be invalid or on strike, check to ensure we got a proper cogc
-		if (!cogcValues.includes(identifiedType)) return "---";
-		else return identifiedType as PlanCOGCProgram;
-	}
 
 	/**
 	 * Generates a new plan definition from Planet Natural Id

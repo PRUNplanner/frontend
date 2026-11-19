@@ -10,16 +10,6 @@ import { getPlanetSpecialMaterials } from "@/features/planning/engine/buildings"
 // Types & Interfaces
 import type { Planet } from "@/features/api/schemas/gameData.schemas";
 
-// Planetary type static boundaries, see the planning engine
-export {
-	boundaryGravityLow,
-	boundaryGravityHigh,
-	boundaryPressureLow,
-	boundaryPressureHigh,
-	boundaryTemperatureLow,
-	boundaryTemperatureHigh,
-} from "@/features/planning/engine/buildings";
-
 export function usePlanetData() {
 	const { allData, get, preload } = useDB(planetsStore);
 

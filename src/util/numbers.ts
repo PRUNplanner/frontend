@@ -1,7 +1,6 @@
 import numbro from "numbro";
 
 import { i18n } from "@/lib/i18n";
-import type { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 
 // one Intl formatter per "digits|forceSign"
 const formatters = new Map<string, Intl.NumberFormat>();
@@ -134,25 +133,4 @@ export function formatPayback(days: number, withUnit = true): string {
  */
 export function clamp(value: number, min: number, max: number): number {
 	return Math.max(min, Math.min(max, value));
-}
-
-/**
- * Checks a value against boundaries and returns a
- * descriptor, used in planetary features
- * @author jplacht
- *
- * @export
- * @param {number} value Value
- * @param {number} lower Lower Boundary
- * @param {number} upper Upper Boundary
- * @returns {BOUNDARY_DESCRIPTOR} "HIGH", "LOW", "NORMAL"
- */
-export function boundaryDescriptor(
-	value: number,
-	lower: number,
-	upper: number
-): BOUNDARY_DESCRIPTOR {
-	if (value < lower) return "LOW";
-	else if (value > upper) return "HIGH";
-	else return "NORMAL";
 }

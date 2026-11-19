@@ -4,6 +4,10 @@ import { createPinia, setActivePinia } from "pinia";
 
 // Composables
 import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
+import {
+	calculateEmpireCostOverview,
+	combineEmpireMaterialIO,
+} from "@/features/empire/util/empireMaterialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
@@ -200,9 +204,6 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const { combineEmpireMaterialIO, calculateEmpireCostOverview } =
-			useMaterialIOUtil();
-
 		const result = combineEmpireMaterialIO(fakeInput);
 
 		expect(result.length).toBe(3);
@@ -225,7 +226,6 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("includes building degradation in empire cost", () => {
-		const { calculateEmpireCostOverview } = useMaterialIOUtil();
 		const materialIO = [
 			{ deltaPrice: 5 },
 			{ deltaPrice: -9 },
@@ -260,8 +260,6 @@ describe("Util: materialIO ", async () => {
 				],
 			},
 		];
-
-		const { combineEmpireMaterialIO } = useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 

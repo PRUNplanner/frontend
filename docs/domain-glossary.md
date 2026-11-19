@@ -25,7 +25,7 @@ in-game resources.
 | **CM** | Core module, the mandatory base building. It is optionally included in construction materials (`includeCM` plan preference) | `includeCM` plan preference (`usePlanPreferences`) |
 | **Area / permits** | Each base has limited area. Extra permits unlock more area | `IAreaResult` |
 | **Expertise / experts** | Nine expertise categories (Agriculture, Chemistry, …). Experts on a base boost the matching buildings | `ExpertType`, `expertNames` |
-| **COGC** | Chamber of Global Commerce. A planet-wide program that boosts one expertise or workforce type | `PlanCOGCProgram` (`api/schemas/planningData.schemas.ts`); `cogcTextMapping` in `usePlan.ts` |
+| **COGC** | Chamber of Global Commerce. A planet-wide program that boosts one expertise or workforce type | `PlanCOGCProgram` (`api/schemas/planningData.schemas.ts`); `cogcTextMapping` in `planning_data/planCOGC.util.ts` |
 | **HQ / Corp HQ** | Corporation headquarters on a planet, which gives an efficiency bonus. A separate tool plans HQ level upgrades | `plan_corphq`; `src/features/hq_upgrade_calculator` |
 | **Fertility** | Planet property that affects farms (`FRM`, `ORC`) | `features/planning/engine/efficiency.ts` |
 | **Extraction** | Resource extractors (`EXT`, `RIG`, `COL`) pulling planet resources | `calculations/extractionCalculations.ts` |

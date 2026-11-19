@@ -17,7 +17,7 @@ import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { useMaterialIOUtil } from "@/features/planning/useMaterialIOUtil";
+import { combineEmpireMaterialIO } from "@/features/empire/util/empireMaterialIO.util";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
@@ -210,7 +210,6 @@ describe("batch", () => {
 
 // B9: Empire holds its 30 results in a ref (deep proxies) or a shallowRef,
 // then aggregates the material I/O once, like its computeds do
-const { combineEmpireMaterialIO } = useMaterialIOUtil();
 const empireResults: Record<string, IPlanCalculation> = {};
 {
 	const { loadGameData, createContext } = usePlanContext();

@@ -19,7 +19,8 @@ exchanges and the production chain.
   exchange (share of 30-day volume ≥ `MARKET_SHARE_AMBER` 10 % /
   `MARKET_SHARE_RED` 50 %, no trades in 7 days, no offers/buyers, no price,
   fallback, stale); spreads never flagged. `askBidPriceBook` buys at ask,
-  sells at bid. Thresholds and `formatShare` are shared with
+  sells at bid. Thresholds and `formatShare` (`marketCheck.format.ts`, kept
+  out of the util so the MCP server imports it without i18n) are shared with
   `material_tile/materialMarket.util.ts` so both agree.
   `components/MarketFlagButton.vue` / `MarketFlagIcon.vue` show the flags.
 - `usePrice.ts`: async wrappers that first ensure exchange data is loaded;

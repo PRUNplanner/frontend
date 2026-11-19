@@ -97,3 +97,12 @@ export type AnalyticsPlanetInsightsData = z.infer<
 export type AnalyticsPlanetInsightsPayload = z.infer<
 	typeof AnalyticsPlanetInsightsPayloadSchema
 >;
+
+/**
+ * GET /analytics/planning_insights/materials/: what PRUNplanner players'
+ * empires (changed in the last 30 days) plan per material and day, as
+ * [ticker, production, consumption, net]
+ */
+export const AnalyticsMaterialInsightsSchema = z.array(
+	z.tuple([z.string(), z.number(), z.number(), z.number()])
+);

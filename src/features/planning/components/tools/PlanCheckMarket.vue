@@ -16,11 +16,11 @@
 	// Util
 	import {
 		countLevels,
-		formatShare,
 		MARKET_SHARE_AMBER,
 		MARKET_SHARE_RED,
 		marketCheck,
 	} from "@/features/cx/marketCheck.util";
+	import { formatShare } from "@/features/cx/marketCheck.format";
 	import { realisticPlan } from "@/features/planning/util/whatIf.util";
 	import { priceSourceLabel } from "@/features/exchanges/exchangeLabel.util";
 	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";

@@ -13,6 +13,7 @@
 		segmentColor,
 		STARTER_MAX_BUILDINGS,
 		STARTER_PRESELECT_PERCENTAGE,
+		starterCandidates,
 		starterExperts,
 	} from "@/features/plan_analytics/planInsights.util";
 	import { formatPercent } from "@/util/numbers";
@@ -40,25 +41,9 @@
 		usePlanetInsights(() => planetId);
 
 	const candidates = computed(() =>
-		popularBuildings.value.slice(0, STARTER_MAX_BUILDINGS).map((b) => {
-			// only recipes the building can run here
-			const options = getBuildingRecipes(b.ticker, planetResources);
-			const recipes = (typicalRecipes(b.ticker)?.recipes ?? []).filter(
-				(r) => options.some((o) => o.recipe_id === r.recipeid)
-			);
-			return {
-				ticker: b.ticker,
-				percentage: b.percentage,
-				amount: Math.max(1, Math.round(b.median_amount)),
-				recipes,
-				outputs: recipes.flatMap(
-					(r) =>
-						options
-							.find((o) => o.recipe_id === r.recipeid)
-							?.outputs.map((m) => m.material_ticker) ?? []
-				),
-			};
-		})
+		starterCandidates(popularBuildings.value, typicalRecipes, (ticker) =>
+			getBuildingRecipes(ticker, planetResources)
+		)
 	);
 
 	const preselected: ComputedRef<Set<string>> = computed(

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import {
+	empireCostOverview,
 	netPerPlanet,
 	shortPlanetName,
 	summarizeSide,
@@ -11,6 +12,7 @@ import type {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
 } from "@/features/empire/empire.types";
+import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
 
 const plan = (
 	planetId: string,
@@ -153,5 +155,30 @@ describe("empireMaterialIO.util", () => {
 		expect(shortPlanetName(names, "KW-688c")).toBe("Etherwind");
 		expect(shortPlanetName(names, "OT-580b")).toBe("OT-580b");
 		expect(shortPlanetName(names, "ZV-307c")).toBe("ZV-307c");
+	});
+});
+
+describe("empireCostOverview", () => {
+	it("adds area and the plans' cost besides bought materials", () => {
+		const result = {
+			cost: 100,
+			area: { areaUsed: 7 },
+			materialio: [
+				{ delta: -2, price: -10 },
+				{ delta: 3, price: 20 },
+			],
+		} as unknown as IPlanResult;
+		const combined = [
+			{ deltaPrice: -10 },
+			{ deltaPrice: 20 },
+		] as IEmpireMaterialIO[];
+
+		// cost 100 minus the 10 the shortfall costs back = 90 non-material
+		expect(empireCostOverview(combined, [result])).toEqual({
+			totalRevenue: 20,
+			totalCost: 100,
+			totalProfit: -80,
+			totalAreaUsed: 7,
+		});
 	});
 });

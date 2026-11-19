@@ -162,6 +162,48 @@ describe("solveChain", () => {
 		expect(r.rows.H2O.buildings).toBe(0);
 	});
 
+	it("extracts a planet resource that also has a recipe when that's cheaper (O for STL)", () => {
+		const extract = solveChain(
+			chainInput([["STL", 10]], { rawSource: "extract" }),
+			ctx
+		);
+		const o = extract.rows.O;
+		expect(o.source).toBe("extract");
+		// O is gaseous, liquid or mineral by planet: the extractor follows the
+		// typical site's resource type; no TNP and no TC byproduct
+		expect(o.buildingTicker).toBe(
+			ctx.extraction!.get("O")!.typical.buildingTicker
+		);
+		expect(
+			extract.order.some((t) => extract.rows[t].buildingTicker === "TNP")
+		).toBe(false);
+		expect(extract.byproducts.map((b) => b.ticker)).not.toContain("TC");
+
+		// cheaper than the recipe on the solver's own unit cost
+		const made = solveChain(
+			chainInput([["STL", 10]], {
+				rawSource: "extract",
+				source: { O: "make" },
+			}),
+			ctx
+		);
+		expect(made.rows.O.source).toBe("make");
+		expect(o.unitCost).toBeLessThan(made.rows.O.unitCost);
+
+		// buying raw resources keeps making it, as before
+		const buy = solveChain(chainInput([["STL", 10]]), ctx);
+		expect(buy.rows.O.source).toBe("make");
+	});
+
+	it("a resource with a recipe waits for the planet index when extracting", () => {
+		const r = solveChain(
+			chainInput([["STL", 10]], { rawSource: "extract" }),
+			testContext(false)
+		);
+		expect(r.rows.O.source).toBe("extract");
+		expect(r.rows.O.pending).toBe(true);
+	});
+
 	it("covers demand with byproducts (AC 8)", () => {
 		const targets: [string, number][] = [
 			["NA", 100],

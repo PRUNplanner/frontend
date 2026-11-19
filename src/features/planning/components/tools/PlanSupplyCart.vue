@@ -57,6 +57,7 @@
 		RemoveCircleOutlineSharp,
 	} from "@vicons/material";
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
+	import { supplyAmount } from "@/features/planning/util/carts.util";
 
 	const props = defineProps({
 		planetNaturalId: {
@@ -106,8 +107,9 @@
 
 		props.materialIO.forEach((m) => {
 			if (m.delta < 0) {
-				const stockNeed: number = Math.ceil(
-					Math.abs(m.delta) * refStockRequirement.value
+				const stockNeed: number = supplyAmount(
+					m.delta,
+					refStockRequirement.value
 				);
 				const stock: number = findStorageValueFromOptions(
 					refSelectedStorage.value,
@@ -197,7 +199,7 @@
 				.map((m) => ({
 					ticker: m.ticker,
 					value: clamp(
-						Math.ceil(m.input * refStockRequirement.value) -
+						supplyAmount(m.input, refStockRequirement.value) -
 							findStorageValueFromOptions(
 								refSelectedStorage.value,
 								m.ticker

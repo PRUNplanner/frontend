@@ -6,7 +6,7 @@
 
 	// Util
 	import { formatNumber, formatPayback } from "@/util/numbers";
-	import { paybackDays } from "@/features/sharing/sharedPlan.util";
+	import { paybackDays } from "@/features/planning/util/whatIf.util";
 
 	// Types & Interfaces
 	import type { IPlanCompare } from "@/features/sharing/sharedPlan.types";

@@ -1,5 +1,5 @@
 // Util
-import { cogcTextMapping } from "@/features/planning_data/usePlan";
+import { cogcTextMapping } from "@/features/planning_data/planCOGC.util";
 import { factionOptions } from "@/features/empire/empire.constants";
 
 // Types & Interfaces

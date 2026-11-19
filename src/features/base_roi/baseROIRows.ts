@@ -252,6 +252,30 @@ function dailyCargo(calc: IPlanCalculation): number {
 }
 
 /**
+ * Storage to add so a plan holds `days` of the larger of its daily cargo in
+ * and out: STO, then STA once 2,500 or less is missing
+ * @author jplacht
+ *
+ * @param {IPlanCalculation} calc The plan calculated
+ * @param {number} days Days of cargo to hold
+ * @returns {{ STO: number; STA: number }} Buildings to add
+ */
+export function storageForDays(
+	calc: IPlanCalculation,
+	days: number
+): { STO: number; STA: number } {
+	const needed = dailyCargo(calc) * days;
+	let capacity = storageCapacity(calc);
+	const add = { STO: 0, STA: 0 };
+	while (capacity < needed) {
+		const sta = needed - capacity <= 2500;
+		add[sta ? "STA" : "STO"]++;
+		capacity += sta ? 2500 : 5000;
+	}
+	return add;
+}
+
+/**
  * Runs the plan engine for one row. With a stock buffer, adds STO (or STA
  * for the rest) until storage holds buffer days of the larger of the daily
  * cargo in and out; while the area exceeds the permit, drops one production
@@ -290,17 +314,12 @@ export function calculateBase(
 	let calc = run();
 
 	while (settings.bufferDays > 0) {
-		const needed = dailyCargo(calc) * settings.bufferDays;
-		let capacity = storageCapacity(calc);
-		let added = false;
-		while (capacity < needed) {
-			const sta = needed - capacity <= 2500;
-			storageAdded[sta ? "STA" : "STO"]++;
-			infrastructure[sta ? "STA" : "STO"]++;
-			capacity += sta ? 2500 : 5000;
-			added = true;
+		const add = storageForDays(calc, settings.bufferDays);
+		for (const t of ["STO", "STA"] as const) {
+			storageAdded[t] += add[t];
+			infrastructure[t] += add[t];
 		}
-		if (added) calc = run();
+		if (add.STO + add.STA > 0) calc = run();
 
 		const { areaUsed, areaTotal } = calc.result.area;
 		if (areaUsed <= areaTotal || amount <= 1) break;
@@ -333,6 +352,16 @@ export function calculateBase(
 	}
 
 	return { ...calc, amount, infrastructure, storageAdded };
+}
+
+/**
+ * Units traded per day over the last 7 days, days without trades counting
+ * as 0 (the 7-day sum ÷ 7). avg_traded_7d averages trading days only and
+ * overstates thin markets, so the market check uses the sum too.
+ * @author jplacht
+ */
+function tradedPerDay7d(exchange: Exchange | undefined): number {
+	return (exchange?.sum_traded_7d ?? 0) / 7;
 }
 
 /**
@@ -383,9 +412,9 @@ export function toRowInput(
 			outputs.push({
 				ticker: m.ticker,
 				amount: m.delta,
-				traded:
-					exchange(`${m.ticker}.${source.volume}`)?.avg_traded_7d ??
-					0,
+				traded: tradedPerDay7d(
+					exchange(`${m.ticker}.${source.volume}`)
+				),
 				exchange: source.volume,
 			});
 	}
@@ -399,7 +428,7 @@ export function toRowInput(
 			return {
 				ticker: m.ticker,
 				amount: m.input - m.output,
-				traded: exchange(`${m.ticker}.${volume}`)?.avg_traded_7d ?? 0,
+				traded: tradedPerDay7d(exchange(`${m.ticker}.${volume}`)),
 				exchange: volume,
 			};
 		});

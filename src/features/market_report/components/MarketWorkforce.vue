@@ -9,15 +9,17 @@
 	// Util
 	import {
 		changeClass,
-		formatChange,
 		formatDate,
-		formatMoney,
 		MARKET_EXCHANGES,
 		seriesChange,
 		WORKFORCE_TICKERS,
 		workforceDrivers,
 		workforceSeries,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 
 	// Components
 	import MarketBlock from "@/features/market_report/components/MarketBlock.vue";

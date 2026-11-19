@@ -32,7 +32,12 @@ thresholds) rather than copying their math.
   in reverse post-order. A recipe loop stops at the repeat and warns.
 - **Source.** Targets are made/extracted, never bought; materials with a
   recipe are made, raw ones bought (or extracted with Raw resources =
-  Extract); per-material choices override. Default recipe: cheapest
+  Extract); per-material choices override. With Extract, a planet resource
+  that also has a recipe (O, HE3, SIO) is extracted when its extracted row
+  costs less per unit than its made row (`solveChain` solves, tries those
+  rows as extract, keeps the cheaper ones), unless the user set its source
+  or its base's planet lacks it (`notOnPlanet`). Until the planet index is
+  loaded such a resource is pending, so the page loads the index. Default recipe: cheapest
   single-output by unit cost, byproduct recipes only if nothing else.
 - **Buildings.** `perDay / outputPerRun × time_ms / 86,400,000 / efficiency`,
   capacity shared per building type (built = ceil of the sum).

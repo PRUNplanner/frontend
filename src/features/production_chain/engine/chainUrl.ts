@@ -40,7 +40,7 @@ const SOURCES: ChainSource[] = ["make", "buy", "extract"];
 const RAW: ChainRawSource[] = ["buy", "extract"];
 const BYPRODUCTS: ChainByproductMode[] = ["cover", "sell"];
 
-export const DEFAULT_EFFICIENCY = 100;
+const DEFAULT_EFFICIENCY = 100;
 const MAX_EFFICIENCY = 1000;
 
 const first = (v: IQueryValue): string | undefined =>
@@ -83,6 +83,21 @@ function decodeShare(v: string, bases: IChainBase[]): ChainBaseShare | null {
 /** the one base a chain starts with */
 export function firstBase(): IChainBase {
 	return { id: BASE_IDS[0], name: "", planetId: null, cogc: "auto" };
+}
+
+/** a chain without targets, with the page's defaults */
+export function emptyInput(): IChainInput {
+	return {
+		targets: [],
+		efficiency: DEFAULT_EFFICIENCY,
+		rawSource: "buy",
+		byproducts: "cover",
+		source: {},
+		recipeId: {},
+		planetId: {},
+		bases: [firstBase()],
+		baseOf: {},
+	};
 }
 
 const COGC_CHOICES: string[] = [

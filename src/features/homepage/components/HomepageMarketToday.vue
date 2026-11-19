@@ -19,15 +19,17 @@
 	// Util
 	import {
 		changeClass,
-		formatChange,
 		formatDate,
-		formatMoney,
 		indexChanges,
 		marketLead,
 		sectorCards,
 		summaryDays,
 		WORKFORCE_TICKERS,
 	} from "@/features/market_report/marketReport.util";
+	import {
+		formatChange,
+		formatMoney,
+	} from "@/features/market_report/marketReport.format";
 	import {
 		landingCard,
 		landingGrid4,

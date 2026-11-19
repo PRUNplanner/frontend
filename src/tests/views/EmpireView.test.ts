@@ -95,12 +95,15 @@ vi.mock("@/features/preferences/usePreferences", () => {
 	return { usePreferences: () => ({ defaultEmpireUuid }) };
 });
 vi.mock("@/features/planning/useMaterialIOUtil", () => ({
-	useMaterialIOUtil: () => ({
-		// its result only feeds the stubbed EmpireCostOverview
-		calculateEmpireCostOverview: costOverview,
-		combineEmpireMaterialIO: () => [],
-		empireMaterialIOState: materialIOState,
-	}),
+	useMaterialIOUtil: () => ({ empireMaterialIOState: materialIOState }),
+}));
+vi.mock("@/features/empire/util/empireMaterialIO.util", async (orig) => ({
+	...(await orig<
+		typeof import("@/features/empire/util/empireMaterialIO.util")
+	>()),
+	// its result only feeds the stubbed EmpireCostOverview
+	empireCostOverview: costOverview,
+	combineEmpireMaterialIO: () => [],
 }));
 vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: (name: string, params: unknown) => ({
@@ -600,8 +603,11 @@ describe("EmpireView", () => {
 
 			await open([E1], [{ uuid: "P1", planet_natural_id: "OT-580b" }]);
 
-			// area used, and the cost minus what the shortfall costs back
-			expect(costOverview).toHaveBeenLastCalledWith([], 7, 90);
+			// the combined rows and every plan's result
+			expect(costOverview).toHaveBeenLastCalledWith(
+				[],
+				[expect.objectContaining({ cost: 100 })]
+			);
 		});
 
 		it("a failing state patch is reported, a missing state is not sent", async () => {

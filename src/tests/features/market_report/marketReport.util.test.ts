@@ -5,10 +5,7 @@ import {
 	changeColor,
 	exchangeCards,
 	exchangeGaps,
-	formatBookPrice,
-	formatChange,
 	formatDate,
-	formatMoney,
 	indexChanges,
 	marketBrief,
 	marketKpis,
@@ -24,6 +21,11 @@ import {
 	workforceSeries,
 	WORKFORCE_TICKERS,
 } from "@/features/market_report/marketReport.util";
+import {
+	formatBookPrice,
+	formatChange,
+	formatMoney,
+} from "@/features/market_report/marketReport.format";
 import {
 	MarketSummarySchema,
 	type MarketMaterial,
