@@ -16,3 +16,4 @@ minimumReleaseAge: 1440
 overrides:
     follow-redirects: ^1.16.2
     minimatch: ^11.0.1
+    tmp: ^0.2.6
