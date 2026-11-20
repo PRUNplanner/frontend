@@ -1,23 +1,23 @@
 {
 	"loading": "Загрузка данных...",
-	"retry": "Retry",
-	"error": "Error",
+	"retry": "Повторить",
+	"error": "Ошибка",
 	"gamedata": {
-		"material_data": "Данные @:terms.materials",
-		"exchange_data": "Данные @:terms.exchanges",
-		"building_data": "Данные @:terms.buildings",
-		"recipe_data": "Данные @:terms.recipes",
-		"planet_data": "Данные @:terms.planets '{name}'",
-		"planet_multiple_data": "Данные @:terms.planet_plural '{names}'"
+		"material_data": "Данные материалов",
+		"exchange_data": "Данные бирж",
+		"building_data": "Данные зданий",
+		"recipe_data": "Данные рецептов",
+		"planet_data": "Данные планеты '{name}'",
+		"planet_multiple_data": "Данные планет '{names}'"
 	},
 	"planning_data": {
-		"shared_plan": "Поделиться @:terms.plan конфигурацией",
-		"empires": "Конфигурация @:terms.empire",
-		"plan": "Конфигурация @:terms.plan",
-		"plans_all": "Настройка всех @:terms.plans_plural",
-		"planet_data": "Данные @:terms.planets '{name}'",
+		"shared_plan": "Конфигурация общего плана",
+		"empires": "Конфигурация империи",
+		"plan": "Конфигурация плана",
+		"plans_all": "Конфигурация всех планов",
+		"planet_data": "Данные планеты '{name}'",
 		"cx": "Конфигурация @:terms.cx",
-		"shared_list": "Настройки планов с общим доступом @:terms.plans_plural",
-		"empire_plans": "Настройки @:terms.plans_plural @:terms.empire"
+		"shared_list": "Конфигурации общих планов",
+		"empire_plans": "Конфигурации планов империи"
 	}
 }
