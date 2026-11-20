@@ -180,6 +180,7 @@ describe("MCP HTTP handler", () => {
 			backend_calls: expect.any(Number),
 			duration_ms: expect.any(Number),
 			backend_ms: expect.any(Number),
+			backend_wall_ms: expect.any(Number),
 			client_name: expect.any(String),
 		});
 		// never the secret, the header or the arguments

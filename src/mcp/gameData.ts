@@ -7,6 +7,7 @@ import {
 	CXSparklinesSchema,
 	ExchangePayloadSchema,
 	MaterialPayloadSchema,
+	PlanetMultiplePayloadSchema,
 	PlanetSchema,
 	PlanetSearchIndexSchema,
 	RecipePayloadSchema,
@@ -136,6 +137,56 @@ export async function resolvePlanetId(
 			)
 			.join(", ")}${found.length > 10 ? ", …" : ""}. Pass the id.`
 	);
+}
+
+// the backend's limit per batch request
+const PLANET_BATCH = 200;
+
+/**
+ * Loads many planets into the cache with one request per 200 (the
+ * backend's batch endpoint, the same data as one planet each), so the
+ * getPlanet calls of a loop over plans after it make none. Planets still
+ * cached, and names, aren't asked for; a planet the batch doesn't return
+ * is left to getPlanet, which reports it
+ * @author jplacht
+ *
+ * @param {IBackend} b Backend client
+ * @param {string[]} ids Planet natural ids, e.g. the plans' planets
+ */
+export async function preloadPlanets(
+	b: IBackend,
+	ids: string[]
+): Promise<void> {
+	const missing = [
+		...new Set(
+			ids
+				.filter((id) => PLANET_ID.test(id))
+				.map(
+					(id) =>
+						id.slice(0, 6).toUpperCase() + id.slice(6).toLowerCase()
+				)
+		),
+	].filter((id) => {
+		const hit = cache.get(`planet:${id}`);
+		return !hit || Date.now() - hit.at >= TTL.planets * MINUTE;
+	});
+	const chunks: string[][] = [];
+	for (let i = 0; i < missing.length; i += PLANET_BATCH)
+		chunks.push(missing.slice(i, i + PLANET_BATCH));
+	const found = await Promise.all(
+		chunks.map((chunk) =>
+			b.post(
+				"/data/planets/multiple/",
+				chunk,
+				PlanetMultiplePayloadSchema,
+				false
+			)
+		)
+	);
+	for (const planet of found.flat())
+		cached(`planet:${planet.planet_natural_id}`, TTL.planets, () =>
+			Promise.resolve(planet)
+		);
 }
 
 /** a planet by its id or name, cached */

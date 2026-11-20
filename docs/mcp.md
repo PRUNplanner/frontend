@@ -112,8 +112,17 @@ container `prunplanner-mcp`), not here.
   engine, the recipe picker's `pickerOptions`, the Production Chains solver,
   Base ROI's rows, planet insights' starter setup, `diffPlan`), never their
   own math.
+- **A constant number of backend requests.** A loop over plans calls
+  `preloadPlanets()` (`gameData.ts`) first: one `POST /data/planets/multiple/`
+  (a read, at most 200 ids) fills the planet cache, so its `getPlanet()` calls
+  make no request. `createBackend()` keeps at most 6 requests of one tool call
+  open (all MCP traffic reaches the backend from one address). The log's
+  `backend_ms` sums the requests; `backend_wall_ms` is the time any was open,
+  the call's backend latency. `backendCalls.test.ts` counts the requests of
+  `list_plans` and `get_empire` for 16 plans (9 and 8 cold, 4 warm for
+  `list_plans`) and snapshots their output.
 - **Reads GET, writes only from write tools.** Reading and calculating tools
-  only send GET (tested); write tools send the app's own payloads (checked with
+  only send GET, besides the planet batch (tested); write tools send the app's own payloads (checked with
   its schemas), with `base_modified_at` where the app sends it, so a newer save
   in the app is a conflict, not overwritten. The key's scope decides: a
   read-only key's write is refused by the backend. An open app page shows the

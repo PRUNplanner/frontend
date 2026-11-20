@@ -14,7 +14,7 @@ import {
 	getPlans,
 	resolveEmpire,
 } from "@/mcp/context";
-import { getPlanet, loadGameData } from "@/mcp/gameData";
+import { getPlanet, loadGameData, preloadPlanets } from "@/mcp/gameData";
 import {
 	defineTool,
 	figures,
@@ -43,7 +43,14 @@ async function calculateAll(
 	const [cxs, gameData, defaultEmpire] = await Promise.all([
 		getCXs(backend),
 		loadGameData(backend),
-		empireUuid ? undefined : getDefaultEmpireUuid(backend),
+		// the default empire only picks between a plan's several empires
+		empireUuid || !plans.some((p) => (p.empires?.length ?? 0) > 1)
+			? undefined
+			: getDefaultEmpireUuid(backend),
+		preloadPlanets(
+			backend,
+			plans.map((p) => p.planet_natural_id)
+		),
 	]);
 	return Promise.all(
 		plans.map(async (plan) => {

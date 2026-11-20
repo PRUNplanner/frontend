@@ -354,7 +354,9 @@ describe("empireState: what is stored", () => {
 		).toBeUndefined();
 		expect(
 			fake.requests
-				.filter((r) => r.method !== "GET")
+				.filter(
+					(r) => r.method !== "GET" && !r.path.startsWith("/data/")
+				)
 				.map((r) => `${r.method} ${r.path}`)
 		).toEqual([`PATCH /planning/empire/${EMPIRE_UUID}/state/`]);
 	});

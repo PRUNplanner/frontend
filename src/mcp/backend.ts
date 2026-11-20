@@ -1,3 +1,5 @@
+import pLimit from "p-limit";
+
 // Types & Interfaces
 import type { z } from "zod";
 
@@ -22,8 +24,15 @@ export class ToolError extends Error {
 
 export interface IBackendStats {
 	calls: number;
+	// summed over the requests, so parallel ones count each
 	ms: number;
+	// time with at least one request open: the call's backend latency
+	wallMs: number;
 }
+
+// requests one tool call has open at once: all MCP traffic reaches the
+// backend from one address
+const MAX_IN_FLIGHT = 6;
 
 export type WriteMethod = "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -50,6 +59,20 @@ export interface IBackend {
 		body: unknown,
 		payload: z.ZodType | null,
 		response?: S
+	): Promise<z.infer<S>>;
+	/**
+	 * A read sent as POST (e.g. a batch of planets), validated like get
+	 *
+	 * @param path Path below the API URL
+	 * @param body JSON body
+	 * @param schema Zod schema of the answer
+	 * @param auth Send the user's API key (game data is public)
+	 */
+	post<S extends z.ZodType>(
+		path: string,
+		body: unknown,
+		schema: S,
+		auth?: boolean
 	): Promise<z.infer<S>>;
 	readonly stats: IBackendStats;
 }
@@ -95,13 +118,17 @@ async function errorBody(
  */
 export function createBackend(options: IBackendOptions): IBackend {
 	const doFetch = options.fetch ?? fetch;
-	const stats: IBackendStats = { calls: 0, ms: 0 };
+	const stats: IBackendStats = { calls: 0, ms: 0, wallMs: 0 };
+	const limit = pLimit(MAX_IN_FLIGHT);
+	let open = 0;
+	let openSince = 0;
 
 	async function request(
 		method: "GET" | WriteMethod,
 		path: string,
 		auth: boolean,
-		body?: unknown
+		body?: unknown,
+		write = method !== "GET"
 	): Promise<Response> {
 		const headers: Record<string, string> = {
 			Accept: "application/json",
@@ -116,26 +143,29 @@ export function createBackend(options: IBackendOptions): IBackend {
 			headers.Authorization = `Api-Key ${options.apiKey}`;
 		if (body !== undefined) headers["Content-Type"] = "application/json";
 
-		const started = performance.now();
-		stats.calls++;
-		let response: Response;
-		try {
-			response = await doFetch(options.apiUrl + path, {
-				method,
-				headers,
-				body: body === undefined ? undefined : JSON.stringify(body),
-			});
-		} catch {
-			throw new ToolError(
-				"PRUNplanner's API can't be reached right now.",
-				"backend_error"
-			);
-		} finally {
-			stats.ms += performance.now() - started;
-		}
+		const response = await limit(async () => {
+			const started = performance.now();
+			stats.calls++;
+			if (open++ === 0) openSince = started;
+			try {
+				return await doFetch(options.apiUrl + path, {
+					method,
+					headers,
+					body: body === undefined ? undefined : JSON.stringify(body),
+				});
+			} catch {
+				throw new ToolError(
+					"PRUNplanner's API can't be reached right now.",
+					"backend_error"
+				);
+			} finally {
+				const now = performance.now();
+				stats.ms += now - started;
+				if (--open === 0) stats.wallMs += now - openSince;
+			}
+		});
 		if (response.ok) return response;
 
-		const write = method !== "GET";
 		const { code, text } = write
 			? await errorBody(response)
 			: ({} as { code?: string; text?: string });
@@ -232,5 +262,18 @@ export function createBackend(options: IBackendOptions): IBackend {
 		return parse(answer, path, response);
 	}
 
-	return { get, send, stats };
+	async function post<S extends z.ZodType>(
+		path: string,
+		body: unknown,
+		schema: S,
+		auth = true
+	): Promise<z.infer<S>> {
+		return parse(
+			await request("POST", path, auth, body, false),
+			path,
+			schema
+		);
+	}
+
+	return { get, post, send, stats };
 }
