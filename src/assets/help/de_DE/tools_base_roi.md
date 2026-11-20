@@ -1,166 +1,166 @@
-**Base ROI** ranks every way to run one base, so you can see which bases pay back fastest before you plan one. Each row is a full base: one resource on one planet, one farming recipe on one fertile planet, or one recipe of any other production building. You don't need an account for it.
+**Basis-ROI** ordnet jede Möglichkeit, eine Basis zu betreiben, damit du siehst, welche Basen sich am schnellsten amortisieren, bevor du eine planst. Jede Zeile ist eine vollständige Basis: eine Ressource auf einem Planeten, ein Landwirtschaftsauftrag auf einem fruchtbaren Planeten oder ein Auftrag eines beliebigen anderen Produktionsgebäudes. Ein Konto brauchst du dafür nicht.
 
-You'd use it when you're looking for your next base and want to compare the options side by side. When a row looks interesting and you're logged in, **Open as plan** turns it into a plan you can change in every detail.
+Du nutzt es, wenn du deine nächste Basis suchst und die Optionen nebeneinander vergleichen willst. Sieht eine Zeile interessant aus und du bist angemeldet, macht **Als Plan öffnen** daraus einen Plan, den du in jedem Detail ändern kannst.
 
 > [!warning]
-> Base ROI is in a test phase and has no entry in the navigation yet. Open it at [/base-roi](/base-roi).
+> Basis-ROI ist in einer Testphase und hat noch keinen Eintrag in der Navigation. Öffne es unter [/base-roi](/base-roi).
 
-## First visit {#first-visit}
+## Erster Besuch {#first-visit}
 
-The first time you open the page, **Set up Base ROI** asks a few questions so the table fits how you play:
+Wenn du die Seite zum ersten Mal öffnest, stellt **Basis-ROI einrichten** ein paar Fragen, damit die Tabelle zu deiner Spielweise passt:
 
-- your exchange preference (only when you're logged in)
-- **How strict should the table be?**: **Rookie**, **Standard** (preselected) or **Veteran**
-- the ship (Veteran only: any ship, or **No limit**, the default) and **Ship visits**, how many days of cargo the ship carries per trip, in and out
-- **Choose columns**: the preset's columns, which you can change before you press **Start**
+- deine Marktplatz-Präferenz (nur wenn du angemeldet bist)
+- **Wie streng soll die Tabelle sein?**: **Einsteiger**, **Standard** (vorausgewählt) oder **Veteran**
+- das Schiff (nur Veteran: ein beliebiges Schiff oder **Kein Limit**, der Standard) und **Schiffsbesuche**, für wie viele Tage Fracht das Schiff pro Fahrt mitnimmt, rein und raus
+- **Spalten wählen**: die Spalten der Voreinstellung, die du ändern kannst, bevor du **Starten** drückst
 
-| Preset       | Logistics                                   | Min market capacity        | Stock buffer | Hidden columns                                |
-| ------------ | ------------------------------------------- | -------------------------- | ------------ | --------------------------------------------- |
-| **Rookie**   | SCB (500 t / 500 m³)     | 0.7        | 10 days      | Weekly return, running cost, plots, workforce |
-| **Standard** | WCB (3,000 t / 1,000 m³) | 0.7        | 10 days      | Weekly return, running cost, plots, workforce |
-| **Veteran**  | your ship, or no limit                      | 0 (any) | 10 days      | Running cost                                  |
+| Voreinstellung | Logistik                                                                    | Min. Marktkapazität | Lagerpuffer | Ausgeblendete Spalten                                 |
+| -------------- | --------------------------------------------------------------------------- | ----------------------------------- | ----------- | ----------------------------------------------------- |
+| **Einsteiger** | SCB (500 t / 500 m³)                                     | 0,7                                 | 10 Tage     | Wochenrendite, Betriebskosten, Bauplätze, Belegschaft |
+| **Standard**   | WCB (3.000 t / 1.000 m³) | 0,7                                 | 10 Tage     | Wochenrendite, Betriebskosten, Bauplätze, Belegschaft |
+| **Veteran**    | dein Schiff oder kein Limit                                                 | 0 (beliebig)     | 10 Tage     | Betriebskosten                                        |
 
-A preset only fills in settings you can also change later in [Settings](#settings), so nothing you pick here is final. The ship and **Ship visits** matter because they set the logistics limit: the table hides bases that move more cargo between two visits than the ship carries. The minimum market capacity hides bases the market can take fewer of than that number, for example fewer than 0.7 bases.
+Eine Voreinstellung füllt nur Einstellungen aus, die du später auch in den [Einstellungen](#settings) ändern kannst, nichts, was du hier wählst, ist also endgültig. Schiff und **Schiffsbesuche** sind wichtig, weil sie das Logistiklimit festlegen: Die Tabelle blendet Basen aus, die zwischen zwei Besuchen mehr Fracht bewegen, als das Schiff trägt. Die minimale Marktkapazität blendet Basen aus, von denen der Markt weniger verkraftet als diese Zahl, etwa weniger als 0,7 Basen.
 
-**Skip**, or closing the dialog, keeps the current settings. Either way the dialog won't open by itself again, but **Run setup again** in Settings brings it back. All settings live in this browser only, not in your account.
+**Überspringen** oder das Schließen des Dialogs behält die aktuellen Einstellungen. So oder so öffnet sich der Dialog nicht mehr von selbst, aber **Einrichtung erneut starten** in den Einstellungen holt ihn zurück. Alle Einstellungen liegen nur in diesem Browser, nicht in deinem Konto.
 
-## What every base assumes {#assumptions}
+## Was jede Basis annimmt {#assumptions}
 
-Every row is a full 500-area base (one [[area-permits|permit]]) with the building's optimal layout. PRUNplanner calculates it with the same engine as your [[plan|plans]] and prices it with the selected [[exchange-preference|exchange preference]], or with Universe 30D prices when you're not logged in or have "None - Universe 30D" selected. Each base also assumes:
+Jede Zeile ist eine vollständige Basis mit 500 Fläche (eine [[area-permits|Genehmigung]]) mit der optimalen Aufteilung des Gebäudes. PRUNplanner berechnet sie mit derselben Engine wie deine [[plan|Pläne]] und bepreist sie mit der gewählten [[exchange-preference|Marktplatz-Präferenz]], oder mit Universe-30D-Preisen, wenn du nicht angemeldet bist oder „None - Universe 30D“ gewählt hast. Jede Basis nimmt außerdem an:
 
-- Both [[luxuries]] for every tier.
-- [[experts|Experts]] only in the building's own [[expertise]], as set in Settings.
-- The COGC from Settings, never the planet's real program. The details show the planet's real program as "(not applied)". In the game the planet's residents vote on the program, and the winner runs for a week, so the real program can change from week to week.
-- Recipe rows run on a standard planet: rocky, normal gravity, pressure and temperature, not fertile, and without production fees.
+- Beide [[luxuries|Luxusgüter]] für jede Stufe.
+- [[experts|Experten]] nur im eigenen [[expertise|Fachgebiet]] des Gebäudes, wie in den Einstellungen festgelegt.
+- Das COGC aus den Einstellungen, nie das echte Programm des Planeten. Die Details zeigen das echte Programm des Planeten als „(nicht angewendet)“. Im Spiel stimmen die Bewohner des Planeten über das Programm ab, und der Gewinner läuft eine Woche lang, das echte Programm kann sich also von Woche zu Woche ändern.
+- Auftragszeilen laufen auf einem Standardplaneten: felsig, normale Schwerkraft, normaler Druck und normale Temperatur, nicht fruchtbar und ohne Produktionsgebühren.
 
-The bottom of Settings says the same: "All rows assume the COGC and experts set here; recipe rows run on a standard planet."
+Unten in den Einstellungen steht dasselbe: „Alle Zeilen nutzen das hier eingestellte COGC und die Experten; Auftragszeilen laufen auf einem Standardplaneten.“
 
-## Row kinds {#row-kinds}
+## Zeilenarten {#row-kinds}
 
-- **Resource**: one resource on one planet, with RIG, EXT or COL and the planet's environment materials in the construction. PRUNplanner only calculates planets within **Max jumps (planet rows)** and resources with a daily [[extraction]] above 0. The row shows "@ planet · N jumps", the [[jumps]] to the nearest exchange of your exchange preference, or of all four exchanges if you have none.
-- **Landwirtschaft**: ein FRM- oder ORC-Rezept auf einem fruchtbaren Planeten, mit der Fruchtbarkeit des Planeten im Ertrag. It shows "@ planet · N jumps" too. The **Resources** box in **Row kinds** shows or hides these rows along with the resource rows.
-- **Recipe**: one recipe of any other production building, on the standard planet. Nutze **Auf einem Planeten testen** in den Details der Zeile, um es auf einem echten Planeten zu sehen.
+- **Ressource**: eine Ressource auf einem Planeten, mit RIG, EXT oder COL und den Umweltmaterialien des Planeten in den Baukosten. PRUNplanner berechnet nur Planeten innerhalb von **Max. Sprünge (Planetenzeilen)** und Ressourcen mit einem täglichen [[extraction|Abbau]] über 0. Die Zeile zeigt „@ Planet · N Sprünge“, die [[jumps|Sprünge]] zum nächsten Marktplatz deiner Marktplatz-Präferenz, oder zu allen vier Marktplätzen, wenn du keine hast.
+- **Landwirtschaft**: ein FRM- oder ORC-Auftrag auf einem fruchtbaren Planeten, mit der Fruchtbarkeit des Planeten im Ertrag. Auch sie zeigt „@ Planet · N Sprünge“. Das Kästchen **Ressourcen** in **Zeilenarten** blendet diese Zeilen zusammen mit den Ressourcenzeilen ein oder aus.
+- **Auftrag**: ein Auftrag eines beliebigen anderen Produktionsgebäudes, auf dem Standardplaneten. Nutze **Auf einem Planeten testen** in den Details der Zeile, um ihn auf einem echten Planeten zu sehen.
 
-## Metrics {#metrics}
+## Kennzahlen {#metrics}
 
-- **Daily profit**: revenue minus inputs, consumables, [[degradation]] and [[production-fees|production fees]]. Degradation is the construction of the production buildings ÷ 180. Planet rows pay their planet's fees (the planet's fee per day × efficiency × buildings). Recipe rows on the standard planet pay none. With **Ramp from 0** this is the profit at 5 experts, otherwise at the fixed count.
-- **Absolut**: jede Linie auf einer ȼ-Skala, um zu sehen, wie sie zueinander stehen. With **Ramp from 0** a new base starts without experts. The stages with 0, 1, 2, 3 and 4 experts last 10, 12.5, 57.57, 276.5 and 915.1 days, each divided by the number of production buildings. Revenue, inputs and production fees grow with the expert bonus, while consumables and degradation stay the same. It shows "never" when the base makes no profit (with the ramp: at 5 experts). Don't worry if you rarely see it: those rows have a daily profit of 0 or less, so they only show while **Show negative** is on.
+- **Täglicher Profit**: Umsatz minus Inputs, Verbrauchsgüter, [[degradation|Abnutzung]] und [[production-fees|Produktionsgebühren]]. Die Abnutzung sind die Baukosten der Produktionsgebäude ÷ 180. Planetenzeilen zahlen die Gebühren ihres Planeten (die Gebühr des Planeten pro Tag × Effizienz × Gebäude). Auftragszeilen auf dem Standardplaneten zahlen keine. Mit **Aufbau ab 0** ist das der Profit bei 5 Experten, sonst bei der festen Anzahl.
+- **Amortisation**: Tage, bis die Baukosten zurückgezahlt sind. Mit **Aufbau ab 0** startet eine neue Basis ohne Experten. Die Stufen mit 0, 1, 2, 3 und 4 Experten dauern 10, 12,5, 57,57, 276,5 und 915,1 Tage, jeweils geteilt durch die Zahl der Produktionsgebäude. Umsatz, Inputs und Produktionsgebühren wachsen mit dem Expertenbonus, Verbrauchsgüter und Abnutzung bleiben gleich. Sie zeigt „nie“, wenn die Basis keinen Profit macht (mit dem Aufbau: bei 5 Experten). Keine Sorge, wenn du das selten siehst: Diese Zeilen haben einen täglichen Profit von 0 oder weniger, sie erscheinen also nur, solange **Negative anzeigen** an ist.
 - **Wochenrendite**: 7 × täglicher Profit ÷ Baukosten.
-- **Building cost**: construction plus the options in Settings, which are the buffer stock (buffer days × (inputs + consumables + revenue) ÷ 2) and the HQ upgrade for one more permit.
-- **Daily running cost**: inputs + consumables + degradation + production fees. It's hidden until you turn it on in **Columns**, because the buffer stock in the building cost already covers the running cost to start with.
-- **Cargo / day**: two numbers, tonnes and m³, each the larger of what the base moves in and out per day. The tooltip lists in and out separately, along with the ship check. Sorting uses the larger of the two numbers, tonnes and m³ alike.
-- **Market capacity**: how many bases like this the market can take. For each output, it's the traded volume per day (everything traded in the last 7 days ÷ 7, so days without trades count) ÷ what the base produces per day. For each recipe input, it's the traded volume ÷ what the base needs per day. Byproducts count as outputs, and workforce consumables don't count. The lowest value counts. (O) or (I) shows which side limits it, and the tooltip names the material. Below 1 (shown in amber), one base produces or needs more than the market trades. The tooltip also gives one base's share of the traded volume (1 ÷ market capacity, as a percentage). See [[market-capacity|market capacity]].
-- **Industry**: the base's industry, in short (Food for Food Industries, Fuel for Fuel Refining, Extraction for Resource Extraction).
-- **Plots**: free [[plots]] on the planet, for planet rows. Sort by it to find the emptiest planets. Recipe rows show a dash.
-- **Workforce**: the workers the base needs per tier (PIO, SET, TEC, ENG, SCI). When the planet can't staff the base, an amber line says how many are free, or "No population report".
-- **Profit, 30 days**: daily profit with the daily [[vwap|VWAP]] of each material's exchange over the last 30 days, as a small chart. Days without trades keep the last price, and materials without history keep today's price. ASK, BID und Festpreise haben keinen Verlauf.
-- **⚠**: a material priced from a 7D or 30D VWAP whose [[bid]] or [[ask]] is more than 30 % off that price. It's a hint that the daily profit can look quite different when you trade at the order book instead of at the average. The popover lists the daily profit for each combination of bid and ask of those materials, lowest first. With more than 100 combinations it shows only the two extremes: buying at the ask and selling at the bid, and the other way round.
+- **Baukosten**: der Bau plus die Optionen in den Einstellungen, also der Pufferbestand (Puffertage × (Inputs + Verbrauchsgüter + Umsatz) ÷ 2) und das HQ-Upgrade für eine weitere Genehmigung.
+- **Tägliche Betriebskosten**: Inputs + Verbrauchsgüter + Abnutzung + Produktionsgebühren. Die Spalte ist ausgeblendet, bis du sie in **Spalten** einschaltest, weil der Pufferbestand in den Baukosten die Betriebskosten für den Anfang schon abdeckt.
+- **Fracht / Tag**: zwei Zahlen, Tonnen und m³, jeweils der größere Wert von dem, was die Basis pro Tag rein- und rausbewegt. Der Tooltip listet rein und raus getrennt auf, zusammen mit der Schiffsprüfung. Die Sortierung nutzt die größere der beiden Zahlen, Tonnen und m³ gleichermaßen.
+- **Marktkapazität**: wie viele Basen wie diese der Markt verkraftet. Für jeden Output ist das das gehandelte Volumen pro Tag (alles, was in den letzten 7 Tagen gehandelt wurde, ÷ 7, Tage ohne Handel zählen also mit) ÷ das, was die Basis pro Tag herstellt. Für jeden Auftrags-Input ist es das gehandelte Volumen ÷ das, was die Basis pro Tag braucht. Nebenprodukte zählen als Outputs, Verbrauchsgüter der Belegschaft zählen nicht. Der niedrigste Wert zählt. (O) oder (I) zeigt, welche Seite begrenzt, und der Tooltip nennt das Material. Unter 1 (gelb angezeigt) stellt eine Basis mehr her oder braucht mehr, als der Markt handelt. Der Tooltip nennt auch den Anteil einer Basis am gehandelten Volumen (1 ÷ Marktkapazität, in Prozent). Siehe [[market-capacity|Marktkapazität]].
+- **Industrie**: die Industrie der Basis, abgekürzt (Food für Lebensmittelindustrie, Fuel für Treibstoffherstellung, Extraction für Ressourcengewinnung).
+- **Bauplätze**: freie [[plots|Bauplätze]] auf dem Planeten, für Planetenzeilen. Sortiere danach, um die leersten Planeten zu finden. Auftragszeilen zeigen einen Strich.
+- **Belegschaft**: die Arbeiter, die die Basis pro Stufe braucht (PIO, SET, TEC, ENG, SCI). Kann der Planet die Basis nicht besetzen, sagt eine gelbe Zeile, wie viele frei sind, oder „Kein Bevölkerungsbericht“.
+- **Profit, 30 Tage**: der tägliche Profit mit dem täglichen [[vwap|VWAP]] des Marktplatzes jedes Materials über die letzten 30 Tage, als kleines Diagramm. Tage ohne Handel behalten den letzten Preis, und Materialien ohne Verlauf behalten den heutigen Preis. ASK, BID und Festpreise haben keinen Verlauf.
+- **⚠**: ein Material, das aus einem VWAP 7D oder 30D bepreist wird und dessen [[bid|Bid]] oder [[ask|Ask]] mehr als 30 % von diesem Preis abweicht. Es ist ein Hinweis, dass der tägliche Profit ganz anders aussehen kann, wenn du am Orderbuch statt zum Durchschnitt handelst. Das Popover listet den täglichen Profit für jede Kombination aus Bid und Ask dieser Materialien, den niedrigsten zuerst. Bei mehr als 100 Kombinationen zeigt es nur die zwei Extreme: Kauf zum Ask und Verkauf zum Bid, und umgekehrt.
 
-### Worked example {#metrics-example}
+### Rechenbeispiel {#metrics-example}
 
-The numbers here are made up and round, with a fixed expert count, so the arithmetic stays easy to follow.
+Die Zahlen hier sind ausgedacht und rund, mit fester Expertenzahl, damit die Rechnung leicht nachzuvollziehen bleibt.
 
-- A base has a building cost of 700,000 ȼ and makes 20,000 ȼ a day. Break-even is 700,000 ÷ 20,000 = 35 days, and the weekly return is 7 × 20,000 ÷ 700,000 = 20 %.
-- Part of that building cost is the stock buffer. With 10 buffer days, inputs of 3,000 ȼ, consumables of 1,000 ȼ and revenue of 8,000 ȼ a day, it's 10 × (3,000 + 1,000 + 8,000) ÷ 2 = 60,000 ȼ.
-- The base makes 300 units of its output a day, and the market trades 900 a day on average over 7 days: 900 ÷ 300 = 3 bases. Its recipe needs 200 units of one input a day, which trades 400 a day: 400 ÷ 200 = 2 bases. The lower value counts, so the market capacity is 2 (I), and one base's share of that input's traded volume is 1 ÷ 2 = 50 %.
+- Eine Basis hat Baukosten von 700.000 ȼ und macht 20.000 ȼ pro Tag. Die Amortisation ist 700.000 ÷ 20.000 = 35 Tage, und die Wochenrendite ist 7 × 20.000 ÷ 700.000 = 20 %.
+- Ein Teil dieser Baukosten ist der Lagerpuffer. Mit 10 Puffertagen, Inputs von 3.000 ȼ, Verbrauchsgütern von 1.000 ȼ und einem Umsatz von 8.000 ȼ pro Tag sind das 10 × (3.000 + 1.000 + 8.000) ÷ 2 = 60.000 ȼ.
+- Die Basis stellt 300 Einheiten ihres Outputs pro Tag her, und der Markt handelt im Schnitt über 7 Tage 900 pro Tag: 900 ÷ 300 = 3 Basen. Ihr Auftrag braucht 200 Einheiten eines Inputs pro Tag, der mit 400 pro Tag gehandelt wird: 400 ÷ 200 = 2 Basen. Der niedrigere Wert zählt, die Marktkapazität ist also 2 (I), und der Anteil einer Basis am gehandelten Volumen dieses Inputs ist 1 ÷ 2 = 50 %.
 
-With **Ramp from 0**, break-even is longer than building cost ÷ daily profit, because the early stages run with fewer experts. In the game, experts arrive over time from running that expertise's production buildings, and more buildings bring them faster. The ramp follows that: each stage is divided by the number of production buildings.
+Mit **Aufbau ab 0** ist die Amortisation länger als Baukosten ÷ täglicher Profit, weil die frühen Stufen mit weniger Experten laufen. Im Spiel kommen Experten mit der Zeit, wenn du die Produktionsgebäude dieses Fachgebiets betreibst, und mehr Gebäude bringen sie schneller. Der Aufbau bildet das ab: Jede Stufe wird durch die Zahl der Produktionsgebäude geteilt.
 
 > [!tip]
-> A short break-even with a market capacity below 1 is a trap, because one base already floods the market. Sort by break-even, then check that the market capacity is well above the number of bases you plan.
+> Eine kurze Amortisation mit einer Marktkapazität unter 1 ist eine Falle, weil schon eine Basis den Markt überschwemmt. Sortiere nach Amortisation und prüf dann, ob die Marktkapazität deutlich über der Zahl der Basen liegt, die du planst.
 
-## Settings {#settings}
+## Einstellungen {#settings}
 
-The Settings panel sits above the table. When it's closed, it shows a one-line summary of the settings that shape the table.
+Das Einstellungsfeld steht über der Tabelle. Ist es geschlossen, zeigt es eine einzeilige Zusammenfassung der Einstellungen, die die Tabelle prägen.
 
-| Setting                                        | Default                                                                                               | Options                                                                    |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| **COGC (all rows)**         | **Matching program** (the program for the building's own expertise)                | **None**                                                                   |
-| **Experts**                                    | **Ramp from 0**                                                                                       | 0 to 5, fixed                                                              |
-| **Stock buffer**                               | 10 days                                                                                               | **Off**, 1 to 10, 14, 21 or 28 days                                        |
-| **Logistics limit**                            | **By ship**: WCB, every 3 days                                                        | **Manual** (600 t and 200 m³ per day), **None**         |
-| **Target permit (HQ cost)** | **Off**                                                                                               | 2 to 50                                                                    |
-| **Max jumps (planet rows)** | 7                                                                                                     | any whole number from 0                                                    |
-| **Min market capacity**                        | 0.7 bases                                                                             | 0.0 to 1.0 in steps of 0.1 |
-| **Row kinds**                                  | **Resources** and **Recipes** on; **Show negative** and **Show planets without workers or plots** off |                                                                            |
+| Einstellung                                                          | Standard                                                                                                             | Optionen                                                             |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **COGC (alle Zeilen)**                            | **Passendes Programm** (das Programm für das eigene Fachgebiet des Gebäudes)                      | **Keins**                                                            |
+| **Experten**                                                         | **Aufbau ab 0**                                                                                                      | 0 bis 5, fest                                                        |
+| **Lagerpuffer**                                                      | 10 Tage                                                                                                              | **Aus**, 1 bis 10, 14, 21 oder 28 Tage                               |
+| **Logistiklimit**                                                    | **Nach Schiff**: WCB, alle 3 Tage                                                                    | **Manuell** (600 t und 200 m³ pro Tag), **Keins** |
+| **Ziel-Genehmigung (HQ-Kosten)**                  | **Aus**                                                                                                              | 2 bis 50                                                             |
+| **Max. Sprünge (Planetenzeilen)** | 7                                                                                                                    | jede ganze Zahl ab 0                                                 |
+| **Min. Marktkapazität**                              | 0,7 Basen                                                                                                            | 0,0 bis 1,0 in Schritten von 0,1                                     |
+| **Zeilenarten**                                                      | **Ressourcen** und **Aufträge** an; **Negative anzeigen** und **Planeten ohne Arbeiter oder Bauplätze anzeigen** aus |                                                                      |
 
-- **Logistics limit**: **By ship** picks a ship (TCB to HCB, each with its t and m³) and how often it comes ("Every … days"). The ship has to carry that many days of cargo, in and out, by weight and by volume. The table hides rows that need more. **Manual** sets the limit per day, and **None** limits nothing. For example, the default WCB (3,000 t / 1,000 m³) every 3 days allows a base that moves up to 3,000 ÷ 3 = 1,000 t and 1,000 ÷ 3 ≈ 333 m³ a day, counting the larger of in and out.
-- **Stock buffer**: storage for this many days of cargo. PRUNplanner adds STO or STA. When the base would no longer fit in 500 area, it drops a production building until it does.
-- **Target permit (HQ cost)**: adds the materials for that HQ level, at CX buy prices, to every row's building cost. The cost counts from 3 on, so 2 adds nothing. In the game each HQ level upgrade gives you one more base permit, so this shows what the base on that permit costs, including the upgrade to that HQ level.
-- **Max jumps (planet rows)**: counted to the nearest exchange of your exchange preference, which the setting names. Planets without a route count as too far.
-- **Min market capacity** sits next to the search above the table and hides rows below it.
-- **Show negative**: when it's off, the table hides rows with a daily profit of 0 or less.
-- **Show planets without workers or plots**: off by default. The table then hides planet rows when no new base fits (every plot taken and no [[ghost-sites|ghost sites]]) or when the latest [[popr|population report]] can't fill the base's jobs, counting free workers less the jobs already open. Ein Planet ohne Bevölkerungsbericht gilt als ohne Arbeiter. Turn it on to see these rows, and turn on the **Workforce** column to see what's missing. Recipe rows aren't checked. If the reports can't be loaded, the page says so and nothing is hidden.
-- **Reset to defaults** resets the settings, but keeps your columns, the open or closed panels and charts, and the charts' time range and aggregation.
-- **Run setup again** opens the first-visit dialog.
+- **Logistiklimit**: **Nach Schiff** wählt ein Schiff (TCB bis HCB, jeweils mit seinen t und m³) und wie oft es kommt („Alle … Tage“). Das Schiff muss so viele Tage Fracht tragen, rein und raus, nach Gewicht und nach Volumen. Die Tabelle blendet Zeilen aus, die mehr brauchen. **Manuell** legt das Limit pro Tag fest, und **Keins** begrenzt nichts. Ein Beispiel: Das Standard-WCB (3.000 t / 1.000 m³) alle 3 Tage erlaubt eine Basis, die bis zu 3.000 ÷ 3 = 1.000 t und 1.000 ÷ 3 ≈ 333 m³ pro Tag bewegt, gezählt wird der größere Wert von rein und raus.
+- **Lagerpuffer**: Lager für so viele Tage Fracht. PRUNplanner fügt STO oder STA hinzu. Passt die Basis dann nicht mehr in 500 Fläche, lässt es ein Produktionsgebäude weg, bis sie passt.
+- **Ziel-Genehmigung (HQ-Kosten)**: rechnet die Materialien für diese HQ-Stufe zu CX-Kaufpreisen zu den Baukosten jeder Zeile. Die Kosten zählen ab 3, 2 fügt also nichts hinzu. Im Spiel bringt dir jedes HQ-Upgrade eine weitere Basis-Genehmigung, das zeigt also, was die Basis auf dieser Genehmigung kostet, inklusive des Upgrades auf diese HQ-Stufe.
+- **Max. Sprünge (Planetenzeilen)**: gezählt zum nächsten Marktplatz deiner Marktplatz-Präferenz, den die Einstellung nennt. Planeten ohne Route gelten als zu weit.
+- **Min. Marktkapazität** steht neben der Suche über der Tabelle und blendet Zeilen darunter aus.
+- **Negative anzeigen**: Ist es aus, blendet die Tabelle Zeilen mit einem täglichen Profit von 0 oder weniger aus.
+- **Planeten ohne Arbeiter oder Bauplätze anzeigen**: standardmäßig aus. Die Tabelle blendet dann Planetenzeilen aus, wenn keine neue Basis passt (alle Bauplätze belegt und keine [[ghost-sites|Geisterplätze]]) oder wenn der neueste [[popr|Bevölkerungsbericht]] die Arbeitsplätze der Basis nicht füllen kann, gezählt werden freie Arbeiter abzüglich der schon offenen Stellen. Ein Planet ohne Bevölkerungsbericht gilt als ohne Arbeiter. Schalte es ein, um diese Zeilen zu sehen, und schalte die Spalte **Belegschaft** ein, um zu sehen, was fehlt. Auftragszeilen werden nicht geprüft. Können die Berichte nicht geladen werden, sagt die Seite das, und nichts wird ausgeblendet.
+- **Auf Standard zurücksetzen** setzt die Einstellungen zurück, behält aber deine Spalten, die offenen oder geschlossenen Felder und Diagramme und den Zeitraum und die Zusammenfassung der Diagramme.
+- **Einrichtung erneut starten** öffnet den Dialog des ersten Besuchs.
 
-A planet that's full but has ghost sites stays in the table. In the game, ghost sites only let new players who start on that planet settle there, so check the **Plots** column if your company started elsewhere.
+Ein Planet, der voll ist, aber Geisterplätze hat, bleibt in der Tabelle. Im Spiel lassen Geisterplätze nur neue Spieler, die auf diesem Planeten beginnen, dort siedeln, prüf also die Spalte **Bauplätze**, wenn deine Firma woanders begonnen hat.
 
-Only COGC, experts, stock buffer, max jumps and the exchange preference make PRUNplanner calculate the rows again. Every other setting applies at once.
+Nur COGC, Experten, Lagerpuffer, max. Sprünge und die Marktplatz-Präferenz lassen PRUNplanner die Zeilen neu berechnen. Jede andere Einstellung gilt sofort.
 
 > [!warning]
-> Picking an exchange preference in the selector at the top (logged in only) also makes it your default exchange preference. Other pages that follow your default switch with it.
+> Wählst du oben im Auswahlfeld eine Marktplatz-Präferenz (nur angemeldet), wird sie auch zu deiner Standard-Marktplatz-Präferenz. Andere Seiten, die deinem Standard folgen, wechseln mit.
 
-### Hidden rows {#hidden-rows}
+### Ausgeblendete Zeilen {#hidden-rows}
 
-The line above the table counts the rows, and the hidden ones per limit: "max jumps", "logistics", "market capacity", "no plots", "no workers" and "negative profit". Each row counts once, at its first limit in that order. "no plots" and "no workers" only count while **Show planets without workers or plots** is off, and "negative profit" only while **Show negative** is off. The search isn't a limit and isn't counted.
+Die Zeile über der Tabelle zählt die Zeilen und die ausgeblendeten pro Limit: „max. Sprünge“, „Logistik“, „Marktkapazität“, „keine Bauplätze“, „keine Arbeiter“ und „negativer Profit“. Jede Zeile zählt einmal, bei ihrem ersten Limit in dieser Reihenfolge. „keine Bauplätze“ und „keine Arbeiter“ zählen nur, solange **Planeten ohne Arbeiter oder Bauplätze anzeigen** aus ist, und „negativer Profit“ nur, solange **Negative anzeigen** aus ist. Die Suche ist kein Limit und wird nicht gezählt.
 
-When no row is left, the table says "No base passes these settings." Don't worry: unless the page says a request failed, this only means your settings or your search leave nothing to show. The counts above the table tell you which limits hid rows, so you know which setting to change.
+Bleibt keine Zeile übrig, sagt die Tabelle „Keine Basis erfüllt diese Einstellungen.“ Keine Sorge: Solange die Seite nicht sagt, dass eine Anfrage fehlgeschlagen ist, heißt das nur, dass deine Einstellungen oder deine Suche nichts zum Anzeigen übrig lassen. Die Zahlen über der Tabelle sagen dir, welche Limits Zeilen ausgeblendet haben, damit du weißt, welche Einstellung du ändern musst.
 
-## Profit chart {#profit-chart}
+## Profit-Diagramm {#profit-chart}
 
-Above the table, **Daily profit by industry** shows each industry's daily profit over the chosen time range (90 days unless you change it). On screens 1,536 px and wider it sits beside the settings.
+Über der Tabelle zeigt **Täglicher Profit nach Branche** den täglichen Profit jeder Industrie über den gewählten Zeitraum (90 Tage, solange du ihn nicht änderst). Auf Bildschirmen ab 1.536 px Breite steht es neben den Einstellungen.
 
-- Each base counts by how much of its material the market trades (7-day average of its outputs).
-- The many planets of one resource or farming recipe count as one: the mean of the 3 planets with the highest daily profit, so poor planets don't drag the line down.
-- It follows the table's settings and limits.
-- Es zeigt die 7 am meisten gehandelten Linien und sagt, wie viele es noch gibt.
+- Jede Basis zählt danach, wie viel von ihrem Material der Markt handelt (7-Tage-Schnitt ihrer Outputs).
+- Die vielen Planeten einer Ressource oder eines Landwirtschaftsauftrags zählen als einer: der Mittelwert der 3 Planeten mit dem höchsten täglichen Profit, damit schwache Planeten die Linie nicht nach unten ziehen.
+- Es folgt den Einstellungen und Limits der Tabelle.
+- Es zeigt die 7 meistgehandelten Linien und sagt, wie viele es noch gibt.
 
-Click the title to collapse the chart, and it stays collapsed. Search to drill in:
+Klick auf den Titel, um das Diagramm einzuklappen, und es bleibt eingeklappt. Mit der Suche kannst du tiefer einsteigen:
 
-- an industry (e.g. "Chemistry") shows its buildings
-- a building (e.g. "CHP") shows its materials
-- a material (e.g. "SC") shows the recipes that make it
+- eine Industrie (z. B. „Chemistry“) zeigt ihre Gebäude
+- ein Gebäude (z. B. „CHP“) zeigt seine Materialien
+- ein Material (z. B. „SC“) zeigt die Aufträge, die es herstellen
 
-A search that leaves only one building or one industry drills in too.
+Eine Suche, die nur ein Gebäude oder eine Industrie übrig lässt, steigt ebenfalls tiefer ein.
 
-Every history chart has a time range (**7D**, **30D** or **90D**) and an aggregation (**1D**, **3D** or **7D** per point) at its top right, like the game's charts. A longer aggregation averages out daily noise. Your choice applies to all of these charts and is remembered. The table's **Profit, 30 days** column always shows 30 days.
+Jedes Verlaufsdiagramm hat oben rechts einen Zeitraum (**7T**, **30T** oder **90T**) und eine Zusammenfassung (**1T**, **3T** oder **7T** pro Punkt), wie die Diagramme im Spiel. Eine längere Zusammenfassung glättet das tägliche Rauschen. Deine Wahl gilt für alle diese Diagramme und wird gespeichert. Die Spalte **Profit, 30 Tage** der Tabelle zeigt immer 30 Tage.
 
-## Chart {#chart}
+## Diagramm {#chart}
 
-**Chart** at the top opens **Break-even vs. market capacity** in a drawer you can resize. It plots the rows the table shows, search included:
+**Chart** oben öffnet **Amortisation vs. Marktkapazität** in einer Schublade, deren Größe du ändern kannst. Es zeichnet die Zeilen, die die Tabelle zeigt, Suche eingeschlossen:
 
-- across, the break-even in days, and up, the market capacity in bases, both on log scales
-- dot size is the daily profit, and colour is the row kind
-- the dashed line joins the best trade-offs: rows that no other row beats on both a shorter break-even and a higher market capacity
+- waagerecht die Amortisation in Tagen und senkrecht die Marktkapazität in Basen, beide auf logarithmischen Skalen
+- die Punktgröße ist der tägliche Profit, die Farbe die Zeilenart
+- die gestrichelte Linie verbindet die besten Kompromisse: Zeilen, die keine andere Zeile sowohl bei kürzerer Amortisation als auch bei höherer Marktkapazität schlägt
 
-Rows that never pay off or have no market capacity aren't drawn, but the drawer counts them. Hover a dot to scroll the table to its row. The button is off while no row shows, and the drawer stays open or closed as you left it.
+Zeilen, die sich nie auszahlen oder keine Marktkapazität haben, werden nicht gezeichnet, aber die Schublade zählt sie. Fahr mit der Maus über einen Punkt, um die Tabelle zu seiner Zeile zu scrollen. Der Button ist aus, solange keine Zeile angezeigt wird, und die Schublade bleibt offen oder geschlossen, wie du sie verlassen hast.
 
 > [!tip]
-> The top-left corner of the chart is where you want to be: quick payback and room in the market. Hover the dots there to find their rows.
+> Die linke obere Ecke des Diagramms ist, wo du hinwillst: schnelle Amortisation und Platz im Markt. Fahr dort mit der Maus über die Punkte, um ihre Zeilen zu finden.
 
-## Search and tooltips {#search-and-tooltips}
+## Suche und Tooltips {#search-and-tooltips}
 
-- The search above the table filters by industry, building or output ticker.
-- The table orders rows by break-even, shortest first, and among equal break-evens by the higher daily profit. Click a column header to sort by it instead (Material, Workforce and Profit, 30 days don't sort). The table shows 50 rows per page.
-- Hover a column header to see what it means, or a number for the napkin math behind it.
+- Die Suche über der Tabelle filtert nach Industrie, Gebäude oder Output-Ticker.
+- Die Tabelle ordnet Zeilen nach Amortisation, die kürzeste zuerst, und bei gleicher Amortisation nach dem höheren täglichen Profit. Klick auf eine Spaltenüberschrift, um stattdessen danach zu sortieren (Material, Belegschaft und Profit, 30 Tage sortieren nicht). Die Tabelle zeigt 50 Zeilen pro Seite.
+- Fahr mit der Maus über eine Spaltenüberschrift, um zu sehen, was sie bedeutet, oder über eine Zahl für die Überschlagsrechnung dahinter.
 
 ## Details {#details}
 
-Expand a row to see two charts under **Profit history**, with the full math below them.
+Klapp eine Zeile auf, um unter **Profitverlauf** zwei Diagramme zu sehen, mit der vollständigen Rechnung darunter.
 
-- Profit: revenue, running cost and daily profit, every line on one ȼ scale.
-- Market volume: how many bases the market carries each day, from the CX traded volume of that day. **Outputs** is the scarcest output's traded volume ÷ what one base sells per day. **Inputs (bottleneck)** is the same for the recipe input with the least volume per unit the recipe needs. It's the market capacity column, day by day.
+- Profit: Umsatz, Betriebskosten und täglicher Profit, jede Linie auf einer ȼ-Skala.
+- Marktvolumen: wie viele Basen der Markt jeden Tag trägt, aus dem gehandelten CX-Volumen dieses Tages. **Outputs** ist das gehandelte Volumen des knappsten Outputs ÷ das, was eine Basis pro Tag verkauft. **Inputs (Engpass)** ist dasselbe für den Auftrags-Input mit dem geringsten Volumen pro Einheit, die der Auftrag braucht. Es ist die Spalte Marktkapazität, Tag für Tag.
 
-Both charts follow the time range and aggregation of the history charts. The math comes in eight sections: **Layout and building cost**, **Logistics and storage**, **Production efficiency**, **Line runs**, **Yield**, **Money per day** (with consumables, degradation and production fees), **Break-even** (each expert stage and the day it's paid off) and **Market capacity**. **Copy as text** copies it all.
+Beide Diagramme folgen dem Zeitraum und der Zusammenfassung der Verlaufsdiagramme. Die Rechnung kommt in acht Abschnitten: **Layout und Baukosten**, **Logistik und Lager**, **Produktionseffizienz**, **Durchläufe**, **Ertrag**, **Geld pro Tag** (mit Verbrauchsgütern, Abnutzung und Produktionsgebühren), **Amortisation** (jede Expertenstufe und der Tag, an dem sie abbezahlt ist) und **Marktkapazität**. **Als Text kopieren** kopiert alles.
 
-**Try on a planet** (recipe rows only) lets you pick any planet, and PRUNplanner calculates the row there with the table's settings. A line compares building cost and break-even with the standard planet, and **Back to standard planet** undoes it. PRUNplanner forgets the choice when the details close.
+**Auf einem Planeten testen** (nur Auftragszeilen) lässt dich einen beliebigen Planeten wählen, und PRUNplanner berechnet die Zeile dort mit den Einstellungen der Tabelle. Eine Zeile vergleicht Baukosten und Amortisation mit dem Standardplaneten, und **Zurück zum Standardplaneten** macht das rückgängig. PRUNplanner vergisst die Wahl, wenn sich die Details schließen.
 
-**Open as plan** (logged in) creates and saves a plan right away and opens it. The plan is named "Base ROI" with the outputs and building, and gets the same layout. It goes on the row's planet, the planet you tried, or Montem (OT-580b) for a recipe row. It goes into one of your empires with the same exchange preference and no faction bonus for the building. Without such an empire it goes into none, and a notice says the plan's daily profit can differ. Planet rows also link "Open …" to start a plan on that planet.
+**Als Plan öffnen** (angemeldet) erstellt und speichert sofort einen Plan und öffnet ihn. Der Plan heißt „Base ROI“ mit den Outputs und dem Gebäude und bekommt dieselbe Aufteilung. Er kommt auf den Planeten der Zeile, den Planeten, den du getestet hast, oder Montem (OT-580b) bei einer Auftragszeile. Er kommt in eines deiner Imperien mit derselben Marktplatz-Präferenz und ohne Fraktionsbonus für das Gebäude. Ohne ein solches Imperium kommt er in keines, und ein Hinweis sagt, dass der tägliche Profit des Plans abweichen kann. Planetenzeilen verlinken außerdem „… öffnen“, um einen Plan auf diesem Planeten zu beginnen.
 
 > [!tip]
-> A recipe row has no production fees. Use **Try on a planet** first: the numbers then include that planet's fees, and **Open as plan** puts the plan there instead of on Montem.
+> Eine Auftragszeile hat keine Produktionsgebühren. Nutze zuerst **Auf einem Planeten testen**: Die Zahlen enthalten dann die Gebühren dieses Planeten, und **Als Plan öffnen** setzt den Plan dorthin statt auf Montem.
 
-## Loading {#loading}
+## Laden {#loading}
 
-Recipe rows appear first, then the planet rows ("Loading planet rows…"). A progress line shows each step. If a request fails, the page says so. Change a setting or reload the page to try again. On the first load the recipe rows show as soon as they're ready, so you can look at those while the planet rows are still being calculated.
+Auftragszeilen erscheinen zuerst, dann die Planetenzeilen („Lade Planetenzeilen…“). Eine Fortschrittszeile zeigt jeden Schritt. Schlägt eine Anfrage fehl, sagt die Seite das. Ändere eine Einstellung oder lade die Seite neu, um es noch einmal zu versuchen. Beim ersten Laden erscheinen die Auftragszeilen, sobald sie fertig sind, sodass du sie dir ansehen kannst, während die Planetenzeilen noch berechnet werden.
