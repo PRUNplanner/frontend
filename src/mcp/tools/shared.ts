@@ -1,7 +1,16 @@
 import { pathfinder } from "@/features/pathfinding/pathfinder";
+import { hqStepCost } from "@/features/base_roi/baseROIMetrics";
 import { mapPlanetToPlanType } from "@/features/planning_data/planCOGC.util";
 import { basisText, type PriceBasis } from "@/mcp/priceBasis";
-import { calculateVisitation } from "@/features/planning/engine/visitation";
+import {
+	calculateVisitation,
+	SHIP_SIZES,
+	shipDays,
+} from "@/features/planning/engine/visitation";
+import {
+	MAX_EXPERTS_PER_TYPE,
+	MAX_EXPERTS_TOTAL,
+} from "@/features/planning/engine/efficiency";
 import {
 	getVolumeOfAllStorages,
 	getWeightOfAllStorages,
@@ -22,8 +31,13 @@ import type {
 	IProductionBuildingRecipe,
 } from "@/features/planning/usePlanCalculation.types";
 import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
+	Building,
+	Exchange,
+	Planet,
+} from "@/features/api/schemas/gameData.schemas";
 import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 /** what a tool gets besides its arguments */
 export interface IToolEnv {
@@ -173,6 +187,18 @@ export function shipping(calc: IPlanCalculation) {
 			: null,
 		storage_capacity_t: weight,
 		storage_capacity_m3: volume,
+		// the Visitation frequency tool's ships: a visit both brings the
+		// imports and takes the exports, so the side that fills first counts
+		trips_per_week: Object.fromEntries(
+			SHIP_SIZES.map((ship) => {
+				const d = shipDays(ship, v);
+				const days = Math.min(d.exportDays, d.importDays);
+				return [
+					`${ship.weight}t_${ship.volume}m3`,
+					Number.isFinite(days) && days > 0 ? money(7 / days) : 0,
+				];
+			})
+		),
 		// the side that fills first
 		storage_limited_by:
 			v.dailyWeight > 0 || v.dailyVolume > 0
@@ -224,7 +250,9 @@ export function calculationDetails(
 	resolved: IResolvedEmpire,
 	basis: PriceBasis = "plan",
 	planet?: Planet,
-	buildings?: ReadonlyMap<string, Building>
+	buildings?: ReadonlyMap<string, Building>,
+	// exchange data by ticker id, for the fixed-price drift warning
+	exchanges?: ReadonlyMap<string, Exchange>
 ) {
 	return {
 		empire: resolved.empire
@@ -251,6 +279,7 @@ export function calculationDetails(
 				recipe_id: r.recipeId,
 				amount: r.amount,
 				daily_share: amount(r.dailyShare),
+				...runTime(r),
 				...orderEconomics(b.amount, r),
 			})),
 			daily_production_fee: money(b.dailyProductionFee),
@@ -287,6 +316,15 @@ export function calculationDetails(
 			...[
 				cxMatch(calc.result.materialio, prices, cx, basis)?.warning,
 			].filter((w): w is string => !!w),
+			...(exchanges
+				? fixedPriceDriftWarning(
+						fixedPriceDrift(
+							calc.result.materialio,
+							prices,
+							exchanges
+						)
+					)
+				: []),
 		],
 	};
 }
@@ -322,6 +360,8 @@ export function summarizeDetails<
 			recipes: b.recipes.map((r) => ({
 				recipe_id: r.recipe_id,
 				amount: r.amount,
+				hours_per_run: r.hours_per_run,
+				profit_per_hour: r.profit_per_hour,
 			})),
 			per_day_profit: b.per_day_profit,
 		})),
@@ -362,8 +402,29 @@ export function planDetails(
 			resolved,
 			setup.basis,
 			planet,
-			setup.gameData.buildings
+			setup.gameData.buildings,
+			setup.gameData.exchanges
 		),
+	};
+}
+
+/**
+ * How long one run of an order takes in its building (the recipe's time
+ * after the building's efficiency, as the COGM tool uses it) and what one
+ * building earns per hour running it, so orders compare per building-hour
+ * @author jplacht
+ */
+export function runTime(order: IProductionBuildingRecipe): {
+	hours_per_run: number | null;
+	profit_per_hour: number | null;
+} {
+	const c = order.cogm;
+	if (!c || !Number.isFinite(c.runtime) || c.runtime <= 0)
+		return { hours_per_run: null, profit_per_hour: null };
+	const hours = c.runtime / 3_600_000;
+	return {
+		hours_per_run: amount(hours),
+		profit_per_hour: money(c.totalProfit / hours),
 	};
 }
 
@@ -474,6 +535,110 @@ export function cogcWarnings(
  * Plan problems an assistant should mention first
  * @author jplacht
  */
+/**
+ * What the base permits a change takes cost: an empire's free permits
+ * (Permits Total − Permits Used, as set on the Empire page) first, then one
+ * HQ upgrade per permit, priced like Base ROI (permit N takes HQ level
+ * N − 1). A plan's area permits count against the same pool, as the Empire
+ * page adds them up. Null without an empire or when no permit is needed
+ * @author jplacht
+ */
+export function permitCost(
+	empire:
+		| Pick<
+				PlanEmpireElement,
+				"empire_permits_used" | "empire_permits_total"
+		  >
+		| undefined,
+	needed: number,
+	prices: IPriceBook,
+	profitPerDay: number,
+	constructionCost: number
+) {
+	if (!empire || needed <= 0) return null;
+	const free = Math.max(
+		0,
+		empire.empire_permits_total - empire.empire_permits_used
+	);
+	const upgrades = Math.max(0, needed - free);
+	let cost = 0;
+	for (let i = 1; i <= upgrades; i++)
+		cost += hqStepCost(empire.empire_permits_total + i, (t) =>
+			prices.getPrice(t, "BUY")
+		);
+	const total = constructionCost + cost;
+	return {
+		permits_needed: needed,
+		free_permits: free,
+		hq_upgrades: upgrades,
+		hq_upgrade_cost: money(cost),
+		payback_days_with_permits:
+			total <= 0
+				? 0
+				: profitPerDay > 0
+					? money(total / profitPerDay)
+					: null,
+		note: `From the empire's Permits Used/Total (${empire.empire_permits_used} of ${empire.empire_permits_total}); each further permit is an HQ upgrade, priced at its materials' buy prices.`,
+	};
+}
+
+// a fixed price this far (%) on the flattering side of the market is flagged
+export const FIXED_DRIFT_PCT = 10;
+
+/**
+ * Fixed prices (a CX preference's material values) that make the plan look
+ * better than its exchange: buying more than FIXED_DRIFT_PCT under the ask,
+ * or selling more than that over the bid, with what it adds to the daily
+ * profit. Prices checked against the Universe (no single ask/bid) are left
+ * out
+ * @author jplacht
+ */
+export function fixedPriceDrift(
+	materialio: IMaterialIO[],
+	prices: IPriceBook,
+	exchanges: ReadonlyMap<string, Exchange>
+) {
+	return materialio.flatMap((m) => {
+		if (!m.delta) return [];
+		const type = priceType(m.delta);
+		const source = prices.getPriceSource(m.ticker, type);
+		if (
+			(source.level !== "planet_ticker" &&
+				source.level !== "empire_ticker") ||
+			source.volume === "UNIVERSE"
+		)
+			return [];
+		const data = exchanges.get(`${m.ticker}.${source.volume}`);
+		const market = type === "BUY" ? data?.ask : data?.bid;
+		const fixed = prices.getPrice(m.ticker, type);
+		if (!market || !fixed) return [];
+		// > 0: the fixed price flatters the profit
+		const gap = type === "BUY" ? market - fixed : fixed - market;
+		if ((gap / market) * 100 <= FIXED_DRIFT_PCT) return [];
+		return [
+			{
+				ticker: m.ticker,
+				side: type === "BUY" ? ("buy" as const) : ("sell" as const),
+				fixed_price: money(fixed),
+				market: `${source.volume} ${type === "BUY" ? "ask" : "bid"}`,
+				market_price: money(market),
+				profit_overstated_per_day: money(gap * Math.abs(m.delta)),
+			},
+		];
+	});
+}
+
+/** the drift rows in one warning, or nothing */
+export function fixedPriceDriftWarning(
+	rows: ReturnType<typeof fixedPriceDrift>
+): string[] {
+	if (!rows.length) return [];
+	const total = rows.reduce((s, r) => s + r.profit_overstated_per_day, 0);
+	return [
+		`Fixed prices more than ${FIXED_DRIFT_PCT} % off the market in the plan's favour: ${rows.map((r) => `${r.ticker} ${r.side} at ${r.fixed_price} vs ${r.market} ${r.market_price}`).join(", ")}. At market prices profit is about ${money(total)} per day lower. Update the CX preference's fixed prices, or see check_plan_market.`,
+	];
+}
+
 export function warnings(calc: IPlanCalculation): string[] {
 	const out: string[] = [];
 	const { area, workforce, production } = calc.result;
@@ -490,6 +655,16 @@ export function warnings(calc: IPlanCalculation): string[] {
 			`Area over the limit: ${amount(area.areaUsed)} used of ${amount(area.areaTotal)} (${amount(-area.areaLeft)} too much). Biggest users: ${biggest.join(", ")}; habs, storage and core module ${amount(area.areaUsed - production_)}. Try habs "least_area" in calculate_plan_variant, fewer buildings or more permits.`
 		);
 	}
+	// the engine gives no bonus outside 0–5 per type (calculateExpertBonus)
+	const experts = Object.values(calc.result.experts).filter(
+		(e) => e.amount > 0
+	);
+	const expertTotal = experts.reduce((n, e) => n + e.amount, 0);
+	const overType = experts.filter((e) => e.amount > MAX_EXPERTS_PER_TYPE);
+	if (overType.length || expertTotal > MAX_EXPERTS_TOTAL)
+		out.push(
+			`Experts over the game's limits (${MAX_EXPERTS_PER_TYPE} per type, ${MAX_EXPERTS_TOTAL} per base): ${experts.map((e) => `${e.amount} ${e.name.replaceAll("_", " ")}`).join(", ")}.${overType.length ? ` More than ${MAX_EXPERTS_PER_TYPE} of a type gives that type no bonus at all.` : ""} Set experts in calculate_plan_variant, or "auto".`
+		);
 	for (const w of Object.values(workforce))
 		if (w.left < 0)
 			out.push(

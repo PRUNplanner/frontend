@@ -147,6 +147,23 @@ container `prunplanner-mcp`), not here.
   and the COGC boost per planet. On the test data the summary is 37 % of the full size for `get_plan`
   (4.0k of 10.7k characters) and 38 % for `get_planet`. A test that reads these fields
   passes `detail: "full"`.
+- **Checks a player would make by hand** (tester feedback, 2026-11-20;
+  `testerFeedback.test.ts`):
+  - Every order has `hours_per_run` (after efficiency) and `profit_per_hour`
+    per building-hour (`runTime()`), in the summary too.
+  - `warnings()` flags experts over 5 per type or 6 per base.
+  - `shipping()` gives `trips_per_week` for the Visitation frequency ships
+    (`SHIP_SIZES`, `shipDays()` in `engine/visitation.ts`, shared with the tool).
+  - `fixedPriceDrift()` flags a fixed CX-preference price more than 10 % on
+    the plan's side of its exchange's ask/bid. It is a warning in plan
+    results and variants, and `fixed_price_drift` in `check_plan_market`.
+  - `permitCost()` adds the base permits a new plan or more area permits
+    take: the empire's free permits first, then Base ROI's HQ upgrade cost.
+    A plan's area permits count against the empire's pool, as the Empire
+    page adds them up.
+  - `get_empire`'s text says when material rows are cut.
+  - The experts union names its two shapes in its error: the SDK checks
+    arguments before the handler, so these failures aren't in the log.
 - **Text carries the data.** A tool result's text block is a one-line summary
   plus the same JSON as `structuredContent`: Claude Desktop and others pass
   only the text to the model.

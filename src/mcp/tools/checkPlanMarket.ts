@@ -25,6 +25,8 @@ import {
 import {
 	amount,
 	defineTool,
+	FIXED_DRIFT_PCT,
+	fixedPriceDrift,
 	money,
 	planUrl,
 	uuidArg,
@@ -176,6 +178,16 @@ export const checkPlanMarket = defineTool({
 			};
 		}
 
+		const drift = fixedPriceDrift(
+			result.materialio,
+			v.ctx.prices,
+			gameData.exchanges
+		);
+		const driftTotal = drift.reduce(
+			(s, r) => s + r.profit_overstated_per_day,
+			0
+		);
+
 		const pct = args.range_pct ?? 20;
 		const profitAt = (args.profit_at ?? []).map((basis) => {
 			const calc = calculatePlan(v.input, {
@@ -218,6 +230,14 @@ export const checkPlanMarket = defineTool({
 						note: "No exchange to check: the plan has no CX preference and is priced at Universe VWAPs. Pass price_basis (e.g. AI1_ASKBID, BEST_ASKBID) or profit_at to see ask/bid.",
 					},
 			profit_at: profitAt.length ? profitAt : undefined,
+			// fixed prices that flatter the plan against its exchange
+			fixed_price_drift: drift.length
+				? {
+						note: `Fixed CX preference prices more than ${FIXED_DRIFT_PCT} % under the ask (buying) or over the bid (selling).`,
+						profit_overstated_per_day: money(driftTotal),
+						materials: drift,
+					}
+				: undefined,
 			profit_range: {
 				price_move_pct: pct,
 				note: `Profit when one material's price moves by ±${pct} %; break-even is the price change at which profit is 0.`,
@@ -272,7 +292,7 @@ export const checkPlanMarket = defineTool({
 			(c) => c.level === "red" || c.level === "amber"
 		);
 		return {
-			text: `${header.name}${args.variant ? " (variant)" : ""}: profit ${data.profit_per_day} per day${real ? `, ${money(real.calculation.overview.profit)} at ask/bid` : ""}; ${flagged.length} of ${checks.length} materials flagged${flagged.length ? ` (${flagged.map((c) => c.ticker).join(", ")})` : ""}.`,
+			text: `${header.name}${args.variant ? " (variant)" : ""}: profit ${data.profit_per_day} per day${real ? `, ${money(real.calculation.overview.profit)} at ask/bid` : ""}; ${flagged.length} of ${checks.length} materials flagged${flagged.length ? ` (${flagged.map((c) => c.ticker).join(", ")})` : ""}${drift.length ? `; fixed prices overstate profit by about ${money(driftTotal)} per day (${drift.map((r) => r.ticker).join(", ")})` : ""}.`,
 			data,
 		};
 	},

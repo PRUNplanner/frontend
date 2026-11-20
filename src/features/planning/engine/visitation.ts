@@ -141,3 +141,54 @@ export function calculateVisitation(
 		dailyVolume: dailyVolumeTotal,
 	};
 }
+
+/** the ships the Visitation frequency tool lists: capacity in t and m³ */
+export const SHIP_SIZES: readonly { weight: number; volume: number }[] = [
+	{ volume: 500, weight: 500 },
+	{ volume: 1000, weight: 1000 },
+	{ volume: 2000, weight: 2000 },
+	{ volume: 3000, weight: 1000 },
+	{ volume: 1000, weight: 3000 },
+	{ volume: 5000, weight: 5000 },
+];
+
+/**
+ * Days until a ship of this size is full with a base's exports, and with
+ * its imports, and which of weight or volume fills it first
+ * @author jplacht
+ *
+ * @param {{ weight: number; volume: number }} ship Capacity in t and m³
+ * @param {Pick<IVisitationData, "dailyWeightImport" | "dailyWeightExport" | "dailyVolumeImport" | "dailyVolumeExport">} daily Daily cargo
+ * @returns Days and the limiting side per direction
+ */
+export function shipDays(
+	ship: { weight: number; volume: number },
+	daily: Pick<
+		IVisitationData,
+		| "dailyWeightImport"
+		| "dailyWeightExport"
+		| "dailyVolumeImport"
+		| "dailyVolumeExport"
+	>
+): {
+	exportDays: number;
+	importDays: number;
+	exportLimit: "m³" | "t";
+	importLimit: "m³" | "t";
+} {
+	const side = (dailyWeight: number, dailyVolume: number) => {
+		const volumeDays = ship.volume / dailyVolume;
+		const weightDays = ship.weight / dailyWeight;
+		return volumeDays < weightDays
+			? { days: volumeDays, limit: "m³" as const }
+			: { days: weightDays, limit: "t" as const };
+	};
+	const out = side(daily.dailyWeightExport, daily.dailyVolumeExport);
+	const into = side(daily.dailyWeightImport, daily.dailyVolumeImport);
+	return {
+		exportDays: out.days,
+		importDays: into.days,
+		exportLimit: out.limit,
+		importLimit: into.limit,
+	};
+}

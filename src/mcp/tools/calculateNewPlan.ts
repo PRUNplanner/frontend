@@ -9,6 +9,7 @@ import {
 	calculationDetails,
 	defineTool,
 	detailArg,
+	permitCost,
 	PLAN_FULL_DETAIL,
 	summarizeDetails,
 	uuidArg,
@@ -113,7 +114,9 @@ export const calculateNewPlan = defineTool({
 			},
 			v.basis,
 			v.planet,
-			v.ctx.buildings
+			v.ctx.buildings,
+			// cached game data: no request
+			(await loadGameData(backend)).exchanges
 		);
 		const details = args.detail === "full" ? full : summarizeDetails(full);
 		const d = details.per_day;
@@ -135,6 +138,15 @@ export const calculateNewPlan = defineTool({
 					url: `${appUrl}/plan/${v.planet.planet_natural_id}`,
 				},
 				habitation,
+				// a new base takes its permits from the empire's pool
+				permits_cost:
+					permitCost(
+						v.empire,
+						v.plan.plan_permits_used,
+						v.ctx.prices,
+						v.calc.result.profit,
+						v.calc.overview.totalConstructionCost
+					) ?? undefined,
 				...details,
 				empire_choices: v.pricing?.choices,
 			},
