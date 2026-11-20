@@ -115,9 +115,9 @@
 	},
 	"opportunities": {
 		"headline": "Produktionschancen",
-		"intro": "Finde Rezepte, mit denen du überschüssige Materialien in andere Produkte umwandeln kannst. Diese Ansicht zeigt Produktionsmöglichkeiten, bei denen dein Material I/O ein positives Delta hat, sortiert nach der Verfügbarkeit der Inputs.",
+		"intro": "Finde Aufträge, mit denen du überschüssige Materialien in andere Produkte umwandeln kannst. Diese Ansicht zeigt Produktionsmöglichkeiten, bei denen dein Material I/O ein positives Delta hat, sortiert nach der Verfügbarkeit der Inputs.",
 		"please_note": "Beachte bitte:",
-		"note": "Verlass dich nicht allein auf die Produktionschance, sondern prüfe das gehandelte Volumen und die Marktplatz-Übersicht, um die Marktliquidität einzuschätzen. Nutze die Indikatoren, um zu sehen, ob ein Material dein Engpass ist oder ob es profitabler ist, das überschüssige Material direkt zu verkaufen, statt es in einem anderen Rezept weiterzuverarbeiten.",
+		"note": "Verlass dich nicht allein auf die Produktionschance, sondern prüfe das gehandelte Volumen und die Marktplatz-Übersicht, um die Marktliquidität einzuschätzen. Nutze die Indikatoren, um zu sehen, ob ein Material dein Engpass ist oder ob es profitabler ist, das überschüssige Material direkt zu verkaufen, statt es in einem anderen Auftrag weiterzuverarbeiten.",
 		"tiles": {
 			"opportunities": "Chancen",
 			"delta_required": "Delta benötigt",
