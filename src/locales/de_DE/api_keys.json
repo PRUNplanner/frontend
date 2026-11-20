@@ -3,11 +3,10 @@
 	"title": "API Schlüssel",
 	"info": {
 		"description": {
-			"p1": "Die {link} bietet programmatischen Zugriff auf alle deine Planungsdaten, Spiel-Metadaten (Gebäude, Rezepte, Materialien) und berechnete Marktkennzahlen wie VWAP. Öffentliche Endpunkte bleiben für die Community offen, der Zugriff auf private Planungsdaten – einschließlich deiner Plankonfigurationen – erfordert dagegen eine sichere Authentifizierung.",
-			"p2": "Mithilfe dieser Endpunkte kannst du deine Planungsdaten mit externen Tabellen, eigenen Dashboards oder sogar Optimierungsalgorithmen synchronisieren.",
-			"link": "PRUNplanner REST API",
-			"warning": "API-Schlüssel gewähren vollen Zugriff auf deine Daten und bleiben unbegrenzt gültig. Diese Zugangsdaten sollten so sensibel wie dein Passwort behandelt werden. Übertrage niemals Schlüssel in öffentliche Repositories oder teile sie mit nicht überprüften Drittanbieterdiensten. Wenn ein Schlüssel kompromittiert ist, widerrufe ihn sofort und erzeuge einen Ersatz.",
-			"warning_sheets": "Ein Schlüssel in einer Google-Sheets-URL ist für alle sichtbar, die die Tabelle öffnen können. Nutze pro Tabelle einen eigenen Schlüssel, damit du ihn einzeln widerrufen kannst."
+			"p1": "Read your PRUNplanner data from sheets, scripts and AI assistants. See the {link}.",
+			"link": "REST API reference",
+			"warning": "Treat a key like your password: it reads all your planning data, and a read & write key can also change it. {link}",
+			"warning_link": "How long keys stay valid"
 		}
 	},
 	"get_started": {
@@ -153,10 +152,16 @@
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
-	"implementation": {
-		"title": "Autorisierung-Implementierung",
-		"link": "REST API Referenz anzeigen →",
-		"authorize": "Die REST-API-Referenz hat einen „Authorize“-Button: Füge dort einen Schlüssel ein, um Aufrufe im Browser auszuprobieren."
+	"mcp": {
+		"title": "AI assistants (MCP)",
+		"description": "Connect Claude, ChatGPT/Codex, Copilot, Cursor and other assistants: they read and calculate your plans and empires with PRUNplanner's own engine.",
+		"server_url": "Server URL",
+		"header": "Header",
+		"copy_url": "Copy server URL",
+		"copied": "Server URL copied",
+		"download": "Download for Claude Desktop",
+		"keys": "A Read-only key reads and calculates; a Read & write key also saves plans, empires and preferences.",
+		"setup_link": "Set up Claude, ChatGPT/Codex, VS Code, Cursor and more"
 	},
 	"create": {
 		"title": "API-Schlüssel erstellen",
