@@ -80,6 +80,17 @@ export function fakeBackend(
 		requests.push({ method, path: url.pathname, headers, body });
 		if (status && headers.has("Authorization"))
 			return new Response("{}", { status });
+		// the planet batch is a read: the planet for each id, like the backend
+		if (method === "POST" && url.pathname === "/data/planets/multiple/")
+			return new Response(
+				JSON.stringify(
+					(body as string[]).map((id) => ({
+						...planet,
+						planet_natural_id: id,
+					}))
+				),
+				{ status: 200 }
+			);
 		if (method !== "GET") {
 			const answer = onWrite?.(method, url.pathname, body) ?? {};
 			return answer.body === undefined

@@ -208,15 +208,20 @@ describe("game data helpers", () => {
 		});
 		const ok = (body: unknown) =>
 			new Response(JSON.stringify(body), { status: 200 });
+		// requests start once the backend's concurrency limit lets them
+		const answer = async (i: number, r: Response) => {
+			await vi.waitFor(() => expect(pending[i]).toBeDefined());
+			pending[i](r);
+		};
 
 		// sparks: the first request fails after a newer one replaced it
 		const stale = getSparks(b, "CI1");
 		vi.setSystemTime(Date.now() + 2 * 3_600_000);
 		const fresh = getSparks(b, "CI1");
-		pending[0](new Response("{}", { status: 404 }));
+		await answer(0, new Response("{}", { status: 404 }));
 		await expect(stale).rejects.toMatchObject({ code: "tool_error" });
 		const sparks = { exchange: "CI1", days: 30, series: { RAT: [1, 2] } };
-		pending[1](ok(sparks));
+		await answer(1, ok(sparks));
 		expect(await fresh).toMatchObject({ series: { RAT: [1, 2] } });
 		// still cached: no third request
 		expect(await getSparks(b, "CI1")).toMatchObject(sparks);
@@ -226,9 +231,9 @@ describe("game data helpers", () => {
 		const oldHistory = getHistory(b, "FE", "NC1");
 		vi.setSystemTime(Date.now() + 2 * 3_600_000);
 		const newHistory = getHistory(b, "FE", "NC1");
-		pending[2](new Response("{}", { status: 404 }));
+		await answer(2, new Response("{}", { status: 404 }));
 		await expect(oldHistory).rejects.toMatchObject({ code: "tool_error" });
-		pending[3](ok([]));
+		await answer(3, ok([]));
 		expect(await newHistory).toEqual([]);
 		expect(await getHistory(b, "FE", "NC1")).toEqual([]);
 		expect(paths.filter((p) => p === "/data/cxpc/FE/")).toHaveLength(2);

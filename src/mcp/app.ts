@@ -242,6 +242,7 @@ function createServer(options: IAppOptions, call: ICallInfo): McpServer {
 							),
 							backend_calls: backend.stats.calls,
 							backend_ms: Math.round(backend.stats.ms),
+							backend_wall_ms: Math.round(backend.stats.wallMs),
 							api_key_prefix: call.keyPrefix,
 						},
 						outcome === "ok" ? "info" : "warning"
