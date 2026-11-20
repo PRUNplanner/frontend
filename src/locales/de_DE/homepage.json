@@ -30,7 +30,7 @@
 		"cta_logged_in": "Imperium öffnen",
 		"example": "Beispielplan öffnen",
 		"example_note": "Für das Beispiel brauchst du kein Konto. Mit geöffnetem Spiel ist die Registrierung in einer Minute erledigt.",
-		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Profit, Amortisation, Belegschaft und Fläche in der Ergebnisleiste, die Produktionsliste mit ihren Rezepten und Material I/O",
+		"image_alt": "Der Plan-Editor für eine Eisenbasis auf Montem: Profit, Amortisation, Belegschaft und Fläche in der Ergebnisleiste, die Produktionsliste mit ihren Aufträgen und Material I/O",
 		"image_title": "prunplanner.org / plan / Montem Eisen"
 	},
 	"numbers": {
@@ -54,7 +54,7 @@
 			},
 			"buildings": {
 				"title": "Gebäude hinzufügen",
-				"text": "Wähle Gebäude und Rezepte aus dem, was der Planet bietet. Jedes Gebäude zeigt seine Effizienz, seinen Profit pro Tag und seine Fläche; jedes Rezept seine Laufzeit, seinen Anteil und seine COGM."
+				"text": "Wähle Gebäude und Aufträge aus dem, was der Planet bietet. Jedes Gebäude zeigt seine Effizienz, seinen Profit pro Tag und seine Fläche; jeder Auftrag seine Laufzeit, seinen Anteil und seine COGM."
 			},
 			"workforce": {
 				"title": "Belegschaft einplanen",
@@ -149,12 +149,12 @@
 		"starter": {
 			"label": "Neu im Spiel",
 			"title": "Starte mit einem typischen Setup und mach es zu deinem.",
-			"text": "Ein leerer Plan schlägt vor, was andere Spieler auf diesem Planeten typischerweise planen. Das ist eine Orientierung, keine Regel: Ändere jedes Gebäude und jedes Rezept, bis du dein eigenes bestes Setup gefunden hast."
+			"text": "Ein leerer Plan schlägt vor, was andere Spieler auf diesem Planeten typischerweise planen. Das ist eine Orientierung, keine Regel: Ändere jedes Gebäude und jeden Auftrag, bis du dein eigenes bestes Setup gefunden hast."
 		},
 		"shared": {
 			"label": "Geteilte Pläne",
 			"title": "Teile einen Plan als Link.",
-			"text": "Jeder mit dem Link sieht die Rezepte und kann Änderungen ausprobieren, ganz ohne Konto. Ideal, um deine Corporation um Feedback zu bitten."
+			"text": "Jeder mit dem Link sieht die Aufträge und kann Änderungen ausprobieren, ganz ohne Konto. Ideal, um deine Corporation um Feedback zu bitten."
 		}
 	},
 	"market": {
@@ -194,8 +194,8 @@
 		"label": "Schritte zur Einrichtung",
 		"plan": {
 			"label": "Plan",
-			"text": "Jeder Plan gehört zu einem Planeten: Gebäude, Produktionsrezepte, Unterkünfte, Experten und COGC. Los geht es von der Planetensuche.",
-			"alt": "Produktionsgebäude und ihre Rezepte im Plan-Editor"
+			"text": "Jeder Plan gehört zu einem Planeten: Gebäude, Produktionsaufträge, Unterkünfte, Experten und COGC. Los geht es von der Planetensuche.",
+			"alt": "Produktionsgebäude und ihre Aufträge im Plan-Editor"
 		},
 		"empire": {
 			"label": "Imperium",
@@ -222,8 +222,8 @@
 			"text": "Preis- und Volumenentwicklung je Material und Marktplatz."
 		},
 		"recipe_roi": {
-			"label": "Rezept-ROI",
-			"text": "Jedes Rezept sortiert nach seinem ROI auf Basis aktueller Preise."
+			"label": "Auftrags-ROI",
+			"text": "Jeder Auftrag sortiert nach seinem ROI auf Basis aktueller Preise."
 		},
 		"production_chains": {
 			"label": "Produktionsketten",
@@ -263,7 +263,7 @@
 		},
 		"try": {
 			"question": "Kann ich es ohne Konto ausprobieren?",
-			"answer": "Ja. Öffne den Beispielplan: Du kannst Gebäude und Rezepte ändern und siehst, wie sich die Zahlen aktualisieren. Ein Konto brauchst du nur, um eigene Pläne zu speichern."
+			"answer": "Ja. Öffne den Beispielplan: Du kannst Gebäude und Aufträge ändern und siehst, wie sich die Zahlen aktualisieren. Ein Konto brauchst du nur, um eigene Pläne zu speichern."
 		},
 		"official": {
 			"question": "Ist es ein offizielles Tool von Prosperous Universe?",
