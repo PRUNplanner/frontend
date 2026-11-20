@@ -84,6 +84,8 @@ Funnel: `landing:auth_open` with `panel = registration` → `account:signup_comp
 | --- | --- | --- |
 | `apikey:key_copy` | | new key copied from the create dialog |
 | `apikey:use_in_builder` | | "Use in URL builder" |
+| `apikey:mcp_url_copy` | | MCP server URL copied from the AI assistants card |
+| `apikey:mcpb_download` | | "Download for Claude Desktop" (the `.mcpb`) clicked |
 | `apikey:builder_change` | `endpoint` (entry id in `apiEndpoints.ts`), `format` (`csv`, `json`) | builder endpoint or format changed, debounced |
 | `apikey:snippet_copy` | `endpoint`, `format`, `kind` (`url`, `sheets`, `curl`, `python`), `has_key` (real key, not the placeholder) | a snippet copied |
 

@@ -114,3 +114,10 @@ export function resolvePath(
 	});
 	return missing ? null : path;
 }
+
+/** the production MCP server, for AI assistants */
+export const MCP_SERVER_URL = "https://mcp.prunplanner.org/mcp";
+
+/** the Claude Desktop extension, attached to every frontend release */
+export const MCP_BUNDLE_URL =
+	"https://github.com/PRUNplanner/frontend/releases/latest/download/prunplanner.mcpb";

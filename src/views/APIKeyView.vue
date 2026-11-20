@@ -20,6 +20,7 @@
 	import { formatDate, relativeFromDate } from "@/util/date";
 
 	// Components
+	import APIMCPCard from "@/features/api_keys/components/APIMCPCard.vue";
 	import APIURLBuilder from "@/features/api_keys/components/APIURLBuilder.vue";
 	import HelpPanel from "@/features/help/components/HelpPanel.vue";
 
@@ -264,240 +265,114 @@
 			<h1 class="text-2xl font-bold">{{ $t("api_keys.title") }}</h1>
 			<HelpPanel article="api_keys" />
 		</div>
-		<div
-			class="grid grid-cols-1 lg:grid-cols-3 lg:divide-x divide-white/10 min-h-screen">
-			<div class="lg:col-span-2 min-w-0 flex flex-col gap-3 px-6 py-3">
-				<i18n-t keypath="api_keys.info.description.p1" tag="div">
+		<div class="min-w-0 max-w-5xl flex flex-col gap-3 px-6 py-3">
+			<i18n-t keypath="api_keys.info.description.p1" tag="p">
+				<template #link>
+					<a
+						:href="docsUrl"
+						target="_blank"
+						class="font-bold underline hover:text-prunplanner"
+						>{{ $t("api_keys.info.description.link") }}</a
+					>
+				</template>
+			</i18n-t>
+			<div
+				class="bg-prunplanner/10 border-l-4 border-prunplanner p-3 text-xs"
+				data-testid="key-warning">
+				<i18n-t keypath="api_keys.info.description.warning" tag="p">
 					<template #link>
-						<a
-							:href="docsUrl"
-							target="_blank"
+						<RouterLink
+							to="/help/api_keys#validity"
 							class="font-bold underline hover:text-prunplanner"
-							>{{ $t("api_keys.info.description.link") }}</a
+							>{{
+								$t("api_keys.info.description.warning_link")
+							}}</RouterLink
 						>
 					</template>
 				</i18n-t>
-				<div>
-					{{ $t("api_keys.info.description.p2") }}
-				</div>
+			</div>
+
+			<section data-testid="manage-keys">
 				<div
-					class="bg-prunplanner/10 border-l-4 border-prunplanner p-3 flex flex-col gap-2">
-					<p class="text-white font-mono text-xs">
-						{{ $t("api_keys.info.description.warning") }}
-					</p>
-					<p class="text-white font-mono text-xs">
-						{{ $t("api_keys.info.description.warning_sheets") }}
-					</p>
-				</div>
-
-				<h2 class="text-lg font-bold pt-3">
-					{{ $t("api_keys.get_started.title") }}
-				</h2>
-				<ol class="list-decimal pl-6 flex flex-col gap-1">
-					<li>{{ $t("api_keys.get_started.step_create") }}</li>
-					<li>{{ $t("api_keys.get_started.step_pick") }}</li>
-					<li>{{ $t("api_keys.get_started.step_paste") }}</li>
-				</ol>
-
-				<section
-					id="api-builder"
-					ref="builderRef"
-					class="flex flex-col gap-3 pt-3 scroll-mt-3">
+					class="flex flex-row flex-wrap gap-3 justify-between items-center pt-3 pb-3">
 					<h2 class="text-lg font-bold">
-						{{ $t("api_keys.builder.title") }}
+						{{ $t("api_keys.manage.title") }}
 					</h2>
-					<APIURLBuilder :api-key="builderKey" />
-				</section>
-
-				<div>
-					<div
-						class="flex flex-row flex-wrap gap-3 justify-between items-center pt-6 pb-3">
-						<h2 class="text-lg font-bold">
-							{{ $t("api_keys.manage.title") }}
-						</h2>
-						<div class="flex flex-row gap-3">
-							<PButton
-								@click="showCreateModal = !showCreateModal">
-								{{ $t("api_keys.manage.buttons.new_apikey") }}
-							</PButton>
-							<PButton
-								:aria-label="$t('common.buttons.reload')"
-								@click="fetchAPIKeys">
-								<template #icon>
-									<RestartAltSharp />
-								</template>
-							</PButton>
-						</div>
+					<div class="flex flex-row gap-3">
+						<PButton @click="showCreateModal = !showCreateModal">
+							{{ $t("api_keys.manage.buttons.new_apikey") }}
+						</PButton>
+						<PButton
+							:aria-label="$t('common.buttons.reload')"
+							@click="fetchAPIKeys">
+							<template #icon>
+								<RestartAltSharp />
+							</template>
+						</PButton>
 					</div>
-					<template v-if="apiKeyData?.length">
-						<div class="hidden md:block">
-							<PTable class="w-full" striped>
-								<thead>
-									<tr>
-										<th>
-											{{
-												$t(
-													"api_keys.manage.table.apikey_name"
-												)
-											}}
-										</th>
-										<th>
-											{{
-												$t(
-													"api_keys.manage.table.apikey_prefix"
-												)
-											}}
-										</th>
-										<th>
-											{{
-												$t(
-													"api_keys.manage.table.apikey_access"
-												)
-											}}
-										</th>
-										<th>
-											{{
-												$t(
-													"api_keys.manage.table.apikey_created"
-												)
-											}}
-										</th>
-										<th>
-											{{
-												$t(
-													"api_keys.manage.table.apikey_lastused"
-												)
-											}}
-										</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr
-										v-for="apiKey in apiKeyData"
-										:key="apiKey.id">
-										<td class="font-bold">
-											{{ apiKey.name }}
-										</td>
-										<td class="font-mono">
-											{{ apiKey.prefix }}
-										</td>
-										<td data-testid="key-access">
-											{{
-												$t(
-													`api_keys.scope.${apiKey.scope}`
-												)
-											}}
-										</td>
-										<td class="font-mono">
-											{{ formatDate(apiKey.created) }}
-										</td>
-										<td>
-											<span v-if="apiKey.last_used">
-												{{
-													relativeFromDate(
-														apiKey.last_used
-													)
-												}}
-											</span>
-											<PTooltip v-else>
-												<template #trigger>
-													<span class="text-muted">
-														{{
-															$t(
-																"api_keys.manage.never"
-															)
-														}}
-													</span>
-												</template>
-												{{
-													$t(
-														"api_keys.manage.last_used_hint"
-													)
-												}}
-											</PTooltip>
-										</td>
-										<td class="flex justify-end">
-											<PButton
-												type="error"
-												:loading="
-													apiKey.id === inDeletionId
-												"
-												@click="revokeKey(apiKey)">
-												{{
-													$t(
-														"api_keys.manage.buttons.revoke_apikey"
-													)
-												}}
-											</PButton>
-										</td>
-									</tr>
-								</tbody>
-							</PTable>
-						</div>
-						<ul class="md:hidden flex flex-col gap-3">
-							<li
-								v-for="apiKey in apiKeyData"
-								:key="apiKey.id"
-								class="border border-white/10 rounded p-3 flex flex-col gap-2">
-								<div
-									class="flex flex-row justify-between items-center gap-3">
-									<span class="font-bold break-all">
-										{{ apiKey.name }}
-									</span>
-									<PButton
-										type="error"
-										:loading="apiKey.id === inDeletionId"
-										@click="revokeKey(apiKey)">
+				</div>
+				<template v-if="apiKeyData?.length">
+					<div class="hidden md:block">
+						<PTable class="w-full" striped>
+							<thead>
+								<tr>
+									<th>
 										{{
 											$t(
-												"api_keys.manage.buttons.revoke_apikey"
+												"api_keys.manage.table.apikey_name"
 											)
 										}}
-									</PButton>
-								</div>
-								<dl
-									class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
-									<dt class="text-muted">
+									</th>
+									<th>
 										{{
 											$t(
 												"api_keys.manage.table.apikey_prefix"
 											)
 										}}
-									</dt>
-									<dd class="font-mono">
-										{{ apiKey.prefix }}
-									</dd>
-									<dt class="text-muted">
+									</th>
+									<th>
 										{{
 											$t(
 												"api_keys.manage.table.apikey_access"
 											)
 										}}
-									</dt>
-									<dd>
-										{{
-											$t(`api_keys.scope.${apiKey.scope}`)
-										}}
-									</dd>
-									<dt class="text-muted">
+									</th>
+									<th>
 										{{
 											$t(
 												"api_keys.manage.table.apikey_created"
 											)
 										}}
-									</dt>
-									<dd class="font-mono">
-										{{ formatDate(apiKey.created) }}
-									</dd>
-									<dt class="text-muted">
+									</th>
+									<th>
 										{{
 											$t(
 												"api_keys.manage.table.apikey_lastused"
 											)
 										}}
-									</dt>
-									<dd>
+									</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									v-for="apiKey in apiKeyData"
+									:key="apiKey.id">
+									<td class="font-bold">
+										{{ apiKey.name }}
+									</td>
+									<td class="font-mono">
+										{{ apiKey.prefix }}
+									</td>
+									<td data-testid="key-access">
+										{{
+											$t(`api_keys.scope.${apiKey.scope}`)
+										}}
+									</td>
+									<td class="font-mono">
+										{{ formatDate(apiKey.created) }}
+									</td>
+									<td>
 										<span v-if="apiKey.last_used">
 											{{
 												relativeFromDate(
@@ -521,61 +396,138 @@
 												)
 											}}
 										</PTooltip>
-									</dd>
-								</dl>
-							</li>
-						</ul>
-					</template>
-					<div
-						v-else-if="!loaded"
-						class="text-center font-mono text-white/80">
-						{{ $t("api_keys.manage.loading") }}
+									</td>
+									<td class="flex justify-end">
+										<PButton
+											type="error"
+											:loading="
+												apiKey.id === inDeletionId
+											"
+											@click="revokeKey(apiKey)">
+											{{
+												$t(
+													"api_keys.manage.buttons.revoke_apikey"
+												)
+											}}
+										</PButton>
+									</td>
+								</tr>
+							</tbody>
+						</PTable>
 					</div>
-					<div v-else class="text-center font-mono text-white/80">
-						{{ $t("api_keys.manage.empty") }}
-					</div>
-				</div>
-			</div>
-			<div class="px-6 py-3">
+					<ul class="md:hidden flex flex-col gap-3">
+						<li
+							v-for="apiKey in apiKeyData"
+							:key="apiKey.id"
+							class="border border-white/10 rounded p-3 flex flex-col gap-2">
+							<div
+								class="flex flex-row justify-between items-center gap-3">
+								<span class="font-bold break-all">
+									{{ apiKey.name }}
+								</span>
+								<PButton
+									type="error"
+									:loading="apiKey.id === inDeletionId"
+									@click="revokeKey(apiKey)">
+									{{
+										$t(
+											"api_keys.manage.buttons.revoke_apikey"
+										)
+									}}
+								</PButton>
+							</div>
+							<dl
+								class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+								<dt class="text-muted">
+									{{
+										$t(
+											"api_keys.manage.table.apikey_prefix"
+										)
+									}}
+								</dt>
+								<dd class="font-mono">
+									{{ apiKey.prefix }}
+								</dd>
+								<dt class="text-muted">
+									{{
+										$t(
+											"api_keys.manage.table.apikey_access"
+										)
+									}}
+								</dt>
+								<dd>
+									{{ $t(`api_keys.scope.${apiKey.scope}`) }}
+								</dd>
+								<dt class="text-muted">
+									{{
+										$t(
+											"api_keys.manage.table.apikey_created"
+										)
+									}}
+								</dt>
+								<dd class="font-mono">
+									{{ formatDate(apiKey.created) }}
+								</dd>
+								<dt class="text-muted">
+									{{
+										$t(
+											"api_keys.manage.table.apikey_lastused"
+										)
+									}}
+								</dt>
+								<dd>
+									<span v-if="apiKey.last_used">
+										{{ relativeFromDate(apiKey.last_used) }}
+									</span>
+									<PTooltip v-else>
+										<template #trigger>
+											<span class="text-muted">
+												{{
+													$t("api_keys.manage.never")
+												}}
+											</span>
+										</template>
+										{{
+											$t("api_keys.manage.last_used_hint")
+										}}
+									</PTooltip>
+								</dd>
+							</dl>
+						</li>
+					</ul>
+				</template>
 				<div
-					class="bg-white/5 border border-dark-gray border-dashed rounded flex flex-col gap-3 p-3">
-					<h3 class="uppercase font-bold">
-						{{ $t("api_keys.implementation.title") }}
-					</h3>
-					<div class="space-y-4">
-						<div>
-							<span class="text-xs text-prunplanner block mb-1">
-								HTTP Header
-							</span>
-							<code
-								class="text-xs text-white/80 bg-gray-dark p-2 rounded block border border-white/10">
-								Authorization: Api-Key &lt;KEY&gt;
-							</code>
-						</div>
-
-						<div>
-							<span class="text-xs text-prunplanner block mb-1">
-								URL Parameter
-							</span>
-							<code
-								class="text-xs text-white/80 bg-gray-dark p-2 rounded block border border-white/10">
-								?api_key=&lt;KEY&gt;
-							</code>
-						</div>
-
-						<p class="text-xs text-white/80">
-							{{ $t("api_keys.implementation.authorize") }}
-						</p>
-
-						<a
-							:href="docsUrl"
-							target="_blank"
-							class="font-mono text-xs font-bold text-white hover:text-prunplanner underline mt-2">
-							{{ $t("api_keys.implementation.link") }}
-						</a>
-					</div>
+					v-else-if="!loaded"
+					class="text-center font-mono text-white/80">
+					{{ $t("api_keys.manage.loading") }}
 				</div>
-			</div>
+				<div v-else class="text-center font-mono text-white/80">
+					{{ $t("api_keys.manage.empty") }}
+				</div>
+			</section>
+
+			<APIMCPCard />
+
+			<section class="flex flex-col gap-1 pt-3">
+				<h2 class="text-lg font-bold">
+					{{ $t("api_keys.get_started.title") }}
+				</h2>
+				<ol class="list-decimal pl-6 flex flex-col gap-1">
+					<li>{{ $t("api_keys.get_started.step_create") }}</li>
+					<li>{{ $t("api_keys.get_started.step_pick") }}</li>
+					<li>{{ $t("api_keys.get_started.step_paste") }}</li>
+				</ol>
+			</section>
+
+			<section
+				id="api-builder"
+				ref="builderRef"
+				class="flex flex-col gap-3 pt-3 scroll-mt-3">
+				<h2 class="text-lg font-bold">
+					{{ $t("api_keys.builder.title") }}
+				</h2>
+				<APIURLBuilder :api-key="builderKey" />
+			</section>
 		</div>
 	</div>
 </template>
