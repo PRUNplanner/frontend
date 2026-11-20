@@ -1,132 +1,132 @@
-The results tell you what your base earns, how long it takes to pay back, whether its workers are housed, and how its area and storage hold up. They're the five tiles at the top of a plan (in the Standard layout), plus the Material I/O table with its totals, and they update with every edit.
+Los resultados te dicen cuánto gana tu base, cuánto tarda en amortizarse, si sus trabajadores tienen alojamiento y cómo van su área y su almacenamiento. Son las cinco tarjetas de la parte superior de un plan (en el diseño Estándar), más la tabla de E/S de materiales con sus totales, y se actualizan con cada cambio.
 
-They're what you look at to judge a plan: what the base would earn, and where it runs short. A red figure on the **Workforce** or **Area** tile marks a shortage of beds or area.
+Son lo que miras para valorar un plan: cuánto ganaría la base y dónde se queda corta. Una cifra en rojo en la tarjeta **Mano de obra** o **Área** indica que faltan camas o área.
 
-## Results tiles {#tiles}
+## Tarjetas de resultados {#tiles}
 
-Each tile is a button. Click it to open the part its figure comes from, and if that part is hidden in your layout, it opens in a dialog.
+Cada tarjeta es un botón. Haz clic en ella para abrir la parte de la que sale su cifra, y si esa parte está oculta en tu diseño, se abre en un diálogo.
 
-| Tile             | Shows                                           | Opens                                  |
-| ---------------- | ----------------------------------------------- | -------------------------------------- |
-| **Profit / day** | Revenue minus cost per day                      | **Profit** (the Profit Breakdown tool) |
-| **Payback**      | Days until the profit has paid for the base     | **Construction**                       |
-| **Workforce**    | The lowest workforce efficiency, beds per tier  | **Workforce**                          |
-| **Area**         | Area used of the area you have, profit per area | **Planet**                             |
-| **Storage**      | Days until the base storage is full             | **Visits**                             |
+| Tarjeta             | Muestra                                                 | Abre                                                  |
+| ------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| **Beneficio / día** | Ingresos menos coste al día                             | **Beneficio** (la herramienta Desglose del beneficio) |
+| **Amortización**    | Días hasta que el beneficio ha pagado la base           | **Construcción**                                      |
+| **Mano de obra**    | La eficiencia de mano de obra más baja, camas por nivel | **Mano de obra**                                      |
+| **Área**            | Área usada del área que tienes, beneficio por área      | **Planeta**                                           |
+| **Almacenamiento**  | Días hasta que el almacenamiento de la base se llena    | **Visitas**                                           |
 
-Every figure uses the prices of the empire the plan calculates with (see [Empire & prices](/help/plan_base#empire-and-prices)).
+Todas las cifras usan los precios del imperio con el que se calcula el plan (consulta [Imperio y precios](/help/plan_base#empire-and-prices)).
 
-### Profit / day {#profit}
+### Beneficio / día {#profit}
 
-**Profit / day** is the base's [[profit]]: revenue minus cost, per day. The line under it reads "Revenue … · cost … incl. … degradation and … production fees".
+**Beneficio / día** es el [[profit|beneficio]] de la base: ingresos menos coste, al día. La línea de debajo dice «Ingresos … · coste … incl. … de degradación y … de tasas de producción».
 
-_Revenue_ is the value of every material the base makes more of than it uses (a positive Δ in [Material I/O](#material-io)), at the sell price.
+Los _ingresos_ son el valor de cada material del que la base produce más de lo que usa (un Δ positivo en [E/S de materiales](#material-io)), al precio de venta.
 
-_Cost_ adds up three things:
+El _coste_ suma tres cosas:
 
-- every material the base uses more of than it makes, at the buy price, including the consumables of your [[workforce]];
-- [[degradation]], which is 1/180 of the construction cost of the _production buildings_ per day. The [[core-module|core module]], [[habs|habitations]] and [[storage]] don't count here;
-- [[production-fees|production fees]] (see [below](#production-fees)).
+- cada material del que la base usa más de lo que produce, al precio de compra, incluidos los consumibles de tu [[workforce|mano de obra]];
+- la [[degradation|degradación]], que es 1/180 del coste de construcción de los _edificios de producción_ al día. El [[core-module|módulo central]], los [[habs|hábitats]] y el [[storage|almacenamiento]] no cuentan aquí;
+- las [[production-fees|tasas de producción]] (consulta [más abajo](#production-fees)).
 
-Degradation stands for the wear on your buildings. For example (made-up numbers), production buildings that cost 900,000 ȼ to build add 900,000 ÷ 180 = 5,000 ȼ of degradation per day.
+La degradación representa el desgaste de tus edificios. Por ejemplo (con cifras inventadas), unos edificios de producción que cuestan 900.000 ȼ de construir añaden 900.000 ÷ 180 = 5.000 ȼ de degradación al día.
 
-A material the base makes and also uses counts once, by its net amount. If the plan makes 100 RAT and its workers eat 60, only the 40 extra are sold.
-
-> [!tip]
-> Profit / day is the same figure as the bold **Profit / day** line in the [Material I/O totals](#totals). Click the tile to see it broken down into its parts in the Profit tool (see [Plan tools](/help/plan_tools)).
-
-### Production fees {#production-fees}
-
-The planet charges a fee for each production order, and PRUNplanner counts it per building. In the game, the planet's governors set these fees per expertise and workforce tier, and a fee is paid when a production order starts. PRUNplanner takes the planet's fee for the building's expertise for each workforce tier, then averages those over the building's workers, weighted by headcount.
-
-Per day, a building pays that fee × its efficiency × its count. A faster building runs more orders, so it pays more, and a building that runs nothing pays nothing. A planet without fees, or a building without an expertise, costs no fee.
-
-For example (made-up numbers), take a building with 10 pioneers and 30 settlers on a planet that charges 20 ȼ for pioneers and 40 ȼ for settlers in its expertise. Its fee is (10 × 20 + 30 × 40) ÷ 40 = 35 ȼ per day at 100 %. Two of them at 120 % efficiency pay 35 × 1.2 × 2 = 84 ȼ per day.
-
-Fees aren't a material, so they don't show up as rows in Material I/O. You'll find them in the profit line, in the [totals](#totals), in the recipe picker's **ȼ / day** and in the COGM dialog (see [Production & recipes](/help/plan_production#cogm)).
-
-### Payback {#payback}
-
-**Payback** is the build cost of the base divided by its profit per day, in days (for example "212.40 d"). It shows "never" when the base makes no profit.
-
-For example (made-up numbers), a base that costs 1,000,000 ȼ to build and makes 5,000 ȼ a day pays back in 1,000,000 ÷ 5,000 = 200 days. If you see "never", don't worry: it only means the profit per day is 0 or below at these prices, so the base wouldn't earn its build cost back. The **Profit / day** tile shows why.
-
-The line under it is the build cost ("… **ȼ build cost**"). That's every construction material at the buy price, for the production buildings, the core module (once), and every habitation and storage building. It includes the extra materials the planet's environment needs (see [[extra-building-materials|extra building materials]]).
+Un material que la base produce y también usa cuenta una vez, por su cantidad neta. Si el plan produce 100 RAT y sus trabajadores comen 60, solo se venden las 40 que sobran.
 
 > [!tip]
-> Payback counts the habitations and storage, but Profit / day's degradation doesn't. A base with many habitations can pay back slowly even though its daily profit looks fine. Open **Construction** to see what you still have to buy.
+> Beneficio / día es la misma cifra que la línea en negrita **Beneficio / día** de los [totales de la E/S de materiales](#totals). Haz clic en la tarjeta para verla desglosada en sus partes en la herramienta Beneficio (consulta [Herramientas del plan](/help/plan_tools)).
 
-### Workforce {#workforce}
+### Tasas de producción {#production-fees}
 
-The **Workforce** figure is the lowest efficiency among the workforce tiers the plan needs workers of, for example "86.7 %". It shows "—" when no building needs workers, and it turns red when any tier has fewer beds than workers.
+El planeta cobra una tasa por cada orden de producción, y PRUNplanner la cuenta por edificio. En el juego, los gobernadores del planeta fijan estas tasas por especialización y nivel de mano de obra, y la tasa se paga cuando empieza una orden de producción. PRUNplanner toma la tasa del planeta para la especialización del edificio en cada nivel de mano de obra, y luego hace la media entre los trabajadores del edificio, ponderada por número de trabajadores.
 
-The red matters because workers without beds lower production efficiency, and with it what your buildings make. Adding enough habitations for that tier in **Infrastructure** clears it. With **Auto** on, PRUNplanner picks them for you.
+Por día, un edificio paga esa tasa × su eficiencia × su cantidad. Un edificio más rápido ejecuta más órdenes, así que paga más, y un edificio que no ejecuta nada no paga nada. Un planeta sin tasas, o un edificio sin especialización, no cuesta ninguna tasa.
 
-The line under it lists each needed tier as workers needed / beds, for example "PIO 260/650 · SET 550/1,450", with a tier short of beds in red. A second line lists the experts you placed, for example "Agri 1 · Chem 4". Hover it for the whole list.
+Por ejemplo (con cifras inventadas), toma un edificio con 10 pioneros y 30 colonos en un planeta que cobra 20 ȼ por los pioneros y 40 ȼ por los colonos en su especialización. Su tasa es (10 × 20 + 30 × 40) ÷ 40 = 35 ȼ al día al 100 %. Dos de ellos al 120 % de eficiencia pagan 35 × 1,2 × 2 = 84 ȼ al día.
 
-[Base setup](/help/plan_base#workforce) explains how the efficiency is worked out and how to change it.
+Las tasas no son un material, así que no aparecen como filas en la E/S de materiales. Las encontrarás en la línea del beneficio, en los [totales](#totals), en la columna **ȼ / día** del selector de recetas y en el diálogo de COGM (consulta [Producción y recetas](/help/plan_production#cogm)).
 
-### Area {#area}
+### Amortización {#payback}
 
-**Area** shows the area used of the area you have, with a meter. The used figure turns red when the base needs more than your permits give.
+**Amortización** es el coste de construcción de la base dividido por su beneficio al día, en días (por ejemplo «212,40 d»). Muestra «nunca» cuando la base no da beneficio.
 
-- Area you have = 250 + 250 × permits (set in **Planet**, see [Base setup](/help/plan_base#permits)).
-- Area used = 25 for the core module + the area of every production building, habitation and storage building.
+Por ejemplo (con cifras inventadas), una base que cuesta 1.000.000 ȼ de construir y gana 5.000 ȼ al día se amortiza en 1.000.000 ÷ 5.000 = 200 días. Si ves «nunca», no te preocupes: solo significa que el beneficio al día es 0 o menos con estos precios, así que la base no recuperaría su coste de construcción. La tarjeta **Beneficio / día** muestra por qué.
 
-For example, with 2 permits you have 250 + 2 × 250 = 750 area. When the used figure is red, you can raise **Permits** in **Planet** (up to 3) or take buildings out until the base fits.
-
-Under it, "**ȼ profit / area**" is the profit per day divided by the area used, or 0 when nothing uses area. The recipe picker's **ȼ / area** divides by a standard layout so recipes compare across buildings. This one uses your actual base.
-
-After it, an "Empire" figure shows the same ratio for the whole empire the plan calculates with: the empire's total profit per day ÷ the total area all its plans use. It's an area-weighted figure, not an average of plan figures. It only shows once you've opened that empire's page in [Empire](/empire) in this browser tab, and saving a plan clears it until you open the empire page again.
+La línea de debajo es el coste de construcción («… **ȼ coste de construcción**»). Es cada material de construcción al precio de compra, para los edificios de producción, el módulo central (una vez) y cada edificio de habitación y de almacenamiento. Incluye los materiales extra que necesita el entorno del planeta (consulta [[extra-building-materials|materiales de construcción adicionales]]).
 
 > [!tip]
-> A plan above the empire figure earns more per area than your empire does on average. That's a good sign when you're choosing which base to build next with limited permits.
+> La amortización cuenta la habitación y el almacenamiento, pero la degradación de Beneficio / día no. Una base con muchos hábitats puede amortizarse despacio aunque su beneficio diario parezca bueno. Abre **Construcción** para ver lo que aún tienes que comprar.
 
-### Storage {#storage}
+### Mano de obra {#workforce}
 
-**Storage** shows the days until the base storage is full ("**days to full**"). PRUNplanner works it out for weight and volume separately, dividing the storage capacity by the _larger_ of what comes in and what goes out per day. The tile shows the smaller of the two results. It tells you how long the base can go between ships before its storage is full.
+La cifra de **Mano de obra** es la eficiencia más baja entre los niveles de mano de obra de los que el plan necesita trabajadores, por ejemplo «86,7 %». Muestra «—» cuando ningún edificio necesita trabajadores, y se pone en rojo cuando algún nivel tiene menos camas que trabajadores.
 
-Capacity is the core module's 1,500 t and 1,500 m³ plus your storage buildings (see [Infrastructure](/help/plan_base#infrastructure)). The line under the figure reads "… t in · … t out / day", and you can hover it for the same in m³. It shows "—" when nothing comes in or goes out.
+El rojo importa porque los trabajadores sin cama reducen la eficiencia de producción, y con ella lo que producen tus edificios. Añadir suficientes hábitats para ese nivel en **Infraestructura** lo soluciona. Con **Auto** activado, PRUNplanner los elige por ti.
 
-For example (made-up numbers), a base without storage buildings holds 1,500 t and 1,500 m³. If it takes in 60 t and sends out 100 t a day, weight lasts 1,500 ÷ 100 = 15 days. If it takes in 50 m³ and sends out 75 m³, volume lasts 1,500 ÷ 75 = 20 days. The tile shows 15 days.
+La línea de debajo lista cada nivel necesario como trabajadores necesarios / camas, por ejemplo «PIO 260/650 · COL 550/1.450», con el nivel al que le faltan camas en rojo. Una segunda línea lista los expertos que has colocado, por ejemplo «Agri 1 · Quím 4». Pasa el ratón por encima para ver la lista completa.
 
-The tile uses the whole Material I/O. It doesn't follow the "excluded materials" you set in the Visits tool, so it can show a different number of days than **Visits** itself. More in [Plan tools](/help/plan_tools).
+[Configuración de la base](/help/plan_base#workforce) explica cómo se calcula la eficiencia y cómo cambiarla.
 
-## Material I/O {#material-io}
+### Área {#area}
 
-[[material-io|Material I/O]] lists every material the base makes or uses, per day:
+**Área** muestra el área usada del área que tienes, con un medidor. La cifra usada se pone en rojo cuando la base necesita más de lo que dan tus permisos.
 
-- **In**: what the base uses (production inputs and workforce consumables).
-- **Out**: what the base makes.
-- **Δ**: Out − In. A positive Δ is exported (sold), a negative Δ is imported (bought).
+- Área que tienes = 250 + 250 × permisos (se fija en **Planeta**, consulta [Configuración de la base](/help/plan_base#permits)).
+- Área usada = 25 del módulo central + el área de cada edificio de producción, de habitación y de almacenamiento.
 
-Three controls above the table choose what you see. They aren't saved, so the page always opens with Whole base, All and ȼ. Whole base is the view the profit is calculated from, so its Δ is what the base would buy and sell.
+Por ejemplo, con 2 permisos tienes 250 + 2 × 250 = 750 de área. Cuando la cifra usada está en rojo, puedes subir **Permisos** en **Planeta** (hasta 3) o quitar edificios hasta que la base quepa.
 
-| Switch          | Options                                                 | What it does                                                                                                                                          |
-| --------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Which materials | **Whole base** (default), **Production**, **Workforce** | Whole base nets production and workforce together. Production shows only the buildings' inputs and outputs, Workforce only what your workers consume. |
-| Direction       | **All** (default), **Exports**, **Imports**             | Exports keeps rows with a positive Δ, Imports rows with a negative Δ.                                                                                 |
-| Value           | ȼ (default), t, m³, %                                   | The last column: **ȼ / day** (Δ at the sell price for exports, the buy price for imports), **Δ t**, **Δ m³**, or **7d share** and **30d share**.      |
+Debajo, «**ȼ beneficio / área**» es el beneficio al día dividido por el área usada, o 0 cuando nada usa área. La columna **ȼ / área** del selector de recetas divide por una distribución estándar para que las recetas se puedan comparar entre edificios. Esta usa tu base real.
 
-The % view shows Δ as a share of the average daily volume traded in the last 7 and 30 days. It tells you whether the market can take what you sell or supply what you buy (see [Plan check](/help/plan_check#flags)).
-
-Click a column heading to sort by it. With **Whole base**, a flag after a material's tile marks a market warning. Click it to open Plan check on its market view, described in [Plan check](/help/plan_check#market-check).
-
-### Totals {#totals}
-
-The Material I/O totals part sums up the table per day:
-
-- **Exports**: the value of all rows with a positive Δ.
-- **Imports**: the value of all rows with a negative Δ, as a negative number.
-- With **Whole base** only: **Degradation**, **Production fees** and **Profit / day** (in bold).
-
-The totals follow the Whole base, Production or Workforce choice, but not the All, Exports or Imports one. With Whole base, Exports + Imports + Degradation + Production fees = Profit / day, the same figure as the tile.
+Después, una cifra «Imperio» muestra la misma relación para todo el imperio con el que se calcula el plan: el beneficio total al día del imperio ÷ el área total que usan todos sus planes. Es una cifra ponderada por área, no una media de las cifras de los planes. Solo aparece una vez que has abierto la página de ese imperio en [Imperio](/empire) en esta pestaña del navegador, y guardar un plan la borra hasta que vuelves a abrir la página del imperio.
 
 > [!tip]
-> Switch Material I/O to **Workforce** to see what feeding your workers costs per day. Turning a luxury off in Workforce lowers it, but it also lowers the workers' efficiency (see [Base setup](/help/plan_base#workforce)).
+> Un plan por encima de la cifra del imperio gana más por área que tu imperio de media. Es buena señal cuando eliges qué base construir a continuación con permisos limitados.
 
-### Download as CSV {#csv}
+### Almacenamiento {#storage}
 
-**More** in the plan header has **Download Material I/O (CSV)**. The file has one row per material with the columns ticker, input, output, delta, value, weight and volume, all per day. Value is in ȼ, and weight and volume are of Δ. A CSV file opens in any spreadsheet program, so you can work with the numbers outside PRUNplanner.
+**Almacenamiento** muestra los días hasta que el almacenamiento de la base se llena («**días hasta llenarse**»). PRUNplanner lo calcula por separado para el peso y el volumen, dividiendo la capacidad de almacenamiento por el _mayor_ entre lo que entra y lo que sale al día. La tarjeta muestra el menor de los dos resultados. Te dice cuánto tiempo puede pasar la base entre naves antes de que se le llene el almacenamiento.
 
-The download covers the current Whole base, Production or Workforce choice and ignores the All, Exports or Imports one. The file is named after the plan, or after the planet's ID while the plan has no name, followed by "-material-io.csv".
+La capacidad es la del módulo central, 1.500 t y 1.500 m³, más tus edificios de almacenamiento (consulta [Infraestructura](/help/plan_base#infrastructure)). La línea bajo la cifra dice «… t entran · … t salen / día», y puedes pasar el ratón por encima para ver lo mismo en m³. Muestra «—» cuando no entra ni sale nada.
+
+Por ejemplo (con cifras inventadas), una base sin edificios de almacenamiento guarda 1.500 t y 1.500 m³. Si recibe 60 t y envía 100 t al día, el peso dura 1.500 ÷ 100 = 15 días. Si recibe 50 m³ y envía 75 m³, el volumen dura 1.500 ÷ 75 = 20 días. La tarjeta muestra 15 días.
+
+La tarjeta usa toda la E/S de materiales. No sigue los «materiales excluidos» que fijas en la herramienta Visitas, así que puede mostrar un número de días distinto al de **Visitas**. Más en [Herramientas del plan](/help/plan_tools).
+
+## E/S de materiales {#material-io}
+
+La [[material-io|E/S de materiales]] lista cada material que la base produce o usa, al día:
+
+- **Entrada**: lo que usa la base (insumos de producción y consumibles de la mano de obra).
+- **Salida**: lo que produce la base.
+- **Δ**: Salida − Entrada. Un Δ positivo se exporta (se vende), un Δ negativo se importa (se compra).
+
+Tres controles encima de la tabla eligen lo que ves. No se guardan, así que la página siempre se abre con Toda la base, Todos y ȼ. Toda la base es la vista con la que se calcula el beneficio, así que su Δ es lo que la base compraría y vendería.
+
+| Selector       | Opciones                                                            | Qué hace                                                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Qué materiales | **Toda la base** (predeterminado), **Producción**, **Mano de obra** | Toda la base compensa producción y mano de obra juntas. Producción muestra solo los insumos y las salidas de los edificios, Mano de obra solo lo que consumen tus trabajadores. |
+| Dirección      | **Todos** (predeterminado), **Exportaciones**, **Importaciones**    | Exportaciones deja las filas con Δ positivo, Importaciones las filas con Δ negativo.                                                                                            |
+| Valor          | ȼ (predeterminado), t, m³, %                                        | La última columna: **ȼ / día** (Δ al precio de venta para las exportaciones, al precio de compra para las importaciones), **Δ t**, **Δ m³**, o **Parte 7d** y **Parte 30d**.    |
+
+La vista en % muestra el Δ como parte del volumen diario medio negociado en los últimos 7 y 30 días. Te dice si el mercado puede absorber lo que vendes o suministrar lo que compras (consulta [Revisión del plan](/help/plan_check#flags)).
+
+Haz clic en el encabezado de una columna para ordenar por ella. Con **Toda la base**, una marca tras la tarjeta de un material indica un aviso de mercado. Haz clic en ella para abrir la Revisión del plan en su vista de mercado, descrita en [Revisión del plan](/help/plan_check#market-check).
+
+### Totales {#totals}
+
+La parte de totales de la E/S de materiales resume la tabla al día:
+
+- **Exportaciones**: el valor de todas las filas con Δ positivo.
+- **Importaciones**: el valor de todas las filas con Δ negativo, como número negativo.
+- Solo con **Toda la base**: **Degradación**, **Tasas de producción** y **Beneficio / día** (en negrita).
+
+Los totales siguen la elección de Toda la base, Producción o Mano de obra, pero no la de Todos, Exportaciones o Importaciones. Con Toda la base, Exportaciones + Importaciones + Degradación + Tasas de producción = Beneficio / día, la misma cifra que la tarjeta.
+
+> [!tip]
+> Cambia la E/S de materiales a **Mano de obra** para ver cuánto cuesta al día alimentar a tus trabajadores. Desactivar un lujo en Mano de obra lo reduce, pero también reduce la eficiencia de los trabajadores (consulta [Configuración de la base](/help/plan_base#workforce)).
+
+### Descargar como CSV {#csv}
+
+**Más**, en la cabecera del plan, tiene **Descargar E/S de materiales (CSV)**. El archivo tiene una fila por material con las columnas ticker, input, output, delta, value, weight y volume, todas al día. El valor está en ȼ, y el peso y el volumen son los del Δ. Un archivo CSV se abre en cualquier programa de hojas de cálculo, así que puedes trabajar con las cifras fuera de PRUNplanner.
+
+La descarga cubre la elección actual de Toda la base, Producción o Mano de obra e ignora la de Todos, Exportaciones o Importaciones. El archivo lleva el nombre del plan, o el ID del planeta mientras el plan no tiene nombre, seguido de «-material-io.csv».
