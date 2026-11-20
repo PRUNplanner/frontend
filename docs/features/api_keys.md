@@ -1,9 +1,13 @@
 # api_keys
 
 **Purpose.** Create and delete personal API keys, and build working URLs,
-Google Sheets formulas, curl and Python snippets with them.
+Google Sheets formulas, curl and Python snippets with them; show how to
+connect an AI assistant to the MCP server.
 
-**Used by.** `views/APIKeyView.vue` (`/apikey`).
+**Used by.** `views/APIKeyView.vue` (`/apikey`), one column in this order: a
+one-line intro and warning, the key table with **Create New Key**, the AI
+assistants card, Get started and the URL builder (`#api-builder`, the
+target of "Use in URL builder").
 
 ## Key files
 
@@ -21,6 +25,9 @@ Google Sheets formulas, curl and Python snippets with them.
   URL carries the key as `?api_key=`, curl and Python as the
   `Authorization: Api-Key` header; Python always reads the CSV variant when
   there is one; the Sheets formula exists only for CSV.
+- `components/APIMCPCard.vue`: the AI assistants (MCP) card: server URL with
+  copy, header, `.mcpb` download, link to the `mcp` help article. URLs are
+  `MCP_SERVER_URL` and `MCP_BUNDLE_URL` in `apiEndpoints.ts`.
 - `components/APIURLBuilder.vue`: the builder UI; loads empires, plans or CX
   preferences only when the endpoint needs them.
 

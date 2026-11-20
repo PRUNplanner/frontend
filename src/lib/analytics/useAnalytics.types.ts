@@ -241,6 +241,8 @@ export interface IAnalyticsEventProperties {
 		has_key: boolean;
 	};
 	"apikey:use_in_builder": undefined;
+	"apikey:mcp_url_copy": undefined;
+	"apikey:mcpb_download": undefined;
 
 	"plan:view": { planet_natural_id: string | undefined; is_shared: boolean };
 	"plan:create": { planet_natural_id: string; is_first_plan: boolean };

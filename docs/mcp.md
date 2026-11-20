@@ -6,7 +6,8 @@ calculate them with the app's own plan engine and price book, and, with a
 read-write API key, save plans, empires, CX preferences, shares and planning
 defaults.
 It runs at `https://mcp.prunplanner.org` (see [Production](#production)),
-open to anyone with an API key but not announced in the app yet, and in the
+open to anyone with an API key and announced in the app (spec
+`2026-11-19-mcp-03-help`), and in the
 e2e stack.
 
 ```
@@ -23,6 +24,15 @@ the manifest with the app version, runs `pnpm build:mcpb` and attaches
 is always the current one. The tools live on the server: an installed
 extension picks up new tools on its next connect and needs a new download
 only when the bridge or its manifest changes.
+
+**How players connect.** The API Keys page (`/apikey`) has an "AI
+assistants (MCP)" card (`features/api_keys/components/APIMCPCard.vue`) with
+the server URL, the header and the `.mcpb` download (constants
+`MCP_SERVER_URL`, `MCP_BUNDLE_URL` in `features/api_keys/apiEndpoints.ts`).
+The help article `src/assets/help/en_US/mcp.md` holds the tool groups,
+prompts and the setup per client; `src/tests/mcp/helpArticle.test.ts` fails
+when a tool or prompt is missing there or a snippet stops parsing. A new
+tool or prompt adds a line to the article.
 
 **Image.** The `Dockerfile`'s `mcp` stage (before `production`, so a build
 without `--target` still makes the app) runs `server.js` as `node` on port

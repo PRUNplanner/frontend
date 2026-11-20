@@ -103,7 +103,8 @@ export const HELP_ARTICLES: IHelpArticle[] = [
 	entry("fio_repair", "fio", ["fio_burn"]),
 	entry("fio_burn", "fio", ["fio_repair"]),
 	entry("profile", "account", ["api_keys", "exchanges"]),
-	entry("api_keys", "account", ["profile"]),
+	entry("api_keys", "account", ["profile", "mcp"]),
+	entry("mcp", "account", ["api_keys"]),
 	entry("glossary", "reference", []),
 	{
 		id: WHATS_NEW,
