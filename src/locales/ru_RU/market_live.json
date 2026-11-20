@@ -1,16 +1,16 @@
 {
 	"view_title": "Мониторинг рынка",
 	"title": "Мониторинг рынка",
-	"connection_lost": "Connection lost. Reconnecting...",
+	"connection_lost": "Соединение потеряно. Переподключение...",
 	"status": {
 		"connected": "Онлайн",
 		"disconnected": "Офлайн",
-		"reconnecting": "Reconnecting"
+		"reconnecting": "Переподключение"
 	},
 	"severity_type": {
-		"LOW": "НИЗКОЕ",
-		"MEDIUM": "СРЕДНЕЕ",
-		"HIGH": "ВЫСОКОЕ"
+		"LOW": "НИЗКАЯ",
+		"MEDIUM": "СРЕДНЯЯ",
+		"HIGH": "ВЫСОКАЯ"
 	},
 	"status_type": {
 		"active": "Активно",
@@ -19,7 +19,7 @@
 	"rule_type": {
 		"static": "Значение",
 		"previous": "Предыдущее",
-		"previous_pct": "Смещение",
+		"previous_pct": "Смещение, %",
 		"text": "Текст"
 	},
 	"components": {
@@ -28,10 +28,10 @@
 			"buttons": {
 				"open_manager": "Открыть менеджер оповещений",
 				"close_manager": "Закрыть менеджер оповещений",
-				"clear_feed": "Очистить Ленту",
+				"clear_feed": "Очистить ленту",
 				"show_overview": "Показать обзор",
 				"hide_overview": "Скрыть обзор",
-				"alerts": "Alert notifications"
+				"alerts": "Уведомления об оповещениях"
 			}
 		},
 		"alert_feed": {
@@ -49,12 +49,12 @@
 			"ask": "@:{'terms.ask'}: {value}",
 			"bid": "@:{'terms.bid'}: {value}",
 			"spread": "@:{'terms.spread'}",
-			"buy_volume": "Объем закупок",
+			"buy_volume": "Объём покупок",
 			"vwap": "@:{'terms.vwap'}: {value}",
 			"change": "Изменение: {value}",
-			"sell_volume": "Объем продаж",
-			"buy_volume_value": "Объем закупок: {value}",
-			"sell_volume_value": "Объем продаж: {value}"
+			"sell_volume": "Объём продаж",
+			"buy_volume_value": "Объём покупок: {value}",
+			"sell_volume_value": "Объём продаж: {value}"
 		},
 		"point_table": {
 			"table": {
@@ -63,13 +63,13 @@
 				"bid": "@:terms.bid (ȼ)",
 				"ask": "@:terms.ask (ȼ)",
 				"spread_pct": "Спред %",
-				"buy_volume": "Объем закупок.",
-				"sell_volume": "Объем продаж."
+				"buy_volume": "Объём пок.",
+				"sell_volume": "Объём прод."
 			}
 		},
 		"history": {
 			"title": "История данных",
-			"received": "{value} @:terms.material_ticker получено"
+			"received": "Получено тикеров: {value}"
 		},
 		"rule_builder": {
 			"buttons": {
@@ -77,16 +77,16 @@
 				"add_group": "Группа",
 				"remove": "Удалить"
 			},
-			"operator_label": "Match",
+			"operator_label": "Совпадение",
 			"error": "Ошибка: {value}",
 			"empty": "Пустая группа"
 		},
 		"alert_manager": {
-			"title": "Открыть менеджер оповещений",
+			"title": "Менеджер оповещений",
 			"title_editing": "Редактировать оповещение",
-			"info": "Уведомления в настоящее время хранятся только на этом устройстве и не синхронизируются с вашей учетной записью.",
-			"no_alerts": "Уведомления не найдены. Начните с создания первого детектора сигнала",
-			"new_alert_name": "New Alert",
+			"info": "Оповещения пока хранятся только на этом устройстве и не синхронизируются с твоим аккаунтом.",
+			"no_alerts": "Оповещений пока нет. Начни с создания первого сигнала детектора",
+			"new_alert_name": "Новое оповещение",
 			"buttons": {
 				"create_alert": "Создать оповещение",
 				"discard": "@:common.buttons.discard",
@@ -99,37 +99,37 @@
 				"severity": "Критичность",
 				"status": "Состояние",
 				"logic_configuration": "Конфигурация логики",
-				"previous_datapoint": "Previous Datapoint"
+				"previous_datapoint": "Предыдущая точка данных"
 			}
 		},
 		"detector": {
-			"field": "Field",
-			"operator": "Operator",
-			"target_type": "Target type",
+			"field": "Поле",
+			"operator": "Оператор",
+			"target_type": "Тип значения",
 			"fields": {
-				"material_ticker": "Ticker",
-				"exchange_code": "Exchange Code",
-				"price": "Price",
+				"material_ticker": "Тикер",
+				"exchange_code": "Код биржи",
+				"price": "Цена",
 				"bid": "Bid",
 				"ask": "Ask",
-				"price_change": "Price Change",
-				"price_change_pct": "Price Change (Percent)",
-				"bid_change": "Bid Change",
-				"ask_change": "Ask Change",
-				"demand": "Demand",
-				"supply": "Supply",
-				"traded": "Traded",
-				"volume": "Volume",
-				"buy_volume_total": "Buy Volume",
-				"sell_volume_total": "Sell Volume",
-				"buy_volume_change": "Buy Volume Change (Abs.)",
-				"sell_volume_change": "Sell Volume Change (Abs.)",
-				"buy_vwap": "Buy VWAP",
-				"sell_vwap": "Sell VWAP",
-				"lowest_sell_cost": "Best Ask Price",
-				"highest_buy_cost": "Best Bid Price",
-				"spread": "Spread",
-				"spread_pct": "Spread (Percent)"
+				"price_change": "Изменение цены",
+				"price_change_pct": "Изменение цены (%)",
+				"bid_change": "Изменение Bid",
+				"ask_change": "Изменение Ask",
+				"demand": "Спрос",
+				"supply": "Предложение",
+				"traded": "Продано",
+				"volume": "Объём",
+				"buy_volume_total": "Объём покупок",
+				"sell_volume_total": "Объём продаж",
+				"buy_volume_change": "Изменение объёма покупок (абс.)",
+				"sell_volume_change": "Изменение объёма продаж (абс.)",
+				"buy_vwap": "VWAP покупок",
+				"sell_vwap": "VWAP продаж",
+				"lowest_sell_cost": "Лучшая цена Ask",
+				"highest_buy_cost": "Лучшая цена Bid",
+				"spread": "Спред",
+				"spread_pct": "Спред (%)"
 			}
 		}
 	}
