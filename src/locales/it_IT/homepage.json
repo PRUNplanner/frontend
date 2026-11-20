@@ -1,299 +1,299 @@
 {
 	"navigation": {
-		"registration": "Create account",
-		"login": "Log in",
-		"sections": "Sections",
-		"how": "How it works",
-		"market": "Market",
-		"planet_search": "Planet Search",
-		"features": "Features",
-		"tools": "Tools",
-		"help": "Help",
+		"registration": "Crea un account",
+		"login": "Accedi",
+		"sections": "Sezioni",
+		"how": "Come funziona",
+		"market": "Mercato",
+		"planet_search": "Ricerca pianeti",
+		"features": "Funzioni",
+		"tools": "Strumenti",
+		"help": "Guida",
 		"github": "GitHub",
 		"menu": "Menu",
-		"menu_close": "Close menu",
-		"tools_group": "Tools",
-		"all_tools": "All tools"
+		"menu_close": "Chiudi menu",
+		"tools_group": "Strumenti",
+		"all_tools": "Tutti gli strumenti"
 	},
 	"auth_panel": {
-		"label": "Log in or create an account",
+		"label": "Accedi o crea un account",
 		"switch": "Account",
-		"plan_context": "Log in to start a plan on {planet} ({id}). You go straight to it. New here? Create a free account first, you come back to {name} after."
+		"plan_context": "Accedi per iniziare un piano su {planet} ({id}): ci arrivi direttamente. Sei nuovo? Crea prima un account gratuito, poi torni su {name}."
 	},
 	"hero": {
-		"eyebrow": "Base and empire planner for Prosperous Universe",
-		"title": "Plan a base {accent} you build it.",
-		"title_accent": "before",
-		"positioning": "The definitive Prosperous Universe companion for all who love to strategize and optimise.",
-		"lead": "Know what a base earns, what it needs and when it pays back, before you spend anything on it. Then group your bases into an empire and see what it makes, burns and has to ship.",
-		"cta": "Start planning, it's free",
-		"cta_logged_in": "Open your empire",
-		"example": "Open an example plan",
-		"example_note": "The example needs no account. Registering takes a minute with the game open.",
-		"image_alt": "The plan editor for an iron base on Montem: profit, payback, workforce and area in the results bar, the production list with its recipes, and material I/O",
-		"image_title": "prunplanner.org / plan / Montem iron"
+		"eyebrow": "Pianificatore di basi e imperi per Prosperous Universe",
+		"title": "Pianifica una base {accent} di costruirla.",
+		"title_accent": "prima",
+		"positioning": "Il compagno definitivo di Prosperous Universe per chi ama pianificare e ottimizzare.",
+		"lead": "Scopri quanto rende una base, di cosa ha bisogno e quando si ripaga, prima di spenderci qualcosa. Poi riunisci le tue basi in un impero e vedi cosa produce, cosa consuma e cosa deve spedire.",
+		"cta": "Inizia a pianificare, è gratis",
+		"cta_logged_in": "Apri il tuo impero",
+		"example": "Apri un piano di esempio",
+		"example_note": "L'esempio non richiede un account. Registrarsi richiede un minuto con il gioco aperto.",
+		"image_alt": "L'editor del piano per una base di ferro su Montem: profitto, ammortamento, forza lavoro e area nella barra dei risultati, l'elenco della produzione con le sue ricette e l'I/O dei materiali",
+		"image_title": "prunplanner.org / piano / Montem ferro"
 	},
 	"numbers": {
-		"label": "PRUNplanner in numbers",
-		"players": "players plan with it",
-		"plans": "plans created",
-		"free_value": "Free",
-		"free": "No ads, no paid tier.",
-		"languages_value": "{count} languages",
-		"languages": "Open source, translated by players and AI."
+		"label": "PRUNplanner in numeri",
+		"players": "giocatori pianificano con PRUNplanner",
+		"plans": "piani creati",
+		"free_value": "Gratis",
+		"free": "Niente pubblicità, niente versione a pagamento.",
+		"languages_value": "{count} lingue",
+		"languages": "Open source, tradotto da giocatori e IA."
 	},
 	"tour": {
-		"pause": "Pause",
-		"play": "Play",
-		"step_of": "Guided tour · step {step} of {total}",
+		"pause": "Pausa",
+		"play": "Avvia",
+		"step_of": "Tour guidato · passo {step} di {total}",
 		"plan": {
-			"label": "Plan tour steps",
+			"label": "Passi del tour del piano",
 			"whole": {
-				"title": "The whole plan",
-				"text": "One base on one screen: profit, payback, workforce, area and storage at the top, production in the middle, material flow at the side, updating as you change it."
+				"title": "Il piano completo",
+				"text": "Una base in una schermata: profitto, ammortamento, forza lavoro, area e magazzino in alto, la produzione al centro, il flusso dei materiali di lato, tutto aggiornato mentre modifichi."
 			},
 			"buildings": {
-				"title": "Add buildings",
-				"text": "Pick buildings and recipes from what the planet offers. Each building shows its efficiency, profit per day and area; each recipe its runtime, share and COGM."
+				"title": "Aggiungi edifici",
+				"text": "Scegli edifici e ricette tra quelli che offre il pianeta. Ogni edificio mostra efficienza, profitto al giorno e area; ogni ricetta la durata, la quota e il COGM."
 			},
 			"workforce": {
-				"title": "Staff it",
-				"text": "Workforce needed against housing supplied, with the efficiency it gives; the Base pane holds the tiers and the luxuries you choose to provide."
+				"title": "Assegna il personale",
+				"text": "La forza lavoro necessaria rispetto alle abitazioni disponibili, con l'efficienza che ne risulta; il pannello Base contiene i livelli e i beni di lusso che scegli di fornire."
 			},
 			"money": {
-				"title": "See the money",
-				"text": "This iron base on Montem makes 21,938.67 a day and pays back its build cost in 63.56 days."
+				"title": "Guarda i soldi",
+				"text": "Questa base di ferro su Montem guadagna 21.938,67 al giorno e ripaga il costo di costruzione in 63,56 giorni."
 			},
 			"flow": {
-				"title": "Check the flow",
-				"text": "Material I/O lists what the base consumes and produces per day, what each line is worth, and flags materials that are a large share of their market."
+				"title": "Controlla il flusso",
+				"text": "L'I/O dei materiali elenca cosa la base consuma e produce al giorno, quanto vale ogni riga, e segnala i materiali che sono una quota grande del loro mercato."
 			},
 			"tabs": {
-				"title": "Go deeper",
-				"text": "Construction, supply, visits, repair, profit, plan check and POPR are one tab away."
+				"title": "Approfondisci",
+				"text": "Costruzione, rifornimento, visite, riparazione, profitto, verifica del piano e POPR sono a una scheda di distanza."
 			}
 		},
 		"planet_search": {
-			"label": "Planet Search tour steps",
+			"label": "Passi del tour della ricerca pianeti",
 			"materials": {
-				"title": "Pick your materials",
-				"text": "H2O, at least 21 a day. Add more materials, in any-of or all-of groups."
+				"title": "Scegli i materiali",
+				"text": "H2O, almeno 21 al giorno. Aggiungi altri materiali, in gruppi \"uno qualsiasi\" o \"tutti\"."
 			},
 			"conditions": {
-				"title": "Set the conditions",
-				"text": "Surface, fertility, gravity, pressure, temperature and the active COGC program."
+				"title": "Imposta le condizioni",
+				"text": "Superficie, fertilità, gravità, pressione, temperatura e il programma COGC attivo."
 			},
 			"matches": {
-				"title": "Read the matches",
-				"text": "9 of 4576 planets, with their other resources, COGC and infrastructure."
+				"title": "Leggi i risultati",
+				"text": "9 pianeti su 4576, con le loro altre risorse, COGC e infrastrutture."
 			},
 			"create_plan": {
-				"title": "Start a plan",
-				"text": "The + button creates a plan on that planet."
+				"title": "Inizia un piano",
+				"text": "Il pulsante + crea un piano su quel pianeta."
 			},
 			"compare": {
-				"title": "Compare up to four",
-				"text": "Pin planets with the star and see them side by side."
+				"title": "Confrontane fino a quattro",
+				"text": "Fissa i pianeti con la stella e vedili uno accanto all'altro."
 			}
 		},
 		"empire": {
-			"label": "Empire tour steps",
+			"label": "Passi del tour dell'impero",
 			"totals": {
-				"title": "One bottom line",
-				"text": "Revenue, cost and profit of all bases together: this empire makes 104,290.08 a day."
+				"title": "Un unico risultato",
+				"text": "Ricavi, costi e profitto di tutte le basi insieme: questo impero guadagna 104.290,08 al giorno."
 			},
 			"plans": {
-				"title": "Every plan side by side",
-				"text": "Each base with its planet, COGC and daily profit, and how many permits the empire uses."
+				"title": "Tutti i piani a confronto",
+				"text": "Ogni base con il suo pianeta, COGC e profitto giornaliero, e quanti permessi usa l'impero."
 			},
 			"material_io": {
-				"title": "Short or spare",
-				"text": "Material I/O across all bases shows what the empire has to buy or ship in, and what it can sell."
+				"title": "In carenza o in eccesso",
+				"text": "L'I/O dei materiali di tutte le basi mostra cosa l'impero deve comprare o importare e cosa può vendere."
 			},
 			"tabs": {
-				"title": "Look further",
-				"text": "Analysis and Production Opportunities are one tab away."
+				"title": "Guarda oltre",
+				"text": "Analisi e Opportunità di produzione sono a una scheda di distanza."
 			}
 		}
 	},
 	"most_used": {
-		"eyebrow": "What players use most",
-		"title": "Where to settle, what pays back, and when a base runs dry.",
-		"needs_fio": "Needs FIO",
+		"eyebrow": "Cosa usano di più i giocatori",
+		"title": "Dove stabilirsi, cosa si ripaga e quando una base resta a secco.",
+		"needs_fio": "Richiede FIO",
 		"planet_search": {
-			"label": "Planet Search",
-			"title": "Find the planet for your next base.",
-			"lead": "Filter every planet in the universe and start a plan from the result.",
-			"alt": "Planet Search: filters on the left, matching planets with their resources, COGC and infrastructure",
-			"cta": "Try Planet Search",
-			"cta_note": "No account needed."
+			"label": "Ricerca pianeti",
+			"title": "Trova il pianeta per la tua prossima base.",
+			"lead": "Filtra tutti i pianeti dell'universo e inizia un piano dal risultato.",
+			"alt": "Ricerca pianeti: filtri a sinistra, pianeti corrispondenti con risorse, COGC e infrastrutture",
+			"cta": "Prova la ricerca pianeti",
+			"cta_note": "Non serve un account."
 		},
 		"empire": {
-			"label": "Empire",
-			"title": "Run every base as one empire.",
-			"lead": "Put your plans together and see what the whole operation earns, and which materials it is short of or has spare.",
-			"alt": "Empire view: revenue, cost and profit, the list of plans, and material I/O across all bases"
+			"label": "Impero",
+			"title": "Gestisci tutte le basi come un unico impero.",
+			"lead": "Metti insieme i tuoi piani e vedi quanto guadagna l'intera operazione e quali materiali mancano o avanzano.",
+			"alt": "Vista impero: ricavi, costi e profitto, l'elenco dei piani e l'I/O dei materiali di tutte le basi"
 		},
 		"resource_roi": {
-			"label": "Resource ROI",
-			"title": "See which planet pays back fastest.",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan: plan cost, daily profit and ROI in days, next to POPR, COGC, environment and infrastructure.",
-			"alt": "Resource ROI for ALO: planets ranked with daily output, plan cost, daily profit and ROI in days"
+			"label": "ROI risorse",
+			"title": "Scopri quale pianeta si ripaga prima.",
+			"lead": "Scegli una risorsa e la tua preferenza di borsa. Ogni pianeta che la possiede riceve un piano con i costi: costo del piano, profitto giornaliero e ROI in giorni, accanto a POPR, COGC, ambiente e infrastrutture.",
+			"alt": "ROI risorse per ALO: pianeti in classifica con produzione giornaliera, costo del piano, profitto giornaliero e ROI in giorni"
 		},
 		"fio_burn": {
-			"label": "FIO Burn",
-			"title": "Know when a base runs out.",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses: days left per material, thresholds you set, and a resupply list per base exported as XIT actions.",
-			"alt": "FIO Burn: burn per plan, with one base expanded to show consumption, stock and days left per material"
+			"label": "Consumo FIO",
+			"title": "Sappi quando una base resta senza scorte.",
+			"lead": "Collega il tuo account FIO e Consumo FIO confronta le tue scorte reali con ciò che usa ogni piano: giorni rimanenti per materiale, soglie impostate da te e una lista di rifornimento per base, esportabile come azioni XIT.",
+			"alt": "Consumo FIO: consumo per piano, con una base espansa che mostra consumo, scorte e giorni rimanenti per materiale"
 		},
 		"starter": {
-			"label": "New to the game",
-			"title": "Start from a typical setup, then make it yours.",
-			"text": "An empty plan offers what other players typically plan on that planet. It is a guideline, not a rule: change every building and recipe until you have found your own best setup."
+			"label": "Nuovo nel gioco",
+			"title": "Parti da una configurazione tipica, poi falla tua.",
+			"text": "Un piano vuoto propone ciò che gli altri giocatori pianificano di solito su quel pianeta. È un'indicazione, non una regola: cambia ogni edificio e ricetta finché non trovi la tua configurazione migliore."
 		},
 		"shared": {
-			"label": "Shared plans",
-			"title": "Send a plan as a link.",
-			"text": "Anyone with the link can see the recipes and try changes, without an account. Good for asking your corporation for feedback."
+			"label": "Piani condivisi",
+			"title": "Invia un piano come link.",
+			"text": "Chiunque abbia il link può vedere le ricette e provare modifiche, senza un account. Utile per chiedere un parere alla tua corporazione."
 		}
 	},
 	"market": {
-		"eyebrow": "Market today",
-		"title": "What the commodity exchanges did this week",
+		"eyebrow": "Il mercato oggi",
+		"title": "Cosa hanno fatto le borse delle merci questa settimana",
 		"lead": {
-			"index": "Prices on the four exchanges moved {change} since {start} and {change30} over the last 30 days.",
-			"sector": "{sector} lead ({change}).",
-			"pioneer": "Feeding 100 pioneers costs {cost} a day, {change} since {start}.",
-			"source": "Straight from FIO, no account needed."
+			"index": "I prezzi nelle quattro borse sono variati di {change} dal {start} e di {change30} negli ultimi 30 giorni.",
+			"sector": "In testa: {sector} ({change}).",
+			"pioneer": "Sfamare 100 pionieri costa {cost} al giorno, {change} dal {start}.",
+			"source": "Direttamente da FIO, senza account."
 		},
 		"index": {
-			"label": "PrUn CX Index · all exchanges",
-			"chip": "{days} d",
-			"caption": "VWAP 7D of a basket of {members} materials, weighted by what they trade. {start} = 100.",
-			"chart_label": "CX Index over 90 days"
+			"label": "PrUn CX Index · tutte le borse",
+			"chip": "{days} g",
+			"caption": "VWAP 7D di un paniere di {members} materiali, ponderato in base agli scambi. {start} = 100.",
+			"chart_label": "CX Index negli ultimi 90 giorni"
 		},
 		"movers": {
-			"title": "This week’s movers",
-			"caption": "VWAP 7D against VWAP 30D. Only materials with at least 5 M ȼ and 50 units traded in 7 days."
+			"title": "I più mossi della settimana",
+			"caption": "VWAP 7D rispetto a VWAP 30D. Solo materiali con almeno 5 M ȼ e 50 unità scambiate in 7 giorni."
 		},
 		"sectors": {
-			"title": "By sector, last 90 days",
-			"caption": "Bar: share of 30-day turnover",
-			"change30": "30 d {change}",
-			"share": "{share} % of turnover",
-			"label": "{sector}: {change} in 90 days",
-			"spark_label": "{sector}, index over 90 days"
+			"title": "Per settore, ultimi 90 giorni",
+			"caption": "Barra: quota del fatturato a 30 giorni",
+			"change30": "30 g {change}",
+			"share": "{share} % del fatturato",
+			"label": "{sector}: {change} in 90 giorni",
+			"spark_label": "{sector}, indice negli ultimi 90 giorni"
 		},
-		"cta": "Open the market report",
-		"source": "Daily data to {date} · FIO"
+		"cta": "Apri il report di mercato",
+		"source": "Dati giornalieri fino al {date} · FIO"
 	},
 	"setup": {
-		"eyebrow": "How it works",
-		"title": "From first base to empire.",
-		"lead": "Three things carry everything: plans, empires and exchange preferences.",
-		"label": "Set-up steps",
+		"eyebrow": "Come funziona",
+		"title": "Dalla prima base all'impero.",
+		"lead": "Tre elementi reggono tutto: piani, imperi e preferenze di borsa.",
+		"label": "Passi di configurazione",
 		"plan": {
-			"label": "Plan",
-			"text": "One base on one planet: buildings, recipes, habitation, experts and COGC. Start from Planet Search.",
-			"alt": "Production buildings and recipes in the plan editor"
+			"label": "Piano",
+			"text": "Una base su un pianeta: edifici, ricette, abitazioni, esperti e COGC. Si parte dalla ricerca pianeti.",
+			"alt": "Edifici di produzione e ricette nell'editor del piano"
 		},
 		"empire": {
-			"label": "Empire",
-			"text": "Your plans together. See total profit, and which materials you're short of or have spare across all bases.",
-			"alt": "Empire material I/O with surplus and deficit per material"
+			"label": "Impero",
+			"text": "I tuoi piani insieme. Vedi il profitto totale e quali materiali ti mancano o ti avanzano in tutte le basi.",
+			"alt": "I/O dei materiali dell'impero con eccedenza e deficit per materiale"
 		},
 		"exchange": {
-			"label": "Exchange preference",
-			"text": "Which CX prices to use, with your own prices per material or per planet. Every plan in the empire is priced with it.",
-			"alt": "An exchange preference with ticker overrides"
+			"label": "Preferenza di borsa",
+			"text": "Quali prezzi CX usare, con i tuoi prezzi per materiale o per pianeta. Ogni piano dell'impero viene prezzato con questa.",
+			"alt": "Una preferenza di borsa con prezzi personalizzati per ticker"
 		}
 	},
 	"tools": {
-		"eyebrow": "And the tools around it",
-		"title": "Market data and calculators, priced from FIO.",
-		"lead": "FIO is the community service that reads your in-game data. Link your account and Repair uses your real bases too.",
-		"with_fio": "with FIO",
+		"eyebrow": "E gli strumenti intorno",
+		"title": "Dati di mercato e calcolatori, con prezzi da FIO.",
+		"lead": "FIO è il servizio della community che legge i tuoi dati di gioco. Collega il tuo account e anche Riparazione FIO usa le tue basi reali.",
+		"with_fio": "con FIO",
 		"market_live": {
-			"label": "Market Live",
-			"text": "Live CX prices, and alerts from rules on price, spread and volume."
+			"label": "Mercato live",
+			"text": "Prezzi CX in tempo reale e avvisi da regole su prezzo, spread e volume."
 		},
 		"market_exploration": {
-			"label": "Market Exploration",
-			"text": "Price and volume history per material and exchange."
+			"label": "Esplorazione dei mercati",
+			"text": "Storico di prezzi e volumi per materiale e borsa."
 		},
 		"recipe_roi": {
-			"label": "Recipe ROI",
-			"text": "Every recipe ranked by payback at current prices."
+			"label": "ROI ricette",
+			"text": "Tutte le ricette in classifica per ammortamento ai prezzi attuali."
 		},
 		"production_chains": {
-			"label": "Production Chains",
-			"text": "What a material takes to make, all the way down."
+			"label": "Catene di produzione",
+			"text": "Cosa serve per produrre un materiale, fino in fondo."
 		},
 		"hq_calculator": {
-			"label": "HQ Calculator",
-			"text": "Materials needed for your next HQ level."
+			"label": "Calcolatrice HQ",
+			"text": "I materiali necessari per il prossimo livello del tuo HQ."
 		},
 		"repair": {
-			"label": "Repair",
-			"text": "When each of your buildings is due for repair."
+			"label": "Riparazione FIO",
+			"text": "Quando ognuno dei tuoi edifici va riparato."
 		},
 		"carts": {
-			"label": "Supply and Construction Cart",
-			"text": "Shopping lists per plan, exportable as XIT actions."
+			"label": "Carrello rifornimento e costruzione",
+			"text": "Liste della spesa per piano, esportabili come azioni XIT."
 		},
 		"upkeep": {
-			"label": "Upkeep Price Calculator",
-			"text": "ȼ per need point for safety, health, comfort, culture and education."
+			"label": "Calcolatrice prezzi mantenimento",
+			"text": "ȼ per punto di bisogno per sicurezza, salute, comfort, cultura e istruzione."
 		}
 	},
 	"faq": {
-		"eyebrow": "Questions",
-		"title": "Before you sign up.",
+		"eyebrow": "Domande",
+		"title": "Prima di registrarti.",
 		"what": {
-			"question": "What is PRUNplanner?",
-			"answer": "PRUNplanner is a free, open source planning tool for the browser game Prosperous Universe (PrUn). You plan bases and whole empires in it, find planets, compare what pays back and see when a base runs out of materials."
+			"question": "Cos'è PRUNplanner?",
+			"answer": "PRUNplanner è uno strumento di pianificazione gratuito e open source per il gioco da browser Prosperous Universe (PrUn). Ti permette di pianificare basi e interi imperi, trovare pianeti, confrontare cosa si ripaga e vedere quando una base resta senza materiali."
 		},
 		"free": {
-			"question": "Is PRUNplanner free?",
-			"answer": "Yes. There are no ads and no paid tier. The code is on GitHub."
+			"question": "PRUNplanner è gratuito?",
+			"answer": "Sì. Non ci sono pubblicità né versioni a pagamento. Il codice è su GitHub."
 		},
 		"fio": {
-			"question": "Do I need FIO to use it?",
-			"answer": "No. Plans, empires, Planet Search, Resource ROI and the calculators work without it. FIO Burn and Repair read your real in-game stock and buildings, so those two need a linked FIO account."
+			"question": "Serve FIO per usarlo?",
+			"answer": "No. Piani, imperi, Ricerca pianeti, ROI risorse e i calcolatori funzionano senza. Consumo FIO e Riparazione FIO leggono le tue scorte e i tuoi edifici reali nel gioco, quindi questi due richiedono un account FIO collegato."
 		},
 		"try": {
-			"question": "Can I try it without an account?",
-			"answer": "Yes. Open the example plan: you can change buildings and recipes and see the numbers update. You need an account to save plans of your own."
+			"question": "Posso provarlo senza un account?",
+			"answer": "Sì. Apri il piano di esempio: puoi cambiare edifici e ricette e vedere i numeri aggiornarsi. Serve un account per salvare i tuoi piani."
 		},
 		"official": {
-			"question": "Is it an official Prosperous Universe tool?",
-			"answer": "No. It is a community project made by a player and is not made by the game's developer."
+			"question": "È uno strumento ufficiale di Prosperous Universe?",
+			"answer": "No. È un progetto della community creato da un giocatore, non dallo sviluppatore del gioco."
 		},
 		"languages": {
-			"question": "Which languages does it support?",
-			"answer": "English and {count} more, translated by players on Crowdin."
+			"question": "Quali lingue supporta?",
+			"answer": "L'inglese e altre {count}, tradotte dai giocatori su Crowdin."
 		}
 	},
 	"closing": {
-		"title": "Plan your next base {accent}",
-		"title_accent": "before you pay for it.",
-		"text": "Over {players} players already do. Free, open source and translated by players. Registering takes a minute with the game open.",
-		"cta": "Start planning",
-		"github": "View on GitHub",
-		"github_text": "Read the code or contribute.",
-		"translate": "Translate on Crowdin",
-		"translate_text": "{count} languages so far."
+		"title": "Pianifica la tua prossima base {accent}",
+		"title_accent": "prima di pagarla.",
+		"text": "Lo fanno già oltre {players} giocatori. Gratuito, open source e tradotto dai giocatori. Registrarsi richiede un minuto con il gioco aperto.",
+		"cta": "Inizia a pianificare",
+		"github": "Vedi su GitHub",
+		"github_text": "Leggi il codice o contribuisci.",
+		"translate": "Traduci su Crowdin",
+		"translate_text": "{count} lingue finora."
 	},
 	"footer": {
-		"made_in": "Made in Munich, with contributions from around the world.",
-		"imprint": "Imprint and terms",
-		"translate": "Translate on Crowdin",
-		"language": "Language"
+		"made_in": "Fatto a Monaco di Baviera, con contributi da tutto il mondo.",
+		"imprint": "Note legali e termini",
+		"translate": "Traduci su Crowdin",
+		"language": "Lingua"
 	},
 	"seo": {
-		"title": "PRUNplanner: Base and Empire Planner for Prosperous Universe",
-		"description": "Free planning tool for Prosperous Universe (PrUn): plan bases and empires, find planets, compare ROI and track burn with FIO. Used by over 6,000 players.",
-		"imprint_title": "Imprint and Terms of Service",
-		"imprint_description": "Imprint, terms of service and privacy policy of PRUNplanner, the free planning tool for Prosperous Universe."
+		"title": "PRUNplanner: pianificatore di basi e imperi per Prosperous Universe",
+		"description": "Strumento di pianificazione gratuito per Prosperous Universe (PrUn): pianifica basi e imperi, trova pianeti, confronta il ROI e tieni d'occhio il consumo con FIO. Usato da oltre 6.000 giocatori.",
+		"imprint_title": "Note legali e termini di servizio",
+		"imprint_description": "Note legali, termini di servizio e informativa sulla privacy di PRUNplanner, lo strumento di pianificazione gratuito per Prosperous Universe."
 	}
 }
