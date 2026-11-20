@@ -111,6 +111,8 @@
 		// guide screenshots (public/images/help/guides): full column width
 		"[&_img]:block [&_img]:w-full [&_img]:h-auto [&_img]:rounded-panel [&_img]:border [&_img]:border-line",
 		"[&_code]:font-mono [&_code]:text-xs [&_code]:bg-surface-sunken [&_code]:px-1 [&_code]:rounded-control",
+		// code blocks (setup snippets): scroll sideways inside the column
+		"[&_pre]:overflow-x-auto [&_pre]:mb-3 [&_pre]:p-3 [&_pre]:bg-surface-sunken [&_pre]:rounded-panel [&_pre_code]:p-0 [&_pre_code]:bg-transparent",
 		"[&_table]:w-full [&_table]:mb-4 [&_table]:border-collapse",
 		"[&_th]:text-left [&_th]:font-medium [&_th]:text-ink-strong [&_th]:border-b [&_th]:border-line [&_th]:px-3 [&_th]:py-1.5",
 		"[&_td]:border-b [&_td]:border-line [&_td]:px-3 [&_td]:py-1.5",

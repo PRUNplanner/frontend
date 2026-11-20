@@ -96,6 +96,30 @@ describe("APIKeyView", () => {
 		);
 	});
 
+	it("puts the keys first, then the MCP card, then the builder", async () => {
+		const { wrapper } = await mountView([KEY]);
+		const at = (selector: string) => {
+			const el = wrapper.find(selector);
+			expect(el.exists(), selector).toBe(true);
+			return el.element;
+		};
+		const keys = at('[data-testid="manage-keys"]');
+		const card = at('[data-testid="mcp-card"]');
+		const builder = at("#api-builder");
+		const follows = Node.DOCUMENT_POSITION_FOLLOWING;
+		expect(
+			at('[data-testid="key-warning"]').compareDocumentPosition(keys) &
+				follows
+		).toBeTruthy();
+		expect(keys.compareDocumentPosition(card) & follows).toBeTruthy();
+		expect(card.compareDocumentPosition(builder) & follows).toBeTruthy();
+		// the button and the first key sit in the manage section
+		expect(keys.textContent).toContain(
+			"api_keys.manage.buttons.new_apikey"
+		);
+		expect(keys.textContent).toContain("Sheet");
+	});
+
 	it("shows the empty state without keys", async () => {
 		const { wrapper } = await mountView([]);
 		expect(wrapper.findComponent(PTable).exists()).toBe(false);
