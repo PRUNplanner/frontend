@@ -145,6 +145,9 @@
 		"api_keys": {
 			"title": "API 密钥"
 		},
+		"mcp": {
+			"title": "AI assistants (MCP)"
+		},
 		"glossary": {
 			"title": "术语表"
 		},
