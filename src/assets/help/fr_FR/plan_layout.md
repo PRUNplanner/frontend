@@ -1,197 +1,197 @@
-You can arrange the parts of the plan page to suit how you plan. Use the Standard layout or customise your own, fold parts, group them as tabs and set up how the page looks on a phone. The page also shows plan suggestions based on what other players plan.
+Tu peux organiser les parties de la page du plan selon ta façon de planifier. Utilise la disposition Standard ou personnalise la tienne, replie des parties, regroupe-les en onglets et choisis l'apparence de la page sur téléphone. La page propose aussi des suggestions de plan basées sur ce que planifient les autres joueurs.
 
-Use it, for example, to keep Material I/O in view beside a long Production list, or to fold the parts you set once. The layout holds only where the parts go, how big they are, what's folded and whether parts are tinted, so changing it never changes your plan's figures.
+Par exemple, garde les E/S des matériaux visibles à côté d'une longue liste de production, ou replie les parties que tu ne règles qu'une fois. La disposition ne retient que l'emplacement des parties, leur taille, ce qui est replié et si les parties sont teintées : la modifier ne change donc jamais les chiffres de ton plan.
 
-## The parts of the page {#parts}
+## Les parties de la page {#parts}
 
-- **Base**: **Empire & prices**, **Planet**, **Workforce**, **Infrastructure** and **Experts**. See [Base setup](/help/plan_base).
-- **Production**, with the tools as its tabs: **Construction**, **Supply**, **Visits**, **Repair**, **Profit**, **Plan check** and **POPR**. See [Production](/help/plan_production), [Plan tools](/help/plan_tools) and [Plan check](/help/plan_check). POPR is only there when you're logged in.
-- **Material I/O** and **Material I/O totals**.
-- The five results tiles: **Profit / day**, **Payback**, **Workforce %**, **Area** and **Storage**. See [Results](/help/plan_results).
+- **Base** : **Empire et prix**, **Planète**, **Main-d'œuvre**, **Infrastructures** et **Experts**. Voir [Configuration de la base](/help/plan_base).
+- **Production**, avec les outils en onglets : **Construction**, **Approvisionnement**, **Visites**, **Réparation**, **Bénéfice**, **Contrôle du plan** et **POPR**. Voir [Production et recettes](/help/plan_production), [Outils du plan](/help/plan_tools) et [Contrôle du plan](/help/plan_check). POPR n'apparaît que si tu es connecté.
+- **E/S des matériaux** et **Totaux E/S des matériaux**.
+- Les cinq tuiles de résultats : **Bénéfice / jour**, **Amortissement**, **Main-d'œuvre %**, **Surface** et **Stockage**. Voir [Résultats](/help/plan_results).
 
-Each part uses the room it gets. Give it more width and it shows more side by side instead of growing taller. Experts fill as many per line as fit, and the [[workforce]] tiers sit next to each other. The layout is the same for all your plans.
+Chaque partie utilise la place qu'on lui donne. Donne-lui plus de largeur et elle affiche plus d'éléments côte à côte au lieu de s'allonger. Les experts remplissent chaque ligne autant que possible, et les niveaux de [[workforce|main-d'œuvre]] se placent les uns à côté des autres. La disposition est la même pour tous tes plans.
 
-## The Layout menu {#layout-menu}
+## Le menu Disposition {#layout-menu}
 
-The **Layout** button in the plan header picks the layout. You only see it when you're logged in, and below 768 px it shows as an icon only.
+Le bouton **Disposition** dans l'en-tête du plan choisit la disposition. Tu ne le vois que si tu es connecté, et sous 768 px il ne s'affiche que sous forme d'icône.
 
-- **Standard**: results on top, Base on the left, Production with its tools in the middle, Material I/O on the right. Standard never changes.
-- **Custom Layout**: your own arrangement. It appears once you've saved one. There's one Custom Layout, used for all your plans. Switching to Standard keeps it, so you can switch back at any time.
+- **Standard** : les résultats en haut, la Base à gauche, la Production avec ses outils au milieu, les E/S des matériaux à droite. Standard ne change jamais.
+- **Disposition personnalisée** : ton propre agencement. Elle apparaît dès que tu en as enregistré une. Il n'y a qu'une seule disposition personnalisée, utilisée pour tous tes plans. Passer à Standard la conserve, tu peux donc y revenir à tout moment.
 
-Customising starts from a copy. Pick **Customise, starting from Standard…**, or **Customise Custom Layout…** while Custom Layout is in use. Below 768 px the customise item isn't offered, but you can still switch layouts there.
+La personnalisation part d'une copie. Choisis **Personnaliser, à partir de Standard…**, ou **Personnaliser la disposition personnalisée…** quand la disposition personnalisée est active. Sous 768 px, l'option de personnalisation n'est pas proposée, mais tu peux toujours y changer de disposition.
 
-## Customise {#customise}
+## Personnaliser {#customise}
 
-While you customise, the page shows its real content, but you can't click it. Each part's title bar carries a grip (⋮⋮), its size, the eye that hides it and its ⋯ menu. The results tiles get a title bar too, and **Elements** opens beside the page.
+Pendant la personnalisation, la page montre son vrai contenu, mais tu ne peux pas cliquer dessus. La barre de titre de chaque partie porte une poignée (⋮⋮), sa taille, l'œil qui la masque et son menu ⋯. Les tuiles de résultats reçoivent aussi une barre de titre, et **Éléments** s'ouvre à côté de la page.
 
-The bar at the top has:
+La barre du haut contient :
 
-- **Arrangement**: **Wide** or **Phone**, see [Wide and Phone](#phone).
-- **Columns** (4 to 24, Wide only) and **Gap** (8, 12, 16 or 24 px). Changing the columns keeps each part's share of the width. For example, going from 12 to 24 columns turns a part 4 columns wide into one 8 columns wide. Shares that don't divide evenly round to whole columns.
-- **Tinted parts**: gives every part a slightly lighter background for more contrast, in either layout and on every screen. It's kept as soon as you tick it.
-- **Elements · N**: N parts aren't placed in the arrangement shown.
-- **Undo** (also Ctrl/⌘+Z), **Reset to Standard** (Wide as Standard, Phone automatic, and you can undo it), **Cancel** and **Save**.
+- **Agencement** : **Large** ou **Téléphone**, voir [Large et Téléphone](#phone).
+- **Colonnes** (de 4 à 24, Large uniquement) et **Espacement** (8, 12, 16 ou 24 px). Changer le nombre de colonnes conserve la part de largeur de chaque partie. Par exemple, passer de 12 à 24 colonnes transforme une partie de 4 colonnes de large en une partie de 8 colonnes. Les parts qui ne tombent pas juste sont arrondies à des colonnes entières.
+- **Parties teintées** : donne à chaque partie un fond légèrement plus clair pour plus de contraste, dans les deux dispositions et sur tous les écrans. Le réglage est conservé dès que tu coches la case.
+- **Éléments · N** : N parties ne sont pas placées dans l'agencement affiché.
+- **Annuler** (aussi Ctrl/⌘+Z), **Revenir à Standard** (Large comme Standard, Téléphone automatique, et tu peux l'annuler), **Annuler** et **Enregistrer**.
 
-If you changed something, **Cancel** (or Esc) asks "Discard your layout changes?". **Discard changes** drops them and **Keep editing** takes you back. During a drag, Esc cancels only that drag. **Save** saves both arrangements as your Custom Layout. If you save Standard's copy over an existing Custom Layout, PRUNplanner asks first: **Replace Custom Layout** or **Keep editing**.
-
-> [!tip]
-> Hiding a part, joining parts, taking them out again or resetting shows a message with **Undo**. You can also press Ctrl/⌘+Z at any time while you customise. There's no redo for the layout.
-
-### Moving {#moving}
-
-- Drag a part by its title bar. A dashed box marked **Lands here** shows where it'll land.
-- Its top lines up with the top of a part beside it, and a yellow line shows which one. Hold Alt to place it freely.
-- Drop it on another part's title bar to join that part. Before you let go, the title bar splits into **Tab**, **Below** and **Beside**. See [Tabs and joined parts](#tabs).
-- Drag it into the band at the top to pin it there, or use **Pin to top** in its ⋯ menu. The band only takes drops while something is pinned. With nothing pinned, use **Pin to top**.
-
-### Sizing {#sizing}
-
-- Drag the left or right edge to set the width in columns, the bottom edge for the height, or the corner for both.
-- Growing into a part beside it makes that part narrower, down to its minimum. There the edge stops, and the badge says so.
-- The bottom edge snaps to the bottom of a part beside it, to the height of another part and to the part's own content. Hold Alt to size freely.
-- A badge shows the size while you drag.
-- Parts never get smaller than they need. Production is at least 540 px wide.
-
-### Height {#height}
-
-Each part has one of three height modes. You set it in the Height row of the ⋯ menu:
-
-| Mode                          | What it does                                                                     |
-| ----------------------------- | -------------------------------------------------------------------------------- |
-| **Fit content**               | Grows with its content.                                          |
-| **Fit content, at most N px** | Grows with its content up to N px, then scrolls inside.          |
-| **Fixed N px**                | Keeps its height. Taller content scrolls inside. |
-
-For example, with a limit of 480 px, a part with 300 px of content is 300 px tall, and one with 600 px is 480 px tall and scrolls the rest inside. Set to **Fixed N px** at 480 px, both are 480 px tall.
-
-When a part has no height set yet, "at most" and "fixed" start from its current content height, at most 480 px.
-
-Dragging the bottom edge sets **Fixed N px** at the new height. A part set to "at most" stays "at most", with the new limit. When the edge snaps to the part's own content, the part goes back to **Fit content**. **Shorter, −40 px** and **Taller, +40 px** in the Height row work the same way.
-
-### Pin to top and Follow while scrolling {#pin-follow}
-
-- **Pin to top** puts a part into the band at the top of the page. The band stays put while you scroll the rest. If it would cover more than 40 % of the window and the page below needs the room, it's cut there and scrolls inside. With nothing left on the page, the band is the page.
-- **Follow while scrolling** keeps a part in view in its own columns. As you scroll past it, it moves down with you, along with the parts below it in those columns, until the first part below that reaches outside those columns, or until the page ends.
-- A part either pins or follows, not both. Pinning a part stops it following, and following unpins it. Follow doesn't work in the Phone arrangement.
+Si tu as modifié quelque chose, **Annuler** (ou Échap) demande « Abandonner tes modifications de disposition ? ». **Abandonner les modifications** les supprime et **Continuer à modifier** te ramène en arrière. Pendant un glisser-déposer, Échap annule seulement ce déplacement. **Enregistrer** enregistre les deux agencements comme ta disposition personnalisée. Si tu enregistres la copie de Standard par-dessus une disposition personnalisée existante, PRUNplanner te demande d'abord : **Remplacer la disposition personnalisée** ou **Continuer à modifier**.
 
 > [!tip]
-> Material I/O beside a long Production list is the classic case for Follow while scrolling. Set it to **Fit content, at most N px** as well, so it fits the window.
+> Masquer une partie, joindre des parties, les séparer à nouveau ou réinitialiser affiche un message avec **Annuler**. Tu peux aussi appuyer sur Ctrl/⌘+Z à tout moment pendant la personnalisation. Il n'y a pas de rétablissement pour la disposition.
 
-### The ⋯ menu {#item-menu}
+### Déplacer {#moving}
 
-The ⋯ menu of each part does everything a drag does, and a little more:
+- Fais glisser une partie par sa barre de titre. Un cadre en pointillés marqué **Arrive ici** montre où elle va atterrir.
+- Son haut s'aligne sur le haut d'une partie voisine, et une ligne jaune indique laquelle. Maintiens Alt pour la placer librement.
+- Dépose-la sur la barre de titre d'une autre partie pour la joindre à celle-ci. Avant que tu relâches, la barre de titre se divise en **Onglet**, **Dessous** et **À côté**. Voir [Onglets et parties jointes](#tabs).
+- Fais-la glisser dans la bande du haut pour l'y épingler, ou utilise **Épingler en haut** dans son menu ⋯. La bande n'accepte de dépôts que si quelque chose y est déjà épinglé. Si rien n'est épinglé, utilise **Épingler en haut**.
 
-- Width and Height rows of small buttons: − and +, **Full width** and the height modes. The menu stays open after a click, so you can click again, and the row's heading names the button under the pointer.
-- **Pin to top** and **Follow while scrolling**.
-- **Title bar**: switch it off to show only the part's content, like the results tiles. The part can't fold then, and customising still shows the bar. A part with several tabs keeps its title bar, because its tabs live there.
-- **Move**: **Left one column**, **Up**, **Down**, **Right one column**.
-- **Tab, below or beside …** (or **Tabs ({n}) …** for a part with several tabs). See [Tabs](#tabs).
-- **Display**: Workforce shows **As cards** or **As a table** with a row per tier (in a narrow part the table scrolls sideways). For Workforce, Experts and Infrastructure, **Everything open** shows every tier, expert field and button, on the page as well. For Infrastructure that includes the **Cheapest** and **Least area** buttons, even with **Auto** on.
-- **Hide**.
+### Dimensionner {#sizing}
 
-Small icons after a part's size show what's set: pinned, follows, no title bar, everything open, table. When something isn't possible, the menu tells you why.
+- Fais glisser le bord gauche ou droit pour régler la largeur en colonnes, le bord inférieur pour la hauteur, ou le coin pour les deux.
+- Agrandir une partie vers sa voisine rend celle-ci plus étroite, jusqu'à son minimum. Là, le bord s'arrête et le badge l'indique.
+- Le bord inférieur s'aimante sur le bas d'une partie voisine, sur la hauteur d'une autre partie et sur le contenu de la partie elle-même. Maintiens Alt pour dimensionner librement.
+- Un badge affiche la taille pendant que tu fais glisser.
+- Les parties ne deviennent jamais plus petites que ce dont elles ont besoin. La Production fait au moins 540 px de large.
 
-You can use the keyboard too. Focus a part's grip, and the arrow keys move it, Shift+arrows resize it (up and down by 40 px), and Enter or Space opens the menu.
+### Hauteur {#height}
 
-### Hiding and Elements {#hiding}
+Chaque partie a l'un des trois modes de hauteur. Tu le choisis dans la ligne Hauteur du menu ⋯ :
 
-- The eye on a title bar hides the part. On a part with tabs, it hides the tab on view. You can also drop a part on **Elements**. If you drag it by its title bar, the whole group goes, tabs and all.
-- Production always stays on the page, and so does any tab that contains it.
-- The parts below move up into the gap, and **Undo** in the message brings the part back.
-- **Elements** lists every part, grouped as **Base**, **Production & tools**, **Material I/O** and **Results**, and says where each one is: **On the page**, **Pinned to top**, a tab or part of another, or **Hidden**. **Add** puts a hidden part at the bottom. Drag any part onto the page to place or move it (a tab leaves its group). **Show** switches to its tab, scrolls to it and highlights it.
+| Mode                                    | Ce qu'il fait                                                                                |
+| --------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Adapter au contenu**                  | Grandit avec son contenu.                                                    |
+| **Adapter au contenu, N px au maximum** | Grandit avec son contenu jusqu'à N px, puis défile à l'intérieur.            |
+| **Fixe N px**                           | Garde sa hauteur. Un contenu plus haut défile à l'intérieur. |
 
-> [!tip]
-> Can't find a part on the page? While you customise, **Elements** says where each one is. A part you hid is marked **Hidden**, and **Add** brings it back.
+Par exemple, avec une limite de 480 px, une partie avec 300 px de contenu fait 300 px de haut, et une partie avec 600 px fait 480 px de haut et fait défiler le reste à l'intérieur. Réglées sur **Fixe N px** à 480 px, les deux font 480 px de haut.
 
-### New parts {#new-parts}
+Quand une partie n'a pas encore de hauteur définie, « au maximum » et « fixe » partent de la hauteur actuelle de son contenu, 480 px au plus.
 
-When PRUNplanner gets a new part, it joins your Custom Layout once, at the bottom of both arrangements. It's marked **New** for that visit, and a message tells you. Move or hide it like any other part.
+Faire glisser le bord inférieur règle **Fixe N px** à la nouvelle hauteur. Une partie réglée sur « au maximum » le reste, avec la nouvelle limite. Quand le bord s'aimante sur le contenu de la partie elle-même, la partie revient à **Adapter au contenu**. **Moins haut, −40 px** et **Plus haut, +40 px** dans la ligne Hauteur fonctionnent de la même façon.
 
-## Tabs and joined parts {#tabs}
+### Épingler en haut et Suivre le défilement {#pin-follow}
 
-A part can hold others as tabs. In Standard, the tools are tabs of Production.
-
-- To make a part a tab of another, drag it onto the left third of that part's title bar, or pick **Tab** under **Tab, below or beside …** in its ⋯ menu.
-- Click a tab to see it. To take a tab out again, drag it off the title bar. Dragging the first tab moves the whole group.
-- **Tabs ({n}) …** in the menu offers **Take {name} out** for each tab but the first, and **Split all into separate items**.
-- Only a part on its own can join another. A part with several tabs can only be moved, so take its tabs out first.
-- The page opens with whichever tab was shown when you saved the layout. A tab you click on the page lasts for that visit.
-
-### Several parts in one tab {#joined-parts}
-
-A tab can show several parts below each other or beside each other, never both.
-
-- Drop a part on the middle third of a title bar to show it **Below** the part shown there, or on the right third to show it **Beside** it. The menu has **Below** and **Beside** too. Where the box is too narrow for all of them side by side, they go below.
-- A tab that already shows several parts only takes more on its own side. The other side is struck through.
-- Drag a part over the parts of a tab to drop it between two of them or at either end. A blue line shows where.
-- Drag a part by its body to move it within its tab or out of it. Taking out the first part makes the next one the tab's own. The menu only takes out the other parts.
-- The menu switches the whole tab between below and beside.
-- Two parts are named "A & B". Three or more are named after the first part with a count, such as "Material I/O +2". Hover the name to see all of them.
-- Drag the line between two parts to size just those two. Beside each other, they take whole columns and the last part gets the rest. Below each other, the part above the line gets a height in px and scrolls inside when its content is taller.
-- **Less room for {name}** and **More room for {name}** do the same in steps (a column, or 40 px). **Auto** shares by their sizes again.
-- Hiding the tab hides all its parts.
-
-## Wide and Phone {#phone}
-
-Custom Layout has two arrangements. You pick one under **Arrangement** while you customise:
-
-- **Phone** is used when the page is narrower than 760 px: phones, upright tablets, a narrow window. The width counts after the side menu, so a 1024 px window with the full side menu open gets Phone as well.
-- **Wide** is used otherwise.
-
-Each arrangement has its own parts, places, sizes, folds, display settings and gap. You edit Phone at a phone's width, in two columns.
-
-Until you change something in Phone, it's automatic. It shows Wide the way a phone would, every part stacked in order, small ones two per row. Your first change there starts from that, and **Back to automatic** follows Wide again.
-
-While you customise Wide, a note lists the parts that narrower screens rearrange to keep their minimum width.
-
-## Folding {#folding}
-
-- The chevron on a title bar folds a part down to its title, with a short summary after it. Results tiles and parts without a title bar don't fold.
-- When two or more folded parts sit side by side with open ones, the folded parts stack into a short column and the open parts in that row take their room.
-- Folded parts stay folded, whichever layout you use. Wide and Phone keep their own folds.
-
-A results tile opens the part its figure comes from and unfolds it:
-
-| Tile             | Opens            |
-| ---------------- | ---------------- |
-| **Profit / day** | **Profit**       |
-| **Payback**      | **Construction** |
-| **Workforce %**  | **Workforce**    |
-| **Area**         | **Planet**       |
-| **Storage**      | **Visits**       |
-
-The **Plan check →** link under Material I/O does the same for Plan check. If the part is hidden, it opens in a dialog instead.
+- **Épingler en haut** place une partie dans la bande en haut de la page. La bande reste en place pendant que tu fais défiler le reste. Si elle devait couvrir plus de 40 % de la fenêtre et que la page en dessous a besoin de la place, elle est coupée à ce niveau et défile à l'intérieur. S'il ne reste rien sur la page, la bande devient la page.
+- **Suivre le défilement** garde une partie visible dans ses propres colonnes. Quand tu fais défiler au-delà, elle descend avec toi, avec les parties situées en dessous dans ces colonnes, jusqu'à la première partie en dessous qui dépasse de ces colonnes, ou jusqu'à la fin de la page.
+- Une partie est soit épinglée, soit elle suit, pas les deux. Épingler une partie arrête le suivi, et activer le suivi la désépingle. Le suivi ne fonctionne pas dans l'agencement Téléphone.
 
 > [!tip]
-> Fold the parts you set once per plan, such as Empire & prices or Experts. They keep a one-line summary, and every plan opens that way.
+> Les E/S des matériaux à côté d'une longue liste de production, c'est le cas typique pour Suivre le défilement. Règle-les aussi sur **Adapter au contenu, N px au maximum** pour qu'elles tiennent dans la fenêtre.
 
-## Smaller screens {#smaller-screens}
+### Le menu ⋯ {#item-menu}
 
-- When a part would be narrower than it needs, PRUNplanner rearranges the parts at that width (marked "auto" while you customise). Your layout itself stays as it is.
-- Below 760 px, Standard stacks every part in order, small ones two per row, the same way automatic Phone does.
-- On a phone you pick recipes in a sheet from the bottom, and the save status with **Save** sits above the navigation bar.
+Le menu ⋯ de chaque partie fait tout ce que fait un glisser-déposer, et un peu plus :
 
-## Where your layout is saved {#saved}
+- Des lignes Largeur et Hauteur de petits boutons : − et +, **Pleine largeur** et les modes de hauteur. Le menu reste ouvert après un clic, tu peux donc cliquer à nouveau, et le titre de la ligne nomme le bouton sous le pointeur.
+- **Épingler en haut** et **Suivre le défilement**.
+- **Barre de titre** : désactive-la pour n'afficher que le contenu de la partie, comme les tuiles de résultats. La partie ne peut alors plus être repliée, et la personnalisation affiche toujours la barre. Une partie avec plusieurs onglets garde sa barre de titre, car ses onglets s'y trouvent.
+- **Déplacer** : **Une colonne à gauche**, **Monter**, **Descendre**, **Une colonne à droite**.
+- **Onglet, dessous ou à côté …** (ou **Onglets ({n}) …** pour une partie avec plusieurs onglets). Voir [Onglets](#tabs).
+- **Affichage** : la Main-d'œuvre s'affiche **En cartes** ou **En tableau** avec une ligne par niveau (dans une partie étroite, le tableau défile horizontalement). Pour la Main-d'œuvre, les Experts et les Infrastructures, **Tout ouvert** affiche chaque niveau, champ d'expert et bouton, sur la page aussi. Pour les Infrastructures, cela inclut les boutons **Le moins cher** et **Le moins de surface**, même avec **Auto** activé.
+- **Masquer**.
 
-- Your layout (Standard, or Custom Layout with both arrangements), what's folded and Tinted parts are saved to your account and used on every device.
-- A change made in another tab of the same browser shows there at once. A change made on another device shows after you reload the page.
-- While you customise, a note "Your layout was changed elsewhere" asks whether to **Load it**. If you have unsaved changes, it asks again before dropping them.
-- If saving to your account fails, the layout stays in use, and PRUNplanner sends it with your next change or when you leave the page.
-- When you're logged out, a shared plan always shows in Standard. Folding works, but only until you reload.
+De petites icônes après la taille d'une partie montrent ce qui est réglé : épinglée, suit le défilement, sans barre de titre, tout ouvert, tableau. Quand quelque chose n'est pas possible, le menu te dit pourquoi.
 
-## Plan suggestions {#suggestions}
+Tu peux aussi utiliser le clavier. Place le focus sur la poignée d'une partie : les flèches la déplacent, Maj+flèches la redimensionnent (de 40 px vers le haut ou le bas), et Entrée ou Espace ouvre le menu.
 
-PRUNplanner shows what other players plan on the same planet. The numbers come from plans changed in the last 180 days by players active in the last 90 days, and PRUNplanner updates them several times a day. A planet needs at least 15 such plans from at least 10 players. Buildings and recipes only show when at least 5 % of the plans and at least 10 players use them. On a planet with fewer plans, none of the suggestions below appear.
+### Masquer et Éléments {#hiding}
 
-For example, take a planet with 40 such plans from 25 players. A building in 4 of them (10 %), from 4 players, doesn't show, because fewer than 10 players use it. A building in 12 of them (30 %), from 11 players, does.
-
-- **Planning Insights**: when the planet has enough plans, the **Planet** part shows a link "{n} plans on {planet} · what others build here". It opens a box with the [[experts]], production buildings and [[recipe|recipes]] those plans use, as shares.
-- **Building select**: in Production, the building select starts with a group "Popular on {planet} · {plans} plans". It lists up to 8 buildings with the share of plans that have them, then **All buildings**.
-- **Recipe picker**: a **Plans** column shows the share of plans with that building that run the recipe ("< 5 %" when it's too rare to show), and you can **Sort by** **Popular**.
-- **Empty building**: a building without a recipe shows **Most planned here:** with the planet's most planned recipe mix, its share and **Add**.
-- **Start from a typical setup on {planet}**: an empty plan you can edit offers the planet's most planned buildings, up to 8. Those in at least 20 % of plans are pre-checked. Each comes with its typical amount (**Amount**) and **Typical recipes**. It also lists the experts that at least half of the plans have, at their typical count. **Use typical setup ({count})** adds the checked buildings and the experts, and switches **Auto** on in Infrastructure, so habitations follow the workforce. It's one undo step, and nothing is saved until you save. **Start empty** hides the card, and the empty Production list then has a link to bring it back.
-
-To turn all of this off, switch off **Plan suggestions** in **Profile › Preferences**. It's on by default. See [Profile](/help/profile#preferences).
+- L'œil sur une barre de titre masque la partie. Sur une partie avec des onglets, il masque l'onglet affiché. Tu peux aussi déposer une partie sur **Éléments**. Si tu la fais glisser par sa barre de titre, tout le groupe part, onglets compris.
+- La Production reste toujours sur la page, tout comme l'onglet qui la contient.
+- Les parties en dessous remontent pour combler le vide, et **Annuler** dans le message ramène la partie.
+- **Éléments** liste toutes les parties, regroupées en **Base**, **Production et outils**, **E/S des matériaux** et **Résultats**, et indique où se trouve chacune : **Sur la page**, **Épinglé en haut**, un onglet ou une partie d'une autre, ou **Masqué**. **Ajouter** place une partie masquée en bas. Fais glisser n'importe quelle partie sur la page pour la placer ou la déplacer (un onglet quitte alors son groupe). **Afficher** passe à son onglet, fait défiler jusqu'à elle et la met en évidence.
 
 > [!tip]
-> The typical setup shows what others plan, not what earns most. After you use it, check its [[profit]] in the results and run the [Market check](/help/plan_check#market-check) on its outputs before you build.
+> Tu ne trouves pas une partie sur la page ? Pendant la personnalisation, **Éléments** indique où se trouve chacune. Une partie que tu as masquée est marquée **Masqué**, et **Ajouter** la ramène.
+
+### Nouvelles parties {#new-parts}
+
+Quand PRUNplanner reçoit une nouvelle partie, elle rejoint ta disposition personnalisée une seule fois, en bas des deux agencements. Elle est marquée **Nouveau** pendant cette visite, et un message te prévient. Déplace-la ou masque-la comme n'importe quelle autre partie.
+
+## Onglets et parties jointes {#tabs}
+
+Une partie peut contenir d'autres parties sous forme d'onglets. Dans Standard, les outils sont des onglets de la Production.
+
+- Pour faire d'une partie un onglet d'une autre, fais-la glisser sur le tiers gauche de la barre de titre de celle-ci, ou choisis **Onglet** sous **Onglet, dessous ou à côté …** dans son menu ⋯.
+- Clique sur un onglet pour l'afficher. Pour sortir un onglet, fais-le glisser hors de la barre de titre. Faire glisser le premier onglet déplace tout le groupe.
+- **Onglets ({n}) …** dans le menu propose **Sortir {name}** pour chaque onglet sauf le premier, et **Tout séparer en éléments distincts**.
+- Seule une partie isolée peut en rejoindre une autre. Une partie avec plusieurs onglets peut seulement être déplacée : sors d'abord ses onglets.
+- La page s'ouvre sur l'onglet affiché au moment où tu as enregistré la disposition. Un onglet sur lequel tu cliques sur la page reste affiché pendant cette visite.
+
+### Plusieurs parties dans un onglet {#joined-parts}
+
+Un onglet peut afficher plusieurs parties les unes sous les autres ou les unes à côté des autres, jamais les deux.
+
+- Dépose une partie sur le tiers central d'une barre de titre pour l'afficher **Dessous** la partie qui s'y trouve, ou sur le tiers droit pour l'afficher **À côté**. Le menu propose aussi **Dessous** et **À côté**. Si le cadre est trop étroit pour les mettre toutes côte à côte, elles passent les unes sous les autres.
+- Un onglet qui affiche déjà plusieurs parties n'en accepte d'autres que dans son propre sens. L'autre option est barrée.
+- Fais glisser une partie au-dessus des parties d'un onglet pour la déposer entre deux d'entre elles ou à l'une des extrémités. Une ligne bleue montre l'endroit.
+- Fais glisser une partie par son contenu pour la déplacer dans son onglet ou l'en sortir. Sortir la première partie fait de la suivante la partie propre de l'onglet. Le menu ne sort que les autres parties.
+- Le menu fait passer tout l'onglet de « dessous » à « à côté » et inversement.
+- Deux parties sont nommées « A & B ». Trois ou plus portent le nom de la première partie avec un compteur, comme « E/S des matériaux +2 ». Survole le nom pour toutes les voir.
+- Fais glisser la ligne entre deux parties pour dimensionner seulement ces deux-là. Côte à côte, elles occupent des colonnes entières et la dernière partie prend le reste. Les unes sous les autres, la partie au-dessus de la ligne reçoit une hauteur en px et défile à l'intérieur quand son contenu est plus haut.
+- **Moins de place pour {name}** et **Plus de place pour {name}** font la même chose par paliers (une colonne, ou 40 px). **Auto** répartit à nouveau selon leurs tailles.
+- Masquer l'onglet masque toutes ses parties.
+
+## Large et Téléphone {#phone}
+
+La disposition personnalisée a deux agencements. Tu en choisis un sous **Agencement** pendant la personnalisation :
+
+- **Téléphone** est utilisé quand la page fait moins de 760 px de large : téléphones, tablettes en mode portrait, fenêtre étroite. La largeur se compte après le menu latéral, donc une fenêtre de 1024 px avec le menu latéral complet ouvert passe aussi en Téléphone.
+- **Large** est utilisé dans les autres cas.
+
+Chaque agencement a ses propres parties, emplacements, tailles, replis, réglages d'affichage et espacement. Tu modifies Téléphone à la largeur d'un téléphone, sur deux colonnes.
+
+Tant que tu ne changes rien dans Téléphone, il est automatique. Il montre Large comme le ferait un téléphone, toutes les parties empilées dans l'ordre, les petites par deux sur une ligne. Ta première modification part de là, et **Revenir à l'automatique** suit de nouveau Large.
+
+Pendant que tu personnalises Large, une note liste les parties que les écrans plus étroits réorganisent pour garder leur largeur minimale.
+
+## Replier {#folding}
+
+- Le chevron d'une barre de titre replie une partie jusqu'à son titre, suivi d'un court résumé. Les tuiles de résultats et les parties sans barre de titre ne se replient pas.
+- Quand deux parties repliées ou plus se trouvent à côté de parties ouvertes, les parties repliées s'empilent en une colonne courte et les parties ouvertes de cette rangée prennent leur place.
+- Les parties repliées restent repliées, quelle que soit la disposition utilisée. Large et Téléphone gardent chacun leurs propres replis.
+
+Une tuile de résultats ouvre la partie d'où vient son chiffre et la déplie :
+
+| Tuile               | Ouvre            |
+| ------------------- | ---------------- |
+| **Bénéfice / jour** | **Bénéfice**     |
+| **Amortissement**   | **Construction** |
+| **Main-d'œuvre %**  | **Main-d'œuvre** |
+| **Surface**         | **Planète**      |
+| **Stockage**        | **Visites**      |
+
+Le lien **Contrôle du plan →** sous les E/S des matériaux fait de même pour le contrôle du plan. Si la partie est masquée, elle s'ouvre à la place dans une boîte de dialogue.
+
+> [!tip]
+> Replie les parties que tu ne règles qu'une fois par plan, comme Empire et prix ou Experts. Elles gardent un résumé d'une ligne, et chaque plan s'ouvre ainsi.
+
+## Écrans plus petits {#smaller-screens}
+
+- Quand une partie serait plus étroite que nécessaire, PRUNplanner réorganise les parties à cette largeur (marqué « auto » pendant la personnalisation). Ta disposition elle-même reste telle quelle.
+- Sous 760 px, Standard empile toutes les parties dans l'ordre, les petites par deux sur une ligne, comme le fait Téléphone en automatique.
+- Sur un téléphone, tu choisis les recettes dans un panneau qui monte du bas, et l'état d'enregistrement avec **Enregistrer** se trouve au-dessus de la barre de navigation.
+
+## Où ta disposition est enregistrée {#saved}
+
+- Ta disposition (Standard, ou la disposition personnalisée avec ses deux agencements), ce qui est replié et les parties teintées sont enregistrés sur ton compte et utilisés sur tous tes appareils.
+- Une modification faite dans un autre onglet du même navigateur y apparaît aussitôt. Une modification faite sur un autre appareil apparaît après le rechargement de la page.
+- Pendant la personnalisation, une note « Ta disposition a été modifiée ailleurs » te demande si tu veux **La charger**. Si tu as des modifications non enregistrées, elle te redemande avant de les abandonner.
+- Si l'enregistrement sur ton compte échoue, la disposition reste utilisée, et PRUNplanner l'envoie avec ta prochaine modification ou quand tu quittes la page.
+- Quand tu n'es pas connecté, un plan partagé s'affiche toujours en Standard. Le repli fonctionne, mais seulement jusqu'au rechargement.
+
+## Suggestions de plan {#suggestions}
+
+PRUNplanner montre ce que les autres joueurs planifient sur la même planète. Les chiffres viennent des plans modifiés dans les 180 derniers jours par des joueurs actifs dans les 90 derniers jours, et PRUNplanner les met à jour plusieurs fois par jour. Une planète a besoin d'au moins 15 de ces plans venant d'au moins 10 joueurs. Les bâtiments et les recettes n'apparaissent que si au moins 5 % des plans et au moins 10 joueurs les utilisent. Sur une planète avec moins de plans, aucune des suggestions ci-dessous n'apparaît.
+
+Par exemple, prends une planète avec 40 de ces plans venant de 25 joueurs. Un bâtiment présent dans 4 d'entre eux (10 %), venant de 4 joueurs, n'apparaît pas, car moins de 10 joueurs l'utilisent. Un bâtiment présent dans 12 d'entre eux (30 %), venant de 11 joueurs, apparaît.
+
+- **Aperçus de planification** : quand la planète a assez de plans, la partie **Planète** affiche un lien « {n} plans sur {planet} · ce que les autres construisent ici ». Il ouvre un cadre avec les [[experts|experts]], les bâtiments de production et les [[recipe|recettes]] utilisés par ces plans, en parts.
+- **Sélection du bâtiment** : dans la Production, la liste des bâtiments commence par un groupe « Populaires sur {planet} · {plans} plans ». Elle liste jusqu'à 8 bâtiments avec la part des plans qui les contiennent, puis **Tous les bâtiments**.
+- **Sélecteur de recette** : une colonne **Plans** montre la part des plans avec ce bâtiment qui utilisent la recette (« < 5 % » quand elle est trop rare pour être affichée), et tu peux **Trier par** **Populaires**.
+- **Bâtiment vide** : un bâtiment sans recette affiche **Les plus planifiées ici :** avec la combinaison de recettes la plus planifiée sur la planète, sa part et **Ajouter**.
+- **Partir d'une configuration typique sur {planet}** : un plan vide que tu peux modifier propose les bâtiments les plus planifiés sur la planète, jusqu'à 8. Ceux présents dans au moins 20 % des plans sont précochés. Chacun vient avec sa quantité typique (**Quantité**) et ses **Recettes typiques**. La carte liste aussi les experts présents dans au moins la moitié des plans, avec leur nombre typique. **Utiliser la configuration typique ({count})** ajoute les bâtiments cochés et les experts, et active **Auto** dans les Infrastructures, pour que les habitations suivent la main-d'œuvre. C'est une seule étape d'annulation, et rien n'est enregistré tant que tu n'enregistres pas. **Partir de zéro** masque la carte, et la liste de production vide propose alors un lien pour la faire revenir.
+
+Pour désactiver tout cela, désactive **Suggestions de plan** dans **Profil › Préférences**. C'est activé par défaut. Voir [Profil et préférences](/help/profile#preferences).
+
+> [!tip]
+> La configuration typique montre ce que les autres planifient, pas ce qui rapporte le plus. Après l'avoir utilisée, vérifie son [[profit|bénéfice]] dans les résultats et lance le [contrôle du marché](/help/plan_check#market-check) sur ses produits avant de construire.
