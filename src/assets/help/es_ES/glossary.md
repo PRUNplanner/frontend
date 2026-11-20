@@ -1,406 +1,406 @@
-The game and planning terms PRUNplanner uses, in alphabetical order. The first paragraph of each entry is the short definition you see when you hover the term in an article. The rest says how PRUNplanner calculates or shows it and where to read more.
+Los términos del juego y de planificación que usa PRUNplanner, por orden alfabético. El primer párrafo de cada entrada es la definición breve que ves al pasar el ratón por encima del término en un artículo. El resto explica cómo lo calcula o lo muestra PRUNplanner y dónde leer más.
 
-## Area and permits {#area-permits}
+## Área y permisos {#area-permits}
 
-A base's usable area is 250 plus 250 for every permit it uses, so one permit gives the usual 500 area. The core module always takes 25 of it.
+El área útil de una base es 250 más 250 por cada permiso que usa, así que un permiso da las 500 de área habituales. El módulo central siempre ocupa 25 de ellas.
 
-Every building takes area, and a plan shows how much is used and how much is free. In the game, each HQ level upgrade gives you one more base permit. Production Chains plans bases with 1 to 3 permits, so 500, 750 or 1,000 area. See [Production Chains](/help/tools_production_chain#bases).
+Cada edificio ocupa área, y un plan muestra cuánta está usada y cuánta libre. En el juego, cada mejora de nivel de la HQ te da un permiso de base más. Cadenas de producción planifica bases con 1 a 3 permisos, es decir, 500, 750 o 1.000 de área. Consulta [Cadenas de producción](/help/tools_production_chain#bases).
 
 ## Ask {#ask}
 
-The lowest price a seller currently asks on an exchange. If you buy at once, you pay the ask. No ask means nobody sells the material there right now.
+El precio más bajo que pide ahora mismo un vendedor en una bolsa. Si compras al instante, pagas el ask. Sin ask significa que ahora mismo nadie vende el material allí.
 
-Plan check shows "No offers" when a plan buys a material on an exchange without an ask. Your exchange preference can use the ask as the price basis. See [Plan check](/help/plan_check#flags) and [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
+La Revisión del plan muestra «Sin ofertas» cuando un plan compra un material en una bolsa sin ask. Tu preferencia de bolsa puede usar el ask como base de precio. Consulta [Revisión del plan](/help/plan_check#flags) y [Base de precio](/help/exchanges#price-basis-vwap-ask-and-bid).
 
 ## Bid {#bid}
 
-The highest price a buyer currently offers on an exchange. If you sell at once, you take the bid. No bid means nobody buys the material there right now.
+El precio más alto que ofrece ahora mismo un comprador en una bolsa. Si vendes al instante, te llevas el bid. Sin bid significa que ahora mismo nadie compra el material allí.
 
-Plan check shows "No buyers" when a plan sells a material on an exchange without a bid. Your exchange preference can use the bid as the price basis. See [Plan check](/help/plan_check#flags).
+La Revisión del plan muestra «Sin compradores» cuando un plan vende un material en una bolsa sin bid. Tu preferencia de bolsa puede usar el bid como base de precio. Consulta [Revisión del plan](/help/plan_check#flags).
 
-## Burn {#burn}
+## Consumo (burn) {#burn}
 
-How many days a base's stock of a material lasts: the stock in your FIO storage ÷ what the base uses up per day. A material the base makes as much of as it uses never runs out.
+Cuántos días dura el stock de un material en una base: el stock de tu almacenamiento en FIO ÷ lo que la base gasta al día. Un material del que la base produce tanto como gasta nunca se agota.
 
-FIO Burn colours a material red at or below 5 days and yellow at or below 10 days by default. You can change both on the FIO Burn page or in your Profile. Burn needs your FIO data. See [FIO Burn](/help/fio_burn#calculations).
+FIO Consumo colorea un material de rojo con 5 días o menos y de amarillo con 10 días o menos por defecto. Puedes cambiar ambos umbrales en la página FIO Consumo o en tu Perfil. El consumo necesita tus datos de FIO. Consulta [FIO Consumo](/help/fio_burn#calculations).
 
-For example, a base with 300 units of a material in stock that uses 40 a day and makes 10 a day burns 30 net a day, so the stock lasts 300 ÷ 30 = 10 days. At the default thresholds (red 5, yellow 10 days) that's yellow, not yet red.
+Por ejemplo, una base con 300 unidades de un material en stock que gasta 40 al día y produce 10 al día consume 30 netas al día, así que el stock dura 300 ÷ 30 = 10 días. Con los umbrales por defecto (rojo 5, amarillo 10 días) eso es amarillo, todavía no rojo.
 
-## Byproduct {#byproduct}
+## Subproducto {#byproduct}
 
-A second output of a recipe, made alongside the material the recipe is run for.
+Una segunda salida de una receta, que se produce junto al material para el que se ejecuta la receta.
 
-By default, Production Chains uses a byproduct for the chain's own needs first and sells the rest. See [Production Chains](/help/tools_production_chain#settings).
+Por defecto, Cadenas de producción usa primero un subproducto para las necesidades de la propia cadena y vende el resto. Consulta [Cadenas de producción](/help/tools_production_chain#settings).
 
-## Cargo bays {#cargo-bays}
+## Bodegas de carga {#cargo-bays}
 
-The ship sizes Base ROI uses to check whether a base's cargo fits one ship visit, given as weight and volume.
+Los tamaños de nave que usa ROI de bases para comprobar si la carga de una base cabe en una visita de nave, expresados en peso y volumen.
 
-| Ship | Weight  | Volume   |
+| Nave | Peso    | Volumen  |
 | ---- | ------- | -------- |
 | TCB  | 100 t   | 100 m³   |
 | VSC  | 250 t   | 250 m³   |
 | SCB  | 500 t   | 500 m³   |
-| MCB  | 1,000 t | 1,000 m³ |
-| LCB  | 2,000 t | 2,000 m³ |
-| WCB  | 3,000 t | 1,000 m³ |
-| VCB  | 1,000 t | 3,000 m³ |
-| HCB  | 5,000 t | 5,000 m³ |
+| MCB  | 1.000 t | 1.000 m³ |
+| LCB  | 2.000 t | 2.000 m³ |
+| WCB  | 3.000 t | 1.000 m³ |
+| VCB  | 1.000 t | 3.000 m³ |
+| HCB  | 5.000 t | 5.000 m³ |
 
-Base ROI's beginner preset uses the SCB as the starter ship. See [Base ROI](/help/tools_base_roi#settings).
+El ajuste para principiantes de ROI de bases usa la SCB como nave inicial. Consulta [ROI de bases](/help/tools_base_roi#settings).
 
 ## COGC {#cogc}
 
-The Chamber of Global Commerce program running on a planet. An advertising program speeds up buildings of one expertise by 25 %, and a workforce program speeds up buildings that employ that workforce tier by 10 %.
+El programa de la Cámara de Comercio Global que está activo en un planeta. Un programa de publicidad acelera un 25 % los edificios de una especialización, y un programa de mano de obra acelera un 10 % los edificios que emplean ese nivel de mano de obra.
 
-In the game, the residents (players with a base on the planet) vote on the program, and the winning program runs for a week. You pick the program in a plan's planet settings, and Planet Search can filter by it. See [Planet Search](/help/planet_search#cogc-and-infrastructure).
+En el juego, los residentes (los jugadores con una base en el planeta) votan el programa, y el ganador está activo durante una semana. Eliges el programa en los ajustes de planeta de un plan, y la Búsqueda de planetas puede filtrar por él. Consulta [Búsqueda de planetas](/help/planet_search#cogc-and-infrastructure).
 
 ## COGM {#cogm}
 
-Cost of goods manufactured: what one unit of a recipe's output costs in a plan, from input prices, workforce, wear, production fees, runtime and efficiency.
+Coste de los bienes fabricados (cost of goods manufactured): lo que cuesta en un plan una unidad de la salida de una receta, a partir de los precios de los insumos, la mano de obra, el desgaste, las tasas de producción, la duración y la eficiencia.
 
-The cost of one run is the run's share of the building's daily wear and workforce cost, plus its inputs and its production fee. The share is how long the run takes at the building's efficiency ÷ 24 h.
+El coste de una ejecución es su parte del desgaste diario y del coste diario de mano de obra del edificio, más sus insumos y su tasa de producción. Esa parte es lo que tarda la ejecución con la eficiencia del edificio ÷ 24 h.
 
-A made-up example: a recipe runs 12 h at 100 % efficiency, so its share is 12 ÷ 24 = 0.5. The building cost 18,000 ȼ to build, so its wear is 18,000 ÷ 180 = 100 ȼ a day, and the run's part is 50 ȼ. Its workforce costs 400 ȼ a day, so the run's part is 200 ȼ. With 1,000 ȼ of inputs and a 50 ȼ fee, the run costs 50 + 200 + 1,000 + 50 = 1,300 ȼ. If it makes 10 units, the COGM is 1,300 ÷ 10 = 130 ȼ a unit.
+Un ejemplo inventado: una receta tarda 12 h al 100 % de eficiencia, así que su parte es 12 ÷ 24 = 0,5. El edificio costó 18.000 ȼ de construir, así que su desgaste es 18.000 ÷ 180 = 100 ȼ al día, y a la ejecución le tocan 50 ȼ. Su mano de obra cuesta 400 ȼ al día, así que a la ejecución le tocan 200 ȼ. Con 1.000 ȼ de insumos y una tasa de 50 ȼ, la ejecución cuesta 50 + 200 + 1.000 + 50 = 1.300 ȼ. Si produce 10 unidades, el COGM es 1.300 ÷ 10 = 130 ȼ por unidad.
 
-When a recipe has several outputs, PRUNplanner either splits the cost by quantity or charges it in full to each output. A COGM can also become a fixed price in your exchange preference. See [Plan tools](/help/plan_tools) and [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm).
+Cuando una receta tiene varias salidas, PRUNplanner reparte el coste según la cantidad o lo carga entero a cada salida. Un COGM también puede convertirse en un precio fijo de tu preferencia de bolsa. Consulta [Herramientas del plan](/help/plan_tools) y [Precios fijos y COGM](/help/exchanges#fixed-prices-and-cogm).
 
-If the same run made 10 units of one output and 5 of a byproduct, splitting charges 1,300 ÷ 15 ≈ 86.67 ȼ to every unit of both. Charging in full gives 1,300 ÷ 10 = 130 ȼ a unit to the first output and 1,300 ÷ 5 = 260 ȼ a unit to the byproduct.
+Si la misma ejecución produjera 10 unidades de una salida y 5 de un subproducto, el reparto carga 1.300 ÷ 15 ≈ 86,67 ȼ a cada unidad de ambas. Cargarlo entero da 1.300 ÷ 10 = 130 ȼ por unidad a la primera salida y 1.300 ÷ 5 = 260 ȼ por unidad al subproducto.
 
-## Construction cart {#construction-cart}
+## Carrito de construcción {#construction-cart}
 
-A plan tool that lists the materials you still need to buy for the plan's buildings, after the buildings already standing on the base.
+Una herramienta del plan que lista los materiales que aún tienes que comprar para los edificios del plan, descontando los edificios que ya están en pie en la base.
 
-The standing buildings come from your FIO data, or you type them in. You get the list as a table or as an XIT action. See [Plan tools](/help/plan_tools).
+Los edificios en pie salen de tus datos de FIO, o los introduces tú. Obtienes la lista como tabla o como acción de XIT. Consulta [Herramientas del plan](/help/plan_tools).
 
-## Core module {#core-module}
+## Módulo central {#core-module}
 
-Every base's central building. It takes 25 area of the base, and plans always count it among the buildings to construct.
+El edificio central de toda base. Ocupa 25 de área de la base, y los planes siempre lo cuentan entre los edificios que hay que construir.
 
-It's also called CM.
+También se le llama CM.
 
-## Corp. HQ {#corp-hq}
+## Sede corp. {#corp-hq}
 
-The headquarters of the corporation you belong to, when it's on the plan's planet. It isn't your own company's HQ. It speeds up every building of the plan by 10 %.
+La sede de la corporación a la que perteneces, cuando está en el planeta del plan. No es la HQ de tu propia empresa. Acelera un 10 % todos los edificios del plan.
 
-Turn it on in a plan's planet settings. See [Base setup](/help/plan_base). Your own company's headquarters is a different thing, covered under HQ level.
+Actívala en los ajustes de planeta de un plan. Consulta [Configuración de la base](/help/plan_base). La sede de tu propia empresa es otra cosa, que se explica en Nivel de HQ.
 
-## Credits (ȼ) {#currency}
+## Créditos (ȼ) {#currency}
 
-The game's money. PRUNplanner shows every price, cost and profit in credits, written ȼ.
+El dinero del juego. PRUNplanner muestra todos los precios, costes y beneficios en créditos, escritos ȼ.
 
-Production fees are set in the planet's currency. PRUNplanner adds them to costs one to one as ȼ.
+Las tasas de producción se fijan en la moneda del planeta. PRUNplanner las suma a los costes uno a uno como ȼ.
 
 ## CX {#cx}
 
-A commodity exchange, one of the game's player-run markets, each with its own order book. PRUNplanner's prices and volumes cover AI1, CI1, IC1 and NC1.
+Una bolsa de comercio (commodity exchange), uno de los mercados del juego gestionados por jugadores, cada uno con su propio libro de órdenes. Los precios y volúmenes de PRUNplanner cubren AI1, CI1, IC1 y NC1.
 
-AI1 is at Antares, CI1 at Benten, IC1 at Hortus and NC1 at Moria. Market Live also shows CI2 (Arclight) and NC2 (Hubur), and XIT actions can start from their warehouses. Trade off the CX, on local markets or by contract, isn't in this data. See [Exchanges](/help/exchanges).
+AI1 está en Antares, CI1 en Benten, IC1 en Hortus y NC1 en Moria. Mercado en vivo también muestra CI2 (Arclight) y NC2 (Hubur), y las acciones de XIT pueden partir de sus almacenes. El comercio fuera de la CX, en mercados locales o por contrato, no está en estos datos. Consulta [Bolsas](/help/exchanges).
 
-## Degradation {#degradation}
+## Degradación {#degradation}
 
-Buildings wear out over time. Plans charge this as a daily cost of 1 ⁄ 180 of the production buildings' construction cost.
+Los edificios se desgastan con el tiempo. Los planes lo cargan como un coste diario de 1 ⁄ 180 del coste de construcción de los edificios de producción.
 
-For example, production buildings that cost 180,000 ȼ to build add 180,000 ÷ 180 = 1,000 ȼ a day to the plan's cost.
+Por ejemplo, unos edificios de producción que cuestan 180.000 ȼ de construir suman 180.000 ÷ 180 = 1.000 ȼ al día al coste del plan.
 
-Degradation counts in a plan's cost and profit, and in COGM. It's also called wear. See Repair for how condition and repair costs work.
+La degradación cuenta en el coste y el beneficio de un plan, y en el COGM. También se le llama desgaste. Consulta Reparación para ver cómo funcionan la condición y los costes de reparación.
 
-## Efficiency {#efficiency}
+## Eficiencia {#efficiency}
 
-How fast a building produces compared to its recipe's base time. At 100 % it runs a recipe in its base time, and at 125 % in 80 % of that time.
+Lo rápido que produce un edificio en comparación con el tiempo base de su receta. Al 100 % ejecuta una receta en su tiempo base, y al 125 % en el 80 % de ese tiempo.
 
-A building's efficiency is the product of its factors: fertility (farms only), Corp. HQ, COGC, experts, workforce and faction. A plan shows each factor for each building. See [Base setup](/help/plan_base).
+La eficiencia de un edificio es el producto de sus factores: fertilidad (solo granjas), Sede corp., COGC, expertos, mano de obra y facción. Un plan muestra cada factor de cada edificio. Consulta [Configuración de la base](/help/plan_base).
 
-For example, a building with the COGC advertising program for its expertise (× 1.25), a Corp. HQ (× 1.1) and fully housed workers with both luxuries (× 1), and no other factors, runs at 1.25 × 1.1 × 1 = 1.375, so 137.5 %. A recipe with a base time of 10 h then takes 10 ÷ 1.375 ≈ 7.3 h.
+Por ejemplo, un edificio con el programa de publicidad del COGC para su especialización (× 1,25), una Sede corp. (× 1,1) y trabajadores bien alojados con ambos lujos (× 1), sin otros factores, funciona a 1,25 × 1,1 × 1 = 1,375, es decir, al 137,5 %. Una receta con un tiempo base de 10 h tarda entonces 10 ÷ 1,375 ≈ 7,3 h.
 
-## Empire {#empire}
+## Imperio {#empire}
 
-A named group of your plans with a faction and a permit count. The faction and permits give each plan its faction bonus, and the empire's exchange preference prices all its plans.
+Un grupo con nombre de tus planes, con una facción y un número de permisos. La facción y los permisos dan a cada plan su bonificación de facción, y la preferencia de bolsa del imperio pone precio a todos sus planes.
 
-A plan can belong to several empires, and its numbers depend on the empire you open it in. You create and edit empires in Management. See [Management](/help/management#empires).
+Un plan puede pertenecer a varios imperios, y sus cifras dependen del imperio en el que lo abras. Los imperios se crean y editan en Gestión. Consulta [Gestión](/help/management#empires).
 
-## Exchange preference {#exchange-preference}
+## Preferencia de bolsa {#exchange-preference}
 
-Your rules for the prices plans use: which exchange and price basis (VWAP 7D, VWAP 30D, ask or bid), plus fixed prices for single materials. You assign one to an empire.
+Tus reglas para los precios que usan los planes: qué bolsa y qué base de precio (VWAP 7D, VWAP 30D, ask o bid), más precios fijos para materiales concretos. Asignas una a un imperio.
 
-A rule can apply to buying, selling or both, and to all planets or one planet. PRUNplanner uses the first rule that matches, in this order: a planet fixed price, an all-planets fixed price, a planet exchange rule, an all-planets exchange rule. If none matches, it uses Universe VWAP 30D. It's also called CX preference or Default CX. See [How a price is found](/help/exchanges#how-a-price-is-found).
+Una regla puede aplicarse a la compra, a la venta o a ambas, y a todos los planetas o a uno. PRUNplanner usa la primera regla que coincide, en este orden: un precio fijo de planeta, un precio fijo de todos los planetas, una regla de bolsa de planeta, una regla de bolsa de todos los planetas. Si ninguna coincide, usa el VWAP 30D de Universe. También se le llama preferencia de CX o Default CX. Consulta [Cómo se obtiene un precio](/help/exchanges#how-a-price-is-found).
 
-## Expertise {#expertise}
+## Especialización {#expertise}
 
-The field of a production building: Agriculture, Chemistry, Construction, Electronics, Food Industries, Fuel Refining, Manufacturing, Metallurgy or Resource Extraction.
+El campo de un edificio de producción: Agricultura, Química, Construcción, Electrónica, Industria Alimenticia, Refinamiento de Combustible, Fabricación, Metalurgia o Extracción de Recursos.
 
-Experts, COGC advertising programs and faction bonuses each work on the buildings of one expertise.
+Los expertos, los programas de publicidad del COGC y las bonificaciones de facción actúan cada uno sobre los edificios de una especialización.
 
-## Experts {#experts}
+## Expertos {#experts}
 
-Specialists on a base who speed up its buildings of one expertise. They arrive over time from running that expertise's production buildings, and more buildings bring them faster.
+Especialistas de una base que aceleran sus edificios de una especialización. Llegan con el tiempo por tener en marcha los edificios de producción de esa especialización, y con más edificios llegan antes.
 
-| Experts | Speed-up |
-| ------- | -------- |
-| 1       | 3.06 %   |
-| 2       | 6.96 %   |
-| 3       | 12.48 %  |
-| 4       | 19.74 %  |
-| 5       | 28.4 %   |
+| Expertos | Aceleración |
+| -------- | ----------- |
+| 1        | 3,06 %      |
+| 2        | 6,96 %      |
+| 3        | 12,48 %     |
+| 4        | 19,74 %     |
+| 5        | 28,4 %      |
 
-A plan takes at most 5 experts per expertise, and warns when a base has more than 6 in total. See [Base setup](/help/plan_base).
+Un plan admite como mucho 5 expertos por especialización, y avisa cuando una base tiene más de 6 en total. Consulta [Configuración de la base](/help/plan_base).
 
-## Extra building materials {#extra-building-materials}
+## Materiales de construcción adicionales {#extra-building-materials}
 
-Materials a planet adds to the construction of every building, because of its surface, gravity, pressure or temperature.
+Materiales que un planeta añade a la construcción de cada edificio por su superficie, gravedad, presión o temperatura.
 
-| Planet               | Extra material |
-| -------------------- | -------------- |
-| Rocky surface        | MCG            |
-| Gaseous (no surface) | AEF            |
-| Low gravity          | MGC            |
-| High gravity         | BL             |
-| Low pressure         | SEA            |
-| High pressure        | HSE            |
-| Low temperature      | INS            |
-| High temperature     | TSH            |
+| Planeta                  | Material adicional |
+| ------------------------ | ------------------ |
+| Superficie rocosa        | MCG                |
+| Gaseoso (sin superficie) | AEF                |
+| Gravedad baja            | MGC                |
+| Gravedad alta            | BL                 |
+| Presión baja             | SEA                |
+| Presión alta             | HSE                |
+| Temperatura baja         | INS                |
+| Temperatura alta         | TSH                |
 
-They raise a plan's construction cost. Planet Search shows them for every planet. See [Planet Search](/help/planet_search#reading-the-results).
+Aumentan el coste de construcción de un plan. La Búsqueda de planetas los muestra para cada planeta. Consulta [Búsqueda de planetas](/help/planet_search#reading-the-results).
 
-## Extraction {#extraction}
+## Extracción {#extraction}
 
-Taking a planet's resource with an EXT (minerals), RIG (liquids) or COL (gases). The amount per run depends on the planet's daily rate for that resource.
+Sacar un recurso de un planeta con un EXT (minerales), un RIG (líquidos) o un COL (gases). La cantidad por ejecución depende de la tasa diaria del planeta para ese recurso.
 
-A run yields the planet's daily rate × a share of the day (12 h for EXT, 4.8 h for RIG, 6 h for COL), rounded up to whole units. It takes as long as that amount needs at the daily rate. So a run can be a little longer than its share, and the output per day matches the planet's rate.
+Una ejecución rinde la tasa diaria del planeta × una parte del día (12 h para EXT, 4,8 h para RIG, 6 h para COL), redondeada hacia arriba a unidades enteras. Tarda lo que esa cantidad necesita a la tasa diaria. Así que una ejecución puede durar algo más que su parte, y la producción diaria coincide con la tasa del planeta.
 
-For example, with a daily rate of 7 for a mineral, an EXT run yields 7 × 12 ÷ 24 = 3.5, rounded up to 4 units, and takes 4 ÷ 7 of a day, about 13.7 h. Four units every 13.7 h add up to the planet's 7 a day.
+Por ejemplo, con una tasa diaria de 7 para un mineral, una ejecución de EXT rinde 7 × 12 ÷ 24 = 3,5, redondeado a 4 unidades, y tarda 4 ÷ 7 de día, unas 13,7 h. Cuatro unidades cada 13,7 h suman las 7 al día del planeta.
 
-## Faction {#faction}
+## Facción {#faction}
 
-Your company's faction, set per empire. Buildings of the faction's expertise get a bonus that grows the fewer of your permits you use.
+La facción de tu empresa, que se fija por imperio. Los edificios de la especialización de la facción reciben una bonificación que crece cuantos menos permisos tuyos uses.
 
-| Faction        | Base bonus                                                |
-| -------------- | --------------------------------------------------------- |
-| Antares        | Electronics 5 %                                           |
-| Benten         | Manufacturing 5 %                                         |
-| Hortus         | Agriculture 3 %, Food Industries 2 %                      |
-| Moria          | Metallurgy 2 %, Construction 3 %                          |
-| Outside Region | Chemistry, Fuel Refining and Resource Extraction 2 % each |
-| No Faction     | none                                                      |
+| Facción         | Bonificación base                                                          |
+| --------------- | -------------------------------------------------------------------------- |
+| Antares         | Electrónica 5 %                                                            |
+| Benten          | Fabricación 5 %                                                            |
+| Hortus          | Agricultura 3 %, Industria Alimenticia 2 %                                 |
+| Moria           | Metalurgia 2 %, Construcción 3 %                                           |
+| Fuera de región | Química, Refinamiento de Combustible y Extracción de Recursos 2 % cada una |
+| Sin facción     | ninguna                                                                    |
 
-PRUNplanner multiplies the base bonus by 2 × (3 − 2 × permits used ÷ permits total), from the empire's permits. With every permit used that's × 2, so Antares gives Electronics 10 %. With a third of them used, it's about × 4.67.
+PRUNplanner multiplica la bonificación base por 2 × (3 − 2 × permisos usados ÷ permisos totales), según los permisos del imperio. Con todos los permisos usados eso es × 2, así que Antares da a Electrónica un 10 %. Con un tercio usado, es aproximadamente × 4,67.
 
-## Fertility {#fertility}
+## Fertilidad {#fertility}
 
-A planet property that only farms (FRM and ORC) use. Higher fertility makes them faster, and a planet without fertility can't run them.
+Una propiedad del planeta que solo usan las granjas (FRM y ORC). Más fertilidad las hace más rápidas, y un planeta sin fertilidad no puede tenerlas en marcha.
 
-A farm's fertility factor is 1 + fertility × 10 ⁄ 33. Planet Search can filter by fertility. See [Planet Search](/help/planet_search#planet-conditions).
+El factor de fertilidad de una granja es 1 + fertilidad × 10 ⁄ 33. La Búsqueda de planetas puede filtrar por fertilidad. Consulta [Búsqueda de planetas](/help/planet_search#planet-conditions).
 
 ## FIO {#fio}
 
-The community API that mirrors game data. With your FIO username and API key in your Profile, PRUNplanner also reads your storage, sites and ships.
+La API de la comunidad que replica los datos del juego. Con tu nombre de usuario y tu clave API de FIO en tu Perfil, PRUNplanner también lee tu almacenamiento, tus sitios y tus naves.
 
-PRUNplanner's game data and exchange data come from FIO. FIO Burn, FIO Repair and the plan carts use your own FIO data. See [Profile](/help/profile).
+Los datos del juego y de las bolsas de PRUNplanner vienen de FIO. FIO Consumo, FIO Reparación y los carritos del plan usan tus propios datos de FIO. Consulta [Perfil](/help/profile).
 
-## Fixed price {#fixed-price}
+## Precio fijo {#fixed-price}
 
-A price you set yourself for a material in an exchange preference, for buying, selling or both, on all planets or one planet. It wins over exchange rules.
+Un precio que fijas tú mismo para un material en una preferencia de bolsa, para la compra, la venta o ambas, en todos los planetas o en uno. Tiene prioridad sobre las reglas de bolsa.
 
-Use it for materials you make yourself or get from a partner. See [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm).
+Úsalo para materiales que produces tú mismo o que te da un socio. Consulta [Precios fijos y COGM](/help/exchanges#fixed-prices-and-cogm).
 
-## Ghost sites {#ghost-sites}
+## Sitios fantasma {#ghost-sites}
 
-Bases on a planet beyond its plot count. On starter planets, a new player who starts there can still settle once every plot is taken. Nobody else can.
+Bases en un planeta por encima de su número de parcelas. En los planetas iniciales, un jugador nuevo que empieza allí puede asentarse aunque todas las parcelas estén ocupadas. Nadie más puede.
 
-In the game, ghost sites occur on starter planets for new players. A new player who starts there can settle even when every plot is taken. If your starting planet is elsewhere, you can't settle such a planet once it has no free plots. Planet Search marks a full planet that allows ghost sites "Full · ghost sites". See [Plots](/help/planet_search#plots).
+En el juego, los sitios fantasma aparecen en los planetas iniciales para jugadores nuevos. Un jugador nuevo que empieza allí puede asentarse aunque todas las parcelas estén ocupadas. Si tu planeta inicial está en otro sitio, no puedes asentarte en un planeta así cuando ya no tiene parcelas libres. La Búsqueda de planetas marca un planeta lleno que admite sitios fantasma con «Lleno · sitios fantasma». Consulta [Parcelas](/help/planet_search#plots).
 
-## Habs {#habs}
+## Hábitats {#habs}
 
-Habitation buildings that house a base's workforce. HB1 to HB5 each house one tier, while HBB, HBC, HBM and HBL house mixed tiers.
+Edificios de habitación que alojan a la mano de obra de una base. Del HB1 al HB5 aloja cada uno un nivel, mientras que HBB, HBC, HBM y HBL alojan niveles mixtos.
 
-Too little housing lowers workforce efficiency. A plan can size its habs to the workforce automatically, and that's on for new plans. See [Base setup](/help/plan_base).
+Un alojamiento insuficiente reduce la eficiencia de la mano de obra. Un plan puede dimensionar sus hábitats automáticamente según la mano de obra, y eso está activado en los planes nuevos. Consulta [Configuración de la base](/help/plan_base).
 
-## HQ level {#hq-level}
+## Nivel de HQ {#hq-level}
 
-The level of your own company's headquarters. Each HQ level upgrade gives you one more base permit.
+El nivel de la sede (HQ) de tu propia empresa. Cada mejora de nivel de la HQ te da un permiso de base más.
 
-The HQ Upgrade Calculator lists and prices the materials from one level to another. Its range ends at level 50, but that's the calculator's range, not a game limit. Base ROI can add the upgrade for one more permit to a base's cost. See [HQ Calculator](/help/tools_hq_upgrade_calculator).
+La Calculadora de HQ lista los materiales de un nivel a otro y les pone precio. Su rango termina en el nivel 50, pero ese es el rango de la calculadora, no un límite del juego. ROI de bases puede sumar al coste de una base la mejora para un permiso más. Consulta [Calculadora de HQ](/help/tools_hq_upgrade_calculator).
 
-## Jumps {#jumps}
+## Saltos {#jumps}
 
-The number of system-to-system jumps on the shortest route between two places.
+El número de saltos de sistema a sistema en la ruta más corta entre dos lugares.
 
-Planet Search calculates jumps in your browser, to the exchanges and to your plans. A "—" means there's no jump route, and a colony ship is required. See [Distance](/help/planet_search#distance).
+La Búsqueda de planetas calcula los saltos en tu navegador, hasta las bolsas y hasta tus planes. Un «—» significa que no hay ruta de saltos y que hace falta una nave colonial. Consulta [Distancia](/help/planet_search#distance).
 
-## Luxuries {#luxuries}
+## Lujos {#luxuries}
 
-Two optional consumables per workforce tier, such as PWO and COF for Pioneers. Providing them raises workforce efficiency, at the cost of their daily consumption.
+Dos consumibles opcionales por nivel de mano de obra, como PWO y COF para los Pioneros. Proporcionarlos aumenta la eficiencia de la mano de obra, a cambio de su consumo diario.
 
-Workers housed without luxuries work at about 79 %. The first luxury raises that to about 87 %, the second to about 92 %, and both together to 100 %. Luxuries you don't turn on aren't consumed. See [Base setup](/help/plan_base).
+Los trabajadores alojados sin lujos trabajan a un 79 % aproximadamente. El primer lujo lo sube a un 87 % aproximadamente, el segundo a un 92 % aproximadamente, y ambos juntos al 100 %. Los lujos que no activas no se consumen. Consulta [Configuración de la base](/help/plan_base).
 
-## Market capacity {#market-capacity}
+## Capacidad de mercado {#market-capacity}
 
-In Base ROI, how many bases like this one the market can take: the exchange's traded volume per day (the last 7 days' total ÷ 7, days without trades included) ÷ what one base sells or needs per day.
+En ROI de bases, cuántas bases como esta puede absorber el mercado: el volumen negociado al día en la bolsa (el total de los últimos 7 días ÷ 7, incluidos los días sin operaciones) ÷ lo que una base vende o necesita al día.
 
-For example, if the exchange trades 1,000 units of an output a day and one base sells 250 a day, the capacity is 1,000 ÷ 250 = 4 bases.
+Por ejemplo, si la bolsa negocia 1.000 unidades de una salida al día y una base vende 250 al día, la capacidad es 1.000 ÷ 250 = 4 bases.
 
-Base ROI checks it for every output and recipe input over 7 days, and the lowest one counts. Below 1, one base makes or needs more than the market trades. See [Base ROI](/help/tools_base_roi#metrics).
+ROI de bases la comprueba para cada salida e insumo de receta durante 7 días, y cuenta la más baja. Por debajo de 1, una base produce o necesita más de lo que negocia el mercado. Consulta [ROI de bases](/help/tools_base_roi#metrics).
 
-## Market maker {#market-maker}
+## Creador de mercado {#market-maker}
 
-Orders from the game itself, not from players, that buy or sell certain tier-1 goods at fixed prices. For those goods, their price acts as a floor or a ceiling.
+Órdenes del propio juego, no de jugadores, que compran o venden ciertos bienes de nivel 1 a precios fijos. Para esos bienes, su precio actúa como suelo o como techo.
 
-Players report market makers on goods such as agricultural products, basic prefabs and consumables, and say the game has changed their prices before. Trades with market makers count in the exchange's VWAP like any other trade. PRUNplanner doesn't use the market makers' own buy and sell prices that FIO reports.
+Los jugadores informan de creadores de mercado en bienes como productos agrícolas, prefabricados básicos y consumibles, y dicen que el juego ya ha cambiado sus precios antes. Las operaciones con creadores de mercado cuentan en el VWAP de la bolsa como cualquier otra operación. PRUNplanner no usa los precios de compra y venta propios de los creadores de mercado que informa FIO.
 
-## Material I/O {#material-io}
+## E/S de materiales {#material-io}
 
-What a plan or empire takes in and puts out per material and day, and the difference (Δ).
+Lo que un plan o un imperio consume y produce por material y día, y la diferencia (Δ).
 
-You can show it in ȼ, t, m³ or as a share of the market. See [Plan results](/help/plan_results).
+Puedes mostrarlo en ȼ, t, m³ o como parte del mercado. Consulta [Resultados](/help/plan_results).
 
-## Optimal setup {#optimal-setup}
+## Configuración óptima {#optimal-setup}
 
-The 500-area base the ROI tools compare recipes on: production buildings plus the habs and storage they need, with 5 experts and the matching COGC, on a planet with normal conditions.
+La base de 500 de área sobre la que las herramientas de ROI comparan recetas: edificios de producción más los hábitats y el almacenamiento que necesitan, con 5 expertos y el COGC correspondiente, en un planeta de condiciones normales.
 
-Profit per area on this setup lets you compare buildings with each other. See [Recipe ROI](/help/tools_roi_overview).
+El beneficio por área en esta configuración te permite comparar edificios entre sí. Consulta [ROI de recetas](/help/tools_roi_overview).
 
-## Payback {#payback}
+## Amortización {#payback}
 
-How many days a plan's daily profit takes to pay for its construction: construction cost ÷ profit per day. A plan that makes no profit never pays back.
+Cuántos días tarda el beneficio diario de un plan en pagar su construcción: coste de construcción ÷ beneficio por día. Un plan que no da beneficio nunca se amortiza.
 
-Base ROI's Break-even can also count a stock buffer, the HQ upgrade and the time until the experts arrive. See [Base ROI](/help/tools_base_roi#metrics).
+La Amortización de ROI de bases también puede contar un búfer de stock, la mejora de HQ y el tiempo hasta que llegan los expertos. Consulta [ROI de bases](/help/tools_base_roi#metrics).
 
-For example, a plan that costs 1,200,000 ȼ to build and makes 30,000 ȼ profit a day pays back in 1,200,000 ÷ 30,000 = 40 days. Base ROI's Break-even adds its extra costs to the construction cost. With a fixed expert count, no stock buffer and a 300,000 ȼ HQ upgrade, the same base breaks even after 1,500,000 ÷ 30,000 = 50 days.
+Por ejemplo, un plan que cuesta 1.200.000 ȼ de construir y da 30.000 ȼ de beneficio al día se amortiza en 1.200.000 ÷ 30.000 = 40 días. La Amortización de ROI de bases suma sus costes extra al coste de construcción. Con un número fijo de expertos, sin búfer de stock y con una mejora de HQ de 300.000 ȼ, la misma base se amortiza tras 1.500.000 ÷ 30.000 = 50 días.
 
 ## Plan {#plan}
 
-One base on one planet as PRUNplanner calculates it: buildings and recipes, habs and storage, experts, workforce luxuries, COGC program, Corp. HQ and permits.
+Una base en un planeta tal como la calcula PRUNplanner: edificios y recetas, hábitats y almacenamiento, expertos, lujos de la mano de obra, programa del COGC, Sede corp. y permisos.
 
-A plan's numbers depend on the empire you open it in (faction and permits) and that empire's exchange preference. See [Plan layout](/help/plan_layout).
+Las cifras de un plan dependen del imperio en el que lo abras (facción y permisos) y de la preferencia de bolsa de ese imperio. Consulta [Diseño](/help/plan_layout).
 
-## Planetary projects {#planetary-projects}
+## Proyectos planetarios {#planetary-projects}
 
-Planet-wide buildings: LM (local market), COGC, WAR (warehouse), ADM (administration center) and SHY (shipyard). Each takes a plot of the planet.
+Edificios de todo el planeta: LM (mercado local), COGC, WAR (almacén), ADM (centro de administración) y SHY (astillero). Cada uno ocupa una parcela del planeta.
 
-Planet Search shows them as infrastructure and can filter by them. See [Planet Search](/help/planet_search#cogc-and-infrastructure).
+La Búsqueda de planetas los muestra como infraestructura y puede filtrar por ellos. Consulta [Búsqueda de planetas](/help/planet_search#cogc-and-infrastructure).
 
-## Plots {#plots}
+## Parcelas {#plots}
 
-A planet's building sites. Every base takes one, and so do corporation HQs and planetary projects.
+Los solares de construcción de un planeta. Cada base ocupa una, y también las sedes de corporación y los proyectos planetarios.
 
-Free plots are the planet's total plots minus the sites that aren't ghost sites. Planet Search shows them in its Plots column, as FIO last saw the planet. See [Plots](/help/planet_search#plots).
+Las parcelas libres son las parcelas totales del planeta menos los sitios que no son sitios fantasma. La Búsqueda de planetas las muestra en su columna Parcelas, tal como FIO vio el planeta por última vez. Consulta [Parcelas](/help/planet_search#plots).
 
 ## POPR {#popr}
 
-Population report: a planet's figures on its population, such as workers and free workers per tier, and its infrastructure. The game publishes it weekly.
+Informe de población (population report): las cifras de un planeta sobre su población, como trabajadores y trabajadores libres por nivel, y su infraestructura. El juego lo publica cada semana.
 
-A plan's POPR tool shows the latest report for its planet. See [Plan tools](/help/plan_tools).
+La herramienta POPR de un plan muestra el último informe de su planeta. Consulta [Herramientas del plan](/help/plan_tools).
 
-## Production fees {#production-fees}
+## Tasas de producción {#production-fees}
 
-A fee the planet's governor sets per expertise and workforce tier, paid for each production order on the recipe's base time. Faster buildings run more orders, so they pay more per day.
+Una tasa que fija el gobernador del planeta por especialización y nivel de mano de obra, que se paga por cada orden de producción según el tiempo base de la receta. Los edificios más rápidos ejecutan más órdenes, así que pagan más al día.
 
-PRUNplanner charges it per day as the fee weighted by the building's workforce × the building's efficiency. It counts in plans, Profit Breakdown, Empire, Base ROI and Production Chains, and in COGM. See [Plan results](/help/plan_results).
+PRUNplanner la cobra por día como la tasa ponderada por la mano de obra del edificio × la eficiencia del edificio. Cuenta en los planes, en Desglose del beneficio, en Imperio, en ROI de bases y en Cadenas de producción, y en el COGM. Consulta [Resultados](/help/plan_results).
 
-## Profit {#profit}
+## Beneficio {#profit}
 
-A plan's daily revenue minus its daily cost. Revenue is what it sells. Cost is what it buys, plus wear and production fees.
+Los ingresos diarios de un plan menos su coste diario. Los ingresos son lo que vende. El coste es lo que compra, más el desgaste y las tasas de producción.
 
-PRUNplanner prices sold materials at sell prices, and bought materials and workforce consumables at buy prices, all from the empire's exchange preference. Wear is 1 ⁄ 180 of the production buildings' construction cost per day. See [Plan results](/help/plan_results).
+PRUNplanner valora los materiales vendidos a precios de venta, y los materiales comprados y los consumibles de la mano de obra a precios de compra, todos según la preferencia de bolsa del imperio. El desgaste es 1 ⁄ 180 del coste de construcción de los edificios de producción al día. Consulta [Resultados](/help/plan_results).
 
-## Recipe {#recipe}
+## Receta {#recipe}
 
-One production step of a building, where inputs turn into outputs over a base duration. A building runs its recipes one after another.
+Un paso de producción de un edificio, en el que unos insumos se convierten en salidas durante una duración base. Un edificio ejecuta sus recetas una tras otra.
 
-## Repair {#repair}
+## Reparación {#repair}
 
-Buildings lose condition over time, and efficiency with it. Repairing a building costs part of its construction materials, and the longer you wait, the more it costs.
+Los edificios pierden condición con el tiempo, y con ella eficiencia. Reparar un edificio cuesta parte de sus materiales de construcción, y cuanto más esperas, más cuesta.
 
-PRUNplanner models the repair cost rising each day until day 180, when it costs as much as a new building, and efficiency falling toward 33 %. See [FIO Repair](/help/fio_repair).
+PRUNplanner modela el coste de reparación subiendo cada día hasta el día 180, cuando cuesta tanto como un edificio nuevo, y la eficiencia bajando hacia el 33 %. Consulta [FIO Reparación](/help/fio_repair).
 
 ## ROI {#roi}
 
-Return on investment. PRUNplanner shows it as payback days: construction cost ÷ profit per day.
+Retorno de la inversión (return on investment). PRUNplanner lo muestra como días de amortización: coste de construcción ÷ beneficio por día.
 
-Recipe ROI, Resource ROI and Base ROI rank recipes, resources and bases by it. See [Recipe ROI](/help/tools_roi_overview).
+ROI de recetas, ROI de recursos y ROI de bases ordenan recetas, recursos y bases según él. Consulta [ROI de recetas](/help/tools_roi_overview).
 
-## Share of volume {#share-of-volume}
+## Parte del volumen {#share-of-volume}
 
-What a plan or empire buys or sells of a material per day ÷ what the exchange traded of it per day, on average over 30 days.
+Lo que un plan o un imperio compra o vende de un material al día ÷ lo que la bolsa negoció de él al día, de media en 30 días.
 
-Plan check flags a share amber from 10 % and red from 50 %. See [Market check](/help/plan_check#market-check).
+La Revisión del plan marca una parte en ámbar a partir del 10 % y en rojo a partir del 50 %. Consulta [Revisión de mercado](/help/plan_check#market-check).
 
-For example, if a plan buys 50 units a day and the exchange traded 6,000 units in the last 30 days, that's 200 a day, so the share is 50 ÷ 200 = 25 %, amber.
+Por ejemplo, si un plan compra 50 unidades al día y la bolsa negoció 6.000 unidades en los últimos 30 días, eso son 200 al día, así que la parte es 50 ÷ 200 = 25 %, ámbar.
 
-## Shared plan {#shared-plan}
+## Plan compartido {#shared-plan}
 
-A link to one of your plans. Anyone with it sees the plan and can try changes on their own copy. Your plan never changes.
+Un enlace a uno de tus planes. Cualquiera que lo tenga ve el plan y puede probar cambios en su propia copia. Tu plan nunca cambia.
 
-The link stops working when you stop sharing or delete the plan. See [Sharing a plan](/help/plan_sharing).
+El enlace deja de funcionar cuando dejas de compartirlo o eliminas el plan. Consulta [Compartir un plan](/help/plan_sharing).
 
-## Spread {#spread}
+## Diferencial {#spread}
 
-The gap between ask and bid on an exchange, as a share of the ask: (ask − bid) ÷ ask. A wide spread means trading at once costs more.
+La distancia entre ask y bid en una bolsa, como parte del ask: (ask − bid) ÷ ask. Un diferencial amplio significa que operar al instante cuesta más.
 
-For example, an ask of 100 ȼ and a bid of 80 ȼ give a spread of (100 − 80) ÷ 100 = 20 %.
+Por ejemplo, un ask de 100 ȼ y un bid de 80 ȼ dan un diferencial de (100 − 80) ÷ 100 = 20 %.
 
-Plan check shows the spread but doesn't flag it. See [Plan check](/help/plan_check#market-check).
+La Revisión del plan muestra el diferencial pero no lo marca. Consulta [Revisión del plan](/help/plan_check#market-check).
 
-## Storage {#storage}
+## Almacenamiento {#storage}
 
-Storage buildings: STO, STA, STE, STV and STW. Their weight and volume capacity set how many days of the base's daily imports and exports it can hold.
+Edificios de almacenamiento: STO, STA, STE, STV y STW. Su capacidad de peso y volumen determina cuántos días de importaciones y exportaciones diarias de la base pueden guardar.
 
-A plan's storage sets its visitation frequency. See [Plan tools](/help/plan_tools).
+El almacenamiento de un plan determina su frecuencia de visitas. Consulta [Herramientas del plan](/help/plan_tools).
 
-## Supply cart {#supply-cart}
+## Carrito de suministro {#supply-cart}
 
-A plan tool that lists the consumables and inputs a base needs for a number of days (20 by default), less what its FIO storage holds.
+Una herramienta del plan que lista los consumibles y los insumos que una base necesita para un número de días (20 por defecto), descontando lo que guarda su almacenamiento en FIO.
 
-You get the list as a table or as an XIT action. XIT Initial also ships the inputs the plan makes itself, for the first supply. See [Plan tools](/help/plan_tools).
+Obtienes la lista como tabla o como acción de XIT. XIT Initial también envía los insumos que el propio plan produce, para el primer suministro. Consulta [Herramientas del plan](/help/plan_tools).
 
-## Thin market {#thin-market}
+## Mercado poco líquido {#thin-market}
 
-In Production Chains, a bought material where the chain needs 10 % or more of what the exchange trades a day, or that didn't trade in 30 days.
+En Cadenas de producción, un material comprado del que la cadena necesita el 10 % o más de lo que la bolsa negocia al día, o que no se ha negociado en 30 días.
 
-See [Warnings](/help/tools_production_chain#warnings).
+Consulta [Avisos](/help/tools_production_chain#warnings).
 
 ## Ticker {#ticker}
 
-The short code of a material or building, as in the game: DW for drinking water, PP1 for prefab plant.
+El código corto de un material o un edificio, como en el juego: DW para el agua potable, PP1 para la planta de prefabricados.
 
-Search, filters and XIT actions use tickers.
+La búsqueda, los filtros y las acciones de XIT usan tickers.
 
 ## Universe {#universe}
 
-PRUNplanner's average over the four exchanges AI1, CI1, IC1 and NC1. It isn't a place where anyone can trade.
+La media de PRUNplanner sobre las cuatro bolsas AI1, CI1, IC1 y NC1. No es un lugar donde se pueda comerciar.
 
-PRUNplanner uses the Universe VWAP 30D for every price that no rule of your exchange preference covers, and for every price of an empire without one. See [How a price is found](/help/exchanges#how-a-price-is-found).
+PRUNplanner usa el VWAP 30D de Universe para todo precio que no cubra ninguna regla de tu preferencia de bolsa, y para todos los precios de un imperio sin preferencia. Consulta [Cómo se obtiene un precio](/help/exchanges#how-a-price-is-found).
 
-## Upkeep {#upkeep}
+## Mantenimiento {#upkeep}
 
-What it costs to keep things running. In Production Chains, it's the daily cost of the workforce's consumables. In the Upkeep Price Calculator, it's the materials planetary buildings consume to meet population needs.
+Lo que cuesta mantener las cosas en marcha. En Cadenas de producción, es el coste diario de los consumibles de la mano de obra. En la Calculadora de precios de mantenimiento, son los materiales que consumen los edificios planetarios para cubrir las necesidades de la población.
 
-The population needs are Safety, Health, Comfort, Culture and Education. See [Upkeep Prices](/help/tools_upkeep_price_calculator).
+Las necesidades de la población son Seguridad, Salud, Comodidad, Cultura y Educación. Consulta [Precios de mantenimiento](/help/tools_upkeep_price_calculator).
 
-## Visitation frequency {#visitation}
+## Frecuencia de visitas {#visitation}
 
-A plan tool that shows how many days it takes the base's storage to fill with what it imports and exports per day. That's how often a ship must visit.
+Una herramienta del plan que muestra cuántos días tarda en llenarse el almacenamiento de la base con lo que importa y exporta al día. Esa es la frecuencia con la que debe visitarla una nave.
 
-You can leave materials out of the calculation. See [Plan tools](/help/plan_tools).
+Puedes dejar materiales fuera del cálculo. Consulta [Herramientas del plan](/help/plan_tools).
 
 ## VWAP {#vwap}
 
-Volume-weighted average price: the credits traded for a material on an exchange ÷ the units traded, over the last 7 or 30 days.
+Precio medio ponderado por volumen (volume-weighted average price): los créditos negociados por un material en una bolsa ÷ las unidades negociadas, en los últimos 7 o 30 días.
 
-For example, if an exchange trades 100 units at 10 ȼ on one day (1,000 ȼ) and 300 units at 12 ȼ on another (3,600 ȼ), the VWAP over those days is 4,600 ÷ 400 = 11.5 ȼ. The busier day weighs more, so it's above the plain average of 11 ȼ.
+Por ejemplo, si una bolsa negocia 100 unidades a 10 ȼ un día (1.000 ȼ) y 300 unidades a 12 ȼ otro día (3.600 ȼ), el VWAP de esos días es 4.600 ÷ 400 = 11,5 ȼ. El día con más actividad pesa más, así que queda por encima de la media simple de 11 ȼ.
 
-With no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded, as long as that day is within the last 30 days. After 30 days without a trade, both are 0. See [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid).
+Sin operaciones en los últimos 7 días, el VWAP 7D usa el precio del último día en que se negoció, siempre que ese día esté dentro de los últimos 30 días. Tras 30 días sin operaciones, ambos son 0. Consulta [Base de precio](/help/exchanges#price-basis-vwap-ask-and-bid).
 
-A VWAP of 0 means the material hasn't traded on that exchange for 30 days. A plan using that price counts it at 0 ȼ, and Plan check flags it as "No price". See [Plan check](/help/plan_check#flags).
+Un VWAP de 0 significa que el material no se ha negociado en esa bolsa en 30 días. Un plan que usa ese precio lo cuenta a 0 ȼ, y la Revisión del plan lo marca como «Sin precio». Consulta [Revisión del plan](/help/plan_check#flags).
 
-## Workforce {#workforce}
+## Mano de obra {#workforce}
 
-The workers buildings need, in five tiers: Pioneers, Settlers, Technicians, Engineers and Scientists. Habs house them, and they consume food, water and other goods every day.
+Los trabajadores que necesitan los edificios, en cinco niveles: Pioneros, Colonos, Técnicos, Ingenieros y Científicos. Los hábitats los alojan, y cada día consumen comida, agua y otros bienes.
 
-Housed workers without luxuries work at about 79 % efficiency. Too little housing lowers it in proportion. See [Base setup](/help/plan_base).
+Los trabajadores alojados sin lujos trabajan a un 79 % de eficiencia aproximadamente. Un alojamiento insuficiente la reduce en proporción. Consulta [Configuración de la base](/help/plan_base).
 
 ## XIT {#xit}
 
-An action package PRUNplanner builds, such as CX buys, material transfers or repairs, for Refined PrUn to run in the game as XIT ACT. PRUNplanner never trades for you.
+Un paquete de acciones que prepara PRUNplanner, como compras en la CX, traslados de materiales o reparaciones, para que Refined PrUn lo ejecute en el juego como XIT ACT. PRUNplanner nunca comercia por ti.
 
-FIO Burn, FIO Repair and the plan carts build XIT actions. After an XIT repair flight, you run BRA in the game, the command that repairs all buildings of a base. See [FIO Repair](/help/fio_repair#prices).
+FIO Consumo, FIO Reparación y los carritos del plan preparan acciones de XIT. Tras un vuelo de reparación de XIT, ejecutas BRA en el juego, el comando que repara todos los edificios de una base. Consulta [FIO Reparación](/help/fio_repair#prices).
