@@ -1,11 +1,11 @@
 {
 	"components": {
 		"login": {
-			"title": "Login",
+			"title": "De vuelta a tu imperio.",
 			"error": "Error al iniciar sesión. Comprueba tu nombre de usuario y tu contraseña.",
 			"throttled": "Demasiados intentos de inicio de sesión. Espera un poco e inténtalo de nuevo más tarde.",
 			"buttons": {
-				"login": "Login"
+				"login": "Iniciar sesión"
 			},
 			"form": {
 				"username": "Nombre de usuario",
@@ -13,34 +13,34 @@
 			},
 			"tos": "Al usar PRUNplanner aceptas los {tos_link}.",
 			"tos_link": "Términos del servicio",
-			"forgot_link": "Password Reset"
+			"forgot_link": "¿Olvidaste tu contraseña?"
 		},
 		"registration": {
-			"title": "Account Information",
+			"title": "Empieza a planificar, es gratis.",
 			"tos": "PRUNplanner es de uso gratuito. Al crear una cuenta, reconoces y aceptas los {tos_link}.",
 			"tos_link": "Términos del servicio",
 			"result": {
 				"ok_header": "¡Te damos la bienvenida, {username}!",
-				"ok_message": "Registration succesful. You can now login to PRUNplanner.",
+				"ok_message": "Registro completado. Ya puedes iniciar sesión en PRUNplanner.",
 				"error": "Error durante el registro.",
 				"fix_fields": "Corrige los campos marcados a continuación.",
 				"throttled": "Demasiados intentos de registro. Espera un minuto e inténtalo de nuevo.",
 				"unknown": "Error desconocido. Inténtalo de nuevo más tarde."
 			},
 			"buttons": {
-				"register": "Create Account"
+				"register": "Crear cuenta"
 			},
 			"form": {
 				"username": "Nombre de usuario",
-				"username_info": "Must be at least 3 characters long. Can't contain spaces.",
+				"username_info": "Al menos 3 caracteres, sin espacios.",
 				"password": "Contraseña",
 				"password_info": "Al menos 8 caracteres, no solo números y no una contraseña común.",
 				"email": "E-mail (opcional)",
-				"email_info": "Only used to reset your password if you forget it. No newsletters, never shared. You can add it later in Profile.",
+				"email_info": "No es obligatorio, pero sí recomendable. Aumenta la seguridad de tu cuenta.",
 				"email_invalid": "Esto no parece una dirección de e-mail. Déjala vacía o corrígela para crear tu cuenta.",
-				"security_question": "Security Question",
+				"security_question": "Pregunta de seguridad",
 				"question": "Introduce el nombre del planeta {planet}. Para encontrarlo, abre un nuevo búfer de Prosperous Universe con este comando y lee el nombre del planeta bajo «Name».",
-				"planet_name": "Name",
+				"planet_name": "Nombre del planeta",
 				"another_planet": "Usar otro planeta"
 			}
 		},
