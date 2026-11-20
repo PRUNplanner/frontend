@@ -1,269 +1,269 @@
-With **Production Chains** you plan a whole production chain per day. Tell it what you want to produce and how much a day, for one material or several at once (say DW, RAT and OVE). It works out every step for you: which [[recipe]] makes each material, how many buildings that takes, what you have to buy, and what the chain costs and earns at your [[cx|CX]] prices. Then it lays the chain out into bases, picks planets and creates the [[plan|plans]]. Its second mode, **Check an empire**, looks at an empire you already run.
+Mit **Produktionsketten** planst du eine ganze Produktionskette pro Tag. Sag ihr, was du wie viel pro Tag produzieren willst, für ein Material oder mehrere auf einmal (etwa DW, RAT und OVE). Sie rechnet jeden Schritt für dich aus: welcher [[recipe|Auftrag]] jedes Material herstellt, wie viele Gebäude das braucht, was du kaufen musst und was die Kette zu deinen [[cx|CX]]-Preisen kostet und einbringt. Dann teilt sie die Kette auf Basen auf, wählt Planeten und erstellt die [[plan|Pläne]]. Ihr zweiter Modus, **Imperium prüfen**, schaut sich ein Imperium an, das du schon betreibst.
 
-Use it before you build: it shows what to make per day, what to buy and what it takes to run, from the raw materials up, so you know what a chain costs and earns before you place a building.
+Nutze sie, bevor du baust: Sie zeigt, was pro Tag herzustellen ist, was zu kaufen ist und was der Betrieb braucht, von den Rohstoffen aufwärts. So weißt du, was eine Kette kostet und einbringt, bevor du ein Gebäude setzt.
 
-## Getting started {#getting-started}
+## Erste Schritte {#getting-started}
 
-You need an account for Production Chains. Log in, then open it under Calculators → **Production Chains**.
+Für Produktionsketten brauchst du ein Konto. Melde dich an und öffne sie dann unter Rechner → **Produktionsketten**.
 
-1. Under **Produce per day**, pick a material in **Add material**. You can pick any material that has a recipe or occurs as a planet resource.
-2. Each target starts at 10 per day. Type an amount, or use − and +. They step by 1 below 20, by 5 from 20 and by 10 from 100, and − never goes below 1.
-3. × removes a target. You can add as many as you like, and the chain shares steps between them.
+1. Wähle unter **Produktion pro Tag** ein Material in **Material hinzufügen**. Du kannst jedes Material wählen, das einen Auftrag hat oder als Planetenressource vorkommt.
+2. Jedes Ziel startet mit 10 pro Tag. Gib eine Menge ein oder nutze − und +. Sie gehen unter 20 in Schritten von 1, ab 20 in Schritten von 5 und ab 100 in Schritten von 10, und − geht nie unter 1.
+3. × entfernt ein Ziel. Du kannst so viele hinzufügen, wie du willst, und die Kette teilt Schritte zwischen ihnen.
 
-The results, steps and graph update with every change you make. Until you add a material, the page asks "What do you want to produce?" in place of the results.
+Ergebnisse, Schritte und Graph aktualisieren sich bei jeder Änderung. Bis du ein Material hinzufügst, fragt die Seite anstelle der Ergebnisse „Was möchtest du produzieren?“.
 
-While the planets load, a line says "Loading planets for extraction …". If they can't be loaded, extracted rows show no buildings. Press **Retry** to load them again.
+Während die Planeten laden, steht dort „Planeten für den Abbau werden geladen …“. Können sie nicht geladen werden, zeigen abgebaute Zeilen keine Gebäude. Drück **Erneut versuchen**, um sie neu zu laden.
 
 > [!tip]
-> Start with the daily amount you'd like to sell and look at the profit and the buildings. Then use **Fit the rate to your bases** (see [Bases](#bases)) to size the chain to the bases you can actually build.
+> Fang mit der Tagesmenge an, die du verkaufen möchtest, und schau dir Profit und Gebäude an. Nutze dann **Rate an deine Basen anpassen** (siehe [Basen](#bases)), um die Kette auf die Basen zuzuschneiden, die du wirklich bauen kannst.
 
-## Settings {#settings}
+## Einstellungen {#settings}
 
-Every base runs with both [[luxuries]] and the [[experts]] worth most for its buildings (more in [Bases](#bases)). Luxuries are optional consumables that raise your workers' efficiency, and experts speed up a base's buildings of one expertise. These settings sit above the results:
+Jede Basis läuft mit beiden [[luxuries|Luxusgütern]] und den [[experts|Experten]], die für ihre Gebäude am meisten bringen (mehr dazu in [Basen](#bases)). Luxusgüter sind optionale Verbrauchsgüter, die die Effizienz deiner Arbeiter erhöhen, und Experten beschleunigen die Gebäude einer Basis in einem Fachgebiet. Diese Einstellungen stehen über den Ergebnissen:
 
-- **Efficiency**: an extra global percentage on top, for [[corp-hq|Corp. HQ]] or [[faction]] bonuses. 100 % adds nothing, and it accepts 1 to 1,000 %. It changes how much each building makes, not the production fees. For example, at 125 % a step that needs 10 buildings at 100 % comes to 8 exact buildings.
-- **Prices**: the [[exchange-preference|exchange preference]] the chain is priced with. It starts at your default exchange preference, and "None - Universe 30D" uses universe-wide prices. The chain uses the preference's prices but not its planet-specific exceptions. The prices drive the default recipes, every cost and the profit, so another exchange preference can change the chain.
-- **Raw resources**: **Buy** (default) or **Extract**. You can also set a single row to Extract in Steps. A raw material that is itself a target is always extracted. With **Extract**, the chain plans extractors and counts their upkeep, wear and fees instead of a CX price. Three planet resources also have a recipe: O, HE3 and SIO. With **Extract**, the chain extracts such a resource when that costs less per unit than making it and the step's base can extract it, and makes it otherwise. For example, steel needs O: making it in a TNP also yields TC to sell, while extracting it needs only the planet's extractor. A row you set to Make or Extract yourself keeps that choice.
-- **Byproducts**: some recipes make a second output alongside the material they're run for. **Cover demand** (default) uses each [[byproduct]] first where the chain needs that same material, and sells the rest. **Sell** sells them all.
+- **Effizienz**: ein zusätzlicher globaler Prozentsatz obendrauf, für Boni durch [[corp-hq|Corp.-HQ]] oder [[faction|Fraktion]]. 100 % fügt nichts hinzu, und erlaubt sind 1 bis 1.000 %. Er ändert, wie viel jedes Gebäude herstellt, nicht die Produktionsgebühren. Ein Beispiel: Bei 125 % kommt ein Schritt, der bei 100 % 10 Gebäude braucht, auf genau 8 Gebäude.
+- **Preise**: die [[exchange-preference|Marktplatz-Präferenz]], mit der die Kette bepreist wird. Sie startet mit deiner Standard-Marktplatz-Präferenz, und „None - Universe 30D“ nutzt universumsweite Preise. Die Kette nutzt die Preise der Präferenz, aber nicht ihre planetenspezifischen Ausnahmen. Die Preise bestimmen die Standardaufträge, alle Kosten und den Profit, eine andere Marktplatz-Präferenz kann die Kette also verändern.
+- **Rohstoffe**: **Kaufen** (Standard) oder **Abbauen**. Du kannst auch eine einzelne Zeile in Schritte auf Abbauen stellen. Ein Rohstoff, der selbst ein Ziel ist, wird immer abgebaut. Mit **Abbauen** plant die Kette Extraktoren und rechnet ihren Unterhalt, Verschleiß und ihre Gebühren statt eines CX-Preises. Drei Planetenressourcen haben auch einen Auftrag: O, HE3 und SIO. Mit **Abbauen** baut die Kette eine solche Ressource ab, wenn das pro Einheit weniger kostet als die Herstellung und die Basis des Schritts sie abbauen kann, und stellt sie sonst her. Ein Beispiel: Stahl braucht O. Stellst du es in einem TNP her, entsteht auch TC zum Verkaufen, während der Abbau nur den Extraktor des Planeten braucht. Eine Zeile, die du selbst auf Herstellen oder Abbauen stellst, behält diese Wahl.
+- **Nebenprodukte**: Manche Aufträge stellen neben dem Material, für das sie laufen, einen zweiten Output her. **Bedarf decken** (Standard) nutzt jedes [[byproduct|Nebenprodukt]] zuerst dort, wo die Kette genau dieses Material braucht, und verkauft den Rest. **Verkaufen** verkauft alle.
 
 > [!warning]
-> Picking an exchange preference under **Prices** also makes it your default exchange preference, so other pages that follow your default switch with it. That happens in both modes.
+> Wählst du unter **Preise** eine Marktplatz-Präferenz, wird sie auch zu deiner Standard-Marktplatz-Präferenz, und andere Seiten, die deinem Standard folgen, wechseln mit. Das passiert in beiden Modi.
 
-### Defaults {#defaults}
+### Standardwerte {#defaults}
 
-| Setting             | Default                          |
-| ------------------- | -------------------------------- |
-| **Efficiency**      | 100 %                            |
-| **Prices**          | your default exchange preference |
-| **Raw resources**   | **Buy**                          |
-| **Byproducts**      | **Cover demand**                 |
-| **Own production**  | **None**                         |
-| A new target        | 10 / day                         |
-| **Bases up to**     | 500 area                         |
-| **Number of bases** | 2                                |
-| **Buy list**        | for 10 days                      |
-| **Row order**       | **Chain**                        |
-| **Line width**      | **t / day**                      |
-| A base's luxuries   | both                             |
-| A base's experts    | **Auto**                         |
-| A base's COGC       | the planet's running program     |
+| Einstellung            | Standard                            |
+| ---------------------- | ----------------------------------- |
+| **Effizienz**          | 100 %                               |
+| **Preise**             | deine Standard-Marktplatz-Präferenz |
+| **Rohstoffe**          | **Kaufen**                          |
+| **Nebenprodukte**      | **Bedarf decken**                   |
+| **Eigene Produktion**  | **Keine**                           |
+| Ein neues Ziel         | 10 / Tag                            |
+| **Basen bis**          | 500 Fläche                          |
+| **Anzahl Basen**       | 2                                   |
+| **Einkaufsliste**      | für 10 Tage                         |
+| **Zeilenreihenfolge**  | **Kette**                           |
+| **Linienstärke**       | **t / Tag**                         |
+| Luxusgüter einer Basis | beide                               |
+| Experten einer Basis   | **Auto**                            |
+| COGC einer Basis       | das aktive Programm des Planeten    |
 
-## Own production {#own-production}
+## Eigene Produktion {#own-production}
 
-If you already make part of a chain, pick one of your [[empire|empires]] under **Own production**. Any material the chain needs that the empire makes more of than it uses is marked **Have**. That surplus is what its plans make minus what they use, workforce consumption included. The chain uses it first, after byproducts, and only makes, buys or extracts the rest.
+Wenn du einen Teil einer Kette schon herstellst, wähle unter **Eigene Produktion** eines deiner [[empire|Imperien]]. Jedes Material, das die Kette braucht und von dem das Imperium mehr herstellt, als es verbraucht, wird als **Vorhanden** markiert. Dieser Überschuss ist, was seine Pläne herstellen, minus was sie verbrauchen, den Verbrauch der Belegschaft eingeschlossen. Die Kette nutzt ihn zuerst, nach den Nebenprodukten, und stellt nur den Rest her, kauft ihn oder baut ihn ab.
 
-- A material you have enough of moves to the first column of the Graph, and its inputs drop out of the chain. Steps, buildings and construction then show only what the new chain adds, and the results tell you how many fewer buildings and how much less construction you need.
-- You can also mark a material **Have** by hand in the Source column and type how much you have per day. Leave it empty for all of it, or type 0 to turn it off. A typed amount wins over the empire. When it differs from the empire's surplus, "use …" next to it goes back to the empire's amount.
-- If you have only part of a material, the row shows "rest" and lets you choose what covers the rest.
-- Targets always come from the chain itself.
-- Don't worry if a material your plans make shows no **Have**: only what the empire makes more of than it uses counts, so a material it uses up has no surplus. You can still mark it **Have** by hand.
-- What comes from your plans counts in the profit like a bought input at its CX price. The inputs tile then reads **Inputs / day** and splits it into own and bought.
-- [Bases](#bases) lists which plan supplies what, in plan-name order, and which part of the surplus the chain doesn't use. The shipping table includes the routes from those plans.
-- Have rows aren't part of the plans **Create plans** makes.
-- If you change the empire's plans in another tab, the amounts update while this page is open.
-- The chain link keeps the Have amounts the chain uses, also those from the empire, but never the empire itself.
+- Ein Material, von dem du genug hast, wandert in die erste Spalte des Graphen, und seine Inputs fallen aus der Kette. Schritte, Gebäude und Baukosten zeigen dann nur, was die neue Kette hinzufügt, und die Ergebnisse sagen dir, wie viel weniger Gebäude und Baukosten du brauchst.
+- Du kannst ein Material auch von Hand in der Spalte Quelle als **Vorhanden** markieren und eingeben, wie viel du pro Tag hast. Lass das Feld leer für alles, oder gib 0 ein, um es auszuschalten. Eine eingegebene Menge hat Vorrang vor dem Imperium. Weicht sie vom Überschuss des Imperiums ab, setzt „… nutzen“ daneben sie auf die Menge des Imperiums zurück.
+- Hast du nur einen Teil eines Materials, zeigt die Zeile „Rest“ und lässt dich wählen, was den Rest deckt.
+- Ziele kommen immer aus der Kette selbst.
+- Keine Sorge, wenn ein Material, das deine Pläne herstellen, kein **Vorhanden** zeigt: Nur was das Imperium über den eigenen Verbrauch hinaus herstellt, zählt, ein Material, das es aufbraucht, hat also keinen Überschuss. Du kannst es trotzdem von Hand als **Vorhanden** markieren.
+- Was aus deinen Plänen kommt, zählt im Profit wie ein gekaufter Input zu seinem CX-Preis. Die Input-Kachel heißt dann **Inputs / Tag** und teilt sie in eigene und gekaufte auf.
+- [Basen](#bases) listet, welcher Plan was liefert, in der Reihenfolge der Plannamen, und welchen Teil des Überschusses die Kette nicht nutzt. Die Transporttabelle enthält die Routen von diesen Plänen.
+- Vorhanden-Zeilen sind nicht Teil der Pläne, die **Pläne erstellen** anlegt.
+- Änderst du die Pläne des Imperiums in einem anderen Tab, aktualisieren sich die Mengen, solange diese Seite offen ist.
+- Der Kettenlink behält die Vorhanden-Mengen, die die Kette nutzt, auch die aus dem Imperium, aber nie das Imperium selbst.
 
-## Results {#results}
+## Ergebnisse {#results}
 
-The strip at the top adds up all your bases.
+Die Leiste oben zählt alle deine Basen zusammen.
 
-| Tile                          | What it shows                                                                                                                                                                                                                                                                                                                                                  |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Profit / day**              | Output value minus bought inputs, own production at CX price, upkeep, wear and production fees, also as a share of the output value (without Own production)                                                                                                                                                                                |
-| **Output value / day**        | The targets at the CX sell price, plus sold byproducts                                                                                                                                                                                                                                                                                                         |
-| **Bought inputs / day**       | What you buy, at the CX buy price                                                                                                                                                                                                                                                                                                                              |
-| **Upkeep, wear + fees / day** | Workforce [[upkeep]] with the luxuries, wear, and [[production-fees\|production fees]], with the workforce upkeep and the fees below the value |
-| **Buildings**                 | Built and exact                                                                                                                                                                                                                                                                                                                                                |
-| **Area**                      | Including habitation                                                                                                                                                                                                                                                                                                                                           |
-| **Workforce**                 | Per tier                                                                                                                                                                                                                                                                                                                                                       |
-| **Construction**              | With the [[payback]], or "no payback" when the profit is 0 or less                                                                                                                                                                                     |
+| Kachel                                     | Was sie zeigt                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Profit / Tag**                           | Output-Wert minus gekaufte Inputs, eigene Produktion zum CX-Preis, Unterhalt, Verschleiß und Produktionsgebühren, auch als Anteil am Output-Wert (ohne Eigene Produktion)                                                                                                                                                                                                          |
+| **Output-Wert / Tag**                      | Die Ziele zum CX-Verkaufspreis, plus verkaufte Nebenprodukte                                                                                                                                                                                                                                                                                                                                          |
+| **Gekaufte Inputs / Tag**                  | Was du kaufst, zum CX-Kaufpreis                                                                                                                                                                                                                                                                                                                                                                       |
+| **Unterhalt, Verschleiß + Gebühren / Tag** | [[upkeep\|Unterhalt]] der Belegschaft mit den Luxusgütern, Verschleiß und [[production-fees\|Produktionsgebühren]], mit dem Unterhalt der Belegschaft und den Gebühren unter dem Wert |
+| **Gebäude**                                | Gebaut und exakt                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Fläche**                                 | Inklusive Wohngebäude                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Belegschaft**                            | Pro Stufe                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Baukosten**                              | Mit der [[payback\|Amortisation]], oder „keine Amortisation“, wenn der Profit 0 oder weniger ist                                                                                                                                                                                              |
 
-Each base counts its core module and one STO in the area. Construction counts the buildings, habitation and the STO, but not the core module or planet extras (MCG, AEF, SEA, HSE, INS, TSH). A base without steps counts nothing.
+Jede Basis zählt ihr Kernmodul und ein STO zur Fläche. Die Baukosten zählen die Gebäude, die Wohngebäude und das STO, aber nicht das Kernmodul oder Planeten-Extras (MCG, AEF, SEA, HSE, INS, TSH). Eine Basis ohne Schritte zählt nichts.
 
-Buildings of one type share their capacity across recipes, as in the game, so 4.5 Food Processors come to 5 built. That only works inside one base.
+Gebäude eines Typs teilen ihre Kapazität über Aufträge hinweg, wie im Spiel, also werden aus 4,5 Food Processors 5 gebaute. Das funktioniert nur innerhalb einer Basis.
 
-For example, with made-up numbers: an output value of 10,000 ȼ a day, 4,000 ȼ of bought inputs and 2,500 ȼ of upkeep, wear and fees leave a **Profit / day** of 3,500 ȼ, 35 % of the output value. With 700,000 ȼ of construction, that pays back in 700,000 ÷ 3,500 = 200 days. A profit below 0 shows in red, and **Construction** then reads "no payback".
+Ein Beispiel mit ausgedachten Zahlen: Ein Output-Wert von 10.000 ȼ pro Tag, 4.000 ȼ gekaufte Inputs und 2.500 ȼ Unterhalt, Verschleiß und Gebühren lassen einen **Profit / Tag** von 3.500 ȼ, 35 % des Output-Werts. Bei 700.000 ȼ Baukosten amortisiert sich das in 700.000 ÷ 3.500 = 200 Tagen. Ein Profit unter 0 erscheint rot, und **Baukosten** zeigt dann „keine Amortisation“.
 
-### How costs are calculated {#how-costs-are-calculated}
+### So werden die Kosten berechnet {#how-costs-are-calculated}
 
-- **Wear** is the building's construction cost ÷ 180 days. For example, a building that costs 90,000 ȼ to build adds 500 ȼ of wear a day.
-- **Cost per unit of a made step** adds up its inputs at their chain cost, the building's upkeep and wear for one run, and the production fee for one run. Made inputs count at their own cost per unit, bought ones at the CX buy price. A run gets shorter with more efficiency. A recipe with several outputs splits its cost by the outputs' CX sell value, or by quantity when none has a price.
-- **Cost per unit of an extracted step** is the extractor's upkeep and wear per day ÷ units per day, plus the fee.
-- **Production fees** are charged per run on the recipe's base time, so efficiency doesn't change them. A made step pays the fees of its base's planet, and each piece of a split step pays those of its own base's planet. An extracted step pays those of its site's planet. The typical planet and a base without a planet pay none, so picking planets can raise the costs.
-- **Default recipe**: when you don't pick one, the chain takes the cheapest single-output recipe at CX prices. It only uses recipes with byproducts when no single-output recipe exists.
+- **Verschleiß** sind die Baukosten des Gebäudes ÷ 180 Tage. Ein Beispiel: Ein Gebäude mit 90.000 ȼ Baukosten fügt 500 ȼ Verschleiß pro Tag hinzu.
+- **Kosten pro Einheit eines hergestellten Schritts** addieren seine Inputs zu ihren Kettenkosten, Unterhalt und Verschleiß des Gebäudes für einen Durchlauf und die Produktionsgebühr für einen Durchlauf. Hergestellte Inputs zählen zu ihren eigenen Kosten pro Einheit, gekaufte zum CX-Kaufpreis. Mit mehr Effizienz wird ein Durchlauf kürzer. Ein Auftrag mit mehreren Outputs teilt seine Kosten nach dem CX-Verkaufswert der Outputs auf, oder nach Menge, wenn keiner einen Preis hat.
+- **Kosten pro Einheit eines abgebauten Schritts** sind Unterhalt und Verschleiß des Extraktors pro Tag ÷ Einheiten pro Tag, plus die Gebühr.
+- **Produktionsgebühren** werden pro Durchlauf auf die Grundzeit des Auftrags berechnet, Effizienz ändert sie also nicht. Ein hergestellter Schritt zahlt die Gebühren des Planeten seiner Basis, und jedes Stück eines aufgeteilten Schritts die des Planeten seiner eigenen Basis. Ein abgebauter Schritt zahlt die des Planeten seines Standorts. Der typische Planet und eine Basis ohne Planet zahlen keine, die Wahl von Planeten kann die Kosten also erhöhen.
+- **Standardauftrag**: Wählst du keinen, nimmt die Kette den günstigsten Auftrag mit einem einzigen Output zu CX-Preisen. Aufträge mit Nebenprodukten nutzt sie nur, wenn es keinen Auftrag mit einem einzigen Output gibt.
 
-## Steps {#steps}
+## Schritte {#steps}
 
-Every material appears once. You can order the rows by **Chain**, where each target comes with its inputs (the caret collapses them), or **By source**, in the groups "Produced", "Extracted", "Bought" and "From your plans".
+Jedes Material erscheint einmal. Du kannst die Zeilen nach **Kette** ordnen, wo jedes Ziel mit seinen Inputs kommt (das Dreieck klappt sie ein), oder **Nach Quelle**, in den Gruppen „Hergestellt“, „Abgebaut“, „Gekauft“ und „Aus deinen Plänen“.
 
-| Column               | What it shows                                                                                                                            |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **Material**         | With "target", "for …" (what it feeds) or "sold"                                                                      |
-| **Per day**          | How much, with "+ … from byproducts" and "+ … own"                                                                                       |
-| **Base**             | Which base makes it. Use it to move a step or a piece of it (see [Bases](#bases))                     |
-| **Source**           | **Make**, **Buy**, **Extract** (planet resources only) or **Have**                                                    |
-| **Recipe or supply** | The recipe, the exchange it's bought on, or the extraction planet                                                                        |
-| **Buildings**        | The building and how many, and how much of the built ones it uses                                                                        |
-| **Cost / unit**      | Its cost per unit in the chain                                                                                                           |
-| **CX price**         | The CX price                                                                                                                             |
-| **Make or buy**      | Whether making saves money ("Make, saves …" or "Buying is … cheaper"), with a market chip for bought rows and targets |
+| Spalte                     | Was sie zeigt                                                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Material**               | Mit „Ziel“, „für …“ (was es beliefert) oder „verkauft“                                                                             |
+| **Pro Tag**                | Wie viel, mit „+ … aus Nebenprodukten“ und „+ … eigen“                                                                                                |
+| **Basis**                  | Welche Basis es herstellt. Damit verschiebst du einen Schritt oder ein Stück davon (siehe [Basen](#bases))         |
+| **Quelle**                 | **Herstellen**, **Kaufen**, **Abbauen** (nur Planetenressourcen) oder **Vorhanden**                                                |
+| **Auftrag oder Bezug**     | Der Auftrag, der Marktplatz, auf dem es gekauft wird, oder der Abbauplanet                                                                            |
+| **Gebäude**                | Das Gebäude und wie viele, und wie viel der gebauten es nutzt                                                                                         |
+| **Kosten / Einheit**       | Seine Kosten pro Einheit in der Kette                                                                                                                 |
+| **CX-Preis**               | Der CX-Preis                                                                                                                                          |
+| **Herstellen oder kaufen** | Ob Herstellen Geld spart („Herstellen, spart …“ oder „Kaufen ist … günstiger“), mit einem Markt-Chip für gekaufte Zeilen und Ziele |
 
-**Make** is off for a material without a recipe, and **Buy** and **Have** are off for targets. A byproducts block at the bottom lists where each byproduct comes from, how much the chain uses and how much it sells. **CSV** downloads the table as `production-chain.csv`.
+**Herstellen** ist für ein Material ohne Auftrag aus, und **Kaufen** und **Vorhanden** sind für Ziele aus. Ein Nebenprodukt-Block unten listet, woher jedes Nebenprodukt kommt, wie viel die Kette nutzt und wie viel sie verkauft. **CSV** lädt die Tabelle als `production-chain.csv` herunter.
 
-- Click a material to see what it **Takes**, where it **Goes to**, its cost **Per unit** (inputs, upkeep and wear, production fees, chain cost against the CX price) and the spare capacity of its buildings: "Spare … up to + … / day".
-- Click a recipe ("n recipes ▾", only shown when there are several) to compare all recipes for that material. The one in use comes first, then the others by their effect on the profit, each with the change in profit per day and buildings. Badges mark the one **in use**, the **default** and those **with byproducts**.
-- Extracted rows use a typical planet: the top 10 % of all planets with the resource, meaning the 90th percentile of daily extraction, or the best planet when fewer than 10 planets have it. It's a planning default, not a real base, and it pays no production fees. Click it to pick a real planet in **Where to extract**. You can filter by extractor, surface, jumps to an exchange, **No extra materials**, **Resource Extraction COGC** and **Local market**, or use **Open in Planet Search**. When the step's base has a planet with the resource, that planet's own rate wins.
+- Klick auf ein Material, um zu sehen, was es **Benötigt**, wohin es **Geht an**, seine Kosten **Pro Einheit** (Inputs, Unterhalt und Verschleiß, Produktionsgebühren, Kettenkosten gegen den CX-Preis) und die freie Kapazität seiner Gebäude: „… frei, bis zu + … / Tag“.
+- Klick auf einen Auftrag („… Aufträge ▾“, nur angezeigt, wenn es mehrere gibt), um alle Aufträge für dieses Material zu vergleichen. Der genutzte steht oben, dann die anderen nach ihrer Wirkung auf den Profit, jeweils mit der Änderung des Profits pro Tag und der Gebäude. Abzeichen markieren den Auftrag **in Verwendung**, den **Standard** und die **mit Nebenprodukten**.
+- Abgebaute Zeilen nutzen einen typischen Planeten: die besten 10 % aller Planeten mit der Ressource, also das 90. Perzentil des täglichen Abbaus, oder den besten Planeten, wenn weniger als 10 Planeten sie haben. Das ist ein Planungsstandard, keine echte Basis, und er zahlt keine Produktionsgebühren. Klick darauf, um in **Wo abbauen** einen echten Planeten zu wählen. Du kannst nach Extraktor, Oberfläche, Sprüngen zu einem Marktplatz, **Keine Zusatzmaterialien**, **Ressourcenabbau-COGC** und **Lokaler Markt** filtern, oder **In der Planetensuche öffnen** nutzen. Hat die Basis des Schritts einen Planeten mit der Ressource, gilt dessen eigene Rate.
 
-## Warnings {#warnings}
+## Warnungen {#warnings}
 
-The chips above the steps sum up what to look at. Click one to filter the steps, and **Show all** brings everything back.
+Die Chips über den Schritten fassen zusammen, worauf du schauen solltest. Klick auf einen, um die Schritte zu filtern, und **Alle anzeigen** holt alles zurück.
 
-- **Cheaper to buy** lists materials the chain makes or extracts for more than the CX price. Targets never count. **Buy all** switches them to buying, and the toast offers **Undo**.
-- **Thin market** lists bought materials where the chain needs 10 % or more of what the CX trades a day (the 30-day average), or that didn't trade in 30 days. For example, if the CX traded 6,000 units in 30 days, that's 200 a day, so buying 30 a day is 15 %. In Steps, the [[share-of-volume|share of volume]] chip turns amber from 10 % and red from 50 %. Targets get the same chip for the sell side. Read more: [[thin-market|thin markets]].
-- **Steps their bases can't run** flags a farm on a planet without fertility, or an extraction on a planet without the resource. The chip jumps to Bases.
-- **Recipe loop** means a recipe needs its own output somewhere up the chain. The chain stops at the repeat.
+- **Günstiger zu kaufen** listet Materialien, die die Kette teurer herstellt oder abbaut als zum CX-Preis. Ziele zählen nie. **Alle kaufen** stellt sie auf Kaufen um, und die Meldung bietet **Rückgängig** an.
+- **Dünner Markt** listet gekaufte Materialien, bei denen die Kette 10 % oder mehr dessen braucht, was die CX pro Tag handelt (der 30-Tage-Schnitt), oder die in 30 Tagen nicht gehandelt wurden. Ein Beispiel: Hat die CX in 30 Tagen 6.000 Einheiten gehandelt, sind das 200 pro Tag, 30 pro Tag zu kaufen sind also 15 %. In Schritte wird der Chip für den [[share-of-volume|Volumenanteil]] ab 10 % gelb und ab 50 % rot. Ziele bekommen denselben Chip für die Verkaufsseite. Mehr dazu: [[thin-market|dünne Märkte]].
+- **Schritte, die ihre Basen nicht ausführen können** markiert eine Farm auf einem Planeten ohne Fruchtbarkeit oder einen Abbau auf einem Planeten ohne die Ressource. Der Chip springt zu Basen.
+- **Auftragsschleife** heißt, dass ein Auftrag irgendwo weiter oben in der Kette seinen eigenen Output braucht. Die Kette hört bei der Wiederholung auf.
 
-Without anything cheaper to buy, a thin market or a base warning, a "No warnings" chip shows in their place.
+Gibt es nichts günstiger zu kaufen, keinen dünnen Markt und keine Basiswarnung, steht an ihrer Stelle ein Chip „Keine Warnungen“.
 
 ## Graph {#graph}
 
-The graph shows the same chain. Raw materials sit on the left ("Bought · extracted", plus "have" with Own production) and the targets on the right. **Line width** follows **t / day** (default), **ȼ / day** or **Equal**. Zoom with −, **Fit** and +. Each node shows where it's bought, or which base and building make it. Click a material to see only what it needs and feeds, and **Show all** to go back.
+Der Graph zeigt dieselbe Kette. Rohstoffe stehen links („Gekauft · abgebaut“, mit Eigener Produktion plus „vorhanden“) und die Ziele rechts. **Linienstärke** folgt **t / Tag** (Standard), **ȼ / Tag** oder **Gleich**. Zoome mit −, **Einpassen** und +. Jeder Knoten zeigt, wo er gekauft wird oder welche Basis und welches Gebäude ihn herstellen. Klick auf ein Material, um nur zu sehen, was es braucht und beliefert, und auf **Alle anzeigen**, um zurückzugehen.
 
-## Bases {#bases}
+## Basen {#bases}
 
-A chain can run on up to 26 bases (A to Z), each on one planet. The Bases tab starts with three steps, and the next one to take is the main button.
+Eine Kette kann auf bis zu 26 Basen (A bis Z) laufen, jede auf einem Planeten. Der Tab Basen beginnt mit drei Schritten, und der nächste fällige ist der Hauptbutton.
 
-### 1. Lay out into bases {#auto-layout}
+### 1. Auf Basen aufteilen {#auto-layout}
 
-**Auto layout** lays the chain out into bases you could build:
+**Automatische Aufteilung** teilt die Kette auf Basen auf, die du bauen könntest:
 
-- Each base gets one [[expertise]] (the field of its production buildings, such as Agriculture or Metallurgy), up to the size in **Bases up to**: 500 area (default), 750 or 1,000. When an expertise needs more than one base at that size, it fills bases up to 1,000 instead, so you run one full base rather than several alike.
-- Auto layout splits a step that doesn't fit by whole buildings. As many as fit go into the current base and the rest into the next one, so 6 CHP can become 4 + 2. A step can span more than two bases. Extraction steps stay whole.
-- Small groups of steps (under 1.5 buildings, or without an expertise) join the base they ship the most tonnes with that has room for them. If none has, they get a mixed base.
-- Auto layout buys steps under 0.2 building that cost more per unit with a whole building than on the CX. While such a step is made, it shows a **Buy** tag in Steps. You can switch them back to Make, but the next Auto layout or Fit buys them again.
-- Each base gets a planet, as described in [How planets are picked](#planet-picking).
-- Afterwards, it merges bases of the same expertise when the merged base fits 1,000 area and loses no resource or fertility.
-
-> [!warning]
-> Auto layout starts over. It builds new bases from scratch, with new names and planets, COGC set to the running program, and default luxuries and experts. Any names, planets, COGC picks, luxuries and expert edits you made before are lost.
-
-### How planets are picked {#planet-picking}
-
-Auto layout only uses a planet that:
-
-- has a free [[plots|plot]], or plots PRUNplanner hasn't read yet (a full planet with [[ghost-sites|ghost sites]] isn't used)
-- has none of your plans, in an empire or not
-- can run the base: every extracted resource is there, farms can run, and the base fits within the size.
-
-Among those, planets running a COGC program that helps the base's buildings come first. After that, closeness counts: to the other bases, weighted by the tonnes shipped, and to the empire's planets if you picked one under Own production. On a tie, the planet where the base needs the least area wins. The largest base is placed first. If no planet can run the base, it takes the first one by COGC and closeness anyway, so check the base card's warnings.
-
-### 2. Fit the rate to your bases {#fit}
-
-Set **Number of bases** (2 by default, 1 to 26) and press **Fit rate**. It finds the largest rate, with all targets scaled alike, that auto layout fits into that many bases, then lays the chain out. It can lower the rates or raise them (up to 4,096 times), in steps of 0.01 per day on the largest target. If even 0.01 per day needs more bases, it tells you.
-
-It checks the count with the layout before planets are picked. Planets with lower extraction rates or poorer fertility can then need a little more, so look over the result.
-
-> [!tip]
-> Fit rate scales every target by the same factor, so their ratio stays the same. If you want a different mix, change one target first. For example, DW at 20 and RAT at 10 per day become 10 and 5 when the fit halves the rate.
-
-### 3. Create the plans {#create-the-plans}
-
-Once every base has a planet and fits 1,000 area, the third step says so and offers "Create … plans…". Otherwise it tells you how many bases lack a planet or are over 1,000 area. Details in [Create plans](#create-plans).
-
-### Overview and base cards {#base-cards}
-
-Below the steps, an overview shows **Bases** (how many have a planet), **Largest base**, **Permits** (with the area in all bases) and **Shipping t / day** (with the routes). It also has one line per base with its expertise and planet. **Add base** adds a base.
-
-On each base card you can:
-
-- name the base and pick its planet ("Pick a planet", or "change")
-- pick its COGC program: "Running: …" (the default), **No program**, or another program to plan ahead of a vote. Programs that help the base come first, with their bonus, and show "not running" when the planet doesn't run them
-- set its **Luxuries**: Both (100 % workforce efficiency, the default), Lux 2 (92 %), Lux 1 (87 %) or Essentials (79 %). The upkeep pays for them
-- **Edit** its **Experts**, or go back to **Auto**. Auto picks the split worth most for the base's output: usually 5 in its main expertise and the sixth in the next one, with at most 5 of one type and 6 per base
-- **Merge into…** another base, which keeps its planet
-- **Separate** it by expertise, or in half for one expertise, with planets for the new bases
-- remove it with ×, which moves its steps to the first base.
-
-A base's buildings get the planet's bonuses as in a plan: +25 % from an advertising program for their expertise, +10 % from a workforce program for a tier they employ, and fertility for farms. FRM and ORC can't run without fertility. Extracted steps use the planet's own rate. A planet without the resource keeps the chain's rate and shows a warning, and so does a base over 1,000 area.
-
-The card shows its buildings, area (core module, one STO and habitation), [[area-permits|permits]], workforce, and upkeep with wear per day.
-
-The **Base** column in Steps moves a step, or one piece of a split step, to another base. "+ new base" starts a new one.
-
-The planet picker for a base solves the base's steps on every planet, so you can compare buildings and area. It marks planets where you already have a plan ("your plan"). **Only planets that** filters for planets that have the resources and allow farming (on by default), run a COGC program for the base, are fertile, or have one of your plans. You can also filter by extra materials, local market, jumps and name. It shows each planet's plots but doesn't filter by them.
-
-**Shipping per day** lists what moves between bases and the CX, in tonnes and m³, with the [[jumps]]. That's what you hand over to your logistics.
-
-## Create plans {#create-plans}
-
-**Create plans** makes one plan per base that has steps, with its buildings, recipes, habitation, one STO, the COGC program and permits. Each plan gets its base's luxuries and experts, so it produces what the chain shows. HQ and faction bonuses are left to the plans.
-
-- Each plan's name starts as the targets plus the base name, and you can change it.
-- Pick **New empire** (the default, named "Chain …" after the targets, with a **Faction**), **Add to** an existing empire, or **No empire**. A new empire is created first, with its permits set from the plans.
-- The dialog tells you what blocks it: no base with steps, a base without a planet or over 1,000 area, a missing name, or no empire picked.
-- A farm on a planet without fertility is left out of its plan, and an extraction off its resource gets the extractor without a recipe. The dialog says so.
-- With Own production, materials your bases supply aren't in the new plans.
-
-The page stays on the chain and links the new plans and the empire. Those links stay in the Bases tab until the chain changes. If one plan fails, the plans created before it are kept and listed.
-
-## Buy list {#buy-list}
-
-The buy list shows what the chain buys over a number of days (10 by default), grouped by base when there's more than one. Each row has the units (rounded up), weight and cost. For example, on a one-base chain a material bought at 2.5 a day comes to 25 units over 10 days, and at 2.55 a day to 26. The list also shows the totals, the m³ to haul in, and the targets' tonnes and m³ going out.
-
-**Copy XIT buy action** (or "Copy XIT action for …" per base) copies an [[xit|XIT]] action that buys the list at the warehouse of the exchange most of its rows are priced on. When the base has a planet, the action also moves the goods there.
-
-The list only holds the chain's recipe inputs. Workforce consumables aren't on it, so plan those in the plans the chain creates.
-
-## Sharing {#sharing}
-
-The link holds the whole chain: targets, settings, sources, recipes, planets, bases, Have amounts and the CX. **Copy chain link** copies it. When you open the page without a link, the last chain you worked on opens again, in this browser and per account.
-
-## Check an empire {#check-an-empire}
-
-Switch from **Plan a chain** to **Check an empire** at the top to see how one of your empires makes what it sells, and what would make it better. Each mode keeps its own state while you switch between them.
-
-1. Pick the **Empire**. It starts at your default empire.
-2. Pick the chains. Each material the empire sells (makes more of than it uses, with a CX sell price) is a chain, shown with its amount per day. "+ Add a chain" adds one, and "All the empire sells" or **Check everything the empire sells** adds all of them. **Clear** removes them.
-
-If you have no empire yet, the page says so and points you to Plan a chain or to Manage.
-
-The check follows each chain back through your plans: which base makes each step, with which recipe and efficiency, and what's bought. It never changes a plan, it only points at them.
-
-| Setting                   | Default                          |
-| ------------------------- | -------------------------------- |
-| **Prices**                | the empire's exchange preference |
-| **Setup gains**           | **Show**                         |
-| **Ignore below**          | 200 ȼ / day                      |
-| **Moves pay back within** | 100 days                         |
-
-The strip at the top shows the empire's **Profit / day** as planned, the **Possible gain / day**, **Bases checked**, how many **Look optimal**, **Improvements**, **Plan fixes**, **Setup gains / day** and **Moves**. Gains are measured against the chain default: both luxuries, the experts worth most and the planet's running COGC, at your CX prices, with made inputs at the empire's own cost.
-
-### Bases {#check-an-empire-bases}
-
-Each base gets a mark: **Looks optimal**, has improvements, **Plan fix**, or **Not in these chains**. Open a base to see its **Production as planned**, its luxuries, experts and COGC under **Plan** against the **Chain default**, and its **Findings**. **Coverage** on the side shows how many bases the chains reach, and "Add …" adds what the other bases sell.
-
-### Findings {#findings}
-
-Each finding shows its gain per day, construction and payback. You can filter them by kind:
-
-- **Plan fix**: the plan counts a COGC program the planet doesn't run, or the planet runs one the plan doesn't count. With an advertising (expertise) program, the buildings make 20 % less than the plan says, or would make 25 % more. With a workforce program it's 9 % less or 10 % more.
-- **Recipe**: another recipe of the same building makes the material at least 3 % cheaper.
-- **Make or buy**: a material that isn't a target costs more to make than to buy.
-- **Location**: another planet suits the step at least 10 % better through its COGC program, fertility or extraction rate, compared with the program the planet actually runs. The option is either one of your bases (only the moved buildings to build, and it needs free area) or a new base (buildings, habitation and core module). PRUNplanner suggests the best option that has room, a free plot (or ghost sites; unknown plots count as possible) and pays back within **Moves pay back within**. "All … planets…" lists every option with filters and sorting. **Use** makes a planet your pick, and **Back to suggested** undoes that.
-- **Setup**: both luxuries (only when the extra output earns more than they cost), or a better expert split. Experts come with time in the game. Set **Setup gains** to **Hide** to leave these out.
-
-The check hides findings below **Ignore below**, but plan fixes and your picked locations always show. Gains on one step are alternatives, so a base's possible gain counts only the best one per step. For example, a Recipe finding worth 300 ȼ / day and a Location finding worth 500 ȼ / day on the same step count as 500 ȼ / day, not 800. **Try in planner** (on Recipe, Make or buy and Location findings) opens Plan a chain with the chain's bases and the change applied.
-
-> [!tip]
-> Fix the plan fixes first. They cost nothing to build, and the plan's numbers are off until you do.
+- Jede Basis bekommt ein [[expertise|Fachgebiet]] (das Gebiet ihrer Produktionsgebäude, etwa Landwirtschaft oder Metallurgie), bis zur Größe in **Basen bis**: 500 Fläche (Standard), 750 oder 1.000. Braucht ein Fachgebiet bei dieser Größe mehr als eine Basis, füllt es stattdessen Basen bis 1.000, sodass du eine volle Basis betreibst statt mehrerer gleicher.
+- Die automatische Aufteilung teilt einen Schritt, der nicht passt, nach ganzen Gebäuden. So viele wie passen kommen in die aktuelle Basis und der Rest in die nächste, aus 6 CHP können also 4 + 2 werden. Ein Schritt kann sich über mehr als zwei Basen erstrecken. Abbauschritte bleiben ganz.
+- Kleine Gruppen von Schritten (unter 1,5 Gebäuden oder ohne Fachgebiet) kommen zu der Basis, mit der sie die meisten Tonnen austauschen und die Platz für sie hat. Hat keine Platz, bekommen sie eine gemischte Basis.
+- Die automatische Aufteilung kauft Schritte unter 0,2 Gebäuden, die mit einem ganzen Gebäude pro Einheit mehr kosten als an der CX. Solange so ein Schritt hergestellt wird, zeigt er in Schritte ein Etikett **Kaufen**. Du kannst sie zurück auf Herstellen stellen, aber die nächste automatische Aufteilung oder Anpassung kauft sie wieder.
+- Jede Basis bekommt einen Planeten, wie in [So werden Planeten gewählt](#planet-picking) beschrieben.
+- Danach führt sie Basen desselben Fachgebiets zusammen, wenn die zusammengeführte Basis in 1.000 Fläche passt und keine Ressource oder Fruchtbarkeit verliert.
 
 > [!warning]
-> A Location finding counts a full planet with ghost sites as possible for a new base. In the game, ghost sites only let new players who start on that planet settle there.
+> Die automatische Aufteilung fängt von vorne an. Sie baut neue Basen von Grund auf, mit neuen Namen und Planeten, COGC auf das aktive Programm gesetzt und Standard-Luxusgütern und -Experten. Alle Namen, Planeten, COGC-Wahlen, Luxusgüter und Expertenänderungen, die du vorher gemacht hast, gehen verloren.
 
-### Chains {#chains}
+### So werden Planeten gewählt {#planet-picking}
 
-Each chain is listed material by material: how much is made (**Made / day**), where (**Made in**), with which recipe (**Recipe as planned**), at what cost against the CX price, and what the chain planner would do (**Chain planner**).
+Die automatische Aufteilung nutzt nur einen Planeten, der:
 
-### Sharing {#check-an-empire-sharing}
+- einen freien [[plots|Bauplatz]] hat, oder Bauplätze, die PRUNplanner noch nicht gelesen hat (ein voller Planet mit [[ghost-sites|Geisterplätzen]] wird nicht genutzt)
+- keinen deiner Pläne hat, ob in einem Imperium oder nicht
+- die Basis betreiben kann: Jede abgebaute Ressource ist vorhanden, Farmen können laufen, und die Basis passt in die Größe.
 
-**Copy check link** copies the empire, the chains, the settings and your picked locations, but not the prices. Whoever opens it sees the empire's own exchange preference. Only you can open your own empires. For anyone else, the page says the empire isn't theirs.
+Unter diesen kommen Planeten zuerst, auf denen ein COGC-Programm läuft, das den Gebäuden der Basis hilft. Danach zählt die Nähe: zu den anderen Basen, gewichtet nach den transportierten Tonnen, und zu den Planeten des Imperiums, falls du unter Eigene Produktion eines gewählt hast. Bei Gleichstand gewinnt der Planet, auf dem die Basis die wenigste Fläche braucht. Die größte Basis wird zuerst platziert. Kann kein Planet die Basis betreiben, nimmt sie trotzdem den ersten nach COGC und Nähe, prüf also die Warnungen der Basiskarte.
+
+### 2. Rate an deine Basen anpassen {#fit}
+
+Stell **Anzahl Basen** ein (standardmäßig 2, 1 bis 26) und drück **Rate anpassen**. Es findet die größte Rate, bei der alle Ziele gleich skaliert werden, die die automatische Aufteilung in so viele Basen packt, und teilt die Kette dann auf. Es kann die Raten senken oder erhöhen (bis zum 4.096-Fachen), in Schritten von 0,01 pro Tag beim größten Ziel. Braucht schon 0,01 pro Tag mehr Basen, sagt es dir das.
+
+Es prüft die Anzahl mit der Aufteilung, bevor Planeten gewählt werden. Planeten mit niedrigeren Abbauraten oder geringerer Fruchtbarkeit können dann etwas mehr brauchen, schau dir das Ergebnis also an.
+
+> [!tip]
+> Rate anpassen skaliert jedes Ziel mit demselben Faktor, ihr Verhältnis bleibt also gleich. Willst du eine andere Mischung, ändere zuerst ein Ziel. Ein Beispiel: DW mit 20 und RAT mit 10 pro Tag werden zu 10 und 5, wenn die Anpassung die Rate halbiert.
+
+### 3. Die Pläne erstellen {#create-the-plans}
+
+Sobald jede Basis einen Planeten hat und in 1.000 Fläche passt, sagt der dritte Schritt das und bietet „… Pläne erstellen…“ an. Sonst sagt er dir, wie vielen Basen ein Planet fehlt oder wie viele über 1.000 Fläche liegen. Details in [Pläne erstellen](#create-plans).
+
+### Übersicht und Basiskarten {#base-cards}
+
+Unter den Schritten zeigt eine Übersicht **Basen** (wie viele einen Planeten haben), **Größte Basis**, **Genehmigungen** (mit der Fläche in allen Basen) und **Transport t / Tag** (mit den Routen). Sie hat außerdem eine Zeile pro Basis mit ihrem Fachgebiet und Planeten. **Basis hinzufügen** fügt eine Basis hinzu.
+
+Auf jeder Basiskarte kannst du:
+
+- der Basis einen Namen geben und ihren Planeten wählen („Planet wählen“ oder „ändern“)
+- ihr COGC-Programm wählen: „Aktiv: …“ (der Standard), **Kein Programm** oder ein anderes Programm, um vor einer Abstimmung vorauszuplanen. Programme, die der Basis helfen, stehen zuerst, mit ihrem Bonus, und zeigen „nicht aktiv“, wenn der Planet sie nicht betreibt
+- ihre **Luxusgüter** einstellen: Beide (100 % Effizienz der Belegschaft, der Standard), Luxus 2 (92 %), Luxus 1 (87 %) oder Grundbedarf (79 %). Der Unterhalt bezahlt sie
+- ihre **Experten** **Bearbeiten** oder zu **Auto** zurückkehren. Auto wählt die Verteilung, die für den Output der Basis am meisten bringt: meist 5 in ihrem Hauptfachgebiet und den sechsten im nächsten, mit höchstens 5 eines Typs und 6 pro Basis
+- sie **Zusammenführen mit…** einer anderen Basis, die ihren Planeten behält
+- sie nach Fachgebiet **Trennen**, oder bei einem einzigen Fachgebiet halbieren, mit Planeten für die neuen Basen
+- sie mit × entfernen, was ihre Schritte in die erste Basis verschiebt.
+
+Die Gebäude einer Basis bekommen die Boni des Planeten wie in einem Plan: +25 % durch ein Werbeprogramm für ihr Fachgebiet, +10 % durch ein Belegschaftsprogramm für eine Stufe, die sie beschäftigen, und Fruchtbarkeit für Farmen. FRM und ORC laufen nicht ohne Fruchtbarkeit. Abgebaute Schritte nutzen die eigene Rate des Planeten. Ein Planet ohne die Ressource behält die Rate der Kette und zeigt eine Warnung, ebenso eine Basis über 1.000 Fläche.
+
+Die Karte zeigt ihre Gebäude, die Fläche (Kernmodul, ein STO und Wohngebäude), [[area-permits|Genehmigungen]], Belegschaft und Unterhalt mit Verschleiß pro Tag.
+
+Die Spalte **Basis** in Schritte verschiebt einen Schritt oder ein Stück eines aufgeteilten Schritts in eine andere Basis. „+ neue Basis“ beginnt eine neue.
+
+Die Planetenauswahl für eine Basis löst die Schritte der Basis auf jedem Planeten, sodass du Gebäude und Fläche vergleichen kannst. Sie markiert Planeten, auf denen du schon einen Plan hast („dein Plan“). **Nur Planeten, die** filtert nach Planeten, die die Ressourcen haben und Landwirtschaft erlauben (standardmäßig an), ein COGC-Programm für die Basis betreiben, fruchtbar sind oder einen deiner Pläne haben. Du kannst auch nach Zusatzmaterialien, lokalem Markt, Sprüngen und Name filtern. Sie zeigt die Bauplätze jedes Planeten, filtert aber nicht danach.
+
+**Transport pro Tag** listet, was zwischen den Basen und der CX bewegt wird, in Tonnen und m³, mit den [[jumps|Sprüngen]]. Das gibst du an deine Logistik weiter.
+
+## Pläne erstellen {#create-plans}
+
+**Pläne erstellen** legt einen Plan pro Basis mit Schritten an, mit ihren Gebäuden, Aufträgen, Wohngebäuden, einem STO, dem COGC-Programm und den Genehmigungen. Jeder Plan bekommt die Luxusgüter und Experten seiner Basis, sodass er herstellt, was die Kette zeigt. HQ- und Fraktionsboni bleiben den Plänen überlassen.
+
+- Der Name jedes Plans beginnt mit den Zielen plus dem Basisnamen, und du kannst ihn ändern.
+- Wähle **Neues Imperium** (der Standard, nach den Zielen „Kette …“ benannt, mit einer **Fraktion**), **Hinzufügen zu** einem bestehenden Imperium oder **Kein Imperium**. Ein neues Imperium wird zuerst erstellt, mit Genehmigungen aus den Plänen.
+- Der Dialog sagt dir, was blockiert: keine Basis mit Schritten, eine Basis ohne Planet oder über 1.000 Fläche, ein fehlender Name oder kein gewähltes Imperium.
+- Eine Farm auf einem Planeten ohne Fruchtbarkeit bleibt aus ihrem Plan draußen, und ein Abbau ohne seine Ressource bekommt den Extraktor ohne Auftrag. Der Dialog sagt das.
+- Mit Eigener Produktion sind Materialien, die deine Basen liefern, nicht in den neuen Plänen.
+
+Die Seite bleibt bei der Kette und verlinkt die neuen Pläne und das Imperium. Diese Links bleiben im Tab Basen, bis sich die Kette ändert. Schlägt ein Plan fehl, bleiben die vorher erstellten Pläne erhalten und werden aufgelistet.
+
+## Einkaufsliste {#buy-list}
+
+Die Einkaufsliste zeigt, was die Kette über eine Anzahl Tage kauft (standardmäßig 10), nach Basis gruppiert, wenn es mehr als eine gibt. Jede Zeile hat die Einheiten (aufgerundet), das Gewicht und die Kosten. Ein Beispiel: In einer Kette mit einer Basis kommt ein Material, das zu 2,5 pro Tag gekauft wird, über 10 Tage auf 25 Einheiten, und bei 2,55 pro Tag auf 26. Die Liste zeigt außerdem die Summen, die einzufliegenden m³ und die ausgehenden Tonnen und m³ der Ziele.
+
+**XIT-Kaufaktion kopieren** (oder „XIT-Aktion für … kopieren“ pro Basis) kopiert eine [[xit|XIT]]-Aktion, die die Liste im Lagerhaus des Marktplatzes kauft, nach dem die meisten ihrer Zeilen bepreist sind. Hat die Basis einen Planeten, bringt die Aktion die Waren auch dorthin.
+
+Die Liste enthält nur die Auftrags-Inputs der Kette. Verbrauchsgüter der Belegschaft stehen nicht darauf, plane sie also in den Plänen, die die Kette erstellt.
+
+## Teilen {#sharing}
+
+Der Link enthält die ganze Kette: Ziele, Einstellungen, Quellen, Aufträge, Planeten, Basen, Vorhanden-Mengen und die CX. **Kettenlink kopieren** kopiert ihn. Öffnest du die Seite ohne Link, öffnet sich die letzte Kette wieder, an der du gearbeitet hast, in diesem Browser und pro Konto.
+
+## Imperium prüfen {#check-an-empire}
+
+Wechsle oben von **Kette planen** zu **Imperium prüfen**, um zu sehen, wie eines deiner Imperien herstellt, was es verkauft, und was es besser machen würde. Jeder Modus behält seinen eigenen Zustand, während du zwischen ihnen wechselst.
+
+1. Wähle das **Imperium**. Es startet mit deinem Standard-Imperium.
+2. Wähle die Ketten. Jedes Material, das das Imperium verkauft (von dem es mehr herstellt, als es verbraucht, mit einem CX-Verkaufspreis), ist eine Kette, angezeigt mit seiner Menge pro Tag. „+ Kette hinzufügen“ fügt eine hinzu, und „Alles, was das Imperium verkauft“ oder **Alles prüfen, was das Imperium verkauft** fügt alle hinzu. **Leeren** entfernt sie.
+
+Hast du noch kein Imperium, sagt die Seite das und verweist dich auf Kette planen oder auf Verwalten.
+
+Die Prüfung verfolgt jede Kette zurück durch deine Pläne: welche Basis jeden Schritt herstellt, mit welchem Auftrag und welcher Effizienz, und was gekauft wird. Sie ändert nie einen Plan, sie zeigt nur auf sie.
+
+| Einstellung                                     | Standard                               |
+| ----------------------------------------------- | -------------------------------------- |
+| **Preise**                                      | die Marktplatz-Präferenz des Imperiums |
+| **Ausstattungsgewinne**                         | **Anzeigen**                           |
+| **Ignorieren unter**                            | 200 ȼ / Tag                            |
+| **Verlegungen amortisieren sich innerhalb von** | 100 Tage                               |
+
+Die Leiste oben zeigt den **Profit / Tag** des Imperiums wie geplant, den **Möglichen Gewinn / Tag**, **Geprüfte Basen**, wie viele **Wirken optimal**, **Verbesserungen**, **Plankorrekturen**, **Ausstattungsgewinne / Tag** und **Verlegungen**. Gewinne werden am Kettenstandard gemessen: beide Luxusgüter, die Experten, die am meisten bringen, und das aktive COGC des Planeten, zu deinen CX-Preisen, mit hergestellten Inputs zu den eigenen Kosten des Imperiums.
+
+### Basen {#check-an-empire-bases}
+
+Jede Basis bekommt eine Markierung: **Wirkt optimal**, hat Verbesserungen, **Plankorrektur** oder **Nicht in diesen Ketten**. Öffne eine Basis, um ihre **Produktion wie geplant** zu sehen, ihre Luxusgüter, Experten und ihr COGC unter **Plan** gegenüber dem **Kettenstandard**, und ihre **Befunde**. **Abdeckung** an der Seite zeigt, wie viele Basen die Ketten erreichen, und „… hinzufügen“ fügt hinzu, was die anderen Basen verkaufen.
+
+### Befunde {#findings}
+
+Jeder Befund zeigt seinen Gewinn pro Tag, die Baukosten und die Amortisation. Du kannst sie nach Art filtern:
+
+- **Plankorrektur**: Der Plan rechnet mit einem COGC-Programm, das der Planet nicht betreibt, oder der Planet betreibt eines, mit dem der Plan nicht rechnet. Bei einem Werbeprogramm (Fachgebiet) stellen die Gebäude 20 % weniger her, als der Plan sagt, oder würden 25 % mehr herstellen. Bei einem Belegschaftsprogramm sind es 9 % weniger oder 10 % mehr.
+- **Auftrag**: Ein anderer Auftrag desselben Gebäudes stellt das Material mindestens 3 % günstiger her.
+- **Herstellen oder kaufen**: Ein Material, das kein Ziel ist, kostet in der Herstellung mehr als im Kauf.
+- **Standort**: Ein anderer Planet passt durch sein COGC-Programm, seine Fruchtbarkeit oder seine Abbaurate mindestens 10 % besser zum Schritt, verglichen mit dem Programm, das der Planet tatsächlich betreibt. Die Option ist entweder eine deiner Basen (nur die verlegten Gebäude sind zu bauen, und sie braucht freie Fläche) oder eine neue Basis (Gebäude, Wohngebäude und Kernmodul). PRUNplanner schlägt die beste Option vor, die Platz hat, einen freien Bauplatz (oder Geisterplätze; unbekannte Bauplätze zählen als möglich) und sich innerhalb von **Verlegungen amortisieren sich innerhalb von** amortisiert. „Alle … Planeten…“ listet jede Option mit Filtern und Sortierung. **Verwenden** macht einen Planeten zu deiner Wahl, und **Zurück zum Vorschlag** macht das rückgängig.
+- **Ausstattung**: beide Luxusgüter (nur wenn der zusätzliche Output mehr einbringt, als sie kosten) oder eine bessere Expertenverteilung. Experten kommen im Spiel mit der Zeit. Stell **Ausstattungsgewinne** auf **Ausblenden**, um diese wegzulassen.
+
+Die Prüfung blendet Befunde unter **Ignorieren unter** aus, aber Plankorrekturen und deine gewählten Standorte erscheinen immer. Gewinne für einen Schritt sind Alternativen, der mögliche Gewinn einer Basis zählt also nur den besten pro Schritt. Ein Beispiel: Ein Auftrag-Befund über 300 ȼ / Tag und ein Standort-Befund über 500 ȼ / Tag für denselben Schritt zählen als 500 ȼ / Tag, nicht 800. **Im Planer ausprobieren** (bei Auftrag-, Herstellen-oder-kaufen- und Standort-Befunden) öffnet Kette planen mit den Basen der Kette und der angewendeten Änderung.
+
+> [!tip]
+> Erledige zuerst die Plankorrekturen. Sie kosten nichts zu bauen, und die Zahlen des Plans stimmen nicht, bis du sie behebst.
+
+> [!warning]
+> Ein Standort-Befund zählt einen vollen Planeten mit Geisterplätzen als möglich für eine neue Basis. Im Spiel lassen Geisterplätze nur neue Spieler, die auf diesem Planeten beginnen, dort siedeln.
+
+### Ketten {#chains}
+
+Jede Kette wird Material für Material aufgelistet: wie viel hergestellt wird (**Hergestellt / Tag**), wo (**Hergestellt in**), mit welchem Auftrag (**Auftrag wie geplant**), zu welchen Kosten gegenüber dem CX-Preis, und was der Kettenplaner tun würde (**Kettenplaner**).
+
+### Teilen {#check-an-empire-sharing}
+
+**Prüflink kopieren** kopiert das Imperium, die Ketten, die Einstellungen und deine gewählten Standorte, aber nicht die Preise. Wer ihn öffnet, sieht die eigene Marktplatz-Präferenz des Imperiums. Nur du kannst deine eigenen Imperien öffnen. Allen anderen sagt die Seite, dass das Imperium nicht ihres ist.
