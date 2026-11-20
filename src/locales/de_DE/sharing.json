@@ -33,11 +33,11 @@
 		"added": "neu",
 		"new": "neu",
 		"amount": "Anzahl geändert",
-		"recipe": "Rezept geändert",
+		"recipe": "Auftrag geändert",
 		"removed": "entfernt"
 	},
 	"changes": {
-		"recipe": "{label} Rezepte {from} → {to}",
+		"recipe": "{label} Aufträge {from} → {to}",
 		"profit": "Gewinn: {from} → {to} ȼ/Tag",
 		"roi": "ROI {from} → {to}",
 		"prices": "Preise: {source}",
