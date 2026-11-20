@@ -197,6 +197,9 @@ export function usePlan() {
 			if (capMessage)
 				return { error: "version_cap", message: capMessage };
 			reportError(err);
+			// timeout or dropped connection: the backend may have stored it
+			if (isApiError(err) && err.status === undefined)
+				return { error: "no_answer" };
 			return { error: getSaveError(err) ?? "failed" };
 		}
 	}

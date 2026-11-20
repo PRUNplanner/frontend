@@ -140,6 +140,8 @@ describe("usePlan", async () => {
 				"conflict",
 			],
 			[Object.assign(new Error(), { status: 404 }), "deleted"],
+			// timeout or dropped connection
+			[Object.assign(new Error(), { status: undefined }), "no_answer"],
 		])("failure %#, error kind", async (err, error) => {
 			const { saveExistingPlan } = usePlan();
 			vi.mocked(callSavePlan).mockRejectedValueOnce(err);

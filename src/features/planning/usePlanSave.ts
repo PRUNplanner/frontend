@@ -31,6 +31,7 @@ import { remoteChange } from "@/lib/crossTab";
 import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 
 // Util
+import { isEqual } from "lodash-es";
 import { inertClone } from "@/util/data";
 import { isApiError } from "@/lib/apiError";
 import {
@@ -55,7 +56,10 @@ import type {
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
 import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { IPlanDiffable } from "@/features/planning_data/planDiff";
-import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
+import type {
+	IPlanDefinition,
+	IPlanSaveResult,
+} from "@/features/planning_data/usePlan.types";
 import type {
 	IPlanCalculation,
 	IPlanViewProps,
@@ -244,6 +248,8 @@ export function usePlanSave(
 							refBaseModifiedAt.value,
 							{ ...version, restored_from: undefined }
 						);
+					if ("error" in result && result.error === "no_answer")
+						result = await lostAnswer(sent);
 					if (!("error" in result)) draft.saved();
 					return result;
 				});
@@ -251,7 +257,11 @@ export function usePlanSave(
 					const kind = saved.error;
 					if (kind === "version_cap")
 						return saveFailed(saved.message);
-					if (kind === "failed" || kind === "restored_from")
+					if (
+						kind === "failed" ||
+						kind === "restored_from" ||
+						kind === "no_answer"
+					)
 						return saveFailed();
 					// after the save settled, the dialog waits on the user
 					void nextTick(() => resolveConflict(kind));
@@ -516,6 +526,30 @@ export function usePlanSave(
 		} finally {
 			refIsSaving.value = false;
 		}
+	}
+
+	/**
+	 * After a save without an answer (timeout, dropped connection): the
+	 * backend may have stored it, then a retry would conflict with this
+	 * tab's own save. The saved plan tells: unchanged is a failed save,
+	 * the state sent is this save, anything else another tab's.
+	 *
+	 * @param {string} sent Snapshot the save sent
+	 * @returns {Promise<IPlanSaveResult>} The save's outcome
+	 */
+	async function lostAnswer(sent: string): Promise<IPlanSaveResult> {
+		let plan: Plan;
+		try {
+			plan = await fetchSavedPlan();
+		} catch {
+			// still no connection, the save's own error is reported
+			return { error: "failed" };
+		}
+		if (plan.modified_at === refBaseModifiedAt.value)
+			return { error: "failed" };
+		if (!isEqual(JSON.parse(versionState(plan)), JSON.parse(sent)))
+			return { error: "conflict" };
+		return { uuid: plan.uuid, modifiedAt: plan.modified_at };
 	}
 
 	/**
