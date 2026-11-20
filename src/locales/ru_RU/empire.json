@@ -1,10 +1,10 @@
 {
 	"view_title": "Империя",
 	"switch_empire": "Сменить империю",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"overview_hide": "Скрыть список планов",
+	"overview_show": "Показать список планов",
 	"views": {
-		"label": "View",
+		"label": "Вид",
 		"material_io": "I/O материалов",
 		"analysis": "Анализ",
 		"production_opportunities": "Производственные возможности"
@@ -14,154 +14,154 @@
 		"form": {
 			"name": "Имя",
 			"faction": "Фракция",
-			"permits_total": "Всего @:terms.permits_plural",
-			"permits_used": "Использовано @:terms.permits_plural"
+			"permits_total": "Всего разрешений",
+			"permits_used": "Использовано разрешений"
 		},
 		"sync_warning": {
 			"title": "Обнаружено несоответствие:",
-			"body": "@:empire.configuration.sync_warning.title настроено {configured} использованных разрешений, в то время как запланировано {planned}. Пожалуйста, обновите эти значения в соответствии с информацией в {hq_buffer}, для получения точных бонусов от фракции."
+			"body": "@:empire.configuration.sync_warning.title в настройках разрешений: {configured}, в планах: {planned}. Синхронизируй эти значения по {hq_buffer} в игре, чтобы бонус фракции считался точно."
 		}
 	},
 	"plan_list": {
-		"no_plans": "Нет планов в @:terms.empire",
+		"no_plans": "В империи нет планов",
 		"profit": "@:terms.profit (ȼ)",
-		"setup_prompt": "Назначьте существующие планы в {management} или используйте {search} для создания.",
+		"setup_prompt": "Назначь существующие планы в разделе {management} или создай план через {search}.",
 		"links": {
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
 		},
-		"permits_planned": "Всего @:terms.permits запланировано: {permits}"
+		"permits_planned": "Всего запланировано разрешений: {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"view_label": "Detail view",
-		"surplus": "Surplus",
-		"needs": "Needs",
-		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"produced_by": "Производят",
+		"consumed_by": "Потребляют",
+		"planets": "Планеты",
+		"summary": "Сводка",
+		"expand_all": "Развернуть все",
+		"expand_row": "Показать планеты для {ticker}",
+		"view_sides": "Производители · Потребители",
+		"view_net": "Баланс по планетам",
+		"view_label": "Подробный вид",
+		"surplus": "Излишек",
+		"needs": "Нужно",
+		"plan_count": "{count} планов | {count} план | {count} плана | {count} планов",
+		"planet_count": "{count} планет | {count} планета | {count} планеты | {count} планет",
+		"per_day": "{value} / день",
+		"makes_uses": "производит {makes} · потребляет {uses}",
+		"not_produced": "В этой империи не производится.",
+		"not_consumed": "В этой империи не потребляется.",
+		"no_surplus": "Ни у одной планеты нет излишка.",
+		"no_needs": "Ни одной планете он не нужен."
 	},
 	"filters": {
-		"display": "Дисплей",
-		"consumables": "Потребляемые",
+		"display": "Показать",
+		"consumables": "Расходные материалы",
 		"all": "Всё",
 		"loadbalance": "Баланс нагрузки"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Материальные Выгоды (ȼ)",
+		"plan_profit": "Прибыль по планам (ȼ)",
+		"material_profits": "Прибыль по материалам (ȼ)",
 		"material_costs": "Стоимость материалов (ȼ)",
-		"net_production": "Объем производства",
-		"net_consumption": "Объем потребления",
+		"net_production": "Чистое производство",
+		"net_consumption": "Чистое потребление",
 		"exclusive_production": "Эксклюзивное производство",
 		"exclusive_consumption": "Эксклюзивное потребление",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
-			"fees": "Production fees",
-			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"inputs": "Сырьё для производства",
+			"workforce": "Рабочая сила",
+			"degradation": "Износ",
+			"fees": "Производственные сборы",
+			"profit": "Прибыль",
+			"uncovered": "Непокрытые затраты"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
-			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
-			"fees": "Fees {pct}",
-			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"label": "Распределение выручки: {parts}",
+			"inputs": "Сырьё {pct}",
+			"workforce": "Рабочая сила {pct}",
+			"degradation": "Износ {pct}",
+			"fees": "Сборы {pct}",
+			"profit": "Прибыль {pct}",
+			"uncovered": "Не покрыто {pct}",
+			"of_cost": "Доля затрат, которую выручка не покрывает"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "Куда уходит выручка каждого плана",
+			"caption": "Топ-{top} по прибыли · убыточные планы показаны всегда",
+			"split": "Распределение выручки",
+			"margin": "Маржа",
+			"revenue_day": "Выручка / день",
+			"other": "Прочее · {n} планов | Прочее · {n} план | Прочее · {n} плана | Прочее · {n} планов",
+			"row_label": "{name}: маржа {margin}, выручка {revenue} ȼ в день",
+			"empty": "Пока нет планов для распределения."
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"metric_label": "Metric",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "Материалы с наибольшим оборотом ȼ",
+			"price": "ȼ / день",
+			"amount": "Ед. / день",
+			"metric_label": "Показатель",
+			"buy": "← ты покупаешь (чистое потребление)",
+			"sell": "ты продаёшь (чистое производство) →",
+			"caption": "Топ-{top} из {n} материалов · нажми на строку, чтобы открыть её в I/O материалов",
+			"row_label": "{ticker}: {direction} {value}, открыть в I/O материалов",
+			"bought": "куплено",
+			"sold": "продано",
+			"empty": "Нет купленных или проданных материалов."
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "Другие графики",
+			"caption": "Прибыль планов · прибыль и стоимость материалов · чистое и эксклюзивное производство и потребление"
 		}
 	},
 	"opportunities": {
 		"headline": "Производственные возможности",
-		"intro": "Находите возможности для переработки избыточных материалов в другие продукты. Этот раздел выявляет производственные возможности там где ваш материальный ввод/вывод показывает положительную дельту, с приоритетом по доступности входных материалов",
-		"please_note": "Обратите внимание:",
-		"note": "Не полагайтесь только на доступные возможности. Сверяйтесь с объёмами торгов и обзорами биржи (при наведении на материал) чтобы оценить ликвидность рынка и потенциальный ROI. Используйте индикаторы чтобы определить какой конкретный материал ограничивает ваш потенциал масштабирования, или выгоднее ли продать имеющуюся дельту чем переходить к другому производству.",
+		"intro": "Находи рецепты, чтобы перерабатывать излишки материалов в другие продукты. Здесь показаны производственные возможности там, где I/O материалов показывает положительную дельту, с приоритетом по доступности сырья",
+		"please_note": "Обрати внимание:",
+		"note": "Не полагайся только на найденные возможности. Сверяйся с объёмами торгов и обзорами бирж (при наведении на материал), чтобы оценить ликвидность рынка и потенциальный ROI. По индикаторам видно, какой материал ограничивает масштабирование и не выгоднее ли продать имеющуюся дельту, чем переходить на другое производство.",
 		"tiles": {
 			"opportunities": "Возможности",
 			"delta_required": "Необходима дельта",
 			"material_missing": "Материал отсутствует"
 		},
 		"table": {
-			"building": "Строительство",
-			"flow_inputs": "Производство (Входные → Выходные материалы)",
+			"building": "Здание",
+			"flow_inputs": "Производство (сырьё → продукция)",
 			"analysis": "Аналитика",
-			"sell_inputs": "Продать входные",
-			"sell_outputs": "Продать выходные",
+			"sell_inputs": "Продать сырьё",
+			"sell_outputs": "Продать продукцию",
 			"potential_batches": "Потенциальные партии",
 			"delta_required": "Необходима дельта",
 			"missing_material": "Отсутствующие материалы",
-			"missing": "Missing"
+			"missing": "Не хватает"
 		}
 	},
 	"onboarding": {
-		"title": "Welcome to PRUNplanner",
-		"intro": "Three steps to your first base plan.",
+		"title": "Добро пожаловать в PRUNplanner",
+		"intro": "Три шага до плана твоей первой базы.",
 		"empire": {
-			"title": "Your empire",
-			"help": "Faction and permits affect your plans' faction bonus and available area.",
-			"saved": "Saved"
+			"title": "Твоя империя",
+			"help": "Фракция и разрешения влияют на бонус фракции и доступную площадь в твоих планах.",
+			"saved": "Сохранено"
 		},
 		"plan": {
-			"title": "Plan your first base",
-			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"title": "Спланируй первую базу",
+			"help": "Найди планету и создай на ней план. Он автоматически добавится в эту империю.",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
-			"title": "Prices",
-			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
-			"exchanges": "Exchanges"
+			"title": "Цены",
+			"help": "Цены берутся по средней за 30 дней по Universe. Выбрать, на какой бирже покупать и продавать каждый материал, можно в разделе {exchanges}.",
+			"exchanges": "Биржи"
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "Доставка"
 	},
 	"empty": {
-		"title": "No empires yet",
-		"text": "An empire groups your base plans and holds your faction and permits.",
-		"create": "Create empire",
-		"manage": "Manage empires"
+		"title": "Империй пока нет",
+		"text": "Империя объединяет планы твоих баз и хранит фракцию и разрешения.",
+		"create": "Создать империю",
+		"manage": "Управлять империями"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "Неизвестно"
 }
