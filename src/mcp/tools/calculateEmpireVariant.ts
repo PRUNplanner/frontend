@@ -22,6 +22,7 @@ import { buildVariant, sizingNotes, VariantChangesSchema } from "@/mcp/variant";
 import { calculateNew, NewPlanSchema } from "@/mcp/tools/calculateNewPlan";
 import {
 	amount,
+	argsOf,
 	defineTool,
 	empireUrl,
 	money,
@@ -75,10 +76,19 @@ export const calculateEmpireVariant = defineTool({
 	inputSchema: z.object({
 		empire_uuid: uuidArg(),
 		changes: z
-			.array(VariantChangesSchema.extend({ plan_uuid: uuidArg() }))
-			.optional(),
+			.array(
+				argsOf(VariantChangesSchema.extend({ plan_uuid: uuidArg() }))
+			)
+			.optional()
+			.describe(
+				"Per plan: plan_uuid and calculate_plan_variant's change arguments"
+			),
 		remove_plans: z.array(uuidArg()).optional(),
-		new_plans: z.array(NewPlanSchema).max(5).optional(),
+		new_plans: z
+			.array(argsOf(NewPlanSchema))
+			.max(5)
+			.optional()
+			.describe("Each: calculate_new_plan's arguments"),
 		price_basis: PriceBasisSchema.optional(),
 	}),
 	async run(args, { backend, appUrl }) {

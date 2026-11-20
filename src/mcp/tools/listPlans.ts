@@ -80,6 +80,7 @@ async function calculateAll(
 
 export const listPlans = defineTool({
 	name: "list_plans",
+	alwaysLoad: true,
 	title: "List plans",
 	description:
 		"Lists the user's base plans (one planet each), optionally only those of one empire, with plan uuids for the other tools. By default every plan is also calculated with the plan engine (in the given empire, else the one its plan page opens with, as get_plan does: calculated_in) with profit, revenue, cost, construction cost, margin and ROI, and the list is ranked by profit per day, highest first; in_several_empires marks plans whose numbers depend on the empire. with_profit false lists only.",

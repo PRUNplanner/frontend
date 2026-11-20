@@ -263,3 +263,29 @@ describe("MCP: tester feedback, part 2", () => {
 		).rejects.toThrow("Unknown material NOPE.");
 	});
 });
+
+describe("MCP: another tool's arguments", () => {
+	it("check_plan_market still checks a variant with calculate_plan_variant's schema", () => {
+		const tool = TOOLS.find((t) => t.name === "check_plan_market")!;
+		const bad = tool.inputSchema.safeParse({
+			plan_uuid: PLAN_UUID,
+			variant: { buildings: [{ ticker: "FP", amount: -1 }] },
+		});
+		expect(bad.success).toBe(false);
+		expect(bad.error!.issues[0].path).toEqual([
+			"variant",
+			"buildings",
+			0,
+			"amount",
+		]);
+		const empire = TOOLS.find(
+			(t) => t.name === "calculate_empire_variant"
+		)!;
+		expect(
+			empire.inputSchema.safeParse({
+				empire_uuid: EMPIRE_UUID,
+				new_plans: [{ planet_natural_id: "KW-688c" }],
+			}).success
+		).toBe(false);
+	});
+});

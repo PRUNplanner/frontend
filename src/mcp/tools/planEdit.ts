@@ -47,28 +47,18 @@ import type {
 export const BuildingChangeSchema = z.object({
 	ticker: z
 		.string()
-		.describe(
-			"Building ticker, e.g. FRM; habs (HB1…HBL) and storage (STO…) too"
-		),
-	amount: z
-		.number()
-		.int()
-		.min(0)
-		.describe("Total amount of this building; 0 removes it"),
+		.describe("Building ticker; habs (HB1…HBL) and storage (STO…) too"),
+	amount: z.number().int().min(0).describe("Total amount; 0 removes it"),
 	recipe_id: z
 		.string()
 		.optional()
-		.describe(
-			'Recipe to add (from lookup_material; extraction EXT#/RIG#/COL#<ticker>); see "Buildings" in the server instructions'
-		),
+		.describe("Recipe to add; see buildings[] in the server instructions"),
 	recipe_amount: z
 		.number()
 		.int()
 		.min(0)
 		.optional()
-		.describe(
-			"recipe_id's share of the building's runs (default 1; 0 removes that recipe)"
-		),
+		.describe("recipe_id's share of the runs (default 1; 0 removes it)"),
 	recipes: z
 		.array(
 			z.object({
@@ -77,9 +67,7 @@ export const BuildingChangeSchema = z.object({
 			})
 		)
 		.optional()
-		.describe(
-			"Replaces all of the building's recipes, each with its share of the runs ([] idle); to run several or switch"
-		),
+		.describe("Replaces all its recipes, with shares ([] idles it)"),
 });
 export type BuildingChange = z.infer<typeof BuildingChangeSchema>;
 
@@ -360,9 +348,7 @@ export const PlanFieldChangesSchema = z.object({
 		.min(0.5)
 		.max(30)
 		.optional()
-		.describe(
-			'Size storage for this many days of cargo (the days between ship visits); see "Storage" in the server instructions'
-		),
+		.describe("Days of cargo to store; see the server instructions"),
 });
 export type PlanFieldChanges = z.infer<typeof PlanFieldChangesSchema>;
 

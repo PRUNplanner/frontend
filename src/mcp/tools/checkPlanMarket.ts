@@ -24,6 +24,7 @@ import {
 } from "@/mcp/variant";
 import {
 	amount,
+	argsOf,
 	defineTool,
 	FIXED_DRIFT_PCT,
 	fixedPriceDrift,
@@ -41,14 +42,16 @@ export const checkPlanMarket = defineTool({
 		plan_uuid: uuidArg()
 			.optional()
 			.describe("A saved plan (or pass new_plan instead)"),
-		new_plan: NewPlanSchema.optional().describe(
-			"An unsaved plan to check, as calculate_new_plan takes it"
-		),
+		new_plan: argsOf(NewPlanSchema)
+			.optional()
+			.describe("An unsaved plan: calculate_new_plan's arguments"),
 		empire_uuid: uuidArg().optional(),
 		price_basis: PriceBasisSchema.optional(),
-		variant: VariantChangesSchema.optional().describe(
-			"Check a variant of the plan instead (same fields as calculate_plan_variant)"
-		),
+		variant: argsOf(VariantChangesSchema)
+			.optional()
+			.describe(
+				"Check a variant of the plan instead: calculate_plan_variant's change arguments"
+			),
 		profit_at: z
 			.array(PriceBasisSchema)
 			.max(12)

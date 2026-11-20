@@ -62,6 +62,8 @@ export interface ITool<S extends z.ZodObject = z.ZodObject> {
 	write?: "save" | "delete";
 	/** a save that can overwrite what's there (clients may ask first) */
 	overwrites?: boolean;
+	/** an entry tool: clients that load tools on demand load it at once */
+	alwaysLoad?: boolean;
 	run(args: z.infer<S>, env: IToolEnv): Promise<IToolResult>;
 }
 
@@ -330,6 +332,16 @@ export function calculationDetails(
 		],
 	};
 }
+
+/**
+ * An argument that takes another tool's arguments: listed as a plain object
+ * (its description names the tool), checked with that tool's schema here.
+ * Clients load every tool definition, so a schema embedded twice costs
+ * twice; validation and the run's types stay the same
+ * @author jplacht
+ */
+export const argsOf = <S extends z.ZodObject>(schema: S) =>
+	z.looseObject({}).pipe(schema);
 
 /** the detail argument of the tools that return a plan or a planet */
 export const detailArg = (full: string) =>

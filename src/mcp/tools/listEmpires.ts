@@ -11,6 +11,7 @@ const KEY_PAGE = "https://prunplanner.org/apikey";
 
 export const listEmpires = defineTool({
 	name: "list_empires",
+	alwaysLoad: true,
 	title: "List empires",
 	description:
 		"Lists the user's PRUNplanner empires (groups of base plans) with faction, CX price preference and plan count, and whether the API key can change data. Start here to find empire_uuid values.",
