@@ -1,82 +1,82 @@
-Before you plan around a price or trade on it, check Market Exploration to see whether that price is normal, rising or falling. It shows the price history and the current market of one material on all four exchanges.
+Antes de planificar en torno a un precio o de operar con él, consulta Exploración del mercado para ver si ese precio es normal, está subiendo o está bajando. Muestra el historial de precios y el mercado actual de un material en las cuatro bolsas.
 
-## Price history {#history}
+## Historial de precios {#history}
 
-The game only shows the last 365 days of price history. PRUNplanner keeps every day it has stored, back to July 2023. So the **All** range of the [All exchanges](#all-exchanges) chart can reach further back than the game does.
+El juego solo muestra los últimos 365 días de historial de precios. PRUNplanner conserva todos los días que tiene guardados, desde julio de 2023. Así que el rango **Todo** del gráfico [Todas las bolsas](#all-exchanges) puede llegar más atrás que el juego.
 
-PRUNplanner builds the history from the daily price data [[fio|FIO]] delivers. A day FIO delivered nothing for is missing, and PRUNplanner doesn't correct any day's prices. So a single trade at an extreme price shows as it happened, for example as a long wick on one candle.
+PRUNplanner construye el historial a partir de los datos diarios de precios que entrega [[fio|FIO]]. Falta cualquier día para el que FIO no entregó nada, y PRUNplanner no corrige los precios de ningún día. Así que una única operación a un precio extremo aparece tal como ocurrió, por ejemplo como una mecha larga en una vela.
 
-## Choosing a material {#material}
+## Elegir un material {#material}
 
-**Switch Material** picks the material, and it starts on DW. Links from a material's market card open the page on that material, and so does **Explore** in the [overview table](#overview).
+**Cambiar material** elige el material, y empieza con DW. Los enlaces desde la tarjeta de mercado de un material abren la página con ese material, igual que **Explorar** en la [tabla de resumen](#overview).
 
-## Key figures {#kpis}
+## Cifras clave {#kpis}
 
-The tiles at the top describe the material across all four exchanges ([[universe|Universe]]):
+Los recuadros de arriba describen el material en las cuatro bolsas ([[universe|Universe]]):
 
-| Tile                                                              | What it shows                                                                                                                                                                                                                                                        |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Universe VWAP 7D**                                              | the [[vwap\|VWAP]] of the last 7 days in ȼ. Under it, **% Trend** = (VWAP 7D − VWAP 30D) ÷ VWAP 30D                       |
-| **Universe Traded Volume 7D**                                     | units traded in the last 7 days, with the 30-day units under it                                                                                                                                                                                                      |
-| **Universe Market Delta**                                         | supply − demand: units in all sell orders minus units in all buy orders of the four books. It reads **Shortage** when negative and **Surplus** when positive, with **Supply:** and **Demand:** below |
-| **Weighted Trend** (**Volume-Adjusted Delta**) | each exchange's % Trend, weighted by its share of the 7-day traded units                                                                                                                                                                                             |
-| **Price Cohesion** (**Variance Index**)        | how far apart the four exchanges' VWAP 7D are: standard deviation ÷ mean, in %                                                                                                                                                                       |
+| Recuadro                                                                    | Qué muestra                                                                                                                                                                                                                                                                                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **VWAP 7D de Universe**                                                     | el [[vwap\|VWAP]] de los últimos 7 días en ȼ. Debajo, **% Tendencia** = (VWAP 7D − VWAP 30D) ÷ VWAP 30D                                                           |
+| **Volumen negociado 7D de Universe**                                        | unidades negociadas en los últimos 7 días, con las unidades de 30 días debajo                                                                                                                                                                                                                                |
+| **Delta de mercado de Universe**                                            | oferta − demanda: unidades en todas las órdenes de venta menos unidades en todas las órdenes de compra de los cuatro libros. Indica **Escasez** cuando es negativo y **Excedente** cuando es positivo, con **Oferta:** y **Demanda:** debajo |
+| **Tendencia ponderada** (**Delta ajustado por volumen**) | la % Tendencia de cada bolsa, ponderada por su parte de las unidades negociadas en 7 días                                                                                                                                                                                                                    |
+| **Cohesión de precios** (**Índice de varianza**)         | lo separados que están los VWAP 7D de las cuatro bolsas: desviación estándar ÷ media, en %                                                                                                                                                                                                   |
 
-A positive % Trend means the last 7 days traded dearer on average than the last 30, and a negative one cheaper. Some made-up examples:
+Una % Tendencia positiva significa que los últimos 7 días se negoció más caro de media que en los últimos 30, y una negativa, más barato. Algunos ejemplos inventados:
 
-- **% Trend**: a VWAP 7D of 105 ȼ against a VWAP 30D of 100 ȼ gives (105 − 100) ÷ 100 = +5 %.
-- **Universe Market Delta**: a supply of 1,000 against a demand of 1,500 gives 1,000 − 1,500 = −500, so it reads **Shortage**.
-- **Weighted Trend**: of 1,000 units traded in 7 days, AI1 traded 500 at +10 %, CI1 250 at +4 %, IC1 150 at −2 % and NC1 100 at 0 %. That gives 0.5 × 10 + 0.25 × 4 + 0.15 × (−2) + 0.1 × 0 = +5.7 %.
-- **Price Cohesion**: VWAP 7D of 98, 100, 100 and 102 ȼ have a mean of 100 and a standard deviation of √((4 + 0 + 0 + 4) ÷ 4) ≈ 1.41, so it reads about 1.4 %.
+- **% Tendencia**: un VWAP 7D de 105 ȼ frente a un VWAP 30D de 100 ȼ da (105 − 100) ÷ 100 = +5 %.
+- **Delta de mercado de Universe**: una oferta de 1.000 frente a una demanda de 1.500 da 1.000 − 1.500 = −500, así que indica **Escasez**.
+- **Tendencia ponderada**: de 1.000 unidades negociadas en 7 días, AI1 negoció 500 a +10 %, CI1 250 a +4 %, IC1 150 a −2 % y NC1 100 a 0 %. Eso da 0,5 × 10 + 0,25 × 4 + 0,15 × (−2) + 0,1 × 0 = +5,7 %.
+- **Cohesión de precios**: unos VWAP 7D de 98, 100, 100 y 102 ȼ tienen una media de 100 y una desviación estándar de √((4 + 0 + 0 + 4) ÷ 4) ≈ 1,41, así que indica alrededor de 1,4 %.
 
-A low Price Cohesion means the exchanges trade at nearly the same price, and a high one means there are gaps between them. An exchange without trades counts in it with a price of 0.
+Una Cohesión de precios baja significa que las bolsas negocian casi al mismo precio, y una alta, que hay diferencias entre ellas. Una bolsa sin operaciones cuenta en ella con un precio de 0.
 
-Weighted Trend shows "—" when any of the four exchanges had no trades in the last 30 days, because PRUNplanner can't calculate that exchange's trend.
+Tendencia ponderada muestra «—» cuando alguna de las cuatro bolsas no tuvo operaciones en los últimos 30 días, porque PRUNplanner no puede calcular la tendencia de esa bolsa.
 
-## Market Chart {#chart}
+## Gráfico de mercado {#chart}
 
-**Chart view** switches between two charts. The page remembers your choice until you close the browser tab.
+**Vista del gráfico** cambia entre dos gráficos. La página recuerda tu elección hasta que cierras la pestaña del navegador.
 
-### Candles {#candles}
+### Velas {#candles}
 
-Here you see one exchange as a candlestick chart (open, high, low, close per period), with the traded units as bars below.
+Aquí ves una bolsa como gráfico de velas (apertura, máximo, mínimo y cierre por periodo), con las unidades negociadas como barras debajo.
 
-- **Exchange**: AI1 (default), CI1, IC1 or NC1.
-- **Interval**: **Daily**, **Weekly** (weeks start on Monday) or **Monthly**, in UTC.
+- **Bolsa**: AI1 (por defecto), CI1, IC1 o NC1.
+- **Intervalo**: **Diario**, **Semanal** (las semanas empiezan el lunes) o **Mensual**, en UTC.
 
-A day without data shows as a flat candle at the last close with 0 volume, so a gap looks like a quiet day.
+Un día sin datos aparece como una vela plana en el último cierre con volumen 0, así que un hueco parece un día tranquilo.
 
-### All exchanges {#all-exchanges}
+### Todas las bolsas {#all-exchanges}
 
-Each exchange gets its own line so you can compare them directly, with **Traded volume, all exchanges** (units / day) below.
+Cada bolsa tiene su propia línea para que puedas compararlas directamente, con **Volumen negociado, todas las bolsas** (unidades / día) debajo.
 
-- **Value**: **VWAP** (ȼ traded ÷ units traded that day), **Low** or **High**.
-- **Range**: **30 d**, **90 d** (default), **1 y** or **All**.
+- **Valor**: **VWAP** (ȼ negociados ÷ unidades negociadas ese día), **Mín.** o **Máximo**.
+- **Rango**: **30 d**, **90 d** (por defecto), **1 a** o **Todo**.
 
-The range ends on the last day with trades on any exchange. A day without trades on an exchange leaves a gap in its line. If the material has no trades at all, the chart says **No trades in this range**.
+El rango termina en el último día con operaciones en alguna bolsa. Un día sin operaciones en una bolsa deja un hueco en su línea. Si el material no tiene ninguna operación, el gráfico dice **No hay operaciones en este rango**.
 
-The button at the top right of the chart (**Toggle fullscreen**) gives the chart the full width.
+El botón de arriba a la derecha del gráfico (**Pantalla completa**) le da al gráfico todo el ancho.
 
-## Market Data {#market-data}
+## Datos de mercado {#market-data}
 
-**Market Data** is the per-exchange table from the material's market card, with the views **Prices**, **Order books** and **Volume**. [Exchanges & prices](/help/exchanges) explains what its columns mean.
+**Datos de mercado** es la tabla por bolsa de la tarjeta de mercado del material, con las vistas **Precios**, **Libros de órdenes** y **Volumen**. [Bolsas y precios](/help/exchanges) explica qué significan sus columnas.
 
-## Material Market Overview {#overview}
+## Resumen del mercado de materiales {#overview}
 
-**Material Market Overview** lists every material, sorted by ticker. Click a header to sort by it. That works on every column except **30 days** and **Details**.
+**Resumen del mercado de materiales** enumera todos los materiales, ordenados por ticker. Haz clic en una cabecera para ordenar por ella. Funciona en todas las columnas salvo **30 días** y **Detalles**.
 
-| Column                                      | What it shows                                                                                                           |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Material**                                | the material                                                                                                            |
-| **VWAP 7D**, **VWAP 30D**                   | Universe VWAP of the last 7 and 30 days                                                                                 |
-| **30 days**                                 | the daily Universe VWAP of the last 30 days. It shows direction only, since every row has its own scale |
-| **Trend**                                   | the Weighted Trend (see [Key figures](#kpis))                                                        |
-| **Traded Volume 7D**, **Traded Volume 30D** | Universe units traded                                                                                                   |
-| **Details**                                 | **Explore** loads the material into the page                                                                            |
+| Columna                                             | Qué muestra                                                                                                                           |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Material**                                        | el material                                                                                                                           |
+| **VWAP 7D**, **VWAP 30D**                           | VWAP de Universe de los últimos 7 y 30 días                                                                                           |
+| **30 días**                                         | el VWAP diario de Universe de los últimos 30 días. Solo muestra la dirección, ya que cada fila tiene su propia escala |
+| **Tendencia**                                       | la Tendencia ponderada (consulta [Cifras clave](#kpis))                                                            |
+| **Volumen negociado 7D**, **Volumen negociado 30D** | unidades negociadas en Universe                                                                                                       |
+| **Detalles**                                        | **Explorar** carga el material en la página                                                                                           |
 
 > [!tip]
-> Sort by **Trend** to find the materials whose price is moving most this week, then press **Explore** to see whether it's a blip or a longer move. For the whole market at a glance, see the [Market report](/help/tools_market_report).
+> Ordena por **Tendencia** para encontrar los materiales cuyo precio más se mueve esta semana, y luego pulsa **Explorar** para ver si es algo pasajero o un movimiento más largo. Para ver todo el mercado de un vistazo, consulta el [Informe de mercado](/help/tools_market_report).
 
-## Reading candlestick charts {#candlesticks}
+## Cómo leer los gráficos de velas {#candlesticks}
 
-A candle covers one period. Its body runs from the open to the close price, and the thin lines (wicks) reach the period's high and low. A close above the open makes a rising candle, and a close below it a falling one. The bars under the chart show how many units traded, so you can tell a move on real volume from one on a single trade.
+Una vela cubre un periodo. Su cuerpo va del precio de apertura al de cierre, y las líneas finas (mechas) llegan al máximo y al mínimo del periodo. Un cierre por encima de la apertura da una vela alcista, y un cierre por debajo, una bajista. Las barras bajo el gráfico muestran cuántas unidades se negociaron, así que puedes distinguir un movimiento con volumen real de uno con una sola operación.
