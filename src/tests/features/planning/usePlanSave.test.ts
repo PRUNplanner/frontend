@@ -303,6 +303,96 @@ describe("usePlanSave", () => {
 		);
 	});
 
+	describe("a save without an answer", () => {
+		const STATE = { plan_cogc: "X", plan_data: { a: 1 } };
+
+		function lost() {
+			const s = setup();
+			s.calculation.snapshot.mockReturnValue(JSON.stringify(STATE));
+			m.saveExistingPlan.mockResolvedValueOnce({ error: "no_answer" });
+			return s;
+		}
+
+		it("counts as saved when the backend stored it", async () => {
+			const s = lost();
+			m.getPlan.mockResolvedValue({
+				uuid: "p-1",
+				modified_at: "t1",
+				// key order is the backend's
+				plan_data: { a: 1 },
+				plan_cogc: "X",
+			});
+			const { result: saving } = await mountSave(s);
+
+			await saving.save();
+			expect(saving.refSaveFailed.value).toBe(false);
+			expect(m.toast).not.toHaveBeenCalled();
+			expect(m.draft.saved).toHaveBeenCalled();
+			expect(s.calculation.markSaved).toHaveBeenCalledWith(
+				JSON.stringify(STATE)
+			);
+			expect(m.trackEvent).toHaveBeenCalledWith(
+				"plan:save",
+				expect.objectContaining({ trigger: "button" })
+			);
+
+			// the next save starts from the stored version: no conflict
+			s.modified.value = true;
+			m.saveExistingPlan.mockResolvedValue({ modifiedAt: "t2" });
+			await saving.save();
+			expect(m.saveExistingPlan.mock.calls[1][2]).toBe("t1");
+		});
+
+		it("fails when nothing was stored", async () => {
+			const s = lost();
+			m.getPlan.mockResolvedValue({ uuid: "p-1", modified_at: "t0" });
+			const { result: saving } = await mountSave(s);
+
+			await saving.save();
+			expect(saving.refSaveFailed.value).toBe(true);
+			expect(s.calculation.markSaved).not.toHaveBeenCalled();
+			expect(m.draft.saved).not.toHaveBeenCalled();
+			expect(m.ask).not.toHaveBeenCalled();
+			expect(m.toast).toHaveBeenCalledWith(
+				"plan.save_status.failed_message",
+				{ type: "error" }
+			);
+		});
+
+		it("fails when the saved plan can't be loaded either", async () => {
+			const s = lost();
+			const { result: saving } = await mountSave(s);
+			m.getPlan.mockRejectedValue(new Error("offline"));
+
+			await saving.save();
+			expect(saving.refSaveFailed.value).toBe(true);
+			expect(s.calculation.markSaved).not.toHaveBeenCalled();
+			expect(m.ask).not.toHaveBeenCalled();
+		});
+
+		it("asks when another save is stored", async () => {
+			const s = lost();
+			m.getPlan.mockResolvedValue({
+				uuid: "p-1",
+				modified_at: "t1",
+				plan_cogc: "X",
+				plan_data: { a: 2 },
+			});
+			m.ask.mockResolvedValue(null);
+			const { result: saving } = await mountSave(s);
+
+			await saving.save();
+			await nextTick();
+			await flushPromises();
+			expect(m.ask).toHaveBeenCalledWith(
+				expect.objectContaining({ deleted: false })
+			);
+			expect(s.calculation.markSaved).not.toHaveBeenCalled();
+			expect(m.draft.saved).not.toHaveBeenCalled();
+			expect(m.toast).not.toHaveBeenCalled();
+		});
+	});
+
 	it("shows the version cap and retries with the typed name", async () => {
 		const s = setup();
 		m.saveExistingPlan.mockResolvedValue({

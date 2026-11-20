@@ -14,7 +14,9 @@ save calls, the COGC mapping and plan diffs.
   `PlanCOGCProgram`, from `planCOGC.util.ts`), `createNewPlan(data)` (`CreatePlan` then `GetPlan`;
   `IPlanSaved` or `undefined`), `saveExistingPlan(uuid, data,
   baseModifiedAt?, version?)` (`PatchPlan`; `IPlanSaved` or `{ error:
-  "conflict" | "deleted" | "restored_from" | "failed" }`) and
+  "conflict" | "deleted" | "restored_from" | "version_cap" | "no_answer" |
+  "failed" }`; `no_answer` is a timeout or dropped connection, after which
+  `usePlanSave` checks the saved plan for its own write) and
   `getPlanNamePlanet`. Module export `cogcTextMapping`: COGC display names.
 - `planCOGC.util.ts`: the pure `mapPlanetToPlanType` and `cogcTextMapping`
   (re-exported by `usePlan.ts`), so the MCP server can use them in Node.
