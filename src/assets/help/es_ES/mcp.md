@@ -1,84 +1,84 @@
-PRUNplanner runs an MCP server (Model Context Protocol), so an AI assistant such as Claude, ChatGPT/Codex, Copilot or Cursor can work with your plans and empires. Your assistant reads them and calculates them with PRUNplanner's own plan engine and your CX preferences, so its numbers match what the plan page shows. You ask in plain words; the assistant picks the right tools.
+PRUNplanner tiene un servidor MCP (Model Context Protocol), para que un asistente de IA como Claude, ChatGPT/Codex, Copilot o Cursor pueda trabajar con tus planes e imperios. Tu asistente los lee y los calcula con el propio motor de planes de PRUNplanner y tus preferencias de CX, así que sus cifras coinciden con lo que muestra la página del plan. Tú preguntas con palabras normales; el asistente elige las herramientas adecuadas.
 
-All you need is an [API key](/help/api_keys) and a few lines of setup in your assistant. The [API Keys](/apikey) page shows the server address and has the download for Claude Desktop.
+Solo necesitas una [clave API](/help/api_keys) y unas pocas líneas de configuración en tu asistente. La página [Claves API](/apikey) muestra la dirección del servidor y tiene la descarga para Claude Desktop.
 
-## What You Can Ask {#what-it-does}
+## Qué puedes preguntar {#what-it-does}
 
-The assistant has a set of tools, grouped below by what you'd use them for. You never call them yourself; their names are here so you recognise them when your assistant shows which tool it uses.
+El asistente tiene un conjunto de herramientas, agrupadas abajo según para qué las usarías. Nunca las llamas tú; sus nombres están aquí para que las reconozcas cuando tu asistente muestre qué herramienta usa.
 
-_Read your plans and empires._ "Which of my bases earns the most per day?" or "What does my empire import every day?"
+_Leer tus planes e imperios._ «¿Cuál de mis bases gana más al día?» o «¿Qué importa mi imperio cada día?»
 `list_empires`, `list_plans`, `get_plan`, `get_empire`, `compare_plans`, `list_plan_versions`, `diff_plan_versions`
 
-_What-ifs, without saving anything._ "What if my farm base had 5 experts?" or "What would a new plan with 4 FRM on this planet earn?"
+_Hipótesis, sin guardar nada._ «¿Y si mi base de granjas tuviera 5 expertos?» o «¿Cuánto ganaría un plan nuevo con 4 FRM en este planeta?»
 `calculate_plan_variant`, `calculate_new_plan`, `calculate_empire_variant`
 
-_Alternatives._ "Which recipe in my FP makes the most?" or "Should I make or buy the inputs of my DW?"
+_Alternativas._ «¿Qué receta de mi FP rinde más?» o «¿Debería fabricar o comprar los insumos de mi DW?»
 `rank_recipes`, `get_production_cost`, `check_make_or_buy`, `lookup_material`
 
-_Where to build._ "Where should I extract ALO near Moria?" or "Which of these planets suits a smelting base best?"
+_Dónde construir._ «¿Dónde debería extraer ALO cerca de Moria?» o «¿Cuál de estos planetas encaja mejor con una base de fundición?»
 `find_planets`, `get_planet`, `get_distances`, `suggest_base`, `rank_bases`
 
-_Is the price real?_ "Is the market for my outputs deep enough?" or "How did the price of RAT move this month?"
+_¿Es real el precio?_ «¿Es el mercado de mis salidas lo bastante profundo?» o «¿Cómo se ha movido el precio de RAT este mes?»
 `check_plan_market`, `get_material_prices`, `get_market_report`, `get_price_history`
 
-_Hand-off to the game._ "Give me the [[xit|XIT]] action to supply my base for 7 days."
+_Pasar al juego._ «Dame la acción de [[xit|XIT]] para abastecer mi base durante 7 días.»
 `get_xit_action`
 
-_Shared plans._ "Look at this shared plan and compare it with mine."
+_Planes compartidos._ «Mira este plan compartido y compáralo con el mío.»
 `get_shared_plan`
 
-_Changes_, with a Read & write key only (see [Which key](#keys)). "Save this variant as my plan." or "Share my farm plan."
+_Cambios_, solo con una clave de lectura y escritura (consulta [Qué clave](#keys)). «Guarda esta variante como mi plan.» o «Comparte mi plan de granjas.»
 `save_plan`, `restore_plan_version`, `save_empire`, `save_cx_preference`, `share_plan`, `copy_shared_plan`, `set_preferences`, `delete`
 
-Amounts and money in the answers are per day unless the assistant says otherwise. Prices follow the plan's [[cx|CX]] preference; without one, the Universe 30-day [[vwap|VWAP]].
+Las cantidades y el dinero de las respuestas son por día salvo que el asistente diga otra cosa. Los precios siguen la preferencia de [[cx|CX]] del plan; sin ella, el [[vwap|VWAP]] de 30 días de Universe.
 
-## Ready-Made Prompts {#prompts}
+## Prompts preparados {#prompts}
 
-The server also offers four ready-made prompts, each a complete request for a common job. Clients that support MCP prompts offer them as commands; Claude Code, for example, lists them when you type `/`:
+El servidor también ofrece cuatro prompts preparados, cada uno una petición completa para una tarea habitual. Los clientes que admiten prompts de MCP los ofrecen como comandos; Claude Code, por ejemplo, los lista cuando escribes `/`:
 
-- `review_plan`, _Review a plan_: tries every lever of one plan (experts, luxuries, COGC, habitation, storage, other recipes) without changing its buildings, and shows what each is worth per day.
-- `review_empire`, _Review my empire_: what earns, what is weak or risky, and where the empire depends on thin markets.
-- `vertical_chain`, _Plan a vertical chain_: the production chain for a material at a daily rate, with the right ratios, split into bases near an exchange.
-- `load_lists`, _Load lists for my bases_: supply load lists and XIT packages for a group of bases at the group's fastest visit interval.
+- `review_plan`, _Revisar un plan_: prueba todas las palancas de un plan (expertos, lujos, COGC, hábitats, almacenamiento, otras recetas) sin cambiar sus edificios, y muestra cuánto vale cada una al día.
+- `review_empire`, _Revisar mi imperio_: qué gana dinero, qué es débil o arriesgado, y dónde depende el imperio de mercados poco profundos.
+- `vertical_chain`, _Planificar una cadena vertical_: la cadena de producción de un material a un ritmo diario, con las proporciones correctas, repartida en bases cerca de una bolsa.
+- `load_lists`, _Listas de carga para mis bases_: listas de carga de suministros y paquetes de XIT para un grupo de bases, al intervalo de visita más rápido del grupo.
 
-Each one ends the same way: the assistant shows the options with their numbers and lets you choose, and saves nothing unless you say so.
+Todos terminan igual: el asistente muestra las opciones con sus cifras y te deja elegir, y no guarda nada salvo que se lo digas.
 
-## Short Answers First {#summary}
+## Primero respuestas breves {#summary}
 
-`get_plan`, `get_shared_plan`, `calculate_new_plan`, `get_planet` and `find_planets` answer with the key figures first. For a plan that is the money, buildings with their recipes, the net material flows, workforce, area and shipping; per-order economics, prices per material and construction materials are left out. That keeps answers quick and saves your assistant's context. When you need everything, ask for "the full breakdown" and the assistant asks again with the full detail.
+`get_plan`, `get_shared_plan`, `calculate_new_plan`, `get_planet` y `find_planets` responden primero con las cifras clave. En un plan eso es el dinero, los edificios con sus recetas, los flujos netos de materiales, la mano de obra, el área y el transporte; se dejan fuera la economía por orden, los precios por material y los materiales de construcción. Así las respuestas son rápidas y se ahorra contexto de tu asistente. Cuando lo necesites todo, pide «el desglose completo» y el asistente vuelve a preguntar con todo el detalle.
 
-## Which Key {#keys}
+## Qué clave {#keys}
 
-The server uses your PRUNplanner API key; it has no sign-in of its own.
+El servidor usa tu clave API de PRUNplanner; no tiene inicio de sesión propio.
 
-- A **Read-only** key is the one we recommend. The assistant reads and calculates everything above, and can't change anything.
-- A **Read & write** key also lets it save plans, empires and CX preferences, share and copy plans, change your defaults, and delete. Every plan save is a new version you can restore. Before a delete, the assistant shows what would go and asks you first, and it says what it will change before any save.
-- With a Read-only key, a change fails with a message saying the key is read-only and how to get a Read & write key. Nothing is changed.
+- Una clave de **Solo lectura** es la que recomendamos. El asistente lee y calcula todo lo anterior, y no puede cambiar nada.
+- Una clave de **Lectura y escritura** además le permite guardar planes, imperios y preferencias de CX, compartir y copiar planes, cambiar tus valores por defecto y borrar. Cada vez que guarda un plan se crea una versión nueva que puedes restaurar. Antes de borrar, el asistente te muestra lo que se eliminaría y te pregunta primero, y antes de guardar dice lo que va a cambiar.
+- Con una clave de solo lectura, un cambio falla con un mensaje que dice que la clave es de solo lectura y cómo conseguir una clave de lectura y escritura. No se cambia nada.
 
-A key in a config file is plain text on your computer. Use one key per assistant, named after it, so you can revoke one without touching the others.
+Una clave en un archivo de configuración es texto sin cifrar en tu ordenador. Usa una clave por asistente, con su nombre, para poder revocar una sin tocar las demás.
 
-## Set Up {#setup}
+## Configuración {#setup}
 
-Every client needs the same two things:
+Todos los clientes necesitan las mismas dos cosas:
 
-- the server URL `https://mcp.prunplanner.org/mcp` (Streamable HTTP),
-- the header `Authorization: Api-Key <YOUR_KEY>`.
+- la URL del servidor `https://mcp.prunplanner.org/mcp` (Streamable HTTP),
+- la cabecera `Authorization: Api-Key <YOUR_KEY>`.
 
-Below, replace `<YOUR_KEY>` with your key, the full text shown once when you create it.
+A continuación, sustituye `<YOUR_KEY>` por tu clave, el texto completo que se muestra una sola vez al crearla.
 
 ### Claude Desktop {#claude-desktop}
 
-The easy way is the PRUNplanner extension:
+Lo más fácil es la extensión de PRUNplanner:
 
-1. On the [API Keys](/apikey) page, click **Download for Claude Desktop**. You get `prunplanner.mcpb`.
-2. In Claude Desktop, open Settings → Extensions and drag the file in, then Install.
-3. Paste your key into the extension's API Key field. Claude Desktop keeps it in your system's keychain.
+1. En la página [Claves API](/apikey), haz clic en **Descargar para Claude Desktop**. Obtienes `prunplanner.mcpb`.
+2. En Claude Desktop, abre Settings → Extensions y arrastra el archivo dentro; después, Install.
+3. Pega tu clave en el campo API Key de la extensión. Claude Desktop la guarda en el llavero de tu sistema.
 
-You need to be signed in to Claude, and an organisation account can have extensions turned off.
+Tienes que haber iniciado sesión en Claude, y una cuenta de organización puede tener las extensiones desactivadas.
 
-> On Windows, Claude Desktop sometimes passes a hidden setting to an extension as `__encrypted__…` instead of the key (an open issue in Claude Desktop). If your assistant answers with an invalid-key error although the key is right, remove the extension and use the config file below instead.
+> En Windows, Claude Desktop a veces pasa a una extensión un ajuste oculto como `__encrypted__…` en lugar de la clave (un problema abierto de Claude Desktop). Si tu asistente responde con un error de clave no válida aunque la clave sea correcta, quita la extensión y usa el archivo de configuración de abajo.
 
-_Fallback: the config file._ This needs Node.js. Open Settings → Developer → Edit Config, which opens `claude_desktop_config.json`, and add:
+_Alternativa: el archivo de configuración._ Necesita Node.js. Abre Settings → Developer → Edit Config, que abre `claude_desktop_config.json`, y añade:
 
 ```json
 {
@@ -98,25 +98,25 @@ _Fallback: the config file._ This needs Node.js. Open Settings → Developer →
 }
 ```
 
-Write no space after `Authorization:` in `args`; the key goes in `env`, where spaces are fine. Then quit Claude Desktop completely and start it again.
+No pongas espacio después de `Authorization:` en `args`; la clave va en `env`, donde los espacios no son problema. Después cierra Claude Desktop por completo y vuelve a abrirlo.
 
-### claude.ai on the Web and Mobile {#claude-web}
+### claude.ai en la web y el móvil {#claude-web}
 
-A custom connector on claude.ai can send our header only where the "Request headers" beta is available, which so far reaches a limited set of organisations. If you see a Request headers section when you add a custom connector, pick no sign-in and add the header `Authorization` with the value `Api-Key <YOUR_KEY>`. If you don't see it, use Claude Desktop: the connector would ask for a sign-in that PRUNplanner doesn't offer.
+Un conector personalizado en claude.ai solo puede enviar nuestra cabecera donde está disponible la beta «Request headers», que por ahora llega a un número limitado de organizaciones. Si ves una sección Request headers al añadir un conector personalizado, elige sin inicio de sesión y añade la cabecera `Authorization` con el valor `Api-Key <YOUR_KEY>`. Si no la ves, usa Claude Desktop: el conector pediría un inicio de sesión que PRUNplanner no ofrece.
 
 ### Claude Code {#claude-code}
 
-One command adds the server for all your projects:
+Un solo comando añade el servidor para todos tus proyectos:
 
 ```bash
 claude mcp add --transport http prunplanner https://mcp.prunplanner.org/mcp --header "Authorization: Api-Key <YOUR_KEY>" --scope user
 ```
 
-Start a new session, or check it with `/mcp`. Don't use `--scope project` with a key: it writes the key into `.mcp.json`, a file meant to be committed. The Claude Code extension for VS Code uses this same setup.
+Empieza una sesión nueva, o compruébalo con `/mcp`. No uses `--scope project` con una clave: escribe la clave en `.mcp.json`, un archivo pensado para subirse al repositorio. La extensión de Claude Code para VS Code usa esta misma configuración.
 
-### ChatGPT Desktop App and Codex {#codex}
+### App de escritorio de ChatGPT y Codex {#codex}
 
-The ChatGPT desktop app, the Codex CLI and the Codex IDE extension share one file: `~/.codex/config.toml` (on Windows `%USERPROFILE%\.codex\config.toml`). Add:
+La app de escritorio de ChatGPT, la CLI de Codex y la extensión de Codex para IDE comparten un archivo: `~/.codex/config.toml` (en Windows `%USERPROFILE%\.codex\config.toml`). Añade:
 
 ```toml
 [mcp_servers.prunplanner]
@@ -124,13 +124,13 @@ url = "https://mcp.prunplanner.org/mcp"
 http_headers = { "Authorization" = "Api-Key <YOUR_KEY>" }
 ```
 
-Then restart the app. To keep the key out of the file, use `env_http_headers = { "Authorization" = "PRUNPLANNER_AUTH" }` instead and set the environment variable `PRUNPLANNER_AUTH` to `Api-Key <YOUR_KEY>`. Don't use `bearer_token_env_var`: it sends `Bearer`, which PRUNplanner doesn't accept.
+Después reinicia la app. Para no tener la clave en el archivo, usa en su lugar `env_http_headers = { "Authorization" = "PRUNPLANNER_AUTH" }` y pon la variable de entorno `PRUNPLANNER_AUTH` a `Api-Key <YOUR_KEY>`. No uses `bearer_token_env_var`: envía `Bearer`, que PRUNplanner no acepta.
 
-ChatGPT on the web can't connect: it signs in to servers only with OAuth or no authentication, and can't send an API key.
+ChatGPT en la web no puede conectarse: solo inicia sesión en servidores con OAuth o sin autenticación, y no puede enviar una clave API.
 
-### VS Code with Copilot {#vscode}
+### VS Code con Copilot {#vscode}
 
-Run the command MCP: Open User Configuration and add the server. VS Code asks for the key the first time the server starts:
+Ejecuta el comando MCP: Open User Configuration y añade el servidor. VS Code te pide la clave la primera vez que arranca el servidor:
 
 ```json
 {
@@ -152,11 +152,11 @@ Run the command MCP: Open User Configuration and add the server. VS Code asks fo
 }
 ```
 
-VS Code is moving to a newer format (`.mcp.json` in a workspace, or `~/.copilot/mcp-config.json`), which has no key prompt. There, use `mcpServers` instead of `servers`, the same `type`, `url` and `headers`, and `"Authorization": "Api-Key ${PRUNPLANNER_KEY}"` with the key in the environment variable `PRUNPLANNER_KEY`.
+VS Code está pasando a un formato más nuevo (`.mcp.json` en un espacio de trabajo, o `~/.copilot/mcp-config.json`), que no pide la clave. Ahí, usa `mcpServers` en lugar de `servers`, los mismos `type`, `url` y `headers`, y `"Authorization": "Api-Key ${PRUNPLANNER_KEY}"` con la clave en la variable de entorno `PRUNPLANNER_KEY`.
 
 ### Cursor {#cursor}
 
-Add to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project), then turn the server on in Cursor's MCP settings:
+Añade a `~/.cursor/mcp.json` (todos los proyectos) o `.cursor/mcp.json` (un proyecto) lo siguiente, y luego activa el servidor en los ajustes de MCP de Cursor:
 
 ```json
 {
@@ -169,11 +169,11 @@ Add to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project), 
 }
 ```
 
-`${env:PRUNPLANNER_KEY}` in place of `<YOUR_KEY>` reads the key from an environment variable.
+`${env:PRUNPLANNER_KEY}` en lugar de `<YOUR_KEY>` lee la clave de una variable de entorno.
 
 ### Hermes Agent {#hermes}
 
-Put the key in `~/.hermes/.env` as `PRUNPLANNER_KEY=<YOUR_KEY>`, then add to `~/.hermes/config.yaml`:
+Pon la clave en `~/.hermes/.env` como `PRUNPLANNER_KEY=<YOUR_KEY>` y luego añade a `~/.hermes/config.yaml`:
 
 ```yaml
 mcp_servers:
@@ -183,11 +183,11 @@ mcp_servers:
       Authorization: "Api-Key ${PRUNPLANNER_KEY}"
 ```
 
-Reload with `/reload-mcp`.
+Recarga con `/reload-mcp`.
 
 ### Antigravity (Gemini) {#antigravity}
 
-Antigravity, the IDE and CLI that replaced Gemini CLI, reads `~/.gemini/config/mcp_config.json`. Note the key name `serverUrl`:
+Antigravity, el IDE y la CLI que sustituyeron a Gemini CLI, lee `~/.gemini/config/mcp_config.json`. Fíjate en el nombre de clave `serverUrl`:
 
 ```json
 {
@@ -200,40 +200,40 @@ Antigravity, the IDE and CLI that replaced Gemini CLI, reads `~/.gemini/config/m
 }
 ```
 
-Reload the servers with `/mcp` or restart.
+Recarga los servidores con `/mcp` o reinicia.
 
-### Zed, Cline, LM Studio and Open WebUI {#other-clients}
+### Zed, Cline, LM Studio y Open WebUI {#other-clients}
 
-- Zed: Settings → AI → MCP Servers → Add Remote Server, or `context_servers` in the settings file, with the URL and the header.
-- Cline: an `mcpServers` entry with `"type": "streamableHttp"`, `url` and `headers`. Without the `type`, Cline tries an older protocol.
-- LM Studio: Program → Install → Edit mcp.json, an entry with `url` and `headers`.
-- Open WebUI (0.6.31 or later): Admin Settings → MCP, type Streamable HTTP, the header as Headers JSON. Don't pick Bearer.
+- Zed: Settings → AI → MCP Servers → Add Remote Server, o `context_servers` en el archivo de ajustes, con la URL y la cabecera.
+- Cline: una entrada `mcpServers` con `"type": "streamableHttp"`, `url` y `headers`. Sin el `type`, Cline intenta usar un protocolo más antiguo.
+- LM Studio: Program → Install → Edit mcp.json, una entrada con `url` y `headers`.
+- Open WebUI (0.6.31 o posterior): Admin Settings → MCP, tipo Streamable HTTP, la cabecera como Headers JSON. No elijas Bearer.
 
-### Any Other Client {#any-client}
+### Cualquier otro cliente {#any-client}
 
-Give it the server URL and the header from the start of this section. A client that only starts local servers can use `mcp-remote` like the Claude Desktop fallback above.
+Dale la URL del servidor y la cabecera del principio de esta sección. Un cliente que solo arranca servidores locales puede usar `mcp-remote` como en la alternativa de Claude Desktop de arriba.
 
-To test a key on its own, MCP Inspector lists the tools it can reach:
+Para probar una clave por separado, MCP Inspector lista las herramientas a las que llega:
 
 ```bash
 npx @modelcontextprotocol/inspector --cli https://mcp.prunplanner.org/mcp --transport http --method tools/list --header "Authorization: Api-Key <YOUR_KEY>"
 ```
 
-## Check It Works {#check}
+## Comprueba que funciona {#check}
 
-Ask your assistant "List my empires." It should name your empires and say which key access it has. If it doesn't:
+Pregunta a tu asistente «Lista mis imperios.» Debería nombrar tus imperios y decir qué acceso tiene su clave. Si no lo hace:
 
-- _Invalid or revoked key_ (401): the key is mistyped, revoked, or stopped working because you changed your password (see [Validity](/help/api_keys#validity)). Create a new key and replace it in the setup.
-- _The key is read-only_: you asked for a change with a Read-only key. Nothing was changed; use a Read & write key if you want the assistant to save.
-- _Too many requests_ (429): the server accepts 10 requests a second per IP address, with bursts up to 60, and your key's usual limit of 240 a minute applies too (see [Rate Limits](/help/api_keys#rate-limits)). One question can take several requests, and they share that limit with your sheets and scripts. Wait a moment and ask again.
-- _PRUNplanner's API can't be reached_: the server couldn't reach PRUNplanner's API. Try again in a few minutes.
-- _The client asks you to sign in or shows OAuth_: the client can't send the header. Check its section above; ChatGPT on the web and claude.ai without the beta can't connect.
+- _Clave no válida o revocada_ (401): la clave está mal escrita, revocada o dejó de funcionar porque cambiaste tu contraseña (consulta [Validez](/help/api_keys#validity)). Crea una clave nueva y sustitúyela en la configuración.
+- _La clave es de solo lectura_: pediste un cambio con una clave de solo lectura. No se cambió nada; usa una clave de lectura y escritura si quieres que el asistente guarde.
+- _Demasiadas peticiones_ (429): el servidor acepta 10 peticiones por segundo por dirección IP, con ráfagas de hasta 60, y además se aplica el límite habitual de tu clave de 240 por minuto (consulta [Límites de peticiones](/help/api_keys#rate-limits)). Una pregunta puede necesitar varias peticiones, y comparten ese límite con tus hojas de cálculo y scripts. Espera un momento y vuelve a preguntar.
+- _No se puede acceder a la API de PRUNplanner_: el servidor no pudo llegar a la API de PRUNplanner. Vuelve a intentarlo dentro de unos minutos.
+- _El cliente te pide iniciar sesión o muestra OAuth_: el cliente no puede enviar la cabecera. Revisa su sección de arriba; ChatGPT en la web y claude.ai sin la beta no pueden conectarse.
 
-## Privacy {#privacy}
+## Privacidad {#privacy}
 
-- Your assistant's provider (Anthropic, OpenAI, GitHub and so on) sees what the tools return: your plans, empires and prices. Their terms apply to that.
-- Nothing reaches the game. The assistant can't act in Prosperous Universe; XIT actions are text for you to paste.
-- Plans other players share are treated as data. The assistant is told never to follow instructions written into a plan or empire name.
-- Revoke the key on the [API Keys](/apikey) page to cut the assistant off at once.
-- For each tool call, PRUNplanner logs the tool's name, the client's name, whether it worked, how long it took and your key's prefix (the part before the dot, which isn't secret). It never logs the key, what you asked, or what came back.
-- The server keeps no copy of your data. Each request reads it with your key and forgets it afterwards; only public game data (materials, recipes, buildings, planets, prices) is cached, shared by everyone.
+- El proveedor de tu asistente (Anthropic, OpenAI, GitHub, etc.) ve lo que devuelven las herramientas: tus planes, imperios y precios. Sus condiciones se aplican a eso.
+- Nada llega al juego. El asistente no puede actuar en Prosperous Universe; las acciones de XIT son texto para que lo pegues tú.
+- Los planes que comparten otros jugadores se tratan como datos. Al asistente se le indica que nunca siga instrucciones escritas en el nombre de un plan o de un imperio.
+- Revoca la clave en la página [Claves API](/apikey) para cortar al asistente al instante.
+- Por cada llamada a una herramienta, PRUNplanner registra el nombre de la herramienta, el nombre del cliente, si funcionó, cuánto tardó y el prefijo de tu clave (la parte antes del punto, que no es secreta). Nunca registra la clave, lo que preguntaste ni lo que se devolvió.
+- El servidor no guarda ninguna copia de tus datos. Cada petición los lee con tu clave y los olvida después; solo se guardan en caché los datos públicos del juego (materiales, recetas, edificios, planetas, precios), compartidos por todos.
