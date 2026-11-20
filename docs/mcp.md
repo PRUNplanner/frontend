@@ -173,6 +173,23 @@ container `prunplanner-mcp`), not here.
   - `get_empire`'s text says when material rows are cut.
   - The experts union names its two shapes in its error: the SDK checks
     arguments before the handler, so these failures aren't in the log.
+  - Part 2 (`testerFeedback2.test.ts`):
+    - `list_empires` reads `/user/profile/`'s `api_key_scope` (backend
+      2026-11-20; absent on older backends: `api_key_access: null`).
+    - `calculate_plan_variant` and `calculate_new_plan` carry
+      `marketFootprint()`: each traded material's share of daily volume
+      (1 % and up) with `planned_by_players`.
+    - `check_make_or_buy` lists the user's plans outside the empire that
+      make an input, each calculated in the empire its plan page opens with.
+    - `calculate_plan_variant` takes `built` (and `age_days`)
+      (`builtBase.ts`). Staying buildings are paid for; removed ones give
+      back FIO's `ReclaimableMaterials` from the planet's site (the least
+      first), else the intact share at `age_days` on the repair curve
+      (`⌊M·(180−d)/180⌋`, `repairAnalysis.util`), else nothing.
+    - Habs `"add"` keeps the habs and adds for the missing workers only.
+    - `get_production_cost` takes `also` (more targets in one chain) and
+      returns `orders`: whole buildings and order amounts per base from
+      `baseBuildings()`, which the Production Chains page's plan drafts use.
 - **Text carries the data.** A tool result's text block is a one-line summary
   plus the same JSON as `structuredContent`: Claude Desktop and others pass
   only the text to the model.

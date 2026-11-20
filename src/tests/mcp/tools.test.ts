@@ -974,9 +974,14 @@ describe("MCP tools", () => {
 		await run("get_planet", { planet_natural_id: "KW-688c" });
 		await run("lookup_material", { ticker: "RAT" });
 		expect(backend.requests.length).toBeGreaterThan(10);
-		expect(new Set(backend.requests.map((r) => r.method))).toEqual(
-			new Set(["GET"])
-		);
+		// the planet batch is a read sent as POST
+		expect(
+			new Set(
+				backend.requests
+					.filter((r) => r.path !== "/data/planets/multiple/")
+					.map((r) => r.method)
+			)
+		).toEqual(new Set(["GET"]));
 		// game data goes without the key, user data with it
 		const keyed = backend.requests.filter((r) =>
 			r.headers.has("Authorization")
@@ -985,7 +990,8 @@ describe("MCP tools", () => {
 			keyed.every(
 				(r) =>
 					r.path.startsWith("/planning/") ||
-					r.path === "/user/preferences/"
+					r.path === "/user/preferences/" ||
+					r.path === "/user/profile/"
 			)
 		).toBe(true);
 		expect(keyed[0].headers.get("Authorization")).toBe(

@@ -2,13 +2,15 @@ import { z } from "zod";
 
 // Util
 import { loadEmpireCX } from "@/mcp/context";
-import { getPlanet, loadGameData } from "@/mcp/gameData";
+import { getPlanet, getPlannedMaterials, loadGameData } from "@/mcp/gameData";
 import { PriceBasisSchema } from "@/mcp/priceBasis";
 import { calculateWithHabs, type IVariant } from "@/mcp/variant";
 import {
 	calculationDetails,
 	defineTool,
 	detailArg,
+	marketFootprint,
+	MARKET_NOTE,
 	permitCost,
 	PLAN_FULL_DETAIL,
 	summarizeDetails,
@@ -104,6 +106,14 @@ export const calculateNewPlan = defineTool({
 			args.empire_uuid,
 			args.price_basis
 		);
+		const gameData = await loadGameData(backend);
+		// the market each output and input would take (one request an hour)
+		const market = marketFootprint(
+			v.calc.result.materialio,
+			v.ctx.prices,
+			gameData.getExchange,
+			await getPlannedMaterials(backend).catch(() => undefined)
+		);
 		const full = calculationDetails(
 			v.calc,
 			v.ctx.prices,
@@ -115,8 +125,7 @@ export const calculateNewPlan = defineTool({
 			v.basis,
 			v.planet,
 			v.ctx.buildings,
-			// cached game data: no request
-			(await loadGameData(backend)).exchanges
+			gameData.exchanges
 		);
 		const details = args.detail === "full" ? full : summarizeDetails(full);
 		const d = details.per_day;
@@ -139,6 +148,9 @@ export const calculateNewPlan = defineTool({
 				},
 				habitation,
 				// a new base takes its permits from the empire's pool
+				market: market.length
+					? { note: MARKET_NOTE, materials: market }
+					: undefined,
 				permits_cost:
 					permitCost(
 						v.empire,

@@ -206,13 +206,14 @@ export function applyBuildings(
 }
 
 export const HabsModeSchema = z
-	.enum(["keep", "auto", "cheapest", "least_area"])
+	.enum(["keep", "add", "auto", "cheapest", "least_area"])
 	.describe(
-		'Habitation: "keep", or size with the editor\'s optimiser: "auto" (its auto-habs), "cheapest", "least_area"'
+		'Habitation: "keep"; "add" keeps habs, adds for missing workers; or optimise anew: "auto", "cheapest", "least_area"'
 	);
 export type HabsMode = z.infer<typeof HabsModeSchema>;
 
 const HAB_GOAL: Record<Exclude<HabsMode, "keep">, HabSolverGoal> = {
+	add: "auto",
 	auto: "auto",
 	cheapest: "cost",
 	least_area: "area",
@@ -235,22 +236,44 @@ export function fitHabs(
 ): PlanData | undefined {
 	const { area, infrastructure, infrastructureCosts, workforce } =
 		calc.result;
+	// "add": house only the workers without beds, in the area left, on top
+	// of the habs there (already built habs aren't torn down)
+	const add = mode === "add";
+	const need = add
+		? (Object.fromEntries(
+				Object.entries(workforce).map(([type, w]) => [
+					type,
+					{ ...w, required: Math.max(0, -w.left) },
+				])
+			) as typeof workforce)
+		: workforce;
+	if (add && Object.values(need).every((w) => w.required === 0)) return data;
 	const solution = optimizeHabs(
 		HAB_GOAL[mode],
 		infrastructureCosts,
-		workforce,
-		calculateAvailableArea(area.areaTotal, area.areaUsed, infrastructure)
+		need,
+		add
+			? area.areaLeft
+			: calculateAvailableArea(
+					area.areaTotal,
+					area.areaUsed,
+					infrastructure
+				)
 	);
 	if (solution.status !== "optimal") return undefined;
 	const habs = new Map(solution.variables);
 	const isHab = (b: string) => HabTypeSchema.options.includes(b as never);
+	const there = (b: string) =>
+		add
+			? (data.infrastructure.find((i) => i.building === b)?.amount ?? 0)
+			: 0;
 	return {
 		...data,
 		infrastructure: [
 			...data.infrastructure.filter((i) => !isHab(i.building)),
 			...HabTypeSchema.options.map((building) => ({
 				building,
-				amount: habs.get(building) ?? 0,
+				amount: there(building) + (habs.get(building) ?? 0),
 			})),
 		],
 	};

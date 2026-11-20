@@ -4,6 +4,7 @@ import { z } from "zod";
 import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import { empireSurplus } from "@/features/production_chain/engine/chainHave";
 import { encodeChain } from "@/features/production_chain/engine/chainUrl";
+import { baseBuildings } from "@/features/production_chain/engine/chainBases";
 
 // Util
 import {
@@ -51,9 +52,19 @@ export const getProductionCost = defineTool({
 	name: "get_production_cost",
 	title: "Cost to make a material",
 	description:
-		"What it costs to make a material, from the Production Chains solver as the Production Chains page computes it (one base, 100 % efficiency, auto experts, both luxuries, byproducts cover demand). Returns the unit cost and its parts (inputs at their own unit cost or the CX buy price, upkeep, wear = construction ÷ 180 per day, fees; a multi-output recipe's cost split by output value), the market price under the same basis and the make-vs-buy difference, the chain's steps (recipe, building, buildings, amount per day for per_day, source: made / bought / extracted / own production) and totals (construction, area, buildings, workforce). With empire_uuid (or plan_uuid) what its plans make beyond their use counts as own production; without either, pricing follows the server instructions' empire rule (pricing_note). raw_source \"extract\" extracts planet resources (O, HE3, SIO only when cheaper than making them) on a typical planet, or on planet (or plan_uuid's planet when extracting), where what can't be extracted is made, or bought without a recipe. Byproducts show their market share.",
+		"What it costs to make a material, from the Production Chains solver as its page computes it (one base, 100 % efficiency, auto experts, both luxuries, byproducts cover demand): unit cost and parts (inputs, upkeep, wear = construction ÷ 180 a day, fees; multi-output recipes split by output value), market price and make-vs-buy difference, the chain's steps (recipe, building, buildings, per day, source), whole buildings with order amounts per base (orders), and totals. also balances more materials in the same chain (ratios across recipes). empire_uuid or plan_uuid: their plans' surplus counts as own production; else pricing follows the empire rule (pricing_note). raw_source \"extract\" extracts resources (O, HE3, SIO only when cheaper than making) on a typical planet, or planet (plan_uuid's when extracting); what it can't extract is made, or bought without a recipe.",
 	inputSchema: z.object({
 		ticker: z.string().describe("Material to make, e.g. RAT"),
+		also: z
+			.array(
+				z.object({
+					ticker: z.string(),
+					per_day: z.number().positive(),
+				})
+			)
+			.max(10)
+			.optional()
+			.describe("More materials to make in the same chain"),
 		per_day: z
 			.number()
 			.positive()
@@ -168,9 +179,16 @@ export const getProductionCost = defineTool({
 				? (planetOfPlan ?? undefined)
 				: undefined;
 
+		const also = (args.also ?? []).map((a) => ({
+			ticker: a.ticker.toUpperCase(),
+			perDay: a.per_day,
+		}));
+		const unknown = also.find((a) => !gameData.materials.has(a.ticker));
+		if (unknown) throw new ToolError(`Unknown material ${unknown.ticker}.`);
 		const { input, ctx, result } = await chainCost(backend, gameData, {
 			ticker,
 			perDay: args.per_day ?? 1,
+			also,
 			cx,
 			basis,
 			have: surplus,
@@ -249,6 +267,20 @@ export const getProductionCost = defineTool({
 					value: money(rowValue(r)),
 				};
 			}),
+			// whole buildings and order amounts, as the page drafts its plans
+			orders: result.bases
+				.filter((b) => b.materials.length)
+				.flatMap((b) =>
+					baseBuildings(result, b).map((x) => ({
+						base: b.id,
+						building: x.name,
+						buildings: x.amount,
+						orders: x.active_recipes.map((r) => ({
+							recipe_id: r.recipeid,
+							amount: r.amount,
+						})),
+					}))
+				),
 			byproducts: result.byproducts.map((b) => ({
 				ticker: b.ticker,
 				produced: amount(b.produced),

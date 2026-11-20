@@ -121,7 +121,7 @@ export const findPlanets = defineTool({
 		plan_uuid: uuidArg()
 			.optional()
 			.describe(
-				"Rank the matching planets by what this saved plan would earn on each (its buildings and recipes moved there; up to 30 planets, in Planet Search order first). Only planets where all its extraction recipes can run are kept (RIG needs the resource as liquid, COL gaseous, EXT mineral); the others are counted in not_possible_for_plan"
+				"Rank matching planets by what this saved plan earns there (moved there; up to 30, in Planet Search order first). Only planets where its extraction can run are kept (RIG liquid, COL gaseous, EXT mineral); others: not_possible_for_plan"
 			),
 		empire_uuid: uuidArg()
 			.optional()

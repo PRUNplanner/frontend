@@ -65,6 +65,8 @@ export async function chainCost(
 	opts: {
 		ticker: string;
 		perDay: number;
+		// more materials made in the same chain, balanced with ticker
+		also?: { ticker: string; perDay: number }[];
 		cx: CX | undefined;
 		basis: PriceBasis;
 		have: Map<string, number>;
@@ -75,7 +77,10 @@ export async function chainCost(
 	const empty = emptyInput();
 	let input: IChainInput = {
 		...empty,
-		targets: [{ ticker: opts.ticker, perDay: opts.perDay }],
+		targets: [
+			{ ticker: opts.ticker, perDay: opts.perDay },
+			...(opts.also ?? []),
+		],
 		rawSource: opts.rawSource ?? "buy",
 		have: Object.fromEntries(opts.have),
 		bases: opts.planetId

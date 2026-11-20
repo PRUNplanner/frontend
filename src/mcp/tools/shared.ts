@@ -1,4 +1,5 @@
 import { pathfinder } from "@/features/pathfinding/pathfinder";
+import { marketCheck } from "@/features/cx/marketCheck.util";
 import { hqStepCost } from "@/features/base_roi/baseROIMetrics";
 import { mapPlanetToPlanType } from "@/features/planning_data/planCOGC.util";
 import { basisText, type PriceBasis } from "@/mcp/priceBasis";
@@ -19,6 +20,7 @@ import {
 // Types & Interfaces
 import { z } from "zod";
 import type { IBackend } from "@/mcp/backend";
+import { PLANNED_NOTE, type IPlannedMaterial } from "@/mcp/gameData";
 import type { IPlanSetup, IResolvedEmpire } from "@/mcp/context";
 import type {
 	IPriceBook,
@@ -580,6 +582,44 @@ export function permitCost(
 					: null,
 		note: `From the empire's Permits Used/Total (${empire.empire_permits_used} of ${empire.empire_permits_total}); each further permit is an HQ upgrade, priced at its materials' buy prices.`,
 	};
+}
+
+/** what a market block in a what-if result means */
+export const MARKET_NOTE = `share_of_daily_volume_pct: the plan's daily amount against the exchange's average daily traded volume over 30 days (as Plan check; 1 % and up, biggest first, at most 10). ${PLANNED_NOTE}`;
+
+/**
+ * The plan's market footprint for what-if results: each traded material's
+ * share of its exchange's average daily traded volume (30 days, as Plan
+ * check measures it) and what PRUNplanner players' empires plan of it per
+ * day, the biggest shares first (1 % and up, at most 10)
+ * @author jplacht
+ */
+export function marketFootprint(
+	materialio: IMaterialIO[],
+	prices: IPriceBook,
+	getExchange: (tickerId: string) => Exchange,
+	planned: ReadonlyMap<string, IPlannedMaterial> | undefined
+) {
+	return marketCheck(materialio, prices, getExchange)
+		.filter((c) => c.sharePct !== null && c.sharePct >= 1)
+		.sort((a, b) => b.sharePct! - a.sharePct!)
+		.slice(0, 10)
+		.map((c) => {
+			const p = planned?.get(c.ticker);
+			return {
+				ticker: c.ticker,
+				side: c.delta > 0 ? ("sell" as const) : ("buy" as const),
+				amount_per_day: amount(Math.abs(c.delta)),
+				exchange: c.exchange,
+				share_of_daily_volume_pct: money(c.sharePct!),
+				planned_by_players_per_day: p
+					? {
+							production: amount(p.production),
+							consumption: amount(p.consumption),
+						}
+					: null,
+			};
+		});
 }
 
 // a fixed price this far (%) on the flattering side of the market is flagged

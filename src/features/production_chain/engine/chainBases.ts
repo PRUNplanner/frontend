@@ -433,12 +433,17 @@ export function planDrafts(
 		.map((b) => ({ base: b.id, data: planDraft(result, b, names[b.id]) }));
 }
 
-function planDraft(
-	result: IChainResult,
-	base: IChainBaseResult,
-	name: string
-): PlanCreateData {
-	const buildings = base.buildingTypes.map((type) => {
+/**
+ * A base's buildings with whole buildings and whole order amounts per
+ * recipe, as its plan draft gets them (recipeAmounts)
+ * @author jplacht
+ *
+ * @param {IChainResult} result Solved chain
+ * @param {IChainBaseResult} base One of its bases
+ * @returns Buildings with their orders
+ */
+export function baseBuildings(result: IChainResult, base: IChainBaseResult) {
+	return base.buildingTypes.map((type) => {
 		const loads = new Map<string, IRecipeLoad>();
 		for (const t of type.materials) {
 			const row = result.rows[t];
@@ -476,6 +481,14 @@ function planDraft(
 			})),
 		};
 	});
+}
+
+function planDraft(
+	result: IChainResult,
+	base: IChainBaseResult,
+	name: string
+): PlanCreateData {
+	const buildings = baseBuildings(result, base);
 
 	return {
 		plan_name: name,
