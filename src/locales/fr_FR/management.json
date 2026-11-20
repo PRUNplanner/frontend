@@ -51,7 +51,7 @@
 	},
 	"assignments": {
 		"title": "Assignations plan ↔ empire",
-		"description": "Every planned base can be assigned to multiple empires. This allows you to simultaneously keep track of your existing Prosperous Universe empire, corporation production chains or future expansion plans.",
+		"description": "Chaque base planifiée peut être assignée à plusieurs empires. Tu peux ainsi suivre en même temps ton empire existant dans Prosperous Universe, les chaînes de production de ta corporation ou tes futurs projets d'expansion. Les modifications s'enregistrent ensemble depuis la barre en bas.",
 		"deletion": {
 			"title": "Confirmer la suppression du plan",
 			"content": "Tu es sûr ? Supprimer le plan est irréversible."
