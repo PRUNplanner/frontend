@@ -13,6 +13,7 @@ import {
 
 export const getPlan = defineTool({
 	name: "get_plan",
+	alwaysLoad: true,
 	title: "Calculate a plan",
 	description:
 		"Calculates one base plan with PRUNplanner's plan engine, as its plan page does: money per day (revenue, cost, profit, fees, degradation), construction cost, ROI, buildings with efficiency and recipes, net material flow, workforce, area, habs and storage, shipping per day (weight, volume, days the storage holds), COGC and warnings.",

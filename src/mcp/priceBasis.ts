@@ -28,9 +28,7 @@ export const PriceBasisSchema = z
 		...EXCHANGES.flatMap((e) => [`${e}_7D`, `${e}_30D`, `${e}_ASKBID`]),
 		"BEST_ASKBID",
 	] as [string, ...string[]])
-	.describe(
-		'Price basis (default "plan": the empire\'s CX preference); see "Price bases" in the server instructions'
-	);
+	.describe('Price basis (default "plan"); see the server instructions');
 export type PriceBasis = z.infer<typeof PriceBasisSchema>;
 
 const preference = (rules: CXData["cx_empire"]): CXData => ({

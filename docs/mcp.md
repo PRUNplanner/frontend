@@ -135,13 +135,26 @@ container `prunplanner-mcp`), not here.
   area, degradation), taken from the help pages and `knowledge/game/` only;
   keep them in step with those sources. Results add the facts that matter
   for one plan or planet (`cogc_boost`, `efficiency_factors`, COGC warnings).
-- **Lean tool list.** Clients load every tool definition into each
-  conversation (about 17k tokens for 33 tools). Field descriptions stay short;
-  explanations shared by several tools (price bases, buildings and recipes,
-  storage, experts "auto") live once in `INSTRUCTIONS`. Uuid arguments use
-  `uuidArg()` (`tools/shared.ts`), not `z.uuid()`, whose pattern costs about
-  2k tokens over the list. `app.test.ts` guards the size. List tools have
-  default limits and say how to get more.
+- **Lean tool list.** Some clients (VS Code, Claude's "Always available")
+  load every tool definition into each conversation: 56.5k characters,
+  about 14k tokens, for 33 tools (2026-11-20; `app.test.ts` keeps it under
+  60k). Others (Claude Code, Claude Desktop's default, Codex, the APIs' tool
+  search) load names and descriptions up front and a tool's schema when it's
+  used; `alwaysLoad` (`_meta` `anthropic/alwaysLoad`) loads `list_empires`,
+  `list_plans` and `get_plan` at once.
+  - Field descriptions stay short; explanations shared by several tools
+    (price bases, buildings and recipes, storage, experts "auto") live once
+    in `INSTRUCTIONS`.
+  - `INSTRUCTIONS` stay under 4,096 characters, Claude Code's cut (tested),
+    with those shared formats before the tool guide and planning facts.
+  - A tool that takes another tool's arguments (`check_plan_market`'s
+    `variant` and `new_plan`, `calculate_empire_variant`'s `changes` and
+    `new_plans`) uses `argsOf()`: listed as a plain object naming that tool,
+    checked with its schema. No `$ref`/`$defs`: Claude Code sends `$ref`
+    parameters as strings (claude-code#18260, open 2026-11).
+  - Uuid arguments use `uuidArg()` (`tools/shared.ts`), not `z.uuid()`,
+    whose pattern costs about 2k tokens over the list.
+  - List tools have default limits and say how to get more.
 - **Summary first.** `get_plan`, `get_shared_plan`, `calculate_new_plan`,
   `get_planet` and `find_planets` take `detail` (`detailArg()`): `"summary"`
   (default) returns the key figures, `"full"` what they returned before.
@@ -173,6 +186,23 @@ container `prunplanner-mcp`), not here.
   - `get_empire`'s text says when material rows are cut.
   - The experts union names its two shapes in its error: the SDK checks
     arguments before the handler, so these failures aren't in the log.
+  - Part 2 (`testerFeedback2.test.ts`):
+    - `list_empires` reads `/user/profile/`'s `api_key_scope` (backend
+      2026-11-20; absent on older backends: `api_key_access: null`).
+    - `calculate_plan_variant` and `calculate_new_plan` carry
+      `marketFootprint()`: each traded material's share of daily volume
+      (1 % and up) with `planned_by_players`.
+    - `check_make_or_buy` lists the user's plans outside the empire that
+      make an input, each calculated in the empire its plan page opens with.
+    - `calculate_plan_variant` takes `built` (and `age_days`)
+      (`builtBase.ts`). Staying buildings are paid for; removed ones give
+      back FIO's `ReclaimableMaterials` from the planet's site (the least
+      first), else the intact share at `age_days` on the repair curve
+      (`⌊M·(180−d)/180⌋`, `repairAnalysis.util`), else nothing.
+    - Habs `"add"` keeps the habs and adds for the missing workers only.
+    - `get_production_cost` takes `also` (more targets in one chain) and
+      returns `orders`: whole buildings and order amounts per base from
+      `baseBuildings()`, which the Production Chains page's plan drafts use.
 - **Text carries the data.** A tool result's text block is a one-line summary
   plus the same JSON as `structuredContent`: Claude Desktop and others pass
   only the text to the model.

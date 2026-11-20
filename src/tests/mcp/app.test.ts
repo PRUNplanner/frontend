@@ -128,14 +128,37 @@ describe("MCP HTTP handler", () => {
 		expect(
 			tools.filter((t) => !t.annotations?.readOnlyHint).map((t) => t.name)
 		).toHaveLength(8);
-		// clients load every definition into each conversation: keep the
-		// list lean (about 17k tokens for 33 tools; raised from 68k for
-		// compare_plans and get_shared_plan) and uuid fields free of
-		// z.uuid()'s long pattern
+		// clients that load every definition pay for all of it in each
+		// conversation: keep the list lean (56.5k on 2026-11-20, after
+		// tools that take another tool's arguments stopped embedding its
+		// schema: argsOf) and uuid fields free of z.uuid()'s long pattern
 		const definitions = JSON.stringify(tools);
-		expect(definitions.length).toBeLessThan(70_000);
+		expect(definitions.length).toBeLessThan(60_000);
 		expect(definitions).not.toContain("[89abAB]");
-		expect(client.getInstructions()).toContain("per day");
+		// Claude Code cuts server instructions at 4,096 characters; the
+		// shared argument formats the field descriptions point to come first
+		const instructions = client.getInstructions()!;
+		expect(instructions.length).toBeLessThanOrEqual(4096);
+		for (const section of [
+			"per day",
+			"price_basis:",
+			"buildings[]:",
+			"storage_days:",
+		])
+			expect(instructions).toContain(section);
+		// the entry points load at once where tools load on demand
+		expect(
+			tools
+				.filter((t) => t._meta?.["anthropic/alwaysLoad"])
+				.map((t) => t.name)
+				.sort()
+		).toEqual(["get_plan", "list_empires", "list_plans"]);
+		// a tool taking another's arguments lists them as a plain object
+		const check = tools.find((t) => t.name === "check_plan_market")!;
+		expect(check.inputSchema.properties!.variant).toMatchObject({
+			type: "object",
+			properties: {},
+		});
 		// the icon clients show next to the server
 		expect(client.getServerVersion()).toMatchObject({
 			title: "PRUNplanner",

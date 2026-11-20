@@ -50,6 +50,9 @@ export const UserProfileSchema = z.object({
 		.nullable(),
 	fio_status: FIOStatusSchema,
 	fio_last_refreshed_at: z.string().nullable(),
+	// the access of the API key the request came with, null when logged in
+	// (absent from older backends)
+	api_key_scope: z.enum(["read", "read_write"]).nullish(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 

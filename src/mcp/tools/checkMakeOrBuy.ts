@@ -16,8 +16,11 @@ import {
 	createPlanContext,
 	findEmpireCX,
 	getCXs,
+	getDefaultEmpireUuid,
 	getEmpirePlans,
 	getEmpires,
+	getPlans,
+	resolveEmpire,
 } from "@/mcp/context";
 import {
 	getPlanet,
@@ -36,6 +39,86 @@ import {
 	uuidArg,
 } from "@/mcp/tools/shared";
 
+// Types & Interfaces
+import type { IBackend } from "@/mcp/backend";
+import type { IMcpGameData } from "@/mcp/gameData";
+import type { PriceBasis } from "@/mcp/priceBasis";
+import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan } from "@/features/api/schemas/planningData.schemas";
+
+/**
+ * The user's plans outside an empire that make one of its inputs (net
+ * output per day), each calculated as its plan page opens it: an input the
+ * empire buys could come from them instead
+ * @author jplacht
+ */
+async function madeElsewhere(
+	backend: IBackend,
+	gameData: IMcpGameData,
+	empires: PlanEmpireElement[],
+	cxs: CX[],
+	inEmpire: Plan[],
+	tickers: Set<string>,
+	basis: PriceBasis
+) {
+	const out = new Map<
+		string,
+		{
+			plan_uuid: string;
+			plan: string;
+			planet: string;
+			empire: string | null;
+			net_output_per_day: number;
+		}[]
+	>();
+	if (!tickers.size) return out;
+	const mine = new Set(inEmpire.map((p) => p.uuid));
+	const others = (await getPlans(backend)).filter((p) => !mine.has(p.uuid));
+	if (!others.length) return out;
+	const [defaultEmpire] = await Promise.all([
+		// only picks between a plan's several empires
+		others.some((p) => (p.empires?.length ?? 0) > 1)
+			? getDefaultEmpireUuid(backend)
+			: undefined,
+		preloadPlanets(
+			backend,
+			others.map((p) => p.planet_natural_id)
+		),
+	]);
+	for (const plan of others) {
+		const { empire } = resolveEmpire(
+			plan,
+			empires,
+			undefined,
+			defaultEmpire
+		);
+		const cx = findEmpireCX(cxs, empire?.uuid);
+		const calc = calculatePlan(
+			{ plan, empire, cxUuid: cx?.uuid, recipeOptions: false },
+			createPlanContext(
+				gameData,
+				await getPlanet(backend, plan.planet_natural_id),
+				cx,
+				basis
+			)
+		);
+		for (const m of calc.result.materialio)
+			if (m.delta > 0 && tickers.has(m.ticker))
+				out.set(m.ticker, [
+					...(out.get(m.ticker) ?? []),
+					{
+						plan_uuid: plan.uuid,
+						plan: plan.plan_name,
+						planet: plan.planet_natural_id,
+						empire: empire?.empire_name ?? null,
+						net_output_per_day: amount(m.delta),
+					},
+				]);
+	}
+	return out;
+}
+
 const SOURCE: Record<string, string> = {
 	make: "made",
 	buy: "bought",
@@ -47,7 +130,7 @@ export const checkMakeOrBuy = defineTool({
 	name: "check_make_or_buy",
 	title: "Make or buy for an empire",
 	description:
-		"For an empire's biggest net inputs (what it buys most, by value per day): what each would cost to make with the Production Chains solver (its own production counted) against the buy price, the rough daily saving, the market's traded volume and, for raw materials, the planets with the most of it. ROUGH: the chain uses the Production Chains page defaults (one base, 100 % efficiency, no planet fees or COGC), not a real plan; check a candidate with calculate_new_plan before deciding.",
+		"For an empire's biggest net inputs (what it buys most, by value per day): what each would cost to make with the Production Chains solver (its own production counted) against the buy price, the rough daily saving, the market's traded volume and, for raw materials, the planets with the most of it; your plans outside the empire making an input are listed. ROUGH: the chain uses the Production Chains page defaults (one base, 100 % efficiency, no planet fees or COGC), not a real plan; check a candidate with calculate_new_plan before deciding.",
 	inputSchema: z.object({
 		empire_uuid: uuidArg(),
 		top: z.number().int().min(1).max(25).optional().describe("Default 10"),
@@ -95,6 +178,15 @@ export const checkMakeOrBuy = defineTool({
 			.filter((m) => m.delta < 0)
 			.sort((a, b) => a.deltaPrice - b.deltaPrice)
 			.slice(0, args.top ?? 10);
+		const elsewhere = await madeElsewhere(
+			backend,
+			gameData,
+			empires,
+			cxs,
+			plans,
+			new Set(inputs.map((m) => m.ticker)),
+			basis
+		);
 
 		const rows = [];
 		for (const m of inputs) {
@@ -173,6 +265,7 @@ export const checkMakeOrBuy = defineTool({
 							? "cheaper to make (rough)"
 							: "cheaper to buy (rough)",
 				planets_with_it: planets,
+				made_by_your_plans_outside_this_empire: elsewhere.get(m.ticker),
 			});
 		}
 
@@ -190,7 +283,7 @@ export const checkMakeOrBuy = defineTool({
 			r.verdict.startsWith("cheaper to make")
 		);
 		return {
-			text: `${empire.empire_name}: ${rows.length} biggest inputs; ${make.length} look cheaper to make (rough)${make.length ? `: ${make.map((r) => `${r.ticker} (~${r.rough_saving_per_day}/day)`).join(", ")}` : ""}.`,
+			text: `${empire.empire_name}: ${rows.length} biggest inputs; ${make.length} look cheaper to make (rough)${make.length ? `: ${make.map((r) => `${r.ticker} (~${r.rough_saving_per_day}/day)`).join(", ")}` : ""}${elsewhere.size ? `; made by your plans outside this empire: ${[...elsewhere.keys()].join(", ")}` : ""}.`,
 			data,
 		};
 	},

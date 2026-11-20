@@ -6,6 +6,8 @@ import { paybackOfDifference } from "@/features/planning/util/whatIf.util";
 
 // Util
 import { calculate, loadPlanSetup } from "@/mcp/context";
+import { getPlannedMaterials } from "@/mcp/gameData";
+import { builtChange, fioSite } from "@/mcp/builtBase";
 import { basisText, type PriceBasis } from "@/mcp/priceBasis";
 import { buildVariant, VariantChangesSchema } from "@/mcp/variant";
 import {
@@ -20,6 +22,8 @@ import {
 	cogcWarnings,
 	fixedPriceDrift,
 	fixedPriceDriftWarning,
+	marketFootprint,
+	MARKET_NOTE,
 	permitCost,
 	warnings,
 	workforce,
@@ -157,7 +161,7 @@ export const calculatePlanVariant = defineTool({
 	name: "calculate_plan_variant",
 	title: "Try a plan variant",
 	description:
-		"Calculates a what-if variant of a saved plan without saving anything (save_plan saves the same changes). Change buildings (absolute amounts, 0 removes; habs HB1… and storage STO… too), switch or re-weight a building's recipes (recipes replaces its orders; recipe_id + recipe_amount adds or re-weights one, recipe_amount 0 removes it), COGC, corp HQ, permits, experts, luxuries, the planet, the empire or faction, the price basis, or single prices. habs sizes habitation with the plan editor's optimiser (use auto after changing buildings). Returns before, after and the difference of the key figures, workforce and area, warnings, the changed material lines (before and after), the construction materials to buy or freed by the change, shipping before and after, and the payback of the difference.",
+		"Calculates a what-if variant of a saved plan without saving anything (save_plan saves the same changes). Change buildings (absolute amounts, 0 removes; habs HB1… and storage STO… too), switch or re-weight a building's recipes (recipes replaces its orders; recipe_id + recipe_amount adds or re-weights one, recipe_amount 0 removes it), COGC, corp HQ, permits, experts, luxuries, the planet, the empire or faction, the price basis, or single prices. habs sizes habitation with the plan editor's optimiser (use auto after changing buildings). Returns before/after/difference of the key figures, workforce, area, warnings, changed material lines, construction to buy or freed, shipping, market share, and the payback of the difference.",
 	inputSchema: VariantChangesSchema.extend({
 		plan_uuid: uuidArg(),
 		empire_uuid: uuidArg()
@@ -169,6 +173,17 @@ export const calculatePlanVariant = defineTool({
 			.array(PriceOverrideSchema)
 			.optional()
 			.describe("Price overrides for the variant only"),
+		built: z
+			.boolean()
+			.optional()
+			.describe(
+				"Built in the game: removed buildings give back only what demolishing reclaims (FIO site, else age_days, else 0)"
+			),
+		age_days: z
+			.number()
+			.min(0)
+			.optional()
+			.describe("With built: days since built or repaired"),
 	}),
 	async run(args, { backend, appUrl }) {
 		const setup = await loadPlanSetup(
@@ -201,6 +216,33 @@ export const calculatePlanVariant = defineTool({
 			])
 		);
 		const payback = paybackOfDifference(before, after);
+		// a built base: added buildings bought, removed ones only reclaimed
+		const built = args.built
+			? builtChange(
+					before,
+					after,
+					afterBook,
+					await fioSite(backend, variant.planet.planet_natural_id),
+					args.age_days
+				)
+			: undefined;
+		const extraCost = built ? built.net_cost : payback.cost;
+		const paybackDays = built
+			? extraCost > 0
+				? payback.profit > 0
+					? amount(extraCost / payback.profit)
+					: "never"
+				: null
+			: typeof payback.days === "number"
+				? amount(payback.days)
+				: payback.days;
+		// the market each output and input would take (one request an hour)
+		const marketAfter = marketFootprint(
+			after.result.materialio,
+			afterBook,
+			setup.gameData.getExchange,
+			await getPlannedMaterials(backend).catch(() => undefined)
+		);
 		const data = {
 			plan: {
 				uuid: setup.plan.uuid,
@@ -245,6 +287,9 @@ export const calculatePlanVariant = defineTool({
 					([, n]) => n > 0
 				)
 			),
+			market_after: marketAfter.length
+				? { note: MARKET_NOTE, materials: marketAfter }
+				: undefined,
 			warnings_after: [
 				...warnings(after),
 				...cogcWarnings(
@@ -268,16 +313,14 @@ export const calculatePlanVariant = defineTool({
 				overrides,
 				[setup.basis, variant.basis]
 			),
-			construction_change: constructionChange(before, after, afterBook),
+			construction_change:
+				built ?? constructionChange(before, after, afterBook),
 			shipping_before: shipping(before),
 			shipping_after: shipping(after),
 			payback_of_difference: {
-				extra_construction_cost: money(payback.cost),
+				extra_construction_cost: money(extraCost),
 				extra_profit_per_day: money(payback.profit),
-				days:
-					typeof payback.days === "number"
-						? amount(payback.days)
-						: payback.days,
+				days: paybackDays,
 				// more area permits take base permits: free ones, else HQ upgrades
 				permits:
 					permitCost(
@@ -286,7 +329,7 @@ export const calculatePlanVariant = defineTool({
 							setup.plan.plan_permits_used,
 						afterBook,
 						payback.profit,
-						payback.cost
+						extraCost
 					) ?? undefined,
 			},
 		};

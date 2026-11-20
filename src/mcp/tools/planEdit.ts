@@ -47,28 +47,18 @@ import type {
 export const BuildingChangeSchema = z.object({
 	ticker: z
 		.string()
-		.describe(
-			"Building ticker, e.g. FRM; habs (HB1…HBL) and storage (STO…) too"
-		),
-	amount: z
-		.number()
-		.int()
-		.min(0)
-		.describe("Total amount of this building; 0 removes it"),
+		.describe("Building ticker; habs (HB1…HBL) and storage (STO…) too"),
+	amount: z.number().int().min(0).describe("Total amount; 0 removes it"),
 	recipe_id: z
 		.string()
 		.optional()
-		.describe(
-			'Recipe to add (from lookup_material; extraction EXT#/RIG#/COL#<ticker>); see "Buildings" in the server instructions'
-		),
+		.describe("Recipe to add; see buildings[] in the server instructions"),
 	recipe_amount: z
 		.number()
 		.int()
 		.min(0)
 		.optional()
-		.describe(
-			"recipe_id's share of the building's runs (default 1; 0 removes that recipe)"
-		),
+		.describe("recipe_id's share of the runs (default 1; 0 removes it)"),
 	recipes: z
 		.array(
 			z.object({
@@ -77,9 +67,7 @@ export const BuildingChangeSchema = z.object({
 			})
 		)
 		.optional()
-		.describe(
-			"Replaces all of the building's recipes, each with its share of the runs ([] idle); to run several or switch"
-		),
+		.describe("Replaces all its recipes, with shares ([] idles it)"),
 });
 export type BuildingChange = z.infer<typeof BuildingChangeSchema>;
 
@@ -206,13 +194,14 @@ export function applyBuildings(
 }
 
 export const HabsModeSchema = z
-	.enum(["keep", "auto", "cheapest", "least_area"])
+	.enum(["keep", "add", "auto", "cheapest", "least_area"])
 	.describe(
-		'Habitation: "keep", or size with the editor\'s optimiser: "auto" (its auto-habs), "cheapest", "least_area"'
+		'Habitation: "keep"; "add" keeps habs, adds for missing workers; or optimise anew: "auto", "cheapest", "least_area"'
 	);
 export type HabsMode = z.infer<typeof HabsModeSchema>;
 
 const HAB_GOAL: Record<Exclude<HabsMode, "keep">, HabSolverGoal> = {
+	add: "auto",
 	auto: "auto",
 	cheapest: "cost",
 	least_area: "area",
@@ -235,22 +224,44 @@ export function fitHabs(
 ): PlanData | undefined {
 	const { area, infrastructure, infrastructureCosts, workforce } =
 		calc.result;
+	// "add": house only the workers without beds, in the area left, on top
+	// of the habs there (already built habs aren't torn down)
+	const add = mode === "add";
+	const need = add
+		? (Object.fromEntries(
+				Object.entries(workforce).map(([type, w]) => [
+					type,
+					{ ...w, required: Math.max(0, -w.left) },
+				])
+			) as typeof workforce)
+		: workforce;
+	if (add && Object.values(need).every((w) => w.required === 0)) return data;
 	const solution = optimizeHabs(
 		HAB_GOAL[mode],
 		infrastructureCosts,
-		workforce,
-		calculateAvailableArea(area.areaTotal, area.areaUsed, infrastructure)
+		need,
+		add
+			? area.areaLeft
+			: calculateAvailableArea(
+					area.areaTotal,
+					area.areaUsed,
+					infrastructure
+				)
 	);
 	if (solution.status !== "optimal") return undefined;
 	const habs = new Map(solution.variables);
 	const isHab = (b: string) => HabTypeSchema.options.includes(b as never);
+	const there = (b: string) =>
+		add
+			? (data.infrastructure.find((i) => i.building === b)?.amount ?? 0)
+			: 0;
 	return {
 		...data,
 		infrastructure: [
 			...data.infrastructure.filter((i) => !isHab(i.building)),
 			...HabTypeSchema.options.map((building) => ({
 				building,
-				amount: habs.get(building) ?? 0,
+				amount: there(building) + (habs.get(building) ?? 0),
 			})),
 		],
 	};
@@ -337,9 +348,7 @@ export const PlanFieldChangesSchema = z.object({
 		.min(0.5)
 		.max(30)
 		.optional()
-		.describe(
-			'Size storage for this many days of cargo (the days between ship visits); see "Storage" in the server instructions'
-		),
+		.describe("Days of cargo to store; see the server instructions"),
 });
 export type PlanFieldChanges = z.infer<typeof PlanFieldChangesSchema>;
 
