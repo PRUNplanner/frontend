@@ -24,18 +24,18 @@
 		},
 		"l4": {
 			"title": "Erstelle einen Plan:",
-			"p": "Prüfe, mit welchem Imperium der Plan rechnet. Füge dann Produktionsgebäude hinzu und wähle ihre Rezepte, oder klick auf eine Ressource des Planeten, um sie abzubauen. Solange Auto aktiv ist, folgen die Unterkünfte deiner Belegschaft von selbst. Gib dem Plan einen Namen und klick auf Erstellen."
+			"p": "Prüfe, mit welchem Imperium der Plan rechnet. Füge dann Produktionsgebäude hinzu und wähle ihre Aufträge, oder klick auf eine Ressource des Planeten, um sie abzubauen. Solange Auto aktiv ist, folgen die Unterkünfte deiner Belegschaft von selbst. Gib dem Plan einen Namen und klick auf Erstellen."
 		},
 		"l5": {
 			"title": "Prüfe die Zahlen:",
-			"p": "Die Kacheln oben zeigen Profit / Tag, Amortisation, Belegschaft, Fläche und Lager. Amortisation zeigt nie, solange die Basis keinen Profit macht. Material I/O listet, was die Basis herstellt und kauft, und der Plan-Check prüft die Mengen gegen den Markt. Jede Änderung aktualisiert die Zahlen sofort, also probier ein Rezept oder eine Gebäudeanzahl aus und vergleiche."
+			"p": "Die Kacheln oben zeigen Profit / Tag, Amortisation, Belegschaft, Fläche und Lager. Amortisation zeigt nie, solange die Basis keinen Profit macht. Material I/O listet, was die Basis herstellt und kauft, und der Plan-Check prüft die Mengen gegen den Markt. Jede Änderung aktualisiert die Zahlen sofort, also probier einen Auftrag oder eine Gebäudeanzahl aus und vergleiche."
 		}
 	},
 	"core_concepts": {
 		"title": "Grundkonzepte",
 		"p1": {
 			"title": "Pläne",
-			"p": "Ein Plan ist eine Basis auf einem Planeten: ihre Gebäude, Rezepte, Belegschaft, Unterkünfte und Boni. Er kann in mehreren Imperien sein oder in keinem. PRUNplanner bewertet ihn mit der Marktplatz-Präferenz des Imperiums, mit dem er rechnet."
+			"p": "Ein Plan ist eine Basis auf einem Planeten: ihre Gebäude, Aufträge, Belegschaft, Unterkünfte und Boni. Er kann in mehreren Imperien sein oder in keinem. PRUNplanner bewertet ihn mit der Marktplatz-Präferenz des Imperiums, mit dem er rechnet."
 		},
 		"p2": {
 			"title": "Imperien",
@@ -50,15 +50,15 @@
 		"title": "Hauptfunktionen",
 		"p1": {
 			"title": "Plan-Simulation",
-			"p": "Entwirf und teste eine Basis, bevor du sie baust. PRUNplanner deckt Gebäude und Rezepte, Belegschaft und Unterkünfte, Experten, COGC-Programm, Fläche, Ressourcen des Planeten, Baukosten und Produktionsgebühren ab und zeigt Profit und Amortisation zu deinen Preisen."
+			"p": "Entwirf und teste eine Basis, bevor du sie baust. PRUNplanner deckt Gebäude und Aufträge, Belegschaft und Unterkünfte, Experten, COGC-Programm, Fläche, Ressourcen des Planeten, Baukosten und Produktionsgebühren ab und zeigt Profit und Amortisation zu deinen Preisen."
 		},
 		"p2": {
 			"title": "Imperiale Planung",
-			"p": "Sieh mehrere Basen als ein Imperium: was sie zusammen herstellen, verbrauchen, kaufen und verkaufen, wie viel von jedem Markt sie nehmen würden und welche Rezepte die Überschüsse nutzen könnten. Produktionsketten teilt eine ganze Kette in Basen auf und erstellt die Pläne."
+			"p": "Sieh mehrere Basen als ein Imperium: was sie zusammen herstellen, verbrauchen, kaufen und verkaufen, wie viel von jedem Markt sie nehmen würden und welche Aufträge die Überschüsse nutzen könnten. Produktionsketten teilt eine ganze Kette in Basen auf und erstellt die Pläne."
 		},
 		"p3": {
 			"title": "Spieldaten",
-			"p": "Spieldaten und Marktplatzpreise kommen von FIO, der Community-API, und die Preise werden etwa alle 30 Minuten aktualisiert. Du kannst die Preisentwicklung erkunden, den täglichen Marktbericht lesen oder Rezepte und Planetenressourcen nach Rendite sortieren."
+			"p": "Spieldaten und Marktplatzpreise kommen von FIO, der Community-API, und die Preise werden etwa alle 30 Minuten aktualisiert. Du kannst die Preisentwicklung erkunden, den täglichen Marktbericht lesen oder Aufträge und Planetenressourcen nach Rendite sortieren."
 		},
 		"p4": {
 			"title": "Verbrennen & Reparieren",
@@ -146,7 +146,7 @@
 			"title": "API-Schlüssel"
 		},
 		"mcp": {
-			"title": "AI assistants (MCP)"
+			"title": "KI-Assistenten (MCP)"
 		},
 		"glossary": {
 			"title": "Glossar"
@@ -155,7 +155,7 @@
 			"title": "Ergebnisse"
 		},
 		"plan_production": {
-			"title": "Produktion & Rezepte"
+			"title": "Produktion & Aufträge"
 		},
 		"plan_saving": {
 			"title": "Speichern & Versionen"
@@ -182,7 +182,7 @@
 			"title": "Basis-ROI"
 		},
 		"tools_roi_overview": {
-			"title": "Rezept-ROI"
+			"title": "Auftrags-ROI"
 		},
 		"tools_resource_roi_overview": {
 			"title": "Ressourcen-ROI"
