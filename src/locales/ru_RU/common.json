@@ -6,7 +6,7 @@
 		"management": "Управление",
 		"exchanges": "Биржи",
 		"tools": "Инструменты",
-		"market_report": "Market report",
+		"market_report": "Обзор рынка",
 		"market_exploration": "Исследование рынка",
 		"market_live": "Мониторинг рынка",
 		"recipe_roi": "ROI рецептов",
@@ -14,39 +14,39 @@
 		"hq_calculator": "Калькулятор HQ",
 		"production_chains": "Производственные цепочки",
 		"upkeep_price_calculator": "Цены содержания",
-		"fio_burn": "FIO Burn",
-		"fio_repair": "FIO Repair",
+		"fio_burn": "Расход FIO",
+		"fio_repair": "Ремонт FIO",
 		"account": "Аккаунт",
 		"profile": "Профиль",
 		"api": "API",
 		"help": "Помощь",
 		"logout": "Выйти",
 		"fio": {
-			"fio_updated": "FIO updated",
-			"fetched": "PRUNplanner fetched",
+			"fio_updated": "FIO обновлён",
+			"fetched": "PRUNplanner загрузил",
 			"fio": "FIO",
 			"fio_active": "FIO активен",
 			"fio_inactive": "FIO не активен",
-			"fio_syncing": "FIO Syncing",
-			"fio_no_data": "FIO Waiting for Data",
-			"fio_rejected": "FIO Key Rejected"
+			"fio_syncing": "FIO синхронизируется",
+			"fio_no_data": "FIO ждёт данных",
+			"fio_rejected": "Ключ FIO отклонён"
 		},
-		"collapse": "Collapse navigation",
-		"expand": "Expand navigation",
-		"empire_switch": "Switch",
-		"plans": "Plans",
-		"plans_count": "{name} · {count} plans",
-		"new_plan": "New plan from Planet Search",
-		"create_empire": "Create an empire",
-		"no_plans": "No plans yet",
-		"not_in_empire": "not in this empire",
-		"plans_filter": "Filter plans",
-		"plans_filter_clear": "Clear filter",
-		"plans_filter_empty": "No plan matches",
-		"market": "Market",
-		"calculators": "Calculators",
-		"more": "More",
-		"account_menu": "Account menu"
+		"collapse": "Свернуть навигацию",
+		"expand": "Развернуть навигацию",
+		"empire_switch": "Сменить",
+		"plans": "Планы",
+		"plans_count": "{name} · планов: {count}",
+		"new_plan": "Новый план из поиска планет",
+		"create_empire": "Создать империю",
+		"no_plans": "Планов пока нет",
+		"not_in_empire": "не в этой империи",
+		"plans_filter": "Фильтр планов",
+		"plans_filter_clear": "Сбросить фильтр",
+		"plans_filter_empty": "Нет подходящих планов",
+		"market": "Рынок",
+		"calculators": "Калькуляторы",
+		"more": "Ещё",
+		"account_menu": "Меню аккаунта"
 	},
 	"buttons": {
 		"create": "Создать",
@@ -62,11 +62,11 @@
 		"delete": "Удалить",
 		"cancel": "Отменить",
 		"copy": "Копировать",
-		"add": "Add",
-		"fullscreen": "Toggle fullscreen",
-		"edit": "Edit",
-		"show_all": "Show all ({n})",
-		"show_fewer": "Show fewer"
+		"add": "Добавить",
+		"fullscreen": "Полноэкранный режим",
+		"edit": "Изменить",
+		"show_all": "Показать все ({n})",
+		"show_fewer": "Показать меньше"
 	},
 	"ui": {
 		"placeholder": {
@@ -79,70 +79,70 @@
 			"select_options": "Выберите опции"
 		},
 		"input_number": {
-			"decrease": "Decrease",
-			"increase": "Increase"
+			"decrease": "Уменьшить",
+			"increase": "Увеличить"
 		},
 		"pagination": {
-			"previous": "Previous page",
-			"next": "Next page",
-			"page": "Page {page}",
-			"more": "More pages"
+			"previous": "Предыдущая страница",
+			"next": "Следующая страница",
+			"page": "Страница {page}",
+			"more": "Другие страницы"
 		},
 		"table": {
-			"no_data": "No Data",
-			"expand_row": "Show details"
+			"no_data": "Нет данных",
+			"expand_row": "Показать подробности"
 		},
-		"close": "Close",
+		"close": "Закрыть",
 		"tag": {
-			"remove": "Remove {label}"
+			"remove": "Убрать {label}"
 		},
-		"language": "Language",
-		"page_load_failed": "This page couldn't load. Reload to get the latest version.",
-		"save_failed": "Couldn't save that. Please try again.",
-		"session_ended": "Your session ended. Please log in again.",
-		"load_failed": "Couldn't load that. Please try again.",
-		"delete_failed": "Couldn't delete that. Please try again.",
-		"copy_failed": "Couldn't copy to the clipboard.",
+		"language": "Язык",
+		"page_load_failed": "Не удалось загрузить страницу. Обнови её, чтобы получить последнюю версию.",
+		"save_failed": "Не удалось сохранить. Попробуй ещё раз.",
+		"session_ended": "Сессия завершилась. Войди снова.",
+		"load_failed": "Не удалось загрузить. Попробуй ещё раз.",
+		"delete_failed": "Не удалось удалить. Попробуй ещё раз.",
+		"copy_failed": "Не удалось скопировать в буфер обмена.",
 		"meter": {
-			"used": "{label} {pct} % used"
+			"used": "{label}: занято {pct} %"
 		},
 		"strip": {
 			"dot": "{label}: {value}",
-			"over": "{n} more beyond the axis"
+			"over": "Ещё {n} за пределами оси"
 		},
 		"runway": {
-			"beyond": "beyond the axis"
+			"beyond": "за пределами оси"
 		}
 	},
 	"values": {
-		"never": "never"
+		"never": "никогда"
 	},
 	"charts": {
-		"other": "Other ({n})",
-		"empty": "Nothing to show"
+		"other": "Прочее ({n})",
+		"empty": "Нечего показать"
 	},
 	"version_update": {
-		"ready_title": "A new version of PRUNplanner is ready",
-		"ready_body": "Reload to get it. Your saved work stays as it is.",
-		"unsaved_body": "Save your changes first, then reload.",
-		"outdated_title": "This tab is out of date",
-		"outdated_body": "A newer PRUNplanner opened in another tab. Reload to keep working.",
-		"reload": "Reload",
-		"later": "Later",
-		"chip": "Update ready",
-		"whats_new_title": "PRUNplanner {version} is here",
-		"whats_new_action": "What's new"
+		"ready_title": "Доступна новая версия PRUNplanner",
+		"ready_body": "Обнови страницу, чтобы её получить. Сохранённые данные останутся как есть.",
+		"unsaved_body": "Сначала сохрани изменения, затем обнови страницу.",
+		"outdated_title": "Эта вкладка устарела",
+		"outdated_body": "В другой вкладке открыта более новая версия PRUNplanner. Обнови страницу, чтобы продолжить работу.",
+		"reload": "Обновить",
+		"later": "Позже",
+		"chip": "Есть обновление",
+		"whats_new_title": "Вышел PRUNplanner {version}",
+		"whats_new_action": "Что нового"
 	},
 	"not_found": {
-		"title": "Page not found",
-		"text": "There is no page at this address.",
-		"home": "Go to the start page"
+		"title": "Страница не найдена",
+		"text": "По этому адресу нет страницы.",
+		"home": "Перейти на стартовую страницу"
 	},
 	"not_implemented": {
-		"title": "Feature Not Yet Implemented",
-		"open_source": "PRUNplanner v2 is Open Source. Check out the {link}.",
-		"repository": "Github repository",
-		"contact": "Get in touch on the {link}.",
-		"discord": "PrUn Community Tools Discord"
+		"title": "Функция ещё не реализована",
+		"open_source": "PRUNplanner v2 — проект с открытым исходным кодом. Загляни в {link}.",
+		"repository": "репозиторий на GitHub",
+		"contact": "Свяжись с нами в {link}.",
+		"discord": "Discord PrUn Community Tools"
 	}
 }
