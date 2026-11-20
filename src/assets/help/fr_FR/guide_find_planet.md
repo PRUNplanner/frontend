@@ -1,97 +1,97 @@
-Start with the material you want to make. This guide takes about 10 minutes, and by the end you'll have:
+Pars du matériau que tu veux produire. Ce guide prend environ 10 minutes, et à la fin tu auras :
 
-- a short list of planets that have your material, close to your exchange,
-- a check of which of them still have free plots,
-- a new [[plan]] on the planet you pick.
+- une courte liste de planètes qui ont ton matériau, proches de ton échange,
+- vérifié lesquelles ont encore des parcelles libres,
+- un nouveau [[plan|plan]] sur la planète que tu choisis.
 
-It's for anyone choosing where to put a base. The pages linked at the end of each step go deeper. [Planet Search](/search) works without an account. You only need to log in for distances to your own plans and to create the plan.
+Il s'adresse à tous ceux qui choisissent où installer une base. Les pages en lien à la fin de chaque étape vont plus loin. La [Recherche de planètes](/search) fonctionne sans compte. Tu n'as besoin de te connecter que pour les distances jusqu'à tes propres plans et pour créer le plan.
 
-## 1. Pick the material {#step-1}
+## 1. Choisis le matériau {#step-1}
 
-Open [Planet Search](/search). Under Materials, click **+ add material…** and pick the resource you want to [[extraction|extract]]. Each option shows how many planets you'd get with it.
+Ouvre la [Recherche de planètes](/search). Sous Matériaux, clique sur **+ ajouter un matériau…** et choisis la ressource que tu veux [[extraction|extraire]]. Chaque option indique combien de planètes tu obtiendrais avec elle.
 
-![Planet Search with an FEO filter: the Materials filter on the left, the planet list with the FEO column on the right](/images/help/guides/find-planet-materials.webp)
+![Recherche de planètes avec un filtre FEO : le filtre Matériaux à gauche, la liste des planètes avec la colonne FEO à droite](/images/help/guides/find-planet-materials.webp)
 
-- Type a minimum in "min … /day" to hide planets that give too little. The "(max …)" next to it is the best any planet gives, so you know what's possible.
-- Need two resources on one planet? Add both to one group and switch it to **all of**. With **any of**, either one is enough.
+- Saisis un minimum dans « min … /jour » pour masquer les planètes qui donnent trop peu. Le « (max. …) » à côté est le meilleur rendement de toutes les planètes : tu sais ainsi ce qui est possible.
+- Besoin de deux ressources sur la même planète ? Ajoute les deux dans un même groupe et passe-le sur **tous les**. Avec **au moins un de**, l'une ou l'autre suffit.
 
-Each material tile in the list is filled by how the planet's output compares with the best planet's: green from 75 %, yellow from 50 %, orange from 25 % and red below that.
+Chaque tuile de matériau de la liste est remplie selon le rendement de la planète par rapport à la meilleure planète : vert à partir de 75 %, jaune à partir de 50 %, orange à partir de 25 % et rouge en dessous.
 
-You're set when the heading reads "n of total planets" and the list is short enough to scan by eye.
+C'est bon quand le titre indique « n planètes sur total » et que la liste est assez courte pour être parcourue d'un coup d'œil.
 
-More: [Materials](/help/planet_search#materials).
+Pour aller plus loin : [Matériaux](/help/planet_search#materials).
 
-## 2. Set the planet conditions {#step-2}
+## 2. Règle les conditions de la planète {#step-2}
 
-- **Rocky** and **Gaseous** pick the surface. A new search starts with Rocky only. Tick **Fertile** when you want to farm.
-- Under **Accept extra building materials**, tick the ones you're willing to ship in. PRUNplanner hides planets that need any other. Each one makes every building on the planet cost more (see [[extra-building-materials|extra building materials]]).
-- **Active COGC program** and **Infrastructure** are optional. A running [[cogc|COGC]] program for your industry speeds up your buildings by 25 %.
+- **Rocheuse** et **Gazeuse** choisissent la surface. Une nouvelle recherche démarre avec Rocheuse seulement. Coche **Fertile** si tu veux cultiver.
+- Sous **Accepter les matériaux de construction supplémentaires**, coche ceux que tu es prêt à faire venir. PRUNplanner masque les planètes qui en demandent d'autres. Chacun rend plus cher chaque bâtiment de la planète (voir [[extra-building-materials|matériaux de construction supplémentaires]]).
+- **Programme COGC actif** et **Infrastructures** sont facultatifs. Un programme [[cogc|COGC]] en cours pour ton industrie accélère tes bâtiments de 25 %.
 
-The number next to an unticked option tells you how many planets you'd get by ticking it. _Any_ in a section's header sets that section to hide as few planets as possible.
+Le nombre à côté d'une option non cochée indique combien de planètes tu obtiendrais en la cochant. _Tous_ dans l'en-tête d'une section règle cette section pour masquer le moins de planètes possible.
 
-Read more: [Planet conditions](/help/planet_search#planet-conditions), [COGC and infrastructure](/help/planet_search#cogc-and-infrastructure).
+Pour aller plus loin : [Conditions de la planète](/help/planet_search#planet-conditions), [COGC et infrastructures](/help/planet_search#cogc-and-infrastructure).
 
-## 3. Limit the distance {#step-3}
+## 3. Limite la distance {#step-3}
 
-[[jumps|Jumps]] count the system-to-system hops on the shortest route between two places. Fewer jumps mean shorter flights for your supply and your sales, so stay close to your exchange and your other bases.
+Les [[jumps|sauts]] comptent les passages de système à système sur l'itinéraire le plus court entre deux endroits. Moins de sauts signifie des vols plus courts pour ton approvisionnement et tes ventes : reste donc proche de ton échange et de tes autres bases.
 
-![The Distance filter with NC1 ticked, and the list limited to planets within 5 jumps of NC1](/images/help/guides/find-planet-distance.webp)
+![Le filtre Distance avec NC1 coché, et la liste limitée aux planètes à 5 sauts ou moins de NC1](/images/help/guides/find-planet-distance.webp)
 
-1. Under **Distance**, tick your home exchange under **Exchanges**.
-2. If you're logged in, you can also pick plans under **Plans from empire**. The planet then has to be near them too.
-3. Set **Max jumps** (0 to 30, starts at 10).
+1. Sous **Distance**, coche ton échange principal sous **Échanges**.
+2. Si tu es connecté, tu peux aussi choisir des plans sous **Plans de l'empire**. La planète doit alors être proche d'eux aussi.
+3. Règle **Sauts max.** (de 0 à 30, 10 au départ).
 
-Each picked plan gets its own jumps column, and the column of a picked exchange turns green. "—" means there's no jump route. A planet has to be within **Max jumps** of every exchange and plan you pick, so each extra pick can shorten the list.
-
-> [!tip]
-> Looking for a second base next to your first? Pick its plan under **Distance** and set **Max jumps** to 2 or 3.
-
-More: [Distance](/help/planet_search#distance).
-
-## 4. Check for free plots {#step-4}
-
-A planet whose [[plots]] are all taken is no use to you. Turn on **Plots** under **Columns** to see free plots out of the total, as FIO last saw the planet.
-
-- A full planet shows a red ⊘ next to its name and **Full** in the Plots column.
-- **Full · ghost sites** in amber means only new players who start on that planet can still settle there.
-- **plots unknown** means PRUNplanner hasn't read the planet's plots yet. Check it in the game.
-
-Plots don't filter, so full planets stay in the list. You still see their numbers, and the Plots column shows which ones are full.
-
-More: [Plots](/help/planet_search#plots).
-
-## 5. Compare the results {#step-5}
-
-Switch the view next to the heading:
-
-![The Chart view of Planet Search, with the dashed best trade-off line](/images/help/guides/find-planet-chart.webp)
-
-- **List**: one row per planet. Click a header to sort, and Shift+click another to add a tiebreaker, such as jumps first, then the most output.
-- **Matrix**: every material found gets a column, shaded by output. It's the quickest way to spot planets with two or three useful resources.
-- **Chart**: distance across, output up. The highlighted **best trade-off** planets are the ones no other planet beats on both. **Colour by** **COGC** shows the running programs.
-
-Good candidates are the few planets near the top of the List that also sit on the best trade-off line.
-
-Details: [List and Matrix](/help/planet_search#list-and-matrix), [Chart](/help/planet_search#chart), [Sorting](/help/planet_search#sorting).
-
-## 6. Pin and compare up to four {#step-6}
-
-On screens 1,024 px and wider, click ☆ on up to four planets. The tray at the bottom puts them side by side and colours the rows it ranks from best to worst: fertility, the output of each searched material, jumps to your picks, and the free workers of each tier from the planet's latest [[popr|population report]].
+Chaque plan choisi reçoit sa propre colonne de sauts, et la colonne d'un échange choisi passe au vert. « — » signifie qu'il n'y a pas d'itinéraire. Une planète doit être à **Sauts max.** ou moins de chaque échange et de chaque plan que tu choisis : chaque choix supplémentaire peut donc raccourcir la liste.
 
 > [!tip]
-> If there are few free workers of a tier you need, your base will compete for them. Prefer a planet that covers your workforce.
+> Tu cherches une deuxième base à côté de la première ? Choisis son plan sous **Distance** et règle **Sauts max.** sur 2 ou 3.
 
-More: [Compare](/help/planet_search#compare).
+Pour aller plus loin : [Distance](/help/planet_search#distance).
 
-## 7. Open it as a plan {#step-7}
+## 4. Vérifie les parcelles libres {#step-4}
 
-Click "+" on the planet's row. A new plan for that planet opens in a new tab, and your search stays as it is. In the **Chart**, double-clicking a dot does the same.
+Une planète dont toutes les [[plots|parcelles]] sont prises ne te sert à rien. Active **Parcelles** sous **Colonnes** pour voir les parcelles libres sur le total, telles que FIO a vu la planète pour la dernière fois.
 
-To come back to the search later, **Copy link** copies the whole search (filters, sort, view and pins). **Save search** keeps the filters, but only in this browser.
+- Une planète pleine affiche un ⊘ rouge à côté de son nom et **Complète** dans la colonne Parcelles.
+- **Complète · sites fantômes** en ambre signifie que seuls les nouveaux joueurs qui démarrent sur cette planète peuvent encore s'y installer.
+- **parcelles inconnues** signifie que PRUNplanner n'a pas encore lu les parcelles de la planète. Vérifie dans le jeu.
 
-Read more: [Saving and sharing](/help/planet_search#saving-and-sharing), [Base setup](/help/plan_base).
+Les parcelles ne filtrent pas : les planètes pleines restent dans la liste. Tu vois toujours leurs chiffres, et la colonne Parcelles montre lesquelles sont pleines.
 
-## Next {#next}
+Pour aller plus loin : [Parcelles](/help/planet_search#plots).
 
-- [Your first base](/help/guide_first_base): set up the plan you opened and read its results.
-- [From a chain to bases](/help/guide_chain_to_bases): let Production Chains pick planets for a whole chain.
+## 5. Compare les résultats {#step-5}
+
+Change de vue à côté du titre :
+
+![La vue Graphique de la Recherche de planètes, avec la ligne pointillée du meilleur compromis](/images/help/guides/find-planet-chart.webp)
+
+- **Liste** : une ligne par planète. Clique sur un en-tête pour trier, et Maj+clic sur un autre pour ajouter un critère de départage, par exemple les sauts d'abord, puis le plus gros rendement.
+- **Matrice** : chaque matériau trouvé reçoit une colonne, ombrée selon le rendement. C'est le moyen le plus rapide de repérer les planètes avec deux ou trois ressources utiles.
+- **Graphique** : la distance en abscisse, le rendement en ordonnée. Les planètes **meilleur compromis** mises en évidence sont celles qu'aucune autre planète ne bat sur les deux critères. **Colorer par** **COGC** montre les programmes en cours.
+
+Les bons candidats sont les quelques planètes en haut de la Liste qui se trouvent aussi sur la ligne du meilleur compromis.
+
+Détails : [Liste et Matrice](/help/planet_search#list-and-matrix), [Graphique](/help/planet_search#chart), [Tri](/help/planet_search#sorting).
+
+## 6. Épingle et compare jusqu'à quatre planètes {#step-6}
+
+Sur les écrans de 1 024 px de large ou plus, clique sur ☆ pour jusqu'à quatre planètes. Le bandeau en bas les place côte à côte et colore les lignes qu'il classe de la meilleure à la pire : la fertilité, le rendement de chaque matériau recherché, les sauts jusqu'à tes choix, et les travailleurs disponibles de chaque niveau d'après le dernier [[popr|rapport de population]] de la planète.
+
+> [!tip]
+> S'il y a peu de travailleurs disponibles d'un niveau dont tu as besoin, ta base sera en concurrence pour eux. Préfère une planète qui couvre ta main-d'œuvre.
+
+Pour aller plus loin : [Comparer](/help/planet_search#compare).
+
+## 7. Ouvre-la comme plan {#step-7}
+
+Clique sur « + » sur la ligne de la planète. Un nouveau plan pour cette planète s'ouvre dans un nouvel onglet, et ta recherche reste telle quelle. Dans le **Graphique**, un double-clic sur un point fait la même chose.
+
+Pour revenir à la recherche plus tard, **Copier le lien** copie toute la recherche (filtres, tri, vue et épingles). **Enregistrer la recherche** garde les filtres, mais seulement dans ce navigateur.
+
+Pour aller plus loin : [Enregistrer et partager](/help/planet_search#saving-and-sharing), [Configuration de la base](/help/plan_base).
+
+## Ensuite {#next}
+
+- [Ta première base](/help/guide_first_base) : configure le plan que tu as ouvert et lis ses résultats.
+- [D'une chaîne à des bases](/help/guide_chain_to_bases) : laisse Chaînes de production choisir les planètes de toute une chaîne.
