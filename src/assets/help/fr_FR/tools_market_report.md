@@ -1,136 +1,136 @@
-The [Market report](/market) shows how prices and turnover moved on the four commodity exchanges over the last 90 days. Start here for the big picture, then dig into one material in [Market Exploration](/help/tools_market_exploration) or check your plan's prices. The report is public, so you don't need to log in.
+Le [Rapport de marché](/market) montre comment les prix et les volumes ont évolué sur les quatre échanges de marchandises au cours des 90 derniers jours. Commence ici pour avoir une vue d'ensemble, puis creuse un matériau dans [Exploration du marché](/help/tools_market_exploration) ou vérifie les prix de ton plan. Le rapport est public : pas besoin de te connecter.
 
-## Data and updates {#data}
+## Données et mises à jour {#data}
 
-Daily prices come from the daily trading data [[fio|FIO]] delivers for AI1, CI1, IC1 and NC1. The report covers the 90 complete UTC days up to yesterday. It updates daily (UTC) from the previous day's trading, so today's trading only shows up once the day is over. The header gives the last day as "Daily prices to" a date.
+Les prix quotidiens viennent des données de transactions quotidiennes que [[fio|FIO]] fournit pour AI1, CI1, IC1 et NC1. Le rapport couvre les 90 jours UTC complets jusqu'à hier. Il se met à jour chaque jour (UTC) à partir des échanges de la veille : les transactions du jour n'apparaissent donc qu'une fois la journée terminée. L'en-tête donne le dernier jour sous la forme « Prix quotidiens au » suivi d'une date.
 
-The order books are current. The biggest open gap, the "Order books now" gaps and the book figures on the exchange cards all use the latest books PRUNplanner has, kept up to date from FIO, at least every 30 minutes.
+Les carnets d'ordres sont actuels. Le plus gros écart ouvert, les écarts « Carnets d'ordres actuels » et les chiffres des carnets sur les cartes des échanges utilisent tous les derniers carnets dont dispose PRUNplanner, tenus à jour depuis FIO au moins toutes les 30 minutes.
 
-Money is in ȼ. Each exchange has its own [[currency]] (AIC, CIS, ICA, NCC), and the report adds them up at par, one to one. That works because the same material trades at close to the same price everywhere.
+Les montants sont en ȼ. Chaque échange a sa propre [[currency|monnaie]] (AIC, CIS, ICA, NCC), et le rapport les additionne à parité, un pour un. Cela fonctionne parce qu'un même matériau s'échange à peu près au même prix partout.
 
-If a part of the page shows "The market data couldn't be loaded." with a **Retry** button, press it to load that part again.
+Si une partie de la page affiche « Impossible de charger les données du marché. » avec un bouton **Réessayer**, appuie dessus pour recharger cette partie.
 
-## In short {#in-short}
+## En bref {#in-short}
 
-Four tiles sit at the top:
+Quatre tuiles se trouvent en haut :
 
-| Tile                           | What it shows                                                                                                                      |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **CX index**                   | the latest combined [price index](#price-index), its change since the first of the 90 days, and a 90-day sparkline                 |
-| **Moved most**                 | the sector whose index rose most since the first of the 90 days (when every sector fell, the one that fell least), with its change |
-| **Feeding 100 pioneers**       | what 100 pioneers consume per day at the latest VWAP 7D on all exchanges, and how that changed over the last two weeks             |
-| **Biggest open gap right now** | the largest [price gap](#price-gaps) in the order books now: buy on one exchange, sell on another                                  |
+| Tuile                                   | Ce qu'elle montre                                                                                                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Indice CX**                           | le dernier [indice des prix](#price-index) combiné, sa variation depuis le premier des 90 jours, et une mini-courbe sur 90 jours                             |
+| **Plus forte variation**                | le secteur dont l'indice a le plus monté depuis le premier des 90 jours (quand tous les secteurs ont baissé, celui qui a le moins baissé), avec sa variation |
+| **Nourrir 100 pionniers**               | ce que 100 pionniers consomment par jour au dernier VWAP 7J sur tous les échanges, et comment cela a évolué ces deux dernières semaines                      |
+| **Plus gros écart ouvert en ce moment** | le plus grand [écart de prix](#price-gaps) dans les carnets d'ordres actuels : acheter sur un échange, vendre sur un autre                                   |
 
-The pioneer basket holds every pioneer need, [[luxuries]] included. If no material has an open gap of 15 % or more, the last tile tells you so.
+Le panier des pionniers contient tous les besoins des pionniers, [[luxuries|produits de luxe]] compris. Si aucun matériau n'a d'écart ouvert de 15 % ou plus, la dernière tuile te l'indique.
 
-## Key figures {#kpis}
+## Chiffres clés {#kpis}
 
-| Figure                         | What it shows                                                                               |
-| ------------------------------ | ------------------------------------------------------------------------------------------- |
-| **Traded, last 7 days**        | turnover of the four exchanges in the last 7 days, and its change against the 7 days before |
-| **Materials traded, 7 days**   | how many materials traded in the last 7 days, out of those traded in 30 days                |
-| **CX index**                   | the combined price index, and its change since the first of the 90 days                     |
-| **Turnover in flat materials** | the share of 30-day turnover in [flat](#flat) materials, and how many there are             |
+| Chiffre                              | Ce qu'il montre                                                                                            |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Échangé, 7 derniers jours**        | le volume des quatre échanges sur les 7 derniers jours, et sa variation par rapport aux 7 jours précédents |
+| **Matériaux échangés, 7 jours**      | combien de matériaux se sont échangés sur les 7 derniers jours, parmi ceux échangés sur 30 jours           |
+| **Indice CX**                        | l'indice des prix combiné, et sa variation depuis le premier des 90 jours                                  |
+| **Volume des matériaux à prix fixe** | la part du volume sur 30 jours qui concerne des matériaux [stables](#flat), et leur nombre                 |
 
-Turnover is units traded × price, so it's a figure in ȼ. For example, 200 units sold at 50 ȼ each add 10,000 ȼ of turnover.
+Le volume, c'est les unités échangées × le prix : c'est donc un montant en ȼ. Par exemple, 200 unités vendues à 50 ȼ pièce ajoutent 10 000 ȼ de volume.
 
-## Price index {#price-index}
+## Indice des prix {#price-index}
 
-**Price index** tracks how the price of what players trade has moved. It's one line that starts at 100 on the first of the 90 days, and each day's value uses that day's [[vwap|VWAP]] 7D. VWAP 7D is the turnover of the last 7 days ÷ the units traded in them, so a day with few trades barely moves it.
+**Indice des prix** suit l'évolution du prix de ce que les joueurs échangent. C'est une courbe qui part de 100 le premier des 90 jours, et la valeur de chaque jour utilise le [[vwap|VWAP]] 7J de ce jour-là. Le VWAP 7J est le volume des 7 derniers jours ÷ les unités échangées sur cette période : un jour avec peu de transactions le fait donc à peine bouger.
 
-Under **Index view** you pick the lines:
+Sous **Vue de l'indice**, tu choisis les courbes :
 
-- **Per exchange** (default): one line per exchange, each in its own currency.
-- **Combined**: one line for all four exchanges.
-- **Per sector**: one line per sector, all exchanges together. There are eight sectors, Consumables through Drones & other.
+- **Par échange** (par défaut) : une courbe par échange, chacune dans sa propre monnaie.
+- **Combiné** : une seule courbe pour les quatre échanges.
+- **Par secteur** : une courbe par secteur, tous échanges confondus. Il y a huit secteurs, de Consommables à Drones et autres.
 
-Every material with a VWAP 7D on each of the 90 days in that scope is a member of the index. A member's weight is its share of 30-day turnover, capped at 5 % (20 % inside a sector). Whatever the cap cuts off a material gets spread over the others, so no single busy material carries the index.
+Chaque matériau qui a un VWAP 7J sur chacun des 90 jours dans ce périmètre fait partie de l'indice. Le poids d'un membre est sa part du volume sur 30 jours, plafonnée à 5 % (20 % à l'intérieur d'un secteur). Ce que le plafond retire à un matériau est réparti sur les autres, si bien qu'aucun matériau très échangé ne porte l'indice à lui seul.
 
-Each day, PRUNplanner takes every member's VWAP 7D against its value on the first day and adds those up by weight. Two made-up examples:
+Chaque jour, PRUNplanner compare le VWAP 7J de chaque membre à sa valeur du premier jour et additionne le tout selon les poids. Deux exemples inventés :
 
-- If every member's VWAP 7D sits 10 % above its first-day value, the index reads 100 × 1.10 = 110, whatever the weights.
-- If only one member with a weight of 5 % doubles its price, the index reads 100 + 100 × 0.05 × (2 − 1) = 105.
+- Si le VWAP 7J de chaque membre est 10 % au-dessus de sa valeur du premier jour, l'indice vaut 100 × 1,10 = 110, quels que soient les poids.
+- Si un seul membre avec un poids de 5 % voit son prix doubler, l'indice vaut 100 + 100 × 0,05 × (2 − 1) = 105.
 
-The footnote under the chart names the base date and the members. For **Combined** it also gives the members' share of 30-day turnover.
+La note sous le graphique indique la date de base et les membres. Pour **Combiné**, elle donne aussi la part des membres dans le volume sur 30 jours.
 
-## What it costs to keep a workforce {#workforce}
+## Ce que coûte l'entretien d'une main-d'œuvre {#workforce}
 
-This section prices the consumables 100 workers of a tier need for one day, all needs including both luxuries, at each day's VWAP 7D. Every base pays this, whatever it produces.
+Cette section valorise les consommables dont 100 travailleurs d'un niveau ont besoin pour un jour, tous besoins confondus y compris les deux produits de luxe, au VWAP 7J de chaque jour. Chaque base paie ce coût, quoi qu'elle produise.
 
-- There's one card per [[workforce]] tier, pioneer to scientist. It shows the cost per 100 workers a day on all exchanges, and its change over 90 days.
-- Pick a tier to see its chart, with one line per exchange over 90 days.
-- "Cheapest today" names the exchange where that tier's basket costs least at the latest prices.
-- **Moved most** names the two materials that changed the tier's cost most, in ȼ, over the 90 days.
+- Il y a une carte par niveau de [[workforce|main-d'œuvre]], des pionniers aux scientifiques. Elle montre le coût pour 100 travailleurs par jour sur tous les échanges, et sa variation sur 90 jours.
+- Choisis un niveau pour voir son graphique, avec une courbe par échange sur 90 jours.
+- « Le moins cher aujourd'hui » nomme l'échange où le panier de ce niveau coûte le moins aux derniers prix.
+- **Plus fortes variations** nomme les deux matériaux qui ont le plus changé le coût du niveau, en ȼ, sur les 90 jours.
 
-If a material in the basket has no price on a day, the chart has no value for that day.
+Si un matériau du panier n'a pas de prix un jour donné, le graphique n'a pas de valeur pour ce jour.
 
-## Where the money moves {#treemap}
+## Où circule l'argent {#treemap}
 
-**Where the money moves** is a treemap. Each box is a material, sized by its 30-day turnover on all four exchanges and grouped by sector. The colour compares VWAP 7D with VWAP 30D: green when it's rising, red when it's falling, deepest at ±12 % and beyond. With the **Color-blind (blue / orange)** palette in your Profile, rising is blue and falling orange. [Flat](#flat) materials are hatched and marked **flat** ("Held at one price, likely a market maker").
+**Où circule l'argent** est une carte proportionnelle (treemap). Chaque case est un matériau, dimensionnée selon son volume sur 30 jours sur les quatre échanges et regroupée par secteur. La couleur compare le VWAP 7J au VWAP 30J : vert quand il monte, rouge quand il baisse, le plus foncé à ±12 % et au-delà. Avec la palette **Daltonien (bleu / orange)** dans ton profil, la hausse est en bleu et la baisse en orange. Les matériaux [stables](#flat) sont hachurés et marqués **stable** (« Maintenu à un seul prix, probablement un teneur de marché »).
 
-Hover a box to see **Turnover, 30 days**, **VWAP 7D**, **VWAP 30D** and **7D against 30D**. When there's no change to show, it says **too few trades**. That happens when the material traded in the last 30 days but not in the last 7, so there's no VWAP 7D to compare.
+Survole une case pour voir **Volume, 30 jours**, **VWAP 7J**, **VWAP 30J** et **7J contre 30J**. Quand il n'y a pas de variation à afficher, elle indique **trop peu d'échanges**. Cela arrive quand le matériau s'est échangé sur les 30 derniers jours mais pas sur les 7 derniers : il n'y a alors pas de VWAP 7J à comparer.
 
-## Movers this week {#movers}
+## Mouvements de la semaine {#movers}
 
-**Movers this week** lists the materials whose VWAP 7D sits furthest above (**Rising**) or below (**Falling**) their VWAP 30D, on all exchanges. For example, a VWAP 7D of 110 ȼ against a VWAP 30D of 100 ȼ is (110 ÷ 100 − 1) × 100 = +10 %.
+**Mouvements de la semaine** liste les matériaux dont le VWAP 7J est le plus au-dessus (**En hausse**) ou au-dessous (**En baisse**) de leur VWAP 30J, sur tous les échanges. Par exemple, un VWAP 7J de 110 ȼ contre un VWAP 30J de 100 ȼ donne (110 ÷ 100 − 1) × 100 = +10 %.
 
-Only materials with at least 5,000,000 ȼ and 50 units traded in the last 7 days count, and flat materials are left out. The top 8 show first, each with a 15-day sparkline of its VWAP 7D. "Show all" opens the full list in pages of 25, and you can **Sort by** **Change vs 30 days**, **Material**, **VWAP 7D** or **Traded, 7 days**.
+Seuls comptent les matériaux avec au moins 5 000 000 ȼ et 50 unités échangées sur les 7 derniers jours, et les matériaux stables sont exclus. Les 8 premiers s'affichent d'abord, chacun avec une mini-courbe de son VWAP 7J sur 15 jours. « Afficher les … » ouvre la liste complète par pages de 25, et tu peux **Trier par** **Variation vs 30 jours**, **Matériau**, **VWAP 7J** ou **Échangé, 7 jours**.
 
-The 30 days include the last 7, so a change looks smaller than it would in a week-on-week comparison. When no material qualifies in a direction, the list says "No material moved this way with enough volume."
+Les 30 jours incluent les 7 derniers : une variation paraît donc plus faible que dans une comparaison semaine sur semaine. Quand aucun matériau ne se qualifie dans un sens, la liste indique « Aucun matériau n'a évolué ainsi avec un volume suffisant. ».
 
-## What the economy runs on {#leaders}
+## Ce qui fait tourner l'économie {#leaders}
 
-**What the economy runs on** lists the 10 materials with the most 30-day turnover, with their share of it. Each bar splits that material's last 7 days of turnover by exchange. "Show all" lists every material traded in 30 days.
+**Ce qui fait tourner l'économie** liste les 10 matériaux avec le plus gros volume sur 30 jours, avec leur part de ce volume. Chaque barre répartit le volume des 7 derniers jours de ce matériau par échange. « Afficher les … » liste tous les matériaux échangés sur 30 jours.
 
-## Price gaps between exchanges {#price-gaps}
+## Écarts de prix entre échanges {#price-gaps}
 
-**Price gaps between exchanges** lists materials that trade notably cheaper on one exchange than on another. You choose the **Gap basis**:
+**Écarts de prix entre échanges** liste les matériaux qui s'échangent nettement moins cher sur un échange que sur un autre. Tu choisis la **Base de l'écart** :
 
-- **Last 7 days** (default) compares each exchange's VWAP 7D. A gap here may already be gone. **Books now** tells you whether you could still buy on one exchange and sell on the other ("Open" with the gap, or **Closed**).
-- **Order books now** compares the best ask on the cheaper exchange with the best bid on the dearer one, right now.
+- **7 derniers jours** (par défaut) compare le VWAP 7J de chaque échange. Un écart ici a peut-être déjà disparu. **Carnets actuels** te dit si tu pourrais encore acheter sur un échange et vendre sur l'autre (« Ouvert » avec l'écart, ou **Fermé**).
+- **Carnets d'ordres actuels** compare le meilleur Ask sur l'échange le moins cher au meilleur Bid sur le plus cher, en ce moment.
 
-A material only counts when both exchanges had at least 20 units and 5,000,000 ȼ traded in the last 7 days, the gap is at least 15 %, and it isn't [flat](#flat).
+Un matériau ne compte que si les deux échanges ont eu au moins 20 unités et 5 000 000 ȼ échangés sur les 7 derniers jours, si l'écart est d'au moins 15 % et s'il n'est pas [stable](#flat).
 
-The gap is the dearer price ÷ the cheaper one − 1, in %. For example, a best ask of 100 ȼ on one exchange and a best bid of 120 ȼ on another make a gap of (120 ÷ 100 − 1) × 100 = 20 %. When no material qualifies, the section says "No material has a gap of 15 % or more with enough volume."
+L'écart est le prix le plus élevé ÷ le moins élevé − 1, en %. Par exemple, un meilleur Ask de 100 ȼ sur un échange et un meilleur Bid de 120 ȼ sur un autre donnent un écart de (120 ÷ 100 − 1) × 100 = 20 %. Quand aucun matériau ne se qualifie, la section indique « Aucun matériau n'a un écart de 15 % ou plus avec assez de volume. ».
 
-The top 10 show first, largest gap first. Only the top price counts, not how much is on offer, and the gap ignores shipping, fuel and flight time.
+Les 10 premiers s'affichent d'abord, le plus grand écart en tête. Seul le meilleur prix compte, pas la quantité proposée, et l'écart ne tient pas compte du transport, du carburant ni du temps de vol.
 
 > [!tip]
-> A gap in the books is only a chance if there's enough on offer and you can move the goods in time. Check the material's order books in [Market Exploration](/help/tools_market_exploration) before you act.
+> Un écart dans les carnets n'est une opportunité que si la quantité proposée suffit et que tu peux déplacer la marchandise à temps. Vérifie les carnets d'ordres du matériau dans [Exploration du marché](/help/tools_market_exploration) avant d'agir.
 
-## The four exchanges {#exchanges}
+## Les quatre échanges {#exchanges}
 
-**The four exchanges** has one card per exchange: Antares Station (AI1, AIC), Benten Station (CI1, CIS), Hortus Station (IC1, ICA) and Moria Station (NC1, NCC). Each card shows:
+**Les quatre échanges** a une carte par échange : Antares Station (AI1, AIC), Benten Station (CI1, CIS), Hortus Station (IC1, ICA) et Moria Station (NC1, NCC). Chaque carte affiche :
 
-| Figure                       | What it shows                                                                     |
-| ---------------------------- | --------------------------------------------------------------------------------- |
-| **Turnover, 30 days**        | the exchange's turnover, and its share of all four                                |
-| bars                         | daily turnover over 90 days                                                       |
-| **Turnover, 7 days**         | the last 7 days' turnover                                                         |
-| **Materials traded, 7 days** | materials with turnover on this exchange in the last 7 days                       |
-| **Median bid–ask spread**    | the median of (ask − bid) ÷ the midpoint of bid and ask, over the books with both |
-| **Books without a buyer**    | order books with no bid now                                                       |
-| **Books without a seller**   | order books with no ask now                                                       |
+| Chiffre                         | Ce qu'il montre                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Volume, 30 jours**            | le volume de l'échange, et sa part dans le total des quatre                              |
+| barres                          | le volume quotidien sur 90 jours                                                         |
+| **Volume, 7 jours**             | le volume des 7 derniers jours                                                           |
+| **Matériaux échangés, 7 jours** | les matériaux avec du volume sur cet échange sur les 7 derniers jours                    |
+| **Écart Bid–Ask médian**        | la médiane de (Ask − Bid) ÷ le milieu entre Bid et Ask, sur les carnets qui ont les deux |
+| **Carnets sans acheteur**       | les carnets d'ordres sans Bid en ce moment                                               |
+| **Carnets sans vendeur**        | les carnets d'ordres sans Ask en ce moment                                               |
 
-The spread here is measured against the midpoint. Market Live and the material card measure it against the ask, so the same book shows a slightly larger number here. For example, a book with a bid of 90 ȼ and an ask of 110 ȼ has a spread of 20 ÷ 100 = 20 % here and 20 ÷ 110 ≈ 18.2 % in Market Live.
+L'écart est mesuré ici par rapport au milieu. Marché en direct et la fiche du matériau le mesurent par rapport à l'Ask : le même carnet affiche donc ici un chiffre légèrement plus grand. Par exemple, un carnet avec un Bid de 90 ȼ et un Ask de 110 ȼ a un écart de 20 ÷ 100 = 20 % ici et de 20 ÷ 110 ≈ 18,2 % dans Marché en direct.
 
-## Flat materials {#flat}
+## Matériaux stables {#flat}
 
-A material is _flat_ when, over the last 30 days, it traded on at least 10 days and its daily VWAP stayed within ±0.3 % of its 30-day median on at least 80 % of those days. For example, with a 30-day median of 100 ȼ, a day stays within the band between 99.70 ȼ and 100.30 ȼ, and a material that traded on 20 days needs at least 16 such days. That usually means [[market-maker|market makers]] buy or sell it at fixed prices. Flat materials count in turnover, but they're left out of the movers and the price gaps.
+Un matériau est _stable_ quand, sur les 30 derniers jours, il s'est échangé au moins 10 jours et que son VWAP quotidien est resté à ±0,3 % de sa médiane sur 30 jours pendant au moins 80 % de ces jours. Par exemple, avec une médiane sur 30 jours de 100 ȼ, un jour reste dans la bande entre 99,70 ȼ et 100,30 ȼ, et un matériau échangé sur 20 jours a besoin d'au moins 16 jours de ce type. Cela signifie généralement que des [[market-maker|teneurs de marché]] l'achètent ou le vendent à prix fixe. Les matériaux stables comptent dans le volume, mais ils sont exclus des mouvements et des écarts de prix.
 
-## How these numbers are made {#how-made}
+## Comment ces chiffres sont établis {#how-made}
 
-The collapsible **How these numbers are made** at the bottom of the page explains, in short form, the source, turnover, prices, the index, movers, gaps, flat materials and what's left out.
+La section repliable **Comment ces chiffres sont établis** en bas de la page explique, en bref, la source, le volume, les prix, l'indice, les mouvements, les écarts, les matériaux stables et ce qui est exclu.
 
-One heavy day shows for a week. A single large trade at an unusual price pulls the VWAP 7D for as long as it sits in the 7-day window, and then the price snaps back.
+Une journée chargée se voit pendant une semaine. Une seule grosse transaction à un prix inhabituel tire le VWAP 7J tant qu'elle reste dans la fenêtre de 7 jours, puis le prix revient d'un coup.
 
-## What CX data can't see {#not-included}
+## Ce que les données CX ne voient pas {#not-included}
 
-The report covers the exchanges, not the whole economy:
+Le rapport couvre les échanges, pas toute l'économie :
 
-- Local markets on planets and stations, contracts and trades inside corporations never touch the exchanges, so they're missing. Players say some everyday goods move mostly on local markets.
-- Trades with market makers count like any other trade.
-- Orders that aren't filled don't count, and the data doesn't say which side started a trade.
-- The order-book figures use only the top price, not the depth behind it.
+- Les marchés locaux sur les planètes et les stations, les contrats et les échanges au sein des corporations ne passent jamais par les échanges : ils sont donc absents. Selon les joueurs, certains biens courants circulent surtout sur les marchés locaux.
+- Les transactions avec les teneurs de marché comptent comme n'importe quelle autre transaction.
+- Les ordres non exécutés ne comptent pas, et les données ne disent pas quel côté a initié une transaction.
+- Les chiffres des carnets d'ordres n'utilisent que le meilleur prix, pas la profondeur derrière.
 
-[What CX volume misses](/help/plan_check#cx-volume) explains what this means for your plan's prices.
+[Ce que le volume CX ne voit pas](/help/plan_check#cx-volume) explique ce que cela signifie pour les prix de ton plan.

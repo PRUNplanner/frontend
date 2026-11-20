@@ -1,103 +1,103 @@
-PRUNplanner plans your bases. You build and run them in the game. This guide covers the hand-over, and by the end you'll have:
+PRUNplanner planifie tes bases. Tu les construis et les fais tourner dans le jeu. Ce guide couvre le passage de relais, et à la fin tu auras :
 
-- FIO connected, so PRUNplanner sees your bases and stores,
-- the materials to build a base and its first supply, as [[xit|XIT]] packages that do the shopping and shipping for you,
-- FIO Burn and FIO Repair set up to keep running bases supplied and repaired.
+- FIO connecté, pour que PRUNplanner voie tes bases et tes stocks,
+- les matériaux pour construire une base et son premier approvisionnement, sous forme de paquets [[xit|XIT]] qui font les achats et le transport pour toi,
+- Consommation FIO et Réparer FIO configurés pour garder tes bases en activité approvisionnées et réparées.
 
-It's for players about to build a planned base. It takes about 15 minutes, plus a one-time FIO setup. The pages linked at the end of each step go deeper.
+Il s'adresse aux joueurs sur le point de construire une base planifiée. Il prend environ 15 minutes, plus une configuration unique de FIO. Les pages en lien à la fin de chaque étape vont plus loin.
 
-## 1. Connect FIO {#step-1}
+## 1. Connecte FIO {#step-1}
 
-[[FIO]] is a free community browser extension that reads your game data. With it, PRUNplanner knows what stands on your planets and what's in your stores.
+[[fio|FIO]] est une extension de navigateur communautaire et gratuite qui lit tes données de jeu. Grâce à elle, PRUNplanner sait ce qui se trouve sur tes planètes et ce qu'il y a dans tes stocks.
 
-![The FIO connection on the Profile page, connected, with the PrUn Username and FIO API Key fields](/images/help/guides/hand-off-fio.webp)
+![La connexion FIO sur la page Profil, connectée, avec les champs Nom d'utilisateur PrUn et Clé API FIO](/images/help/guides/hand-off-fio.webp)
 
-1. Install the FIO extension and register your FIO account from the game's extensions button.
-2. On the FIO website, create an API key for PRUNplanner.
-3. In your [Profile](/profile), under **FIO connection**, enter the **FIO API Key** and your **PrUn Username** and press **Save**.
+1. Installe l'extension FIO et enregistre ton compte FIO depuis le bouton des extensions du jeu.
+2. Sur le site de FIO, crée une clé API pour PRUNplanner.
+3. Dans ton [Profil](/profile), sous **Connexion FIO**, saisis la **Clé API FIO** et ton **Nom d'utilisateur PrUn**, puis appuie sur **Enregistrer**.
 
-Once it works, the FIO icon at the bottom of the side menu gets a green dot. Hover it to see **FIO Active** and when FIO last updated. **FIO Burn** and **FIO Repair** now appear under Tools. While you use PRUNplanner, your FIO data is at most about 30 to 45 minutes old.
+Une fois que ça marche, l'icône FIO en bas du menu latéral reçoit un point vert. Survole-la pour voir **FIO Actif** et la dernière mise à jour de FIO. **Consommation FIO** et **Réparer FIO** apparaissent maintenant sous Outils. Pendant que tu utilises PRUNplanner, tes données FIO ont au plus 30 à 45 minutes environ.
 
-More: [FIO connection](/help/profile#fio-connection).
+Pour aller plus loin : [Connexion FIO](/help/profile#fio-connection).
 
-## 2. Buy and ship the construction materials {#step-2}
+## 2. Achète et expédie les matériaux de construction {#step-2}
 
-Open the plan of the base (from the side menu or the plan list on [Empire](/empire)) and go to its **Construction** tab, the [[construction-cart|construction cart]].
+Ouvre le plan de la base (depuis le menu latéral ou la liste des plans sur [Empire](/empire)) et va dans son onglet **Construction**, le [[construction-cart|panier de construction]].
 
-![The Construction tool of a plan: Built, Amount and Planned per building, and the XIT button](/images/help/guides/hand-off-construction.webp)
+![L'outil Construction d'un plan : Construits, Quantité et Prévus par bâtiment, et le bouton XIT](/images/help/guides/hand-off-construction.webp)
 
-- **Built** starts at what FIO sees on the planet, and **Amount** is what's left to build.
-- **Materials to buy** takes off the stock of the storage you pick under **Storage**, so **Need** is what you still have to get. As an example, with an **Amount** of 120 BSE and 40 in storage, **Need** is 80. With 150 in storage it's 0, never below.
-- A warning next to **Amount** tells you when the buildings would need more workers than their habitations house.
+- **Construits** part de ce que FIO voit sur la planète, et **Quantité** est ce qu'il reste à construire.
+- **Matériaux à acheter** déduit le stock de l'entrepôt que tu choisis sous **Stockage** : **Besoin** est donc ce qu'il te reste à obtenir. Par exemple, avec une **Quantité** de 120 BSE et 40 en stock, **Besoin** vaut 80. Avec 150 en stock, il vaut 0, jamais moins.
+- Un avertissement à côté de **Quantité** te signale quand les bâtiments auraient besoin de plus de travailleurs que leurs habitations n'en logent.
 
-The XIT button next to **Storage** ships only **Need**. The one at the top of the tool ships everything and ignores stock.
+Le bouton XIT à côté de **Stockage** n'expédie que le **Besoin**. Celui en haut de l'outil expédie tout et ignore le stock.
 
-Read more: [Construction](/help/plan_tools#construction).
+Pour aller plus loin : [Construction](/help/plan_tools#construction).
 
-## 3. Plan the first supply {#step-3}
+## 3. Planifie le premier approvisionnement {#step-3}
 
-Open the **Supply** tab, the [[supply-cart|supply cart]]. It lists the workforce consumables and production inputs the base needs for **Stock Duration (days)** (20 by default), minus what's in stock.
+Ouvre l'onglet **Approvisionnement**, le [[supply-cart|panier d'approvisionnement]]. Il liste les consommables de la main-d'œuvre et les intrants de production dont la base a besoin pendant **Durée du stock (jours)** (20 par défaut), moins ce qui est en stock.
 
-![The Supply tool of a plan with its XIT buttons](/images/help/guides/hand-off-supply.webp)
+![L'outil Approvisionnement d'un plan avec ses boutons XIT](/images/help/guides/hand-off-supply.webp)
 
 > [!tip]
-> For the very first flight, use **XIT Initial**. The plain XIT button nets out what the base makes itself, so a base that makes its own DW or RAT would arrive without any before production starts.
+> Pour le tout premier vol, utilise **XIT initial**. Le bouton XIT simple déduit ce que la base produit elle-même : une base qui produit son propre DW ou RAT arriverait donc sans en avoir avant le démarrage de la production.
 
-More: [Supply](/help/plan_tools#supply), [XIT and XIT Initial](/help/plan_tools#supply-xit).
+Pour aller plus loin : [Approvisionnement](/help/plan_tools#supply), [XIT et XIT initial](/help/plan_tools#supply-xit).
 
-## 4. Run the XIT package in the game {#step-4}
+## 4. Lance le paquet XIT dans le jeu {#step-4}
 
-Every XIT button opens a drawer with a package for [Refined PrUn](https://github.com/refined-prun/refined-prun), the browser extension for the game.
+Chaque bouton XIT ouvre un panneau avec un paquet pour [Refined PrUn](https://github.com/refined-prun/refined-prun), l'extension de navigateur pour le jeu.
 
-1. Pick **Origin**: a station warehouse, or **Configure on Execution** to choose when you run it.
-2. Leave **Buy From CX** on to buy the materials on that station's exchange first. It needs a warehouse origin.
-3. **Copy** the JSON.
-4. In the game, Refined PrUn runs it with its XIT ACT command. You pick the destination when it runs.
+1. Choisis l'**Origine** : un entrepôt de station, ou **Configurer à l'exécution** pour choisir au moment de le lancer.
+2. Laisse **Acheter sur le CX** activé pour acheter d'abord les matériaux sur l'échange de cette station. Il faut un entrepôt comme origine.
+3. **Copier** le JSON.
+4. Dans le jeu, Refined PrUn l'exécute avec sa commande XIT ACT. Tu choisis la destination au lancement.
 
-PRUNplanner saves **Origin** and **Buy From CX** with your preferences, and every XIT button shares them.
+PRUNplanner enregistre l'**Origine** et **Acheter sur le CX** dans tes préférences, et tous les boutons XIT les partagent.
 
-Details: [XIT actions](/help/plan_tools#xit).
+Détails : [Actions XIT](/help/plan_tools#xit).
 
-## 5. Keep your bases supplied with FIO Burn {#step-5}
+## 5. Garde tes bases approvisionnées avec Consommation FIO {#step-5}
 
-Open [FIO Burn](/fio/burn) and pick the empire. For each plan, it divides the stock of your base store on that planet by the plan's net daily use and shows how many days each material lasts.
+Ouvre [Consommation FIO](/fio/burn) et choisis l'empire. Pour chaque plan, l'outil divise le stock de ta base sur cette planète par la consommation nette quotidienne du plan et montre combien de jours dure chaque matériau.
 
-![FIO Burn: the burn thresholds and the days left per base](/images/help/guides/hand-off-burn.webp)
+![Consommation FIO : les seuils de consommation et les jours restants par base](/images/help/guides/hand-off-burn.webp)
 
-- Red and yellow mark materials at or below your thresholds (5 and 10 days by default). As an example, 160 RAT in store and a net use of 20 a day last 160 ÷ 20 = 8 days. That's at or below 10 but above 5, so it shows yellow.
-- The XIT button on a plan opens its XIT resupply. Set **Target Days** or let **Fit Ship** pick the most days that fit a ship size, then **Copy XIT JSON**.
+- Le rouge et le jaune marquent les matériaux qui sont à tes seuils ou en dessous (5 et 10 jours par défaut). Par exemple, 160 RAT en stock et une consommation nette de 20 par jour durent 160 ÷ 20 = 8 jours. C'est sous 10 mais au-dessus de 5 : l'affichage est donc jaune.
+- Le bouton XIT d'un plan ouvre son réapprovisionnement XIT. Règle les **Jours cibles** ou laisse **Adapter au vaisseau** choisir le plus de jours qui tiennent dans une taille de vaisseau, puis **Copier XIT JSON**.
 
 > [!warning]
-> FIO Burn counts from your plan, not from what really runs in the game. Keep one plan per planet in the empire and keep the plan in step with your base, or the days are off.
+> Consommation FIO compte à partir de ton plan, pas de ce qui tourne réellement dans le jeu. Garde un seul plan par planète dans l'empire et maintiens le plan en phase avec ta base, sinon les jours sont faux.
 
-More: [FIO Burn](/help/fio_burn), [XIT Resupply](/help/fio_burn#xit-resupply).
+Pour aller plus loin : [Consommation FIO](/help/fio_burn), [Réapprovisionnement XIT](/help/fio_burn#xit-resupply).
 
-## 6. Plan repairs with FIO Repair {#step-6}
+## 6. Planifie les réparations avec Réparer FIO {#step-6}
 
-Buildings wear, and the [[repair]] bill grows the longer you wait. A plan's **Repair** tab finds the best interval for each building type.
+Les bâtiments s'usent, et la facture de [[repair|réparation]] augmente plus tu attends. L'onglet **Réparation** d'un plan trouve le meilleur intervalle pour chaque type de bâtiment.
 
-![FIO Repair: when bases come due, and the bases with their repair dates](/images/help/guides/hand-off-repair.webp)
+![Réparer FIO : quand les bases arrivent à échéance, et les bases avec leurs dates de réparation](/images/help/guides/hand-off-repair.webp)
 
-Open [FIO Repair](/fio/repair). It matches your plans to your real bases and shows which bases are overdue, due soon or due later.
+Ouvre [Réparer FIO](/fio/repair). L'outil associe tes plans à tes vraies bases et montre quelles bases sont en retard, bientôt dues ou dues plus tard.
 
-1. Open a base. Check that **Repair target** names the plan you run there.
-2. Under **Repair flight**, set **Arrives in** to the days your ship needs.
-3. **XIT Repair** builds the package with the repair materials.
-4. Fly to the base, unload and run BRA in the game to repair all its buildings.
+1. Ouvre une base. Vérifie que **Objectif de réparation** nomme le plan que tu y fais tourner.
+2. Sous **Vol de réparation**, règle **Arrive dans** sur le nombre de jours dont ton vaisseau a besoin.
+3. **XIT Réparation** crée le paquet avec les matériaux de réparation.
+4. Vole jusqu'à la base, décharge et lance BRA dans le jeu pour réparer tous ses bâtiments.
 
-Read more: [FIO Repair](/help/fio_repair#repair-flight), [Repair](/help/plan_tools#repair).
+Pour aller plus loin : [Réparer FIO](/help/fio_repair#repair-flight), [Réparation](/help/plan_tools#repair).
 
-## 7. Where the game takes over {#step-7}
+## 7. Là où le jeu prend le relais {#step-7}
 
-PRUNplanner's job is the plan: what to build, where, at what price, and what it pays back. It ends in an export you run in the game. Running your bases day to day happens in the game and its browser extensions, Refined PrUn and its OOG fork, which work inside the game with your live data.
+Le rôle de PRUNplanner, c'est le plan : quoi construire, où, à quel prix et en combien de temps ça s'amortit. Il se termine par un export que tu exécutes dans le jeu. La gestion quotidienne de tes bases se fait dans le jeu et ses extensions de navigateur, Refined PrUn et son fork OOG, qui fonctionnent dans le jeu avec tes données en direct.
 
-- Changed your base in the game? Change the plan too. FIO Burn and FIO Repair count from your plans, so a plan that differs from your base gives different days and due dates.
-- Planning an expansion? Go back to the plan, a copy of it or a new plan, and compare before you build.
-- Want your numbers in a spreadsheet? An [API key](/help/api_keys) lets a Google Sheet read your empire's Material I/O.
+- Tu as modifié ta base dans le jeu ? Modifie aussi le plan. Consommation FIO et Réparer FIO comptent à partir de tes plans : un plan qui diffère de ta base donne d'autres jours et d'autres échéances.
+- Tu prépares une expansion ? Reviens au plan, à une copie ou à un nouveau plan, et compare avant de construire.
+- Tu veux tes chiffres dans une feuille de calcul ? Une [clé API](/help/api_keys) permet à une feuille Google Sheets de lire les E/S des matériaux de ton empire.
 
-More: [Your first base](/help/guide_first_base), [Grow to an empire](/help/guide_empire).
+Pour aller plus loin : [Ta première base](/help/guide_first_base), [Grandir jusqu'à un empire](/help/guide_empire).
 
-## Next {#next}
+## Ensuite {#next}
 
-- [Grow to an empire](/help/guide_empire): check all your bases together before you add the next one.
-- [Glossary](/help/glossary): the game and planning terms in one place.
+- [Grandir jusqu'à un empire](/help/guide_empire) : vérifie toutes tes bases ensemble avant d'ajouter la suivante.
+- [Glossaire](/help/glossary) : les termes du jeu et de la planification réunis en un seul endroit.

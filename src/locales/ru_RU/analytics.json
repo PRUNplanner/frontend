@@ -1,20 +1,20 @@
 {
 	"consent": {
-		"title": "Help improve PRUNplanner?",
-		"intro": "With your permission, PRUNplanner collects how the tool is used. This helps to decide which features to build next and to find and fix bugs.",
-		"collected_events": "Usage events, such as pages you open and actions you take",
-		"collected_errors": "Error reports when something breaks",
-		"collected_recordings": "Session recordings of some visits, with everything you type masked",
-		"linked": "This data is linked to your account id and stored with PostHog in the EU.",
-		"optional": "This is optional and you can change your choice any time in your Profile. Details are in the {link}.",
-		"tos_link": "Terms of Service",
-		"allow": "Allow",
-		"deny": "No thanks"
+		"title": "Помочь улучшить PRUNplanner?",
+		"intro": "С твоего разрешения PRUNplanner собирает данные о том, как используется инструмент. Это помогает решать, какие функции делать дальше, а также находить и исправлять ошибки.",
+		"collected_events": "События использования, например открытые страницы и твои действия",
+		"collected_errors": "Отчёты об ошибках, когда что-то ломается",
+		"collected_recordings": "Записи сеансов некоторых посещений, где всё, что ты вводишь, скрыто",
+		"linked": "Эти данные связаны с ID твоего аккаунта и хранятся в PostHog в ЕС.",
+		"optional": "Это необязательно, и ты можешь в любой момент изменить выбор в профиле. Подробности: {link}.",
+		"tos_link": "Условия использования",
+		"allow": "Разрешить",
+		"deny": "Нет, спасибо"
 	},
 	"banner": {
-		"label": "Analytics consent",
-		"text": "Can we use PostHog to see how prunplanner.org is used? Optional, and only with your OK. {link}",
-		"details": "Details",
-		"footer_link": "Analytics"
+		"label": "Согласие на аналитику",
+		"text": "Можно нам использовать PostHog, чтобы видеть, как используется prunplanner.org? Это необязательно и только с твоего согласия. {link}",
+		"details": "Подробнее",
+		"footer_link": "Аналитика"
 	}
 }

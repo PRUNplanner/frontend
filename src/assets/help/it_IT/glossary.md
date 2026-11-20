@@ -235,7 +235,7 @@ Workers housed without luxuries work at about 79 %. The first luxury raises that
 
 ## Market capacity {#market-capacity}
 
-In Base ROI, how many bases like this one the market can take: the exchange's average traded volume per day ÷ what one base sells or needs per day.
+In Base ROI, how many bases like this one the market can take: the exchange's traded volume per day (the last 7 days' total ÷ 7, days without trades included) ÷ what one base sells or needs per day.
 
 For example, if the exchange trades 1,000 units of an output a day and one base sells 250 a day, the capacity is 1,000 ÷ 250 = 4 bases.
 

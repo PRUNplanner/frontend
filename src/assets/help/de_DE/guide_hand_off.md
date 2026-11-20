@@ -1,103 +1,103 @@
-PRUNplanner plans your bases. You build and run them in the game. This guide covers the hand-over, and by the end you'll have:
+PRUNplanner plant deine Basen. Bauen und betreiben tust du sie im Spiel. Diese Anleitung behandelt die Übergabe, und am Ende hast du:
 
-- FIO connected, so PRUNplanner sees your bases and stores,
-- the materials to build a base and its first supply, as [[xit|XIT]] packages that do the shopping and shipping for you,
-- FIO Burn and FIO Repair set up to keep running bases supplied and repaired.
+- FIO verbunden, sodass PRUNplanner deine Basen und Lager sieht,
+- die Materialien, um eine Basis zu bauen und erstmals zu versorgen, als [[xit|XIT]]-Pakete, die Einkauf und Versand für dich erledigen,
+- FIO Verbrauch und FIO Reparieren eingerichtet, damit laufende Basen versorgt und repariert bleiben.
 
-It's for players about to build a planned base. It takes about 15 minutes, plus a one-time FIO setup. The pages linked at the end of each step go deeper.
+Sie ist für Spieler, die gleich eine geplante Basis bauen. Sie dauert etwa 15 Minuten, plus eine einmalige FIO-Einrichtung. Die Seiten, die am Ende jedes Schritts verlinkt sind, gehen tiefer.
 
-## 1. Connect FIO {#step-1}
+## 1. FIO verbinden {#step-1}
 
-[[FIO]] is a free community browser extension that reads your game data. With it, PRUNplanner knows what stands on your planets and what's in your stores.
+[[fio|FIO]] ist eine kostenlose Browser-Erweiterung der Community, die deine Spieldaten liest. Damit weiß PRUNplanner, was auf deinen Planeten steht und was in deinen Lagern liegt.
 
-![The FIO connection on the Profile page, connected, with the PrUn Username and FIO API Key fields](/images/help/guides/hand-off-fio.webp)
+![Die FIO-Verbindung auf der Profilseite, verbunden, mit den Feldern PrUn Benutzername und FIO-API-Schlüssel](/images/help/guides/hand-off-fio.webp)
 
-1. Install the FIO extension and register your FIO account from the game's extensions button.
-2. On the FIO website, create an API key for PRUNplanner.
-3. In your [Profile](/profile), under **FIO connection**, enter the **FIO API Key** and your **PrUn Username** and press **Save**.
+1. Installiere die FIO-Erweiterung und registriere dein FIO-Konto über den Erweiterungs-Button im Spiel.
+2. Erstelle auf der FIO-Website einen API-Schlüssel für PRUNplanner.
+3. Gib in deinem [Profil](/profile) unter **FIO-Verbindung** den **FIO-API-Schlüssel** und deinen **PrUn Benutzername** ein und drück **Speichern**.
 
-Once it works, the FIO icon at the bottom of the side menu gets a green dot. Hover it to see **FIO Active** and when FIO last updated. **FIO Burn** and **FIO Repair** now appear under Tools. While you use PRUNplanner, your FIO data is at most about 30 to 45 minutes old.
+Sobald es funktioniert, bekommt das FIO-Symbol unten im Seitenmenü einen grünen Punkt. Fahr mit der Maus darüber, um **FIO Aktiv** zu sehen und wann FIO zuletzt aktualisiert hat. **FIO Verbrauch** und **FIO Reparieren** erscheinen jetzt unter den Werkzeugen. Während du PRUNplanner nutzt, sind deine FIO-Daten höchstens etwa 30 bis 45 Minuten alt.
 
-More: [FIO connection](/help/profile#fio-connection).
+Mehr: [FIO-Verbindung](/help/profile#fio-connection).
 
-## 2. Buy and ship the construction materials {#step-2}
+## 2. Baumaterialien kaufen und versenden {#step-2}
 
-Open the plan of the base (from the side menu or the plan list on [Empire](/empire)) and go to its **Construction** tab, the [[construction-cart|construction cart]].
+Öffne den Plan der Basis (über das Seitenmenü oder die Planliste unter [Imperium](/empire)) und geh zu seinem Tab **Konstruktion**, dem [[construction-cart|Bauwagen]].
 
-![The Construction tool of a plan: Built, Amount and Planned per building, and the XIT button](/images/help/guides/hand-off-construction.webp)
+![Das Werkzeug Konstruktion eines Plans: Gebaut, Anzahl und Geplant pro Gebäude, und der XIT-Button](/images/help/guides/hand-off-construction.webp)
 
-- **Built** starts at what FIO sees on the planet, and **Amount** is what's left to build.
-- **Materials to buy** takes off the stock of the storage you pick under **Storage**, so **Need** is what you still have to get. As an example, with an **Amount** of 120 BSE and 40 in storage, **Need** is 80. With 150 in storage it's 0, never below.
-- A warning next to **Amount** tells you when the buildings would need more workers than their habitations house.
+- **Gebaut** startet bei dem, was FIO auf dem Planeten sieht, und **Anzahl** ist, was noch zu bauen ist.
+- **Zu kaufende Materialien** zieht den Bestand des Lagers ab, das du unter **Lager** wählst, **Bedarf** ist also, was du noch besorgen musst. Ein Beispiel: Bei einer **Anzahl** von 120 BSE und 40 im Lager ist **Bedarf** 80. Mit 150 im Lager ist er 0, nie weniger.
+- Eine Warnung neben **Anzahl** sagt dir, wenn die Gebäude mehr Arbeiter bräuchten, als ihre Unterkünfte unterbringen.
 
-The XIT button next to **Storage** ships only **Need**. The one at the top of the tool ships everything and ignores stock.
+Der XIT-Button neben **Lager** verschickt nur den **Bedarf**. Der oben im Werkzeug verschickt alles und ignoriert den Bestand.
 
-Read more: [Construction](/help/plan_tools#construction).
+Mehr dazu: [Konstruktion](/help/plan_tools#construction).
 
-## 3. Plan the first supply {#step-3}
+## 3. Die erste Versorgung planen {#step-3}
 
-Open the **Supply** tab, the [[supply-cart|supply cart]]. It lists the workforce consumables and production inputs the base needs for **Stock Duration (days)** (20 by default), minus what's in stock.
+Öffne den Tab **Versorgung**, den [[supply-cart|Versorgungswagen]]. Er listet die Verbrauchsgüter der Belegschaft und die Produktions-Inputs, die die Basis für **Bestandsverfügbarkeit (Tage)** (standardmäßig 20) braucht, abzüglich dessen, was auf Lager ist.
 
-![The Supply tool of a plan with its XIT buttons](/images/help/guides/hand-off-supply.webp)
+![Das Werkzeug Versorgung eines Plans mit seinen XIT-Buttons](/images/help/guides/hand-off-supply.webp)
 
 > [!tip]
-> For the very first flight, use **XIT Initial**. The plain XIT button nets out what the base makes itself, so a base that makes its own DW or RAT would arrive without any before production starts.
+> Nimm für den allerersten Flug **XIT Erstversorgung**. Der einfache XIT-Button rechnet heraus, was die Basis selbst herstellt, eine Basis, die ihr eigenes DW oder RAT herstellt, käme also ohne an, bevor die Produktion startet.
 
-More: [Supply](/help/plan_tools#supply), [XIT and XIT Initial](/help/plan_tools#supply-xit).
+Mehr: [Versorgung](/help/plan_tools#supply), [XIT und XIT Erstversorgung](/help/plan_tools#supply-xit).
 
-## 4. Run the XIT package in the game {#step-4}
+## 4. Das XIT-Paket im Spiel ausführen {#step-4}
 
-Every XIT button opens a drawer with a package for [Refined PrUn](https://github.com/refined-prun/refined-prun), the browser extension for the game.
+Jeder XIT-Button öffnet eine Schublade mit einem Paket für [Refined PrUn](https://github.com/refined-prun/refined-prun), die Browser-Erweiterung für das Spiel.
 
-1. Pick **Origin**: a station warehouse, or **Configure on Execution** to choose when you run it.
-2. Leave **Buy From CX** on to buy the materials on that station's exchange first. It needs a warehouse origin.
-3. **Copy** the JSON.
-4. In the game, Refined PrUn runs it with its XIT ACT command. You pick the destination when it runs.
+1. Wähle die **Herkunft**: ein Stationslager oder **Bei Ausführung konfigurieren**, um beim Ausführen zu wählen.
+2. Lass **Von CX Kaufen** an, um die Materialien zuerst am Marktplatz dieser Station zu kaufen. Das braucht ein Lager als Herkunft.
+3. Mit **Kopieren** kopierst du das JSON.
+4. Im Spiel führt Refined PrUn es mit seinem Befehl XIT ACT aus. Das Ziel wählst du beim Ausführen.
 
-PRUNplanner saves **Origin** and **Buy From CX** with your preferences, and every XIT button shares them.
+PRUNplanner speichert **Herkunft** und **Von CX Kaufen** in deinen Einstellungen, und jeder XIT-Button nutzt sie gemeinsam.
 
-Details: [XIT actions](/help/plan_tools#xit).
+Details: [XIT-Aktionen](/help/plan_tools#xit).
 
-## 5. Keep your bases supplied with FIO Burn {#step-5}
+## 5. Deine Basen mit FIO Verbrauch versorgt halten {#step-5}
 
-Open [FIO Burn](/fio/burn) and pick the empire. For each plan, it divides the stock of your base store on that planet by the plan's net daily use and shows how many days each material lasts.
+Öffne [FIO Verbrauch](/fio/burn) und wähle das Imperium. Für jeden Plan teilt es den Bestand deines Basislagers auf diesem Planeten durch den Netto-Tagesverbrauch des Plans und zeigt, wie viele Tage jedes Material reicht.
 
-![FIO Burn: the burn thresholds and the days left per base](/images/help/guides/hand-off-burn.webp)
+![FIO Verbrauch: die Verbrauchsschwellen und die verbleibenden Tage pro Basis](/images/help/guides/hand-off-burn.webp)
 
-- Red and yellow mark materials at or below your thresholds (5 and 10 days by default). As an example, 160 RAT in store and a net use of 20 a day last 160 ÷ 20 = 8 days. That's at or below 10 but above 5, so it shows yellow.
-- The XIT button on a plan opens its XIT resupply. Set **Target Days** or let **Fit Ship** pick the most days that fit a ship size, then **Copy XIT JSON**.
+- Rot und Gelb markieren Materialien auf oder unter deinen Schwellen (standardmäßig 5 und 10 Tage). Ein Beispiel: 160 RAT im Lager bei einem Nettoverbrauch von 20 am Tag reichen 160 ÷ 20 = 8 Tage. Das ist auf oder unter 10, aber über 5, also erscheint es gelb.
+- Der XIT-Button bei einem Plan öffnet dessen XIT-Nachschub. Stell **Ziel-Tage** ein oder lass **Auf Schiff anpassen** die meisten Tage wählen, die in eine Schiffsgröße passen, dann **XIT JSON kopieren**.
 
 > [!warning]
-> FIO Burn counts from your plan, not from what really runs in the game. Keep one plan per planet in the empire and keep the plan in step with your base, or the days are off.
+> FIO Verbrauch rechnet mit deinem Plan, nicht mit dem, was im Spiel wirklich läuft. Halte einen Plan pro Planet im Imperium und halte den Plan im Einklang mit deiner Basis, sonst stimmen die Tage nicht.
 
-More: [FIO Burn](/help/fio_burn), [XIT Resupply](/help/fio_burn#xit-resupply).
+Mehr: [FIO Verbrauch](/help/fio_burn), [XIT-Nachschub](/help/fio_burn#xit-resupply).
 
-## 6. Plan repairs with FIO Repair {#step-6}
+## 6. Reparaturen mit FIO Reparieren planen {#step-6}
 
-Buildings wear, and the [[repair]] bill grows the longer you wait. A plan's **Repair** tab finds the best interval for each building type.
+Gebäude nutzen sich ab, und die [[repair|Reparatur]]rechnung wächst, je länger du wartest. Der Tab **Reparatur** eines Plans findet das beste Intervall für jeden Gebäudetyp.
 
-![FIO Repair: when bases come due, and the bases with their repair dates](/images/help/guides/hand-off-repair.webp)
+![FIO Reparieren: wann Basen fällig werden, und die Basen mit ihren Reparaturterminen](/images/help/guides/hand-off-repair.webp)
 
-Open [FIO Repair](/fio/repair). It matches your plans to your real bases and shows which bases are overdue, due soon or due later.
+Öffne [FIO Reparieren](/fio/repair). Es ordnet deine Pläne deinen echten Basen zu und zeigt, welche Basen überfällig, bald fällig oder später fällig sind.
 
-1. Open a base. Check that **Repair target** names the plan you run there.
-2. Under **Repair flight**, set **Arrives in** to the days your ship needs.
-3. **XIT Repair** builds the package with the repair materials.
-4. Fly to the base, unload and run BRA in the game to repair all its buildings.
+1. Öffne eine Basis. Prüfe, ob **Reparaturziel** den Plan nennt, den du dort betreibst.
+2. Stell unter **Reparaturflug** **Ankunft in** auf die Tage, die dein Schiff braucht.
+3. **XIT Reparatur** baut das Paket mit den Reparaturmaterialien.
+4. Flieg zur Basis, entlade und führe im Spiel BRA aus, um alle ihre Gebäude zu reparieren.
 
-Read more: [FIO Repair](/help/fio_repair#repair-flight), [Repair](/help/plan_tools#repair).
+Mehr dazu: [FIO Reparieren](/help/fio_repair#repair-flight), [Reparatur](/help/plan_tools#repair).
 
-## 7. Where the game takes over {#step-7}
+## 7. Wo das Spiel übernimmt {#step-7}
 
-PRUNplanner's job is the plan: what to build, where, at what price, and what it pays back. It ends in an export you run in the game. Running your bases day to day happens in the game and its browser extensions, Refined PrUn and its OOG fork, which work inside the game with your live data.
+PRUNplanners Aufgabe ist der Plan: was du baust, wo, zu welchem Preis und wann es sich amortisiert. Er endet in einem Export, den du im Spiel ausführst. Der tägliche Betrieb deiner Basen passiert im Spiel und in seinen Browser-Erweiterungen, Refined PrUn und dessen OOG-Fork, die im Spiel mit deinen Live-Daten arbeiten.
 
-- Changed your base in the game? Change the plan too. FIO Burn and FIO Repair count from your plans, so a plan that differs from your base gives different days and due dates.
-- Planning an expansion? Go back to the plan, a copy of it or a new plan, and compare before you build.
-- Want your numbers in a spreadsheet? An [API key](/help/api_keys) lets a Google Sheet read your empire's Material I/O.
+- Du hast deine Basis im Spiel geändert? Ändere auch den Plan. FIO Verbrauch und FIO Reparieren rechnen mit deinen Plänen, ein Plan, der von deiner Basis abweicht, ergibt also andere Tage und Fälligkeiten.
+- Du planst eine Erweiterung? Geh zurück zum Plan, zu einer Kopie davon oder zu einem neuen Plan, und vergleiche, bevor du baust.
+- Du willst deine Zahlen in einer Tabelle? Mit einem [API-Schlüssel](/help/api_keys) kann ein Google Sheet das Material I/O deines Imperiums lesen.
 
-More: [Your first base](/help/guide_first_base), [Grow to an empire](/help/guide_empire).
+Mehr: [Deine erste Basis](/help/guide_first_base), [Zum Imperium wachsen](/help/guide_empire).
 
-## Next {#next}
+## Wie geht es weiter {#next}
 
-- [Grow to an empire](/help/guide_empire): check all your bases together before you add the next one.
-- [Glossary](/help/glossary): the game and planning terms in one place.
+- [Zum Imperium wachsen](/help/guide_empire): Prüfe alle deine Basen zusammen, bevor du die nächste hinzufügst.
+- [Glossar](/help/glossary): die Begriffe aus Spiel und Planung an einem Ort.

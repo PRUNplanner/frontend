@@ -5,7 +5,7 @@
 	"save_status": {
 		"unsaved": "Nicht gespeicherte Änderungen",
 		"saving": "Speichern…",
-		"saved_at": "Gespeichert um {time}",
+		"saved_at": "Gespeichert {time}",
 		"failed": "Speichern fehlgeschlagen",
 		"saved": "Gespeichert",
 		"retry": "Speichern wiederholen",
@@ -73,7 +73,7 @@
 		"undo": "Widerrufen",
 		"redo": "Wiederherstellen",
 		"building_removed": "Gebäude entfernt",
-		"recipe_removed": "Rezept entfernt",
+		"recipe_removed": "Auftrag entfernt",
 		"undo_key": "Widerrufen (Ctrl+Z)",
 		"redo_key": "Wiederherstellen (Ctrl+Shift+Z)"
 	},
@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Kennzahlen",
 				"output": "Output-Wert",
-				"costs": "Kosten inkl. Abnutzung",
+				"costs": "Kosten inkl. Abnutzung und Gebühren",
 				"margin": "Marge",
 				"earner": "bringt {share} des Output-Werts ein. Sein Preis entscheidet über diesen Plan.",
 				"cost": "ist mit {share} des Output-Werts der größte Kostenpunkt.",
@@ -391,7 +391,7 @@
 				"cost_total_unit": "ȼ Gesamt",
 				"workforce": "Belegschaft",
 				"total_cost": "Gesamtkosten",
-				"recipe_profit": "Rezept-Profit",
+				"recipe_profit": "Auftrags-Profit",
 				"cost_split": "Kostenteilung",
 				"market": "Markt {price} · {diff} %"
 			}
@@ -412,16 +412,16 @@
 				"building": "Gebäude",
 				"in_plans": "In Plänen",
 				"amount": "Anzahl",
-				"recipes": "Typische Rezepte"
+				"recipes": "Typische Aufträge"
 			},
 			"typical_amount": "typ. {amount}x",
-			"no_recipe": "kein typisches Rezept",
+			"no_recipe": "kein typischer Auftrag",
 			"experts": "Experten in Plänen hier",
 			"expert_share": "{expert} in {percent} von Plänen",
 			"expert_added": "fügt {amount} hinzu",
 			"based_on": "Basiert auf Plänen, die in den letzten 180 Tagen von Spielern geändert wurden, die in den letzten 90 Tagen aktiv waren · mehrmals täglich aktualisiert",
 			"turn_off": "Du kannst Planvorschläge im {link} deaktivieren",
-			"turn_off_link": "Profil & Präferenzen",
+			"turn_off_link": "Profil › Einstellungen",
 			"start_empty": "Leer starten",
 			"apply": "Typisches Setup verwenden ({count})",
 			"applied": "Typisches Setup hinzugefügt: {n} Gebäude | Typisches Setup hinzugefügt: {n} Gebäude",
@@ -651,8 +651,8 @@
 			}
 		},
 		"production_building": {
-			"no_recipe": "Kein aktives @:terms.recipes_plural",
-			"no_recipe_available": "Kein Rezept für dieses Gebäude verfügbar",
+			"no_recipe": "Keine aktiven @:terms.recipes_plural",
+			"no_recipe_available": "Kein Auftrag für dieses Gebäude verfügbar",
 			"zero_reason": {
 				"FERTILITY": "Planet ist nicht fruchtbar",
 				"WORKFORCE": "Keine Arbeitskräfte"
@@ -667,7 +667,7 @@
 			"buttons": {
 				"cogm": "@:terms.cogm"
 			},
-			"amount_label": "Anzahl Rezept {recipe}"
+			"amount_label": "Anzahl Auftrag {recipe}"
 		},
 		"storage": {
 			"table": {
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Profit / Tag",
-		"revenue_cost": "Umsatz {revenue} · Kosten {cost} inkl. {degradation} Abnutzung",
+		"revenue_cost": "Umsatz {revenue} · Kosten {cost} inkl. {degradation} Abnutzung und {fees} Produktionsgebühren",
 		"payback": "Amortisation",
 		"build_cost": "ȼ Baukosten",
 		"profit_per_area": "ȼ Profit / Fläche",
@@ -759,7 +759,7 @@
 		}
 	},
 	"production": {
-		"counts": "{buildings} Gebäude · {units} Einheiten · {recipes} Rezepte",
+		"counts": "{buildings} Gebäude · {units} Einheiten · {recipes} Aufträge",
 		"collapse_all": "Alle einklappen",
 		"expand_all": "Alle ausklappen",
 		"empty": "Noch keine Gebäude. Füge das erste oben mit „{select}“ hinzu.",
@@ -770,22 +770,22 @@
 			"daily": "ȼ / Tag",
 			"area": "Fläche"
 		},
-		"fold": "Rezepte von {building} ein- oder ausblenden",
+		"fold": "Aufträge von {building} ein- oder ausblenden",
 		"experts": "{n} Experte | {n} Experten",
 		"delete_building": "{building} löschen, rückgängig mit Ctrl+Z",
-		"change_recipe": "Rezept {recipe} ändern",
-		"recipe": "Rezept",
+		"change_recipe": "Auftrag {recipe} ändern",
+		"recipe": "Auftrag",
 		"cogm_label": "COGM: Herstellungskosten für {recipe}",
 		"cogc_match": "Das COGC des Planeten fördert dieses Fachgebiet",
 		"cogc_no_match": "Das COGC des Planeten fördert dieses Fachgebiet nicht",
-		"delete_recipe": "Rezept {recipe} löschen, rückgängig mit Ctrl+Z",
-		"add_recipe": "+ Rezept",
+		"delete_recipe": "Auftrag {recipe} löschen, rückgängig mit Ctrl+Z",
+		"add_recipe": "+ Auftrag",
 		"card_meta": "ȼ/Tag · {efficiency} · Fläche {area}",
 		"recipe_daily": "Anteil dieses Auftrags an den ȼ/Tag des Gebäudes"
 	},
 	"picker": {
-		"change_title": "Rezept ändern",
-		"add_title": "Rezept als neuen Auftrag zu {building} hinzufügen",
+		"change_title": "Auftrag ändern",
+		"add_title": "Neuen Auftrag zu {building} hinzufügen",
 		"replacing": "ersetzt {amount} × {ticker}",
 		"close": "Schließen",
 		"sort": {
@@ -802,11 +802,11 @@
 			"payback": "Amortisation",
 			"plans": "Pläne"
 		},
-		"dependency": "Deine {buildings} verarbeiten dieses {ticker} zu {outputs}. Ersetzen heißt, {amount} {ticker} pro Tag zu kaufen. Um beides zu behalten, nutze „+ Rezept“.",
-		"dependency_workforce": "Deine Belegschaft verbraucht dieses {ticker}. Ersetzen heißt, {amount} {ticker} pro Tag zu kaufen. Um beides zu behalten, nutze „+ Rezept“.",
+		"dependency": "Deine {buildings} verarbeiten dieses {ticker} zu {outputs}. Ersetzen heißt, {amount} {ticker} pro Tag zu kaufen. Um beides zu behalten, nutze „+ Auftrag“.",
+		"dependency_workforce": "Deine Belegschaft verbraucht dieses {ticker}. Ersetzen heißt, {amount} {ticker} pro Tag zu kaufen. Um beides zu behalten, nutze „+ Auftrag“.",
 		"uses_made": "nutzt {tickers} aus dem Plan",
 		"feeds": "versorgt {buildings}",
-		"current": "aktuelles Rezept",
+		"current": "aktueller Auftrag",
 		"in_plan": "im Plan",
 		"vs_now": "{delta} vs. jetzt",
 		"below_threshold": "< 5 %",
@@ -896,7 +896,7 @@
 		"undo": "Rückgängig",
 		"reset": "Auf Standard zurücksetzen",
 		"save": "Speichern",
-		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"saved": "Als eigenes Layout gespeichert, gilt für alle deine Pläne auf jedem Gerät",
 		"replace_question": "Damit ersetzt du dein aktuelles eigenes Layout.",
 		"replace": "Eigenes Layout ersetzen",
 		"keep_editing": "Weiter bearbeiten",

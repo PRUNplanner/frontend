@@ -2,21 +2,21 @@
 	"view_title": "Управление",
 	"title": "Управление",
 	"empire": {
-		"title": "Конфигурация Империи",
-		"description": "Удаление империй не удалит связанные с ними планы — они просто не будут назначены. Вы можете редактировать существующие империи в просмотре империи. Для обеспечения правильного расчета эффективности плана, убедитесь, что в каждой империи указана ваша Фракция и соответствующие разрешения.",
+		"title": "Конфигурация империй",
+		"description": "При удалении империи связанные с ней планы не удаляются — они просто остаются без империи. Редактировать существующие империи можно на странице «Империя». Чтобы эффективность планов рассчитывалась правильно, укажи в каждой империи свою фракцию и нужные разрешения.",
 		"buttons": {
 			"new_empire": "Новая империя"
 		},
 		"deletion": {
-			"title": "Confirm Empire Deletion",
-			"content": "Are you sure? Deleting the Empire will not delete plans assigned to it."
+			"title": "Подтверди удаление империи",
+			"content": "Точно? При удалении империи назначенные ей планы не удаляются."
 		},
 		"form": {
-			"empire_name": "@:terms.empire название",
+			"empire_name": "Название империи",
 			"faction": "@:terms.faction",
-			"permits_total": "Всего @:terms.permits_plural",
-			"permits_used": "Использовано @:terms.permits_plural",
-			"empire_placeholder": "max. 100 characters"
+			"permits_total": "Всего разрешений",
+			"permits_used": "Использовано разрешений",
+			"empire_placeholder": "не больше 100 символов"
 		},
 		"table": {
 			"empire_name": "@:terms.empire",
@@ -25,87 +25,87 @@
 			"plans": "@:terms.plans_plural",
 			"cx": "CX",
 			"nodata_title": "Нет доступных империй",
-			"nodata_label": "Создайте свою первую Империю"
+			"nodata_label": "Создай свою первую империю"
 		}
 	},
 	"cx": {
-		"title": "Конфигурация CX",
-		"description": "Удаление настроек CX удалит все параметры обмена и материалов. Назначенные империи не будут затронуты, но они больше не будут использовать удаленные настройки. Не забудьте назначить новую конфигурацию CX.",
+		"title": "Настройки CX",
+		"description": "При удалении настроек CX удаляются все их правила для бирж и материалов. Назначенные империи останутся, но больше не будут использовать удалённые настройки. Не забудь назначить новые настройки CX.",
 		"buttons": {
 			"new_cx": "Новая @:terms.cx"
 		},
 		"deletion": {
-			"title": "Confirm CX Deletion",
-			"content": "Are you sure? Deleting the CX will delete all preferences."
+			"title": "Подтверди удаление CX",
+			"content": "Точно? При удалении CX удалятся все её правила."
 		},
 		"form": {
-			"cx_name": "@:terms.cx название",
-			"cx_placeholder": "Имя CX (максимум 100 символов)"
+			"cx_name": "Название CX",
+			"cx_placeholder": "Название CX (не больше 100 символов)"
 		},
 		"table": {
-			"cx_name": "@:terms.cx название",
-			"assigned_to_empire": "Назначить империю?",
+			"cx_name": "Название CX",
+			"assigned_to_empire": "Назначена империи?",
 			"nodata_title": "Нет доступных @:terms.cx.",
-			"nodata_label": "Укажите предпочитаемую биржу."
+			"nodata_label": "Создай свои первые настройки биржи."
 		}
 	},
 	"assignments": {
-		"title": "План ↔ Назначения империи",
-		"description": "Каждая запланированная база может быть назначена нескольким империям. Это позволяет одновременно отслеживать вашу текущую империю в Prosperous Universe, производственные цепочки корпорации или планы будущего расширения.",
+		"title": "Назначение планов империям",
+		"description": "Каждую запланированную базу можно назначить нескольким империям. Так можно одновременно отслеживать свою текущую империю в Prosperous Universe, производственные цепочки корпорации или планы будущего расширения. Изменения сохраняются все вместе через панель внизу.",
 		"deletion": {
 			"title": "Подтверждение удаления плана",
-			"content": "Вы уверены? Удаление плана нельзя отменить."
+			"content": "Точно? Удаление плана нельзя отменить."
 		},
 		"table": {
 			"plan": "@:terms.plan",
-			"nodata_title": "No @:terms.plans_plural available",
-			"nodata_label": "Use Planet Search to create your first @:{'terms.plan'}.",
-			"assign_label": "{plan} in {empire}"
+			"nodata_title": "Нет доступных планов",
+			"nodata_label": "Создай свой первый план через поиск планет.",
+			"assign_label": "{plan} в {empire}"
 		},
-		"search": "Search plan or planet",
-		"filter_empire": "In empire",
-		"all_empires": "All empires",
-		"unassigned_only": "Unassigned only · {count}",
+		"search": "Поиск плана или планеты",
+		"filter_empire": "В империи",
+		"all_empires": "Все империи",
+		"unassigned_only": "Только без империи · {count}",
 		"plan_count": "{plans} · {empires}",
-		"plans": "{count} plan | {count} plans",
-		"empires": "{count} empire | {count} empires",
-		"empire_plans": "{count} plan | {count} plans",
-		"row_actions": "Actions for {plan}",
-		"row_actions_header": "Actions",
-		"will_add": "Will be added to {empire}",
-		"will_remove": "Will be removed from {empire}",
-		"add_all_shown": "Add all shown plans to {empire}",
-		"remove_all_shown": "Remove all shown plans from {empire}",
-		"no_match": "No plans match the search and filters.",
+		"plans": "{count} планов | {count} план | {count} плана | {count} планов",
+		"empires": "{count} империй | {count} империя | {count} империи | {count} империй",
+		"empire_plans": "{count} планов | {count} план | {count} плана | {count} планов",
+		"row_actions": "Действия для {plan}",
+		"row_actions_header": "Действия",
+		"will_add": "Будет добавлен в {empire}",
+		"will_remove": "Будет удалён из {empire}",
+		"add_all_shown": "Добавить все показанные планы в {empire}",
+		"remove_all_shown": "Убрать все показанные планы из {empire}",
+		"no_match": "Нет планов, подходящих под поиск и фильтры.",
 		"selection": {
-			"select_all_shown": "Select all shown plans",
-			"clear_all_shown": "Deselect all shown plans",
-			"select_label": "Select {plan}",
-			"count": "{count} plan selected | {count} plans selected",
-			"delete": "Delete selected…",
-			"clear": "Clear selection",
-			"deleting": "Deleting {done} of {total}…",
-			"confirm_title": "Delete {count} plan? | Delete {count} plans?",
-			"confirm_content": "{names} will be deleted. This can't be reversed.",
-			"more": "{names} and {count} more",
-			"failed": "{count} plan couldn't be deleted and stays selected. | {count} plans couldn't be deleted and stay selected."
+			"select_all_shown": "Выбрать все показанные планы",
+			"clear_all_shown": "Снять выбор со всех показанных планов",
+			"select_label": "Выбрать {plan}",
+			"count": "Выбрано {count} планов | Выбран {count} план | Выбрано {count} плана | Выбрано {count} планов",
+			"delete": "Удалить выбранные…",
+			"clear": "Снять выбор",
+			"deleting": "Удаление: {done} из {total}…",
+			"confirm_title": "Удалить {count} планов? | Удалить {count} план? | Удалить {count} плана? | Удалить {count} планов?",
+			"confirm_content": "Будет удалено: {names}. Это нельзя отменить.",
+			"more": "{names} и ещё {count}",
+			"failed": "{count} планов не удалось удалить, они остаются выбранными. | {count} план не удалось удалить, он остаётся выбранным. | {count} плана не удалось удалить, они остаются выбранными. | {count} планов не удалось удалить, они остаются выбранными."
 		},
 		"menu": {
-			"clone": "Clone",
-			"share": "Share…",
-			"delete": "Delete…",
-			"clone_name": "{name} (Clone)"
+			"clone": "Клонировать",
+			"share": "Поделиться…",
+			"delete": "Удалить…",
+			"clone_name": "{name} (копия)"
 		}
 	},
 	"save_bar": {
-		"label": "Unsaved changes",
-		"unsaved": "{count} unsaved change | {count} unsaved changes",
-		"saving": "Saving {count} change… | Saving {count} changes…",
-		"error": "Couldn't save. Changes kept.",
-		"save": "Save changes",
-		"retry": "Retry",
-		"discard": "Discard",
-		"all_saved": "All changes saved",
-		"leave_unsaved": "You have unsaved Management changes. Leave without saving?"
+		"label": "Несохранённые изменения",
+		"unsaved": "{count} несохранённых изменений | {count} несохранённое изменение | {count} несохранённых изменения | {count} несохранённых изменений",
+		"saving": "Сохранение {count} изменений… | Сохранение {count} изменения… | Сохранение {count} изменений… | Сохранение {count} изменений…",
+		"error": "Не удалось сохранить. Изменения не потеряны.",
+		"save": "Сохранить изменения",
+		"retry": "Повторить",
+		"discard": "Сбросить",
+		"all_saved": "Все изменения сохранены",
+		"leave_unsaved": "В разделе «Управление» есть несохранённые изменения. Уйти без сохранения?"
 	}
 }

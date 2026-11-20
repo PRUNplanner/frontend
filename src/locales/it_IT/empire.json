@@ -1,25 +1,25 @@
 {
 	"view_title": "Impero",
-	"switch_empire": "Cambia Impero",
-	"overview_hide": "Hide plan list",
-	"overview_show": "Show plan list",
+	"switch_empire": "Cambia impero",
+	"overview_hide": "Nascondi elenco piani",
+	"overview_show": "Mostra elenco piani",
 	"views": {
-		"label": "View",
-		"material_io": "I/O Materiali",
-		"analysis": "Statistiche",
-		"production_opportunities": "Opportunità Di Produzione"
+		"label": "Vista",
+		"material_io": "I/O materiali",
+		"analysis": "Analisi",
+		"production_opportunities": "Opportunità di produzione"
 	},
 	"configuration": {
 		"title": "Configurazione",
 		"form": {
 			"name": "Nome",
 			"faction": "Fazione",
-			"permits_total": "@:terms.permits_plural Totali",
-			"permits_used": "@:terms.permits_plural Utilizzati"
+			"permits_total": "@:terms.permits_plural totali",
+			"permits_used": "@:terms.permits_plural usati"
 		},
 		"sync_warning": {
 			"title": "Discrepanza rilevata:",
-			"body": "{configured} permessi configurati vs. {planned} pianificati. Sincronizza questi valori tramite il Buffer {hq_buffer} per garantire calcoli accurati dei bonus di fazione."
+			"body": "@:empire.configuration.sync_warning.title {configured} permessi configurati contro {planned} pianificati. Sincronizza questi valori con il tuo {hq_buffer} nel gioco per calcolare correttamente il bonus di fazione."
 		}
 	},
 	"plan_list": {
@@ -30,28 +30,28 @@
 			"management": "@:common.navigation.management",
 			"planet_search": "@:common.navigation.planet_search"
 		},
-		"permits_planned": "Totale @:terms.allows previsti: {permits}"
+		"permits_planned": "Permessi pianificati in totale: {permits}"
 	},
 	"material_io": {
-		"produced_by": "Produced by",
-		"consumed_by": "Consumed by",
-		"planets": "Planets",
-		"summary": "Summary",
-		"expand_all": "Expand all",
-		"expand_row": "Show planets for {ticker}",
-		"view_sides": "Producers · Consumers",
-		"view_net": "Net per planet",
-		"view_label": "Detail view",
-		"surplus": "Surplus",
-		"needs": "Needs",
-		"plan_count": "{count} plan | {count} plans",
-		"planet_count": "{count} planet | {count} planets",
-		"per_day": "{value} / day",
-		"makes_uses": "makes {makes} · uses {uses}",
-		"not_produced": "Not produced in this empire.",
-		"not_consumed": "Not consumed in this empire.",
-		"no_surplus": "No planet has a surplus.",
-		"no_needs": "No planet needs it."
+		"produced_by": "Prodotto da",
+		"consumed_by": "Consumato da",
+		"planets": "Pianeti",
+		"summary": "Riepilogo",
+		"expand_all": "Espandi tutto",
+		"expand_row": "Mostra i pianeti per {ticker}",
+		"view_sides": "Produttori · consumatori",
+		"view_net": "Netto per pianeta",
+		"view_label": "Vista dettagliata",
+		"surplus": "Eccedenza",
+		"needs": "Fabbisogno",
+		"plan_count": "{count} piano | {count} piani",
+		"planet_count": "{count} pianeta | {count} pianeti",
+		"per_day": "{value} / giorno",
+		"makes_uses": "produce {makes} · usa {uses}",
+		"not_produced": "Non prodotto in questo impero.",
+		"not_consumed": "Non consumato in questo impero.",
+		"no_surplus": "Nessun pianeta ha un'eccedenza.",
+		"no_needs": "Nessun pianeta ne ha bisogno."
 	},
 	"filters": {
 		"display": "Mostra",
@@ -60,108 +60,108 @@
 		"loadbalance": "Bilancio produzione/consumo"
 	},
 	"analysis": {
-		"plan_profit": "Plan Profit (ȼ)",
-		"material_profits": "Profitti dei Materiali",
-		"material_costs": "Costi dei Materiali",
-		"net_production": "Produzione Netta",
+		"plan_profit": "Profitto dei piani (ȼ)",
+		"material_profits": "Profitti dei materiali (ȼ)",
+		"material_costs": "Costi dei materiali (ȼ)",
+		"net_production": "Produzione netta",
 		"net_consumption": "Consumo netto",
-		"exclusive_production": "Produzione Esclusiva",
-		"exclusive_consumption": "Consumo Esclusivo",
+		"exclusive_production": "Produzione esclusiva",
+		"exclusive_consumption": "Consumo esclusivo",
 		"parts": {
-			"inputs": "Production inputs",
-			"workforce": "Workforce",
-			"degradation": "Degradation",
-			"fees": "Production fees",
-			"profit": "Profit",
-			"uncovered": "Cost not covered"
+			"inputs": "Input di produzione",
+			"workforce": "Forza lavoro",
+			"degradation": "Deterioramento",
+			"fees": "Commissioni di produzione",
+			"profit": "Profitto",
+			"uncovered": "Costo non coperto"
 		},
 		"kpi_split": {
-			"label": "Revenue split: {parts}",
-			"inputs": "Inputs {pct}",
-			"workforce": "Workforce {pct}",
-			"degradation": "Degradation {pct}",
-			"fees": "Fees {pct}",
-			"profit": "Profit {pct}",
-			"uncovered": "Not covered {pct}",
-			"of_cost": "Share of cost: revenue doesn't cover it"
+			"label": "Ripartizione dei ricavi: {parts}",
+			"inputs": "Input {pct}",
+			"workforce": "Forza lavoro {pct}",
+			"degradation": "Deterioramento {pct}",
+			"fees": "Commissioni {pct}",
+			"profit": "Profitto {pct}",
+			"uncovered": "Non coperto {pct}",
+			"of_cost": "Quota del costo: i ricavi non la coprono"
 		},
 		"revenue_split": {
-			"title": "Where each plan's revenue goes",
-			"caption": "Top {top} by profit · loss-making plans always shown",
-			"split": "Revenue split",
-			"margin": "Margin",
-			"revenue_day": "Revenue / day",
-			"other": "Other · {n} plan | Other · {n} plans",
-			"row_label": "{name}: margin {margin}, revenue {revenue} ȼ per day",
-			"empty": "No plans to split yet."
+			"title": "Dove vanno i ricavi di ogni piano",
+			"caption": "Primi {top} per profitto · i piani in perdita sono sempre mostrati",
+			"split": "Ripartizione dei ricavi",
+			"margin": "Margine",
+			"revenue_day": "Ricavi / giorno",
+			"other": "Altro · {n} piano | Altri · {n} piani",
+			"row_label": "{name}: margine {margin}, ricavi {revenue} ȼ al giorno",
+			"empty": "Ancora nessun piano da ripartire."
 		},
 		"butterfly": {
-			"title": "Materials moving the most ȼ",
-			"price": "ȼ / day",
-			"amount": "Units / day",
-			"metric_label": "Metric",
-			"buy": "← you buy (net consumed)",
-			"sell": "you sell (net produced) →",
-			"caption": "Top {top} of {n} materials · click a row to open it in Material I/O",
-			"row_label": "{ticker}: {direction} {value}, open in Material I/O",
-			"bought": "bought",
-			"sold": "sold",
-			"empty": "No materials bought or sold."
+			"title": "Materiali che muovono più ȼ",
+			"price": "ȼ / giorno",
+			"amount": "Unità / giorno",
+			"metric_label": "Metrica",
+			"buy": "← compri (consumo netto)",
+			"sell": "vendi (produzione netta) →",
+			"caption": "Primi {top} di {n} materiali · clicca una riga per aprirla in I/O materiali",
+			"row_label": "{ticker}: {direction} {value}, apri in I/O materiali",
+			"bought": "comprato",
+			"sold": "venduto",
+			"empty": "Nessun materiale comprato o venduto."
 		},
 		"more_charts": {
-			"title": "More charts",
-			"caption": "Plan profit · material profit & cost · net and exclusive production & consumption"
+			"title": "Altri grafici",
+			"caption": "Profitto dei piani · profitto e costo dei materiali · produzione e consumo netti ed esclusivi"
 		}
 	},
 	"opportunities": {
-		"headline": "Opportunità Di Produzione",
-		"intro": "Trova ricette per convertire i materiali in eccesso in altri prodotti. Questa vista identifica le opportunità di produzione in cui il tuo I/O Materiali mostra un delta positivo, dando priorità in base alla disponibilità dell'input",
+		"headline": "Opportunità di produzione",
+		"intro": "Trova ricette per convertire i materiali in eccesso in altri prodotti. Questa vista individua le opportunità di produzione in cui il tuo I/O materiali mostra un delta positivo, ordinate per disponibilità degli input",
 		"please_note": "Nota bene:",
-		"note": "Non fare affidamento solo sull'opportunità disponibile. Usa Il volume degli scambi e la panoramica degli scambi (passando il cursore sul materiale) per valutare la liquidità del mercato e il potenziale ROI. Usa gli indicatori per identificare quale materiale specifico sta limitando il tuo potenziale di espansione oppure se vendere il delta disponibile è più redditizio che passare a un’altra produzione.",
+		"note": "Non affidarti solo all'opportunità disponibile. Confronta i volumi di scambio e la panoramica delle borse (passando il cursore sul materiale) per valutare la liquidità del mercato e il potenziale ROI. Usa gli indicatori per capire quale materiale limita la tua crescita o se vendere il delta disponibile rende più che passare a un'altra produzione.",
 		"tiles": {
 			"opportunities": "Opportunità",
-			"delta_required": "Delta Richiesto",
-			"material_missing": "Materiali Mancante"
+			"delta_required": "Delta richiesto",
+			"material_missing": "Materiale mancante"
 		},
 		"table": {
 			"building": "Edificio",
-			"flow_inputs": "Production (Inputs → Outputs)",
+			"flow_inputs": "Produzione (input → output)",
 			"analysis": "Analisi",
-			"sell_inputs": "Vendi Input",
-			"sell_outputs": "Vendi Output",
-			"potential_batches": "Lotti Potenziali",
-			"delta_required": "Delta Richiesto",
+			"sell_inputs": "Vendi input",
+			"sell_outputs": "Vendi output",
+			"potential_batches": "Cicli potenziali",
+			"delta_required": "Delta richiesto",
 			"missing_material": "Materiali mancanti",
-			"missing": "Missing"
+			"missing": "Mancante"
 		}
 	},
 	"onboarding": {
-		"title": "Welcome to PRUNplanner",
-		"intro": "Three steps to your first base plan.",
+		"title": "Benvenuto in PRUNplanner",
+		"intro": "Tre passi verso il tuo primo piano di base.",
 		"empire": {
-			"title": "Your empire",
-			"help": "Faction and permits affect your plans' faction bonus and available area.",
-			"saved": "Saved"
+			"title": "Il tuo impero",
+			"help": "Fazione e permessi influiscono sul bonus di fazione dei tuoi piani e sull'area disponibile.",
+			"saved": "Salvato"
 		},
 		"plan": {
-			"title": "Plan your first base",
-			"help": "Find a planet and create a plan there. It's added to this empire automatically.",
+			"title": "Pianifica la tua prima base",
+			"help": "Trova un pianeta e crea lì un piano. Viene aggiunto automaticamente a questo impero.",
 			"action": "@:common.navigation.planet_search"
 		},
 		"prices": {
-			"title": "Prices",
-			"help": "Prices use the universe 30-day average. Change which exchange each material is bought and sold on in {exchanges}.",
-			"exchanges": "Exchanges"
+			"title": "Prezzi",
+			"help": "I prezzi usano la media a 30 giorni dell'universo. Scegli su quale borsa comprare e vendere ogni materiale in {exchanges}.",
+			"exchanges": "Borse"
 		}
 	},
 	"cost_overview": {
-		"shipping": "Shipping"
+		"shipping": "Spedizione"
 	},
 	"empty": {
-		"title": "No empires yet",
-		"text": "An empire groups your base plans and holds your faction and permits.",
-		"create": "Create empire",
-		"manage": "Manage empires"
+		"title": "Ancora nessun impero",
+		"text": "Un impero raggruppa i tuoi piani di base e contiene la tua fazione e i tuoi permessi.",
+		"create": "Crea impero",
+		"manage": "Gestisci imperi"
 	},
-	"unknown_empire": "Unknown"
+	"unknown_empire": "Sconosciuto"
 }

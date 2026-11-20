@@ -16,7 +16,7 @@
 		"throttled": "Zu viele Änderungen. Bitte warte eine Minute und versuche es erneut.",
 		"buttons": {
 			"enter_code": "Code eingeben",
-			"resend_code": "Code erneut senden"
+			"resend_code": "Neuen Code senden"
 		},
 		"form": {
 			"fio_apikey": "FIO-API-Schlüssel",
@@ -62,7 +62,7 @@
 		"stores": {
 			"materials": "Materialien",
 			"buildings": "Gebäude",
-			"recipes": "Rezepte",
+			"recipes": "Aufträge",
 			"planets": "Planeten",
 			"exchanges": "Marktplätze",
 			"plans": "Pläne",
@@ -123,7 +123,7 @@
 			"fio_repair_arrival": "Tage bis Ankunft",
 			"fio_repair_note": "Die XIT-Herkunft und „Von CX kaufen“ werden mit FIO Verbrauch geteilt.",
 			"plan_suggestions": "Plan-Vorschläge",
-			"plan_suggestions_help": "Beliebte Gebäude und Rezepte auf dem Planeten, Analytics und ein typisches Setup für leere Pläne",
+			"plan_suggestions_help": "Beliebte Gebäude und Aufträge auf dem Planeten, Analytics und ein typisches Setup für leere Pläne",
 			"privacy": "Privatsphäre",
 			"analytics": "Nutzungsanalyse",
 			"analytics_note": "Ermöglicht PRUNplanner Nutzungsereignisse, Fehlerberichte und Sitzungsaufzeichnungen zu sammeln. Diese Auswahl wird nur in diesem Browser gespeichert, also setze sie auf jedem Gerät, das du verwendest.",

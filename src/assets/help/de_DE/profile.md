@@ -1,87 +1,87 @@
-Your [Profile](/profile) is where you manage your account, link your game data through FIO, and set the preferences that decide how PRUNplanner's tools start. This page also covers logging in, signing up and resetting a password. Come here when you link FIO for the first time, when you want a tool to start with other settings, or to change your email or password.
+In deinem [Profil](/profile) verwaltest du dein Konto, verbindest deine Spieldaten über FIO und legst die Einstellungen fest, mit denen die Werkzeuge von PRUNplanner starten. Diese Seite behandelt auch Anmelden, Registrieren und das Zurücksetzen eines Passworts. Komm hierher, wenn du FIO zum ersten Mal verbindest, wenn ein Werkzeug mit anderen Einstellungen starten soll oder um deine E-Mail-Adresse oder dein Passwort zu ändern.
 
-## Your Account {#account}
+## Dein Konto {#account}
 
-### Logging in and signing up {#login-and-sign-up}
+### Anmelden und registrieren {#login-and-sign-up}
 
-- **Log in** with your username and password. Afterwards you land on your [Empire](/empire), unless you came from a link that brings you back to where you were.
-- **Create account** asks for a **Username** (at least 3 characters, no spaces), a **Password** (at least 8 characters, not only numbers, not a common password) and an optional email. To prove you play the game, you type the name of a planet whose ID you're shown. Open it in a Prosperous Universe buffer to read its name.
-- A new account starts with an empire, "My Empire", and an [[exchange-preference|exchange preference]] assigned to it, "My Exchange Preference" (Universe · VWAP 30D). See [Your first base](/help/guide_first_base).
+- **Anmelden** mit deinem Benutzernamen und Passwort. Danach landest du in deinem [Imperium](/empire), außer du kamst über einen Link, der dich dorthin zurückbringt, wo du warst.
+- **Konto erstellen** fragt nach einem **Benutzername** (mindestens 3 Zeichen, keine Leerzeichen), einem **Passwort** (mindestens 8 Zeichen, nicht nur Ziffern, kein gängiges Passwort) und optional einer E-Mail-Adresse. Um zu zeigen, dass du das Spiel spielst, tippst du den Namen eines Planeten ein, dessen ID dir angezeigt wird. Öffne ihn in einem Buffer von Prosperous Universe, um seinen Namen zu lesen.
+- Ein neues Konto beginnt mit einem Imperium, „My Empire“, und einer ihm zugewiesenen [[exchange-preference|Marktplatz-Präferenz]], „My Exchange Preference“ (Universe · VWAP 30D). Siehe [Deine erste Basis](/help/guide_first_base).
 
-### Email and account recovery {#email}
+### E-Mail und Kontowiederherstellung {#email}
 
-An email is optional, and PRUNplanner only uses it to reset your password. Without one, you can't reset a forgotten password.
+Eine E-Mail-Adresse ist optional, und PRUNplanner nutzt sie nur, um dein Passwort zurückzusetzen. Ohne sie kannst du ein vergessenes Passwort nicht zurücksetzen.
 
-1. Enter it under **Email Address** with your **Current password**, and press **Save**. Adding, changing and removing the address all need your current password.
-2. PRUNplanner sends an 8-character code that's valid for 24 hours. Press **Enter code** and type it, or click the link in the email on any device. **Send new code** sends another.
+1. Gib sie unter **E-Mail-Adresse** mit deinem **Aktuelles Passwort** ein und drück **Speichern**. Hinzufügen, Ändern und Entfernen der Adresse brauchen alle dein aktuelles Passwort.
+2. PRUNplanner schickt einen 8-stelligen Code, der 24 Stunden gültig ist. Drück **Code eingeben** und tipp ihn ein, oder klick auf einem beliebigen Gerät auf den Link in der E-Mail. **Neuen Code senden** schickt einen neuen.
 
-**Account recovery** shows where you stand: **Not set up** (no email), **Waiting for confirmation**, or **Ready** (resets go to this address). A new address only gets resets once you confirm it.
+**Kontowiederherstellung** zeigt, wo du stehst: **Nicht eingerichtet** (keine E-Mail), **Warte auf Bestätigung** oder **Bereit** (Zurücksetzungen gehen an diese Adresse). Eine neue Adresse bekommt Zurücksetzungen erst, wenn du sie bestätigst.
 
-Because a forgotten password can only be reset through a confirmed address, the Empire page shows a reminder while you have plans but no confirmed email. "Not now" hides it for 30 days, and "Don't remind me" hides it for good.
+Weil ein vergessenes Passwort nur über eine bestätigte Adresse zurückgesetzt werden kann, zeigt die Imperium-Seite eine Erinnerung, solange du Pläne, aber keine bestätigte E-Mail-Adresse hast. „Jetzt nicht“ blendet sie für 30 Tage aus, und „Nicht mehr nachfragen“ blendet sie dauerhaft aus.
 
-### Forgotten password {#password-reset}
+### Passwort vergessen {#password-reset}
 
-On the login form, **Forgot your password?** asks for your confirmed email address and sends a code there. Enter the code with a new password to set it.
+Im Anmeldeformular fragt **Passwort vergessen?** nach deiner bestätigten E-Mail-Adresse und schickt einen Code dorthin. Gib den Code mit einem neuen Passwort ein, um es zu setzen.
 
-### Changing your password {#change-password}
+### Passwort ändern {#change-password}
 
-Open **Change Password**, then enter your **Current Password** and a **New Password** (at least 8 characters).
+Öffne **Passwort ändern** und gib dann dein **Aktuelles Passwort** und ein **Neues Passwort** (mindestens 8 Zeichen) ein.
 
 > [!warning]
-> Changing or resetting your password logs you out everywhere, this browser included, and stops every [API key](/help/api_keys#validity) you created before. Create new keys afterwards and update your sheets and scripts.
+> Wenn du dein Passwort änderst oder zurücksetzt, wirst du überall abgemeldet, auch in diesem Browser, und jeder [API-Schlüssel](/help/api_keys#validity), den du vorher erstellt hast, hört auf zu funktionieren. Erstell danach neue Schlüssel und aktualisiere deine Tabellen und Skripte.
 
-## FIO Connection {#fio-connection}
+## FIO-Verbindung {#fio-connection}
 
-[[FIO]] is a free community browser extension that reads your game data. With it, PRUNplanner can show your real stock in [FIO Burn](/help/fio_burn), your buildings' condition in [FIO Repair](/help/fio_repair) and your stores in the API.
+[[fio|FIO]] ist eine kostenlose Browser-Erweiterung der Community, die deine Spieldaten ausliest. Damit kann PRUNplanner deinen echten Lagerbestand in [FIO Verbrauch](/help/fio_burn), den Zustand deiner Gebäude in [FIO Reparieren](/help/fio_repair) und deine Lager in der API zeigen.
 
-1. Install the FIO browser extension and register your FIO account from the game's extensions button.
-2. On the FIO website, open your settings and create an API key for PRUNplanner.
-3. Enter the **FIO API Key** and your **PrUn Username** under **FIO connection** and press **Save**.
+1. Installier die FIO-Browser-Erweiterung und registrier dein FIO-Konto über den Erweiterungs-Button im Spiel.
+2. Öffne auf der FIO-Website deine Einstellungen und erstell einen API-Schlüssel für PRUNplanner.
+3. Gib den **FIO-API-Schlüssel** und deinen **PrUn Benutzername** unter **FIO-Verbindung** ein und drück **Speichern**.
 
-PRUNplanner checks the key and tells you if FIO doesn't accept it or it belongs to another username. **FIO Status** then shows where the connection stands: not connected, loading your data, connected with the time of the last update, connected but no data yet (open the game with the FIO extension running), key rejected, or updates failing.
+PRUNplanner prüft den Schlüssel und sagt dir, wenn FIO ihn nicht annimmt oder er zu einem anderen Benutzernamen gehört. **FIO-Status** zeigt dann, wo die Verbindung steht: nicht verbunden, deine Daten werden geladen, verbunden mit der Zeit der letzten Aktualisierung, verbunden, aber noch keine Daten (öffne das Spiel bei laufender FIO-Erweiterung), Schlüssel abgelehnt oder Aktualisierungen schlagen fehl.
 
-While you use PRUNplanner, your FIO data is at most about 30–45 minutes old. After a week away, it refreshes when you log in. FIO itself only knows what the extension saw while you played.
+Während du PRUNplanner nutzt, sind deine FIO-Daten höchstens etwa 30–45 Minuten alt. Warst du eine Woche weg, werden sie beim Anmelden aktualisiert. FIO selbst kennt nur, was die Erweiterung gesehen hat, während du gespielt hast.
 
-PRUNplanner doesn't store your FIO data (storage and sites) in your browser. It loads it each time you open the app, and again every 5 minutes.
+PRUNplanner speichert deine FIO-Daten (Lager und Standorte) nicht in deinem Browser. Es lädt sie jedes Mal, wenn du die App öffnest, und dann alle 5 Minuten erneut.
 
-## Preferences {#preferences}
+## Einstellungen {#preferences}
 
-PRUNplanner saves preferences to your account as soon as you change them, so they follow you to every device. Only **Usage analytics** is stored in this browser alone.
+PRUNplanner speichert Einstellungen in deinem Konto, sobald du sie änderst, sie folgen dir also auf jedes Gerät. Nur **Nutzungsanalyse** wird allein in diesem Browser gespeichert.
 
-| Preference                                    | Default                                      | What it does                                                                                                                                                                                                                                                                                        |
-| --------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Language**                                  | English                                      | The app's language. Translations come from the community on Crowdin.                                                                                                                                                                                                |
-| **Color palette**                             | **Default (green / red)** | **Color-blind (blue / orange)** changes good/bad colours across the app.                                                                                                                                                                                         |
-| **Market card**                               | **On hover**                                 | With **On click only**, hovering a material shows nothing, and you click it for prices. See [Material market card](/help/exchanges#market-card).                                                                                                                    |
-| **Default Empire**                            | your first empire                            | The empire the Empire page and FIO Burn open on. Switching empire there changes it too.                                                                                                                                                                             |
-| **Default CX**                                | none                                         | The exchange preference these tools start with: ROI tools, Base ROI, HQ Calculator, Upkeep Prices, Production Chains and FIO Repair. Picking a preference in one of them changes it too. Without one, they use Universe · VWAP 30D. |
-| **Red Threshold**                             | 5                                            | FIO Burn: red when a base has this many days of supply left or fewer.                                                                                                                                                                                               |
-| **Yellow Threshold**                          | 10                                           | FIO Burn: yellow at this many days of supply or fewer.                                                                                                                                                                                                              |
-| **Resupply Days**                             | 20                                           | FIO Burn: the days an XIT resupply covers.                                                                                                                                                                                                                          |
-| **XIT Origin**                                | **Configure on Execution**                   | Where XIT resupply and repair loads start: a station warehouse, or chosen when the XIT runs.                                                                                                                                                                        |
-| **XIT Buy from CX**                           | on                                           | Buy the load at the origin's exchange (only with a warehouse origin). Shared by FIO Burn and FIO Repair.                                                                                                                                         |
-| **Repair every (no plan)** | 60                                           | FIO Repair: repair interval in days for bases without a matched plan (1–180).                                                                                                                                                                    |
-| **Due soon**                                  | 7                                            | FIO Repair: days before the target that count as due soon (0–60).                                                                                                                                                                                |
-| **Arrival days**                              | 2                                            | FIO Repair: days until a repair ship unloads (0–30).                                                                                                                                                                                             |
-| **Plan suggestions**                          | on                                           | Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans.                                                                                                                                                                                   |
-| **Usage analytics**                           | asked once, in a banner                      | Lets PRUNplanner collect usage events, error reports and session recordings. Stored in this browser only. It stays off when your browser sends Do-Not-Track or Global Privacy Control.                                                              |
+| Einstellung                                       | Standard                                     | Was sie bewirkt                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sprache**                                       | Englisch                                     | Die Sprache der App. Die Übersetzungen kommen von der Community auf Crowdin.                                                                                                                                                                                                                                            |
+| **Farbpalette**                                   | **Standard (grün / rot)** | **Farbenblind (blau / orange)** ändert die Farben für gut/schlecht in der ganzen App.                                                                                                                                                                                                                                |
+| **Marktkarte**                                    | **Beim Darüberfahren**                       | Mit **Nur beim Klicken** zeigt das Darüberfahren über ein Material nichts, und du klickst es für die Preise an. Siehe [Marktkarte eines Materials](/help/exchanges#market-card).                                                                                                                                        |
+| **Standard-Imperium**                             | dein erstes Imperium                         | Das Imperium, mit dem die Imperium-Seite und FIO Verbrauch öffnen. Wechselst du dort das Imperium, ändert sich auch diese Einstellung.                                                                                                                                                                                  |
+| **Standard CX**                                   | keine                                        | Die Marktplatz-Präferenz, mit der diese Werkzeuge starten: ROI-Werkzeuge, Basis-ROI, HQ Kalkulator, Instandhaltungskosten, Produktionsketten und FIO Reparieren. Wählst du in einem davon eine Präferenz, ändert sich auch diese Einstellung. Ohne eine nutzen sie Universe · VWAP 30D. |
+| **Roter Grenzwert**                               | 5                                            | FIO Verbrauch: rot, wenn eine Basis noch so viele Tage Vorrat hat oder weniger.                                                                                                                                                                                                                                         |
+| **Gelber Grenzwert**                              | 10                                           | FIO Verbrauch: gelb bei so vielen Tagen Vorrat oder weniger.                                                                                                                                                                                                                                                            |
+| **Nachschub-Tage**                                | 20                                           | FIO Verbrauch: die Tage, die ein XIT-Nachschub abdeckt.                                                                                                                                                                                                                                                                 |
+| **XIT-Herkunft**                                  | **Bei Ausführung konfigurieren**             | Wo XIT-Ladungen für Nachschub und Reparatur starten: ein Stations-Warenhaus oder beim Ausführen des XIT gewählt.                                                                                                                                                                                                        |
+| **XIT Von CX kaufen**                             | an                                           | Die Ladung am Marktplatz der Herkunft kaufen (nur mit einem Warenhaus als Herkunft). Gilt für FIO Verbrauch und FIO Reparieren.                                                                                                                                                                      |
+| **Reparatur alle (ohne Plan)** | 60                                           | FIO Reparieren: Reparaturintervall in Tagen für Basen ohne zugeordneten Plan (1–180).                                                                                                                                                                                                                |
+| **Bald fällig**                                   | 7                                            | FIO Reparieren: Tage vor dem Ziel, die als bald fällig gelten (0–60).                                                                                                                                                                                                                                |
+| **Tage bis Ankunft**                              | 2                                            | FIO Reparieren: Tage, bis ein Reparaturschiff entlädt (0–30).                                                                                                                                                                                                                                        |
+| **Plan-Vorschläge**                               | an                                           | Beliebte Gebäude und Aufträge auf dem Planeten, Planeten-Einblicke und ein typisches Setup für leere Pläne.                                                                                                                                                                                                                             |
+| **Nutzungsanalyse**                               | einmal gefragt, in einem Banner              | Erlaubt PRUNplanner, Nutzungsereignisse, Fehlerberichte und Sitzungsaufzeichnungen zu sammeln. Nur in diesem Browser gespeichert. Sie bleibt aus, wenn dein Browser Do-Not-Track oder Global Privacy Control sendet.                                                                                    |
 
-An [[exchange-preference|exchange preference]] is your set of rules for which exchange and price basis prices come from, so **Default CX** decides which prices the tools listed above start with.
+Eine [[exchange-preference|Marktplatz-Präferenz]] ist dein Satz an Regeln, aus welchem Marktplatz und mit welcher Preisbasis die Preise kommen, also entscheidet **Standard CX**, mit welchen Preisen die oben genannten Werkzeuge starten.
 
-The burn thresholds are _days of supply left_, not stock amounts. For example, with **Red Threshold** at 5 and **Yellow Threshold** at 10, a base with 4 days left shows red, one with 7 days shows yellow, and one with 12 days shows no colour. You can also set them on the [FIO Burn](/help/fio_burn#thresholds) page, and the repair settings on [FIO Repair](/help/fio_repair). It's the same setting in both places.
+Die Verbrauchs-Grenzwerte sind _verbleibende Tage Vorrat_, keine Lagermengen. Zum Beispiel zeigt mit **Roter Grenzwert** auf 5 und **Gelber Grenzwert** auf 10 eine Basis mit 4 verbleibenden Tagen Rot, eine mit 7 Tagen Gelb und eine mit 12 Tagen keine Farbe. Du kannst sie auch auf der Seite [FIO Verbrauch](/help/fio_burn#thresholds) einstellen und die Reparatur-Einstellungen unter [FIO Reparieren](/help/fio_repair). Es ist an beiden Stellen dieselbe Einstellung.
 
-**Plan-Specific Settings** lists plans that have settings of their own, for example visitation exclusions, built buildings in the construction cart, or auto-optimize turned off. You change them inside each plan.
+**Planspezifische Einstellungen** listet Pläne auf, die eigene Einstellungen haben, zum Beispiel Ausschlüsse bei der Besuchsfrequenz, gebaute Gebäude im Bauwagen oder ausgeschaltete Auto-Optimierung. Du änderst sie in jedem Plan selbst.
 
-## Browser Storage {#browser-storage}
+## Browser-Speicher {#browser-storage}
 
-To load fast and spare the server, PRUNplanner keeps a copy of game data and your planning data in your browser and refreshes it after set times. The **Browser Storage** table shows how much it holds. Your plans, empires and preferences are saved in your account, so this copy isn't the only place they live.
+Damit alles schnell lädt und der Server geschont wird, behält PRUNplanner eine Kopie der Spieldaten und deiner Planungsdaten in deinem Browser und aktualisiert sie nach festen Zeiten. Die Tabelle **Browser-Speicher** zeigt, wie viel darin liegt. Deine Pläne, Imperien und Einstellungen sind in deinem Konto gespeichert, diese Kopie ist also nicht der einzige Ort, an dem sie liegen.
 
-### Storage Categories {#storage-categories}
+### Speicherkategorien {#storage-categories}
 
-| Category      | What                                                                                             | Refreshed                              |
-| ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------- |
-| Game data     | Materials, buildings, recipes and planets (from FIO)                          | less often than exchanges              |
-| Exchanges     | Prices and market numbers: Ask and Bid from FIO, VWAPs calculated by PRUNplanner | about every 30 minutes                 |
-| Planning data | Your plans, empires, exchange preferences and shared plans                                       | a copy of what's saved in your account |
+| Kategorie     | Was                                                                                          | Aktualisiert                                           |
+| ------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Spieldaten    | Materialien, Gebäude, Aufträge und Planeten (von FIO)                     | seltener als Marktplätze                               |
+| Marktplätze   | Preise und Marktzahlen: Ask und Bid von FIO, VWAPs von PRUNplanner berechnet | etwa alle 30 Minuten                                   |
+| Planungsdaten | Deine Pläne, Imperien, Marktplatz-Präferenzen und geteilten Pläne                            | eine Kopie dessen, was in deinem Konto gespeichert ist |
 
-FIO data isn't kept in browser storage, even though the table lists its rows (see [FIO Connection](#fio-connection)).
+FIO-Daten liegen nicht im Browser-Speicher, auch wenn die Tabelle ihre Zeilen auflistet (siehe [FIO-Verbindung](#fio-connection)).

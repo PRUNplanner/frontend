@@ -25,7 +25,7 @@
 		"title": "Planifica una base {accent} de construirla.",
 		"title_accent": "antes",
 		"positioning": "El compañero definitivo de Prosperous Universe para todos los que aman estrategar y optimizar.",
-		"lead": "Pick a planet, add buildings and recipes, and watch daily profit, workforce, area and payback update as you go. Then group your bases into an empire and see what it makes, burns and has to ship.",
+		"lead": "Descubre lo que gana una base, lo que necesita y cuándo se amortiza, antes de gastar nada en ella. Después agrupa tus bases en un imperio y mira lo que produce, consume y tiene que enviar.",
 		"cta": "Empieza a planificar, es gratis",
 		"cta_logged_in": "Abre tu imperio",
 		"example": "Abrir un plan de ejemplo",
@@ -118,7 +118,7 @@
 	},
 	"most_used": {
 		"eyebrow": "Lo que más usan los jugadores",
-		"title": "What players use most",
+		"title": "Dónde asentarte, qué se amortiza y cuándo se queda sin existencias una base.",
 		"needs_fio": "Requiere FIO",
 		"planet_search": {
 			"label": "Búsqueda de planetas",
@@ -137,13 +137,13 @@
 		"resource_roi": {
 			"label": "ROI de recursos",
 			"title": "Descubre qué planeta se amortiza más rápido.",
-			"lead": "Pick a resource and your exchange preference. Every planet that has it gets a costed plan.",
+			"lead": "Elige un recurso y tu preferencia de bolsa. Cada planeta que lo tiene recibe un plan con costes: coste del plan, beneficio diario y ROI en días, junto a POPR, COGC, entorno e infraestructura.",
 			"alt": "ROI de recursos para ALO: planetas ordenados por producción diaria, coste del plan, beneficio diario y ROI en días"
 		},
 		"fio_burn": {
 			"label": "Consumo FIO",
 			"title": "Sabe cuándo se queda sin existencias una base.",
-			"lead": "Link your FIO account and Burn compares your real stock with what each plan uses.",
+			"lead": "Vincula tu cuenta de FIO y Consumo compara tus existencias reales con lo que usa cada plan: días restantes por material, umbrales que tú defines y una lista de reabastecimiento por base exportada como acciones XIT.",
 			"alt": "Consumo FIO: consumo por plan, con una base desplegada que muestra consumo, stock y días restantes por material"
 		},
 		"starter": {
@@ -189,8 +189,8 @@
 	},
 	"setup": {
 		"eyebrow": "Cómo funciona",
-		"title": "Three things to set up",
-		"lead": "Everything in PRUNplanner hangs off plans, empires and exchange preferences.",
+		"title": "De la primera base al imperio.",
+		"lead": "Tres cosas lo sostienen todo: planes, imperios y preferencias de bolsa.",
 		"label": "Pasos de configuración",
 		"plan": {
 			"label": "Plan",
@@ -210,8 +210,8 @@
 	},
 	"tools": {
 		"eyebrow": "Y las herramientas que lo rodean",
-		"title": "And the tools around it",
-		"lead": "Market data and calculators, priced from FIO. Link your FIO account and Repair uses your real bases too.",
+		"title": "Datos de mercado y calculadoras, con precios de FIO.",
+		"lead": "FIO es el servicio de la comunidad que lee tus datos del juego. Vincula tu cuenta y Reparación también usa tus bases reales.",
 		"with_fio": "con FIO",
 		"market_live": {
 			"label": "Mercado en vivo",

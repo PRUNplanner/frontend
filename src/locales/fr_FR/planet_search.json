@@ -7,11 +7,11 @@
 		"lead_any": "Filtre toutes les planètes de Prosperous Universe par ressources, conditions, COGC et sauts jusqu'aux échanges. Gratuit, sans compte."
 	},
 	"loading": "Chargement des planètes…",
-	"load_error": "Impossible de charger les planètes. Recharge la page pour réessayer.",
+	"load_error": "Impossible de charger les planètes.",
 	"load_throttled": "Trop de requêtes, réessaie dans {n} s.",
 	"header": {
-		"search_label": "Planet name or ID",
-		"search_placeholder": "Planet name or ID, e.g. KI-446 or Harmonia",
+		"search_label": "Nom de planète ou de système, ou ID",
+		"search_placeholder": "Planète ou système, p. ex. KI-446, Harmonia ou Antares II",
 		"saved": "Enregistrées",
 		"load_saved": "Charger une recherche enregistrée…",
 		"manage": "Gérer",

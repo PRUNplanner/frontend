@@ -1,6 +1,6 @@
 {
 	"popr_button": {
-		"no_data": "Планета {planet_id} не имеет данных о популяции",
+		"no_data": "Для планеты {planet_id} нет данных о населении",
 		"buttons": {
 			"no_popr": "Нет POPR"
 		},
@@ -9,9 +9,9 @@
 			"free_population": "Свободное население",
 			"free_population_pct": "Свободное население %",
 			"unfilled_jobs": "Незанятые рабочие места",
-			"plan_need": "Требуется @:terms.plan",
-			"plan_check": "Проверка @:terms.plan"
+			"plan_need": "Нужно плану",
+			"plan_check": "Проверка плана"
 		},
-		"modal_title": "Latest Population Report: {planet_id}"
+		"modal_title": "Последний отчёт о населении: {planet_id}"
 	}
 }

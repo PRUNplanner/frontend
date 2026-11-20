@@ -2,8 +2,8 @@
 	"view_title": "Profilo",
 	"title": "Profilo",
 	"change_password": {
-		"title": "Cambia Password",
-		"button": "Cambia Password",
+		"title": "Cambia password",
+		"button": "Cambia password",
 		"form": {
 			"password_info": "La password deve contenere almeno 8 caratteri",
 			"current_password": "Password attuale",
@@ -13,80 +13,80 @@
 		}
 	},
 	"change_profile": {
-		"throttled": "Too many updates. Please wait a minute and try again.",
+		"throttled": "Troppi aggiornamenti. Attendi un minuto e riprova.",
 		"buttons": {
-			"enter_code": "Enter code",
-			"resend_code": "Re invia codice"
+			"enter_code": "Inserisci codice",
+			"resend_code": "Invia nuovo codice"
 		},
 		"form": {
-			"fio_apikey": "API Key FIO",
-			"prun_username": "Nome Utente PrUn",
-			"email_info": "Non è necessario fornire un'email ma altamente raccomandato per una maggiore sicurezza dell'account e il ripristino della password.",
+			"fio_apikey": "Chiave API FIO",
+			"prun_username": "Nome utente PrUn",
+			"email_info": "Facoltativa. Usata solo per reimpostare la password: niente newsletter, mai condivisa.",
 			"email_address": "Indirizzo email",
-			"fio_status": "FIO Status"
+			"fio_status": "Stato FIO"
 		},
-		"fio_connected": "Connected. Your data will appear in a few minutes.",
+		"fio_connected": "Collegato. I tuoi dati compariranno tra qualche minuto.",
 		"fio_status": {
-			"none": "Not connected. Enter your FIO API key and PrUn username.",
-			"syncing": "Connected, loading your FIO data.",
-			"ok": "Connected. Last FIO update {time}.",
-			"no_data": "Connected, but FIO has no data for you yet. Open Prosperous Universe with the FIO extension running.",
-			"invalid_credentials": "FIO rejected your API key. Enter a valid key and save again.",
-			"error": "FIO updates are failing right now. Check your FIO key and username."
+			"none": "Non collegato. Inserisci la tua chiave API FIO e il nome utente PrUn.",
+			"syncing": "Collegato, caricamento dei tuoi dati FIO.",
+			"ok": "Collegato. Ultimo aggiornamento FIO {time}.",
+			"no_data": "Collegato, ma FIO non ha ancora dati su di te. Apri Prosperous Universe con l'estensione FIO attiva.",
+			"invalid_credentials": "FIO ha rifiutato la tua chiave API. Inserisci una chiave valida e salva di nuovo.",
+			"error": "Gli aggiornamenti FIO al momento non riescono. Controlla la chiave FIO e il nome utente."
 		},
 		"fio_errors": {
-			"fio_required": "Enter both the FIO API key and the PrUn username.",
-			"fio_invalid_key": "FIO doesn't accept this API key.",
-			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
-			"unknown": "Saving failed. Please try again."
+			"fio_required": "Inserisci sia la chiave API FIO sia il nome utente PrUn.",
+			"fio_invalid_key": "FIO non accetta questa chiave API.",
+			"fio_username_mismatch": "Questa chiave API appartiene a un altro nome utente PrUn.",
+			"unknown": "Salvataggio non riuscito. Riprova."
 		},
-		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
+		"code_sent_notice": "Salvato. Abbiamo inviato un codice al nuovo indirizzo; le reimpostazioni arriveranno lì una volta confermato.",
 		"recovery": {
-			"label": "Account recovery",
-			"not_set_up": "Not set up",
-			"not_set_up_info": "Without an email, a forgotten password can't be reset.",
-			"waiting": "Waiting for confirmation",
-			"ready": "Ready",
-			"ready_info": "Password resets go to this address."
+			"label": "Recupero account",
+			"not_set_up": "Non configurato",
+			"not_set_up_info": "Senza un'email, una password dimenticata non si può reimpostare.",
+			"waiting": "In attesa di conferma",
+			"ready": "Pronto",
+			"ready_info": "Le reimpostazioni della password arrivano a questo indirizzo."
 		}
 	},
 	"storage_data": {
-		"title": "Memoria Del Browser",
+		"title": "Memoria del browser",
 		"description": "PRUNplanner minimizza le chiamate API memorizzando i dati localmente nel tuo browser. I dati si aggiornano automaticamente a intervalli impostati.",
-		"total": "{size} MB in {records} records",
+		"total": "{size} MB in {records} record",
 		"table": {
 			"storage": "Memoria",
 			"records": "Record",
 			"size": "Dimensioni ca."
 		},
 		"stores": {
-			"materials": "Materials",
-			"buildings": "Buildings",
-			"recipes": "Recipes",
-			"planets": "Planets",
-			"exchanges": "Exchanges",
-			"plans": "Plans",
-			"empires": "Empires",
-			"cxs": "Exchange Preferences",
-			"shared": "Sharings",
-			"fio_storage_planets": "FIO Storage Planets",
-			"fio_storage_ships": "FIO Storage Ships",
-			"fio_storage_warehouses": "FIO Storage Warehouses",
-			"fio_sites_planets": "FIO Sites Planets"
+			"materials": "Materiali",
+			"buildings": "Edifici",
+			"recipes": "Ricette",
+			"planets": "Pianeti",
+			"exchanges": "Borse",
+			"plans": "Piani",
+			"empires": "Imperi",
+			"cxs": "Preferenze di borsa",
+			"shared": "Condivisioni",
+			"fio_storage_planets": "Magazzini FIO pianeti",
+			"fio_storage_ships": "Magazzini FIO navi",
+			"fio_storage_warehouses": "Magazzini FIO depositi",
+			"fio_sites_planets": "Siti FIO pianeti"
 		}
 	},
 	"fio_information": {
-		"guide": "How to get a FIO API key",
+		"guide": "Come ottenere una chiave API FIO",
 		"help": {
-			"p1": "FIO è una {link} che raccoglie i tuoi dati di gioco e li rende disponibili al di fuori di Prosperous Universe, ed è completamente gratuito da utilizzare.",
+			"p1": "FIO è un'{link} sviluppata dalla community che raccoglie i tuoi dati di gioco, li rende disponibili al di fuori di Prosperous Universe ed è completamente gratuita.",
 			"steps": {
 				"1": "Scarica e installa la {link}",
-				"2": "Apri il gioco, fai clic sul pulsante dell' estensione e registra il tuo account FIO",
-				"3": "Visita il sito web della FIO, apri {link} e crea una chiave API per PRUNplanner",
-				"4": "Copia la chiave API e il tuo nome utente di Prosperous Universe e inseriscili nella sezione del tuo profilo qui sopra, poi premi il bottone \"Aggiorna Profilo\"",
+				"2": "Apri il gioco, clicca il pulsante delle estensioni e registra il tuo account FIO",
+				"3": "Vai sul sito di FIO, apri le tue {link} e crea una chiave API per PRUNplanner",
+				"4": "Inserisci qui sopra la chiave API e il tuo nome utente di Prosperous Universe e premi \"Salva\".",
 				"5": "Aspetta che PRUNplanner ottenga i tuoi dati. Potrai poi usufruire di maggiori capacità di pianificare. I dati vengono aggiornati automaticamente in background, non c'è bisogno di fare nulla."
 			},
-			"refined_prun": "Mentre stai migliorando il tuo gameplay, controlla anche {link}: Un'altra estensione del browser semplifica notevolmente l'interfaccia utente e aggiunge una vasta gamma di funzionalità."
+			"refined_prun": "Già che migliori la tua esperienza di gioco, dai un'occhiata anche a {link}: un'altra estensione per browser che semplifica molto l'interfaccia e aggiunge tantissime funzionalità."
 		},
 		"links": {
 			"browser_extension": "estensione per browser",
@@ -97,58 +97,58 @@
 	},
 	"preferences": {
 		"title": "Opzioni",
-		"description": "Use this panel to review and customize your PRUNplanner settings.",
+		"description": "Salvate nel tuo account appena le modifichi.",
 		"form": {
 			"tool_preferences": "Opzioni degli strumenti",
 			"language": "Lingua",
-			"color_palette": "Color palette",
-			"palette_default": "Default (green / red)",
-			"palette_colorblind": "Color-blind (blue / orange)",
-			"market_card": "Market card",
-			"market_card_hover": "On hover",
-			"market_card_click": "On click only",
-			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
-			"language_note": "Vogliamo rendere PRUNplanner accessibile a tutti. Se vuoi vedere lo strumento nella tua lingua madre - o aiutaci a migliorare una traduzione esistente - unisciti al nostro progetto di localizzazione su {link}.",
-			"default_empire": "Impero Predefinito",
-			"default_cx": "Borsa Predefinita",
-			"fio_burn": "FIO Burn",
+			"color_palette": "Palette di colori",
+			"palette_default": "Predefinita (verde / rosso)",
+			"palette_colorblind": "Daltonici (blu / arancione)",
+			"market_card": "Scheda mercato",
+			"market_card_hover": "Al passaggio del cursore",
+			"market_card_click": "Solo al clic",
+			"market_card_help": "Solo al clic: passare il cursore su un materiale non mostra nulla; cliccalo per vedere i prezzi.",
+			"language_note": "Vogliamo rendere PRUNplanner accessibile a tutti. Se vuoi vedere lo strumento nella tua lingua, o aiutarci a migliorare una traduzione esistente, unisciti al nostro progetto di localizzazione su {link}.",
+			"default_empire": "Impero predefinito",
+			"default_cx": "Preferenza di borsa predefinita",
+			"fio_burn": "Consumo FIO",
 			"red_threshold": "Soglia rosso",
 			"yellow_threshold": "Soglia giallo",
-			"resupply_days": "Resupply Days",
-			"xit_origin": "XIT Origin",
-			"buy_from_cx": "XIT Buy from CX",
-			"fio_repair": "FIO Repair",
-			"fio_repair_interval": "Repair every (no plan)",
-			"fio_repair_due_soon": "Due soon",
-			"fio_repair_arrival": "Arrival days",
-			"fio_repair_note": "The XIT origin and \"Buy from CX\" are shared with FIO Burn.",
-			"plan_suggestions": "Plan suggestions",
-			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
+			"resupply_days": "Giorni di rifornimento",
+			"xit_origin": "Origine XIT",
+			"buy_from_cx": "XIT Compra dalla CX",
+			"fio_repair": "Riparazione FIO",
+			"fio_repair_interval": "Ripara ogni (senza piano)",
+			"fio_repair_due_soon": "In scadenza",
+			"fio_repair_arrival": "Giorni di arrivo",
+			"fio_repair_note": "L'origine XIT e \"Compra dalla CX\" sono condivise con Consumo FIO.",
+			"plan_suggestions": "Suggerimenti per i piani",
+			"plan_suggestions_help": "Edifici e ricette popolari sul pianeta, informazioni sul pianeta e una configurazione tipica per i piani vuoti",
 			"privacy": "Privacy",
-			"analytics": "Usage analytics",
-			"analytics_note": "Allows PRUNplanner to collect usage events, error reports and session recordings. This choice is stored in this browser only, so set it on each device you use.",
-			"analytics_dnt": "Your browser sends a Do-Not-Track or Global Privacy Control signal, so usage analytics stays off.",
-			"plan_specific": "Impostazioni Specifiche Per Piano",
-			"plan_specific_description": "Queste impostazioni sono gestite all'interno di piani individuali. Questa sezione fornisce una panoramica delle opzioni finora personalizzate - per modificarle, navigare al piano corrispondente.",
+			"analytics": "Statistiche d'uso",
+			"analytics_note": "Consente a PRUNplanner di raccogliere eventi d'uso, segnalazioni di errore e registrazioni delle sessioni. Questa scelta è salvata solo in questo browser, quindi impostala su ogni dispositivo che usi.",
+			"analytics_dnt": "Il tuo browser invia un segnale Do-Not-Track o Global Privacy Control, quindi le statistiche d'uso restano disattivate.",
+			"plan_specific": "Impostazioni specifiche per piano",
+			"plan_specific_description": "Queste impostazioni si gestiscono all'interno dei singoli piani. Questa sezione mostra una panoramica delle opzioni che hai personalizzato finora: per modificarle, vai al piano corrispondente.",
 			"plan": "Piano",
 			"preferences": "Opzioni",
-			"planning": "Planning",
-			"plan_specific_empty": "No plan has its own settings yet."
+			"planning": "Pianificazione",
+			"plan_specific_empty": "Nessun piano ha ancora impostazioni proprie."
 		},
 		"plan_settings": {
-			"include_cm": "Include CM",
-			"visitation_exclusions": "Visitation Material Exclusions",
-			"construction_built": "Construction Cart: Built",
-			"auto_optimize_inactive": "Auto-Optimize Inactive"
+			"include_cm": "Includi CM",
+			"visitation_exclusions": "Materiali esclusi dalle visite",
+			"construction_built": "Carrello di costruzione: costruiti",
+			"auto_optimize_inactive": "Ottimizzazione automatica inattiva"
 		}
 	},
 	"buttons": {
-		"save": "Save"
+		"save": "Salva"
 	},
 	"sections": {
 		"fio": {
-			"title": "FIO connection",
-			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+			"title": "Connessione FIO",
+			"description": "Importa da FIO i tuoi magazzini, siti e navi. PRUNplanner li aggiorna in background."
 		},
 		"account": {
 			"title": "Account"

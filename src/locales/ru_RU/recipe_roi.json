@@ -1,26 +1,26 @@
 {
-	"view_title": "Recipe ROI",
-	"title": "Recipe ROI",
+	"view_title": "ROI рецептов",
+	"title": "ROI рецептов",
 	"calculating": "Расчёт ROI рецептов зданий",
-	"cx_select": "Установки @:terms.cx",
+	"cx_select": "Настройки @:terms.cx",
 	"filters": {
 		"title": "@:terms.filter",
 		"building": "@:terms.buildings",
 		"cogc": "@:terms.cogc",
-		"output": "Вывод",
-		"input": "Ввод",
+		"output": "Продукция",
+		"input": "Сырьё",
 		"positive_roi": "Положительный ROI"
 	},
 	"table": {
 		"building": "@:terms.buildings",
-		"optimal_setup": "Оптимальная установка",
-		"recipe_output": "Продукция @:terms.recipes",
-		"recipe_input": "Затраты @:terms.recipes",
+		"optimal_setup": "Оптимальная конфигурация",
+		"recipe_output": "Продукция рецепта",
+		"recipe_input": "Сырьё рецепта",
 		"cogc": "@:terms.cogc",
 		"cogm": "@:terms.cogm",
-		"plan_cost": "@:terms.plan Cost (ȼ)",
-		"daily_profit": "Daily Profit (ȼ)",
-		"profit_area": "Profit/Area (ȼ)",
-		"plan_roi": "@:terms.plan ROI (d)"
+		"plan_cost": "Стоимость плана (ȼ)",
+		"daily_profit": "Прибыль в день (ȼ)",
+		"profit_area": "Прибыль/площадь (ȼ)",
+		"plan_roi": "ROI плана (д)"
 	}
 }

@@ -1,88 +1,88 @@
-A share link lets anyone look at one of your [[plan|plans]], with or without a PRUNplanner account. Use it to show a base in a Discord thread, ask for feedback or hand a setup to a corp mate. Viewers can try changes on their own copy and save it as a plan of their own, but your plan never changes.
+Mit einem Freigabelink kann sich jeder einen deiner [[plan|Pläne]] ansehen, mit oder ohne PRUNplanner-Konto. Nutze ihn, um eine Basis in einem Discord-Thread zu zeigen, um Feedback zu bitten oder einem Corp-Kollegen ein Setup zu übergeben. Betrachter können Änderungen an ihrer eigenen Kopie ausprobieren und sie als eigenen Plan speichern, aber dein Plan ändert sich nie.
 
-This page covers creating and stopping a link, what people see and can do when they open it, and how the link looks when you paste it into a chat.
+Diese Seite erklärt, wie du einen Link erstellst und beendest, was Leute sehen und tun können, wenn sie ihn öffnen, und wie der Link aussieht, wenn du ihn in einen Chat einfügst.
 
-## Sharing a plan {#share-link}
+## Einen Plan teilen {#share-link}
 
-Open your plan and click **Share link** in the header. The button shows on your own plans once they're saved. In [Management](/manage), the ⋯ menu of a plan's row opens the same dialog under **Share…**.
+Öffne deinen Plan und klick im Kopf auf **Link teilen**. Der Button erscheint bei deinen eigenen Plänen, sobald sie gespeichert sind. In der [Verwaltung](/manage) öffnet das ⋯-Menü in der Zeile eines Plans denselben Dialog unter **Teilen…**.
 
-The **Share Plan** dialog works in two steps:
+Der Dialog **Plan teilen** arbeitet in zwei Schritten:
 
-1. Before the plan is shared, it explains what the link does. **Create Sharing Link** creates it.
-2. Once it's shared, the dialog shows the link itself, `https://prunplanner.org/shared/…`, and how often it was viewed. **Copy URL** copies it, and **Stop Sharing** ends it.
+1. Bevor der Plan geteilt ist, erklärt er, was der Link macht. **Freigabelink erstellen** erstellt ihn.
+2. Sobald er geteilt ist, zeigt der Dialog den Link selbst, `https://prunplanner.org/shared/…`, und wie oft er angesehen wurde. **URL kopieren** kopiert ihn, und **Freigabe beenden** beendet ihn.
 
-Each plan has one link, so opening the dialog again shows the same link and its view count. Every time someone opens the link counts as a view, reloads included. Your own clicks count too: opening your own link counts as a view before PRUNplanner switches to your plan. In Management, a small eye with the count marks every shared plan.
+Jeder Plan hat einen Link, ein erneutes Öffnen des Dialogs zeigt also denselben Link und seine Aufrufe. Jedes Öffnen des Links zählt als Aufruf, Neuladen eingeschlossen. Auch deine eigenen Klicks zählen: Öffnest du deinen eigenen Link, zählt das als Aufruf, bevor PRUNplanner zu deinem Plan wechselt. In der Verwaltung markiert ein kleines Auge mit der Anzahl jeden geteilten Plan.
 
-### What viewers see {#what-viewers-see}
+### Was Betrachter sehen {#what-viewers-see}
 
-The link always shows your plan as it's saved: its active version, without the unsaved changes you have open. When you save the plan or make another version active ([Versions](/help/plan_saving#versions)), the next viewer sees that.
-
-> [!tip]
-> Share the plan you actually want to discuss. If you keep working on it while people look, save a copy (**Save as copy…** in the save menu) and share that one, so the link doesn't change under them.
-
-### Stopping a link {#stop-sharing}
-
-**Stop Sharing** ends the link at once, without asking. Anyone who opens it after that sees "**This shared plan is no longer available**". Deleting the plan ends its link too. If you share the plan again later, it gets a new link, and the old one stays dead. Copies that people already saved to their own plans aren't affected, because they're separate plans.
-
-## Opening a shared plan {#shared-view}
-
-A shared link opens the plan page with a banner on top: "**Shared plan**", "Try changes on your own copy. The shared plan never changes."
-
-### Your working copy {#working-copy}
-
-What you see is a working copy. You can change anything you could change in your own plan, such as buildings, recipes, experts, habitations or the [[empire]] it's calculated with. Undo and Redo work as usual.
-
-- The copy lives only in this browser tab. Leaving the page drops it without asking. Logged in, you keep your changes with **Save to my plans** (see [Reset, copy, save](#shared-actions)).
-- Habitations stay as the owner set them. Auto-optimising is off until you turn on **Auto** under Infrastructure.
-- The tools work on your copy. Built counts in [Construction](/help/plan_tools#construction) and excluded materials in [Visits](/help/plan_tools#visits) only last for the visit, and Repair hides its FIO part. Any [[fio|FIO]] stock the tools use is your own.
-- Logged out, you see the plan in the Standard layout and without the POPR tab. Logged in, you see it in your own layout.
-- If you open a link to your own plan, PRUNplanner opens the plan itself instead.
-
-### Prices {#shared-prices}
-
-Under the banner's title, a note tells you which prices the numbers use: "Prices: …" followed by "The person who shared it may see different numbers."
-
-- **Logged in**, PRUNplanner calculates the copy with your default empire (or your first one), so prices follow that empire's [[exchange-preference|exchange preference]] ("your exchange settings: {name}"). An empire without one uses the [[universe]] 30-day average.
-- **Logged out**, prices are the universe 30-day average.
+Der Link zeigt deinen Plan immer so, wie er gespeichert ist: seine aktive Version, ohne die ungespeicherten Änderungen, die du offen hast. Speicherst du den Plan oder machst eine andere Version aktiv ([Versionen](/help/plan_saving#versions)), sieht der nächste Betrachter das.
 
 > [!tip]
-> Comparing notes with the owner? Tell them which exchange preference you use, or both check the numbers against the same preference. Profit and payback can differ a lot between exchanges.
+> Teile den Plan, über den du wirklich sprechen willst. Arbeitest du weiter daran, während andere zusehen, speichere eine Kopie (**Als Kopie speichern** im Speichermenü) und teile diese, damit sich der Link nicht unter ihnen verändert.
 
-### Comparing with the shared version {#vs-shared}
+### Einen Link beenden {#stop-sharing}
 
-As soon as your copy differs from the shared plan, the banner says "**Changed from the shared version**". A line under the header lists what moved, after "**vs. shared:**":
+**Freigabe beenden** beendet den Link sofort, ohne nachzufragen. Wer ihn danach öffnet, sieht „**Dieser geteilte Plan ist nicht mehr verfügbar**“. Löschst du den Plan, endet sein Link ebenfalls. Teilst du den Plan später erneut, bekommt er einen neuen Link, und der alte bleibt tot. Kopien, die Leute schon in ihren eigenen Plänen gespeichert haben, sind nicht betroffen, weil es eigene Pläne sind.
 
-| Figure                     | Shown as                                                    |
-| -------------------------- | ----------------------------------------------------------- |
-| Profit                     | the change in ȼ / day, green when it rose, red when it fell |
-| [[ROI]]                    | the payback before → after, green when it got shorter       |
-| Area, Workforce, Buildings | the change in area used, workers needed and building count  |
+## Einen geteilten Plan öffnen {#shared-view}
 
-For example (made-up numbers), if the shared plan makes 10,000 ȼ a day and your copy makes 12,000 ȼ, Profit shows the rise of 2,000 ȼ/day in green.
+Ein geteilter Link öffnet die Planseite mit einem Banner oben: „**Geteilter Plan**“, „Versuche Änderungen an deiner Kopie dieses Plans. Der geteilte Plan verändert sich dadurch nie.“
 
-The line lists only the figures that changed. In Production, changed buildings are tagged **new**, **amount changed** or **recipe changed**, and recipes the shared building didn't have are tagged **new**. Removed buildings stay in the list, struck through, as **removed**.
+### Deine Arbeitskopie {#working-copy}
 
-### Reset, copy, save {#shared-actions}
+Was du siehst, ist eine Arbeitskopie. Du kannst alles ändern, was du auch in deinem eigenen Plan ändern könntest, etwa Gebäude, Aufträge, Experten, Unterkünfte oder das [[empire|Imperium]], mit dem gerechnet wird. Rückgängig und Wiederherstellen funktionieren wie gewohnt.
 
-- **Reset to shared version** throws your changes away and goes back to the shared plan.
-- **Copy changes** puts a summary on your clipboard, ready to paste into Discord. It has the plan's name and planet, one line per change, profit and payback before → after, the prices you used and the link. It's cut to 2,000 characters, with "…and {n} more" for the rest. A message confirms: "**Changes copied, paste them into Discord**".
-- **Save to my plans** (or Ctrl+S, ⌘+S on a Mac) saves your copy, with your changes, as a new plan of your own. The dialog asks for a **Name** (it suggests the plan's name with "(Copy)") and, if you have empires, an **Empire**. **Create** saves it and opens your new plan. The owner's plan and its link stay as they are.
-- If you're not logged in, **Sign up to save this** and **Log in** take their place.
+- Die Kopie lebt nur in diesem Browser-Tab. Verlässt du die Seite, verschwindet sie ohne Nachfrage. Eingeloggt behältst du deine Änderungen mit **In meinen Plänen speichern** (siehe [Zurücksetzen, kopieren, speichern](#shared-actions)).
+- Die Unterkünfte bleiben so, wie der Besitzer sie eingestellt hat. Die automatische Optimierung ist aus, bis du unter Infrastruktur **Auto** einschaltest.
+- Die Werkzeuge arbeiten mit deiner Kopie. Gebaute Anzahlen in [Konstruktion](/help/plan_tools#construction) und ausgeschlossene Materialien in [Besuche](/help/plan_tools#visits) gelten nur für den Besuch, und Reparatur blendet ihren FIO-Teil aus. Jeder [[fio|FIO]]-Bestand, den die Werkzeuge nutzen, ist dein eigener.
+- Ausgeloggt siehst du den Plan im Standard-Layout und ohne den Tab POPR. Eingeloggt siehst du ihn in deinem eigenen Layout.
+- Öffnest du einen Link zu deinem eigenen Plan, öffnet PRUNplanner stattdessen den Plan selbst.
 
-> [!tip]
-> Suggesting an improvement to someone's base? Make the change in the copy, check the "vs. shared:" line, then **Copy changes** and paste the summary in the thread. They see exactly what you changed and what it does to profit and payback, with the link to open it themselves.
+### Preise {#shared-prices}
 
-## Link previews {#link-previews}
+Unter dem Titel des Banners sagt dir ein Hinweis, welche Preise die Zahlen nutzen: „Preise: …“, gefolgt von „Die Person, die ihn geteilt hat, kann unterschiedliche Zahlen sehen.“
 
-Paste a share link into Discord, or another chat app that shows link previews, and it unfolds into a card for the plan. The card is in English.
-
-- **Title**: the planet, then the plan's name, for example "Montem (OT-580b) · Iron base".
-- **Text**: who shared it, the profit per day, the payback when the plan pays back ("pays back in 42 days"), the plan's COGC program and the outputs it makes. Then the price basis of the top output (for example "CI1 30-day average", or "own prices" for a [[fixed-price|fixed price]]) and the date of those prices. It ends with "Open it to see the whole base and try changes, no account needed."
-- **Image**: the planet and plan name, who shared it, the profit per day in large figures, the payback, the area used of the area available, and up to four outputs with their amounts per day.
-
-The card uses the numbers PRUNplanner stored with the plan's last save. Creating a link from the plan page also stores the current numbers if the plan has no unsaved changes. Each save gives the link a fresh card.
-
-Sometimes no numbers are stored, for example for a plan last saved before previews existed, or right after you made an older version active. Then the card shows the planet, the COGC, the building count and what the plan makes, without profit or payback. Save the plan once to add them.
+- **Eingeloggt** berechnet PRUNplanner die Kopie mit deinem Standard-Imperium (oder deinem ersten), die Preise folgen also der [[exchange-preference|Marktplatz-Präferenz]] dieses Imperiums („Deine Handelspräferenz: {name}“). Ein Imperium ohne eine nutzt den 30-Tage-Durchschnitt des [[universe|Universe]].
+- **Ausgeloggt** sind die Preise der 30-Tage-Durchschnitt des Universe.
 
 > [!tip]
-> Save the plan before you post its link. The card shows the numbers of the last save, so a link posted with unsaved changes shows the old figures.
+> Du vergleichst dich mit dem Besitzer? Sag ihm, welche Marktplatz-Präferenz du nutzt, oder prüft beide die Zahlen gegen dieselbe Präferenz. Profit und Amortisation können sich zwischen Marktplätzen stark unterscheiden.
+
+### Mit der geteilten Version vergleichen {#vs-shared}
+
+Sobald deine Kopie vom geteilten Plan abweicht, sagt das Banner „**Geändert von der geteilten Version**“. Eine Zeile unter dem Kopf listet nach „**vs. geteilt:**“, was sich verändert hat:
+
+| Kennzahl                     | Angezeigt als                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| Profit                       | die Änderung in ȼ / Tag, grün, wenn er gestiegen ist, rot, wenn er gefallen ist |
+| [[roi\|ROI]]                 | die Amortisation vorher → nachher, grün, wenn sie kürzer wurde                  |
+| Fläche, Belegschaft, Gebäude | die Änderung der genutzten Fläche, der benötigten Arbeiter und der Gebäudezahl  |
+
+Ein Beispiel (ausgedachte Zahlen): Bringt der geteilte Plan 10.000 ȼ am Tag und deine Kopie 12.000 ȼ, zeigt Profit den Anstieg um 2.000 ȼ/Tag in Grün.
+
+Die Zeile listet nur die Kennzahlen, die sich geändert haben. In der Produktion sind geänderte Gebäude mit **neu**, **Anzahl geändert** oder **Auftrag geändert** markiert, und Aufträge, die das geteilte Gebäude nicht hatte, mit **neu**. Entfernte Gebäude bleiben durchgestrichen in der Liste, als **entfernt**.
+
+### Zurücksetzen, kopieren, speichern {#shared-actions}
+
+- **Auf geteilte Version zurücksetzen** verwirft deine Änderungen und geht zurück zum geteilten Plan.
+- **Änderungen kopieren** legt eine Zusammenfassung in deine Zwischenablage, fertig zum Einfügen in Discord. Sie enthält Namen und Planet des Plans, eine Zeile pro Änderung, Profit und Amortisation vorher → nachher, die genutzten Preise und den Link. Sie wird auf 2.000 Zeichen gekürzt, mit „...und {n} weitere“ für den Rest. Eine Meldung bestätigt: „**Änderungen kopiert. Teile sie in Discord**“.
+- **In meinen Plänen speichern** (oder Strg+S, ⌘+S auf dem Mac) speichert deine Kopie mit deinen Änderungen als neuen eigenen Plan. Der Dialog fragt nach einem **Name** (er schlägt den Namen des Plans mit „(Kopie)“ vor) und, wenn du Imperien hast, nach einem **Imperium**. **Erstellen** speichert ihn und öffnet deinen neuen Plan. Der Plan des Besitzers und sein Link bleiben, wie sie sind.
+- Bist du nicht eingeloggt, stehen an ihrer Stelle **Melde dich an, um zu Speichern** und **Anmelden**.
+
+> [!tip]
+> Du willst jemandem eine Verbesserung für seine Basis vorschlagen? Mach die Änderung in der Kopie, prüf die Zeile „vs. geteilt:“, dann **Änderungen kopieren** und füg die Zusammenfassung in den Thread ein. So sieht er genau, was du geändert hast und was es mit Profit und Amortisation macht, samt Link, um es selbst zu öffnen.
+
+## Link-Vorschauen {#link-previews}
+
+Füg einen Freigabelink in Discord oder eine andere Chat-App ein, die Link-Vorschauen zeigt, und er klappt zu einer Karte für den Plan auf. Die Karte ist auf Englisch.
+
+- **Titel**: der Planet, dann der Name des Plans, zum Beispiel „Montem (OT-580b) · Iron base“.
+- **Text**: wer ihn geteilt hat, der Profit pro Tag, die Amortisation, wenn sich der Plan amortisiert („pays back in 42 days“), das COGC-Programm des Plans und die Outputs, die er herstellt. Danach die Preisgrundlage des wichtigsten Outputs (zum Beispiel „CI1 30-day average“ oder „own prices“ für einen [[fixed-price|Festpreis]]) und das Datum dieser Preise. Am Ende steht „Open it to see the whole base and try changes, no account needed.“
+- **Bild**: Planet und Planname, wer ihn geteilt hat, der Profit pro Tag in großen Zahlen, die Amortisation, die genutzte von der verfügbaren Fläche und bis zu vier Outputs mit ihren Mengen pro Tag.
+
+Die Karte nutzt die Zahlen, die PRUNplanner beim letzten Speichern des Plans abgelegt hat. Erstellst du einen Link von der Planseite aus, werden außerdem die aktuellen Zahlen abgelegt, sofern der Plan keine ungespeicherten Änderungen hat. Jedes Speichern gibt dem Link eine frische Karte.
+
+Manchmal sind keine Zahlen abgelegt, zum Beispiel bei einem Plan, der zuletzt vor Einführung der Vorschauen gespeichert wurde, oder direkt nachdem du eine ältere Version aktiv gemacht hast. Dann zeigt die Karte den Planeten, das COGC, die Gebäudezahl und was der Plan herstellt, ohne Profit oder Amortisation. Speichere den Plan einmal, um sie hinzuzufügen.
+
+> [!tip]
+> Speichere den Plan, bevor du seinen Link postest. Die Karte zeigt die Zahlen des letzten Speicherns, ein Link, der mit ungespeicherten Änderungen gepostet wird, zeigt also die alten Werte.

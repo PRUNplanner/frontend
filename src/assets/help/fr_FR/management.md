@@ -1,56 +1,56 @@
-[Management](/manage) is where you organise your account. You create and delete empires and exchange preferences, connect each empire to its prices, and decide which plans belong to which empire. You'll use it to set up your first empire and exchange preference, and later to move plans between empires or delete the ones you no longer need.
+La [Gestion](/manage) est l'endroit où tu organises ton compte. Tu y crées et supprimes des empires et des préférences d'échange, relies chaque empire à ses prix et décides quels plans appartiennent à quel empire. Tu t'en serviras pour configurer ton premier empire et ta première préférence d'échange, puis pour déplacer des plans entre empires ou supprimer ceux dont tu n'as plus besoin.
 
-## Core Concepts {#core-concepts}
+## Notions de base {#core-concepts}
 
-PRUNplanner keeps your planning in three kinds of things, and each one gets its own section of the page.
+PRUNplanner range ta planification dans trois types d'éléments, et chacun a sa propre section sur la page.
 
 ### Plans {#plans}
 
-A [[plan]] is one base: its planet, buildings, recipes and bonuses. You create a plan from a planet in [Planet Search](/search). A plan can be in several empires at once, or in none. That way you can reuse it in an empire of your real bases and in one for a future expansion.
+Un [[plan|plan]] est une base : sa planète, ses bâtiments, ses recettes et ses bonus. Tu crées un plan à partir d'une planète dans la [Recherche de planètes](/search). Un plan peut se trouver dans plusieurs empires à la fois, ou dans aucun. Tu peux ainsi le réutiliser dans un empire de tes bases réelles et dans un autre pour une future expansion.
 
-A plan has no exchange preference of its own. It uses the [[exchange-preference|exchange preference]] of its empire. If it's in several empires, it uses the one of the empire it calculates with, which you pick on the plan (see [Empire & prices](/help/plan_base#empire-and-prices)).
+Un plan n'a pas de préférence d'échange à lui. Il utilise la [[exchange-preference|préférence d'échange]] de son empire. S'il est dans plusieurs empires, il utilise celle de l'empire avec lequel il est calculé, que tu choisis sur le plan (voir [Empire et prix](/help/plan_base#empire-and-prices)).
 
 ### Empires {#empires}
 
-An [[empire]] is a group of plans, for example all the bases you run in the game, or a set you want to compare. It holds your [[faction]] and [[area-permits|permits]], which change the production bonus of every plan in it, and it uses one exchange preference for its prices. The [Empire](/help/empire) page shows an empire's numbers.
+Un [[empire|empire]] est un groupe de plans, par exemple toutes les bases que tu fais tourner dans le jeu, ou un ensemble que tu veux comparer. Il contient ta [[faction|faction]] et tes [[area-permits|permis]], qui modifient le bonus de production de chaque plan qu'il contient, et il utilise une préférence d'échange pour ses prix. La page [Empire](/help/empire) affiche les chiffres d'un empire.
 
-The faction and permits matter because they set the [[faction]] bonus: buildings of your faction's expertise get a bonus that's larger the fewer of your permits you use. For example, with 1 of 2 permits used PRUNplanner counts the faction's base bonus 4 times, and with 2 of 2 used twice. That's why the page asks you to give each empire your faction and the right permits, so the plans' efficiency comes out right.
+La faction et les permis comptent parce qu'ils déterminent le bonus de [[faction|faction]] : les bâtiments de l'expertise de ta faction obtiennent un bonus d'autant plus grand que tu utilises peu de tes permis. Par exemple, avec 1 permis utilisé sur 2, PRUNplanner compte 4 fois le bonus de base de la faction, et avec 2 sur 2, deux fois. C'est pourquoi la page te demande de donner à chaque empire ta faction et les bons permis, pour que l'efficacité des plans soit juste.
 
 ### CX {#cx}
 
-An exchange preference holds your price rules: which [[cx|exchange]] and price basis to use, and fixed prices. One preference can serve several empires, but an empire uses only one. You edit its rules on [Exchanges](/help/exchanges).
+Une préférence d'échange contient tes règles de prix : quel [[cx|échange]] et quelle base de prix utiliser, et des prix fixes. Une préférence peut servir plusieurs empires, mais un empire n'en utilise qu'une. Tu modifies ses règles sur [Bourses](/help/exchanges).
 
-## Empire Configuration {#empire-configuration}
+## Configuration de l'empire {#empire-configuration}
 
-The **Empire Configuration** table lists your empires with their faction, permits (used / total), number of plans and the exchange preference in column CX. Until you have one, the table says "No Empires available", and **New Empire** is where you start.
+Le tableau **Configuration de l'empire** liste tes empires avec leur faction, leurs permis (utilisés / total), leur nombre de plans et la préférence d'échange dans la colonne CX. Tant que tu n'en as pas, le tableau indique « Aucun empire disponible », et c'est avec **Nouvel empire** que tu commences.
 
-- **New Empire** opens a form with **Empire Name** (required, up to 100 characters), **Faction**, **Permits Total** (at least 2) and **Permits Used** (at least 1, not more than the total). **Create** saves the empire at once.
-- Pick the empire's exchange preference in column CX, or pick "None" to get Universe · VWAP 30D prices. This change waits for the save bar.
-- Deleting an empire asks first. Its plans aren't deleted. They only lose that empire.
+- **Nouvel empire** ouvre un formulaire avec **Nom de l'empire** (obligatoire, jusqu'à 100 caractères), **Faction**, **Permis total** (au moins 2) et **Permis utilisés** (au moins 1, pas plus que le total). **Créer** enregistre l'empire immédiatement.
+- Choisis la préférence d'échange de l'empire dans la colonne CX, ou choisis « Aucune » pour obtenir les prix Univers · VWAP 30j. Cette modification attend la barre d'enregistrement.
+- Supprimer un empire demande d'abord confirmation. Ses plans ne sont pas supprimés. Ils perdent seulement cet empire.
 
-You can change an empire's name, faction and permits later on the [Empire](/help/empire#configuration) page.
+Tu peux modifier plus tard le nom, la faction et les permis d'un empire sur la page [Empire](/help/empire#configuration).
 
-## CX Configuration {#cx-configuration}
+## Configuration CX {#cx-configuration}
 
-The **CX Configuration** table lists your exchange preferences and whether an empire uses them (**Yes** with the number of empires, or **No**).
+Le tableau **Configuration CX** liste tes préférences d'échange et indique si un empire les utilise (**Oui** avec le nombre d'empires, ou **Non**).
 
-- The button above the table opens a form for a new preference. Give it a name of up to 100 characters and press **Create**, which saves it at once.
-- Click a preference's name to edit its rules on [Exchanges](/exchanges).
-- Deleting a preference asks first and deletes all its rules. Empires that used it keep working, but without a preference, so assign them another one. Until then they get Universe · VWAP 30D prices, the same as "None".
+- Le bouton au-dessus du tableau ouvre un formulaire pour une nouvelle préférence. Donne-lui un nom de 100 caractères au plus et appuie sur **Créer**, qui l'enregistre immédiatement.
+- Clique sur le nom d'une préférence pour modifier ses règles sur [Bourses](/exchanges).
+- Supprimer une préférence demande d'abord confirmation et supprime toutes ses règles. Les empires qui l'utilisaient continuent de fonctionner, mais sans préférence : attribue-leur-en donc une autre. D'ici là, ils obtiennent les prix Univers · VWAP 30j, comme avec « Aucune ».
 
-## Plan ↔ Empire Assignments {#assignments}
+## Attribution plans ↔ empires {#assignments}
 
-This table has one row per plan and one checkbox column per empire. Tick a box to put the plan into that empire, and untick it to take the plan out. Until you save, changed boxes are marked "Will be added to …" or "Will be removed from …".
+Ce tableau a une ligne par plan et une colonne de cases à cocher par empire. Coche une case pour mettre le plan dans cet empire, et décoche-la pour l'en retirer. Tant que tu n'as pas enregistré, les cases modifiées sont marquées « Sera ajouté à … » ou « Sera retiré de … ».
 
-- **Search plan or planet**, **In empire** and the unassigned-only filter narrow the rows. The checkbox in an empire's column header adds or removes every plan the search and filters show.
-- Each row has **Actions**. **Clone** copies the plan as "name (Clone)", saved at once and in no empire. **Share…** creates a share link (see [Sharing a plan](/help/plan_sharing#share-link)). **Delete…** deletes the plan after you confirm, and you can't undo it.
-- To delete several plans, tick them in the first column and press **Delete selected…**. The box in that column's header ticks every plan the search and filters show, including the ones you'd have to scroll to. You confirm once for all of them. If some plans can't be deleted, they stay ticked and a message says how many, so you can try again.
-- If the search and filters leave no rows, the table says "No plans match the search and filters."
+- **Rechercher un plan ou une planète**, **Dans l'empire** et le filtre des plans non assignés uniquement réduisent les lignes. La case dans l'en-tête de la colonne d'un empire ajoute ou retire tous les plans qu'affichent la recherche et les filtres.
+- Chaque ligne a des **Actions**. **Cloner** copie le plan sous le nom « nom (clone) », enregistré immédiatement et dans aucun empire. **Partager…** crée un lien de partage (voir [Partager un plan](/help/plan_sharing#share-link)). **Supprimer…** supprime le plan après confirmation, et tu ne peux pas l'annuler.
+- Pour supprimer plusieurs plans, coche-les dans la première colonne et appuie sur **Supprimer la sélection…**. La case dans l'en-tête de cette colonne coche tous les plans qu'affichent la recherche et les filtres, y compris ceux qu'il faudrait faire défiler pour voir. Tu confirmes une seule fois pour tous. Si certains plans ne peuvent pas être supprimés, ils restent cochés et un message indique combien, pour que tu puisses réessayer.
+- Si la recherche et les filtres ne laissent aucune ligne, le tableau indique « Aucun plan ne correspond à la recherche et aux filtres. »
 
-On phones, the table turns into a list of cards.
+Sur téléphone, le tableau se transforme en liste de cartes.
 
-## Saving {#saving}
+## Enregistrer {#saving}
 
-Exchange preference picks and assignment boxes collect in the save bar at the bottom. It counts your changes, **Save changes** saves them all and **Discard** drops them. After a save, "All changes saved" shows for a few seconds. If saving fails, your changes stay and you can **Retry**. The page asks before you leave with unsaved changes.
+Les choix de préférence d'échange et les cases d'attribution s'accumulent dans la barre d'enregistrement en bas. Elle compte tes modifications, **Enregistrer les modifications** les enregistre toutes et **Annuler** les abandonne. Après un enregistrement, « Toutes les modifications sont enregistrées » s'affiche quelques secondes. Si l'enregistrement échoue, tes modifications restent et tu peux cliquer sur **Réessayer**. La page te demande confirmation avant que tu partes avec des modifications non enregistrées.
 
-Creating, deleting and cloning save at once, without the save bar.
+Créer, supprimer et cloner enregistrent immédiatement, sans la barre d'enregistrement.

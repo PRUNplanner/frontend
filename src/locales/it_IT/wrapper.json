@@ -1,23 +1,23 @@
 {
-	"loading": "Loading Data...",
-	"retry": "Retry",
-	"error": "Error",
+	"loading": "Caricamento dati...",
+	"retry": "Riprova",
+	"error": "Errore",
 	"gamedata": {
-		"material_data": "@:terms.materials Data",
-		"exchange_data": "@:terms.exchanges Data",
-		"building_data": "@:terms.buildings Data",
-		"recipe_data": "@:terms.recipes Data",
-		"planet_data": "@:terms.planets '{name}' Data",
-		"planet_multiple_data": "@:terms.planet_plural '{names}' Data"
+		"material_data": "Dati materiali",
+		"exchange_data": "Dati borse",
+		"building_data": "Dati edifici",
+		"recipe_data": "Dati ricette",
+		"planet_data": "Dati pianeta '{name}'",
+		"planet_multiple_data": "Dati pianeti '{names}'"
 	},
 	"planning_data": {
-		"shared_plan": "Shared @:terms.plan Configuration",
-		"empires": "@:terms.empire Configuration",
-		"plan": "@:terms.plan Configuration",
-		"plans_all": "All @:terms.plans_plural Configuration",
-		"planet_data": "@:terms.planets '{name}' Data",
-		"cx": "@:terms.cx Configurations",
-		"shared_list": "Shared @:terms.plans_plural Configurations",
-		"empire_plans": "@:terms.empire @:terms.plans_plural Configurations"
+		"shared_plan": "Configurazione piano condiviso",
+		"empires": "Configurazione impero",
+		"plan": "Configurazione piano",
+		"plans_all": "Configurazione di tutti i piani",
+		"planet_data": "Dati pianeta '{name}'",
+		"cx": "Configurazioni CX",
+		"shared_list": "Configurazioni piani condivisi",
+		"empire_plans": "Configurazioni piani dell'impero"
 	}
 }

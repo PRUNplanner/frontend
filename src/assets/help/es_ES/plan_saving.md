@@ -1,117 +1,117 @@
-PRUNplanner keeps your work on a [[plan]] with saves, drafts of unsaved changes, undo, copies and named versions you can go back to. When the same plan changes in two places, it asks before it overwrites anything. To show a plan to someone else, see [Sharing a plan](/help/plan_sharing).
+PRUNplanner conserva tu trabajo en un [[plan|plan]] con guardados, borradores de los cambios sin guardar, deshacer, copias y versiones con nombre a las que puedes volver. Cuando el mismo plan cambia en dos sitios, pregunta antes de sobrescribir nada. Para enseñar un plan a otra persona, consulta [Compartir un plan](/help/plan_sharing).
 
-Read it when you want to know whether your changes are safe, how to get back to an earlier state of a plan, or what a save message means.
+Léelo cuando quieras saber si tus cambios están a salvo, cómo volver a un estado anterior de un plan o qué significa un mensaje de guardado.
 
-## Saving and Undo {#saving-and-undo}
+## Guardar y deshacer {#saving-and-undo}
 
-Name your plan with the pencil next to its name. Enter or clicking away keeps the name, and Esc cancels. Save it with **Save** (**Create** for a new plan) or Ctrl+S (Cmd+S on a Mac).
+Ponle nombre a tu plan con el lápiz junto a su nombre. Intro o hacer clic fuera conserva el nombre, y Esc lo cancela. Guárdalo con **Guardar** (**Crear** para un plan nuevo) o con Ctrl+S (Cmd+S en un Mac).
 
-- **Save** only shows while there's something to save, and it stays disabled until the plan has a name.
-- A new plan gets its own address once it's created, and your empires and links use that. Until then, PRUNplanner keeps nothing of it, not even a [draft](#drafts).
-- Undo, Redo, the plan's state and Save sit together in one control. On a phone, Undo and Redo stay in the header, and the state with Save sits above the bottom navigation.
+- **Guardar** solo aparece cuando hay algo que guardar, y sigue desactivado hasta que el plan tiene nombre.
+- Un plan nuevo recibe su propia dirección en cuanto se crea, y tus imperios y enlaces usan esa. Hasta entonces, PRUNplanner no conserva nada de él, ni siquiera un [borrador](#drafts).
+- Deshacer, Rehacer, el estado del plan y Guardar están juntos en un mismo control. En el móvil, Deshacer y Rehacer se quedan en la cabecera, y el estado con Guardar está sobre la navegación inferior.
 
-The state tells you where the plan stands:
+El estado te dice cómo está el plan:
 
-| State                         | Meaning                                                                     |
-| ----------------------------- | --------------------------------------------------------------------------- |
-| "Saved …"                     | Saved at that time, followed by the version's name when it has one.         |
-| **Unsaved changes**           | You changed something since the last save. An amber dot marks it.           |
-| "Unsaved · draft kept …"      | Unsaved, but kept in a [draft](#drafts).                                    |
-| **Saving…**                   | The save is on its way.                                                     |
-| **Save failed**               | The save didn't go through. Your changes are kept, so click **Retry save**. |
-| **Draft not saved**           | Your unsaved changes aren't kept in a draft. Click it to try again.         |
-| "Name your plan to create it" | A new plan needs a name first.                                              |
+| Estado                                | Significado                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| «Guardado …»                          | Guardado a esa hora, seguido del nombre de la versión cuando tiene uno.                            |
+| **Cambios sin guardar**               | Has cambiado algo desde el último guardado. Lo marca un punto ámbar.                               |
+| «Sin guardar · borrador conservado …» | Sin guardar, pero conservado en un [borrador](#drafts).                                            |
+| **Guardando…**                        | El guardado está en curso.                                                                         |
+| **Error al guardar**                  | El guardado no se completó. Tus cambios se conservan, así que haz clic en **Reintentar guardado**. |
+| **Borrador no guardado**              | Tus cambios sin guardar no se conservan en un borrador. Haz clic para volver a intentarlo.         |
+| «Ponle nombre al plan para crearlo»   | Un plan nuevo necesita primero un nombre.                                                          |
 
-Click the state of a saved plan to open its [versions](#versions).
-
-> [!tip]
-> **Reload saved version**, the icon next to Save, takes you back to the plan as last saved and drops the draft. If you have unsaved changes, it asks first.
-
-### Drafts {#drafts}
-
-Once a plan is created, PRUNplanner keeps its unsaved changes as a draft about 3 seconds after each change. A reload, a closed tab or a crash won't lose them.
-
-A draft isn't a save. It's kept with your account, but your empires and the plan's share link keep using the saved version until you save. That's why the versions list marks a draft "not in empires yet".
-
-When you open the plan again, it always shows as saved. A message ("You have unsaved changes from …") offers **Restore**. Your next change, or opening a version, closes the message, and your new changes replace the draft. If you want those changes back, click **Restore** before you edit anything.
-
-The page only warns you before you leave when the draft can't hold your changes. That happens when the plan isn't created yet, the last change is less than about 3 seconds old, or the draft failed.
-
-### Undo and Redo {#undo}
-
-You can undo any change with **Undo** and **Redo**, or with Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The keys don't work inside a text field.
-
-The history holds the last 50 changes. It starts fresh when you open, save or reload the plan, and when you discard changes. While you customise the layout, the keys undo layout changes instead (see [Layout](/help/plan_layout)).
-
-## Save as copy {#save-as-copy}
-
-For a saved, named plan, the arrow next to Save (**Save options**) has **Save as copy…**. It opens **Save As**:
-
-- **Name** starts as the plan's name with " (Copy)".
-- If you have empires, an empire select starts with the empire the plan calculates with, and the copy is added to it.
-- **Create** saves the plan as it is now, unsaved changes included, as a new plan and opens it in a new tab. Your original keeps its state and its unsaved changes.
+Haz clic en el estado de un plan guardado para abrir sus [versiones](#versions).
 
 > [!tip]
-> A copy is how you try a different layout of the same base and keep both. Name the copies clearly, because they're separate plans from then on.
+> **Recargar la versión guardada**, el icono junto a Guardar, te devuelve al plan tal como se guardó por última vez y descarta el borrador. Si tienes cambios sin guardar, pregunta antes.
 
-## Versions {#versions}
+### Borradores {#drafts}
 
-Every save keeps a version of the plan. Click the state of a saved plan to open **Versions**.
+Una vez creado un plan, PRUNplanner conserva sus cambios sin guardar como borrador unos 3 segundos después de cada cambio. Una recarga, una pestaña cerrada o un fallo no los perderán.
 
-- **Named only** is on by default. The list shows your named versions and the active one, with "… unnamed hidden" at the bottom. Untick it to see them all.
-- **Active** marks the version your plan is now.
-- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept … · not in empires yet" or "Not kept in a draft".
-- **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
-- Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
+Un borrador no es un guardado. Se conserva con tu cuenta, pero tus imperios y el enlace para compartir del plan siguen usando la versión guardada hasta que guardas. Por eso la lista de versiones marca un borrador como «aún no está en ningún imperio».
 
-For example, when a plan is created and then saved 14 times without a name, the newest 10 of those 15 unnamed versions stay and the 5 oldest are gone, while every named version stays. To keep a state of the plan for good, give its version a name.
+Cuando vuelves a abrir el plan, siempre aparece como guardado. Un mensaje («Tienes cambios sin guardar de …») ofrece **Restaurar**. Tu siguiente cambio, o abrir una versión, cierra el mensaje, y tus cambios nuevos sustituyen al borrador. Si quieres recuperar esos cambios, haz clic en **Restaurar** antes de editar nada.
 
-### Naming versions {#naming-versions}
+La página solo te avisa antes de salir cuando el borrador no puede guardar tus cambios. Eso pasa cuando el plan aún no se ha creado, el último cambio tiene menos de unos 3 segundos o el borrador ha fallado.
 
-Open **Save options** (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name in **Version name (optional)** and press Enter or **Save named**. A name can be up to 80 characters. This works for any saved, named plan, even with nothing unsaved, and names the plan as it is now.
+### Deshacer y rehacer {#undo}
 
-To name a version later, or rename one, use **Name this version** in its ⋯ menu. An empty name removes the name.
+Puedes deshacer cualquier cambio con **Deshacer** y **Rehacer**, o con Ctrl+Z y Ctrl+Mayús+Z (Cmd en un Mac). Las teclas no funcionan dentro de un campo de texto.
 
-A plan holds at most 20 named versions. At the limit, remove the name from one or delete one before you name another.
+El historial guarda los últimos 50 cambios. Empieza de cero cuando abres, guardas o recargas el plan, y cuando descartas cambios. Mientras personalizas el diseño, las teclas deshacen en su lugar los cambios de diseño (consulta [Diseño](/help/plan_layout)).
 
-### Preview, compare and restore {#preview}
+## Guardar como copia {#save-as-copy}
 
-The eye on a version shows it read-only. A banner tells you which version you're looking at, and the results tiles show its numbers. From there:
+Para un plan guardado y con nombre, la flecha junto a Guardar (**Opciones de guardado**) tiene **Guardar como copia…**. Abre **Guardar como**:
 
-- **Compare with current** lists what differs from your plan now.
-- **Restore** loads it as unsaved changes. Undo takes it back, and saving makes it the active version.
-- **Open as new plan** copies it into a new plan in a new tab, named after the plan with the version's name or date. The copy isn't in any empire.
-- **Back to current** returns you to your plan as it was.
-
-### Make active and delete {#make-active}
-
-**Make active**, in a version's ⋯ menu or in the preview banner, switches the plan to that version in one step. Your empires and the plan's share link use it right away. It goes on top as a new version ("Restored from …"), and the one you picked stays where it is. Any unsaved changes are discarded once you confirm.
-
-**Delete** in the same menu removes a version for good, after you confirm. You can't delete the active version.
-
-**Discard changes** in **Save options** drops your unsaved changes and goes back to the saved version, after you confirm.
-
-## Save conflicts {#conflicts}
-
-The same plan can be open in two tabs or on two devices. PRUNplanner never overwrites one with the other without asking.
-
-If another tab in this browser saves the plan and you have no unsaved changes here, this tab loads the new save. If you do have unsaved changes, a message says "Saved in another tab. Your edits are kept." with **Reload**.
-
-If you save after the plan was saved elsewhere (another tab or another device), **Saved in another tab** opens. Don't worry, when it opens nothing has been overwritten yet. It lists what changed there and what you changed, and offers:
-
-| Option               | What it does                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Save as new plan** | Saves your edits as a copy ("… (copy)") in the plan's empire and opens it. The original keeps the other version. |
-| **Overwrite**        | Replaces the other version with yours.                                                                           |
-| **Reload**           | Drops your edits and loads the saved version.                                                                    |
-| **Keep editing**     | Closes the dialog without saving anything yet.                                                                   |
-
-If the plan was deleted elsewhere, **Deleted in another tab** only offers **Save as new plan**.
-
-Drafts have their own checks:
-
-- **Draft saved elsewhere** means another tab or device kept a newer draft of this plan. Autosave pauses until you pick **Keep mine** or **Load the other draft**. **Decide later** closes the dialog and leaves autosave paused.
-- **Unsaved changes on an older version** means you left unsaved changes and the plan was saved again since. Pick **Keep my changes** (on top of the newer save), **Use the saved version** (deletes your unsaved changes) or **Decide later**.
+- **Nombre** empieza siendo el nombre del plan con « (Copia)».
+- Si tienes imperios, un selector de imperio empieza con el imperio con el que se calcula el plan, y la copia se añade a él.
+- **Crear** guarda el plan tal como está ahora, cambios sin guardar incluidos, como un plan nuevo y lo abre en una pestaña nueva. Tu original conserva su estado y sus cambios sin guardar.
 
 > [!tip]
-> Working on one plan from two devices? Save before you switch. Then the other device only has to reload, and you never need the conflict dialog.
+> Una copia es la forma de probar otra distribución de la misma base y quedarte con ambas. Ponles nombres claros a las copias, porque desde ese momento son planes independientes.
+
+## Versiones {#versions}
+
+Cada guardado conserva una versión del plan. Haz clic en el estado de un plan guardado para abrir **Versiones**.
+
+- **Solo con nombre** está activado por defecto. La lista muestra tus versiones con nombre y la activa, con «… sin nombre ocultas» abajo. Desmárcalo para verlas todas.
+- **Activa** marca la versión que es ahora tu plan.
+- Si tienes cambios sin guardar, la fila de arriba los muestra como **Cambios sin guardar**, con «Borrador conservado … · aún no está en ningún imperio» o «No se conserva en un borrador».
+- **Antes del historial de versiones** es el plan tal como era antes de que existieran las versiones. **Modificada por soporte** marca un cambio hecho por el soporte de PRUNplanner.
+- Las versiones con nombre se quedan. PRUNplanner conserva las últimas 10 sin nombre, y las más antiguas desaparecen.
+
+Por ejemplo, cuando un plan se crea y luego se guarda 14 veces sin nombre, se quedan las 10 más recientes de esas 15 versiones sin nombre y desaparecen las 5 más antiguas, mientras que todas las versiones con nombre se quedan. Para conservar un estado del plan para siempre, ponle nombre a su versión.
+
+### Poner nombre a las versiones {#naming-versions}
+
+Abre **Opciones de guardado** (o pulsa Ctrl+Alt+S, Cmd+Opción+S en un Mac), escribe un nombre en **Nombre de la versión (opcional)** y pulsa Intro o **Guardar con nombre**. Un nombre puede tener hasta 80 caracteres. Funciona con cualquier plan guardado y con nombre, aunque no haya nada sin guardar, y pone nombre al plan tal como está ahora.
+
+Para ponerle nombre a una versión más tarde, o cambiárselo, usa **Poner nombre a esta versión** en su menú ⋯. Un nombre vacío quita el nombre.
+
+Un plan tiene como máximo 20 versiones con nombre. En el límite, quítale el nombre a una o elimina una antes de ponerle nombre a otra.
+
+### Vista previa, comparar y restaurar {#preview}
+
+El ojo de una versión la muestra en modo de solo lectura. Un aviso te dice qué versión estás viendo, y los recuadros de resultados muestran sus números. Desde ahí:
+
+- **Comparar con la actual** enumera lo que difiere de tu plan actual.
+- **Restaurar** la carga como cambios sin guardar. Deshacer la quita, y guardar la convierte en la versión activa.
+- **Abrir como plan nuevo** la copia en un plan nuevo en una pestaña nueva, con el nombre del plan más el nombre o la fecha de la versión. La copia no está en ningún imperio.
+- **Volver a la actual** te devuelve a tu plan tal como estaba.
+
+### Activar y eliminar {#make-active}
+
+**Activar**, en el menú ⋯ de una versión o en el aviso de vista previa, cambia el plan a esa versión en un solo paso. Tus imperios y el enlace para compartir del plan la usan enseguida. Se coloca arriba como versión nueva («Restaurada desde …»), y la que elegiste se queda donde está. Los cambios sin guardar se descartan en cuanto confirmas.
+
+**Eliminar** en el mismo menú quita una versión para siempre, después de que confirmes. No puedes eliminar la versión activa.
+
+**Descartar cambios** en **Opciones de guardado** descarta tus cambios sin guardar y vuelve a la versión guardada, después de que confirmes.
+
+## Conflictos al guardar {#conflicts}
+
+El mismo plan puede estar abierto en dos pestañas o en dos dispositivos. PRUNplanner nunca sobrescribe uno con el otro sin preguntar.
+
+Si otra pestaña de este navegador guarda el plan y no tienes cambios sin guardar aquí, esta pestaña carga el nuevo guardado. Si tienes cambios sin guardar, un mensaje dice «Guardado en otra pestaña. Se conservan tus cambios.» con **Recargar**.
+
+Si guardas después de que el plan se haya guardado en otro sitio (otra pestaña u otro dispositivo), se abre **Guardado en otra pestaña**. No te preocupes, cuando se abre aún no se ha sobrescrito nada. Enumera lo que cambió allí y lo que cambiaste tú, y ofrece:
+
+| Opción                      | Qué hace                                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Guardar como plan nuevo** | Guarda tus cambios como una copia («… (copia)») en el imperio del plan y la abre. El original conserva la otra versión. |
+| **Sobrescribir**            | Sustituye la otra versión por la tuya.                                                                                  |
+| **Recargar**                | Descarta tus cambios y carga la versión guardada.                                                                       |
+| **Seguir editando**         | Cierra el diálogo sin guardar nada todavía.                                                                             |
+
+Si el plan se eliminó en otro sitio, **Eliminado en otra pestaña** solo ofrece **Guardar como plan nuevo**.
+
+Los borradores tienen sus propias comprobaciones:
+
+- **Borrador guardado en otro sitio** significa que otra pestaña u otro dispositivo conservó un borrador más reciente de este plan. El guardado automático se pausa hasta que eliges **Conservar los míos** o **Cargar el otro borrador**. **Decidir más tarde** cierra el diálogo y deja el guardado automático en pausa.
+- **Cambios sin guardar sobre una versión anterior** significa que dejaste cambios sin guardar y el plan se ha vuelto a guardar desde entonces. Elige **Conservar mis cambios** (encima del guardado más reciente), **Usar la versión guardada** (elimina tus cambios sin guardar) o **Decidir más tarde**.
+
+> [!tip]
+> ¿Trabajas en un plan desde dos dispositivos? Guarda antes de cambiar. Así el otro dispositivo solo tiene que recargar, y nunca necesitas el diálogo de conflicto.

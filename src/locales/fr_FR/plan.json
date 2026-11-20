@@ -5,7 +5,7 @@
 	"save_status": {
 		"unsaved": "Modifications non enregistrées",
 		"saving": "Enregistrement…",
-		"saved_at": "Enregistré à {time}",
+		"saved_at": "Enregistré {time}",
 		"failed": "Échec de l'enregistrement",
 		"saved": "Enregistré",
 		"retry": "Réessayer l'enregistrement",
@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Chiffres clés",
 				"output": "Valeur produite",
-				"costs": "Coûts dégradation incluse",
+				"costs": "Coûts, dégradation et frais inclus",
 				"margin": "Marge",
 				"earner": "rapporte {share} de la valeur produite. Son prix décide de ce plan.",
 				"cost": "est le plus gros coût, avec {share} de la valeur produite.",
@@ -225,7 +225,7 @@
 		"supply_cart": {
 			"title": "Panier d'approvisionnement",
 			"info": {
-				"p": "The Supply Cart provides updates on your plans needs combined with existing inventory sourced from FIO. You have the flexibility to opt for alternative storage locations to replenish your base. Tailor your selection based on whether you wish to restock workforce and production supplies or focus on a specific category, and specify the duration for which the supplied stock should sustain. Use the {link} tool for more advanced supply cart options.",
+				"p": "Le panier d'approvisionnement fait le point sur les besoins de ton plan en tenant compte de l'inventaire existant issu de FIO. Tu peux choisir d'autres lieux de stockage pour réapprovisionner ta base. Adapte ta sélection selon que tu veux réapprovisionner la main-d'œuvre et la production ou te concentrer sur une catégorie, et indique pendant combien de jours le stock livré doit tenir. XIT expédie ce dont la base en fonctionnement a encore besoin une fois que sa propre production en couvre une partie. Pour le premier approvisionnement, utilise XIT Initial : il expédie aussi les intrants que ce plan produit lui-même, puisque rien n'est encore produit. Utilise l'outil {link} pour des options d'approvisionnement plus avancées.",
 				"link": "Consommation FIO",
 				"label": "À propos du panier d'approvisionnement"
 			},
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Coût des marchandises fabriquées",
 			"cogm": "@:terms.cogm",
-			"info": "The cost of goods manufactured is calculated using plan settings that factor in production efficiency, recipe runtime, building degradation, input material costs, workforce requirements, and associated workforce costs. The final cost is shown per unit of output, based on quantity or full cost allocation.",
+			"info": "Par unité produite, à partir de l'efficacité, de la durée de cycle, de la dégradation, des frais de production, des prix des intrants et de la main-d'œuvre de ce plan, par quantité ou par répartition du coût complet.",
 			"workforce_note": "Les coûts de main-d'œuvre suivent les habitations et les produits de luxe de ce plan : les travailleurs sans logement et les luxes désactivés ne coûtent rien.",
 			"prices_from": "Les prix viennent de {preference}.",
 			"prices_from_empire": "Les prix viennent de {preference}, la préférence de l'empire actif {empire}.",
@@ -651,7 +651,7 @@
 			}
 		},
 		"production_building": {
-			"no_recipe": "Aucune @:terms.recipes_plural active",
+			"no_recipe": "Aucune recette active",
 			"no_recipe_available": "Aucune recette disponible pour ce bâtiment",
 			"zero_reason": {
 				"FERTILITY": "Planète non fertile",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Bénéfice / jour",
-		"revenue_cost": "Recettes {revenue} · coût {cost} dont {degradation} de dégradation",
+		"revenue_cost": "Recettes {revenue} · coût {cost} dont {degradation} de dégradation et {fees} de frais de production",
 		"payback": "Amortissement",
 		"build_cost": "ȼ coût de construction",
 		"profit_per_area": "ȼ bénéfice / surface",
@@ -896,7 +896,7 @@
 		"undo": "Annuler",
 		"reset": "Revenir à Standard",
 		"save": "Enregistrer",
-		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"saved": "Enregistré comme disposition personnalisée, utilisée pour tous tes plans sur tous tes appareils",
 		"replace_question": "Cela remplace ta disposition personnalisée actuelle.",
 		"replace": "Remplacer la disposition personnalisée",
 		"keep_editing": "Continuer à modifier",

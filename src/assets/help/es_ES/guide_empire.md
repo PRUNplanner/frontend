@@ -1,99 +1,99 @@
-One base is a plan. Several bases that feed each other are an [[empire]]. This guide takes about 15 minutes, and by the end you'll have:
+Una base es un plan. Varias bases que se abastecen entre sí son un [[empire|imperio]]. Esta guía lleva unos 15 minutos, y al terminar tendrás:
 
-- your bases in one empire, with its faction and permits set,
-- read the Empire page: what the bases earn together, what they make and need, and whether the market can take it,
-- a list of recipes your surplus could feed and of fixes to your plans, for deciding what to build next.
+- tus bases en un imperio, con su facción y sus permisos configurados,
+- leída la página Imperio: lo que ganan las bases juntas, lo que fabrican y necesitan, y si el mercado puede absorberlo,
+- una lista de recetas que podría alimentar tu excedente y de correcciones para tus planes, para decidir qué construir después.
 
-It's for players with two or more bases or plans. You need an account. The pages linked at the end of each step go deeper.
+Es para jugadores con dos o más bases o planes. Necesitas una cuenta. Las páginas enlazadas al final de cada paso profundizan más.
 
-## 1. Put your bases in one empire {#step-1}
+## 1. Pon tus bases en un imperio {#step-1}
 
-Open [Management](/manage) and scroll to **Plan ↔ Empire Assignments**. It has one row per [[plan]] and one checkbox column per empire.
+Abre [Gestión](/manage) y baja hasta **Asignaciones plan ↔ imperio**. Tiene una fila por [[plan]] y una columna de casillas por imperio.
 
-1. Tick the empire's box on every plan that belongs to it. Changed boxes stay marked until you save.
-2. Press **Save changes** in the bar at the bottom.
+1. Marca la casilla del imperio en cada plan que pertenezca a él. Las casillas cambiadas siguen marcadas hasta que guardes.
+2. Pulsa **Guardar cambios** en la barra de abajo.
 
-A plan can be in several empires, for example one with your real bases and one for a future expansion. It calculates with one empire at a time and uses that empire's faction, permits and [[exchange-preference|exchange preference]].
-
-> [!tip]
-> Want to try a variant of a base without changing the original? **Clone** under **Actions** copies the plan. Put the copy in a test empire.
-
-Read more: [Plan ↔ Empire assignments](/help/management#assignments), [Core concepts](/help/management#core-concepts).
-
-## 2. Set faction and permits {#step-2}
-
-Open [Empire](/empire) and pick the empire under **Switch Empire**. In the **Configuration** box, set **Faction**, **Permits Total** and **Permits Used**, then press **Save**.
-
-- Permits come from your HQ. Each HQ level upgrade gives one more base permit, and the [HQ Calculator](/hq-upgrade-calculator) lists what an upgrade costs.
-- The [[faction]] bonus grows the fewer permits you use, so these numbers change every plan of the empire.
-- When **Permits Used** differs from the permits your plans add up to, you'll see a "Mismatch Detected" warning. It checks the numbers as you type and doesn't stop you from saving. It's a reminder to take the right values from your in-game `HQ` buffer.
-
-More: [Configuration](/help/empire#configuration), [Area and permits](/help/glossary#area-permits).
-
-## 3. Read the overview numbers {#step-3}
-
-The tiles on top sum up the empire per day: **Revenue**, **Cost**, **Profit** and **Profit / Area**.
-
-![The Empire page: revenue, cost and profit, the cost split, shipping and the plan list](/images/help/guides/empire-overview.webp)
-
-The empire isn't a plain sum of its plans. What one plan makes and another uses cancels out first, and only the rest gets sold or bought, at the plans' average price. That's why the empire's numbers can differ from its plans' profits added up.
-
-As an example, plan A makes 100 DW a day and its Material I/O values them at 80 ȼ each. Plan B uses 60 DW a day at 100 ȼ each. The empire sells the 40 left over. Its price is the average weighted by each plan's amount: (100 × 80 + 60 × 100) ÷ 160 = 14,000 ÷ 160 = 87.50 ȼ, so the 40 DW count 3,500 ȼ a day. The two plans on their own count +8,000 and −6,000, which adds up to 2,000 ȼ.
-
-- The bar below splits revenue into inputs, workforce, [[degradation]], [[production-fees|production fees]] and profit.
-- **Shipping** shows the tonnes and m³ your plans ship in and out per day.
-- The plan list shows each plan's profit. Click one to open it.
-
-Details: [Overview numbers](/help/empire#overview-numbers), [Plan list](/help/empire#plan-list).
-
-## 4. Balance the materials {#step-4}
-
-At the top of the page, open **Material I/O**. It lists every material of the empire with its **Delta** (made minus used per day).
-
-![The Material I/O view of the Empire page](/images/help/guides/empire-materials.webp)
-
-- A positive Delta gets sold, a negative one bought. A large negative Delta of something you could make is a candidate for your next base.
-- With **Display** set to **Loadbalance**, you only see materials the empire both makes and uses. Check that supply and demand match.
-- Expand a row to see which plans make and use the material. **Net per planet** adds up plans on the same planet.
-
-More: [Material I/O](/help/empire#material-io).
-
-## 5. Check the market {#step-5}
-
-**Market check on the empire's net flow**, above the table, checks what the empire as a whole sells and buys against the exchange's trading. Chips count the flags: red ("can't trade as planned"), amber ("large share of the market") and other notes. Click a chip to show only those materials.
-
-- From 10 % of a material's daily volume, your orders will likely move the price. From 50 %, the market can't take the amount as planned. The daily volume is the exchange's 30-day total ÷ 30. As an example, 30,000 units traded in 30 days make 1,000 a day, so an empire that sells 150 a day takes 15 % and gets an amber flag.
-- The check uses the _all-planets_ rules of the empire's exchange preference. If a material has a planet exception, that plan's own [Plan check](/help/plan_check#market-check) checks it.
+Un plan puede estar en varios imperios, por ejemplo uno con tus bases reales y otro para una expansión futura. Calcula con un imperio cada vez y usa la facción, los permisos y la [[exchange-preference|preferencia de bolsa]] de ese imperio.
 
 > [!tip]
-> A red flag on an output doesn't make a base bad. Fewer buildings, a second output or another exchange can bring the share down.
+> ¿Quieres probar una variante de una base sin cambiar la original? **Clonar** en **Acciones** copia el plan. Pon la copia en un imperio de pruebas.
 
-Read more: [Market check](/help/empire#market-check), [Plan check: Empire](/help/plan_check#empire).
+Más información: [Asignaciones plan ↔ imperio](/help/management#assignments), [Conceptos básicos](/help/management#core-concepts).
 
-## 6. Find production opportunities {#step-6}
+## 2. Configura la facción y los permisos {#step-2}
 
-At the top of the page, open **Production Opportunities** to see [[recipe|recipes]] that could use what your empire has left over.
+Abre [Imperio](/empire) y elige el imperio en **Cambiar de imperio**. En el recuadro **Configuración**, rellena **Facción**, **Permisos totales** y **Permisos usados**, y pulsa **Guardar**.
 
-![The Production Opportunities view of the Empire page](/images/help/guides/empire-opportunities.webp)
+- Los permisos vienen de tu sede. Cada mejora de nivel de la sede da un permiso de base más, y la [Calculadora de HQ](/hq-upgrade-calculator) lista lo que cuesta una mejora.
+- La bonificación de [[faction|facción]] crece cuantos menos permisos uses, así que estas cifras cambian todos los planes del imperio.
+- Cuando **Permisos usados** no coincide con los permisos que suman tus planes, verás un aviso «Discrepancia detectada». Comprueba las cifras mientras escribes y no te impide guardar. Es un recordatorio para tomar los valores correctos de tu búfer `HQ` del juego.
 
-- **Opportunities**: recipes where every input is in surplus, enough for at least one run a day.
-- **Potential Batches**: how many runs a day your surplus covers. It ignores recipe time, buildings and efficiency, so read it as "how much input there is", not "how much you can make".
-- **Sell Inputs** and **Sell Outputs** compare selling the surplus as it is with selling what the recipe would make of it.
+Más: [Configuración](/help/empire#configuration), [Área y permisos](/help/glossary#area-permits).
 
-More: [Production Opportunities](/help/empire#production-opportunities).
+## 3. Lee las cifras del resumen {#step-3}
 
-## 7. Check the chains behind your bases {#step-7}
+Los recuadros de arriba resumen el imperio por día: **Ingresos**, **Coste**, **Beneficio** y **Beneficio / Área**.
 
-In [Production Chains](/production-chain), switch from **Plan a chain** to **Check an empire** and pick the empire. Add the chains to check, or pick **Check everything the empire sells**.
+![La página Imperio: ingresos, coste y beneficio, el reparto de costes, el envío y la lista de planes](/images/help/guides/empire-overview.webp)
 
-The check follows each sold material back through your plans and lists findings with their gain per day. A **Plan fix** means the plan counts a COGC program the planet doesn't run, or misses one it does. The other findings are a cheaper **Recipe**, **Make or buy**, a better **Location**, or a better **Setup** of luxuries and experts. It never changes a plan.
+El imperio no es una simple suma de sus planes. Lo que un plan fabrica y otro usa se compensa primero, y solo el resto se vende o se compra, al precio medio de los planes. Por eso las cifras del imperio pueden diferir de la suma de los beneficios de sus planes.
+
+Por ejemplo, el plan A fabrica 100 DW al día y su E/S de materiales los valora a 80 ȼ cada uno. El plan B usa 60 DW al día a 100 ȼ cada uno. El imperio vende los 40 que sobran. Su precio es la media ponderada por la cantidad de cada plan: (100 × 80 + 60 × 100) ÷ 160 = 14.000 ÷ 160 = 87,50 ȼ, así que los 40 DW cuentan 3.500 ȼ al día. Los dos planes por separado cuentan +8.000 y −6.000, que suman 2.000 ȼ.
+
+- La barra de debajo reparte los ingresos entre insumos, mano de obra, [[degradation|degradación]], [[production-fees|tasas de producción]] y beneficio.
+- **Envío** muestra las toneladas y los m³ que tus planes envían y reciben al día.
+- La lista de planes muestra el beneficio de cada plan. Haz clic en uno para abrirlo.
+
+Detalles: [Cifras del resumen](/help/empire#overview-numbers), [Lista de planes](/help/empire#plan-list).
+
+## 4. Equilibra los materiales {#step-4}
+
+Arriba de la página, abre **E/S de materiales**. Lista todos los materiales del imperio con su **Delta** (lo fabricado menos lo usado al día).
+
+![La vista E/S de materiales de la página Imperio](/images/help/guides/empire-materials.webp)
+
+- Un Delta positivo se vende y uno negativo se compra. Un Delta muy negativo de algo que podrías fabricar es candidato para tu próxima base.
+- Con **Mostrar** en **Equilibrado de carga**, solo ves los materiales que el imperio fabrica y usa a la vez. Comprueba que la oferta y la demanda cuadran.
+- Despliega una fila para ver qué planes fabrican y usan el material. **Neto por planeta** suma los planes del mismo planeta.
+
+Más: [E/S de materiales](/help/empire#material-io).
+
+## 5. Revisa el mercado {#step-5}
+
+**Revisión de mercado del flujo neto del imperio**, encima de la tabla, compara lo que vende y compra el imperio en conjunto con la negociación de la bolsa. Unas etiquetas cuentan los avisos: rojo («no pueden comerciarse según lo planificado»), ámbar («gran parte del mercado») y otras notas. Haz clic en una etiqueta para ver solo esos materiales.
+
+- A partir del 10 % del volumen diario de un material, tus órdenes probablemente moverán el precio. A partir del 50 %, el mercado no puede absorber la cantidad tal como está planificada. El volumen diario es el total de 30 días de la bolsa ÷ 30. Por ejemplo, 30.000 unidades negociadas en 30 días son 1.000 al día, así que un imperio que vende 150 al día se lleva el 15 % y recibe un aviso ámbar.
+- La revisión usa las reglas de _todos los planetas_ de la preferencia de bolsa del imperio. Si un material tiene una excepción de planeta, lo revisa la propia [Revisión del plan](/help/plan_check#market-check) de ese plan.
 
 > [!tip]
-> Do the plan fixes first. They cost nothing to build, and the plan's numbers are off until you do.
+> Un aviso rojo en una salida no hace mala una base. Menos edificios, una segunda salida u otra bolsa pueden bajar la cuota.
 
-Details: [Check an empire](/help/tools_production_chain#check-an-empire), [Findings](/help/tools_production_chain#findings).
+Más información: [Revisión de mercado](/help/empire#market-check), [Revisión del plan: Imperio](/help/plan_check#empire).
 
-## Next {#next}
+## 6. Encuentra oportunidades de producción {#step-6}
 
-- [Hand off to the game](/help/guide_hand_off): build, supply and repair your bases with XIT packages.
-- [From a chain to bases](/help/guide_chain_to_bases): plan the next chain and add it to this empire.
+Arriba de la página, abre **Oportunidades de producción** para ver [[recipe|recetas]] que podrían usar lo que le sobra a tu imperio.
+
+![La vista Oportunidades de producción de la página Imperio](/images/help/guides/empire-opportunities.webp)
+
+- **Oportunidades**: recetas en las que todos los insumos tienen excedente, suficiente para al menos una ejecución al día.
+- **Lotes potenciales**: cuántas ejecuciones al día cubre tu excedente. No tiene en cuenta el tiempo de la receta, los edificios ni la eficiencia, así que léelo como «cuánto insumo hay», no como «cuánto puedes fabricar».
+- **Vender insumos** y **Vender productos** comparan vender el excedente tal cual con vender lo que la receta fabricaría con él.
+
+Más: [Oportunidades de producción](/help/empire#production-opportunities).
+
+## 7. Revisa las cadenas detrás de tus bases {#step-7}
+
+En [Cadenas de producción](/production-chain), cambia de **Planificar una cadena** a **Revisar un imperio** y elige el imperio. Añade las cadenas que quieras revisar, o elige **Revisar todo lo que vende el imperio**.
+
+La revisión sigue hacia atrás cada material vendido a través de tus planes y lista hallazgos con su ganancia al día. Una **Corrección del plan** significa que el plan cuenta un programa de COGC que el planeta no tiene, o le falta uno que sí tiene. Los demás hallazgos son una **Receta** más barata, **Fabricar o comprar**, una mejor **Ubicación** o una mejor **Configuración** de lujos y expertos. Nunca cambia un plan.
+
+> [!tip]
+> Haz primero las correcciones del plan. No cuesta nada construirlas, y las cifras del plan no son correctas hasta que las hagas.
+
+Detalles: [Revisar un imperio](/help/tools_production_chain#check-an-empire), [Hallazgos](/help/tools_production_chain#findings).
+
+## Siguiente {#next}
+
+- [Pasar al juego](/help/guide_hand_off): construye, abastece y repara tus bases con paquetes de XIT.
+- [De una cadena a bases](/help/guide_chain_to_bases): planifica la siguiente cadena y añádela a este imperio.

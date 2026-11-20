@@ -1,189 +1,194 @@
 {
-	"view_title": "API Keys",
-	"title": "API Keys",
+	"view_title": "Chiavi API",
+	"title": "Chiavi API",
 	"info": {
 		"description": {
-			"p1": "The {link} provides programmatic access to all your planning data, ingame metadata (buildings, recipes, materials) and calculated market metrics like VWAP. While public endpoints remain open for community use, access to private planning data - including your plan configurations - require secure authentication.",
-			"p2": "By utilizing these endpoints, you can synchronize your planning operations with external spreadsheets, custom dashboards, or even optimization algorithms.",
-			"link": "PRUNplanner REST API",
-			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
+			"p1": "Leggi i tuoi dati di PRUNplanner da fogli di calcolo, script e assistenti IA. Consulta il {link}.",
+			"link": "riferimento dell'API REST",
+			"warning": "Tratta una chiave come la tua password: legge tutti i tuoi dati di pianificazione, e una chiave di lettura e scrittura può anche modificarli. {link}",
+			"warning_link": "Per quanto restano valide le chiavi"
 		}
 	},
 	"get_started": {
-		"title": "Get started",
-		"step_create": "Create a key below and save it somewhere safe.",
-		"step_pick": "Pick what you want in the URL builder, for example your empire's material I/O.",
-		"step_paste": "Copy the Google Sheets formula, the URL or a curl or Python snippet and paste it into your sheet or script."
+		"title": "Per iniziare",
+		"step_create": "Crea una chiave qui sotto e conservala in un posto sicuro.",
+		"step_pick": "Scegli ciò che ti serve nel generatore di URL, ad esempio l'I/O materiali del tuo impero.",
+		"step_paste": "Copia la formula di Google Sheets, l'URL o uno snippet curl o Python e incollalo nel tuo foglio o script."
 	},
 	"builder": {
-		"title": "URL builder",
-		"endpoint": "Data",
-		"format": "Format",
+		"title": "Generatore di URL",
+		"endpoint": "Dati",
+		"format": "Formato",
 		"groups": {
-			"new": "Sheets-ready (CSV and JSON)",
-			"planning": "Your planning data (JSON)",
-			"public": "Public game data (JSON, no key)"
+			"new": "Pronti per i fogli (CSV e JSON)",
+			"planning": "I tuoi dati di pianificazione (JSON)",
+			"public": "Dati di gioco pubblici (JSON, senza chiave)"
 		},
 		"params": {
-			"empire": "Empire",
-			"plan": "Plan",
-			"cx": "CX preference",
-			"planet": "Planet",
-			"ticker": "Material",
-			"exchange": "Exchange",
-			"days": "Days"
+			"empire": "Impero",
+			"plan": "Piano",
+			"cx": "Preferenza CX",
+			"planet": "Pianeta",
+			"ticker": "Materiale",
+			"exchange": "Borsa",
+			"days": "Giorni"
 		},
-		"days_option": "Last day | Last {n} days",
-		"planet_placeholder": "Natural ID, e.g. OT-580b",
+		"days_option": "Ultimo giorno | Ultimi {n} giorni",
+		"planet_placeholder": "ID naturale, es. OT-580b",
 		"empty": {
-			"empire": "You have no empires yet.",
-			"plan": "You have no plans yet.",
-			"cx": "You have no CX preferences yet."
+			"empire": "Non hai ancora nessun impero.",
+			"plan": "Non hai ancora nessun piano.",
+			"cx": "Non hai ancora nessuna preferenza CX."
 		},
-		"empty_link": "Create one in Manage",
-		"incomplete": "Fill in every input above to build the URL.",
-		"placeholder_note": "{placeholder} stands for your key. Create a key and choose \"Use in URL builder\" to fill it in.",
+		"empty_link": "Creane una in Gestione",
+		"incomplete": "Compila tutti i campi qui sopra per generare l'URL.",
+		"placeholder_note": "{placeholder} sta per la tua chiave. Crea una chiave e scegli \"Usa nel generatore di URL\" per inserirla.",
 		"outputs": {
 			"sheets": "Google Sheets",
 			"url": "URL",
 			"curl": "curl",
 			"python": "Python"
 		},
-		"copy": "Copy {what}",
-		"copied": "Copied",
-		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
+		"copy": "Copia {what}",
+		"copied": "Copiato",
+		"freshness": "Dall'ultima volta che PRUNplanner ha calcolato questo impero. La colonna updated_at indica quando.",
+		"key_warning": "Chiunque possa aprire questo foglio può leggere i tuoi dati con questa chiave. Una chiave in un URL può solo leggere, ma usa una chiave di sola lettura diversa per ogni foglio, così puoi revocarla da sola.",
 		"endpoints": {
 			"empire_material_io": {
-				"label": "Empire material I/O",
-				"description": "Production, consumption and delta per material and day for one empire."
+				"label": "I/O materiali dell'impero",
+				"description": "Produzione, consumo e delta per materiale e giorno di un impero."
 			},
 			"empire_plans_material_io": {
-				"label": "Plan material I/O (empire)",
-				"description": "Production, consumption and delta per plan and material for one empire."
+				"label": "I/O materiali dei piani (impero)",
+				"description": "Produzione, consumo e delta per piano e materiale di un impero."
 			},
 			"empire_plans": {
-				"label": "Empire plan list",
-				"description": "The plans of one empire with planet, COGC, permits and CorpHQ."
+				"label": "Elenco piani dell'impero",
+				"description": "I piani di un impero con pianeta, COGC, permessi e CorpHQ."
 			},
 			"fio_storage": {
-				"label": "FIO storage",
-				"description": "Every material in your FIO storages, warehouses and ships."
+				"label": "Magazzini FIO",
+				"description": "Ogni materiale nei tuoi magazzini, depositi e navi su FIO."
 			},
 			"exchanges": {
-				"label": "Exchange prices",
-				"description": "Prices and calculated metrics of every material on every exchange."
+				"label": "Prezzi di borsa",
+				"description": "Prezzi e metriche calcolate di ogni materiale su ogni borsa."
 			},
 			"plans": {
-				"label": "All plans",
-				"description": "Every plan of your account with its full configuration."
+				"label": "Tutti i piani",
+				"description": "Ogni piano del tuo account con la sua configurazione completa."
 			},
 			"plan": {
-				"label": "One plan",
-				"description": "One plan with its full configuration."
+				"label": "Un piano",
+				"description": "Un piano con la sua configurazione completa."
 			},
 			"empires": {
-				"label": "All empires",
-				"description": "Every empire of your account with its plans."
+				"label": "Tutti gli imperi",
+				"description": "Ogni impero del tuo account con i suoi piani."
 			},
 			"empire": {
-				"label": "One empire",
-				"description": "One empire with its configuration."
+				"label": "Un impero",
+				"description": "Un impero con la sua configurazione."
 			},
 			"cxs": {
-				"label": "CX preferences",
-				"description": "Every CX preference of your account."
+				"label": "Preferenze CX",
+				"description": "Ogni preferenza CX del tuo account."
 			},
 			"cx": {
-				"label": "One CX preference",
-				"description": "One CX preference with its rules."
+				"label": "Una preferenza CX",
+				"description": "Una preferenza CX con le sue regole."
 			},
 			"materials": {
-				"label": "Materials",
-				"description": "Every material in the game."
+				"label": "Materiali",
+				"description": "Ogni materiale del gioco."
 			},
 			"recipes": {
-				"label": "Recipes",
-				"description": "Every recipe in the game."
+				"label": "Ricette",
+				"description": "Ogni ricetta del gioco."
 			},
 			"buildings": {
-				"label": "Buildings",
-				"description": "Every building in the game."
+				"label": "Edifici",
+				"description": "Ogni edificio del gioco."
 			},
 			"planet": {
-				"label": "One planet",
-				"description": "Resources, environment and infrastructure of one planet."
+				"label": "Un pianeta",
+				"description": "Risorse, ambiente e infrastrutture di un pianeta."
 			},
 			"planet_popr": {
-				"label": "Planet population report",
-				"description": "The latest population report of one planet."
+				"label": "Rapporto sulla popolazione del pianeta",
+				"description": "L'ultimo rapporto sulla popolazione di un pianeta."
 			},
 			"market_history": {
-				"label": "Market history",
-				"description": "Daily price history of one material on one exchange."
+				"label": "Storico di mercato",
+				"description": "Storico giornaliero dei prezzi di un materiale su una borsa."
 			},
 			"market_daily": {
-				"label": "Market history, every material",
-				"description": "Daily prices of every material on one exchange for the last days, up to 31, in one request. Limited to 30 requests per minute."
+				"label": "Storico di mercato, tutti i materiali",
+				"description": "Prezzi giornalieri di ogni materiale su una borsa negli ultimi giorni, fino a 31, in una sola richiesta. Limitato a 30 richieste al minuto."
 			}
 		}
 	},
 	"manage": {
-		"title": "PRUNplanner API Keys",
-		"loading": "Loading API Keys.",
-		"empty": "No API Keys yet. Create your first API Key.",
-		"never": "Never",
-		"last_used_hint": "Requests with this key update this within a few minutes.",
+		"title": "Chiavi API di PRUNplanner",
+		"loading": "Caricamento delle chiavi API.",
+		"empty": "Ancora nessuna chiave API. Crea la tua prima chiave API.",
+		"never": "Mai",
+		"last_used_hint": "Le richieste con questa chiave aggiornano questo dato entro pochi minuti.",
 		"buttons": {
-			"new_apikey": "Create New Key",
-			"revoke_apikey": "Revoke"
+			"new_apikey": "Crea nuova chiave",
+			"revoke_apikey": "Revoca"
 		},
 		"table": {
-			"apikey_name": "Name",
-			"apikey_prefix": "Prefix",
-			"apikey_access": "Access",
-			"apikey_created": "Created",
-			"apikey_lastused": "Last Used"
+			"apikey_name": "Nome",
+			"apikey_prefix": "Prefisso",
+			"apikey_access": "Accesso",
+			"apikey_created": "Creata",
+			"apikey_lastused": "Ultimo uso"
 		}
 	},
 	"confirm_revoke": {
-		"title": "Revoke {name}?",
-		"content": "Scripts and sheets using it stop working at once.",
+		"title": "Revocare {name}?",
+		"content": "Gli script e i fogli che la usano smettono subito di funzionare.",
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
-	"implementation": {
-		"title": "Authorization Implementation",
-		"link": "View REST API Reference →",
-		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
+	"mcp": {
+		"title": "Assistenti IA (MCP)",
+		"description": "Collega Claude, ChatGPT/Codex, Copilot, Cursor e altri assistenti: leggono e calcolano i tuoi piani e imperi con il motore di PRUNplanner.",
+		"server_url": "URL del server",
+		"header": "Header",
+		"copy_url": "Copia URL del server",
+		"copied": "URL del server copiato",
+		"download": "Scarica per Claude Desktop",
+		"keys": "Una chiave di sola lettura legge e calcola; una chiave di lettura e scrittura salva anche piani, imperi e preferenze.",
+		"setup_link": "Configura Claude, ChatGPT/Codex, VS Code, Cursor e altri"
 	},
 	"create": {
-		"title": "Create API Key",
+		"title": "Crea chiave API",
 		"form": {
-			"key_name": "Key Name",
-			"access": "Access",
-			"key_description": "Give your key a descriptive name to help you identify it later.",
-			"success_title": "Key Generated Successfully",
-			"success_key": "Your Secret Key (Save this Now!)",
-			"success_note": "For security, we cannot show this key again. If you lose it, you must revoke and create a new one.",
-			"error": "Error creating your API Key. Please try again later."
+			"key_name": "Nome della chiave",
+			"access": "Accesso",
+			"key_description": "Dai alla chiave un nome descrittivo per riconoscerla in seguito.",
+			"success_title": "Chiave generata",
+			"success_key": "La tua chiave segreta (salvala subito!)",
+			"success_note": "Per sicurezza non possiamo mostrare di nuovo questa chiave. Se la perdi, devi revocarla e crearne una nuova.",
+			"error": "Errore nella creazione della chiave API. Riprova più tardi."
 		},
 		"buttons": {
 			"create": "@:common.buttons.create",
 			"cancel": "@:common.buttons.cancel",
-			"saved": "I've saved my key",
-			"copy": "Copy key",
-			"use_in_builder": "Use in URL builder"
+			"saved": "Ho salvato la chiave",
+			"copy": "Copia chiave",
+			"use_in_builder": "Usa nel generatore di URL"
 		},
-		"copied": "Key copied"
+		"copied": "Chiave copiata"
 	},
 	"scope": {
-		"read": "Read-only",
-		"read_write": "Read & write",
+		"read": "Sola lettura",
+		"read_write": "Lettura e scrittura",
 		"hint": {
-			"read": "Reads your plans, empires and other data. Can't change anything.",
-			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+			"read": "Legge i tuoi piani, imperi e altri dati. Non può modificare nulla.",
+			"read_write": "Crea, modifica ed elimina anche i tuoi piani, imperi e altri dati."
 		}
 	}
 }

@@ -1,7 +1,7 @@
 {
-	"view_title": "Rezept-ROI",
-	"title": "Rezept-ROI",
-	"calculating": "Berechne alle Gebäude-Auftrage und ihr ROI",
+	"view_title": "Auftrags-ROI",
+	"title": "Auftrags-ROI",
+	"calculating": "Berechne alle Gebäude-Aufträge und ihren ROI",
 	"cx_select": "@:terms.cx Präferenz",
 	"filters": {
 		"title": "@:terms.filter",
