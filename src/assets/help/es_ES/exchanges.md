@@ -1,176 +1,176 @@
-On the [Exchanges](/exchanges) page you decide which prices your plans use. Set a home exchange, pick a price basis, add fixed prices for materials you make yourself, and make exceptions for single planets. Every profit, cost and ROI number in PRUNplanner depends on these prices.
+En la página [Bolsas](/exchanges) decides qué precios usan tus planes. Define una bolsa principal, elige una base de precio, añade precios fijos para los materiales que fabricas tú mismo y crea excepciones para planetas concretos. Cada número de beneficio, coste y ROI de PRUNplanner depende de estos precios.
 
-Come here when you want to know where a price in your plans comes from, or to change it. The [Overview](#overview) shows every price your plans use and the rule behind it, and nothing you change reaches your plans until you save.
+Ven aquí cuando quieras saber de dónde sale un precio de tus planes, o para cambiarlo. El [Resumen](#overview) muestra cada precio que usan tus planes y la regla que hay detrás, y nada de lo que cambies llega a tus planes hasta que guardas.
 
-## Exchange Preferences {#exchange-preferences}
+## Preferencias de bolsa {#exchange-preferences}
 
-An [[exchange-preference|exchange preference]] sets the prices your plans use. It picks the [[cx|exchange]] and price basis, and holds [[fixed-price|fixed prices]] for materials you get at your own cost or from a partner.
+Una [[exchange-preference|preferencia de bolsa]] define los precios que usan tus planes. Elige la [[cx|bolsa]] y la base de precio, y guarda [[fixed-price|precios fijos]] para los materiales que consigues a tu propio coste o de un socio.
 
-- A preference belongs to your account. You assign it to an [[empire]] in [Management](/manage), in the CX column of **Empire Configuration**. An empire has one preference, and one preference can serve several empires.
-- A [[plan]] has no preference of its own. It uses the preference of the empire it's opened in, so a plan that's in two empires can show different prices in each.
-- An empire without a preference ("None") prices everything at **Universe · VWAP 30D**.
-- Every new account starts with "My Exchange Preference", set to Universe · VWAP 30D for buying and selling and assigned to "My Empire".
+- Una preferencia pertenece a tu cuenta. La asignas a un [[empire|imperio]] en [Gestión](/manage), en la columna CX de **Configuración de imperios**. Un imperio tiene una preferencia, y una preferencia puede servir a varios imperios.
+- Un [[plan|plan]] no tiene preferencia propia. Usa la preferencia del imperio en el que se abre, así que un plan que está en dos imperios puede mostrar precios distintos en cada uno.
+- Un imperio sin preferencia («Ninguna») pone precio a todo con **Universe · VWAP 30D**.
+- Cada cuenta nueva empieza con «My Exchange Preference», configurada con Universe · VWAP 30D para comprar y vender y asignada a «My Empire».
 
-You create, rename and delete preferences in [Management](/help/management#cx). This page edits the rules of one preference at a time, which you pick under **Switch Preference**. Below the select you'll see which empires use it, or that no empire does.
+Las preferencias se crean, renombran y eliminan en [Gestión](/help/management#cx). Esta página edita las reglas de una preferencia cada vez, que eliges en **Cambiar preferencia**. Debajo del selector verás qué imperios la usan, o que no la usa ninguno.
 
-## The Rules List {#rules-list}
+## La lista de reglas {#rules-list}
 
-The column on the left lists the parts of the preference you can open. On screens narrower than 1024 px it's a select instead.
+La columna de la izquierda enumera las partes de la preferencia que puedes abrir. En pantallas de menos de 1024 px es un selector.
 
-| Entry                            | What it shows                                                                                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Overview**                     | Every price your plans use, see [Overview](#overview)                                                                                                         |
-| **All planets**                  | Your home exchange and fixed prices for every planet                                                                                                          |
-| **Planets with their own rules** | Planets with an [exception](#planet-exceptions)                                                                                                               |
-| **Using all-planets rules**      | Planets of the empires using this preference that follow the all-planets rules (grouped by empire when several empires use the preference) |
-| **Planets of other empires**     | Planets of empires that don't use this preference, shown after you press the button to show them                                                              |
-| **Not in any plan**              | Planets with saved rules that none of your plans uses                                                                                                         |
+| Entrada                                   | Qué muestra                                                                                                                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Resumen**                               | Cada precio que usan tus planes, consulta [Resumen](#overview)                                                                                                                     |
+| **Todos los planetas**                    | Tu bolsa principal y los precios fijos para todos los planetas                                                                                                                     |
+| **Planetas con reglas propias**           | Planetas con una [excepción](#planet-exceptions)                                                                                                                                   |
+| **Usan las reglas de todos los planetas** | Planetas de los imperios que usan esta preferencia y siguen las reglas de todos los planetas (agrupados por imperio cuando varios imperios usan la preferencia) |
+| **Planetas de otros imperios**            | Planetas de imperios que no usan esta preferencia, que aparecen después de pulsar el botón para mostrarlos                                                                         |
+| **Sin ningún plan**                       | Planetas con reglas guardadas que no usa ninguno de tus planes                                                                                                                     |
 
-**All planets** and every planet with saved rules show how many rules they have, and the count turns amber when the entry has a warning note. From 10 planets on, a **Filter planets** box appears.
+**Todos los planetas** y cada planeta con reglas guardadas muestran cuántas reglas tienen, y el recuento se pone ámbar cuando la entrada tiene una nota de aviso. A partir de 10 planetas aparece una casilla **Filtrar planetas**.
 
-## Overview {#overview}
+## Resumen {#overview}
 
-The page opens on the **Overview**. It lists every material that the plans of the empires using this preference buy or sell, the price it gets and the rule behind it. While planets of other empires are shown, their plans count too. It includes unsaved changes, so you see the effect of an edit before you save. Materials a plan neither buys nor sells (net 0) are left out.
+La página se abre en el **Resumen**. Enumera cada material que compran o venden los planes de los imperios que usan esta preferencia, el precio que recibe y la regla que hay detrás. Mientras se muestran los planetas de otros imperios, sus planes también cuentan. Incluye los cambios sin guardar, así que ves el efecto de una edición antes de guardar. Se omiten los materiales que un plan ni compra ni vende (neto 0).
 
-- The summary on top shows the **All planets** rule, how many planets have their own rules, and how many fixed prices there are.
-- **Search material** and **Show materials** (**All**, **Fixed**, **No price (0 ȼ)**, **Varies by planet**) narrow the table.
-- The table lists **Material**, **Buy ȼ**, **Sell ȼ** and **Used on** (the first three planets, the rest as "+n"). When planets get different prices, you see the range and a "varies by planet" tag. On screens narrower than 1024 px the table shows one side at a time, buy prices first, with a switch for the sell side, and leaves out **Used on**.
-- A tag shows where each price comes from, for example "NC1 · VWAP 30D", **Fixed · all planets**, **Fixed · this planet** or **No price data**. Prices of 0 ȼ without a fixed price are amber.
-- Expand a row to see the full ladder of [how the price is found](#how-a-price-is-found), for each side and planet. **Open the rule** jumps to the rule that set it.
+- El resumen de arriba muestra la regla de **Todos los planetas**, cuántos planetas tienen reglas propias y cuántos precios fijos hay.
+- **Buscar material** y **Mostrar materiales** (**Todos**, **Fijos**, **Sin precio (0 ȼ)**, **Varía según el planeta**) acotan la tabla.
+- La tabla enumera **Material**, **Compra ȼ**, **Venta ȼ** y **Usado en** (los tres primeros planetas, el resto como «+n»). Cuando los planetas reciben precios distintos, ves el rango y una etiqueta «varía según el planeta». En pantallas de menos de 1024 px la tabla muestra un lado cada vez, primero los precios de compra, con un selector para el lado de venta, y omite **Usado en**.
+- Una etiqueta muestra de dónde sale cada precio, por ejemplo «NC1 · VWAP 30D», **Fijo · todos los planetas**, **Fijo · este planeta** o **Sin datos de precio**. Los precios de 0 ȼ sin precio fijo salen en ámbar.
+- Despliega una fila para ver toda la escalera de [cómo se encuentra el precio](#how-a-price-is-found), para cada lado y planeta. **Abrir la regla** salta a la regla que lo definió.
 
-While PRUNplanner calculates your plans, the table shows **Calculating your plans…** with a progress bar.
+Mientras PRUNplanner calcula tus planes, la tabla muestra **Calculando tus planes…** con una barra de progreso.
 
-### Notes {#notes}
+### Notas {#notes}
 
-Las notas sobre la tabla señalan las reglas que conviene revisar. Warnings come first, and **Open** takes you to the rule.
+Las notas sobre la tabla señalan reglas que conviene revisar. Los avisos van primero, y **Abrir** te lleva a la regla.
 
-| Note                                                 | Kind    | What to do                                                                                                         |
-| ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| A rule has no buy or sell price for some materials   | Warning | Those materials count as 0 ȼ. Set a fixed price or pick another exchange or basis. |
-| A material has no price on any exchange              | Warning | It counts as 0 ȼ. Set a fixed price if you know one.                               |
-| A material is fixed at 0 ȼ                           | Info    | Fine if it's your own supply and free to you.                                                      |
-| Fixed buy prices differ from their COGM              | Info    | Overview only. See [Fixed prices and COGM](#fixed-prices-and-cogm).                |
-| A planet's exchange rule is the same as all planets' | Info    | You can remove it.                                                                                 |
-| **No empire uses this preference**                   | Info    | Assign it in Management.                                                                           |
-| Rules for planets in no plan                         | Info    | Delete them under **Not in any plan** if you don't need them.                                      |
+| Nota                                                                   | Tipo        | Qué hacer                                                                                                          |
+| ---------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
+| Una regla no tiene precio de compra o de venta para algunos materiales | Aviso       | Esos materiales cuentan como 0 ȼ. Define un precio fijo o elige otra bolsa o base. |
+| Un material no tiene precio en ninguna bolsa                           | Aviso       | Cuenta como 0 ȼ. Define un precio fijo si conoces uno.                             |
+| Un material está fijado en 0 ȼ                                         | Información | Correcto si es de tu propio suministro y te sale gratis.                                           |
+| Los precios de compra fijos difieren de su COGM                        | Información | Solo en el Resumen. Consulta [Precios fijos y COGM](#fixed-prices-and-cogm).       |
+| La regla de bolsa de un planeta es igual a la de todos los planetas    | Información | Puedes quitarla.                                                                                   |
+| **Ningún imperio usa esta preferencia**                                | Información | Asígnala en Gestión.                                                                               |
+| Reglas para planetas que no están en ningún plan                       | Información | Elimínalas en **Sin ningún plan** si no las necesitas.                                             |
 
-## How a Price Is Found {#how-a-price-is-found}
+## Cómo se encuentra un precio {#how-a-price-is-found}
 
-Para cada material, PRUNplanner busca un precio de compra (para lo que consume un plan) y un precio de venta (para lo que produce). It checks these levels in order and takes the first rule that matches:
+Para cada material, PRUNplanner busca un precio de compra (para lo que consume un plan) y un precio de venta (para lo que produce). Revisa estos niveles en orden y toma la primera regla que coincide:
 
 1. **Precio fijo del planeta**: un precio fijo definido en ese planeta
 2. **Precio fijo de todos los planetas**
 3. **Bolsa del planeta**: la regla de bolsa definida en ese planeta
 4. **Bolsa de todos los planetas**
-5. **Universe · VWAP 30D**, cuando no coincide ninguna regla anterior
+5. **Universe · VWAP 30D**, cuando no coincide ninguna regla de arriba
 
-So an all-planets fixed price wins over a planet's exchange rule.
+Así que un precio fijo de todos los planetas gana a la regla de bolsa de un planeta.
 
-An example: **All planets** has NC1 · VWAP 30D for buying and selling and a fixed buy price of 45 ȼ for RAT. One planet has its own exchange rule, CI1 · Ask, for buying only. On that planet:
+Un ejemplo: **Todos los planetas** tiene NC1 · VWAP 30D para comprar y vender y un precio de compra fijo de 45 ȼ para RAT. Un planeta tiene su propia regla de bolsa, CI1 · Ask, solo para comprar. En ese planeta:
 
-- Buying RAT gets 45 ȼ: the planet has no fixed price of its own, so the all-planets fixed price (level 2) matches first.
-- Buying H2O gets the CI1 Ask: no fixed price matches, so the planet's exchange rule (level 3) does.
-- Selling RAT gets the NC1 VWAP 30D: there's no fixed sell price, and the planet's rule is for buying only, so the all-planets exchange (level 4) matches.
+- Comprar RAT sale a 45 ȼ: el planeta no tiene precio fijo propio, así que el precio fijo de todos los planetas (nivel 2) coincide primero.
+- Comprar H2O sale al Ask de CI1: no coincide ningún precio fijo, así que coincide la regla de bolsa del planeta (nivel 3).
+- Vender RAT sale al VWAP 30D de NC1: no hay precio de venta fijo, y la regla del planeta es solo para comprar, así que coincide la bolsa de todos los planetas (nivel 4).
 
-### Buy, Sell or Both {#buy-sell-or-both}
+### Compra, venta o ambas {#buy-sell-or-both}
 
-Una regla puede aplicarse a la compra, a la venta o a ambas. If a level has no rule for the side a plan needs, PRUNplanner skips that level and checks the next one, down to Universe · VWAP 30D. That happens, for example, when a level only has a buy rule and the plan sells the material.
+Una regla puede aplicarse a la compra, a la venta o a ambas. Si un nivel no tiene regla para el lado que necesita un plan, PRUNplanner se salta ese nivel y revisa el siguiente, hasta Universe · VWAP 30D. Eso pasa, por ejemplo, cuando un nivel solo tiene una regla de compra y el plan vende el material.
 
-### Exchanges Without a Price {#exchanges-without-a-price}
+### Bolsas sin precio {#exchanges-without-a-price}
 
-When an exchange rule matches but its exchange has no price for a material, the price is 0 ȼ. It doesn't fall through to the next level. This happens with Ask when nobody offers the material, with Bid when nobody wants it, and with VWAP when the exchange had no trade in the last 30 days. A material with no exchange data at all shows **No price data** and also counts as 0 ȼ.
+Cuando coincide una regla de bolsa pero su bolsa no tiene precio para un material, el precio es 0 ȼ. No pasa al siguiente nivel. Esto ocurre con Ask cuando nadie ofrece el material, con Bid cuando nadie lo quiere y con VWAP cuando la bolsa no ha tenido operaciones en los últimos 30 días. Un material sin ningún dato de bolsa muestra **Sin datos de precio** y también cuenta como 0 ȼ.
 
-A 0 ȼ price changes your plan's numbers: a material it buys at 0 ȼ costs nothing, and one it sells at 0 ȼ earns nothing. So a plan's profit can look better or worse than it would be on the market.
+Un precio de 0 ȼ cambia los números de tu plan: un material que compra a 0 ȼ no cuesta nada, y uno que vende a 0 ȼ no le hace ganar nada. Así que el beneficio de un plan puede parecer mejor o peor de lo que sería en el mercado.
 
-The page shows these prices in amber and lists them in the [notes](#notes), so you can set a fixed price or pick another exchange or basis.
+La página muestra estos precios en ámbar y los enumera en las [notas](#notes), para que puedas definir un precio fijo o elegir otra bolsa o base.
 
-## Price Basis: VWAP, Ask and Bid {#price-basis-vwap-ask-and-bid}
+## Base de precio: VWAP, Ask y Bid {#price-basis-vwap-ask-and-bid}
 
-| Basis             | What it is                                                                                                                                                                                                                                                                            |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| VWAP 7D, VWAP 30D | The [[vwap\|volume-weighted average price]] of the last 7 or 30 days. Trades with higher volume count more, so one odd trade moves it little. |
-| Ask               | The cheapest offer in the order book right now: what you pay when you buy at once.                                                                                                                                                                    |
-| Bid               | The highest buy order in the order book right now: what you get when you sell at once.                                                                                                                                                                |
+| Base              | Qué es                                                                                                                                                                                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| VWAP 7D, VWAP 30D | El [[vwap\|precio medio ponderado por volumen]] de los últimos 7 o 30 días. Las operaciones con más volumen cuentan más, así que una operación rara apenas lo mueve. |
+| Ask               | La oferta más barata del libro de órdenes ahora mismo: lo que pagas si compras al instante.                                                                                                                                                                                  |
+| Bid               | La orden de compra más alta del libro de órdenes ahora mismo: lo que recibes si vendes al instante.                                                                                                                                                                          |
 
-[[Ask]] and [[Bid]] come from the live order book, so they can change at any time and can be missing for materials with little trading. When an exchange had no trade in the last 7 days, VWAP 7D uses the price of the last day it was traded. Both VWAPs are only 0 when there was no trade at all in the last 30 days.
+[[ask|Ask]] y [[bid|Bid]] salen del libro de órdenes en directo, así que pueden cambiar en cualquier momento y pueden faltar en materiales con poco comercio. Cuando una bolsa no ha tenido operaciones en los últimos 7 días, VWAP 7D usa el precio del último día en que se negoció. Los dos VWAP solo son 0 cuando no hubo ninguna operación en los últimos 30 días.
 
-An example of VWAP with made-up numbers: on one day 100 units trade for 5,000 ȼ in total (50 ȼ each), and on another 10 units trade for 1,000 ȼ (100 ȼ each). The VWAP is the credits ÷ the units, (5,000 + 1,000) ÷ (100 + 10) ≈ 54.55 ȼ. A plain average of the two prices would be 75 ȼ, so the small, pricier day moves the VWAP far less.
+Un ejemplo de VWAP con números inventados: un día se negocian 100 unidades por 5.000 ȼ en total (50 ȼ cada una), y otro día 10 unidades por 1.000 ȼ (100 ȼ cada una). El VWAP es los créditos ÷ las unidades, (5.000 + 1.000) ÷ (100 + 10) ≈ 54,55 ȼ. Una media simple de los dos precios daría 75 ȼ, así que el día pequeño y más caro mueve mucho menos el VWAP.
 
-What the basis does to your plans: VWAP is one price for both sides, so with the same VWAP rule for buying and selling a material gets the same buy and sell price. With Ask for buying and Bid for selling, a plan buys at the cheapest offer and sells to the highest buy order, and the gap between the two, the [[spread]], shows in its profit.
+Lo que hace la base con tus planes: VWAP es un único precio para los dos lados, así que con la misma regla VWAP para comprar y vender un material recibe el mismo precio de compra y de venta. Con Ask para comprar y Bid para vender, un plan compra a la oferta más barata y vende a la orden de compra más alta, y la diferencia entre ambas, el [[spread|diferencial]], se nota en su beneficio.
 
-[[Universe]] combines all four exchanges and only has VWAP prices. PRUNplanner refreshes exchange prices about every 30 minutes.
+[[universe|Universe]] combina las cuatro bolsas y solo tiene precios VWAP. PRUNplanner actualiza los precios de bolsa más o menos cada 30 minutos.
 
-## Setting an Exchange Rule {#exchange-rule}
+## Definir una regla de bolsa {#exchange-rule}
 
-The **Exchange price** box on **All planets** and on each planet sets the exchange rule. Then pick one of these:
+La casilla **Precio de bolsa** de **Todos los planetas** y de cada planeta define la regla de bolsa. Luego elige una de estas opciones:
 
-- **Same for buy and sell**: one exchange and basis for both sides.
-- **Separate buy and sell**: its own exchange and basis per side. A side can stay **Not set**, and then falls through to the next level.
-- **Use all-planets rule** (planets only): the planet follows the all-planets rule, shown as "Uses the all-planets rule: …".
+- **Igual para compra y venta**: una bolsa y una base para los dos lados.
+- **Compra y venta por separado**: su propia bolsa y base para cada lado. Un lado puede quedarse **Sin definir**, y entonces pasa al siguiente nivel.
+- **Usar la regla de todos los planetas** (solo planetas): el planeta sigue la regla de todos los planetas, que se muestra como «Usa la regla de todos los planetas: …».
 
-For each side you choose **Exchange for {side}** (AI1, CI1, IC1, NC1 or Universe) and **Price basis for {side}** (VWAP 7D, VWAP 30D, Ask, Bid). Universe only offers the two VWAPs. When you switch a planet from the all-planets rule to its own, it starts with the choice it inherited.
+Para cada lado eliges **Bolsa para {side}** (AI1, CI1, IC1, NC1 o Universe) y **Base de precio para {side}** (VWAP 7D, VWAP 30D, Ask, Bid). Universe solo ofrece los dos VWAP. Cuando cambias un planeta de la regla de todos los planetas a una propia, empieza con la elección que heredaba.
 
-## Presets {#presets}
+## Ajustes predefinidos {#presets}
 
-Two presets fill in the rule in one click:
+Dos ajustes predefinidos rellenan la regla con un clic:
 
 - **Media · VWAP 30D** usa el VWAP 30D de la bolsa para comprar y vender.
-- **Operar ya · compra Ask, venta Bid** compra al Ask de la bolsa y vende a su Bid. It isn't available for Universe, which has no order book.
+- **Operar ya · compra Ask, venta Bid** compra al Ask de la bolsa y vende a su Bid. No está disponible para Universe, que no tiene libro de órdenes.
 
-Presets work on the exchange of the rule you're editing, else the all-planets exchange, else NC1. The box tells you which ("Presets on NC1:").
+Los ajustes predefinidos actúan sobre la bolsa de la regla que estás editando, si no, sobre la bolsa de todos los planetas, y si no, sobre NC1. La casilla te dice cuál («Ajustes predefinidos en NC1:»).
 
-## Fixed Prices and COGM {#fixed-prices-and-cogm}
+## Precios fijos y COGM {#fixed-prices-and-cogm}
 
-Fixed prices suit materials you make yourself and use at cost, or prices you've agreed with a corporation or partner. Add one with **Add material**, then type a buy price, a sell price or both. Deja un lado vacío para usar el precio de bolsa en él.
+Los precios fijos van bien para materiales que fabricas tú mismo y usas a coste, o para precios que has acordado con una corporación o un socio. Añade uno con **Añadir material** y escribe un precio de compra, uno de venta o ambos. Deja un lado vacío para usar en él el precio de bolsa.
 
-The **Fixed prices** table shows:
+La tabla **Precios fijos** muestra:
 
-| Column                 | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Buy ȼ**, **Sell ȼ**  | Your fixed prices                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Market**             | The price the material would get without the fixed price (buy side, unless only sell is fixed), with the difference in %                                                                                                                                                                                                                                                                                                                                                                        |
-| **COGM in your plans** | All planets only. For materials your plans make, the lowest [[cogm\|COGM]] (cost of goods manufactured) among the plans of the empires that use this preference, and in how many plans it's made. "in use" marks a buy price equal to it, otherwise **Use** sets the buy price to that COGM (rounded to 2 decimals). |
-| Last column            | The × button removes the row. On a planet, **Override** copies an all-planets price into a fixed price of its own                                                                                                                                                                                                                                                                                                                                                                                  |
+| Columna                   | Significado                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Compra ȼ**, **Venta ȼ** | Tus precios fijos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Mercado**               | El precio que recibiría el material sin el precio fijo (lado de compra, salvo que solo esté fijada la venta), con la diferencia en %                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **COGM en tus planes**    | Solo en Todos los planetas. Para los materiales que fabrican tus planes, el [[cogm\|COGM]] (coste de bienes fabricados) más bajo entre los planes de los imperios que usan esta preferencia, y en cuántos planes se fabrica. «en uso» marca un precio de compra igual a él; si no, **Usar** pone el precio de compra en ese COGM (redondeado a 2 decimales). |
+| Última columna            | El botón × quita la fila. En un planeta, **Sobrescribir** copia un precio de todos los planetas en un precio fijo propio                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
-From 10 rows on, you can search and sort the table by **Material** or **% vs market**.
+A partir de 10 filas, puedes buscar y ordenar la tabla por **Material** o **% vs mercado**.
 
-In a plan's COGM tool, **Use as buy price on all planets** sets an all-planets fixed buy price to _that plan's_ COGM, not the lowest one. See [Plan tools](/help/plan_tools#cogm-buy-price).
+En la herramienta COGM de un plan, **Usar como precio de compra en todos los planetas** pone un precio de compra fijo de todos los planetas en el COGM _de ese plan_, no en el más bajo. Consulta [Herramientas del plan](/help/plan_tools#cogm-buy-price).
 
-The Overview shows a note when an all-planets fixed buy price is more than 2 % off the lowest COGM. Its table has a **Use COGM** button per material. For example, with a fixed buy price of 45 ȼ and a lowest COGM of 40 ȼ, the gap is (45 − 40) ÷ 40 = 12.5 %, so the note shows. At 40.50 ȼ it's 1.25 %, and there's no note. Don't worry about this note: it's for information, and the fixed price keeps working as it is.
+El Resumen muestra una nota cuando un precio de compra fijo de todos los planetas se aleja más de un 2 % del COGM más bajo. Su tabla tiene un botón **Usar COGM** por material. Por ejemplo, con un precio de compra fijo de 45 ȼ y un COGM más bajo de 40 ȼ, la diferencia es (45 − 40) ÷ 40 = 12,5 %, así que aparece la nota. Con 40,50 ȼ es un 1,25 %, y no hay nota. No te preocupes por esta nota: es informativa, y el precio fijo sigue funcionando tal cual.
 
 > [!tip]
-> A fixed buy price at your own COGM makes the plans that use the material show the profit of the whole chain in the plan that sells the end product. Keep it in step with the COGM when your production changes.
+> Un precio de compra fijo a tu propio COGM hace que los planes que usan el material muestren el beneficio de toda la cadena en el plan que vende el producto final. Mantenlo al día con el COGM cuando cambie tu producción.
 
-## Planet Exceptions {#planet-exceptions}
+## Excepciones por planeta {#planet-exceptions}
 
-La mayoría de jugadores usa una sola bolsa principal para todos los planetas. Cuando un planeta necesita otra cosa, ábrelo en la lista y define su propia regla de bolsa o sus precios fijos. On that planet its rules win over the all-planets rules, except all-planets fixed prices, which still win over the planet's exchange.
+La mayoría de los jugadores usa una bolsa principal para todos los planetas. Cuando un planeta necesita otra cosa, ábrelo en la lista y define su propia regla de bolsa o sus precios fijos. En ese planeta sus reglas ganan a las de todos los planetas, salvo los precios fijos de todos los planetas, que siguen ganando a la bolsa del planeta.
 
-On a planet, the all-planets fixed prices are listed muted as **All-planets price**, and **Override** gives the planet its own fixed price for that material. Below that, **Prices on {planet}** shows what that planet's plans buy and sell and the price each gets.
+En un planeta, los precios fijos de todos los planetas aparecen atenuados como **Precio de todos los planetas**, y **Sobrescribir** da al planeta su propio precio fijo para ese material. Debajo, **Precios en {planet}** muestra lo que compran y venden los planes de ese planeta y el precio que recibe cada cosa.
 
-Planets with stored rules that none of your plans uses any more are listed under **Not in any plan**. Their rules stay saved until you delete them with **Delete rules**.
+Los planetas con reglas guardadas que ya no usa ninguno de tus planes aparecen en **Sin ningún plan**. Sus reglas siguen guardadas hasta que las eliminas con **Eliminar reglas**.
 
-## Saving {#saving}
+## Guardar {#saving}
 
-Your plans only use your changes once you save them. The save bar at the bottom counts your changes: each changed part of the preference, plus one for a rename. **Save changes** saves them and re-prices every plan you have open, and **Discard** goes back to the saved rules. Since the [Overview](#overview) already shows unsaved changes, you can try a rule, look at the prices it gives, and discard it if it's not what you wanted. If you have unsaved changes, the page asks before you leave or switch preference.
+Tus planes solo usan tus cambios una vez que los guardas. La barra de guardado de abajo cuenta tus cambios: cada parte modificada de la preferencia, más uno por un cambio de nombre. **Guardar cambios** los guarda y vuelve a calcular los precios de todos los planes que tienes abiertos, y **Descartar** vuelve a las reglas guardadas. Como el [Resumen](#overview) ya muestra los cambios sin guardar, puedes probar una regla, ver los precios que da y descartarla si no es lo que querías. Si tienes cambios sin guardar, la página te pregunta antes de salir o cambiar de preferencia.
 
-**Rename…** in the **More actions** menu changes the preference's name. You save the new name with the save bar. **Manage preferences** opens Management.
+**Renombrar…** en el menú **Más acciones** cambia el nombre de la preferencia. El nombre nuevo se guarda con la barra de guardado. **Gestionar preferencias** abre Gestión.
 
-If the same preference was saved in another tab or on another device after you opened it, the page tells you and keeps your edits. When you save, you choose **Overwrite** (your version replaces the other) or **Reload** (drop your edits and load the saved version).
+Si la misma preferencia se guardó en otra pestaña o en otro dispositivo después de que la abrieras, la página te lo dice y conserva tus ediciones. Al guardar, eliges **Sobrescribir** (tu versión sustituye a la otra) o **Recargar** (descarta tus ediciones y carga la versión guardada).
 
-## CSV Import and Export {#csv-import-and-export}
+## Importar y exportar CSV {#csv-import-and-export}
 
-**Export CSV** downloads every rule of the preference, including unsaved changes, as `PRUNPlannerExchangePreferences.csv`. **Importar CSV** lee un archivo así y pregunta antes de reemplazar todas las reglas de la preferencia. An import stays unsaved until you save it.
+**Exportar CSV** descarga todas las reglas de la preferencia, incluidos los cambios sin guardar, como `PRUNPlannerExchangePreferences.csv`. **Importar CSV** lee un archivo así y pregunta antes de sustituir todas las reglas de la preferencia. Una importación queda sin guardar hasta que la guardas.
 
-The file uses semicolons as separators and has the columns `Location;Type;CX;Ticker;Price`:
+El archivo usa punto y coma como separador y tiene las columnas `Location;Type;CX;Ticker;Price`:
 
-| Column        | Values                                                                                                                                                  |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Location      | `EMPIRE` for all planets, or a planet's natural ID                                                                                                      |
-| Type          | `BUY`, `SELL` or `BOTH`                                                                                                                                 |
-| CX            | Exchange rules only: exchange and basis, e.g. `NC1_30D`, `CI1_7D`, `AI1_ASK`, `IC1_BID`, `UNIVERSE_30D` |
-| Ticker, Price | Fixed prices only: the material's ticker and its price                                                                                  |
+| Columna       | Valores                                                                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Location      | `EMPIRE` para todos los planetas, o el ID natural de un planeta                                                                                      |
+| Type          | `BUY`, `SELL` o `BOTH`                                                                                                                               |
+| CX            | Solo reglas de bolsa: bolsa y base, p. ej. `NC1_30D`, `CI1_7D`, `AI1_ASK`, `IC1_BID`, `UNIVERSE_30D` |
+| Ticker, Price | Solo precios fijos: el ticker del material y su precio                                                                               |
 
-PRUNplanner rejects a file with a missing column or an invalid row as a whole, and nothing changes.
+PRUNplanner rechaza entero un archivo al que le falta una columna o que tiene una fila no válida, y no cambia nada.
 
 ```
 Location;Type;CX;Ticker;Price
@@ -178,16 +178,16 @@ EMPIRE;BOTH;NC1_30D;;
 EMPIRE;BUY;;RAT;45
 ```
 
-## Material Market Card {#market-card}
+## Tarjeta de mercado del material {#market-card}
 
-Every material [[ticker]] in PRUNplanner opens a market card. Hover it (or focus it with the keyboard) and the card appears. On a touch screen or a narrow window, tapping opens it as a sheet from the bottom.
+Cada [[ticker|ticker]] de material en PRUNplanner abre una tarjeta de mercado. Pasa el ratón por encima (o dale el foco con el teclado) y aparece la tarjeta. En una pantalla táctil o una ventana estrecha, al tocarlo se abre como una hoja desde abajo.
 
-The card shows one row per exchange plus Universe, with Ask, Bid, [[spread|Spread]], VWAP 7D and VWAP 30D, the change of 7D against 30D, a 30-day price line and the units traded per day (30-day average). Below that, short lines cover the trend across exchanges, the order books (units offered and wanted) and how far apart the exchanges' prices are. If a material trades less than one unit per day on all four exchanges together, the card marks it as rarely traded.
+La tarjeta muestra una fila por bolsa más Universe, con Ask, Bid, [[spread|Diferencial]], VWAP 7D y VWAP 30D, la variación de 7D frente a 30D, una línea de precios de 30 días y las unidades negociadas por día (media de 30 días). Debajo, unas líneas breves cubren la tendencia entre bolsas, los libros de órdenes (unidades ofrecidas y pedidas) y lo separados que están los precios de las bolsas. Si un material se negocia menos de una unidad al día en las cuatro bolsas juntas, la tarjeta lo marca como poco negociado.
 
-When the ticker belongs to a plan, an empire or a setup, the card also shows how much of the material it buys or sells per day and its [[share-of-volume|share of the daily volume]]: Fine below 10 %, Watch from 10 %, Too big from 50 %. These are the same limits as [Plan check](/help/plan_check#market-check). For example, if a plan sells 60 units a day and the exchange traded 9,000 units in the last 30 days, that's 300 a day, and the plan's share is 60 ÷ 300 = 20 %: Watch.
+Cuando el ticker pertenece a un plan, un imperio o una configuración, la tarjeta también muestra cuánto material compra o vende al día y su [[share-of-volume|parte del volumen diario]]: Bien por debajo del 10 %, Vigilar desde el 10 %, Demasiado grande desde el 50 %. Son los mismos límites que en [Revisión del plan](/help/plan_check#market-check). Por ejemplo, si un plan vende 60 unidades al día y la bolsa negoció 9.000 unidades en los últimos 30 días, son 300 al día, y la parte del plan es 60 ÷ 300 = 20 %: Vigilar.
 
-- Click the ticker to pin the card. Esc or × closes it. In a plan's Material I/O and in the HQ Calculator, a click opens the details right away.
-- **Market details →** opens a drawer with the material's weight and volume, the data date, a table per exchange (**Prices**, **Order books**, **Volume**), a 30-day chart and **Market health** (breadth, volume-weighted trend, order book balance, price cohesion).
-- **Market Exploration ↗** opens the material in [Market Exploration](/help/tools_market_exploration).
+- Haz clic en el ticker para fijar la tarjeta. Esc o × la cierran. En la E/S de materiales de un plan y en la Calculadora de HQ, un clic abre los detalles directamente.
+- **Detalles del mercado →** abre un panel con el peso y el volumen del material, la fecha de los datos, una tabla por bolsa (**Precios**, **Libros de órdenes**, **Volumen**), un gráfico de 30 días y **Salud del mercado** (amplitud, tendencia ponderada por volumen, equilibrio del libro de órdenes, cohesión de precios).
+- **Exploración del mercado ↗** abre el material en [Exploración del mercado](/help/tools_market_exploration).
 
-In [Profile](/help/profile#preferences), **Market card** sets how the card opens: **On hover** (default) or **On click only**. With On click only, hovering shows nothing and a click pins the card.
+En [Perfil](/help/profile#preferences), **Tarjeta de mercado** define cómo se abre la tarjeta: **Al pasar el ratón** (por defecto) o **Solo al hacer clic**. Con Solo al hacer clic, pasar el ratón no muestra nada y un clic fija la tarjeta.
