@@ -1,80 +1,80 @@
-Use Recipe ROI to shortlist buildings and recipes before you plan a base. It ranks every production [[recipe]] by what a base full of its building would earn. Then check the winners on a real planet in a [plan](/help/plan_layout).
+Mit Auftrags-ROI stellst du eine Vorauswahl von Gebäuden und Aufträgen zusammen, bevor du eine Basis planst. Es ordnet jeden Produktions-[[recipe|Auftrag]] danach, was eine Basis voller seiner Gebäude verdienen würde. Prüfe die Gewinner danach auf einem echten Planeten in einem [Plan](/help/plan_layout).
 
-The page was built with input from Lowstrife, MemoryAlpha and Laaxus of the PCT and Prosperous Universe Discord communities.
+Die Seite entstand mit Beiträgen von Lowstrife, MemoryAlpha und Laaxus aus den Discord-Communitys von PCT und Prosperous Universe.
 
-## What the page calculates {#what-it-calculates}
+## Was die Seite berechnet {#what-it-calculates}
 
-For each production building, PRUNplanner builds a plan with one fixed layout of that building (see [Layouts](#layouts)). It runs that plan once per recipe, with the building running only that recipe. Every row is one building and one recipe, and PRUNplanner calculates it with the same engine as your own plans.
+Für jedes Produktionsgebäude baut PRUNplanner einen Plan mit einem festen Layout dieses Gebäudes (siehe [Layouts](#layouts)). Diesen Plan rechnet es einmal pro Auftrag durch, wobei das Gebäude nur diesen Auftrag laufen lässt. Jede Zeile ist ein Gebäude und ein Auftrag, und PRUNplanner berechnet sie mit derselben Engine wie deine eigenen Pläne.
 
-Every plan uses the same setup:
+Jeder Plan nutzt dasselbe Setup:
 
-| Setting                                                                                                                        | Value                                                                                                                                                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Planet                                                                                                                         | Montem (OT-580b), with its [[production-fees\|production fees]] and [[fertility]] |
-| [[cogc\|COGC]] program | the building's own [[expertise]], +25 %                                                                                                                                                                      |
-| [[experts\|Experts]]   | 5 in every expertise, so +28.4 % for the building's own                                                                                                                                                                                                                                              |
-| Workforce                                                                                                                      | fully housed by the layout's [[habs\|habitations]]                                                                                                                                                           |
-| Prices                                                                                                                         | your exchange preference (see below)                                                                                                                                                                                                                                                              |
+| Einstellung                                                                                                                     | Wert                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Planet                                                                                                                          | Montem (OT-580b), mit seinen [[production-fees\|Produktionsgebühren]] und seiner [[fertility\|Fruchtbarkeit]] |
+| [[cogc\|COGC]]-Programm | das eigene [[expertise\|Fachgebiet]] des Gebäudes, +25 %                                                                                                                                                                                 |
+| [[experts\|Experten]]   | 5 in jedem Fachgebiet, also +28,4 % für das eigene des Gebäudes                                                                                                                                                                                                                                                                                  |
+| Belegschaft                                                                                                                     | voll untergebracht durch die [[habs\|Unterkünfte]] des Layouts                                                                                                                                                                           |
+| Preise                                                                                                                          | deine Marktplatz-Präferenz (siehe unten)                                                                                                                                                                                                                                                                                      |
 
-Because every row shares this planet, these experts and these prices, the rows differ only in the building, its layout and its program, and the recipe. That's what makes them comparable with each other.
+Weil jede Zeile diesen Planeten, diese Experten und diese Preise teilt, unterscheiden sich die Zeilen nur im Gebäude, seinem Layout und seinem Programm sowie im Auftrag. Das macht sie untereinander vergleichbar.
 
-Montem's production fees are part of every profit on this page, so a recipe can earn more on a planet whose governor charges less. Fertility only matters for ORC, which PRUNplanner calculates at Montem's fertility.
+Die Produktionsgebühren von Montem stecken in jedem Profit auf dieser Seite, ein Auftrag kann also auf einem Planeten mehr verdienen, dessen Gouverneur weniger verlangt. Fruchtbarkeit zählt nur für ORC, das PRUNplanner mit der Fruchtbarkeit von Montem berechnet.
 
-The page leaves out the extraction buildings RIG, EXT and COL and the farm FRM, because their output depends on the planet. For RIG, EXT and COL, use [Resource ROI](/help/tools_resource_roi_overview). FRM has no page like this.
+Die Seite lässt die Abbaugebäude RIG, EXT und COL und die Farm FRM weg, weil ihr Ertrag vom Planeten abhängt. Für RIG, EXT und COL nutze [Ressourcen ROI](/help/tools_resource_roi_overview). Für FRM gibt es keine solche Seite.
 
-The page calculates on its own when you open it, and a progress bar **Calculating Building Recipe ROI** counts through the buildings.
+Die Seite rechnet von selbst, wenn du sie öffnest, und ein Fortschrittsbalken **Berechne alle Gebäude-Auftrage und ihr ROI** zählt die Gebäude durch.
 
 ## Layouts {#layouts}
 
-Each building has one stored layout: a number of production buildings plus the habitations and storage they need. PRUNplanner keeps these layouts in a fixed table and doesn't recalculate them for your prices. Together with the 25 area of the [[core-module|core module]], each layout uses 450 to 500 area, so it fits one base of 500 area.
+Jedes Gebäude hat ein hinterlegtes Layout: eine Anzahl Produktionsgebäude plus die Unterkünfte und das Lager, die sie brauchen. PRUNplanner hält diese Layouts in einer festen Tabelle und rechnet sie nicht für deine Preise neu. Zusammen mit den 25 Fläche des [[core-module|Kernmoduls]] nutzt jedes Layout 450 bis 500 Fläche und passt so in eine Basis mit 500 Fläche.
 
-The **Optimal Setup** column shows the layout, for example `11x TNP, 9x HB3, 1x STO`. The production building comes first, then the habitations and storage.
+Die Spalte **Optimale Konfiguration** zeigt das Layout, zum Beispiel `11x TNP, 9x HB3, 1x STO`. Das Produktionsgebäude kommt zuerst, dann Unterkünfte und Lager.
 
-## Exchange preference {#exchange-preference}
+## Marktplatz-Präferenz {#exchange-preference}
 
-**CX Preference** in the header picks the [[exchange-preference|exchange preference]] the prices come from. PRUNplanner buys inputs and workforce consumables at the buy price and sells outputs at the sell price (see [Buy, Sell or Both](/help/exchanges#buy-sell-or-both)).
+**CX-Präferenz** im Kopf wählt die [[exchange-preference|Marktplatz-Präferenz]], aus der die Preise kommen. PRUNplanner kauft Inputs und Verbrauchsgüter der Belegschaft zum Kaufpreis und verkauft Outputs zum Verkaufspreis (siehe [Kaufen, Verkaufen oder beides](/help/exchanges#buy-sell-or-both)).
 
 > [!warning]
-> Picking an exchange preference here also makes it your default exchange preference for every page, the same as setting it in your profile. The page recalculates at once.
+> Wählst du hier eine Marktplatz-Präferenz, wird sie auch zu deiner Standard-Marktplatz-Präferenz für jede Seite, genau wie beim Einstellen in deinem Profil. Die Seite rechnet sofort neu.
 
-"None - Universe 30D" means no exchange preference, so every price is the [[universe|Universe]] 30-day [[vwap|VWAP]].
+„None - Universe 30D“ heißt keine Marktplatz-Präferenz, jeder Preis ist dann der 30-Tage-[[vwap|VWAP]] des [[universe|Universe]].
 
-## Columns {#columns}
+## Spalten {#columns}
 
-The table shows 50 rows per page. Click a numeric column's header to sort by it.
+Die Tabelle zeigt 50 Zeilen pro Seite. Klick auf den Kopf einer Zahlenspalte, um danach zu sortieren.
 
-| Column                                  | What it shows                                                                                                                                                                                                |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Building**                            | the production building                                                                                                                                                                                      |
-| **Optimal Setup**                       | the stored layout (see [Layouts](#layouts))                                                                                                                                               |
-| **Recipe Output**                       | the recipe's outputs, as material tiles                                                                                                                                                                      |
-| **Recipe Input**                        | the recipe's inputs, as material tiles                                                                                                                                                                       |
-| **COGC**                                | the program the plan runs with, which is the building's expertise                                                                                                                                            |
-| **COGM**                                | opens the **Cost Of Goods Manufactured** breakdown of the recipe ([[cogm\|COGM]]) |
-| **Plan Cost (ȼ)**    | what it costs to build the whole layout                                                                                                                                                                      |
-| **Daily Profit (ȼ)** | what the whole layout earns per day                                                                                                                                                                          |
-| **Profit/Area (ȼ)**  | daily profit per unit of area used                                                                                                                                                                           |
-| **Plan ROI (d)**     | days until the profit has paid for the build                                                                                                                                                                 |
+| Spalte                                      | Was sie zeigt                                                                                                                                                                                                          |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gebäude**                                 | das Produktionsgebäude                                                                                                                                                                                                 |
+| **Optimale Konfiguration**                  | das hinterlegte Layout (siehe [Layouts](#layouts))                                                                                                                                                  |
+| **Aufträge Ausgang**                        | die Outputs des Auftrags, als Materialkacheln                                                                                                                                                                          |
+| **Aufträge Eingang**                        | die Inputs des Auftrags, als Materialkacheln                                                                                                                                                                           |
+| **COGC**                                    | das Programm, mit dem der Plan läuft, also das Fachgebiet des Gebäudes                                                                                                                                                 |
+| **COGM**                                    | öffnet die Aufschlüsselung **Kosten der hergestellten Waren** des Auftrags ([[cogm\|COGM]]) |
+| **Plan Kosten (ȼ)**      | was es kostet, das ganze Layout zu bauen                                                                                                                                                                               |
+| **Täglicher Gewinn (ȼ)** | was das ganze Layout pro Tag verdient                                                                                                                                                                                  |
+| **Profit/Fläche (ȼ)**    | Tagesgewinn pro genutzter Flächeneinheit                                                                                                                                                                               |
+| **Plan ROI (Tag)**       | Tage, bis der Profit den Bau bezahlt hat                                                                                                                                                                               |
 
-The daily amount on a material tile is the recipe amount × buildings × runs per day × 1.25 (the COGC bonus). It leaves out the experts and workforce efficiency, so it's lower than the flow behind the profit next to it. For example, a recipe that makes 4 units in 12 hours runs 2 times a day, so a layout of 10 buildings shows 4 × 10 × 2 × 1.25 = 100 a day.
+Die Tagesmenge auf einer Materialkachel ist Auftragsmenge × Gebäude × Durchläufe pro Tag × 1,25 (der COGC-Bonus). Experten und Effizienz der Belegschaft fehlen darin, sie ist also niedriger als der Fluss hinter dem Profit daneben. Ein Auftrag, der 4 Einheiten in 12 Stunden herstellt, läuft zum Beispiel 2-mal am Tag, ein Layout mit 10 Gebäuden zeigt also 4 × 10 × 2 × 1,25 = 100 am Tag.
 
-## How the numbers are made {#calculation}
+## Wie die Zahlen entstehen {#calculation}
 
-- **Daily Profit (ȼ)** = value of the outputs at the sell price − inputs and workforce consumables at the buy price − [[degradation]] − production fees. Degradation is the construction cost of the production buildings ÷ 180 per day.
-- **Plan Cost (ȼ)** = construction materials of the whole layout at the buy price: production buildings, habitations, storage and the core module.
-- **Profit/Area (ȼ)** = Daily Profit ÷ area used, core module included.
-- **Plan ROI (d)** = Plan Cost ÷ Daily Profit. It's green when the plan pays back. When it never does (no profit), the column shows **never** in red.
+- **Täglicher Gewinn (ȼ)** = Wert der Outputs zum Verkaufspreis − Inputs und Verbrauchsgüter der Belegschaft zum Kaufpreis − [[degradation|Abnutzung]] − Produktionsgebühren. Die Abnutzung ist die Baukosten der Produktionsgebäude ÷ 180 pro Tag.
+- **Plan Kosten (ȼ)** = Baumaterialien des ganzen Layouts zum Kaufpreis: Produktionsgebäude, Unterkünfte, Lager und das Kernmodul.
+- **Profit/Fläche (ȼ)** = Täglicher Gewinn ÷ genutzte Fläche, Kernmodul eingeschlossen.
+- **Plan ROI (Tag)** = Plan Kosten ÷ Täglicher Gewinn. Er ist grün, wenn sich der Plan amortisiert. Amortisiert er sich nie (kein Profit), zeigt die Spalte **nie** in Rot.
 
-A made-up example: a layout with production buildings worth 900,000 ȼ loses 900,000 ÷ 180 = 5,000 ȼ a day to degradation. If the whole layout costs 1,500,000 ȼ to build, uses 500 area and makes a Daily Profit of 30,000 ȼ, its Profit/Area is 30,000 ÷ 500 = 60 ȼ and its Plan ROI is 1,500,000 ÷ 30,000 = 50 days.
+Ein ausgedachtes Beispiel: Ein Layout mit Produktionsgebäuden im Wert von 900.000 ȼ verliert 900.000 ÷ 180 = 5.000 ȼ am Tag durch Abnutzung. Kostet der Bau des ganzen Layouts 1.500.000 ȼ, nutzt es 500 Fläche und bringt es einen Täglichen Gewinn von 30.000 ȼ, ist sein Profit/Fläche 30.000 ÷ 500 = 60 ȼ und sein Plan ROI 1.500.000 ÷ 30.000 = 50 Tage.
 
-Your plans run the same formulas. For the base view of [[profit]] and [[roi|ROI]], see [Plan results](/help/plan_results).
+Deine Pläne rechnen mit denselben Formeln. Für die Basisansicht von [[profit|Profit]] und [[roi|ROI]] siehe [Plan-Ergebnisse](/help/plan_results).
 
-## Filters {#filters}
+## Filter {#filters}
 
-Above the table:
+Über der Tabelle:
 
-- **Building**, **COGC**, **Output** and **Input** each take one or more values, and you can search them. **Output** and **Input** keep the recipes that make or use any of the picked materials.
-- **Positive ROI** hides the recipes that lose money.
+- **Gebäude**, **COGC**, **Ausgang** und **Eingang** nehmen je einen oder mehrere Werte, und du kannst darin suchen. **Ausgang** und **Eingang** behalten die Aufträge, die eines der gewählten Materialien herstellen oder verbrauchen.
+- **Positiver ROI** blendet die Aufträge aus, die Geld verlieren.
 
 > [!tip]
-> To find what to make from a material you already produce, pick it under **Input**. To see who makes a material you need, pick it under **Output**.
+> Um herauszufinden, was du aus einem Material machen kannst, das du schon herstellst, wähle es unter **Eingang**. Um zu sehen, wer ein Material herstellt, das du brauchst, wähle es unter **Ausgang**.
