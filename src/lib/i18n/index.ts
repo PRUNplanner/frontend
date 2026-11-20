@@ -25,6 +25,22 @@ export const localeLazyLoaders = import.meta.glob(
 );
 
 /**
+ * Russian plurals. Two forms (`singular | plural`, the en_US shape) keep
+ * vue-i18n's default choice; four forms are `zero | one | few | many`
+ * (1, 21 → one; 2–4, 22–24 → few; 5–20, 25 → many); three forms are
+ * en_US's `zero | one | many`, where few uses the last form.
+ */
+function russianPluralRule(choice: number, choicesLength: number): number {
+	const n = Math.abs(choice);
+	if (choicesLength === 2) return n ? (n > 1 ? 1 : 0) : 1;
+	if (n === 0) return 0;
+	const teen = n % 100 > 10 && n % 100 < 20;
+	if (!teen && n % 10 === 1) return 1;
+	if (!teen && n % 10 >= 2 && n % 10 <= 4) return 2;
+	return choicesLength < 4 ? 2 : 3;
+}
+
+/**
  * Splits off the messages vue-i18n can't compile (e.g. a translated
  * `@:{terms.x}`). A production build throws on those while rendering,
  * which blanks the page; without them the key falls back to en_US.
@@ -146,6 +162,7 @@ export const i18n: I18n<
 		// rejects as LocaleMessage; the annotation above types the result
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as any,
+	pluralRules: { ru_RU: russianPluralRule },
 	globalInjection: true,
 	missing: (locale, key) => {
 		if (locale === "keymode") return key;
