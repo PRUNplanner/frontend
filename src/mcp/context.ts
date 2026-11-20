@@ -56,6 +56,10 @@ export function findEmpireCX(
 	return cxs.find((c) => c.empires.some((e) => e.uuid === empireUuid));
 }
 
+/** a CX preference as the read tools show it: its uuid for the write tools */
+export const cxRef = (cx: CX | undefined) =>
+	cx ? { uuid: cx.uuid, name: cx.cx_name } : null;
+
 /** pricing for a tool without a saved plan, and how it was picked */
 export interface IEmpireCX {
 	empire?: PlanEmpireElement;

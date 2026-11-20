@@ -5,6 +5,10 @@ exports[`MCP backend calls per tool call > get_empire: a constant number of requ
   "data": {
     "area_used": 15904,
     "empire": {
+      "cx_preference": {
+        "name": "PRUN CX REAL",
+        "uuid": "8eec58c8-7fcb-4bc6-bfc9-56879d297a18",
+      },
       "faction": "MORIA",
       "name": "Sky Productions",
       "url": "https://app.test/empire/32aed118-c4ed-4a4e-9eb4-3cf6aa0068da",
