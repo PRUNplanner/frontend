@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Util
-import { findEmpireCX, getCXs, getEmpires } from "@/mcp/context";
+import { cxRef, findEmpireCX, getCXs, getEmpires } from "@/mcp/context";
 import { defineTool, empireUrl, plural } from "@/mcp/tools/shared";
 
 // Schemas
@@ -14,7 +14,7 @@ export const listEmpires = defineTool({
 	alwaysLoad: true,
 	title: "List empires",
 	description:
-		"Lists the user's PRUNplanner empires (groups of base plans) with faction, CX price preference and plan count, and whether the API key can change data. Start here to find empire_uuid values.",
+		"Lists the user's PRUNplanner empires (groups of base plans) with faction, CX price preference and plan count, every CX preference (uuid, name, the empires using it), and whether the API key can change data. Start here to find empire_uuid and CX preference uuids.",
 	inputSchema: z.object({}),
 	async run(_args, { backend, appUrl }) {
 		const [empires, cxs, access] = await Promise.all([
@@ -31,7 +31,7 @@ export const listEmpires = defineTool({
 			uuid: e.uuid,
 			name: e.empire_name,
 			faction: e.empire_faction,
-			cx_preference: findEmpireCX(cxs, e.uuid)?.cx_name ?? null,
+			cx_preference: cxRef(findEmpireCX(cxs, e.uuid)),
 			plan_count: e.plans.length,
 			url: empireUrl(appUrl, e.uuid),
 		}));
@@ -43,7 +43,16 @@ export const listEmpires = defineTool({
 					: "";
 		return {
 			text: `${plural(list.length, "empire")}: ${list.map((e) => `${e.name} (${plural(e.plan_count, "plan")})`).join(", ")}${keyText ? `. ${keyText}` : ""}`,
-			data: { api_key_access: access, empires: list },
+			data: {
+				api_key_access: access,
+				empires: list,
+				// every preference, also those no empire uses: their uuids are
+				// what save_cx_preference, save_empire, set_preferences and delete take
+				cx_preferences: cxs.map((c) => ({
+					...cxRef(c),
+					empires: c.empires.map((e) => e.empire_name),
+				})),
+			},
 		};
 	},
 });

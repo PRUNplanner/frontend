@@ -32,6 +32,9 @@ import {
 	type IFakeBackend,
 } from "@/tests/mcp/fakeBackend";
 
+// the preference Sky Productions is priced with
+const CX_UUID = fixtures.cxs.find((c) => c.cx_name === "PRUN CX REAL")!.uuid;
+
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";
 import type { Exchange, Planet } from "@/features/api/schemas/gameData.schemas";
@@ -159,13 +162,18 @@ describe("MCP tools", () => {
 	});
 
 	it("list_empires: faction, CX preference, plan count and url", async () => {
-		const { empires } = await run("list_empires");
+		const { empires, cx_preferences } = await run("list_empires");
+		// every preference with its uuid, for the CX write tools
+		expect(cx_preferences).toHaveLength(fixtures.cxs.length);
+		expect(cx_preferences).toContainEqual(
+			expect.objectContaining({ uuid: CX_UUID, name: "PRUN CX REAL" })
+		);
 		expect(empires).toHaveLength(fixtures.empires.length);
 		expect(
 			empires.find((e: { uuid: string }) => e.uuid === EMPIRE_UUID)
 		).toMatchObject({
 			name: "Sky Productions",
-			cx_preference: "PRUN CX REAL",
+			cx_preference: { uuid: CX_UUID, name: "PRUN CX REAL" },
 			plan_count: 18,
 			url: `${APP}/empire/${EMPIRE_UUID}`,
 		});
@@ -359,6 +367,10 @@ describe("MCP tools", () => {
 		const data = await run("get_empire", {
 			empire_uuid: EMPIRE_UUID,
 			include_plan_breakdown: true,
+		});
+		expect(data.empire.cx_preference).toEqual({
+			uuid: CX_UUID,
+			name: "PRUN CX REAL",
 		});
 		const app = appCalculation();
 		expect(data.plans).toHaveLength(1);

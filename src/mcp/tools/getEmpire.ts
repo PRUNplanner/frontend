@@ -6,6 +6,7 @@ import { empireCostOverview } from "@/features/empire/util/empireMaterialIO.util
 
 // Util
 import {
+	cxRef,
 	findEmpireCX,
 	getCXs,
 	getEmpirePlans,
@@ -117,6 +118,7 @@ export const getEmpire = defineTool({
 				uuid: empire.uuid,
 				name: empire.empire_name,
 				faction: empire.empire_faction,
+				cx_preference: cxRef(cx),
 				url: empireUrl(appUrl, empire.uuid),
 			},
 			price_basis: basisText("plan", cx),

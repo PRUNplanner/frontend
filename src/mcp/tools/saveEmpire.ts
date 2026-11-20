@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Util
-import { assignCX, getCXs, getEmpires, getPlans } from "@/mcp/context";
+import { assignCX, cxRef, getCXs, getEmpires, getPlans } from "@/mcp/context";
 import { storeEmpireStates } from "@/mcp/empireState";
 import { ToolError } from "@/mcp/backend";
 import { defineTool, empireUrl, plural, uuidArg } from "@/mcp/tools/shared";
@@ -179,9 +179,7 @@ export const saveEmpire = defineTool({
 						name: p.plan_name,
 						planet: p.planet_natural_id,
 					})),
-					cx_preference: cx
-						? { uuid: cx.uuid, name: cx.cx_name }
-						: null,
+					cx_preference: cxRef(cx),
 					url,
 				},
 				...(stale && { note: stale }),
