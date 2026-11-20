@@ -15,7 +15,7 @@ import {
 	getEmpires,
 	planSetup,
 } from "@/mcp/context";
-import { getPlanet, loadGameData } from "@/mcp/gameData";
+import { getPlanet, loadGameData, preloadPlanets } from "@/mcp/gameData";
 import { ToolError } from "@/mcp/backend";
 import { basisText, PriceBasisSchema } from "@/mcp/priceBasis";
 import { buildVariant, sizingNotes, VariantChangesSchema } from "@/mcp/variant";
@@ -102,6 +102,10 @@ export const calculateEmpireVariant = defineTool({
 					`Plan ${id} isn't in ${empire.empire_name}.`
 				);
 
+		await preloadPlanets(
+			backend,
+			plans.map((p) => p.planet_natural_id)
+		);
 		const notes: string[] = [];
 		const before: IEmpirePlanRow[] = [];
 		const after: IEmpirePlanRow[] = [];

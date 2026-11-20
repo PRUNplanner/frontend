@@ -13,7 +13,7 @@ import {
 	getEmpirePlans,
 	getEmpires,
 } from "@/mcp/context";
-import { getPlanet, loadGameData } from "@/mcp/gameData";
+import { getPlanet, loadGameData, preloadPlanets } from "@/mcp/gameData";
 
 // Schemas
 import { EmpireMaterialIOStateSchema } from "@/features/api/schemas/empireData.schemas";
@@ -37,6 +37,10 @@ export async function calculateEmpirePlans(
 	plans: Plan[],
 	gameData: IMcpGameData
 ) {
+	await preloadPlanets(
+		b,
+		plans.map((p) => p.planet_natural_id)
+	);
 	const calculated = await Promise.all(
 		plans.map(async (plan) => {
 			const planet = await getPlanet(b, plan.planet_natural_id);

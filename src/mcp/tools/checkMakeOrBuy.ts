@@ -19,7 +19,12 @@ import {
 	getEmpirePlans,
 	getEmpires,
 } from "@/mcp/context";
-import { getPlanet, getPlanetSearchIndex, loadGameData } from "@/mcp/gameData";
+import {
+	getPlanet,
+	getPlanetSearchIndex,
+	loadGameData,
+	preloadPlanets,
+} from "@/mcp/gameData";
 import { ToolError } from "@/mcp/backend";
 import { basisText, PriceBasisSchema } from "@/mcp/priceBasis";
 import { chainCost, checkPlan, RESOURCES } from "@/mcp/chainCost";
@@ -60,6 +65,10 @@ export const checkMakeOrBuy = defineTool({
 		const cx = findEmpireCX(cxs, empire.uuid);
 		const basis = args.price_basis ?? "plan";
 
+		await preloadPlanets(
+			backend,
+			plans.map((p) => p.planet_natural_id)
+		);
 		const calculated = await Promise.all(
 			plans.map(async (plan) => {
 				const planet = await getPlanet(backend, plan.planet_natural_id);
