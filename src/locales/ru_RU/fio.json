@@ -4,12 +4,12 @@
 		"title": "Расход FIO:",
 		"fio_last_update": "Обновление данных FIO: {last_updated}",
 		"states": {
-			"no_empire_title": "No empire yet",
-			"no_empire": "FIO Burn shows how long the stock of each base in an empire lasts. Create an empire in Management and assign your plans to it.",
+			"no_empire_title": "Империи пока нет",
+			"no_empire": "«Расход FIO» показывает, на сколько хватит запасов каждой базы в империи. Создай империю в разделе «Управление» и назначь ей свои планы.",
 			"create_empire": "@:empire.empty.create",
-			"no_fio_title": "Connect FIO to see your burn",
-			"no_fio": "FIO Burn reads your bases' stock from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile"
+			"no_fio_title": "Подключи FIO, чтобы видеть расход",
+			"no_fio": "«Расход FIO» берёт запасы твоих баз из FIO. Настрой FIO в разделе {link} и возвращайся сюда.",
+			"profile": "Профиль"
 		},
 		"form": {
 			"empire": "@:terms.empire",
@@ -19,30 +19,30 @@
 		},
 		"components": {
 			"overview": {
-				"title": "Обзор Планового расхода",
-				"axis": "0 – {max} d",
+				"title": "Обзор расхода по планам",
+				"axis": "0 – {max} д",
 				"table": {
 					"plan": "@:terms.plan",
-					"strip": "Days left per material",
+					"strip": "Остаток дней по материалам",
 					"burn": "Расход"
 				},
 				"summary": {
-					"red": "{n} red",
-					"yellow": "{n} yellow",
-					"materials": "no materials | {n} material | {n} materials"
+					"red": "красных: {n}",
+					"yellow": "жёлтых: {n}",
+					"materials": "нет материалов | {n} материал | {n} материала | {n} материалов"
 				},
-				"strip_label": "Days left per material of {plan_name}",
-				"caption": "One dot per consumed material; hover or tap a dot to see which. The axis ends at 3 × the yellow threshold; materials beyond it are counted as \"+n\"."
+				"strip_label": "Остаток дней по материалам плана {plan_name}",
+				"caption": "Одна точка на каждый потребляемый материал; наведи курсор или нажми на точку, чтобы увидеть, какой это материал. Ось заканчивается на 3 × жёлтый порог; материалы за ней считаются как «+n»."
 			},
 			"plans": {
 				"xit_title": "Пополнение XIT: {plan_name}",
-				"expand_row": "Show materials of {plan_name}",
-				"runs_out_first": "runs out first, in {days} days",
-				"more_under": "{n} more under {days} d",
-				"produced": "{n} produced here",
-				"produced_here": "produced here",
-				"days_left": "{days} days left",
-				"runway_label": "{ticker}: {days} days left",
+				"expand_row": "Показать материалы плана {plan_name}",
+				"runs_out_first": "закончится первым, через {days} д",
+				"more_under": "ещё {n} меньше {days} д",
+				"produced": "производится здесь: {n}",
+				"produced_here": "производится здесь",
+				"days_left": "осталось {days} д",
+				"runway_label": "{ticker}: осталось {days} д",
 				"table": {
 					"ticker": "@:terms.material_ticker",
 					"consumption": "@:terms.consumption",
@@ -52,7 +52,7 @@
 					"plan": "@:terms.plan",
 					"burn": "Расход",
 					"exhaustion": "Истощение",
-					"runway": "Runway"
+					"runway": "Хватит на"
 				}
 			}
 		}
@@ -60,147 +60,147 @@
 	"repair": {
 		"view_title": "Ремонт FIO",
 		"title": "Ремонт FIO",
-		"fio_last_update": "FIO Data Update: {last_updated}",
+		"fio_last_update": "Обновление данных FIO: {last_updated}",
 		"states": {
-			"no_fio_title": "Connect FIO to see your bases' repair status",
-			"no_fio": "FIO Repair reads your buildings' condition and last repair from FIO. Set up FIO in your {link}, then come back here.",
-			"profile": "Profile",
-			"no_sites": "FIO has no bases for you yet. Once FIO has your sites, they show up here.",
-			"stale": "FIO data was updated {when}. Buildings have aged since then, so conditions are lower and repair amounts higher than shown. Ages are counted to today."
+			"no_fio_title": "Подключи FIO, чтобы видеть, когда базам нужен ремонт",
+			"no_fio": "«Ремонт FIO» берёт состояние твоих зданий и дату последнего ремонта из FIO. Настрой FIO в разделе {link} и возвращайся сюда.",
+			"profile": "Профиль",
+			"no_sites": "В FIO пока нет твоих баз. Как только они появятся в FIO, ты увидишь их здесь.",
+			"stale": "Данные FIO обновлены {when}. С тех пор здания износились, поэтому их состояние хуже, а объём ремонта больше, чем показано. Возраст считается на сегодняшний день."
 		},
 		"settings": {
-			"title": "Settings",
-			"target": "Repair target",
-			"use_plans": "Use matched plans",
-			"match_summary": "{matched} matched · {likely} likely · {none} without",
-			"interval_plans": "Without a plan, every",
-			"interval": "Repair every",
-			"interval_note_plans": "for bases without a matched plan",
-			"interval_note": "for every base",
-			"days": "days",
-			"due_soon": "Due soon",
-			"due_soon_note": "days before the target day",
-			"exchange": "Exchange Preference",
-			"exchange_note": "empire exchange and tickers only",
-			"footer": "Saved as your preferences, also in {link}. The Exchange Preference is your default one, the same setting as in Profile."
+			"title": "Настройки",
+			"target": "Цель ремонта",
+			"use_plans": "Использовать сопоставленные планы",
+			"match_summary": "сопоставлено: {matched} · вероятно: {likely} · без плана: {none}",
+			"interval_plans": "Без плана — каждые",
+			"interval": "Ремонт каждые",
+			"interval_note_plans": "для баз без сопоставленного плана",
+			"interval_note": "для каждой базы",
+			"days": "дней",
+			"due_soon": "Скоро",
+			"due_soon_note": "дней до целевого дня",
+			"exchange": "Настройки биржи",
+			"exchange_note": "только биржа империи и тикеры",
+			"footer": "Сохраняется в твоих параметрах, они есть и в разделе {link}. Настройки биржи здесь — твои настройки по умолчанию, те же, что в профиле."
 		},
 		"stats": {
-			"overdue": "Overdue",
-			"soon": "Due within {n} d",
-			"later": "Later",
-			"bases": "bases | base | bases",
-			"due_cost": "Repair what's due, today",
-			"due_cargo": "{weight} t · {volume} m³ · no bases | {weight} t · {volume} m³ · {n} base | {weight} t · {volume} m³ · {n} bases",
-			"waiting": "Waiting costs",
-			"waiting_value": "+{cost} ȼ / day",
-			"waiting_note": "more repair material per day, for what's due"
+			"overdue": "Просрочено",
+			"soon": "Срок в течение {n} д",
+			"later": "Позже",
+			"bases": "баз | база | баз(ы)",
+			"due_cost": "Ремонт по сроку, сегодня",
+			"due_cargo": "{weight} t · {volume} m³ · нет баз | {weight} t · {volume} m³ · {n} база | {weight} t · {volume} m³ · {n} базы | {weight} t · {volume} m³ · {n} баз",
+			"waiting": "Цена ожидания",
+			"waiting_value": "+{cost} ȼ / день",
+			"waiting_note": "столько ремонтных материалов добавляется каждый день к тому, что пора ремонтировать"
 		},
 		"timeline": {
-			"title": "When bases come due",
-			"hint": "next repair by base, from the most overdue to the last one due · click a base to open it",
-			"today": "today",
-			"tick": "{n} d",
-			"unknown": "{n} without repair date",
-			"more": "{n} more: {names}"
+			"title": "Когда базам нужен ремонт",
+			"hint": "следующий ремонт по базам, от самой просроченной до последней по сроку · нажми на базу, чтобы открыть её",
+			"today": "сегодня",
+			"tick": "{n} д",
+			"unknown": "без даты ремонта: {n}",
+			"more": "ещё {n}: {names}"
 		},
 		"list": {
-			"title": "Bases",
-			"hint": "click a base for its buildings and repair flight",
-			"filter": "Filter",
+			"title": "Базы",
+			"hint": "нажми на базу, чтобы увидеть её здания и рейс для ремонта",
+			"filter": "Фильтр",
 			"filters": {
-				"all": "All",
-				"overdue": "Overdue",
-				"soon": "Due soon",
-				"later": "Later"
+				"all": "Все",
+				"overdue": "Просрочено",
+				"soon": "Скоро",
+				"later": "Позже"
 			},
 			"columns": {
-				"base": "Base",
-				"buildings": "Buildings",
-				"condition": "Condition",
-				"since": "Since repair",
-				"next": "Next repair",
-				"cost": "Repair now"
+				"base": "База",
+				"buildings": "Здания",
+				"condition": "Состояние",
+				"since": "После ремонта",
+				"next": "Следующий ремонт",
+				"cost": "Ремонт сейчас"
 			},
 			"plan": {
-				"match": "plan {name}",
-				"likely": "likely plan {name}",
-				"picked": "plan {name} (your choice)",
-				"none": "no plan · every {n} d"
+				"match": "план {name}",
+				"likely": "вероятно, план {name}",
+				"picked": "план {name} (твой выбор)",
+				"none": "без плана · каждые {n} д"
 			},
-			"since": "{n} d",
-			"built": "built {n} d",
-			"no_date": "No repair date",
-			"empty": "No base in this filter.",
-			"footer": "Production buildings only. Habitations, storage and the core module age too, but need no repair materials. \"Repair now\" is the repair bill for every production building; it grows each day until day 180, when it equals a new building."
+			"since": "{n} д",
+			"built": "построено {n} д назад",
+			"no_date": "Нет даты ремонта",
+			"empty": "В этом фильтре нет баз.",
+			"footer": "Только производственные здания. Жильё, склады и основной модуль тоже изнашиваются, но не требуют ремонтных материалов. «Ремонт сейчас» — стоимость ремонта всех производственных зданий; она растёт каждый день до 180-го дня, когда сравнивается со стоимостью нового здания."
 		},
 		"due": {
-			"overdue": "Overdue {n} d",
-			"today": "Due today",
-			"soon": "Due in {n} d",
-			"later": "In {n} d",
-			"unknown": "No repair date"
+			"overdue": "Просрочено на {n} д",
+			"today": "Срок сегодня",
+			"soon": "Через {n} д",
+			"later": "Через {n} д",
+			"unknown": "Нет даты ремонта"
 		},
 		"panel": {
-			"close": "Close base details",
-			"back": "Bases",
-			"buildings": "no production buildings | {n} production building | {n} production buildings",
-			"target": "Repair target",
-			"option_plan": "{plan} · {score} % match · {empire}",
-			"option_plan_loose": "{plan} · {score} % match",
-			"option_none": "No plan · every {n} days",
-			"needs_refresh": "Needs a FIO refresh",
+			"close": "Закрыть сведения о базе",
+			"back": "Базы",
+			"buildings": "нет производственных зданий | {n} производственное здание | {n} производственных здания | {n} производственных зданий",
+			"target": "Цель ремонта",
+			"option_plan": "{plan} · совпадение {score} % · {empire}",
+			"option_plan_loose": "{plan} · совпадение {score} %",
+			"option_none": "Без плана · каждые {n} д",
+			"needs_refresh": "Нужно обновить FIO",
 			"confidence": {
-				"match": "Matched",
-				"likely": "Likely",
-				"picked": "Your choice",
-				"nopick": "No plan",
-				"none": "No plan"
+				"match": "Сопоставлен",
+				"likely": "Вероятный",
+				"picked": "Твой выбор",
+				"nopick": "Без плана",
+				"none": "Без плана"
 			},
 			"reason": {
-				"match": "Same planet, all production buildings match FIO. Best day per building type from Repair Analysis.",
-				"likely": "{score} % of the buildings match FIO. Check that this is the plan you run.",
-				"picked": "Saved for this base in your preferences, on every device.",
-				"nopick": "You chose no plan for this base. Repairs every {n} days.",
-				"none_candidates": "No plan here matches FIO well enough. Pick one, or keep every {n} days.",
-				"none": "No plan on this planet. Repairs every {n} days.",
-				"off": "Matched plans are off. Repairs every {n} days."
+				"match": "Та же планета, все производственные здания совпадают с FIO. Лучший день для каждого типа зданий — из анализа ремонта.",
+				"likely": "{score} % зданий совпадают с FIO. Проверь, что это тот план, по которому работает база.",
+				"picked": "Сохранено для этой базы в твоих параметрах, на всех устройствах.",
+				"nopick": "Для этой базы выбран вариант «Без плана». Ремонт каждые {n} д.",
+				"none_candidates": "Ни один план здесь не совпадает с FIO достаточно хорошо. Выбери план или оставь ремонт каждые {n} д.",
+				"none": "На этой планете нет плана. Ремонт каждые {n} д.",
+				"off": "Сопоставление с планами выключено. Ремонт каждые {n} д."
 			},
-			"auto": "Back to automatic match",
-			"create": "Create a plan for {planet}",
+			"auto": "Вернуть автоматическое сопоставление",
+			"create": "Создать план для {planet}",
 			"types": {
-				"building": "Building",
-				"target": "Target",
-				"since": "Since",
-				"condition": "Cond.",
-				"due": "Due",
-				"days": "{n} d"
+				"building": "Здание",
+				"target": "Цель",
+				"since": "После",
+				"condition": "Сост.",
+				"due": "Срок",
+				"days": "{n} д"
 			},
 			"flight": {
-				"title": "Repair flight",
-				"arrives": "Arrives in",
-				"days": "days",
-				"extra": "+{cost} ȼ vs. repairing today",
-				"today": "amounts as of today",
-				"hint": "Add a day or two for long flights: the bill grows until the ship unloads.",
-				"weight": "Cargo weight",
-				"volume": "Cargo volume",
-				"store": "Use what's already in the base store",
-				"from_store": "From the base store: {materials}"
+				"title": "Рейс для ремонта",
+				"arrives": "Прибытие через",
+				"days": "дней",
+				"extra": "+{cost} ȼ по сравнению с ремонтом сегодня",
+				"today": "количество на сегодня",
+				"hint": "Для долгих рейсов добавь день-два: стоимость растёт, пока корабль не разгрузится.",
+				"weight": "Вес груза",
+				"volume": "Объём груза",
+				"store": "Использовать то, что уже есть на складе базы",
+				"from_store": "Со склада базы: {materials}"
 			},
 			"load": {
-				"title": "Load · all {n} buildings",
-				"summary": "{n} materials · {weight} t · {volume} m³",
-				"nothing": "Nothing to load: the base store covers the whole repair.",
-				"total": "Total · Exchange Preference {name}",
-				"no_preference": "none",
-				"footer": "Pick the ship when you run the XIT, fly to {base}, unload and run BRA."
+				"title": "Погрузка · все здания ({n})",
+				"summary": "материалов: {n} · {weight} t · {volume} m³",
+				"nothing": "Грузить нечего: склад базы покрывает весь ремонт.",
+				"total": "Итого · настройки биржи {name}",
+				"no_preference": "нет",
+				"footer": "Выбери корабль при запуске XIT, лети на {base}, разгрузись и запусти BRA."
 			}
 		},
 		"xit": {
-			"button": "XIT Repair",
-			"title": "XIT Repair · {base}",
-			"note": "The ship is picked when the XIT runs. It needs {weight} t and {volume} m³ of free cargo."
+			"button": "XIT ремонт",
+			"title": "XIT ремонт · {base}",
+			"note": "Корабль выбирается при запуске XIT. Нужно {weight} t и {volume} m³ свободного места в трюме."
 		},
-		"computing": "Calculating the best repair days of your matched plans."
+		"computing": "Расчёт лучших дней ремонта для сопоставленных планов."
 	}
 }
