@@ -6,7 +6,7 @@
 	},
 	"calculator": {
 		"calculating": "Расчет расходов на материалы за содержание",
-		"need_label": "Need",
+		"need_label": "Потребность",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
@@ -19,8 +19,8 @@
 			"table": {
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
-				"price_need": "ȼ/Нужно",
-				"cx_price": "@:terms.cx Price (ȼ)",
+				"price_need": "ȼ/потребность",
+				"cx_price": "Цена @:terms.cx (ȼ)",
 				"qty_day": "Кол-во/день"
 			}
 		}
