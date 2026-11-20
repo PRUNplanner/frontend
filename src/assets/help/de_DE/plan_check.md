@@ -1,156 +1,156 @@
-Plan check tests a plan against the market before you build it. It tells you whether you can really buy and sell these amounts, which prices the profit hangs on, and how the plan compares with your other plans. You'll find it as a tool tab of Production (see [Plan layout](/help/plan_layout#parts)), with three views you switch between next to its title: **Market check** (the default), **Price sensitivity** and **Compare plans**. **Compare plans** only shows up when you're logged in.
+Der Plan-Check testet einen Plan gegen den Markt, bevor du ihn baust. Er sagt dir, ob du diese Mengen wirklich kaufen und verkaufen kannst, an welchen Preisen der Profit hängt und wie der Plan im Vergleich zu deinen anderen Plänen abschneidet. Du findest ihn als Werkzeug-Tab der Produktion (siehe [Layout](/help/plan_layout#parts)), mit drei Ansichten, zwischen denen du neben seinem Titel wechselst: **Markt-Check** (der Standard), **Preissensitivität** und **Pläne vergleichen**. **Pläne vergleichen** erscheint nur, wenn du angemeldet bist.
 
-The view and the price change you pick stay put for this browser tab, even when you switch plans or close and reopen the tool. Clicking a flag in [[material-io|Material I/O]] opens a popover, and its **Open Plan check →** opens Plan check on the Market check.
+Die Ansicht und die gewählte Preisänderung bleiben für diesen Browser-Tab erhalten, auch wenn du den Plan wechselst oder das Werkzeug schließt und wieder öffnest. Ein Klick auf eine Markierung in [[material-io|Material I/O]] öffnet ein Popover, und dessen **Plan-Check öffnen →** öffnet den Plan-Check im Markt-Check.
 
-## Market check {#market-check}
+## Markt-Check {#market-check}
 
-A plan's [[profit]] assumes you can buy and sell every material at its price, in any amount. The Market check shows where that isn't true. It lists every material the plan buys or sells per day, worst first: red, then amber, then grey notes, and by share within each.
+Der [[profit|Profit]] eines Plans setzt voraus, dass du jedes Material zu seinem Preis in jeder Menge kaufen und verkaufen kannst. Der Markt-Check zeigt, wo das nicht stimmt. Er listet jedes Material, das der Plan pro Tag kauft oder verkauft, das schlimmste zuerst: rot, dann gelb, dann graue Hinweise, und innerhalb jeder Stufe nach Anteil.
 
-A plan that doesn't buy or sell anything yet shows "This plan doesn't buy or sell anything yet." instead of the table. Add buildings and recipes in [Production](/help/plan_production) first, and the check fills in.
+Ein Plan, der noch nichts kauft oder verkauft, zeigt statt der Tabelle „Dieser Plan kauft oder verkauft noch nichts.“. Füge zuerst in der [Produktion](/help/plan_production) Gebäude und Aufträge hinzu, dann füllt sich der Check.
 
-| Column                             | What it shows                                                                                                                       |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| **Material**, **Side**             | The material and whether the plan buys or sells it.                                                                                 |
-| **Per day**                        | How much the plan buys or sells per day.                                                                                            |
-| **Share of daily volume, 30 days** | The plan's daily amount ÷ the average daily volume traded on the exchange in the last 30 days. Marks on the bar show 10 % and 50 %. |
-| **Traded 30d**                     | Units traded on the exchange in the last 30 days.                                                                                   |
-| **Bid · ask ȼ**, **Spread**        | The best [[bid]] and [[ask]] right now, and the [[spread]] between them as a % of the ask.                                          |
-| **Check**                          | The material's first flag, or **ok**.                                                                                               |
+| Spalte                              | Was sie zeigt                                                                                                                                                                    |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Material**, **Seite**             | Das Material und ob der Plan es kauft oder verkauft.                                                                                                                             |
+| **Pro Tag**                         | Wie viel der Plan pro Tag kauft oder verkauft.                                                                                                                                   |
+| **Anteil am Tagesvolumen, 30 Tage** | Die Tagesmenge des Plans ÷ das durchschnittliche Tagesvolumen, das in den letzten 30 Tagen auf dem Marktplatz gehandelt wurde. Markierungen auf dem Balken zeigen 10 % und 50 %. |
+| **Gehandelt 30T**                   | Auf dem Marktplatz in den letzten 30 Tagen gehandelte Einheiten.                                                                                                                 |
+| **Bid · Ask ȼ**, **Spread**         | Der beste [[bid\|Bid]] und [[ask\|Ask]] gerade jetzt und der [[spread\|Spread]] dazwischen in % des Ask.                                                                         |
+| **Check**                           | Die erste Markierung des Materials, oder **ok**.                                                                                                                                 |
 
-- For [[share-of-volume|share of daily volume]], selling 50 units a day into a market that trades 100 a day is a 50 % share.
-- If you buy at once, you pay the ask. If you sell at once, you take the bid.
-- PRUNplanner checks each material on the exchange your [[exchange-preference|exchange preference]] uses for buying or selling it, and the caption names those exchanges (for example "Exchanges AI1, NC1"). Without an exchange preference, the check uses the volume of all exchanges together. The caption then says "no CX preference set" and, on your own plan, links to where you set one.
-- With an exchange preference, a flagged row names the price rule it uses. On your own plan, that's a link to the rule in Exchanges (see [Exchanges](/help/exchanges#how-a-price-is-found)).
-- **What this means** puts the worst material into one sentence. It also counts the materials that **Can't trade as planned**, have a **Large share of the market** or are **Fine**. Its button opens this page. When nothing is red or amber, it reads "Every material fits its market." A material with only a grey note counts as **Fine** here, since grey notes are about the data the check used, not about your amounts.
-- On a phone, the table turns into cards: the first 6 and every flagged one, then "+ n more materials, all ok".
+- Beim [[share-of-volume|Anteil am Tagesvolumen]] sind 50 Einheiten pro Tag, verkauft in einen Markt, der 100 pro Tag handelt, ein Anteil von 50 %.
+- Wenn du sofort kaufst, zahlst du den Ask. Wenn du sofort verkaufst, nimmst du den Bid.
+- PRUNplanner prüft jedes Material auf dem Marktplatz, den deine [[exchange-preference|Marktplatz-Präferenz]] für seinen Kauf oder Verkauf nutzt, und die Beschriftung nennt diese Marktplätze (zum Beispiel „Marktplätze AI1, NC1“). Ohne Marktplatz-Präferenz nutzt der Check das Volumen aller Marktplätze zusammen. Die Beschriftung sagt dann „keine CX-Präferenz festgelegt“ und verlinkt bei deinem eigenen Plan dorthin, wo du eine festlegst.
+- Mit einer Marktplatz-Präferenz nennt eine markierte Zeile die Preisregel, die sie nutzt. Bei deinem eigenen Plan ist das ein Link zur Regel in Marktplätze (siehe [Marktplätze](/help/exchanges#how-a-price-is-found)).
+- **Was das bedeutet** fasst das schlimmste Material in einem Satz zusammen. Es zählt außerdem die Materialien unter **Handel wie geplant nicht möglich**, **Großer Marktanteil** und **Passt**. Sein Button öffnet diese Seite. Ist nichts rot oder gelb, steht dort „Jedes Material passt zu seinem Markt.“ Ein Material mit nur einem grauen Hinweis zählt hier als **Passt**, weil graue Hinweise die Daten betreffen, die der Check genutzt hat, nicht deine Mengen.
+- Auf dem Handy wird die Tabelle zu Karten: die ersten 6 und jede markierte, dann „+ n weitere Materialien, alles ok“.
 
-### At real prices {#real-prices}
+### Zu echten Preisen {#real-prices}
 
-**At real prices** recalculates the plan as if you bought what it buys at the ask and sold what it sells at the bid, each on its exchange. It shows **Plan profit**, **Buying at ask, selling at bid**, the **Difference** and the **ROI at ask / bid**.
+**Zu echten Preisen** berechnet den Plan neu, als ob du, was er kauft, zum Ask kaufst und, was er verkauft, zum Bid verkaufst, jeweils auf seinem Marktplatz. Es zeigt **Plan-Profit**, **Kauf zum Ask, Verkauf zum Bid**, die **Differenz** und den **ROI bei Ask / Bid**.
 
-It needs an exchange preference. Without one, it isn't calculated and says "Set a CX preference to see the plan at real ask and bid prices."
+Es braucht eine Marktplatz-Präferenz. Ohne eine wird es nicht berechnet und sagt „Lege eine CX-Präferenz fest, um den Plan zu echten Ask- und Bid-Preisen zu sehen.“
 
-A material keeps its plan price in three cases: nobody offers or bids on it right now, no exchange is set for it, or it's priced at the [[universe|Universe]] average, which has no ask or bid. The section lists those materials. A material with a [[fixed-price|fixed price]] in your exchange preference does get the ask or bid here.
+Ein Material behält in drei Fällen seinen Planpreis: Niemand bietet es gerade an oder fragt es nach, für es ist kein Marktplatz festgelegt, oder es ist zum [[universe|Universe]]-Durchschnitt bepreist, der keinen Ask oder Bid hat. Der Abschnitt listet diese Materialien. Ein Material mit einem [[fixed-price|Festpreis]] in deiner Marktplatz-Präferenz bekommt hier dagegen den Ask oder Bid.
 
-Here's an example with made-up numbers. Say the plan sells 100 units a day at a plan price of 50 ȼ, and the best bid right now is 45 ȼ. Selling at the bid brings in 100 × 5 = 500 ȼ a day less. If that's the only price that changes, the **Difference** is −500 ȼ a day.
-
-> [!tip]
-> The plan's prices usually come from averages such as [[vwap|VWAP]]. At real prices shows your profit if you trade at once instead of waiting for your orders to fill. A big difference means the plan's profit depends on patient trading.
-
-## What the flags mean {#flags}
-
-The flag thresholds are fixed:
-
-| Flag                             | Level     | When                                                                                      |
-| -------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
-| _No price_                       | red       | The plan has no price for the material and counts it at 0 ȼ.                              |
-| _No trades in 7 days_            | red       | Nobody traded it on the exchange in the last 7 days, or the exchange has no data for it.  |
-| _No offers_                      | red       | You buy it, and nobody sells it on the exchange right now.                                |
-| _No buyers_                      | red       | You sell it, and nobody bids for it on the exchange right now.                            |
-| _Bigger than the market_         | red       | The plan trades 50 % or more of the daily volume.                                         |
-| _Large share of the market_      | amber     | The plan trades 10 % or more of the daily volume. Your orders will likely move the price. |
-| _All exchanges, no exchange set_ | grey note | No exchange preference, so all exchanges are counted. Shown once above the table.         |
-| _Data older than 2 days_         | grey note | The exchange's latest data is more than 2 days old.                                       |
-
-Red is a filled circle (_can't trade as planned_), amber a triangle, grey a ring. _No offers_ and _No buyers_ need a real exchange, so they never show when all exchanges are counted. Spreads show up in the table but never get a flag.
-
-Volumes, bid and ask come from the exchange data PRUNplanner loads from [[fio|FIO]]. They are at most about 35 minutes old: PRUNplanner refreshes them about every 30 minutes, and the server may hand out a copy up to 5 minutes old.
-
-You can also watch the shares while you change counts and recipes. Switch Material I/O's value from ȼ to %, and it shows each material's Δ as a share of the average daily volume of the last 7 and 30 days (**7d share**, **30d share**), amber from 10 % and red from 50 %. On **Whole base**, Material I/O shows the flag icons too, and its summary ("2 materials can't trade as planned, …") links to **Plan check →**. The Plan check tab carries a dot while the plan has market flags.
+Hier ein Beispiel mit ausgedachten Zahlen. Angenommen, der Plan verkauft 100 Einheiten pro Tag zu einem Planpreis von 50 ȼ, und der beste Bid liegt gerade bei 45 ȼ. Zum Bid zu verkaufen bringt 100 × 5 = 500 ȼ pro Tag weniger ein. Ist das der einzige Preis, der sich ändert, ist die **Differenz** −500 ȼ pro Tag.
 
 > [!tip]
-> A red or amber flag on an output doesn't mean the plan is bad. It means you sell more than the market takes. Fewer buildings, a second output or another exchange can fix that: try them and watch the share drop.
+> Die Preise des Plans kommen meist aus Durchschnitten wie dem [[vwap|VWAP]]. Zu echten Preisen zeigt deinen Profit, wenn du sofort handelst, statt zu warten, bis deine Orders ausgeführt werden. Eine große Differenz heißt, dass der Profit des Plans von geduldigem Handeln abhängt.
 
-## What CX volume misses {#cx-volume}
+## Was die Markierungen bedeuten {#flags}
 
-The volume only comes from the commodity exchanges ([[cx|CX]]). PRUNplanner doesn't count sales on local markets, contracts between players or trades inside a corporation, so a material can be easier to sell than its CX volume says.
+Die Schwellen der Markierungen sind fest:
 
-## Empire {#empire}
+| Markierung                         | Stufe          | Wann                                                                                                          |
+| ---------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
+| _Kein Preis_                       | rot            | Der Plan hat keinen Preis für das Material und rechnet es mit 0 ȼ.                                            |
+| _Keine Transaktionen in 7 Tagen_   | rot            | Niemand hat es in den letzten 7 Tagen auf dem Marktplatz gehandelt, oder der Marktplatz hat keine Daten dazu. |
+| _Keine Angebote_                   | rot            | Du kaufst es, und gerade verkauft es niemand auf dem Marktplatz.                                              |
+| _Keine Käufer_                     | rot            | Du verkaufst es, und gerade bietet niemand auf dem Marktplatz dafür.                                          |
+| _Größer als der Markt_             | rot            | Der Plan handelt 50 % oder mehr des Tagesvolumens.                                                            |
+| _Großer Marktanteil_               | gelb           | Der Plan handelt 10 % oder mehr des Tagesvolumens. Deine Orders werden den Preis wahrscheinlich bewegen.      |
+| _Alle Marktplätze, keiner gewählt_ | grauer Hinweis | Keine Marktplatz-Präferenz, also werden alle Marktplätze gezählt. Wird einmal über der Tabelle angezeigt.     |
+| _Daten älter als 2 Tage_           | grauer Hinweis | Die neuesten Daten des Marktplatzes sind älter als 2 Tage.                                                    |
 
-The [[empire]]'s Material I/O runs the same check on the empire's net flow. What one plan makes and another uses nets out, and only the rest reaches the market. Each plan's own Material I/O still flags its own amounts.
+Rot ist ein gefüllter Kreis (_Handel wie geplant nicht möglich_), gelb ein Dreieck, grau ein Ring. _Keine Angebote_ und _Keine Käufer_ brauchen einen echten Marktplatz, sie erscheinen also nie, wenn alle Marktplätze gezählt werden. Spreads erscheinen in der Tabelle, bekommen aber nie eine Markierung.
 
-Chips above the table count the flagged materials by level, such as "3 can't trade as planned", "2 large share of the market" and "1 other note". Click one to see only the materials at that level, and click it again to see them all. More in [Empire](/help/empire).
+Volumen, Bid und Ask kommen aus den Marktplatzdaten, die PRUNplanner von [[fio|FIO]] lädt. Sie sind höchstens etwa 35 Minuten alt: PRUNplanner aktualisiert sie etwa alle 30 Minuten, und der Server kann eine bis zu 5 Minuten alte Kopie ausliefern.
 
-## Price sensitivity {#sensitivity}
-
-Price sensitivity shows which prices the profit hangs on. Pick **Change each price by** ±10 %, ±20 % (the default), ±30 % or ±50 %.
-
-Every material the plan buys or sells gets a row, as long as its price moves the profit. PRUNplanner recalculates the plan once per material with that price doubled, and the profit change is the material's impact. If a material is also a building material, it moves the [[degradation]] cost too, and that counts in its row. [[production-fees|Production fees]] don't depend on prices. The profit changes in a straight line with any one price, so this one recalculation gives the effect of whichever % you pick in **Change each price by**.
-
-Until the plan buys or sells something whose price moves the profit, the view says "Add production to see which prices this plan depends on."
-
-| Column                              | What it shows                                                                                                                                                 |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Material**, **Side**              | The material, and **buy** or **sell**.                                                                                                                        |
-| **Profit falls ← · → Profit rises** | A bar for the profit change when this one price moves by the chosen %, everything else unchanged. Hover it for the value per day and the profit at both ends. |
-| **Profit range ȼ/day**              | Profit with the price down and up by the chosen %.                                                                                                            |
-| **Break-even**                      | The price change at which the plan's profit reaches 0.                                                                                                        |
-
-PRUNplanner sorts the rows by impact, and the bars' centre line is today's profit. It shows the top 10 and sums up the rest in one line, "+ n more materials … move profit by less than ±…", with a **Show all ({n})** button to list them.
-
-**Break-even** turns red within ±60 % and amber within ±200 %. It reads **never** when the price would have to fall below 0. It reads **> +500 %** when the price would have to rise more than 500 %. Don't worry about **never** on a material you sell while the plan makes a profit: it means the plan stays profitable even if that price drops to 0.
-
-Here's how the figures fit together, with made-up numbers. A plan makes 2,000 ȼ a day, and its main output, which it only sells and doesn't build with, brings in 8,000 ȼ a day. Doubling that price adds 8,000 ȼ a day. At ±20 %, the output's **Profit range ȼ/day** is 2,000 − 1,600 = 400 to 2,000 + 1,600 = 3,600. Its **Break-even** is −2,000 ÷ 8,000 = −25 %: if that price falls by a quarter, the plan makes nothing. It shows red, because −25 % is within ±60 %.
-
-### What this means {#sensitivity-means}
-
-**What this means** picks the most sensitive material and tells you:
-
-- the profit after a move of the chosen % in the direction that hurts, and the break-even price change (or that the plan stays profitable even at a price of 0, or that no change to this price alone brings it to break-even);
-- "Profit if …" and "ROI if …": the profit and the ROI after that move;
-- **All costs +{pct} %**: the profit if every cost rises by the chosen %, counting materials bought, degradation and production fees;
-- **Most sensitive**: the top 3 materials;
-- where the prices come from: the plan's exchange preference, or the Universe 30-day average when it has none.
+Du kannst die Anteile auch beobachten, während du Anzahlen und Aufträge änderst. Stell den Wert von Material I/O von ȼ auf %, dann zeigt es das Δ jedes Materials als Anteil am durchschnittlichen Tagesvolumen der letzten 7 und 30 Tage (**Anteil 7T**, **Anteil 30T**), gelb ab 10 % und rot ab 50 %. Bei **Ganze Basis** zeigt Material I/O auch die Markierungssymbole, und seine Zusammenfassung („2 Materialien können nicht wie geplant gehandelt werden, …“) verlinkt auf **Plan-Check →**. Der Tab Plan-Check trägt einen Punkt, solange der Plan Marktmarkierungen hat.
 
 > [!tip]
-> A break-even close to 0 % on your main output means a small price drop wipes out the profit. Before you build, check that material in [Market Exploration](/market-exploration) and set a price you trust in your exchange preference.
+> Eine rote oder gelbe Markierung bei einem Output heißt nicht, dass der Plan schlecht ist. Sie heißt, dass du mehr verkaufst, als der Markt aufnimmt. Weniger Gebäude, ein zweiter Output oder ein anderer Marktplatz können das beheben: Probier sie aus und sieh zu, wie der Anteil sinkt.
 
-### Target price {#target-price}
+## Was das CX-Volumen nicht erfasst {#cx-volume}
 
-**Target price** finds the price of one material that gives the profit you want, with every other price unchanged.
+Das Volumen kommt nur von den Rohstoffbörsen ([[cx|CX]]). PRUNplanner zählt keine Verkäufe auf lokalen Märkten, Verträge zwischen Spielern oder Handel innerhalb einer Corporation, ein Material kann sich also leichter verkaufen lassen, als sein CX-Volumen sagt.
 
-- **Material** lists the materials from the table and starts with the sold material with the most impact.
-- **Target profit, ȼ/day** starts at today's profit, rounded up to the next 10,000.
-- The answer reads "{ticker} has to sell at" or "{ticker} has to be bought at" a price. When no price above 0 can reach the target, it says you can't reach that profit by changing this price.
-- **Plan price today** and the exchange's bid and ask right now show for comparison.
-- Once you change the material or the target, you also see the exchange's lowest and highest price in the 30 days up to its last day with trades. It uses the daily lows and highs of the days with trades, and for all exchanges it covers all four. A note warns you when the price you'd need is above or below anything paid in those 30 days.
+## Imperium {#empire}
 
-## Compare plans {#compare}
+Das Material I/O des [[empire|Imperiums]] führt denselben Check für den Nettofluss des Imperiums aus. Was ein Plan herstellt und ein anderer verbraucht, gleicht sich aus, und nur der Rest erreicht den Markt. Das eigene Material I/O jedes Plans markiert weiterhin seine eigenen Mengen.
 
-**Compare plans** puts this plan next to another of your plans. You need to be logged in.
+Chips über der Tabelle zählen die markierten Materialien nach Stufe, etwa „3 kann nicht wie geplant gehandelt werden“, „2 großer Marktanteil“ und „1 andere Notiz“. Klick auf einen, um nur die Materialien dieser Stufe zu sehen, und klick noch einmal, um wieder alle zu sehen. Mehr in [Imperium](/help/empire).
 
-**Compare with** lists your other plans, **This planet** first, then **Other planets**. It starts with the first plan in that list and remembers your pick for this plan while the tab is open. If you don't have another plan yet, it says "You have no other plan to compare with yet."
+## Preissensitivität {#sensitivity}
 
-PRUNplanner takes this plan as it is on screen, unsaved changes included. It calculates the other plan as saved, with its own empire, and prices it with that empire's exchange preference (or the Universe 30-day average). A line next to **Compare with** says which.
+Die Preissensitivität zeigt, an welchen Preisen der Profit hängt. Wähle bei **Jeden Preis ändern um** ±10 %, ±20 % (der Standard), ±30 % oder ±50 %.
 
-The two plans' figures sit side by side, each with a bar:
+Jedes Material, das der Plan kauft oder verkauft, bekommt eine Zeile, solange sein Preis den Profit bewegt. PRUNplanner berechnet den Plan einmal pro Material mit verdoppeltem Preis neu, und die Änderung des Profits ist die Wirkung des Materials. Ist ein Material auch ein Baumaterial, bewegt es auch die Kosten der [[degradation|Abnutzung]], und das zählt in seiner Zeile mit. [[production-fees|Produktionsgebühren]] hängen nicht von Preisen ab. Der Profit ändert sich mit jedem einzelnen Preis linear, diese eine Neuberechnung ergibt also die Wirkung jedes Prozentsatzes, den du in **Jeden Preis ändern um** wählst.
 
-| Figure                        | What it is                                             |
-| ----------------------------- | ------------------------------------------------------ |
-| **Daily profit**              | Profit per day.                                        |
-| **Output value**              | What the plan sells per day.                           |
-| **Daily cost**                | What the plan buys per day.                            |
-| **Degradation**               | 1/180 of the production buildings' build cost per day. |
-| **Production fees**           | Fees per day.                                          |
-| **Plan cost**                 | The build cost.                                        |
-| **ROI**                       | Days until the build cost is paid back.                |
-| **Payback of the difference** | See [below](#payback-difference).                      |
-| **Profit / Area**             | Profit per area.                                       |
-| **Area used**                 | Area the plan uses.                                    |
+Solange der Plan nichts kauft oder verkauft, dessen Preis den Profit bewegt, sagt die Ansicht „Füge Produktion hinzu, um zu sehen, von welchen Preisen dieser Plan abhängt.“
 
-**Difference** is the other plan minus this one. It's green or red depending on what's better for you: more profit and output, lower costs and a shorter ROI count as good, and area is neutral.
+| Spalte                               | Was sie zeigt                                                                                                                                                                                                           |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Material**, **Seite**              | Das Material und **kaufen** oder **verkaufen**.                                                                                                                                                                         |
+| **Profit sinkt ← · → Profit steigt** | Ein Balken für die Änderung des Profits, wenn sich dieser eine Preis um den gewählten Prozentsatz bewegt und alles andere gleich bleibt. Fahr mit der Maus darüber für den Wert pro Tag und den Profit an beiden Enden. |
+| **Profit-Spanne ȼ/Tag**              | Profit mit dem Preis um den gewählten Prozentsatz gesenkt und erhöht.                                                                                                                                                   |
+| **Gewinnschwelle**                   | Die Preisänderung, bei der der Profit des Plans 0 erreicht.                                                                                                                                                             |
 
-**Verdict** sums it up in a sentence. It says how much more or less this plan earns per day, how many days sooner or later it pays back, the other plan's largest gain and its two largest costs by material, and whether its extra build cost pays back.
+PRUNplanner sortiert die Zeilen nach Wirkung, und die Mittellinie der Balken ist der heutige Profit. Es zeigt die obersten 10 und fasst den Rest in einer Zeile zusammen, „+ n weitere Materialien … verändern den Profit um weniger als ±…“, mit einem Button **Zeige alle ({n})**, um sie aufzulisten.
 
-**What changes** lists the ȼ / day per material, the other plan minus this one, largest first. If the other plan would trade a material into a worse market flag, that material is marked with its share.
+Die **Gewinnschwelle** wird innerhalb von ±60 % rot und innerhalb von ±200 % gelb. Sie zeigt **nie**, wenn der Preis unter 0 fallen müsste. Sie zeigt **> +500 %**, wenn der Preis um mehr als 500 % steigen müsste. Keine Sorge wegen **nie** bei einem Material, das du verkaufst, während der Plan Profit macht: Es heißt, dass der Plan profitabel bleibt, selbst wenn dieser Preis auf 0 fällt.
 
-The glossary has more on [[roi|ROI]] and [[payback]].
+So passen die Zahlen zusammen, mit ausgedachten Zahlen. Ein Plan macht 2.000 ȼ pro Tag, und sein Haupt-Output, den er nur verkauft und nicht zum Bauen nutzt, bringt 8.000 ȼ pro Tag ein. Diesen Preis zu verdoppeln bringt 8.000 ȼ pro Tag mehr. Bei ±20 % ist die **Profit-Spanne ȼ/Tag** des Outputs 2.000 − 1.600 = 400 bis 2.000 + 1.600 = 3.600. Seine **Gewinnschwelle** ist −2.000 ÷ 8.000 = −25 %: Fällt dieser Preis um ein Viertel, verdient der Plan nichts. Sie erscheint rot, weil −25 % innerhalb von ±60 % liegt.
+
+### Was das bedeutet {#sensitivity-means}
+
+**Was das bedeutet** wählt das empfindlichste Material und sagt dir:
+
+- den Profit nach einer Bewegung um den gewählten Prozentsatz in die Richtung, die schadet, und die Preisänderung bis zur Gewinnschwelle (oder dass der Plan selbst bei einem Preis von 0 profitabel bleibt, oder dass keine Änderung dieses Preises allein ihn zur Gewinnschwelle bringt);
+- „Profit bei …“ und „ROI bei …“: den Profit und den ROI nach dieser Bewegung;
+- **Alle Kosten +{pct} %**: den Profit, wenn alle Kosten um den gewählten Prozentsatz steigen, gezählt werden gekaufte Materialien, Abnutzung und Produktionsgebühren;
+- **Am empfindlichsten**: die 3 obersten Materialien;
+- woher die Preise kommen: aus der Marktplatz-Präferenz des Plans oder, wenn er keine hat, aus dem Universe-30-Tage-Durchschnitt.
 
 > [!tip]
-> Save a copy of your plan, change one thing in the copy (a recipe, a building count, the planet), then compare the two. The Verdict and What changes show exactly what the change is worth.
+> Eine Gewinnschwelle nahe 0 % bei deinem Haupt-Output heißt, dass ein kleiner Preisrückgang den Profit auslöscht. Prüf dieses Material vor dem Bau in der [Marktforschung](/market-exploration) und leg in deiner Marktplatz-Präferenz einen Preis fest, dem du vertraust.
 
-### Payback of the difference {#payback-difference}
+### Zielpreis {#target-price}
 
-This is the other plan's extra build cost divided by its extra profit per day, in days: "{cost} ȼ more to build ÷ {profit} ȼ/day more profit". **never** means it costs more to build and earns no more. When the other plan doesn't cost more to build, you see "–".
+**Zielpreis** findet den Preis eines Materials, der den gewünschten Profit ergibt, bei unveränderten anderen Preisen.
 
-For example (made-up numbers), if the other plan costs 200,000 ȼ more to build and earns 2,000 ȼ a day more, its extra build cost pays back in 200,000 ÷ 2,000 = 100 days.
+- **Material** listet die Materialien aus der Tabelle und startet mit dem verkauften Material mit der größten Wirkung.
+- **Ziel-Profit, ȼ/Tag** startet beim heutigen Profit, aufgerundet auf die nächsten 10.000.
+- Die Antwort lautet „{ticker} muss verkauft werden zu“ oder „{ticker} muss gekauft werden zu“ einem Preis. Kann kein Preis über 0 das Ziel erreichen, sagt sie, dass du diesen Profit nicht durch Ändern dieses Preises erreichen kannst.
+- **Planpreis heute** sowie Bid und Ask des Marktplatzes gerade jetzt stehen zum Vergleich da.
+- Sobald du das Material oder das Ziel änderst, siehst du auch den niedrigsten und höchsten Preis des Marktplatzes in den 30 Tagen bis zu seinem letzten Handelstag. Er nutzt die Tagestiefs und -hochs der Tage mit Handel, und bei allen Marktplätzen deckt er alle vier ab. Ein Hinweis warnt dich, wenn der nötige Preis über oder unter allem liegt, was in diesen 30 Tagen bezahlt wurde.
+
+## Pläne vergleichen {#compare}
+
+**Pläne vergleichen** stellt diesen Plan neben einen anderen deiner Pläne. Dafür musst du angemeldet sein.
+
+**Vergleichen mit** listet deine anderen Pläne, **Dieser Planet** zuerst, dann **Andere Planeten**. Es startet mit dem ersten Plan dieser Liste und merkt sich deine Wahl für diesen Plan, solange der Tab offen ist. Hast du noch keinen anderen Plan, sagt es „Du hast noch keinen anderen Plan zum Vergleichen.“
+
+PRUNplanner nimmt diesen Plan so, wie er auf dem Bildschirm ist, ungespeicherte Änderungen eingeschlossen. Den anderen Plan berechnet es wie gespeichert, mit seinem eigenen Imperium, und bepreist ihn mit der Marktplatz-Präferenz dieses Imperiums (oder dem Universe-30-Tage-Durchschnitt). Eine Zeile neben **Vergleichen mit** sagt, welche.
+
+Die Zahlen der beiden Pläne stehen nebeneinander, jede mit einem Balken:
+
+| Zahl                           | Was sie ist                                         |
+| ------------------------------ | --------------------------------------------------- |
+| **Täglicher Profit**           | Profit pro Tag.                                     |
+| **Output-Wert**                | Was der Plan pro Tag verkauft.                      |
+| **Tägliche Kosten**            | Was der Plan pro Tag kauft.                         |
+| **Abnutzung**                  | 1/180 der Baukosten der Produktionsgebäude pro Tag. |
+| **Produktionsgebühren**        | Gebühren pro Tag.                                   |
+| **Plankosten**                 | Die Baukosten.                                      |
+| **ROI**                        | Tage, bis die Baukosten zurückgezahlt sind.         |
+| **Amortisation der Differenz** | Siehe [unten](#payback-difference).                 |
+| **Profit / Fläche**            | Profit pro Fläche.                                  |
+| **Genutzte Fläche**            | Fläche, die der Plan nutzt.                         |
+
+**Differenz** ist der andere Plan minus dieser. Sie ist grün oder rot, je nachdem, was für dich besser ist: mehr Profit und Output, niedrigere Kosten und ein kürzerer ROI zählen als gut, Fläche ist neutral.
+
+**Fazit** fasst es in einem Satz zusammen. Es sagt, wie viel mehr oder weniger dieser Plan pro Tag verdient, wie viele Tage früher oder später er sich amortisiert, den größten Gewinn des anderen Plans und seine zwei größten Kosten nach Material, und ob sich seine zusätzlichen Baukosten amortisieren.
+
+**Was sich ändert** listet die ȼ / Tag pro Material, der andere Plan minus dieser, die größten zuerst. Würde der andere Plan ein Material in eine schlechtere Marktmarkierung handeln, ist dieses Material mit seinem Anteil markiert.
+
+Das Glossar erklärt mehr zu [[roi|ROI]] und [[payback|Amortisation]].
+
+> [!tip]
+> Speichere eine Kopie deines Plans, ändere in der Kopie eine Sache (einen Auftrag, eine Gebäudeanzahl, den Planeten) und vergleiche dann die beiden. Fazit und Was sich ändert zeigen genau, was die Änderung wert ist.
+
+### Amortisation der Differenz {#payback-difference}
+
+Das sind die zusätzlichen Baukosten des anderen Plans geteilt durch seinen zusätzlichen Profit pro Tag, in Tagen: „{cost} ȼ mehr Baukosten ÷ {profit} ȼ/Tag mehr Profit“. **nie** heißt, dass er mehr kostet und nicht mehr einbringt. Kostet der andere Plan nicht mehr, siehst du „–“.
+
+Ein Beispiel (ausgedachte Zahlen): Kostet der andere Plan 200.000 ȼ mehr und bringt 2.000 ȼ pro Tag mehr ein, amortisieren sich seine zusätzlichen Baukosten in 200.000 ÷ 2.000 = 100 Tagen.
