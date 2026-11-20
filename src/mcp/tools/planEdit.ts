@@ -300,15 +300,23 @@ export const PlanFieldChangesSchema = z.object({
 	corphq: z.boolean().optional().describe("Corporation HQ on the planet"),
 	permits: z.number().int().min(1).max(3).optional(),
 	experts: z
-		.union([
-			z.literal("auto"),
-			z.array(
-				z.object({
-					type: ExpertTypeSchema,
-					amount: z.number().int().min(0).max(MAX_EXPERTS_PER_TYPE),
-				})
-			),
-		])
+		.union(
+			[
+				z.literal("auto"),
+				z.array(
+					z.object({
+						type: ExpertTypeSchema,
+						amount: z
+							.number()
+							.int()
+							.min(0)
+							.max(MAX_EXPERTS_PER_TYPE),
+					})
+				),
+			],
+			// the union's own message ("Invalid input") doesn't say what fits
+			`experts takes the plain string "auto" or a list like [{"type":"Chemistry","amount":2}], 0–${MAX_EXPERTS_PER_TYPE} per type`
+		)
 		.optional()
 		.describe(
 			`Experts to set (others stay; at most ${MAX_EXPERTS_PER_TYPE} per type, ${MAX_EXPERTS_TOTAL} per base), or "auto": the split worth most for the buildings`

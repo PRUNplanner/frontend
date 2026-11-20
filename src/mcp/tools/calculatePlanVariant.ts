@@ -18,6 +18,9 @@ import {
 	planUrl,
 	shipping,
 	cogcWarnings,
+	fixedPriceDrift,
+	fixedPriceDriftWarning,
+	permitCost,
 	warnings,
 	workforce,
 	uuidArg,
@@ -249,6 +252,13 @@ export const calculatePlanVariant = defineTool({
 					variant.planet,
 					setup.gameData.buildings
 				),
+				...fixedPriceDriftWarning(
+					fixedPriceDrift(
+						after.result.materialio,
+						afterBook,
+						setup.gameData.exchanges
+					)
+				),
 			],
 			changed_material_io: changedLines(
 				before,
@@ -268,6 +278,16 @@ export const calculatePlanVariant = defineTool({
 					typeof payback.days === "number"
 						? amount(payback.days)
 						: payback.days,
+				// more area permits take base permits: free ones, else HQ upgrades
+				permits:
+					permitCost(
+						variant.empire,
+						variant.plan.plan_permits_used -
+							setup.plan.plan_permits_used,
+						afterBook,
+						payback.profit,
+						payback.cost
+					) ?? undefined,
 			},
 		};
 		return {

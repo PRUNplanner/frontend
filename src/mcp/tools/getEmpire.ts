@@ -177,7 +177,7 @@ export const getEmpire = defineTool({
 			warnings: [cxMatchWarning].filter(Boolean),
 		};
 		return {
-			text: `${empire.empire_name}: ${plans.length} plans, profit ${data.per_day.profit} per day (revenue ${data.per_day.revenue}, cost ${data.per_day.cost}).`,
+			text: `${empire.empire_name}: ${plans.length} plans, profit ${data.per_day.profit} per day (revenue ${data.per_day.revenue}, cost ${data.per_day.cost}).${include_material_io !== false && data.material_rows.shown < data.material_rows.total ? ` Material rows: showing ${data.material_rows.shown} of ${data.material_rows.total}, by ${sort === "ticker" ? "ticker" : "largest money flow"}; pass limit for more.` : ""}`,
 			data,
 		};
 	},

@@ -21,18 +21,14 @@
 		getWeightOfAllStorages,
 	} from "../../calculations/infrastructureCalculations";
 
-	interface IShippingCalculation {
+	import {
+		SHIP_SIZES,
+		shipDays,
+	} from "@/features/planning/engine/visitation";
+
+	interface IShippingCalculation extends ReturnType<typeof shipDays> {
 		shipVolume: number;
 		shipWeight: number;
-		exportDays: number;
-		importDays: number;
-		exportLimit: string;
-		importLimit: string;
-	}
-
-	interface IShippingVariant {
-		volume: number;
-		weight: number;
 	}
 
 	// UI
@@ -127,60 +123,16 @@
 	});
 
 	const visitationData = computed(() => {
-		const shipVariants: IShippingVariant[] = [
-			{ volume: 500, weight: 500 },
-			{ volume: 1000, weight: 1000 },
-			{ volume: 2000, weight: 2000 },
-			{ volume: 3000, weight: 1000 },
-			{ volume: 1000, weight: 3000 },
-			{ volume: 5000, weight: 5000 },
-		];
-
 		const filteredMaterialIO: IMaterialIO[] = props.materialIO.filter(
 			(e) => !refMaterialExclusions.value.includes(e.ticker)
 		);
-
-		const shippingCalc: IShippingCalculation[] = [];
-
 		const filteredDailyData = calculateDailyData(filteredMaterialIO);
 
-		// calculate per shipVariant
-		shipVariants.forEach((ship) => {
-			const exportVolumeDays: number =
-				ship.volume / filteredDailyData.dailyVolumeExport;
-			const exportWeightDays: number =
-				ship.weight / filteredDailyData.dailyWeightExport;
-
-			const importVolumeDays: number =
-				ship.volume / filteredDailyData.dailyVolumeImport;
-			const importWeightDays: number =
-				ship.weight / filteredDailyData.dailyWeightImport;
-
-			const exportDays: number =
-				exportVolumeDays < exportWeightDays
-					? exportVolumeDays
-					: exportWeightDays;
-			const exportLimit: string =
-				exportVolumeDays < exportWeightDays ? "m³" : "t";
-
-			const importDays: number =
-				importVolumeDays < importWeightDays
-					? importVolumeDays
-					: importWeightDays;
-			const importLimit: string =
-				importVolumeDays < importWeightDays ? "m³" : "t";
-
-			shippingCalc.push({
-				shipVolume: ship.volume,
-				shipWeight: ship.weight,
-				exportDays: exportDays,
-				importDays: importDays,
-				exportLimit: exportLimit,
-				importLimit: importLimit,
-			});
-		});
-
-		return shippingCalc;
+		return SHIP_SIZES.map((ship): IShippingCalculation => ({
+			shipVolume: ship.volume,
+			shipWeight: ship.weight,
+			...shipDays(ship, filteredDailyData),
+		}));
 	});
 
 	const storageAmountsForDisplay: ComputedRef<
