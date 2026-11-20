@@ -1,26 +1,26 @@
 {
 	"view_title": "HQ",
-	"title": "HQ Upgrade Calculator",
+	"title": "Calcolatrice potenziamento HQ",
 	"form": {
-		"from_level": "From HQ Level",
-		"to_level": "To HQ Level",
-		"cx_preference": "@:terms.cx Preference",
-		"show_locations": "Show Locations"
+		"from_level": "Da livello HQ",
+		"to_level": "A livello HQ",
+		"cx_preference": "Preferenza @:terms.cx",
+		"show_locations": "Mostra posizioni"
 	},
 	"cost": {
-		"total_cost": "Total @:terms.cost",
-		"total_weight": "Total @:terms.weight",
-		"total_volume": "Total @:terms.volume"
+		"total_cost": "Costo totale",
+		"total_weight": "Peso totale",
+		"total_volume": "Volume totale"
 	},
 	"table": {
 		"material": "@:terms.materials",
 		"amount": "@:terms.amount",
 		"storage": "@:terms.storage",
-		"override_stock": "Override Stock",
-		"required": "Required",
-		"cost_unit": "Cost / Unit (ȼ)",
-		"cost_total": "Total Cost (ȼ)",
-		"storage_locations": "@:terms.storage Locations",
-		"override_label": "Override stock for {ticker}"
+		"override_stock": "Inventario manuale",
+		"required": "Richiesto",
+		"cost_unit": "Costo / unità (ȼ)",
+		"cost_total": "Costo totale (ȼ)",
+		"storage_locations": "Posizioni del magazzino",
+		"override_label": "Inventario manuale per {ticker}"
 	}
 }
