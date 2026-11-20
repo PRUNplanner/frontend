@@ -1,71 +1,71 @@
-[FIO Burn](/fio/burn) tells you which base needs a resupply first and builds the [[xit|XIT]] load for it. It shows how many days the stock of each of your bases lasts, based on your plans and your real storage from [[FIO]].
+[Consommation FIO](/fio/burn) te dit quelle base doit être réapprovisionnée en premier et prépare le chargement [[xit|XIT]] correspondant. Elle montre combien de jours dure le stock de chacune de tes bases, d'après tes plans et ton vrai stockage issu de [[fio|FIO]].
 
-## Before You Start {#before-you-start}
+## Avant de commencer {#before-you-start}
 
-- You need a [FIO connection](/help/profile#fio-connection). Without one, the page asks you to connect FIO in your Profile.
-- The page shows one [[empire]], which you pick under **Empire**. That also makes it your **Default Empire**. With no empire, the page offers **Create empire**.
-- Each plan of the empire must be on the planet of a base you have in the game. If FIO has no base store on a plan's planet, every stock counts as 0. If a plan shows 0 for every stock, check that it sits on the planet your base is on.
+- Il te faut une [connexion FIO](/help/profile#fio-connection). Sans elle, la page te demande de connecter FIO dans ton profil.
+- La page affiche un seul [[empire]], que tu choisis sous **Empire**. Cela en fait aussi ton **Empire par défaut**. Sans empire, la page propose **Créer un empire**.
+- Chaque plan de l'empire doit se trouver sur la planète d'une base que tu as dans le jeu. Si FIO n'a pas de stockage de base sur la planète d'un plan, chaque stock compte pour 0. Si un plan affiche 0 pour tous ses stocks, vérifie qu'il est bien sur la planète où se trouve ta base.
 
-The header shows when FIO last updated your data ("FIO Data Update"). [Profile](/help/profile#fio-connection) explains how fresh that is.
+L'en-tête indique quand FIO a mis à jour tes données pour la dernière fois (« Mise à jour des données FIO »). [Profil](/help/profile#fio-connection) explique à quel point elles sont fraîches.
 
-## Calculations {#calculations}
+## Calculs {#calculations}
 
-FIO Burn calculates every plan of the empire, the same way the Empire page does, and takes each plan's [[material-io|Material I/O]] (production and workforce needs).
+Consommation FIO calcule chaque plan de l'empire, de la même façon que la page Empire, et prend les [[material-io|E/S des matériaux]] de chaque plan (besoins de production et de main-d'œuvre).
 
-For each material the plan uses more of than it makes:
+Pour chaque matériau que le plan utilise en plus grande quantité qu'il n'en produit :
 
-_days left = stock ÷ net daily consumption_
+_jours restants = stock ÷ consommation nette quotidienne_
 
-The stock is the amount of that material in your base store on the plan's planet, from FIO. A material the plan makes as much of as it uses, or more, never runs out ("produced here"). A plan's **Burn** is its lowest days left.
+Le stock est la quantité de ce matériau dans le stockage de ta base sur la planète du plan, d'après FIO. Un matériau que le plan produit autant qu'il en utilise, ou plus, ne s'épuise jamais (« produit ici »). La **Consommation** d'un plan est son plus petit nombre de jours restants.
 
-The net daily consumption is what the plan uses of the material per day minus what it makes. The plan table shows it as a negative **Delta** (production − consumption), so a **Delta** of −30 means 30 net a day. For example, a plan that uses 40 of a material a day and makes 10 consumes 30 net a day. With 300 in the store, that lasts 300 ÷ 30 = 10 days.
+La consommation nette quotidienne est ce que le plan utilise du matériau par jour moins ce qu'il en produit. Le tableau du plan l'affiche comme un **Delta** négatif (production − consommation), donc un **Delta** de −30 signifie 30 net par jour. Par exemple, un plan qui utilise 40 unités d'un matériau par jour et en produit 10 en consomme 30 net par jour. Avec 300 en stock, cela dure 300 ÷ 30 = 10 jours.
 
-FIO Burn doesn't count:
+Consommation FIO ne compte pas :
 
-- Warehouses and ships. It only looks at the base store on the planet.
-- [[Degradation]] and repair materials, which aren't part of Material I/O. Use [FIO Repair](/help/fio_repair) for those.
-- What really runs in the game. The numbers come from your plan, so if the plan differs from your base, you'll get different days.
+- Les entrepôts et les vaisseaux. Elle ne regarde que le stockage de la base sur la planète.
+- La [[degradation|dégradation]] et les matériaux de réparation, qui ne font pas partie des E/S des matériaux. Utilise [Réparer FIO](/help/fio_repair) pour cela.
+- Ce qui tourne réellement dans le jeu. Les chiffres viennent de ton plan, donc si le plan diffère de ta base, tu obtiendras d'autres nombres de jours.
 
 > [!warning]
-> Each plan counts the whole store of its planet. If two plans in the same empire sit on one planet, both see all of the stock, so the days left come out too high. Keep one plan per planet in the empire you check.
+> Chaque plan compte tout le stockage de sa planète. Si deux plans du même empire sont sur une même planète, les deux voient tout le stock, donc les jours restants sont surestimés. Garde un seul plan par planète dans l'empire que tu vérifies.
 
-## Thresholds {#thresholds}
+## Seuils {#thresholds}
 
-Colours show how soon a material runs out, in _days of supply left_:
+Les couleurs montrent à quelle vitesse un matériau s'épuise, en _jours d'approvisionnement restants_ :
 
-- **Red**: days left at or below the red threshold (default 5).
-- **Yellow**: days left at or below the yellow threshold (default 10).
+- **Rouge** : jours restants inférieurs ou égaux au seuil rouge (5 par défaut).
+- **Jaune** : jours restants inférieurs ou égaux au seuil jaune (10 par défaut).
 
-With the defaults (red 5, yellow 10), a material with 4 days left shows red, one with 8 shows yellow, and one with 12 has no colour.
+Avec les valeurs par défaut (rouge à 5, jaune à 10), un matériau avec 4 jours restants s'affiche en rouge, un avec 8 en jaune, et un avec 12 n'a pas de couleur.
 
-You can set both under **Burn Thresholds** on this page or in [Profile](/help/profile#preferences) (**Red Threshold**, **Yellow Threshold**). It's the same preference, saved to your account. Both are at least 1. Keep yellow above red, or nothing shows yellow.
+Tu peux régler les deux sous **Seuils de consommation** sur cette page ou dans [Profil](/help/profile#preferences) (**Seuil rouge**, **Seuil jaune**). C'est la même préférence, enregistrée dans ton compte. Les deux valent au moins 1. Garde le jaune au-dessus du rouge, sinon rien ne s'affiche en jaune.
 
-## Plan Burn Overview {#overview}
+## Aperçu de la consommation des plans {#overview}
 
-**Plan Burn Overview** gives one row per plan, with the plan's **Burn** and a strip that has one dot per consumed material at its days left. The strip runs from 0 to three times the yellow threshold, and materials beyond it are counted as "+n". Hover or tap a dot to see which material it is. The summary counts the red and yellow materials.
+**Aperçu de la consommation des plans** donne une ligne par plan, avec la **Consommation** du plan et une bande qui a un point par matériau consommé, placé à ses jours restants. La bande va de 0 à trois fois le seuil jaune, et les matériaux au-delà sont comptés en « +n ». Survole ou touche un point pour voir de quel matériau il s'agit. Le résumé compte les matériaux rouges et jaunes.
 
-## Plan Table {#plan-table}
+## Tableau des plans {#plan-table}
 
-Beside the overview (below it on narrower screens), each plan has a row with its **Exhaustion** (lowest days left) and an XIT button. Expand the row to see which material runs out first, how many more are under the yellow threshold, and how many the plan makes itself. Its table lists every material with **Consumption** and **Production** (both on wide screens only), **Delta**, **Stock**, a **Runway** bar and its **Burn** in days.
+À côté de l'aperçu (en dessous sur les écrans plus étroits), chaque plan a une ligne avec son **Épuisement** (le plus petit nombre de jours restants) et un bouton XIT. Déplie la ligne pour voir quel matériau s'épuise en premier, combien d'autres sont sous le seuil jaune, et combien le plan produit lui-même. Son tableau liste chaque matériau avec **Consommation** et **Production** (les deux sur grand écran uniquement), **Delta**, **Stock**, une barre **Autonomie** et sa **Consommation** en jours.
 
-## XIT Resupply {#xit-resupply}
+## Réapprovisionnement XIT {#xit-resupply}
 
-The XIT button opens the resupply for that plan's base (**XIT Resupply: {plan_name}**):
+Le bouton XIT ouvre le réapprovisionnement de la base de ce plan (**Réapprovisionnement XIT : {plan_name}**) :
 
-| Control           | What it does                                                                                                                                                                                     |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Origin**        | Where the ship loads: **Configure on Execution** or a station warehouse. The default comes from **XIT Origin** in Profile.                       |
-| **Target Days**   | How many days of supply to bring. The default comes from **Resupply Days** in Profile (20).                                                   |
-| **Buy From CX**   | Buys the materials at the origin's exchange first. It only works with a warehouse origin. The default comes from **XIT Buy from CX** in Profile. |
-| **Fit Ship**      | 500, 1k, 2k, 3k/1k, 1k/3k or 5k (t / m³). Sets the largest number of days, up to 100, whose load fits.                                        |
-| **Hide Infinite** | Hides materials that never run out.                                                                                                                                              |
+| Commande                | Ce qu'elle fait                                                                                                                                                                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Origine**             | Où le vaisseau charge : **Configurer à l'exécution** ou l'entrepôt d'une station. La valeur par défaut vient de **Origine XIT** dans le profil.                                                 |
+| **Jours cibles**        | Combien de jours d'approvisionnement apporter. La valeur par défaut vient de **Jours de réapprovisionnement** dans le profil (20).                                                           |
+| **Acheter sur le CX**   | Achète d'abord les matériaux sur l'échange de l'origine. Ne fonctionne qu'avec un entrepôt comme origine. La valeur par défaut vient de **XIT : acheter au CX** dans le profil. |
+| **Adapter au vaisseau** | 500, 1k, 2k, 3k/1k, 1k/3k ou 5k (t / m³). Règle le plus grand nombre de jours, jusqu'à 100, dont le chargement tient.                                                                        |
+| **Masquer les infinis** | Masque les matériaux qui ne s'épuisent jamais.                                                                                                                                                                                  |
 
-**Fit Ship** writes its result into **Target Days**. It starts from the days set there, takes away days until the load fits both the ship's weight and its volume, then adds days as long as it still fits.
+**Adapter au vaisseau** écrit son résultat dans **Jours cibles**. Il part des jours qui y sont réglés, retire des jours jusqu'à ce que le chargement tienne à la fois dans le poids et dans le volume du vaisseau, puis ajoute des jours tant que cela tient encore.
 
-**Origin**, **Target Days** and **Buy From CX** are your Profile preferences. A change here is saved to your account. Origin and buying also apply to the other XIT actions, such as FIO Repair's and the plan carts'.
+**Origine**, **Jours cibles** et **Acheter sur le CX** sont tes préférences de profil. Un changement ici est enregistré dans ton compte. L'origine et l'achat s'appliquent aussi aux autres actions XIT, comme celles de Réparer FIO et des paniers du plan.
 
-The amount per material is what tops the stock up to the target days: net daily consumption × days − stock, rounded up, never below 0. You can untick a material or override its amount. The totals show weight, volume and price. The price is an estimate at Universe · VWAP 30D buy prices, not your exchange preference, so it can differ from what you pay at the origin's exchange.
+La quantité par matériau est ce qui complète le stock jusqu'aux jours cibles : consommation nette quotidienne × jours − stock, arrondie au supérieur, jamais en dessous de 0. Tu peux décocher un matériau ou remplacer sa quantité. Les totaux affichent le poids, le volume et le prix. Le prix est une estimation aux prix d'achat Univers · VWAP 30j, pas à ta préférence d'échange, donc il peut différer de ce que tu paies sur l'échange de l'origine.
 
-In the example from [Calculations](/help/fio_burn#calculations), with **Target Days** at 20 the amount is 30 × 20 − 300 = 300 units, which tops the store up to 600, 20 days of net use.
+Dans l'exemple de [Calculs](/help/fio_burn#calculations), avec **Jours cibles** à 20, la quantité est de 30 × 20 − 300 = 300 unités, ce qui porte le stock à 600, soit 20 jours de consommation nette.
 
-**Copy XIT JSON** copies the package ("PRUNplanner Burn Supply") for Refined PrUn. With **Buy From CX**, it first buys at the origin's exchange and then transfers the load. You choose the destination when you run it.
+**Copier XIT JSON** copie le paquet (« PRUNplanner Burn Supply ») pour Refined PrUn. Avec **Acheter sur le CX**, il achète d'abord sur l'échange de l'origine puis transfère le chargement. Tu choisis la destination quand tu l'exécutes.
