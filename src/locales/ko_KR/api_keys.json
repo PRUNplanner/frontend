@@ -3,11 +3,10 @@
 	"title": "API 키",
 	"info": {
 		"description": {
-			"p1": "{link}에서는 모든 플래닝 데이터, 게임 내 메타데이터(건물, 레시피, 물자), VWAP 같은 시장 지표 계산값에 프로그래밍 방식으로 접근할 수 있습니다. 공개 엔드포인트는 커뮤니티가 자유롭게 사용할 수 있지만, 플랜 구성을 포함한 개인 플래닝 데이터에 접근하려면 보안 인증이 필요합니다.",
-			"p2": "이 엔드포인트를 활용하면 플래닝 작업을 외부 스프레드시트, 맞춤 대시보드, 또는 최적화 알고리즘과도 동기화할 수 있습니다.",
-			"link": "PRUNplanner REST API",
-			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
+			"p1": "Read your PRUNplanner data from sheets, scripts and AI assistants. See the {link}.",
+			"link": "REST API reference",
+			"warning": "Treat a key like your password: it reads all your planning data, and a read & write key can also change it. {link}",
+			"warning_link": "How long keys stay valid"
 		}
 	},
 	"get_started": {
@@ -153,10 +152,16 @@
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
-	"implementation": {
-		"title": "인증 구현 방법",
-		"link": "REST API 레퍼런스 보기 →",
-		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
+	"mcp": {
+		"title": "AI assistants (MCP)",
+		"description": "Connect Claude, ChatGPT/Codex, Copilot, Cursor and other assistants: they read and calculate your plans and empires with PRUNplanner's own engine.",
+		"server_url": "Server URL",
+		"header": "Header",
+		"copy_url": "Copy server URL",
+		"copied": "Server URL copied",
+		"download": "Download for Claude Desktop",
+		"keys": "A Read-only key reads and calculates; a Read & write key also saves plans, empires and preferences.",
+		"setup_link": "Set up Claude, ChatGPT/Codex, VS Code, Cursor and more"
 	},
 	"create": {
 		"title": "API 키 생성",
