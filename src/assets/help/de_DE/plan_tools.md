@@ -1,302 +1,302 @@
-The plan page's tools turn a [[plan]] into shopping lists and flight schedules, and give you a closer look at its numbers. In the Standard layout they're tabs next to **Production**: **Construction**, **Supply**, **Visits**, **Repair**, **Profit**, **Plan check** and **POPR**. The [[cogm|COGM]] dialog opens from each recipe, and the calculation debug panel is there for bug reports. [Plan check](/help/plan_check) has its own article, and this page covers the rest.
+Die Werkzeuge der Planseite machen aus einem [[plan|Plan]] Einkaufslisten und Flugpläne und lassen dich seine Zahlen genauer ansehen. Im Standard-Layout sind sie Tabs neben **Produktion**: **Konstruktion**, **Versorgung**, **Besuche**, **Reparatur**, **Profit**, **Plan-Check** und **POPR**. Der [[cogm|COGM]]-Dialog öffnet sich an jedem Auftrag, und das Berechnungs-Debug-Panel ist für Fehlermeldungen da. Der [Plan-Check](/help/plan_check) hat einen eigenen Artikel, diese Seite behandelt den Rest.
 
-Each tool answers one question about the base: what to buy to build it (Construction), what to bring to keep it running (Supply), how often a ship has to come (Visits), when to repair (Repair), where the profit comes from (Profit) and whether the planet has the workers (POPR).
+Jedes Werkzeug beantwortet eine Frage zur Basis: was du kaufen musst, um sie zu bauen (Konstruktion), was du mitbringen musst, damit sie läuft (Versorgung), wie oft ein Schiff kommen muss (Besuche), wann du reparieren solltest (Reparatur), woher der Profit kommt (Profit) und ob der Planet genug Arbeiter hat (POPR).
 
-A tool loads the first time you open its tab. Tools work on the plan as you see it, unsaved changes included, and price materials with the plan's [[exchange-preference|exchange preference]]. You can move or split the tabs like any other part of the page ([Plan layout](/help/plan_layout)). The results tiles open the tool behind them: **Profit / day** opens Profit, **Payback** opens Construction and **Storage** opens Visits.
+Ein Werkzeug lädt, wenn du seinen Tab zum ersten Mal öffnest. Die Werkzeuge rechnen mit dem Plan, wie du ihn gerade siehst, ungespeicherte Änderungen eingeschlossen, und bewerten Materialien mit der [[exchange-preference|Marktplatz-Präferenz]] des Plans. Du kannst die Tabs wie jeden anderen Teil der Seite verschieben oder aufteilen ([Plan-Layout](/help/plan_layout)). Die Ergebnis-Kacheln öffnen das Werkzeug dahinter: **Profit / Tag** öffnet Profit, **Amortisation** öffnet Konstruktion und **Lager** öffnet Besuche.
 
-## Construction {#construction}
+## Konstruktion {#construction}
 
-**Construction Cart** works out what's left to buy before you can build the base. It's your [[construction-cart|construction cart]]: the buildings still to build, and the materials they need after what you already have in stock.
+**Konstruktion** ermittelt, was du noch kaufen musst, bevor du die Basis bauen kannst. Das ist dein [[construction-cart|Bauwagen]]: die Gebäude, die noch zu bauen sind, und die Materialien, die sie brauchen, abzüglich dessen, was du schon auf Lager hast.
 
-### Buildings {#construction-buildings}
+### Gebäude {#construction-buildings}
 
-The **Buildings** table has one row per building type in the plan, including habitations, storage and the [[core-module|core module]].
+Die Tabelle **Gebäude** hat eine Zeile pro Gebäudetyp im Plan, einschließlich Unterkünften, Lager und [[core-module|Kernmodul]].
 
-| Column                  | What it shows                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Built**               | How many you already have on the planet. With [[FIO]] connected it starts at FIO's count for the plan's planet, and you can type your own number. |
-| **Amount**              | How many are left to build: **Planned** − **Built**, never below 0. You can type a different number.                                              |
-| **Planned**             | How many the plan has. The core module always counts as 1.                                                                                        |
-| one column per material | The construction materials for that row's **Amount**. **Materials Sum** adds them up.                                                             |
+| Spalte                   | Was sie zeigt                                                                                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gebaut**               | Wie viele du schon auf dem Planeten hast. Mit verbundenem [[fio\|FIO]] beginnt sie bei der Anzahl, die FIO für den Planeten des Plans meldet, und du kannst deine eigene Zahl eintippen. |
+| **Anzahl**               | Wie viele noch zu bauen sind: **Geplant** − **Gebaut**, nie unter 0. Du kannst eine andere Zahl eintippen.                                                                               |
+| **Geplant**              | Wie viele der Plan enthält. Das Kernmodul zählt immer als 1.                                                                                                                             |
+| eine Spalte pro Material | Die Baumaterialien für die **Anzahl** dieser Zeile. **Material Summe** zählt sie zusammen.                                                                                               |
 
-- A number you type into **Built** shows a pencil ("**Entered by you, not from FIO**") and a reset button. **Reset built** clears all of them and goes back to FIO's counts.
-- PRUNplanner saves typed built counts per plan, with your preferences, for plans you own and have saved. On a new plan, a shared plan or an older version you're looking at, they last only while you stay on the page, and the tool says "**Built counts aren't saved for this plan.**"
-- A **Built** count above **Planned** turns amber. Its **Amount** is then 0, so that row needs no materials.
-- Typed **Amount** values aren't saved. Changing **Built** for a row sets its **Amount** back to **Planned** − **Built**.
-- When the buildings (built plus still to build) need more workers of a tier than their habitations house, a warning appears next to **Amount**: "**Insufficient habitation will reduce production efficiency.**" The **Amount** fields of the habitations that house the short tier turn red. It means the base would have fewer beds than workers for that tier. Adding enough habitations for it in the plan's **Infrastructure** clears the warning (see [Base setup](/help/plan_base#infrastructure)).
-- With FIO, a warning icon next to the title lists buildings FIO has on the planet that the plan doesn't. Demolish them in the game, or the base's area, housing and materials won't match the plan.
+- Eine Zahl, die du bei **Gebaut** eintippst, zeigt einen Stift („**Von dir eingegeben, nicht von FIO**“) und einen Zurücksetzen-Button. **Gebäude zurücksetzen** löscht alle und geht zurück zu den Zahlen von FIO.
+- PRUNplanner speichert eingetippte Gebaut-Zahlen pro Plan in deinen Einstellungen, für Pläne, die dir gehören und die du gespeichert hast. Bei einem neuen Plan, einem geteilten Plan oder einer älteren Version, die du dir ansiehst, gelten sie nur, solange du auf der Seite bleibst, und das Werkzeug sagt „**Gebäudezähler werden für diesen Plan nicht gespeichert.**“
+- Eine Zahl bei **Gebaut** über **Geplant** wird bernsteinfarben. Ihre **Anzahl** ist dann 0, diese Zeile braucht also keine Materialien.
+- Eingetippte Werte bei **Anzahl** werden nicht gespeichert. Wenn du **Gebaut** für eine Zeile änderst, springt ihre **Anzahl** zurück auf **Geplant** − **Gebaut**.
+- Wenn die Gebäude (gebaute plus noch zu bauende) mehr Arbeiter einer Stufe brauchen, als ihre Unterkünfte beherbergen, erscheint neben **Anzahl** eine Warnung: „**Zu wenige Unterkünfte senken die Produktionseffizienz.**“ Die Felder bei **Anzahl** der Unterkünfte, die die fehlende Stufe beherbergen, werden rot. Das heißt, die Basis hätte für diese Stufe weniger Betten als Arbeiter. Füg in der **Infrastruktur** des Plans genug Unterkünfte für sie hinzu, dann verschwindet die Warnung (siehe [Basis einrichten](/help/plan_base#infrastructure)).
+- Mit FIO listet ein Warnsymbol neben dem Titel Gebäude auf, die FIO auf dem Planeten kennt, der Plan aber nicht. Reiß sie im Spiel ab, sonst passen Fläche, Unterkünfte und Materialien der Basis nicht zum Plan.
 
-Under the table, **Total Cost**, **Total Weight** and **Total Volume** cover everything in the **Amount** column, before stock, at the plan's buy prices.
+Unter der Tabelle umfassen **Gesamtkosten**, **Gesamtgewicht** und **Gesamtvolumen** alles in der Spalte **Anzahl**, vor Abzug des Lagerbestands, zu den Kaufpreisen des Plans.
 
-### Materials to buy {#construction-materials}
+### Zu kaufende Materialien {#construction-materials}
 
-**Materials to buy** adds up the materials over all buildings and takes off what you have:
+**Zu kaufende Materialien** zählt die Materialien über alle Gebäude zusammen und zieht ab, was du hast:
 
-| Column             | What it shows                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------ |
-| **Material**       | The construction material.                                                           |
-| **Amount**         | What all buildings in the **Amount** column need.                                    |
-| **Stock**          | What the FIO storage chosen under **Storage** holds. Only with FIO.                  |
-| **Stock Override** | A number you type instead of **Stock**, for stock FIO doesn't know about. Not saved. |
-| **Need**           | **Amount** − stock (or your override), never below 0.                                |
+| Spalte                    | Was sie zeigt                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Material**              | Das Baumaterial.                                                                                              |
+| **Anzahl**                | Was alle Gebäude in der Spalte **Anzahl** brauchen.                                                           |
+| **Lagerbestand**          | Was das unter **Lager** gewählte FIO-Lager enthält. Nur mit FIO.                                              |
+| **Bestand überschreiben** | Eine Zahl, die du statt **Lagerbestand** eintippst, für Bestand, den FIO nicht kennt. Wird nicht gespeichert. |
+| **Bedarf**                | **Anzahl** − Lagerbestand (oder dein überschriebener Wert), nie unter 0.                                      |
 
-**Storage** offers every FIO storage (your planets' bases, warehouses and ships) or none. It starts at the base on the plan's planet. The totals below the table cover **Need**.
+**Lager** bietet jedes FIO-Lager an (die Basen deiner Planeten, Warenhäuser und Schiffe) oder keines. Es beginnt bei der Basis auf dem Planeten des Plans. Die Summen unter der Tabelle beziehen sich auf **Bedarf**.
 
-There are two XIT buttons. The one at the top of the tool ships everything in **Materials Sum** and ignores stock. The one next to **Storage** ships only **Need**. More in [XIT actions](#xit).
-
-> [!tip]
-> Expanding a base you already have? With FIO, **Built** starts at what already stands on the planet, so **Amount** and **Need** cover only the new buildings. The habitation warning still counts old and new together.
-
-## Supply {#supply}
-
-**Supply Cart** lists the [[workforce]] consumables and production inputs the running base needs for a number of days, minus what's in stock. It's your [[supply-cart|supply cart]].
-
-### Settings {#supply-settings}
-
-| Setting                   | Default                       | What it does                                                                                              |
-| ------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Which materials           | **Whole base**                | **Whole base**, **Production** or **Workforce**: which materials are listed.                              |
-| **Stock Duration (days)** | 20                            | How many days the supply lasts. Decimals work. It's one value for all plans, saved with your preferences. |
-| **Storage**               | the base on the plan's planet | The FIO storage whose stock is taken off. Only with FIO.                                                  |
-
-The **Whole base**, **Production** or **Workforce** switch picks which materials are listed. A material shows under **Workforce** when the workforce uses it, and under **Production** when a recipe uses or makes it. The amounts are still the whole base's net need.
-
-### Columns and totals {#supply-columns}
-
-Supply Cart only lists materials the base buys in, meaning those it uses more of than it makes.
-
-| Column                        | Formula                                                                |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| **Ticker**                    | The material.                                                          |
-| **Daily Need**                | What the base uses minus what it makes, per day.                       |
-| **Daily Cost**                | **Daily Need** at the plan's buy price, ȼ / day.                       |
-| **Stock**                     | What the chosen storage holds. Only with FIO.                          |
-| **Full Need**                 | **Daily Need** × days, rounded up.                                     |
-| **Final Need**                | **Full Need** − **Stock**, never below 0.                              |
-| t, m³                         | Weight and volume of **Final Need**.                                   |
-| **Workforce**, **Production** | Whether the workforce uses the material, or a recipe uses or makes it. |
-
-For example (made-up numbers), a base short 4.33 DW a day with 20 days set gets a **Full Need** of 4.33 × 20 = 86.6, rounded up to 87. With 30 in stock, **Final Need** is 87 − 30 = 57.
-
-Below the table you get **Daily Cost**, **Total Cost** (**Final Need** at the plan's buy price), **Total Weight** and **Total Volume**. "More options in FIO Burn" opens [FIO Burn](/fio/burn) ([help](/help/fio_burn)), which plans supply for all bases of an empire at once.
-
-### XIT and XIT Initial {#supply-xit}
-
-- The XIT button ships the **Final Need** of the listed materials: what the running base still needs once its own production covers part of it.
-- **XIT Initial** (its drawer is titled **Supply Cart (Initial)**) is for the first supply, when nothing is produced yet. It ships each material's full input × days, rounded up, minus stock, and that includes the materials the plan makes itself. It follows the **Whole base**, **Production** or **Workforce** choice, so it ships the workforce's or production's own inputs, or both.
+Es gibt zwei XIT-Buttons. Der oben im Werkzeug verschickt alles aus **Material Summe** und ignoriert den Lagerbestand. Der neben **Lager** verschickt nur den **Bedarf**. Mehr dazu unter [XIT-Aktionen](#xit).
 
 > [!tip]
-> Starting a new base? Use **XIT Initial** for the first flight. The plain XIT nets out what the base makes, so a base that makes its own DW or RAT would arrive without any.
+> Du baust eine bestehende Basis aus? Mit FIO beginnt **Gebaut** bei dem, was schon auf dem Planeten steht, sodass **Anzahl** und **Bedarf** nur die neuen Gebäude abdecken. Die Unterkunfts-Warnung zählt alte und neue Gebäude trotzdem zusammen.
 
-## XIT actions {#xit}
+## Versorgung {#supply}
 
-The XIT buttons in Construction, Supply and Repair open a drawer with an [[xit|XIT]] package for [Refined PrUn](https://github.com/refined-prun/refined-prun), the browser extension for the game. Refined PrUn runs it with its XIT ACT command, so you don't have to copy amounts by hand. PRUNplanner only builds the package, so nothing happens in the game until you run it there.
+**Versorgung** listet die Verbrauchsgüter der [[workforce|Belegschaft]] und die Produktions-Inputs, die die laufende Basis für eine Anzahl von Tagen braucht, abzüglich des Lagerbestands. Das ist dein [[supply-cart|Versorgungswagen]].
 
-| Field           | Default                    | What it does                                                                                                                                                                            |
-| --------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Origin**      | **Configure on Execution** | Where the materials come from: one of the six station warehouses (Antares, Arclight, Benten, Hortus, Hubur, Moria), or chosen when you run the package.                                 |
-| **Buy From CX** | on                         | Adds a step that buys the materials on that station's exchange before the transfer. "**Only warehouse origin allows purchasing.**" With **Configure on Execution** the box is disabled. |
-| **JSON**        |                            | The package. **Copy** puts it on the clipboard.                                                                                                                                         |
+### Einstellungen {#supply-settings}
 
-Below the fields, a table lists each material and its amount, leaving out materials with an amount of 0. The package is named "PRUNplanner" plus the tool (for example "PRUNplanner Supply Cart"), and you always choose its destination when you run it. **Origin** and **Buy From CX** are saved with your preferences and shared by every XIT button, including FIO Burn and FIO Repair.
+| Einstellung                      | Standard                             | Was sie bewirkt                                                                                                                      |
+| -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Welche Materialien               | **Ganze Basis**                      | **Ganze Basis**, **Produktion** oder **Belegschaft**: welche Materialien aufgelistet werden.                                         |
+| **Bestandsverfügbarkeit (Tage)** | 20                                   | Wie viele Tage die Versorgung reicht. Dezimalzahlen gehen auch. Es ist ein Wert für alle Pläne, gespeichert in deinen Einstellungen. |
+| **Lager**                        | die Basis auf dem Planeten des Plans | Das FIO-Lager, dessen Bestand abgezogen wird. Nur mit FIO.                                                                           |
 
-## Visits {#visits}
+Der Schalter **Ganze Basis**, **Produktion** oder **Belegschaft** wählt, welche Materialien aufgelistet werden. Ein Material steht unter **Belegschaft**, wenn die Belegschaft es verbraucht, und unter **Produktion**, wenn ein Auftrag es verbraucht oder herstellt. Die Mengen sind trotzdem der Netto-Bedarf der ganzen Basis.
 
-**Visitation Frequency** tells you when the base's storage is full and how often a ship has to come by. The [[visitation]] numbers count materials the base sells (export) and buys (import), per day.
+### Spalten und Summen {#supply-columns}
 
-### Storage {#visits-storage}
+Versorgung listet nur Materialien, die die Basis zukauft, also solche, von denen sie mehr verbraucht, als sie herstellt.
 
-The sentence at the top gives the base's capacity: its own 1,500 t and 1,500 m³ plus the plan's [[storage]] buildings.
+| Spalte                          | Formel                                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Ticker**                      | Das Material.                                                                             |
+| **Täglicher Bedarf**            | Was die Basis verbraucht minus was sie herstellt, pro Tag.                                |
+| **Tägliche Kosten**             | **Täglicher Bedarf** zum Kaufpreis des Plans, ȼ / Tag.                                    |
+| **Lagerbestand**                | Was das gewählte Lager enthält. Nur mit FIO.                                              |
+| **Voller Bedarf**               | **Täglicher Bedarf** × Tage, aufgerundet.                                                 |
+| **Finaler Bedarf**              | **Voller Bedarf** − **Lagerbestand**, nie unter 0.                                        |
+| t, m³                           | Gewicht und Volumen des **Finaler Bedarf**.                                               |
+| **Belegschaft**, **Produktion** | Ob die Belegschaft das Material verbraucht oder ein Auftrag es verbraucht oder herstellt. |
 
-| Building | t      | m³     |
-| -------- | ------ | ------ |
-| STO      | 5,000  | 5,000  |
-| STA      | 2,500  | 2,500  |
-| STE      | 10,000 | 10,000 |
-| STV      | 2,500  | 7,500  |
-| STW      | 7,500  | 2,500  |
+Ein Beispiel (ausgedachte Zahlen): Einer Basis fehlen 4,33 DW pro Tag, eingestellt sind 20 Tage. Dann ist der **Voller Bedarf** 4,33 × 20 = 86,6, aufgerundet 87. Mit 30 auf Lager ist der **Finaler Bedarf** 87 − 30 = 57.
 
-The table shows, in t and m³ per day:
+Unter der Tabelle findest du **Tägliche Kosten**, **Gesamtkosten** (**Finaler Bedarf** zum Kaufpreis des Plans), **Gesamtgewicht** und **Gesamtvolumen**. „Weitere Optionen in FIO Verbrauch“ öffnet [FIO Verbrauch](/fio/burn) ([Hilfe](/help/fio_burn)), das die Versorgung für alle Basen eines Imperiums auf einmal plant.
 
-- **Import**: what the base buys in, meaning the materials it uses more of than it makes.
-- **Export**: what it makes more of than it uses.
-- **Larger leg**: the larger of the two, which is what a ship carries on its fuller leg. Weight and volume are compared separately.
-- **Storage Filled**: capacity ÷ **Larger leg**, in days, for whichever of weight and volume runs out first.
+### XIT und XIT Erstversorgung {#supply-xit}
 
-The exclusion list leaves materials out of this tool, for the ones you sell or buy on the planet itself (local market, contracts). Search for tickers and pick them. The list is saved per plan with your preferences. On a new or shared plan it lasts for the visit.
+- Der XIT-Button verschickt den **Finaler Bedarf** der aufgelisteten Materialien: was die laufende Basis noch braucht, wenn ihre eigene Produktion einen Teil davon deckt.
+- **XIT Erstversorgung** (ihre Schublade heißt **Versorgung (Erstlieferung)**) ist für die erste Lieferung, wenn noch nichts produziert wird. Sie verschickt den vollen Input jedes Materials × Tage, aufgerundet, abzüglich Lagerbestand, und das schließt die Materialien ein, die der Plan selbst herstellt. Sie folgt der Wahl **Ganze Basis**, **Produktion** oder **Belegschaft**, verschickt also die Inputs der Belegschaft, die der Produktion oder beides.
+
+> [!tip]
+> Du startest eine neue Basis? Nimm **XIT Erstversorgung** für den ersten Flug. Das normale XIT verrechnet, was die Basis herstellt, also käme eine Basis, die ihr eigenes DW oder RAT herstellt, ohne an.
+
+## XIT-Aktionen {#xit}
+
+Die XIT-Buttons in Konstruktion, Versorgung und Reparatur öffnen eine Schublade mit einem [[xit|XIT]]-Paket für [Refined PrUn](https://github.com/refined-prun/refined-prun), die Browser-Erweiterung für das Spiel. Refined PrUn führt es mit seinem Befehl XIT ACT aus, sodass du keine Mengen von Hand abtippen musst. PRUNplanner baut nur das Paket, im Spiel passiert also nichts, bis du es dort ausführst.
+
+| Feld              | Standard                         | Was es bewirkt                                                                                                                                                                                                                                 |
+| ----------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Herkunft**      | **Bei Ausführung konfigurieren** | Woher die Materialien kommen: eins der sechs Stations-Warenhäuser (Antares, Arclight, Benten, Hortus, Hubur, Moria) oder beim Ausführen des Pakets gewählt.                                                                                    |
+| **Von CX Kaufen** | an                               | Fügt vor dem Transfer einen Schritt hinzu, der die Materialien an der Handelskammer dieser Station kauft. „**Nur Warenhäuser als Ursprung erlauben den direkten Einkauf.**“ Mit **Bei Ausführung konfigurieren** ist das Kästchen deaktiviert. |
+| **JSON**          |                                  | Das Paket. **Kopieren** legt es in die Zwischenablage.                                                                                                                                                                                         |
+
+Unter den Feldern listet eine Tabelle jedes Material mit seiner Menge auf, Materialien mit Menge 0 lässt sie weg. Das Paket heißt „PRUNplanner“ plus das Werkzeug (zum Beispiel „PRUNplanner Supply Cart“), und das Ziel wählst du immer beim Ausführen. **Herkunft** und **Von CX Kaufen** werden in deinen Einstellungen gespeichert und gelten für jeden XIT-Button, auch in FIO Verbrauch und FIO Reparieren.
+
+## Besuche {#visits}
+
+**Besuchsfrequenz** sagt dir, wann das Lager der Basis voll ist und wie oft ein Schiff vorbeikommen muss. Die Zahlen zur [[visitation|Besuchsfrequenz]] zählen Materialien, die die Basis verkauft (Export) und kauft (Import), pro Tag.
+
+### Lager {#visits-storage}
+
+Der Satz oben nennt die Kapazität der Basis: ihre eigenen 1.500 t und 1.500 m³ plus die [[storage|Lager]]-Gebäude des Plans.
+
+| Gebäude | t      | m³     |
+| ------- | ------ | ------ |
+| STO     | 5.000  | 5.000  |
+| STA     | 2.500  | 2.500  |
+| STE     | 10.000 | 10.000 |
+| STV     | 2.500  | 7.500  |
+| STW     | 7.500  | 2.500  |
+
+Die Tabelle zeigt in t und m³ pro Tag:
+
+- **Import**: was die Basis zukauft, also die Materialien, von denen sie mehr verbraucht, als sie herstellt.
+- **Export**: wovon sie mehr herstellt, als sie verbraucht.
+- **Größere Strecke**: der größere der beiden Werte, also das, was ein Schiff auf seiner volleren Strecke trägt. Gewicht und Volumen werden getrennt verglichen.
+- **Lager gefüllt**: Kapazität ÷ **Größere Strecke**, in Tagen, für das, was zuerst knapp wird, Gewicht oder Volumen.
+
+Die Ausschlussliste nimmt Materialien aus diesem Werkzeug heraus, für die, die du direkt auf dem Planeten verkaufst oder kaufst (lokaler Markt, Verträge). Such nach Tickern und wähl sie aus. Die Liste wird pro Plan in deinen Einstellungen gespeichert. Bei einem neuen oder geteilten Plan gilt sie nur für diesen Besuch.
 
 > [!warning]
-> The **Storage** results tile counts every material and ignores your excluded materials. Once you set exclusions, its days and **Storage Filled** here differ.
+> Die Ergebnis-Kachel **Lager** zählt jedes Material und ignoriert deine ausgeschlossenen Materialien. Sobald du Ausschlüsse setzt, weichen ihre Tage und **Lager gefüllt** hier voneinander ab.
 
-### Shipping {#visits-shipping}
+### Transport {#visits-shipping}
 
-There's one row per ship size: 500 t / 500 m³, 1,000 t / 1,000 m³, 2,000 t / 2,000 m³, 1,000 t / 3,000 m³, 3,000 t / 1,000 m³ and 5,000 t / 5,000 m³ (**Ship t**, **Ship m³**). Exports and imports each get:
+Es gibt eine Zeile pro Schiffsgröße: 500 t / 500 m³, 1.000 t / 1.000 m³, 2.000 t / 2.000 m³, 1.000 t / 3.000 m³, 3.000 t / 1.000 m³ und 5.000 t / 5.000 m³ (**Schiff t**, **Schiff m³**). Exporte und Importe bekommen jeweils:
 
-- **Visitation (days)**: how many days of exports (or imports) fill that ship. It's the smaller of ship t ÷ t per day and ship m³ ÷ m³ per day.
-- **Limit**: which one runs out first, t or m³.
+- **Besuche (Tage)**: nach wie vielen Tagen Exporte (oder Importe) dieses Schiff füllen. Es ist der kleinere Wert aus Schiff-t ÷ t pro Tag und Schiff-m³ ÷ m³ pro Tag.
+- **Limit**: was zuerst knapp wird, t oder m³.
 
-For example (made-up numbers), exports of 100 t and 50 m³ a day fill the 1,000 t / 1,000 m³ ship in 1,000 ÷ 100 = 10 days by weight and 1,000 ÷ 50 = 20 days by volume. Its **Visitation (days)** is 10 and its **Limit** is t.
-
-> [!tip]
-> A ship should visit at least as often as the smallest of **Storage Filled** and the ship's two **Visitation (days)**. Wait longer and storage overflows, the exports no longer fit in one load, or the imports run out. The [[cargo-bays|cargo bay]] sizes in the game tell you which row is yours.
-
-## Repair {#repair}
-
-**Repair Analysis** finds the best [[repair]] interval for each production building type, meaning how many days to wait between repairs so the base makes the most profit. It leaves out habitations, storage and the core module.
-
-### How it is calculated {#repair-calculation}
-
-Buildings wear down. Their condition, and with it their output, falls from 100 % to 33 % over time: slowly at first, fastest around day 100, then levelling off. A repair restores it, but the bill grows the longer you wait. On day _n_ each construction material costs its amount minus ⌊amount × (180 − _n_) ÷ 180⌋, so the bill grows until day 180, when it equals the materials of a new building.
-
-For example, a material with an amount of 10 costs 10 − ⌊10 × 135 ÷ 180⌋ = 10 − 7 = 3 on day 45, and 10 − ⌊10 × 90 ÷ 180⌋ = 10 − 5 = 5 on day 90. Repairing often keeps the output high but costs a bill each time, and waiting makes each bill larger while output falls. The tool weighs the two.
-
-For every interval from 1 to 180 days, PRUNplanner works out per building and day:
-
-1. _Output_: the building's production value at full condition (output value minus inputs and [[production-fees|production fees]], from the plan) × its average condition over the interval.
-2. minus its workforce cost per day.
-3. minus the repair bill for that interval spread over the interval's days (bill ÷ (_n_ + 1)).
-
-The interval with the highest profit is the best one. The _good range_ is the run of days around it whose profit is within 1 % of the best. PRUNplanner prices repair materials at the plan's buy prices.
-
-The plan's own numbers ([Results](/help/plan_results)) charge [[degradation]] as 1/180 of the construction cost per day instead. "**Profit with these repairs**" counts the real repair cost at each interval.
-
-### What it shows {#repair-view}
-
-- At the top you see "**Profit with these repairs**" for the whole plan in ȼ / day, with "**all at best**" or how far it is from all at best. Next to it are **Repair cost** in ȼ / day (or **Next repair due** with FIO, see below) and "**One repair of every building**" in ȼ, t and m³.
-- **Buildings** lists each type, most expensive repair first: **Best (good)** (the best interval and its good range), **Interval (d)** (yours, starting at the best), **ȼ/day** at that interval, and **Good range** (or **Next due** with FIO).
-- Click a building to open its detail. It shows the profit at your interval and how it compares with the best, the **Repair bill**, **Condition at repair** and the average output. **Repair every** has a field, a slider (1–180 days) and quick picks (**Best · {n} d**, 30, 60 and 90 days). The detail also lists the materials of one repair of all buildings of that type.
-- In the charts, **Profit per day, by repair interval** marks the good range, and in **Why {best} days: repair cost vs. lost output** the lowest total is the best interval. There's also **Building condition**.
-
-Intervals you set aren't saved. **Reset all to best** goes back to the best intervals.
-
-### With FIO {#repair-fio}
-
-With FIO connected, the detail lists your buildings of that type on the plan's planet ("**Your {ticker} on {planet} (FIO)**"). Each one shows days since its last repair, its condition and a due tag at your interval: **Overdue {n} d**, **Due today**, **Due in {n} d** (within 7 days, amber) or **In {n} d**. A building FIO reports as never repaired shows "**never repaired**" and gets no due tag. The top shows **Next repair due** instead of **Repair cost**, plus "**FIO last update: {when}**", with a note when that's more than a day old.
-
-**XIT for due ones** ships the repair materials, as FIO reports them, for every building that's overdue or due within 7 days ([XIT actions](#xit)). Without FIO, a note links to "**Set up FIO in your Profile**". On a shared plan the FIO part is hidden, because the FIO data would be yours, not the owner's.
+Ein Beispiel (ausgedachte Zahlen): Exporte von 100 t und 50 m³ pro Tag füllen das Schiff mit 1.000 t / 1.000 m³ nach Gewicht in 1.000 ÷ 100 = 10 Tagen und nach Volumen in 1.000 ÷ 50 = 20 Tagen. Seine **Besuche (Tage)** sind 10 und sein **Limit** ist t.
 
 > [!tip]
-> [FIO Repair](/help/fio_repair) uses each building type's best interval from this tool for the plans it matches to your bases. Set up the plan here, then plan the repair flights there.
+> Ein Schiff sollte mindestens so oft kommen wie der kleinste Wert aus **Lager gefüllt** und den beiden **Besuche (Tage)** des Schiffs. Wartest du länger, läuft das Lager über, die Exporte passen nicht mehr in eine Ladung oder die Importe gehen aus. Die Größen der [[cargo-bays|Frachträume]] im Spiel sagen dir, welche Zeile deine ist.
+
+## Reparatur {#repair}
+
+**Reparatur-Analyse** findet für jeden Produktionsgebäudetyp das beste [[repair|Reparatur]]-Intervall, also wie viele Tage du zwischen Reparaturen warten solltest, damit die Basis den meisten Profit macht. Unterkünfte, Lager und das Kernmodul lässt sie weg.
+
+### Wie gerechnet wird {#repair-calculation}
+
+Gebäude nutzen sich ab. Ihr Zustand und damit ihr Output fällt mit der Zeit von 100 % auf 33 %: erst langsam, um Tag 100 am schnellsten, dann flacht es ab. Eine Reparatur stellt ihn wieder her, aber die Rechnung wächst, je länger du wartest. An Tag _n_ kostet jedes Baumaterial seine Menge minus ⌊Menge × (180 − _n_) ÷ 180⌋, die Rechnung wächst also bis Tag 180, an dem sie den Materialien eines neuen Gebäudes entspricht.
+
+Zum Beispiel kostet ein Material mit Menge 10 an Tag 45 10 − ⌊10 × 135 ÷ 180⌋ = 10 − 7 = 3 und an Tag 90 10 − ⌊10 × 90 ÷ 180⌋ = 10 − 5 = 5. Häufiges Reparieren hält den Output hoch, kostet aber jedes Mal eine Rechnung, und Warten macht jede Rechnung größer, während der Output sinkt. Das Werkzeug wägt beides ab.
+
+Für jedes Intervall von 1 bis 180 Tagen rechnet PRUNplanner pro Gebäude und Tag:
+
+1. _Output_: der Produktionswert des Gebäudes bei vollem Zustand (Output-Wert minus Inputs und [[production-fees|Produktionsgebühren]], aus dem Plan) × sein durchschnittlicher Zustand über das Intervall.
+2. minus seine Belegschaftskosten pro Tag.
+3. minus die Reparaturrechnung für dieses Intervall, verteilt auf die Tage des Intervalls (Rechnung ÷ (_n_ + 1)).
+
+Das Intervall mit dem höchsten Profit ist das beste. Der _gute Bereich_ ist die Spanne von Tagen um es herum, deren Profit höchstens 1 % unter dem besten liegt. PRUNplanner bewertet Reparaturmaterialien zu den Kaufpreisen des Plans.
+
+Die eigenen Zahlen des Plans ([Ergebnisse](/help/plan_results)) berechnen die [[degradation|Abnutzung]] stattdessen als 1/180 der Baukosten pro Tag. „**Profit mit diesen Reparaturen**“ zählt die echten Reparaturkosten bei jedem Intervall.
+
+### Was es zeigt {#repair-view}
+
+- Oben siehst du „**Profit mit diesen Reparaturen**“ für den ganzen Plan in ȼ / Tag, mit „**alle optimal**“ oder wie weit er davon entfernt ist. Daneben stehen **Reparaturkosten** in ȼ / Tag (oder **Nächste Reparatur fällig** mit FIO, siehe unten) und „**Eine Reparatur jedes Gebäudes**“ in ȼ, t und m³.
+- **Gebäude** listet jeden Typ auf, die teuerste Reparatur zuerst: **Optimal (gut)** (das beste Intervall und sein guter Bereich), **Intervall (T)** (deins, beginnend beim besten), **ȼ/Tag** bei diesem Intervall und **Guter Bereich** (oder **Nächste Fälligkeit** mit FIO).
+- Klick auf ein Gebäude, um seine Details zu öffnen. Sie zeigen den Profit bei deinem Intervall und wie er sich zum besten verhält, die **Reparaturrechnung**, den **Zustand bei Reparatur** und den durchschnittlichen Output. **Reparieren alle** hat ein Feld, einen Schieberegler (1–180 Tage) und Schnellauswahlen (**Optimal · {n} T**, 30, 60 und 90 Tage). Die Details listen auch die Materialien einer Reparatur aller Gebäude dieses Typs auf.
+- In den Diagrammen markiert **Profit pro Tag nach Reparaturintervall** den guten Bereich, und in **Warum {best} Tage: Reparaturkosten vs. verlorener Output** ist die niedrigste Summe das beste Intervall. Außerdem gibt es **Gebäudezustand**.
+
+Intervalle, die du einstellst, werden nicht gespeichert. **Alle auf optimal zurücksetzen** geht zurück zu den besten Intervallen.
+
+### Mit FIO {#repair-fio}
+
+Mit verbundenem FIO listen die Details deine Gebäude dieses Typs auf dem Planeten des Plans auf („**Deine {ticker} auf {planet} (FIO)**“). Jedes zeigt die Tage seit seiner letzten Reparatur, seinen Zustand und ein Fälligkeits-Tag bei deinem Intervall: **{n} T überfällig**, **Heute fällig**, **Fällig in {n} T** (innerhalb von 7 Tagen, bernsteinfarben) oder **In {n} T**. Ein Gebäude, das laut FIO nie repariert wurde, zeigt „**nie repariert**“ und bekommt kein Fälligkeits-Tag. Oben steht dann **Nächste Reparatur fällig** statt **Reparaturkosten**, dazu „**FIO zuletzt aktualisiert: {when}**“, mit einem Hinweis, wenn das mehr als einen Tag her ist.
+
+**XIT für fällige** verschickt die Reparaturmaterialien, wie FIO sie meldet, für jedes Gebäude, das überfällig oder innerhalb von 7 Tagen fällig ist ([XIT-Aktionen](#xit)). Ohne FIO verlinkt ein Hinweis auf „**Richte FIO in deinem Profil ein**“. Bei einem geteilten Plan ist der FIO-Teil ausgeblendet, weil die FIO-Daten deine wären, nicht die des Besitzers.
+
+> [!tip]
+> [FIO Reparieren](/help/fio_repair) nutzt das beste Intervall jedes Gebäudetyps aus diesem Werkzeug für die Pläne, die es deinen Basen zuordnet. Richte den Plan hier ein und plane dann dort die Reparaturflüge.
 
 ## Profit {#profit}
 
-**Profit Breakdown** shows where each day's output value goes, in ȼ / day at the plan's exchange preference. It adds nothing new: its steps end at the plan's [[profit]] per day.
+**Profit-Aufschlüsselung** zeigt, wohin der Output-Wert jedes Tages geht, in ȼ / Tag zur Marktplatz-Präferenz des Plans. Sie fügt nichts Neues hinzu: Ihre Schritte enden beim [[profit|Profit]] des Plans pro Tag.
 
-A switch picks **By cost type** (default) or **By building**. PRUNplanner keeps your choice until you reload the page.
+Ein Schalter wählt **Nach Kostenart** (Standard) oder **Nach Gebäude**. PRUNplanner merkt sich deine Wahl, bis du die Seite neu lädst.
 
-### By cost type {#profit-cost-type}
+### Nach Kostenart {#profit-cost-type}
 
-A waterfall, read left to right:
+Ein Wasserfall, von links nach rechts gelesen:
 
-| Step                  | What it is                                                                                                                                                |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Output value**      | What the base makes more of than it uses, at the plan's sell prices.                                                                                      |
-| **Production inputs** | What the base buys in for its recipes, at the plan's buy prices.                                                                                          |
-| **Workforce**         | What the base buys in for its workforce. A material both use goes to **Workforce** up to what the workers consume, and the rest to **Production inputs**. |
-| **Degradation**       | The production buildings' wear: their construction cost ÷ 180 per day.                                                                                    |
-| **Production fees**   | The planet's fees for the buildings' expertise. Only there when the planet charges any.                                                                   |
-| **Daily profit**      | What's left: the plan's profit per day.                                                                                                                   |
+| Schritt                 | Was er ist                                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Output-Wert**         | Wovon die Basis mehr herstellt, als sie verbraucht, zu den Verkaufspreisen des Plans.                                                                                                 |
+| **Produktions-Inputs**  | Was die Basis für ihre Aufträge zukauft, zu den Kaufpreisen des Plans.                                                                                                                |
+| **Belegschaft**         | Was die Basis für ihre Belegschaft zukauft. Ein Material, das beide nutzen, geht bis zu dem, was die Arbeiter verbrauchen, an **Belegschaft** und der Rest an **Produktions-Inputs**. |
+| **Abnutzung**           | Der Verschleiß der Produktionsgebäude: ihre Baukosten ÷ 180 pro Tag.                                                                                                                  |
+| **Produktionsgebühren** | Die Gebühren des Planeten für das Fachgebiet der Gebäude. Nur vorhanden, wenn der Planet welche erhebt.                                                                               |
+| **Täglicher Profit**    | Was übrig bleibt: der Profit des Plans pro Tag.                                                                                                                                       |
 
-PRUNplanner nets materials over the whole base, so a material the base makes and uses only counts with its surplus or shortfall. The output, input, workforce and fee steps show their three largest materials (buildings, for fees) and "+{n} more". Hover a part to see **Produced / day** or **Consumed / day**, **Price**, **ȼ / day** and **Share of output**.
+PRUNplanner verrechnet Materialien über die ganze Basis, also zählt ein Material, das die Basis herstellt und verbraucht, nur mit seinem Überschuss oder Fehlbetrag. Die Schritte für Output, Inputs, Belegschaft und Gebühren zeigen ihre drei größten Materialien (bei Gebühren Gebäude) und „+{n} weitere“. Fahr mit der Maus über einen Teil, um **Produziert / Tag** oder **Verbraucht / Tag**, **Preis**, **ȼ / Tag** und **Anteil am Output** zu sehen.
 
-A production fee is the planet's fee for the building's expertise, averaged over the building's workers by headcount. It's charged per day at 100 % and scales with the building's [[efficiency]], like its output.
+Eine Produktionsgebühr ist die Gebühr des Planeten für das Fachgebiet des Gebäudes, gemittelt über die Arbeiter des Gebäudes nach Kopfzahl. Sie wird pro Tag bei 100 % berechnet und skaliert wie der Output mit der [[efficiency|Effizienz]] des Gebäudes.
 
-### By building {#profit-building}
+### Nach Gebäude {#profit-building}
 
-Each building type gets one step: its output minus its own inputs and workforce, priced on its own, before degradation and fees. The seven largest show, and the rest are summed as "{n} more buildings". **Not attributed** holds what can't be pinned on one building: the whole plan's workforce and materials traded between buildings. Then come **Degradation**, **Production fees** and **Daily profit**, as above.
+Jeder Gebäudetyp bekommt einen Schritt: sein Output minus seine eigenen Inputs und Belegschaft, für sich bewertet, vor Abnutzung und Gebühren. Die sieben größten werden gezeigt, der Rest wird als „{n} weitere Gebäude“ zusammengefasst. **Nicht zugeordnet** enthält, was sich keinem einzelnen Gebäude zuordnen lässt: die Belegschaft des ganzen Plans und Materialien, die zwischen Gebäuden gehandelt werden. Dann folgen **Abnutzung**, **Produktionsgebühren** und **Täglicher Profit** wie oben.
 
-### Key figures {#profit-key-figures}
+### Kennzahlen {#profit-key-figures}
 
-- **Output value**, **Costs incl. degradation and fees** (production inputs + workforce + degradation + production fees) and **Margin** (daily profit ÷ output value). For example, 10,000 ȼ of output value and 2,500 ȼ of daily profit give a margin of 25 %. The margin is red when the plan loses money.
-- The material that brings in the largest share of the output value. Its price decides the plan.
-- The largest single cost among production inputs and workforce, as a share of the output value.
-- The workforce consumables' share of the output value, with the two biggest.
+- **Output-Wert**, **Kosten inkl. Abnutzung und Gebühren** (Produktions-Inputs + Belegschaft + Abnutzung + Produktionsgebühren) und **Marge** (täglicher Profit ÷ Output-Wert). Zum Beispiel ergeben 10.000 ȼ Output-Wert und 2.500 ȼ täglicher Profit eine Marge von 25 %. Die Marge ist rot, wenn der Plan Geld verliert.
+- Das Material, das den größten Anteil am Output-Wert einbringt. Sein Preis entscheidet über den Plan.
+- Die größten Einzelkosten unter Produktions-Inputs und Belegschaft, als Anteil am Output-Wert.
+- Der Anteil der Verbrauchsgüter der Belegschaft am Output-Wert, mit den beiden größten.
 
 > [!tip]
-> When one output carries most of the value, check how deep its market is in [Plan check](/help/plan_check#market-check) before you build.
+> Wenn ein Output den Großteil des Werts trägt, prüf im [Plan-Check](/help/plan_check#market-check), wie tief sein Markt ist, bevor du baust.
 
 ## POPR {#popr}
 
-**Latest Population Report** puts the planet's workforce from the game's last [[popr|population report]] next to what the plan needs. The game publishes the report weekly. You only see the tab when you're logged in.
+**Aktuellster Bevölkerungsbericht** stellt die Belegschaft des Planeten aus dem letzten [[popr|Bevölkerungsbericht]] des Spiels neben das, was der Plan braucht. Das Spiel veröffentlicht den Bericht wöchentlich. Den Tab siehst du nur, wenn du angemeldet bist.
 
-The chart "**Free workers next to what this plan needs**" has one row per tier. The bar is the free workers minus the jobs other bases already have open, never below 0. The line is what the plan needs. A bar is green when it covers the need, red when it doesn't, and grey when the plan needs none of that tier.
+Das Diagramm „**Freie Arbeiter neben dem, was dieser Plan braucht**“ hat eine Zeile pro Stufe. Der Balken sind die freien Arbeiter minus die Stellen, die andere Basen schon offen haben, nie unter 0. Die Linie ist, was der Plan braucht. Ein Balken ist grün, wenn er den Bedarf deckt, rot, wenn nicht, und grau, wenn der Plan von dieser Stufe keine braucht.
 
-For example (made-up numbers), with 500 free pioneers and 200 unfilled pioneer jobs, the bar shows 300. A plan that needs 250 pioneers gets a green bar and a ✓ in "Plan Check", and one that needs 400 gets a red bar and a ✗.
+Ein Beispiel (ausgedachte Zahlen): Bei 500 freien Pionieren und 200 unbesetzten Pionier-Stellen zeigt der Balken 300. Ein Plan, der 250 Pioniere braucht, bekommt einen grünen Balken und ein ✓ bei „Plan Check“, einer, der 400 braucht, einen roten Balken und ein ✗.
 
-The table has a column per tier (Pioneer to Scientist):
+Die Tabelle hat eine Spalte pro Stufe (Pioniere bis Wissenschaftler):
 
-| Row                   | What it shows                                                                        |
-| --------------------- | ------------------------------------------------------------------------------------ |
-| **Total Population**  | FIO's _next population_ value for the tier.                                          |
-| **Free Population**   | Workers without a job.                                                               |
-| **Free Population %** | The unemployment rate × 100 (shown without a % sign).                                |
-| **Unfilled Jobs**     | Jobs other bases have open.                                                          |
-| "Plan Need"           | Workers this plan needs.                                                             |
-| "Plan Check"          | ✓ when the plan needs none, or when free workers minus unfilled jobs cover the need. |
+| Zeile                   | Was sie zeigt                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| **Gesamtbevölkerung**   | Der Wert _next population_ von FIO für die Stufe.                                                   |
+| **Freie Bevölkerung**   | Arbeiter ohne Job.                                                                                  |
+| **Freie Bevölkerung %** | Die Arbeitslosenquote × 100 (ohne %-Zeichen angezeigt).                                             |
+| **Ungefüllte Jobs**     | Stellen, die andere Basen offen haben.                                                              |
+| „Plan Need“             | Arbeiter, die dieser Plan braucht.                                                                  |
+| „Plan Check“            | ✓, wenn der Plan keine braucht oder wenn freie Arbeiter minus unbesetzte Stellen den Bedarf decken. |
 
-Without a report, the tab says "**No population report for this planet yet.**"
+Ohne Bericht sagt der Tab „**Noch kein Bevölkerungsbericht für diesen Planeten.**“
 
 > [!tip]
-> A ✗ in "Plan Check" means you'd compete for workers with bases already waiting for them. Plan with fewer workers of that tier, or check again after the next report.
+> Ein ✗ bei „Plan Check“ heißt, du würdest mit Basen, die schon auf Arbeiter warten, um Arbeiter konkurrieren. Plane mit weniger Arbeitern dieser Stufe oder prüf nach dem nächsten Bericht noch einmal.
 
 ## COGM {#cogm}
 
-The **COGM** button on each recipe row in [Production](/help/plan_production) opens **Cost Of Goods Manufactured**: what one unit of each output costs you to make in this plan. It uses the plan's efficiency, runtime, degradation, production fees, input prices and workforce.
+Der Button **COGM** in jeder Auftragszeile in der [Produktion](/help/plan_production) öffnet **Kosten der hergestellten Waren**: was dich eine Einheit jedes Outputs in diesem Plan in der Herstellung kostet. Er nutzt Effizienz, Laufzeit, Abnutzung, Produktionsgebühren, Input-Preise und Belegschaft des Plans.
 
-### The calculation {#cogm-calculation}
+### Die Berechnung {#cogm-calculation}
 
-| Row                              | Formula                                                                                                                                                                               |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Recipe runtime and its "% / day" | The recipe's time ÷ the building's efficiency, and its share of a day (_runtime share_).                                                                                              |
-| **Efficiency**                   | The building's efficiency in this plan.                                                                                                                                               |
-| **Degradation**                  | Construction cost ÷ 180 × runtime share.                                                                                                                                              |
-| **Production fee / run**         | The building's production fee per day at 100 % × the recipe's base time ÷ 1 day. It ignores efficiency. For example, 35 ȼ per day and a 6 h recipe give 35 × 6 ÷ 24 = 8.75 ȼ per run. |
-| Inputs, **Input Total**          | Each input's amount × the plan's buy price. A tag says where each price comes from and opens that rule in [Exchanges](/help/exchanges).                                               |
-| **Workforce**                    | The building's daily workforce cost × runtime share. Workers without housing and luxuries turned off cost nothing.                                                                    |
-| **Total Cost**                   | Degradation + production fee + inputs + workforce.                                                                                                                                    |
-| Recipe profit                    | The outputs at the plan's sell prices − **Total Cost**.                                                                                                                               |
+| Zeile                                    | Formel                                                                                                                                                                                                            |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Laufzeit des Auftrags und sein „% / Tag“ | Die Zeit des Auftrags ÷ die Effizienz des Gebäudes und ihr Anteil an einem Tag (_Laufzeit-Anteil_).                                                                                                               |
+| **Effizienz**                            | Die Effizienz des Gebäudes in diesem Plan.                                                                                                                                                                        |
+| **Abnutzung**                            | Baukosten ÷ 180 × Laufzeit-Anteil.                                                                                                                                                                                |
+| **Produktionsgebühr / Durchlauf**        | Die Produktionsgebühr des Gebäudes pro Tag bei 100 % × die Basiszeit des Auftrags ÷ 1 Tag. Sie ignoriert die Effizienz. Zum Beispiel ergeben 35 ȼ pro Tag und ein 6-h-Auftrag 35 × 6 ÷ 24 = 8,75 ȼ pro Durchlauf. |
+| Inputs, **Input Gesamt**                 | Die Menge jedes Inputs × der Kaufpreis des Plans. Ein Tag zeigt, woher jeder Preis kommt, und öffnet diese Regel unter [Marktplätze](/help/exchanges).                                                            |
+| **Belegschaft**                          | Die täglichen Belegschaftskosten des Gebäudes × Laufzeit-Anteil. Arbeiter ohne Unterkunft und abgeschaltete Luxusgüter kosten nichts.                                                                             |
+| **Gesamtkosten**                         | Abnutzung + Produktionsgebühr + Inputs + Belegschaft.                                                                                                                                                             |
+| Auftrags-Profit                          | Die Outputs zu den Verkaufspreisen des Plans − **Gesamtkosten**.                                                                                                                                                  |
 
-For each output:
+Für jeden Output:
 
-- **Cost Total**: **Total Cost** ÷ that output's amount, so every output carries the whole cost. This is the COGM PRUNplanner uses elsewhere.
-- **Cost Split**: **Total Cost** ÷ all outputs together, which shares the cost by quantity.
-- A line under it gives the output's market price and how far the COGM is from it, in %. It shows whether making the material here costs more or less than its market price.
+- **Gesamtkosten**: **Gesamtkosten** ÷ die Menge dieses Outputs, sodass jeder Output die gesamten Kosten trägt. Das ist der COGM, den PRUNplanner auch anderswo verwendet.
+- **Kostenteilung**: **Gesamtkosten** ÷ alle Outputs zusammen, was die Kosten nach Menge aufteilt.
+- Eine Zeile darunter nennt den Marktpreis des Outputs und wie weit der COGM davon abweicht, in %. Sie zeigt, ob die Herstellung des Materials hier mehr oder weniger kostet als sein Marktpreis.
 
-For example (made-up numbers), a run with a **Total Cost** of 1,200 ȼ that makes 4 of one material and 2 of another gives a **Cost Total** of 1,200 ÷ 4 = 300 ȼ and 1,200 ÷ 2 = 600 ȼ, and a **Cost Split** of 1,200 ÷ 6 = 200 ȼ for both.
+Ein Beispiel (ausgedachte Zahlen): Ein Durchlauf mit **Gesamtkosten** von 1.200 ȼ, der 4 von einem Material und 2 von einem anderen herstellt, ergibt **Gesamtkosten** pro Output von 1.200 ÷ 4 = 300 ȼ und 1.200 ÷ 2 = 600 ȼ und eine **Kostenteilung** von 1.200 ÷ 6 = 200 ȼ für beide.
 
-### Using COGM as a buy price {#cogm-buy-price}
+### COGM als Kaufpreis nutzen {#cogm-buy-price}
 
-When the plan's empire has an exchange preference, a second panel opens beside the table: **Prices in {name}**, with the preference's name (**Open in Exchanges** opens it). Without one, a note says prices are Universe · VWAP 30D, with **Set one in Management**.
+Wenn das Imperium des Plans eine Marktplatz-Präferenz hat, öffnet sich neben der Tabelle ein zweites Panel: **Preise in {name}**, mit dem Namen der Präferenz (**Unter Marktplätze öffnen** öffnet sie). Ohne eine sagt ein Hinweis, dass die Preise Universe · VWAP 30D sind, mit **Lege eine in der Verwaltung fest**.
 
-For each output it shows **COGM here ({planet})**, **Market · {source}** (the market buy price without fixed prices) and **Buy price, all planets** (your [[fixed-price|fixed]] buy price, or **not fixed**). Then:
+Für jeden Output zeigt es **COGM hier ({planet})**, **Markt · {source}** (der Markt-Kaufpreis ohne Festpreise) und **Kaufpreis, alle Planeten** (dein [[fixed-price|fester]] Kaufpreis oder **nicht festgelegt**). Dann:
 
-- **Use as buy price on all planets** (when there's no fixed price) sets the output's buy price to this plan's COGM, for all planets of this preference.
-- When there is a fixed price and it's more than 2 % off the current COGM, you see "**The fixed buy price is {diff} % off the current COGM**" ("Inputs or efficiency changed since it was set.") with **Update to {value}**.
-- Otherwise it says **Buy price matches COGM**.
+- **Als Kaufpreis auf allen Planeten verwenden** (wenn es keinen Festpreis gibt) setzt den Kaufpreis des Outputs auf den COGM dieses Plans, für alle Planeten dieser Präferenz.
+- Wenn es einen Festpreis gibt und er mehr als 2 % vom aktuellen COGM abweicht, siehst du „**Der feste Kaufpreis weicht {diff} % vom aktuellen COGM ab**“ („Inputs oder Effizienz haben sich seit dem Festlegen geändert.“) mit **Auf {value} aktualisieren**.
+- Sonst steht dort **Kaufpreis entspricht COGM**.
 
-A line says which plans of the preference buy the material, since the change applies to every plan using it. **Fixed prices** below lists the preference's fixed prices for **All planets** or this planet, and you can edit them right there. Nothing is stored until you click **Save changes** in the bar at the bottom (or **Discard**). [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm) explains fixed prices.
-
-> [!tip]
-> Using your own output in another base? A fixed buy price at COGM prices it at what it costs you instead of the market, so the other plan shows its real margin. For a recipe with a [[byproduct]], **Cost Total** gives each output the whole cost. Compare it with **Cost Split** before you fix it.
-
-## Calculation debug {#debug}
-
-Calculation debug lists every step of the plan's calculation with its formula and inputs. It's meant for bug reports: when a number looks wrong, it shows where that number comes from. It stays hidden until you turn it on, and it's in English only.
-
-**Turning it on and off:**
-
-- Add `?debug=calc` to any PRUNplanner address (for example `https://prunplanner.org/?debug=calc`) to turn it on, and `?debug=off` to turn it off. The parameter disappears from the address right away, so a link you share never carries it.
-- Or tick "Calculation debug" on the `/debug` page (logged in).
-- Or click "Turn off" in the panel.
-
-The setting is kept in this browser and applies to all its tabs. Once it's on, the plan page's **More** menu (⋯ in the header) has "Calculation debug". Ctrl plus the key left of 1 (`` ` `` on a US keyboard, ⌘ instead of Ctrl on a Mac) opens and closes it, unless you're typing in a field.
-
-**What the panel shows:** the panel sits under the plan, and you can resize it by its top edge.
-
-- A status line: when it last recalculated, how long that took, the number of steps and how many self-checks pass.
-- Buttons to show or hide each phase of the calculation (input, infrastructure, workforce, area, experts, production, COGM, material I/O, prices, construction, finance and visitation), a "Filter" by building, ticker or label, and "Issues only".
-- The self-checks, any warnings, and the plan's data as a save would send it, including whether it has unsaved edits.
-- "Copy text" and "Copy JSON" copy the whole trace with the app version, the plan, planet, exchange preference and empire.
+Eine Zeile sagt, welche Pläne der Präferenz das Material kaufen, denn die Änderung gilt für jeden Plan, der es nutzt. **Feste Preise** darunter listet die Festpreise der Präferenz für **Alle Planeten** oder diesen Planeten auf, und du kannst sie direkt dort bearbeiten. Gespeichert wird erst, wenn du in der Leiste unten auf **Änderungen speichern** klickst (oder auf **Verwerfen**). [Festpreise und COGM](/help/exchanges#fixed-prices-and-cogm) erklärt Festpreise.
 
 > [!tip]
-> Reporting a wrong number? Open the plan, turn on calculation debug, click "Copy text" and paste it into your report. It holds your plan's data, so only share it where you're fine with that.
+> Du nutzt deinen eigenen Output in einer anderen Basis? Ein fester Kaufpreis zum COGM bewertet ihn mit dem, was er dich kostet, statt mit dem Markt, sodass der andere Plan seine echte Marge zeigt. Bei einem Auftrag mit [[byproduct|Nebenprodukt]] gibt **Gesamtkosten** jedem Output die gesamten Kosten. Vergleich es mit **Kostenteilung**, bevor du den Preis festlegst.
+
+## Berechnungs-Debug {#debug}
+
+Das Berechnungs-Debug listet jeden Schritt der Planberechnung mit Formel und Inputs auf. Es ist für Fehlermeldungen gedacht: Wenn eine Zahl falsch aussieht, zeigt es, woher sie kommt. Es bleibt verborgen, bis du es einschaltest, und es gibt es nur auf Englisch.
+
+**Ein- und ausschalten:**
+
+- Häng `?debug=calc` an eine beliebige PRUNplanner-Adresse (zum Beispiel `https://prunplanner.org/?debug=calc`), um es einzuschalten, und `?debug=off`, um es auszuschalten. Der Parameter verschwindet sofort aus der Adresse, ein geteilter Link enthält ihn also nie.
+- Oder setz auf der Seite `/debug` (angemeldet) das Häkchen bei „Calculation debug“.
+- Oder klick im Panel auf „Turn off“.
+
+Die Einstellung wird in diesem Browser gespeichert und gilt für alle seine Tabs. Sobald sie an ist, hat das Menü **Mehr** der Planseite (⋯ im Kopfbereich) den Eintrag „Calculation debug“. Strg plus die Taste links neben der 1 (`` ` `` auf einer US-Tastatur, ⌘ statt Strg auf einem Mac) öffnet und schließt es, außer du tippst gerade in einem Feld.
+
+**Was das Panel zeigt:** Das Panel sitzt unter dem Plan, und du kannst seine Größe an der Oberkante ändern.
+
+- Eine Statuszeile: wann zuletzt neu berechnet wurde, wie lange das gedauert hat, die Anzahl der Schritte und wie viele Selbsttests bestanden sind.
+- Buttons, um jede Phase der Berechnung ein- oder auszublenden (Input, Infrastruktur, Belegschaft, Fläche, Experten, Produktion, COGM, Material I/O, Preise, Konstruktion, Finanzen und Besuchsfrequenz), ein „Filter“ nach Gebäude, Ticker oder Label und „Issues only“.
+- Die Selbsttests, eventuelle Warnungen und die Daten des Plans so, wie ein Speichern sie senden würde, einschließlich der Angabe, ob er ungespeicherte Änderungen hat.
+- „Copy text“ und „Copy JSON“ kopieren den ganzen Trace mit App-Version, Plan, Planet, Marktplatz-Präferenz und Imperium.
+
+> [!tip]
+> Du willst eine falsche Zahl melden? Öffne den Plan, schalte das Berechnungs-Debug ein, klick auf „Copy text“ und füg es in deine Meldung ein. Es enthält die Daten deines Plans, teil es also nur dort, wo dir das recht ist.
