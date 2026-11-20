@@ -1,59 +1,59 @@
-Use the Upkeep Price Calculator to see which building and material cover a population need (Safety, Health, Comfort, Culture, Education) most cheaply at the prices of your exchange preference. It compares the materials that [[upkeep]] buildings consume by what one unit of a need costs with each of them.
+Utilise le calculateur de coûts d'entretien pour voir quel bâtiment et quel matériau couvrent un besoin de la population (sécurité, santé, confort, culture, éducation) au moindre coût, aux prix de ta préférence d'échange. Il compare les matériaux que consomment les bâtiments d'[[upkeep|entretien]] selon ce que coûte une unité de besoin avec chacun d'eux.
 
-Use it when you want to compare what a need costs to supply with each building and material, at your prices. It doesn't look at your plans or bases: the building figures are built in, and the prices come from your exchange preference.
+Sers-t'en quand tu veux comparer ce que coûte la couverture d'un besoin avec chaque bâtiment et chaque matériau, à tes prix. Il ne regarde ni tes plans ni tes bases : les chiffres des bâtiments sont intégrés, et les prix viennent de ta préférence d'échange.
 
-## How to use it {#how-to-use}
+## Comment l'utiliser {#how-to-use}
 
-1. Check **CX Preference**, which decides the prices (see [Prices](#prices)).
-2. Pick the need under **Need**: **Safety** (default), **Health**, **Comfort**, **Culture** or **Education**.
-3. Read the **Material Details** table, cheapest first.
+1. Vérifie **Préférence CX**, qui détermine les prix (voir [Prix](#prices)).
+2. Choisis le besoin sous **Besoin** : **Sécurité** (par défaut), **Santé**, **Confort**, **Culture** ou **Éducation**.
+3. Lis le tableau **Détails des matériaux**, du moins cher au plus cher.
 
-The page calculates all five needs when you open it ("Calculating Upkeep Material Prices"), and again when you change the exchange preference. Until it's done, you see a progress bar with that line. After that, switching **Need** is instant, because all five needs are already calculated.
+La page calcule les cinq besoins à son ouverture (« Calcul des prix des matériaux d'entretien »), et à nouveau quand tu changes de préférence d'échange. Tant que ce n'est pas fini, tu vois une barre de progression avec cette ligne. Ensuite, changer de **Besoin** est instantané, parce que les cinq besoins sont déjà calculés.
 
-## Buildings and needs {#buildings}
+## Bâtiments et besoins {#buildings}
 
-PRUNplanner knows 14 upkeep buildings, each with the materials it consumes per day and how much of each need it provides. These figures are built into PRUNplanner.
+PRUNplanner connaît 14 bâtiments d'entretien, chacun avec les matériaux qu'il consomme par jour et la quantité de chaque besoin qu'il fournit. Ces chiffres sont intégrés à PRUNplanner.
 
-| Need          | Buildings                                                                     |
-| ------------- | ----------------------------------------------------------------------------- |
-| **Safety**    | SST Safety Station, SDP Security Drone Post, EMC Emergency Center             |
-| **Health**    | INF Infirmary, HOS Hospital, EMC Emergency Center, WCE Wellness Center        |
-| **Comfort**   | PAR Park, 4DA 4D Arcades, WCE Wellness Center, ACA Art Cafe                   |
-| **Culture**   | ART Art Gallery, VRT VR Theater, ACA Art Cafe, PBH Planetary Broadcasting Hub |
-| **Education** | LIB Library, UNI University, PBH Planetary Broadcasting Hub                   |
+| Besoin        | Bâtiments                                                                                 |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| **Sécurité**  | SST Station de sécurité, SDP Poste de drone de sécurité, EMC Centre d'urgence             |
+| **Santé**     | INF Infirmerie, HOS Hôpital, EMC Centre d'urgence, WCE Centre de bien-être                |
+| **Confort**   | PAR Parc naturel, 4DA Arcades 4D, WCE Centre de bien-être, ACA Café d'art                 |
+| **Culture**   | ART Galerie d'art, VRT Théâtre RV, ACA Café d'art, PBH Centre de communication planétaire |
+| **Éducation** | LIB Bibliothèque, UNI Université, PBH Centre de communication planétaire                  |
 
-Four buildings serve two needs: EMC (Safety and Health), WCE (Health and Comfort), ACA (Comfort and Culture) and PBH (Culture and Education).
+Quatre bâtiments servent deux besoins : EMC (sécurité et santé), WCE (santé et confort), ACA (confort et culture) et PBH (culture et éducation).
 
-## Material Details {#material-details}
+## Détails des matériaux {#material-details}
 
-For the selected need, the table has one row per building and material. It shows 50 rows per page, and you can click a header to sort by it.
+Pour le besoin sélectionné, le tableau a une ligne par bâtiment et par matériau. Il affiche 50 lignes par page, et tu peux cliquer sur un en-tête pour trier sur cette colonne.
 
-| Column                              | What it shows                                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Material**                        | the material the building consumes                                                         |
-| **Building**                        | the upkeep building, as its ticker                                                         |
-| **ȼ/Need**                          | the cost per unit of need (4 decimals). Lower is better |
-| **CX Price (ȼ)** | the material's buy price under your exchange preference                                    |
-| **Qty/Day**                         | how many the building consumes per day                                                     |
+| Colonne                            | Ce qu'elle montre                                                                                         |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Matériau**                       | le matériau que le bâtiment consomme                                                                      |
+| **Bâtiment**                       | le bâtiment d'entretien, sous forme de ticker                                                             |
+| **ȼ/besoin**                       | le coût par unité de besoin (4 décimales). Plus c'est bas, mieux c'est |
+| **Prix CX (ȼ)** | le prix d'achat du matériau selon ta préférence d'échange                                                 |
+| **Qté/jour**                       | combien d'unités le bâtiment consomme par jour                                                            |
 
-By default the rows are sorted by **ȼ/Need**, lowest first. Materials without a price show "—" in **ȼ/Need** and **CX Price (ȼ)** and sit at the bottom. Don't worry, that only means your exchange preference gives no buy price for them, so there's nothing to compare.
+Par défaut, les lignes sont triées par **ȼ/besoin**, du plus bas au plus haut. Les matériaux sans prix affichent « — » dans **ȼ/besoin** et **Prix CX (ȼ)** et se retrouvent en bas. Pas d'inquiétude, cela veut seulement dire que ta préférence d'échange ne donne pas de prix d'achat pour eux, donc il n'y a rien à comparer.
 
-## How ȼ/Need is calculated {#price-per-need}
+## Comment ȼ/besoin est calculé {#price-per-need}
 
-ȼ/Need = CX Price × Qty/Day ÷ (need provided × number of needs the building serves)
+ȼ/besoin = Prix CX × Qté/jour ÷ (besoin fourni × nombre de besoins que sert le bâtiment)
 
-For a building that serves two needs, PRUNplanner counts the need it provides twice, because the same materials pay for both needs. That's why its rows look cheaper than a one-need building with the same costs.
+Pour un bâtiment qui sert deux besoins, PRUNplanner compte deux fois le besoin qu'il fournit, parce que les mêmes matériaux paient les deux besoins. C'est pourquoi ses lignes paraissent moins chères que celles d'un bâtiment à un seul besoin avec les mêmes coûts.
 
-For example, with made-up numbers: a building consumes 10 units a day of a material at 50 ȼ and provides 500 of one need. Its row shows 50 × 10 ÷ (500 × 1) = 1 ȼ/Need. A building that consumes the same and provides 500 of each of two needs shows 50 × 10 ÷ (500 × 2) = 0.5 ȼ/Need.
+Par exemple, avec des chiffres inventés : un bâtiment consomme 10 unités par jour d'un matériau à 50 ȼ et fournit 500 d'un besoin. Sa ligne affiche 50 × 10 ÷ (500 × 1) = 1 ȼ/besoin. Un bâtiment qui consomme la même chose et fournit 500 de chacun de deux besoins affiche 50 × 10 ÷ (500 × 2) = 0,5 ȼ/besoin.
 
-Each row looks at one material on its own, as if that material alone bought the building's whole need. A building consumes all of its materials, so its full cost per unit of need is the sum of its rows. If the one-need building above also consumed a second material whose row shows 0.5, its full cost would be 1 + 0.5 = 1.5 ȼ/Need.
+Chaque ligne considère un seul matériau, comme si ce matériau payait à lui seul tout le besoin du bâtiment. Un bâtiment consomme tous ses matériaux, donc son coût complet par unité de besoin est la somme de ses lignes. Si le bâtiment à un seul besoin ci-dessus consommait aussi un second matériau dont la ligne affiche 0,5, son coût complet serait de 1 + 0,5 = 1,5 ȼ/besoin.
 
 > [!tip]
-> Compare buildings by adding up their rows. A building with one cheap material and one expensive one can cost more per need than a building whose materials are all middling.
+> Compare les bâtiments en additionnant leurs lignes. Un bâtiment avec un matériau bon marché et un cher peut coûter plus par besoin qu'un bâtiment dont tous les matériaux sont de prix moyen.
 
-## Prices {#prices}
+## Prix {#prices}
 
-**CX Preference** picks the [[exchange-preference|exchange preference]], and "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]]. Prices don't depend on a planet, so planet exceptions in your exchange preference don't apply here. The prices decide the order, so another exchange preference can put a different material or building first.
+**Préférence CX** choisit la [[exchange-preference|préférence d'échange]], et « None - Universe 30D » utilise le [[vwap|VWAP]] sur 30 jours de l'[[universe|Univers]]. Les prix ne dépendent pas d'une planète, donc les exceptions par planète de ta préférence d'échange ne s'appliquent pas ici. Les prix décident de l'ordre, donc une autre préférence d'échange peut placer un autre matériau ou bâtiment en tête.
 
 > [!warning]
-> Picking an exchange preference here also makes it your default exchange preference, so other pages that follow your default switch with it.
+> Choisir une préférence d'échange ici en fait aussi ta préférence d'échange par défaut, donc les autres pages qui suivent ta préférence par défaut changent avec elle.
