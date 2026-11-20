@@ -7,9 +7,9 @@
 		"fit_ship": "Загрузить корабль",
 		"hide_infinite": "Скрыть бесконечные",
 		"json": "JSON",
-		"include_label": "Include {ticker}",
-		"override_label": "Override for {ticker}",
-		"configure_on_execution": "Configure on Execution"
+		"include_label": "Включить {ticker}",
+		"override_label": "Переопределить {ticker}",
+		"configure_on_execution": "Настроить при выполнении"
 	},
 	"buttons": {
 		"copy_json": "Копировать XIT JSON",
