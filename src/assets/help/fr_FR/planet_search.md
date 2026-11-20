@@ -1,256 +1,256 @@
-Use **Planet Search** to find a planet you already know, or the best places for new production. It's the place to start before a [[plan]]. You filter every planet by resources, conditions, [[COGC]], infrastructure and [[jumps]], then compare the best few side by side. It works without an account, and the results update as soon as you change a filter.
+Utilise **Recherche de planètes** pour retrouver une planète que tu connais déjà, ou les meilleurs endroits pour une nouvelle production. C'est le point de départ avant un [[plan|plan]]. Tu filtres toutes les planètes par ressources, conditions, [[cogc|COGC]], infrastructures et [[jumps|sauts]], puis tu compares côte à côte les quelques meilleures. Elle fonctionne sans compte, et les résultats se mettent à jour dès que tu modifies un filtre.
 
-## Where to find it {#where-to-find-it}
+## Où la trouver {#where-to-find-it}
 
-Planet Search is in the Planning group of the navigation, and on the home page. When you're logged out, a line under the title says it's free and needs no account. You only need to log in for distances to your own plans and to create a plan from a result.
+La Recherche de planètes se trouve dans le groupe Planification de la navigation, et sur la page d'accueil. Quand tu n'es pas connecté, une ligne sous le titre indique qu'elle est gratuite et sans compte. Tu n'as besoin de te connecter que pour les distances jusqu'à tes propres plans et pour créer un plan à partir d'un résultat.
 
-Other pages lead here too. [Production Chains](/help/tools_production_chain) opens Planet Search from an extraction step's planet picker and from a Location finding, and the Empire page links here while you set up your first plans.
+D'autres pages y mènent aussi. [Chaînes de production](/help/tools_production_chain) ouvre la Recherche de planètes depuis le sélecteur de planète d'une étape d'extraction et depuis un constat d'emplacement, et la page Empire y renvoie pendant que tu prépares tes premiers plans.
 
-## Name or ID {#name-or-id}
+## Nom ou ID {#name-or-id}
 
-Type part of a name or ID in the box at the top (**Planet or system name, or ID**). It matches the planet's natural ID ("OT-580b"), its name ("Montem"), its in-game name ("Antares II e") and its system's name, so "Antares II" lists every planet of that system.
+Tape une partie d'un nom ou d'un ID dans le champ en haut (**Nom de planète ou de système, ou ID**). La recherche porte sur l'ID naturel de la planète (« OT-580b »), son nom (« Montem »), son nom dans le jeu (« Antares II e ») et le nom de son système, donc « Antares II » liste toutes les planètes de ce système.
 
-A name search shows every planet that matches, even when your filters would hide some. A note above the results then says your filters are paused.
+Une recherche par nom affiche toutes les planètes qui correspondent, même quand tes filtres en masqueraient certaines. Une note au-dessus des résultats indique alors que tes filtres sont en pause.
 
-- _Apply filters_ combines the name with your filters again. The note then says how many matching planets the filters hide. It also offers up to three changes that would show more of them, each with the number of planets it adds.
-- _Show all_ pauses the filters again.
+- _Appliquer les filtres_ combine à nouveau le nom avec tes filtres. La note indique alors combien de planètes correspondantes les filtres masquent. Elle propose aussi jusqu'à trois modifications qui en afficheraient davantage, chacune avec le nombre de planètes qu'elle ajoute.
+- _Tout afficher_ remet les filtres en pause.
 
-Your filters are kept either way. Once you clear the name, the next name search starts with them paused again. If the filters hide none of the matches, there's no note.
+Tes filtres sont conservés dans les deux cas. Une fois le nom effacé, la recherche par nom suivante recommence avec les filtres en pause. Si les filtres ne masquent aucune des correspondances, il n'y a pas de note.
 
 > [!tip]
-> Looking up a planet someone mentioned in chat? Type its name. You don't have to clear your filters first.
+> Tu cherches une planète dont quelqu'un a parlé dans le chat ? Tape son nom. Pas besoin d'effacer tes filtres d'abord.
 
-## Materials {#materials}
+## Matériaux {#materials}
 
-You can search for one or more groups of materials.
+Tu peux chercher un ou plusieurs groupes de matériaux.
 
-- Each group matches **any of** or **all of** its materials. A new group starts as **any of**.
-- The groups combine with **all groups** (the default) or **any group**.
-- **+ add material…** adds a material to a group, and each option shows how many planets you'd get with it. × removes a material, **Remove** removes a whole group, and **+ Add group** adds one.
+- Chaque groupe correspond à **au moins un de** ou à **tous les** matériaux qu'il contient. Un nouveau groupe commence en **au moins un de**.
+- Les groupes se combinent avec **tous les groupes** (par défaut) ou **au moins un groupe**.
+- **+ ajouter un matériau…** ajoute un matériau à un groupe, et chaque option indique combien de planètes tu obtiendrais avec. × retire un matériau, **Retirer** retire un groupe entier, et **+ Ajouter un groupe** en ajoute un.
 
-That covers searches like "(FEO and H2O) or (MAG and O)": two **all of** groups, combined with **any group**.
+Cela couvre des recherches comme « (FEO et H2O) ou (MAG et O) » : deux groupes **tous les**, combinés avec **au moins un groupe**.
 
-You can give every material a minimum daily [[extraction]] ("min … /day"). That's the planet's daily rate for the material, and a plan builds its EXT, RIG or COL recipe there from it, so a higher minimum keeps the planets where each extractor yields more. The "(max …)" next to it is the highest daily extraction of that material on any planet, so you know what's possible. A minimum belongs to the material, not the group. If the same material is in two groups, they share one minimum.
+Tu peux donner à chaque matériau une [[extraction|extraction]] quotidienne minimale (« min. … /jour »). C'est le taux quotidien de la planète pour ce matériau, et un plan y construit sa recette EXT, RIG ou COL à partir de lui : un minimum plus élevé garde donc les planètes où chaque extracteur rapporte davantage. Le « (max. …) » à côté est l'extraction quotidienne la plus élevée de ce matériau sur toutes les planètes, pour que tu saches ce qui est possible. Un minimum appartient au matériau, pas au groupe. Si le même matériau figure dans deux groupes, ils partagent un seul minimum.
 
-## Planet conditions {#planet-conditions}
+## Conditions de la planète {#planet-conditions}
 
-Pick **Rocky** and/or **Gaseous** planets, and whether they must be **Fertile** (allow farming). A new search starts with Rocky planets only. One surface always stays ticked.
+Choisis des planètes **Rocheuse** et/ou **Gazeuse**, et indique si elles doivent être **Fertile** (permettre l'agriculture). Une nouvelle recherche commence avec les planètes rocheuses uniquement. Une surface reste toujours cochée.
 
-[[fertility|Fertility]] only matters for farms (FRM and ORC). On a planet without it, PRUNplanner sets their efficiency to 0, so they produce nothing there.
+La [[fertility|fertilité]] ne compte que pour les fermes (FRM et ORC). Sur une planète qui n'en a pas, PRUNplanner met leur efficacité à 0, donc elles n'y produisent rien.
 
-Gravity, pressure and temperature only matter through the [[extra-building-materials|extra building materials]] they require. Under **Accept extra building materials**, tick the ones you're willing to ship in:
+La gravité, la pression et la température ne comptent qu'à travers les [[extra-building-materials|matériaux de construction supplémentaires]] qu'elles exigent. Sous **Accepter les matériaux de construction supplémentaires**, coche ceux que tu es prêt à faire venir :
 
-| Material | Needed for           |
-| -------- | -------------------- |
-| MGC      | **Low gravity**      |
-| BL       | **High gravity**     |
-| SEA      | **Low pressure**     |
-| HSE      | **High pressure**    |
-| INS      | **Low temperature**  |
-| TSH      | **High temperature** |
+| Matériau | Nécessaire pour        |
+| -------- | ---------------------- |
+| MGC      | **Gravité faible**     |
+| BL       | **Gravité élevée**     |
+| SEA      | **Pression basse**     |
+| HSE      | **Pression élevée**    |
+| INS      | **Température basse**  |
+| TSH      | **Température élevée** |
 
-These materials matter because a plan on that planet adds them to the construction of every building, so they raise its construction cost. For example, a building with an area of 20 needs 20 × 4 = 80 MCG on a rocky planet, and on a low-temperature planet another 20 × 10 = 200 INS.
+Ces matériaux comptent parce qu'un plan sur cette planète les ajoute à la construction de chaque bâtiment : ils augmentent donc son coût de construction. Par exemple, un bâtiment d'une surface de 20 a besoin de 20 × 4 = 80 MCG sur une planète rocheuse, et sur une planète à basse température de 20 × 10 = 200 INS en plus.
 
-Planet Search hides planets that need any material you didn't tick. With none ticked, you only see planets that need none of them. The surface material (MCG on rocky planets, AEF on gaseous ones) is always needed and isn't part of this filter.
+La Recherche de planètes masque les planètes qui exigent un matériau que tu n'as pas coché. Si aucun n'est coché, tu ne vois que les planètes qui n'en exigent aucun. Le matériau de surface (MCG sur les planètes rocheuses, AEF sur les gazeuses) est toujours nécessaire et ne fait pas partie de ce filtre.
 
-## COGC and infrastructure {#cogc-and-infrastructure}
+## COGC et infrastructures {#cogc-and-infrastructure}
 
-**Active COGC program** keeps planets that run one of the ticked programs right now, meaning at the moment you opened the page. The list has every program: the advertising programs for each industry and the workforce programs for each tier.
+**Programme COGC actif** garde les planètes qui font tourner l'un des programmes cochés en ce moment, c'est-à-dire au moment où tu as ouvert la page. La liste contient tous les programmes : les programmes publicitaires de chaque industrie et les programmes de main-d'œuvre de chaque niveau.
 
-A program matters because it speeds up production in a plan: an advertising program speeds up buildings of its expertise by 25 %, and a workforce program speeds up buildings that employ that tier by 10 %. In the game, the residents (players with a base on the planet) vote on the program, and the winning program runs for a week, so the program you see here can change later.
+Un programme compte parce qu'il accélère la production dans un plan : un programme publicitaire accélère de 25 % les bâtiments de son expertise, et un programme de main-d'œuvre accélère de 10 % les bâtiments qui emploient ce niveau. Dans le jeu, les résidents (les joueurs qui ont une base sur la planète) votent pour le programme, et le programme gagnant tourne pendant une semaine : le programme que tu vois ici peut donc changer plus tard.
 
-**Infrastructure** is a separate filter, and a stricter one. A planet must have every ticked building.
+**Infrastructures** est un filtre à part, et plus strict. Une planète doit avoir chacun des bâtiments cochés.
 
-| Code | Building                  |
-| ---- | ------------------------- |
-| LM   | **Local Market**          |
-| COGC | **Chamber of Commerce**   |
-| WAR  | **Warehouse**             |
-| ADM  | **Administration Center** |
-| SHY  | **Shipyard**              |
+| Code | Bâtiment                        |
+| ---- | ------------------------------- |
+| LM   | **Marché local**                |
+| COGC | **Chambre de Commerce Globale** |
+| WAR  | **Entrepôt**                    |
+| ADM  | **Centre d'administration**     |
+| SHY  | **Chantier naval**              |
 
-The pills show the code. Hover one for the name.
+Les pastilles affichent le code. Survole-en une pour voir le nom.
 
-## Counts and Any {#counts-and-any}
+## Décomptes et Tous {#counts-and-any}
 
-The number next to an unticked option tells you how many planets you'd get by ticking it. You'll see the same counts in the add-material list, next to the exchanges and next to your plans.
+Le nombre à côté d'une option non cochée t'indique combien de planètes tu obtiendrais en la cochant. Tu retrouves les mêmes décomptes dans la liste d'ajout de matériaux, à côté des échanges et à côté de tes plans.
 
-Planet conditions, Accept extra building materials, Active COGC program and Infrastructure each have an _Any_ button in their header. It sets that section to the state that hides the fewest planets, and shows how many planets that gives:
+Conditions de la planète, Accepter les matériaux de construction supplémentaires, Programme COGC actif et Infrastructures ont chacun un bouton _Tous_ dans leur en-tête. Il règle la section sur l'état qui masque le moins de planètes, et indique combien de planètes cela donne :
 
-- Planet conditions: both surfaces, fertility not required.
-- Accept extra building materials: all accepted.
-- Active COGC program: none ticked.
-- Infrastructure: none ticked.
+- Conditions de la planète : les deux surfaces, fertilité non exigée.
+- Accepter les matériaux de construction supplémentaires : tous acceptés.
+- Programme COGC actif : aucun coché.
+- Infrastructures : aucune cochée.
 
-When the section is already there, the button is highlighted and can't be clicked.
+Quand la section est déjà dans cet état, le bouton est mis en évidence et ne peut pas être cliqué.
 
 ## Distance {#distance}
 
-Under **Distance**, pick **Exchanges** and/or plans from one of your [[empire|empires]]. A planet must be within **Max jumps** of every pick. Jumps count between star systems, so every planet of a system has the same distance, and a planet with no jump route to a pick doesn't pass. For example, with NC1 and one of your plans picked and Max jumps at 5, a planet 3 jumps from NC1 and 6 from your plan is hidden. Max jumps runs from 0 to 30 and starts at 10. It only matters once you pick something.
+Sous **Distance**, choisis des **Échanges** et/ou des plans de l'un de tes [[empire|empires]]. Une planète doit se trouver à **Sauts max.** au plus de chacun de tes choix. Les sauts se comptent entre systèmes stellaires, donc toutes les planètes d'un système ont la même distance, et une planète sans itinéraire de sauts vers un choix ne passe pas. Par exemple, avec NC1 et l'un de tes plans choisis et Sauts max. à 5, une planète à 3 sauts de NC1 et à 6 de ton plan est masquée. Sauts max. va de 0 à 30 et commence à 10. Il ne compte qu'une fois que tu as choisi quelque chose.
 
-- **Plans from empire** picks the empire whose plans you can choose. It starts at the empire that holds most of the plans in your search, otherwise your current or default empire. Changing the empire drops the plans you picked.
-- The plan list has a filter box where you can type a plan name, planet ID or planet name.
-- Each picked plan shows as a chip you can remove, and gets its own jumps column in the results.
+- **Plans de l'empire** choisit l'empire dont tu peux sélectionner les plans. Il part de l'empire qui contient la plupart des plans de ta recherche, sinon de ton empire actuel ou par défaut. Changer d'empire retire les plans que tu avais choisis.
+- La liste des plans a un champ de filtre où tu peux taper un nom de plan, un ID de planète ou un nom de planète.
+- Chaque plan choisi apparaît comme une pastille que tu peux retirer, et a sa propre colonne de sauts dans les résultats.
 
-AI1, CI1, IC1 and NC1 have their own jumps columns too, and you can hide them under **Columns**.
+AI1, CI1, IC1 et NC1 ont aussi leurs propres colonnes de sauts, et tu peux les masquer sous **Colonnes**.
 
-Distances to your own plans need a login. When you're logged out, the section says so and offers **Log in**. Planet Search drops plans in a link someone else shared, because they aren't yours.
-
-> [!tip]
-> To find a second base near your first, pick its plan under Distance and set Max jumps to 2 or 3. When nothing matches, the suggestions above the results offer a few more jumps.
-
-## Active filters and Reset {#active-filters-and-reset}
-
-Every active filter shows as a chip above the results, and × on a chip removes only that filter. You get one chip per material group (one for all groups when they combine with **any group**) and one per infrastructure building. There's one chip for all COGC programs, one for the accepted extra materials and one for all distance picks together. The surface gets a chip when it isn't Rocky only. Max jumps alone makes no chip.
-
-**Reset** at the top right goes back to the starting filters and the default order. It keeps your compare pins, the view and your columns. On phones it's in the "⋯" menu.
-
-When no planet matches, the page says **No planets match these filters. Try one of these:** and offers up to three changes, each with the number of planets it would give, most first:
-
-- remove one of your chips;
-- **Include gaseous planets**;
-- **Accept all extra building materials**;
-- a higher Max jumps (3 more, up to 30), when you picked a distance.
-
-Don't worry, this only means your filters together leave no planet. Click a suggestion to apply it.
-
-If two changes give the same result, only one shows. A name search's note can also offer "Any surface, fertile or not", "Any COGC program" and "Any infrastructure".
-
-## Filter panel {#filter-panel}
-
-The panel heading counts your active filters. On screens 1,024 px and wider, the panel sits beside the results. The double arrow at its top collapses it to a narrow rail and expands it again. Below 1,440 px it starts collapsed on every visit, so the results get the room. From 1,440 px on, the browser remembers whether you collapsed it.
-
-On small screens, the _Filters_ button opens the filters in a drawer, and _Show n planets_ at its bottom closes it.
-
-## Results {#results}
-
-The heading above the results reads "n of total planets". Next to it you switch between **List**, **Matrix** and **Chart**. Long lists load 100 rows at a time as you scroll.
-
-## List and Matrix {#list-and-matrix}
-
-The **List** shows the searched materials as tiles next to the other resources. It also has fertility, extra building materials, COGC and infrastructure, and the jumps columns.
-
-The **Matrix** gives every material found in the results its own column. The searched ones come first (alphabetically), then a blue divider, then the others. A cell's shading gets stronger with higher daily extraction, compared with the highest of that material on any planet. A colour strip on top shows the material's category. Hover a header for "on n of total results", or a cell for its value and its share of the maximum.
+Les distances jusqu'à tes propres plans nécessitent une connexion. Quand tu n'es pas connecté, la section l'indique et propose **Se connecter**. La Recherche de planètes retire les plans d'un lien partagé par quelqu'un d'autre, car ce ne sont pas les tiens.
 
 > [!tip]
-> The Matrix is the quickest way to spot planets with two or three useful resources at once. Search one material, then scan the other columns.
+> Pour trouver une deuxième base près de la première, choisis son plan sous Distance et règle Sauts max. sur 2 ou 3. Quand rien ne correspond, les suggestions au-dessus des résultats proposent quelques sauts de plus.
 
-## Chart {#chart}
+## Filtres actifs et Réinitialiser {#active-filters-and-reset}
 
-The **Chart** plots the results by distance and output.
+Chaque filtre actif apparaît comme une pastille au-dessus des résultats, et × sur une pastille retire uniquement ce filtre. Tu obtiens une pastille par groupe de matériaux (une seule pour tous les groupes quand ils se combinent avec **au moins un groupe**) et une par bâtiment d'infrastructure. Il y a une pastille pour tous les programmes COGC, une pour les matériaux supplémentaires acceptés et une pour tous les choix de distance ensemble. La surface a une pastille quand elle n'est pas « rocheuse uniquement ». Sauts max. seul ne crée pas de pastille.
 
-- **Across (X)**: the jumps to your Distance picks, or to the farthest one if you picked several. Without a pick, it's the jumps to one exchange, the one closest to the plotted planets overall (fewest jumps in total). The axis names it, e.g. "jumps to IC1 · nearest exchange".
-- **Up (Y)**: the daily extraction of a searched material. With two or more searched materials, a picker chooses which one (the first by default). Without a searched material, Y is fertility.
-- **Dot size**: fertility, scaled within the range shown in the caption. This only applies when you search a material.
+**Réinitialiser** en haut à droite revient aux filtres de départ et à l'ordre par défaut. Il conserve tes épingles de comparaison, la vue et tes colonnes. Sur téléphone, il se trouve dans le menu « ⋯ ».
 
-The **best trade-off** planets are the ones no other result beats on both counts: none is closer _and_ richer. The chart highlights them and joins them with a dashed line. Everything below and right of that line is beaten by one of them.
+Quand aucune planète ne correspond, la page indique **Aucune planète ne correspond à ces filtres. Essaie l'une de ces options :** et propose jusqu'à trois modifications, chacune avec le nombre de planètes qu'elle donnerait, la plus large en premier :
 
-For example, say planet A is 2 jumps away with 10 /day, B is 4 jumps away with 25 /day, and C is 5 jumps away with 20 /day. A and B are best trade-offs: no result is closer than A, and none within 4 jumps is richer than B. C isn't, because B is both closer and richer.
+- retirer l'une de tes pastilles ;
+- **Inclure les planètes gazeuses** ;
+- **Accepter tous les matériaux de construction supplémentaires** ;
+- un Sauts max. plus élevé (3 de plus, jusqu'à 30), quand tu as choisi une distance.
 
-**Colour by** switches between **Best trade-off** and **COGC**. With COGC, the six most common running programs get their own colours, and the rest share one colour: "other or no COGC program", or "no COGC program" when no other program runs.
+Pas d'inquiétude, cela veut seulement dire que tes filtres, ensemble, ne laissent aucune planète. Clique sur une suggestion pour l'appliquer.
 
-On screens 1,024 px and wider, hover a dot for its details, click it to pin it for Compare, and double-click it to create a plan (when you're logged out, you log in first). On touch and narrow screens, tap a dot for its details.
+Si deux modifications donnent le même résultat, une seule s'affiche. La note d'une recherche par nom peut aussi proposer « N'importe quelle surface, fertile ou non », « N'importe quel programme COGC » et « N'importe quelle infrastructure ».
 
-The list beside the chart ranks the same planets by Y, with "+" and ☆ on each row. The chart plots up to 300 results, the first ones by the current sort, so **Sort** decides which planets make it on. Below the chart, the page counts the planets it couldn't place: without a route, without the material, or not fertile.
+## Panneau des filtres {#filter-panel}
 
-## Reading the results {#reading-the-results}
+L'en-tête du panneau compte tes filtres actifs. Sur les écrans de 1 024 px et plus, le panneau se trouve à côté des résultats. La double flèche en haut le réduit en une barre étroite et le déploie à nouveau. En dessous de 1 440 px, il démarre réduit à chaque visite, pour laisser la place aux résultats. À partir de 1 440 px, le navigateur se souvient si tu l'as réduit.
 
-- **Material tiles**: the colour bar compares the planet's daily extraction with the highest of that material on any planet. Red is below a quarter, then orange, then yellow, and green above three quarters. Hover the bar for the value, the maximum and the percentage. For example, if the richest planet has 40 FEO /day, a planet with 25 is at 25 ÷ 40 = 62.5 %, so its bar is yellow.
-- **Fert. %**: fertility as the game shows it, or "—" when the planet isn't fertile. Sorting puts planets that aren't fertile last.
-- **Extra building materials** (the construction icon): the materials a base on this planet needs. It always lists MCG ("Rocky surface") or AEF ("Gaseous surface"). Hover any one to see why, e.g. "Low gravity".
-- **COGC · Infra**: the running COGC program ("—" for none) and the planet's infrastructure as LM, COGC, WAR, ADM and SHY.
-- **Jumps columns**: "—" means there's no jump route. Hover it to read "Colony Ship Required".
+Sur les petits écrans, le bouton _Filtres_ ouvre les filtres dans un tiroir, et _Afficher n planètes_ en bas le referme.
 
-## Plots {#plots}
+## Résultats {#results}
 
-Every base takes one [[plots|plot]] of its planet, and so do HQs and [[planetary-projects|planetary projects]] (COGC, warehouse, local market and the others).
+L'en-tête au-dessus des résultats indique « n planètes sur total ». À côté, tu bascules entre **Liste**, **Matrice** et **Graphique**. Les longues listes se chargent par 100 lignes à mesure que tu fais défiler.
 
-- A planet with every plot taken and no [[ghost-sites|ghost sites]] carries a red ⊘ icon next to its name, whether or not the Plots column is on. Hover it for the details and the date.
-- The **Plots** column is off by default; turn it on in **Columns**. It shows the free plots out of the planet's total, as FIO last saw the planet (hover for the date), and marks a full planet red **Full**.
-- Some planets allow ghost sites. A full planet that allows them shows an amber **Full · ghost sites**, and the tooltip counts the ghost sites so far.
-- **plots unknown** means PRUNplanner hasn't read the planet's plots yet.
-- Sort by the column to see the planets with the most free plots first. Planets with unknown plots go last.
+## Liste et Matrice {#list-and-matrix}
 
-Full planets keep their place in the results. Plots aren't a filter.
+La **Liste** affiche les matériaux recherchés sous forme de tuiles à côté des autres ressources. Elle contient aussi la fertilité, les matériaux de construction supplémentaires, le COGC et les infrastructures, ainsi que les colonnes de sauts.
+
+La **Matrice** donne à chaque matériau trouvé dans les résultats sa propre colonne. Les matériaux recherchés viennent en premier (par ordre alphabétique), puis un séparateur bleu, puis les autres. La teinte d'une cellule s'intensifie avec l'extraction quotidienne, comparée au maximum de ce matériau sur toutes les planètes. Une bande de couleur en haut indique la catégorie du matériau. Survole un en-tête pour voir « sur n des total résultats », ou une cellule pour sa valeur et sa part du maximum.
+
+> [!tip]
+> La Matrice est le moyen le plus rapide de repérer les planètes qui ont deux ou trois ressources utiles à la fois. Cherche un matériau, puis parcours les autres colonnes.
+
+## Graphique {#chart}
+
+Le **Graphique** place les résultats selon la distance et la production.
+
+- **Horizontal (X)** : les sauts jusqu'à tes choix de Distance, ou jusqu'au plus éloigné si tu en as choisi plusieurs. Sans choix, ce sont les sauts jusqu'à un échange, celui qui est globalement le plus proche des planètes affichées (le moins de sauts au total). L'axe le nomme, par ex. « sauts vers IC1 · échange le plus proche ».
+- **Vertical (Y)** : l'extraction quotidienne d'un matériau recherché. Avec deux matériaux recherchés ou plus, un sélecteur choisit lequel (le premier par défaut). Sans matériau recherché, Y est la fertilité.
+- **Taille du point** : la fertilité, à l'échelle de la plage indiquée dans la légende. Cela ne s'applique que si tu cherches un matériau.
+
+Les planètes **meilleur compromis** sont celles qu'aucun autre résultat ne bat sur les deux critères : aucun n'est à la fois plus proche _et_ plus riche. Le graphique les met en évidence et les relie par une ligne pointillée. Tout ce qui se trouve en dessous et à droite de cette ligne est battu par l'une d'elles.
+
+Par exemple, disons que la planète A est à 2 sauts avec 10 /jour, B à 4 sauts avec 25 /jour, et C à 5 sauts avec 20 /jour. A et B sont des meilleurs compromis : aucun résultat n'est plus proche que A, et aucun dans un rayon de 4 sauts n'est plus riche que B. C n'en est pas un, car B est à la fois plus proche et plus riche.
+
+**Colorer par** bascule entre **Meilleur compromis** et **COGC**. Avec COGC, les six programmes actifs les plus courants ont leur propre couleur, et les autres partagent une seule couleur : « autre programme COGC ou aucun », ou « aucun programme COGC » quand aucun autre programme ne tourne.
+
+Sur les écrans de 1 024 px et plus, survole un point pour voir ses détails, clique dessus pour l'épingler dans la comparaison, et double-clique pour créer un plan (si tu n'es pas connecté, tu te connectes d'abord). Sur les écrans tactiles et étroits, touche un point pour voir ses détails.
+
+La liste à côté du graphique classe les mêmes planètes selon Y, avec « + » et ☆ sur chaque ligne. Le graphique affiche jusqu'à 300 résultats, les premiers selon le tri actuel, donc c'est **Tri** qui décide quelles planètes y figurent. Sous le graphique, la page compte les planètes qu'elle n'a pas pu placer : sans itinéraire, sans le matériau ou non fertiles.
+
+## Lire les résultats {#reading-the-results}
+
+- **Tuiles de matériaux** : la barre de couleur compare l'extraction quotidienne de la planète au maximum de ce matériau sur toutes les planètes. Rouge en dessous d'un quart, puis orange, puis jaune, et vert au-dessus de trois quarts. Survole la barre pour voir la valeur, le maximum et le pourcentage. Par exemple, si la planète la plus riche a 40 FEO /jour, une planète à 25 est à 25 ÷ 40 = 62,5 %, donc sa barre est jaune.
+- **Fert. %** : la fertilité telle que le jeu l'affiche, ou « — » quand la planète n'est pas fertile. Le tri place les planètes non fertiles en dernier.
+- **Matériaux de construction supplémentaires** (l'icône de construction) : les matériaux dont une base sur cette planète a besoin. Elle liste toujours MCG (« Surface rocheuse ») ou AEF (« Surface gazeuse »). Survole l'un d'eux pour voir pourquoi, par ex. « Gravité faible ».
+- **COGC · Infra** : le programme COGC actif (« — » s'il n'y en a pas) et les infrastructures de la planète sous la forme LM, COGC, WAR, ADM et SHY.
+- **Colonnes de sauts** : « — » veut dire qu'il n'y a pas d'itinéraire de sauts. Survole-le pour lire « Vaisseau de colonisation requis ».
+
+## Parcelles {#plots}
+
+Chaque base occupe une [[plots|parcelle]] de sa planète, tout comme les QG et les [[planetary-projects|projets planétaires]] (COGC, entrepôt, marché local et les autres).
+
+- Une planète dont toutes les parcelles sont prises et sans [[ghost-sites|sites fantômes]] porte une icône ⊘ rouge à côté de son nom, que la colonne Parcelles soit affichée ou non. Survole-la pour voir les détails et la date.
+- La colonne **Parcelles** est masquée par défaut ; affiche-la dans **Colonnes**. Elle indique les parcelles libres sur le total de la planète, tel que FIO a vu la planète pour la dernière fois (survole pour voir la date), et marque une planète pleine en rouge **Complète**.
+- Certaines planètes autorisent les sites fantômes. Une planète pleine qui les autorise affiche **Complète · sites fantômes** en orange, et l'infobulle compte les sites fantômes jusqu'ici.
+- **parcelles inconnues** veut dire que PRUNplanner n'a pas encore lu les parcelles de la planète.
+- Trie par cette colonne pour voir en premier les planètes qui ont le plus de parcelles libres. Les planètes aux parcelles inconnues passent en dernier.
+
+Les planètes pleines gardent leur place dans les résultats. Les parcelles ne sont pas un filtre.
 
 > [!warning]
-> Ghost sites are for new players. In the game they occur on starter planets. A new player who starts there can still settle once every plot is taken. If your starting planet was elsewhere, you can't settle a planet with **Full · ghost sites**.
+> Les sites fantômes sont réservés aux nouveaux joueurs. Dans le jeu, ils apparaissent sur les planètes de départ. Un nouveau joueur qui commence là peut encore s'installer une fois toutes les parcelles prises. Si ta planète de départ était ailleurs, tu ne peux pas t'installer sur une planète **Complète · sites fantômes**.
 
-## Sorting {#sorting}
+## Tri {#sorting}
 
-Click a column header to sort by it, and click again to reverse. Materials, fertility and plots sort high first. The name and jumps sort low first.
+Clique sur un en-tête de colonne pour trier par celle-ci, et clique à nouveau pour inverser. Les matériaux, la fertilité et les parcelles se trient du plus haut au plus bas. Le nom et les sauts se trient du plus bas au plus haut.
 
-Shift+click another header to add it as a tiebreaker, up to four columns (the headers then show 1, 2, 3). For example, "NC1 jumps, then FEO /day" lists the richest FEO planets at each distance. Shift+click a column already in the chain to reverse it, and a second time to remove it.
+Maj+clic sur un autre en-tête l'ajoute comme critère de départage, jusqu'à quatre colonnes (les en-têtes affichent alors 1, 2, 3). Par exemple, « sauts NC1, puis FEO /jour » liste les planètes les plus riches en FEO à chaque distance. Maj+clic sur une colonne déjà dans la chaîne l'inverse, et une seconde fois la retire.
 
-The **Sort** menu does the same without a keyboard: **Sort by**, **Then by**, **Low first** and **High first**. If you haven't set a sort of your own, the menu shows the default order: the first searched material (high first), otherwise the jumps to the first distance pick, otherwise the name. When a sorted column goes away, such as a material you no longer search or a plan you unpicked, the page drops that sort.
+Le menu **Tri** fait la même chose sans clavier : **Trier par**, **Puis par**, **Les plus bas d'abord** et **Les plus hauts d'abord**. Si tu n'as pas défini ton propre tri, le menu affiche l'ordre par défaut : le premier matériau recherché (du plus haut au plus bas), sinon les sauts jusqu'au premier choix de distance, sinon le nom. Quand une colonne triée disparaît, comme un matériau que tu ne cherches plus ou un plan que tu as désélectionné, la page abandonne ce tri.
 
-## Columns {#columns}
+## Colonnes {#columns}
 
-The **Columns** menu hides and shows columns: **Fertility**, **Plots**, **Other resources** (List only), **Extra building materials**, **COGC · Infrastructure** and the four exchange jumps columns. It isn't shown in the Chart.
+Le menu **Colonnes** masque et affiche des colonnes : **Fertilité**, **Parcelles**, **Autres ressources** (Liste uniquement), **Matériaux de construction supplémentaires**, **COGC · Infrastructures** et les quatre colonnes de sauts vers les échanges. Il n'apparaît pas dans le Graphique.
 
-In the Matrix it also lists every found material except the searched ones (those always show), each with how many results have it. **All** and **None** show or hide them at once.
+Dans la Matrice, il liste aussi chaque matériau trouvé sauf les matériaux recherchés (qui s'affichent toujours), chacun avec le nombre de résultats qui l'ont. **Toutes** et **Aucune** les affichent ou les masquent d'un coup.
 
-**Reset** in the menu goes back to the default columns, which is everything except Plots.
+**Réinitialiser** dans le menu revient aux colonnes par défaut, c'est-à-dire toutes sauf Parcelles.
 
-## Compare {#compare}
+## Comparer {#compare}
 
-On screens 1,024 px and wider, pin up to four planets with ☆ to compare them side by side in the tray at the bottom. Its header collapses and expands the table.
+Sur les écrans de 1 024 px et plus, épingle jusqu'à quatre planètes avec ☆ pour les comparer côte à côte dans le volet en bas. Son en-tête réduit et déploie le tableau.
 
-These rows are coloured from best to worst, with the best value in bold:
+Ces lignes sont colorées du meilleur au pire, avec la meilleure valeur en gras :
 
-- fertility;
-- the daily extraction of each searched material;
-- the jumps to each of your distance picks;
-- **Free {tier} workers** for each of the five tiers: free workers minus the jobs already open, from the planet's latest [[popr|population report]], which the game publishes weekly.
+- la fertilité ;
+- l'extraction quotidienne de chaque matériau recherché ;
+- les sauts jusqu'à chacun de tes choix de distance ;
+- **Travailleurs {tier} libres** pour chacun des cinq niveaux : les travailleurs libres moins les postes déjà ouverts, d'après le dernier [[popr|rapport de population]] de la planète, que le jeu publie chaque semaine.
 
-For example, 1,000 free technicians with 400 open jobs show as 600. The figure never goes below 0, even when there are more open jobs than free workers.
+Par exemple, 1 000 techniciens libres avec 400 postes ouverts s'affichent comme 600. Le chiffre ne descend jamais en dessous de 0, même quand il y a plus de postes ouverts que de travailleurs libres.
 
-A planet without a value ranks worst. The other rows (extra building materials, other resources, COGC, infrastructure, and the jumps to AI1 / CI1 / IC1 / NC1) are plain text, and a row where the planets differ is tinted blue.
+Une planète sans valeur est classée la pire. Les autres lignes (matériaux de construction supplémentaires, autres ressources, COGC, infrastructures et les sauts vers AI1 / CI1 / IC1 / NC1) sont du texte simple, et une ligne où les planètes diffèrent est teintée en bleu.
 
-Pins are part of the link, but the tray only shows on larger screens.
-
-> [!tip]
-> The free-workers rows tell you how many workers a new base could hire on each planet, as of its latest population report.
-
-## Saving and sharing {#saving-and-sharing}
-
-- **Copy link**: the address bar always holds the whole search (filters, sort, view and compare pins), so the link shares exactly what you see.
-- **Save search**: stores the current filters and view under a name in this browser. The name starts as the chip labels, or "All planets". A saved search keeps neither the sort nor the pins.
-- **Saved** loads a saved search. In **Manage** you can rename, load or delete them. Delete doesn't ask first.
-- "+" on a row opens a new plan for that planet in a new tab, so your search stays where it is. Without an account, "+" asks you to log in first and then opens the plan.
-
-On phones, the saved searches, **Copy link** and **Reset** are in the "⋯" menu.
-
-### What this browser remembers {#what-the-browser-remembers}
-
-Some things stay in this browser only, not in your account: your saved searches, hidden columns and materials, whether the Plots column is on, the collapsed filter panel (1,440 px and wider), and the last view. A visit without a link opens in your last view. A link opens in its own view.
+Les épingles font partie du lien, mais le volet ne s'affiche que sur les grands écrans.
 
 > [!tip]
-> To keep a search on another device or share it with your corporation, use **Copy link** rather than **Save search**.
+> Les lignes des travailleurs libres t'indiquent combien de travailleurs une nouvelle base pourrait embaucher sur chaque planète, d'après son dernier rapport de population.
 
-### Link parameters {#link-parameters}
+## Enregistrer et partager {#saving-and-sharing}
 
-A link holds only what differs from the defaults. You can also write one by hand:
+- **Copier le lien** : la barre d'adresse contient toujours toute la recherche (filtres, tri, vue et épingles de comparaison), donc le lien partage exactement ce que tu vois.
+- **Enregistrer la recherche** : enregistre les filtres et la vue actuels sous un nom dans ce navigateur. Le nom part des libellés des pastilles, ou de « Toutes les planètes ». Une recherche enregistrée ne garde ni le tri ni les épingles.
+- **Enregistrées** charge une recherche enregistrée. Dans **Gérer**, tu peux les renommer, les charger ou les supprimer. La suppression ne demande pas de confirmation.
+- « + » sur une ligne ouvre un nouveau plan pour cette planète dans un nouvel onglet, pour que ta recherche reste en place. Sans compte, « + » te demande d'abord de te connecter, puis ouvre le plan.
 
-| Parameter | Meaning                       | Example                       |
-| --------- | ----------------------------- | ----------------------------- |
-| `q`       | name or ID                    | `q=Montem`                    |
-| `m`       | material groups               | `m=any:FEO\|MAG,all:H2O`      |
-| `g`       | groups combine with any group | `g=any`                       |
-| `d`       | minimum per day               | `d=FEO:15`                    |
-| `cogc`    | COGC programs                 | `cogc=ADVERTISING_METALLURGY` |
-| `infra`   | infrastructure                | `infra=LM,WAR`                |
-| `fert`    | fertile only                  | `fert=1`                      |
-| `surf`    | surfaces, r and/or g          | `surf=rg`                     |
-| `x`       | accepted extra materials      | `x=INS,SEA`                   |
-| `ref`     | distance picks                | `ref=cx:NC1`                  |
-| `j`       | max jumps                     | `j=5`                         |
-| `sort`    | sort chain                    | `sort=mat:FEO:desc`           |
-| `view`    | `matrix` or `chart`           | `view=chart`                  |
-| `pin`     | compare pins                  | `pin=OT-580b`                 |
+Sur téléphone, les recherches enregistrées, **Copier le lien** et **Réinitialiser** se trouvent dans le menu « ⋯ ».
 
-The page drops values it doesn't recognise.
+### Ce dont ce navigateur se souvient {#what-the-browser-remembers}
 
-## When the planets don't load {#errors}
+Certaines choses restent uniquement dans ce navigateur, pas dans ton compte : tes recherches enregistrées, les colonnes et matériaux masqués, l'affichage ou non de la colonne Parcelles, le panneau des filtres réduit (1 440 px et plus) et la dernière vue. Une visite sans lien s'ouvre dans ta dernière vue. Un lien s'ouvre dans sa propre vue.
 
-If loading fails, the page says "The planets couldn't be loaded." and shows a **Retry** button. After too many requests, it asks you to wait a few seconds before you try again.
+> [!tip]
+> Pour garder une recherche sur un autre appareil ou la partager avec ta corporation, utilise **Copier le lien** plutôt que **Enregistrer la recherche**.
+
+### Paramètres du lien {#link-parameters}
+
+Un lien ne contient que ce qui diffère des valeurs par défaut. Tu peux aussi en écrire un à la main :
+
+| Paramètre | Signification                                    | Exemple                       |
+| --------- | ------------------------------------------------ | ----------------------------- |
+| `q`       | nom ou ID                                        | `q=Montem`                    |
+| `m`       | groupes de matériaux                             | `m=any:FEO\|MAG,all:H2O`      |
+| `g`       | les groupes se combinent avec au moins un groupe | `g=any`                       |
+| `d`       | minimum par jour                                 | `d=FEO:15`                    |
+| `cogc`    | programmes COGC                                  | `cogc=ADVERTISING_METALLURGY` |
+| `infra`   | infrastructures                                  | `infra=LM,WAR`                |
+| `fert`    | fertiles uniquement                              | `fert=1`                      |
+| `surf`    | surfaces, r et/ou g                              | `surf=rg`                     |
+| `x`       | matériaux supplémentaires acceptés               | `x=INS,SEA`                   |
+| `ref`     | choix de distance                                | `ref=cx:NC1`                  |
+| `j`       | sauts max.                       | `j=5`                         |
+| `sort`    | chaîne de tri                                    | `sort=mat:FEO:desc`           |
+| `view`    | `matrix` ou `chart`                              | `view=chart`                  |
+| `pin`     | épingles de comparaison                          | `pin=OT-580b`                 |
+
+La page ignore les valeurs qu'elle ne reconnaît pas.
+
+## Quand les planètes ne se chargent pas {#errors}
+
+Si le chargement échoue, la page indique « Impossible de charger les planètes. Recharge la page pour réessayer. » et affiche un bouton **Réessayer**. Après trop de requêtes, elle te demande d'attendre quelques secondes avant de réessayer.
