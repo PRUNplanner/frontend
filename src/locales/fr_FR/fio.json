@@ -60,7 +60,7 @@
 	"repair": {
 		"view_title": "FIO Réparation",
 		"title": "FIO Réparation",
-		"fio_last_update": "FIO Data Update: {last_updated}",
+		"fio_last_update": "Mise à jour des données FIO : {last_updated}",
 		"states": {
 			"no_fio_title": "Connecte FIO pour voir l'état de réparation de tes bases",
 			"no_fio": "FIO Réparation lit la condition de tes bâtiments et leur dernière réparation depuis FIO. Configure FIO dans ton {link}, puis reviens ici.",
