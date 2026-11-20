@@ -1,117 +1,117 @@
-Start from a goal like "make 50 RAT a day". This guide takes about 20 minutes, and by the end you'll have:
+Empieza con un objetivo como «producir 50 RAT al día». Esta guía lleva unos 20 minutos, y al terminar tendrás:
 
-- the whole production chain behind your goal, with its profit and construction cost,
-- that chain split into bases you could build, each on a planet,
-- one [[plan]] per base, in a new [[empire]] if you like.
+- toda la cadena de producción que hay detrás de tu objetivo, con su beneficio y su coste de construcción,
+- esa cadena repartida en bases que podrías construir, cada una en un planeta,
+- un [[plan]] por base, en un [[empire|imperio]] nuevo si quieres.
 
-It's for players planning a new line of production across several bases. The pages linked at the end of each step go deeper. You need an account, and you should set up your prices first (see [Set up your prices](/help/guide_cx_prices)).
+Es para jugadores que planifican una nueva línea de producción repartida en varias bases. Las páginas enlazadas al final de cada paso profundizan más. Necesitas una cuenta, y conviene que configures antes tus precios (consulta [Configurar tus precios](/help/guide_cx_prices)).
 
-## 1. Set your targets {#step-1}
+## 1. Fija tus objetivos {#step-1}
 
-Open [Production Chains](/production-chain) (Calculators in the side menu).
+Abre [Cadenas de producción](/production-chain) (Calculadoras en el menú lateral).
 
-![Production Chains with 100 RAT a day as the target, the settings and the results tiles](/images/help/guides/chain-targets.webp)
+![Cadenas de producción con 100 RAT al día como objetivo, los ajustes y las tarjetas de resultados](/images/help/guides/chain-targets.webp)
 
-1. Under **Produce per day**, pick a material in **Add material**.
-2. Type the amount you want per day. A new target starts at 10.
-3. Add more targets if you like, for example DW, RAT and OVE together. The chain shares the steps they have in common.
+1. En **Producir al día**, elige un material en **Añadir material**.
+2. Escribe la cantidad que quieres al día. Un objetivo nuevo empieza en 10.
+3. Añade más objetivos si quieres, por ejemplo DW, RAT y OVE juntos. La cadena comparte los pasos que tienen en común.
 
-The results, **Steps** and **Graph** fill in at once and update with every change.
+Los resultados, **Pasos** y **Gráfico** se rellenan al momento y se actualizan con cada cambio.
 
-More: [Getting started](/help/tools_production_chain#getting-started).
+Más: [Primeros pasos](/help/tools_production_chain#getting-started).
 
-## 2. Check the settings {#step-2}
+## 2. Revisa los ajustes {#step-2}
 
-These sit above the results:
+Están encima de los resultados:
 
-- **Prices**: the [[exchange-preference|exchange preference]] PRUNplanner prices the chain with.
-- **Raw resources**: **Buy** (default) or **Extract**.
-- **Byproducts**: **Cover demand** uses a [[byproduct]] inside the chain first. **Sell** sells them all.
-- **Own production**: pick an empire you already run, and the chain uses that empire's surplus first.
-
-> [!warning]
-> Picking a preference under **Prices** also makes it your default exchange preference, so other tools that follow your default switch with it.
-
-Read more: [Settings](/help/tools_production_chain#settings), [Own production](/help/tools_production_chain#own-production).
-
-## 3. Decide what to make and what to buy {#step-3}
-
-**Steps** lists every material of the chain once. For each one, **Source** says whether you **Make**, **Buy** or **Extract** it, and **Make or buy** says whether making it saves money.
-
-- The chips above the steps sum up what to look at. **Cheaper to buy** lists steps you make for more than the exchange price, and **Buy all** switches them to buying.
-- **Thin market** lists bought materials where the chain needs 10 % or more of what the exchange trades a day. Buying that much will likely move the price. It also lists materials that didn't trade there in 30 days. As an example, if an exchange traded 30,000 units of a material in the last 30 days, that's 1,000 a day. A chain that buys 120 a day needs 120 ÷ 1,000 = 12 %, so it's listed.
-- If a material has several [[recipe|recipes]], click "n recipes ▾" to compare their effect on the chain.
-
-More: [Steps](/help/tools_production_chain#steps), [Warnings](/help/tools_production_chain#warnings).
-
-## 4. Read the results {#step-4}
-
-The strip at the top adds up the whole chain:
-
-- **Profit / day** is the output value minus bought inputs, workforce [[upkeep]], wear and production fees.
-- **Buildings**, **Area** and **Workforce** show what it takes.
-- **Construction** is what it costs to build, with its [[payback]].
-
-Payback is construction ÷ profit per day. As an example, a chain that costs 3,000,000 ȼ to build and makes 25,000 ȼ a day pays back in 3,000,000 ÷ 25,000 = 120 days. Without a profit, the strip shows "no payback".
-
-You want a profit that pays the construction back in a time you accept. If it doesn't, change a target or switch steps between make and buy, and watch the strip.
-
-Details: [Results](/help/tools_production_chain#results), [How costs are calculated](/help/tools_production_chain#how-costs-are-calculated).
-
-## 5. Lay the chain out into bases {#step-5}
-
-Open the **Bases** tab. It shows three steps, and the next one is the main button.
-
-![The Bases tab of Production Chains with Auto layout, Fit rate and Create the plans](/images/help/guides/chain-bases.webp)
-
-1. Pick the size under **Bases up to**: 500 area (1 permit), 750 or 1,000.
-2. Press **Auto layout**. It groups the steps into bases of one [[expertise]] each and picks a planet for each base. That planet has a free plot, no plan of yours, and the resources and fertility the base needs. Auto layout prefers a helpful COGC program and short distances.
-3. Want a given number of bases instead? Set **Number of bases** and press **Fit rate**. It scales all targets alike to the largest rate that fits, then lays the chain out.
+- **Precios**: la [[exchange-preference|preferencia de bolsa]] con la que PRUNplanner valora la cadena.
+- **Materias primas**: **Comprar** (predeterminado) o **Extraer**.
+- **Subproductos**: **Cubrir demanda** usa primero un [[byproduct|subproducto]] dentro de la cadena. **Vender** los vende todos.
+- **Producción propia**: elige un imperio que ya tengas en marcha, y la cadena usa primero el excedente de ese imperio.
 
 > [!warning]
-> **Auto layout** and **Fit rate** start over. You lose any names, planets, COGC picks, luxuries and experts you changed before, so lay out first and adjust afterwards.
+> Elegir una preferencia en **Precios** también la convierte en tu preferencia de bolsa predeterminada, así que las demás herramientas que siguen tu predeterminada cambian con ella.
 
-More: [Lay out into bases](/help/tools_production_chain#auto-layout), [How planets are picked](/help/tools_production_chain#planet-picking), [Fit the rate](/help/tools_production_chain#fit).
+Más información: [Ajustes](/help/tools_production_chain#settings), [Producción propia](/help/tools_production_chain#own-production).
 
-## 6. Adjust the bases {#step-6}
+## 3. Decide qué fabricar y qué comprar {#step-3}
 
-On each base card you can rename the base, pick another planet, choose its COGC program, set its **Luxuries** and **Experts**, merge it into another base or separate it.
+**Pasos** lista una vez cada material de la cadena. Para cada uno, **Origen** dice si lo fabricas (**Fabricar**), lo compras (**Comprar**) o lo extraes (**Extraer**), y **Fabricar o comprar** dice si fabricarlo ahorra dinero.
 
-The planet picker solves the base on every planet, so you can compare buildings and area. It also marks planets where you already have a plan. **Shipping per day** lists what moves between your bases and the exchange, in tonnes and m³, with the [[jumps]].
+- Las etiquetas encima de los pasos resumen lo que conviene mirar. **Más baratos de comprar** lista los pasos que fabricas por más del precio de la bolsa, y **Comprar los …** los pasa a compra.
+- **Mercados poco líquidos** lista los materiales comprados de los que la cadena necesita el 10 % o más de lo que la bolsa negocia al día. Comprar tanto probablemente moverá el precio. También lista los materiales que no se han negociado allí en 30 días. Por ejemplo, si una bolsa negoció 30.000 unidades de un material en los últimos 30 días, eso son 1.000 al día. Una cadena que compra 120 al día necesita 120 ÷ 1.000 = 12 %, así que aparece en la lista.
+- Si un material tiene varias [[recipe|recetas]], haz clic en «n recetas ▾» para comparar su efecto en la cadena.
 
-You're ready for the next step when every base has a planet and fits 1,000 area, and the third step offers to create the plans.
+Más: [Pasos](/help/tools_production_chain#steps), [Avisos](/help/tools_production_chain#warnings).
 
-More: [Overview and base cards](/help/tools_production_chain#base-cards).
+## 4. Lee los resultados {#step-4}
 
-## 7. Create the plans {#step-7}
+La franja de arriba suma toda la cadena:
 
-Press "Create … plans…" in the third step, or **Create plans**.
+- **Beneficio / día** es el valor producido menos los insumos comprados, el [[upkeep|mantenimiento]] de la mano de obra, el desgaste y las tasas de producción.
+- **Edificios**, **Área** y **Mano de obra** muestran lo que hace falta.
+- **Construcción** es lo que cuesta construirla, con su [[payback|amortización]].
 
-1. Check each plan's name.
-2. Choose **New empire** (the default, with a **Faction**), **Add to** an existing empire, or **No empire**.
-3. Confirm. The page stays on the chain and links the new plans and the empire.
+La amortización es construcción ÷ beneficio al día. Por ejemplo, una cadena que cuesta 3.000.000 ȼ de construir y gana 25.000 ȼ al día se amortiza en 3.000.000 ÷ 25.000 = 120 días. Sin beneficio, la franja muestra «no se amortiza».
 
-Each plan gets its base's buildings, recipes, habitation, one STO, COGC program, permits, luxuries and experts.
+Lo que buscas es un beneficio que amortice la construcción en un plazo que te parezca aceptable. Si no es así, cambia un objetivo o pasa pasos de fabricar a comprar o al revés, y fíjate en la franja.
 
-Read more: [Create plans](/help/tools_production_chain#create-plans).
+Detalles: [Resultados](/help/tools_production_chain#results), [Cómo se calculan los costes](/help/tools_production_chain#how-costs-are-calculated).
 
-## 8. Review the plans {#step-8}
+## 5. Reparte la cadena en bases {#step-5}
 
-The chain leaves some things to the plans, so open each new plan and check it as a base:
+Abre la pestaña **Bases**. Muestra tres pasos, y el siguiente es el botón principal.
 
-- **Planet** and **Empire & prices**: the chain leaves HQ and faction bonuses to the plans. Tick **Corp. HQ** under **Planet** where it applies, and check the empire's faction and permits.
-- The results tiles: **Profit / day**, **Payback**, and **Area** within your permits.
-- **Plan check**: whether the market takes what this base sells and supplies what it buys.
-- **Construction**: what you still need to build it.
+![La pestaña Bases de Cadenas de producción con Distribución automática, Ajustar ritmo y Crear los planes](/images/help/guides/chain-bases.webp)
 
-Back in Production Chains, the **Buy list** sums what the chain buys for a number of days, and **Copy XIT buy action** copies it as an [[xit|XIT]] action.
+1. Elige el tamaño en **Bases de hasta**: 500 de área (1 permiso), 750 o 1.000.
+2. Pulsa **Distribución automática**. Agrupa los pasos en bases de una [[expertise|especialización]] cada una y elige un planeta para cada base. Ese planeta tiene una parcela libre, ningún plan tuyo, y los recursos y la fertilidad que necesita la base. La distribución automática prefiere un programa del COGC que ayude y distancias cortas.
+3. ¿Prefieres un número concreto de bases? Fija **Número de bases** y pulsa **Ajustar ritmo**. Escala todos los objetivos por igual al mayor ritmo que cabe, y luego distribuye la cadena.
+
+> [!warning]
+> **Distribución automática** y **Ajustar ritmo** empiezan de cero. Pierdes los nombres, planetas, elecciones de COGC, lujos y expertos que hayas cambiado antes, así que distribuye primero y ajusta después.
+
+Más: [Distribuir en bases](/help/tools_production_chain#auto-layout), [Cómo se eligen los planetas](/help/tools_production_chain#planet-picking), [Ajustar el ritmo](/help/tools_production_chain#fit).
+
+## 6. Ajusta las bases {#step-6}
+
+En cada tarjeta de base puedes cambiar el nombre de la base, elegir otro planeta, elegir su programa del COGC, fijar sus **Lujos** y **Expertos**, fusionarla con otra base o separarla.
+
+El selector de planeta resuelve la base en cada planeta, para que puedas comparar edificios y área. También marca los planetas donde ya tienes un plan. **Envíos al día** lista lo que se mueve entre tus bases y la bolsa, en toneladas y m³, con los [[jumps|saltos]].
+
+Estás listo para el siguiente paso cuando todas las bases tienen planeta y caben en 1.000 de área, y el tercer paso ofrece crear los planes.
+
+Más: [Resumen y tarjetas de base](/help/tools_production_chain#base-cards).
+
+## 7. Crea los planes {#step-7}
+
+Pulsa «Crear … planes…» en el tercer paso, o **Crear planes**.
+
+1. Revisa el nombre de cada plan.
+2. Elige **Nuevo imperio** (el predeterminado, con una **Facción**), **Añadir a** un imperio existente o **Sin imperio**.
+3. Confirma. La página se queda en la cadena y enlaza los planes nuevos y el imperio.
+
+Cada plan recibe los edificios, recetas, habitación, un STO, el programa del COGC, los permisos, los lujos y los expertos de su base.
+
+Más información: [Crear planes](/help/tools_production_chain#create-plans).
+
+## 8. Revisa los planes {#step-8}
+
+La cadena deja algunas cosas a los planes, así que abre cada plan nuevo y revísalo como base:
+
+- **Planeta** e **Imperio y precios**: la cadena deja las bonificaciones de HQ y de facción a los planes. Marca **Sede corp.** en **Planeta** donde corresponda, y revisa la facción y los permisos del imperio.
+- Las tarjetas de resultados: **Beneficio / día**, **Amortización** y **Área** dentro de tus permisos.
+- **Revisión del plan**: si el mercado absorbe lo que vende esta base y suministra lo que compra.
+- **Construcción**: lo que aún necesitas para construirla.
+
+De vuelta en Cadenas de producción, la **Lista de compra** suma lo que compra la cadena durante un número de días, y **Copiar acción de compra XIT** la copia como acción de [[xit|XIT]].
 
 > [!tip]
-> **Copy chain link** saves the whole chain as a link, so you can come back to it or share it.
+> **Copiar enlace de la cadena** guarda toda la cadena como un enlace, para que puedas volver a ella o compartirla.
 
-More: [Base setup](/help/plan_base#empire-and-prices), [Plan check](/help/plan_check), [Buy list](/help/tools_production_chain#buy-list).
+Más: [Configuración de la base](/help/plan_base#empire-and-prices), [Revisión del plan](/help/plan_check), [Lista de compra](/help/tools_production_chain#buy-list).
 
-## Next {#next}
+## Siguientes pasos {#next}
 
-- [Grow to an empire](/help/guide_empire): check the new bases together on the Empire page.
-- [Hand off to the game](/help/guide_hand_off): construction, supply and XIT packages for building them.
+- [Crecer hasta un imperio](/help/guide_empire): revisa juntas las bases nuevas en la página Imperio.
+- [Pasar al juego](/help/guide_hand_off): construcción, suministro y paquetes de XIT para construirlas.
