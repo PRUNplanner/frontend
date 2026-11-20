@@ -3,10 +3,10 @@
 	"title": "API Schlüssel",
 	"info": {
 		"description": {
-			"p1": "Read your PRUNplanner data from sheets, scripts and AI assistants. See the {link}.",
-			"link": "REST API reference",
-			"warning": "Treat a key like your password: it reads all your planning data, and a read & write key can also change it. {link}",
-			"warning_link": "How long keys stay valid"
+			"p1": "Lies deine PRUNplanner-Daten in Tabellen, Skripten und KI-Assistenten. Siehe die {link}.",
+			"link": "REST-API-Referenz",
+			"warning": "Behandle einen Schlüssel wie dein Passwort: Er liest alle deine Planungsdaten, und ein Schlüssel mit Lesen & Schreiben kann sie auch ändern. {link}",
+			"warning_link": "Wie lange Schlüssel gültig bleiben"
 		}
 	},
 	"get_started": {
@@ -52,7 +52,7 @@
 		"copy": "{what} kopieren",
 		"copied": "Kopiert",
 		"freshness": "Stand der letzten Berechnung dieses Imperiums durch PRUNplanner. Die Spalte updated_at zeigt, wann das war.",
-		"key_warning": "Alle, die diese Tabelle öffnen können, können diesen Schlüssel nutzen, mit vollem Zugriff auf dein Konto. Nutze pro Tabelle einen eigenen Schlüssel, damit du ihn einzeln widerrufen kannst.",
+		"key_warning": "Alle, die diese Tabelle öffnen können, können mit diesem Schlüssel deine Daten lesen. Ein Schlüssel in einer URL kann nur lesen, aber nutze pro Tabelle einen eigenen Schlüssel mit Nur lesen, damit du ihn einzeln widerrufen kannst.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "Material-I/O des Imperiums",
@@ -141,7 +141,7 @@
 		"table": {
 			"apikey_name": "Name",
 			"apikey_prefix": "Präfix",
-			"apikey_access": "Access",
+			"apikey_access": "Zugriff",
 			"apikey_created": "Erstellt am",
 			"apikey_lastused": "Zuletzt benutzt"
 		}
@@ -153,21 +153,21 @@
 		"negative": "@:common.buttons.cancel"
 	},
 	"mcp": {
-		"title": "AI assistants (MCP)",
-		"description": "Connect Claude, ChatGPT/Codex, Copilot, Cursor and other assistants: they read and calculate your plans and empires with PRUNplanner's own engine.",
-		"server_url": "Server URL",
+		"title": "KI-Assistenten (MCP)",
+		"description": "Verbinde Claude, ChatGPT/Codex, Copilot, Cursor und andere Assistenten: Sie lesen und berechnen deine Pläne und Imperien mit PRUNplanners eigener Engine.",
+		"server_url": "Server-URL",
 		"header": "Header",
-		"copy_url": "Copy server URL",
-		"copied": "Server URL copied",
-		"download": "Download for Claude Desktop",
-		"keys": "A Read-only key reads and calculates; a Read & write key also saves plans, empires and preferences.",
-		"setup_link": "Set up Claude, ChatGPT/Codex, VS Code, Cursor and more"
+		"copy_url": "Server-URL kopieren",
+		"copied": "Server-URL kopiert",
+		"download": "Download für Claude Desktop",
+		"keys": "Ein Schlüssel mit Nur lesen liest und berechnet; ein Schlüssel mit Lesen & Schreiben speichert außerdem Pläne, Imperien und Einstellungen.",
+		"setup_link": "Claude, ChatGPT/Codex, VS Code, Cursor und mehr einrichten"
 	},
 	"create": {
 		"title": "API-Schlüssel erstellen",
 		"form": {
 			"key_name": "Schlüssel-Name",
-			"access": "Access",
+			"access": "Zugriff",
 			"key_description": "Gib deinem Schlüssel einen beschreibenden Namen, um ihn später wiederzuerkennen.",
 			"success_title": "Schlüssel erfolgreich generiert",
 			"success_key": "Dein geheimer Schlüssel (Jetzt speichern!)",
@@ -184,11 +184,11 @@
 		"copied": "Schlüssel kopiert"
 	},
 	"scope": {
-		"read": "Read-only",
-		"read_write": "Read & write",
+		"read": "Nur lesen",
+		"read_write": "Lesen & Schreiben",
 		"hint": {
-			"read": "Reads your plans, empires and other data. Can't change anything.",
-			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+			"read": "Liest deine Pläne, Imperien und weitere Daten. Kann nichts ändern.",
+			"read_write": "Erstellt, ändert und löscht außerdem deine Pläne, Imperien und weitere Daten."
 		}
 	}
 }
