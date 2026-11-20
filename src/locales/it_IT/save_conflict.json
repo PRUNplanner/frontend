@@ -1,90 +1,90 @@
 {
-	"title": "Saved in another tab",
-	"text": "This was saved in another tab or device after you opened it. Nothing is overwritten until you choose.",
-	"deleted_title": "Deleted in another tab",
-	"deleted_text": "This was deleted in another tab or device. Your edits are still here.",
-	"theirs": "Changed in the other tab",
-	"mine": "Your changes",
-	"none": "No changes",
-	"both": "changed in both tabs",
-	"more": "and {n} more",
-	"loading": "Loading the saved version…",
-	"load_failed": "The saved version couldn't be loaded.",
-	"copy_name": "{name} (copy)",
+	"title": "Salvato in un'altra scheda",
+	"text": "È stato salvato in un'altra scheda o su un altro dispositivo dopo che l'hai aperto. Niente viene sovrascritto finché non scegli.",
+	"deleted_title": "Eliminato in un'altra scheda",
+	"deleted_text": "È stato eliminato in un'altra scheda o su un altro dispositivo. Le tue modifiche sono ancora qui.",
+	"theirs": "Modificato nell'altra scheda",
+	"mine": "Le tue modifiche",
+	"none": "Nessuna modifica",
+	"both": "modificato in entrambe le schede",
+	"more": "e altri {n}",
+	"loading": "Caricamento della versione salvata…",
+	"load_failed": "Impossibile caricare la versione salvata.",
+	"copy_name": "{name} (copia)",
 	"option": {
-		"save_as_new": "Save as new plan",
-		"overwrite": "Overwrite",
-		"reload": "Reload",
-		"close": "Keep editing"
+		"save_as_new": "Salva come nuovo piano",
+		"overwrite": "Sovrascrivi",
+		"reload": "Ricarica",
+		"close": "Continua a modificare"
 	},
 	"option_help": {
-		"save_as_new": "Creates a copy with your edits, the original keeps the other version.",
-		"overwrite": "Replaces the other version with yours.",
-		"reload": "Drops your edits and loads the saved version."
+		"save_as_new": "Crea una copia con le tue modifiche; l'originale mantiene l'altra versione.",
+		"overwrite": "Sostituisce l'altra versione con la tua.",
+		"reload": "Scarta le tue modifiche e carica la versione salvata."
 	},
 	"deleted_option_help": {
-		"save_as_new": "Creates a new plan with your edits."
+		"save_as_new": "Crea un nuovo piano con le tue modifiche."
 	},
 	"draft": {
-		"title": "Draft saved elsewhere",
-		"text": "Another tab or device saved a draft of this plan after yours. Autosave is paused until you choose.",
-		"theirs": "In the other draft",
-		"mine": "Your changes",
+		"title": "Bozza salvata altrove",
+		"text": "Un'altra scheda o un altro dispositivo ha salvato una bozza di questo piano dopo la tua. Il salvataggio automatico è in pausa finché non scegli.",
+		"theirs": "Nell'altra bozza",
+		"mine": "Le tue modifiche",
 		"option": {
-			"overwrite": "Keep mine",
-			"reload": "Load the other draft",
-			"close": "Decide later"
+			"overwrite": "Tieni la mia",
+			"reload": "Carica l'altra bozza",
+			"close": "Decidi dopo"
 		},
 		"option_help": {
-			"overwrite": "Replaces the other draft with your changes.",
-			"reload": "Drops your changes here and loads the other draft."
+			"overwrite": "Sostituisce l'altra bozza con le tue modifiche.",
+			"reload": "Scarta qui le tue modifiche e carica l'altra bozza."
 		}
 	},
 	"draft_base": {
-		"title": "Unsaved changes on an older version",
-		"text": "You left unsaved changes on this plan, and it was saved again since. Nothing changes until you choose.",
-		"mine": "Your unsaved changes",
+		"title": "Modifiche non salvate su una versione precedente",
+		"text": "Hai lasciato modifiche non salvate su questo piano, che nel frattempo è stato salvato di nuovo. Non cambia niente finché non scegli.",
+		"mine": "Le tue modifiche non salvate",
 		"option": {
-			"overwrite": "Keep my changes",
-			"reload": "Use the saved version",
-			"close": "Decide later"
+			"overwrite": "Tieni le mie modifiche",
+			"reload": "Usa la versione salvata",
+			"close": "Decidi dopo"
 		},
 		"option_help": {
-			"overwrite": "Loads your unsaved changes on top of the saved version.",
-			"reload": "Deletes your unsaved changes and keeps the saved version."
+			"overwrite": "Carica le tue modifiche non salvate sopra la versione salvata.",
+			"reload": "Elimina le tue modifiche non salvate e mantiene la versione salvata."
 		}
 	},
 	"type": {
-		"BUY": "buy",
-		"SELL": "sell",
-		"BOTH": "buy and sell"
+		"BUY": "acquisto",
+		"SELL": "vendita",
+		"BOTH": "acquisto e vendita"
 	},
 	"change": {
-		"name": "Name {from} → {to}",
-		"permits": "Permits {from} → {to}",
+		"name": "Nome {from} → {to}",
+		"permits": "Permessi {from} → {to}",
 		"cogc": "COGC {from} → {to}",
-		"corphq_on": "Corp HQ on",
-		"corphq_off": "Corp HQ off",
-		"added": "{label} added ({amount})",
-		"removed": "{label} removed",
+		"corphq_on": "Corp HQ attivo",
+		"corphq_off": "Corp HQ disattivo",
+		"added": "{label} aggiunto ({amount})",
+		"removed": "{label} rimosso",
 		"amount": "{label} {from} → {to}",
-		"recipe": "{label}: recipe changed",
-		"experts": "{label} experts {from} → {to}",
-		"lux_on": "{label} luxury {n} on",
-		"lux_off": "{label} luxury {n} off",
-		"faction": "Faction {from} → {to}",
-		"permits_used": "Permits used {from} → {to}",
-		"permits_total": "Permits total {from} → {to}",
-		"exchange": "{type} exchange {from} → {to}",
-		"exchange_planet": "{type} exchange {from} → {to} on {planet}",
-		"ticker": "{ticker} {type} price {from} → {to}",
-		"ticker_planet": "{ticker} {type} price {from} → {to} on {planet}"
+		"recipe": "{label}: ricetta cambiata",
+		"experts": "{label} esperti {from} → {to}",
+		"lux_on": "{label} lusso {n} attivo",
+		"lux_off": "{label} lusso {n} disattivo",
+		"faction": "Fazione {from} → {to}",
+		"permits_used": "Permessi usati {from} → {to}",
+		"permits_total": "Permessi totali {from} → {to}",
+		"exchange": "Borsa di {type} {from} → {to}",
+		"exchange_planet": "Borsa di {type} {from} → {to} su {planet}",
+		"ticker": "{ticker} prezzo di {type} {from} → {to}",
+		"ticker_planet": "{ticker} prezzo di {type} {from} → {to} su {planet}"
 	},
 	"notice": {
-		"saved_elsewhere": "Saved in another tab. Your edits are kept.",
-		"deleted_elsewhere": "Deleted in another tab.",
-		"reload": "Reload",
-		"session_replaced": "You logged in in another tab. Reload this tab to continue; it no longer saves anything.",
-		"db_blocked": "PRUNplanner is open in another tab with an older version. Close the other tabs or reload them to continue."
+		"saved_elsewhere": "Salvato in un'altra scheda. Le tue modifiche sono mantenute.",
+		"deleted_elsewhere": "Eliminato in un'altra scheda.",
+		"reload": "Ricarica",
+		"session_replaced": "Hai effettuato l'accesso in un'altra scheda. Ricarica questa scheda per continuare; non salva più nulla.",
+		"db_blocked": "PRUNplanner è aperto in un'altra scheda con una versione precedente. Chiudi o ricarica le altre schede per continuare."
 	}
 }
