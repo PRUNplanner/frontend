@@ -1,136 +1,136 @@
-With an API key, a spreadsheet, dashboard, script or AI assistant can read your PRUNplanner data without your password. On the [API Keys](/apikey) page (**API** in the account menu) you create and revoke keys, connect an [AI assistant](/help/mcp), and build ready-to-paste URLs, Google Sheets formulas, curl and Python snippets.
+Con una clave API, una hoja de cálculo, un panel, un script o un asistente de IA puede leer tus datos de PRUNplanner sin tu contraseña. En la página [Claves API](/apikey) (**API** en el menú de la cuenta) creas y revocas claves, conectas un [asistente de IA](/help/mcp) y generas URL, fórmulas de Google Sheets y fragmentos de curl y Python listos para pegar.
 
-## What Keys Are For {#what-keys-are-for}
+## Para qué sirven las claves {#what-keys-are-for}
 
-The PRUNplanner REST API serves your planning data (plans, empires, exchange preferences, your empires' [[material-io|Material I/O]]), your [[FIO]] storage, game data (materials, recipes, buildings, planets) and market numbers such as [[vwap|VWAP]]. Typical uses:
+La API REST de PRUNplanner sirve tus datos de planificación (planes, imperios, preferencias de bolsa, la [[material-io|E/S de materiales]] de tus imperios), tu almacenamiento de [[fio|FIO]], datos del juego (materiales, recetas, edificios, planetas) y cifras del mercado como el [[vwap|VWAP]]. Usos típicos:
 
-- pull your empire's Material I/O into a Google Sheet that recalculates on its own,
-- feed exchange prices or your FIO storage into your own dashboard,
-- run your own analysis over all your plans.
+- llevar la E/S de materiales de tu imperio a una hoja de Google que se recalcula sola,
+- pasar los precios de las bolsas o tu almacenamiento de FIO a tu propio panel,
+- hacer tus propios análisis sobre todos tus planes.
 
-Public game data and exchange prices need no key. Everything that belongs to you does.
+Los datos públicos del juego y los precios de las bolsas no necesitan clave. Todo lo que es tuyo, sí.
 
-Each key has an **Access**: **Read-only** or **Read & write**. See [Access](#access) for what each one allows.
+Cada clave tiene un **Acceso**: **Solo lectura** o **Lectura y escritura**. Consulta [Acceso](#access) para ver qué permite cada uno.
 
-You'll find the full reference at [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Its Authorize button takes a key, so you can try calls in the browser.
+Tienes la referencia completa en [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Su botón Authorize acepta una clave, así que puedes probar las llamadas en el navegador.
 
-## Creating a Key {#create}
+## Crear una clave {#create}
 
-1. Press **Create New Key**.
-2. Enter a **Key Name** that tells you later where you use it, for example the sheet's name. Keep it to 50 characters at most. A longer name fails with a general error.
-3. Pick the **Access**: **Read-only** (already selected) or **Read & write**. The line below it says what the key will be able to do.
-4. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**, together with its access.
-5. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
-6. Press **I've saved my key**.
+1. Pulsa **Crear nueva clave**.
+2. Escribe un **Nombre de la clave** que más adelante te diga dónde la usas, por ejemplo el nombre de la hoja. Que no pase de 50 caracteres. Un nombre más largo falla con un error genérico.
+3. Elige el **Acceso**: **Solo lectura** (ya seleccionado) o **Lectura y escritura**. La línea de debajo dice lo que podrá hacer la clave.
+4. Pulsa **Crear**. La clave aparece una sola vez, bajo **Tu clave secreta (¡guárdala ahora!)**, junto con su acceso.
+5. Pulsa **Copiar clave** y guarda la clave en un lugar seguro, por ejemplo un gestor de contraseñas. **Usar en el generador de URL** la pone en el generador de URL de abajo, solo durante esta visita.
+6. Pulsa **He guardado mi clave**.
 
 > [!warning]
-> PRUNplanner can't show the key again, because it keeps only a hashed form of it, which can check a key but can't turn back into one. If you lose it, revoke it and create a new one.
+> PRUNplanner no puede volver a mostrar la clave, porque solo guarda una forma cifrada con hash, que sirve para comprobar una clave pero no se puede convertir de nuevo en ella. Si la pierdes, revócala y crea una nueva.
 
-## Managing Keys {#manage-keys}
+## Gestionar las claves {#manage-keys}
 
-**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Access**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
+**Claves API de PRUNplanner** lista tus claves con su **Nombre**, **Prefijo**, **Acceso**, **Creada** y **Último uso**. El prefijo es la primera parte de la clave, la que no es secreta, antes del punto, para que puedas distinguirlas. Último uso muestra **Nunca** hasta que se usa la clave. Después se actualiza como mucho una vez cada 5 minutos, así que puede que una petición que enviaste hace un momento aún no aparezca.
 
-**Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
+**Revocar** elimina una clave después de que lo confirmes. Los scripts y las hojas que la usan dejan de funcionar al instante.
 
-## Access {#access}
+## Acceso {#access}
 
-Every key reads your data. Whether it can also change it depends on the access you picked when you created it:
+Todas las claves leen tus datos. Que además puedan cambiarlos depende del acceso que elegiste al crearlas:
 
-| Access           | Reads your plans, empires and other data | Creates, changes and deletes them |
-| ---------------- | ---------------------------------------- | --------------------------------- |
-| **Read-only**    | yes                                      | no                                |
-| **Read & write** | yes                                      | yes, with the key in the header   |
+| Acceso                  | Lee tus planes, imperios y demás datos | Los crea, cambia y elimina      |
+| ----------------------- | -------------------------------------- | ------------------------------- |
+| **Solo lectura**        | sí                                     | no                              |
+| **Lectura y escritura** | sí                                     | sí, con la clave en la cabecera |
 
-New keys are **Read-only** unless you pick **Read & write**. A sheet, a dashboard or anything you build with the URL builder only reads, so a read-only key is all it needs. Give a key **Read & write** only when a script of yours changes your data. Keys you created before keys had an access are **Read & write**, so the scripts using them keep working.
+Las claves nuevas son de **Solo lectura** salvo que elijas **Lectura y escritura**. Una hoja, un panel o cualquier cosa que montes con el generador de URL solo lee, así que le basta una clave de solo lectura. Da a una clave el acceso **Lectura y escritura** solo cuando un script tuyo cambie tus datos. Las claves que creaste antes de que las claves tuvieran acceso son de **Lectura y escritura**, para que los scripts que las usan sigan funcionando.
 
-You can't change a key's access later. To change it, create a new key with the access you want, switch your sheet or script over, and revoke the old one.
+No puedes cambiar el acceso de una clave después. Para cambiarlo, crea una clave nueva con el acceso que quieras, pasa a ella tu hoja o tu script y revoca la antigua.
 
-Some things no key can do, whatever its access. They need you logged in to PRUNplanner:
+Hay cosas que ninguna clave puede hacer, tenga el acceso que tenga. Necesitan que hayas iniciado sesión en PRUNplanner:
 
-- list, create or revoke keys,
-- change your email, your password, your PrUn username or your FIO API key,
-- request or confirm the email verification.
+- listar, crear o revocar claves,
+- cambiar tu correo, tu contraseña, tu nombre de usuario de PrUn o tu clave API de FIO,
+- solicitar o confirmar la verificación del correo.
 
-A key can read your profile, but your FIO API key comes back empty: it's your key for FIO, and a script has no need for it.
+Una clave puede leer tu perfil, pero tu clave API de FIO vuelve vacía: es tu clave para FIO, y un script no la necesita.
 
-When a key tries something it may not do, the answer is _403 Forbidden_ with a `code` that says why:
+Cuando una clave intenta algo que no tiene permitido, la respuesta es _403 Forbidden_ con un `code` que dice por qué:
 
-- `api_key_read_only`: a **Read-only** key tried to change data.
-- `api_key_in_url`: a key sent as `?api_key=` tried to change data. Send it in the `Authorization` header.
-- `api_key_not_allowed`: a key tried one of the account actions above. Log in to do it.
+- `api_key_read_only`: una clave de **Solo lectura** intentó cambiar datos.
+- `api_key_in_url`: una clave enviada como `?api_key=` intentó cambiar datos. Envíala en la cabecera `Authorization`.
+- `api_key_not_allowed`: una clave intentó una de las acciones de cuenta de arriba. Inicia sesión para hacerla.
 
-Nothing is changed when this happens.
+Cuando esto pasa, no se cambia nada.
 
-## Using a Key {#using-keys}
+## Usar una clave {#using-keys}
 
-Send the key with each request, in one of two ways:
+Envía la clave con cada petición, de una de estas dos formas:
 
-| Way             | Example                                     | Use it for                                             |
-| --------------- | ------------------------------------------- | ------------------------------------------------------ |
-| Header          | `Authorization: Api-Key <YOUR_KEY>`         | Scripts, curl, dashboards                              |
-| Query parameter | `?api_key=<YOUR_KEY>` at the end of the URL | Google Sheets `IMPORTDATA`, tools that only take a URL |
+| Forma                 | Ejemplo                                  | Úsala para                                                           |
+| --------------------- | ---------------------------------------- | -------------------------------------------------------------------- |
+| Cabecera              | `Authorization: Api-Key <YOUR_KEY>`      | Scripts, curl, paneles                                               |
+| Parámetro de consulta | `?api_key=<YOUR_KEY>` al final de la URL | `IMPORTDATA` de Google Sheets, herramientas que solo aceptan una URL |
 
-Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. That's why a key in a URL can only read, even a **Read & write** one. Use a separate read-only key per sheet or script, so you can revoke one without breaking the others.
+Cualquiera que pueda ver una URL puede ver la clave que lleva, por ejemplo todo el que pueda abrir tu hoja. Por eso una clave en una URL solo puede leer, aunque sea de **Lectura y escritura**. Usa una clave de solo lectura distinta para cada hoja o script, para poder revocar una sin romper las demás.
 
-Both ways work for every request a key may make, except that changes need the header. If a request carries both, PRUNplanner uses the header.
+Las dos formas funcionan para todas las peticiones que puede hacer una clave, salvo que los cambios necesitan la cabecera. Si una petición lleva las dos, PRUNplanner usa la cabecera.
 
-## AI Assistants {#ai-assistants}
+## Asistentes de IA {#ai-assistants}
 
-A key also connects an AI assistant such as Claude, ChatGPT/Codex, Copilot or Cursor to PRUNplanner's MCP server, so it can read and calculate your plans and empires with PRUNplanner's own engine. The **AI assistants (MCP)** card on this page has the server address, the header and the download for Claude Desktop. [AI assistants (MCP)](/help/mcp) explains what the assistant can do and how to set up each client.
+Una clave también conecta un asistente de IA como Claude, ChatGPT/Codex, Copilot o Cursor al servidor MCP de PRUNplanner, para que pueda leer y calcular tus planes e imperios con el propio motor de PRUNplanner. La tarjeta **Asistentes de IA (MCP)** de esta página tiene la dirección del servidor, la cabecera y la descarga para Claude Desktop. [Asistentes de IA (MCP)](/help/mcp) explica lo que puede hacer el asistente y cómo configurar cada cliente.
 
-A **Read-only** key is enough for questions and what-ifs; the assistant needs **Read & write** only to save for you.
+Una clave de **Solo lectura** basta para preguntas e hipótesis; el asistente solo necesita **Lectura y escritura** para guardar por ti.
 
-## URL Builder {#url-builder}
+## Generador de URL {#url-builder}
 
-The **URL builder** writes the request for you. Pick the **Data** and the **Format** (CSV or JSON, where both exist), then fill in the inputs the endpoint needs. Those can be **Empire**, **Plan** or **CX preference** (from your account), **Planet** (a natural ID such as OT-580b), **Material**, **Exchange** (AI1, CI1, IC1, NC1 or UNIVERSE) or **Days** (last day, 7, 14 or 31).
+El **Generador de URL** escribe la petición por ti. Elige los **Datos** y el **Formato** (CSV o JSON, donde existen ambos) y luego rellena los datos que necesita el endpoint. Pueden ser **Imperio**, **Plan** o **Preferencia de CX** (de tu cuenta), **Planeta** (un ID natural como OT-580b), **Material**, **Bolsa** (AI1, CI1, IC1, NC1 o UNIVERSE) o **Días** (último día, 7, 14 o 31).
 
-| Group                           | Data                                                                                                                                            |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sheets-ready (CSV and JSON)     | **Empire material I/O**, **Plan material I/O (empire)**, **Empire plan list**, **FIO storage**, **Exchange prices** (no key)                    |
-| Your planning data (JSON)       | **All plans**, **One plan**, **All empires**, **One empire**, **CX preferences**, **One CX preference**                                         |
-| Public game data (JSON, no key) | **Materials**, **Recipes**, **Buildings**, **One planet**, **Planet population report**, **Market history**, **Market history, every material** |
+| Grupo                                      | Datos                                                                                                                                                                       |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Listos para hojas (CSV y JSON)             | **I/O de materiales del imperio**, **I/O de materiales por plan (imperio)**, **Lista de planes del imperio**, **Almacenamiento FIO**, **Precios de las bolsas** (sin clave) |
+| Tus datos de planificación (JSON)          | **Todos los planes**, **Un plan**, **Todos los imperios**, **Un imperio**, **Preferencias de CX**, **Una preferencia de CX**                                                |
+| Datos públicos del juego (JSON, sin clave) | **Materiales**, **Recetas**, **Edificios**, **Un planeta**, **Informe de población del planeta**, **Historial de mercado**, **Historial de mercado, todos los materiales**  |
 
-Then copy what you need:
+Después copia lo que necesites:
 
-- **Google Sheets**: an `=IMPORTDATA("…")` formula, for CSV only. Paste it into a cell.
-- **URL**: the address with the key as `?api_key=`.
-- **curl** and **Python**: with the key in the header. The Python snippet reads the CSV version when there is one.
+- **Google Sheets**: una fórmula `=IMPORTDATA("…")`, solo para CSV. Pégala en una celda.
+- **URL**: la dirección con la clave como `?api_key=`.
+- **curl** y **Python**: con la clave en la cabecera. El fragmento de Python lee la versión CSV cuando existe.
 
-Until you fill in your key, the snippets show `<YOUR_KEY>` in its place.
+Hasta que rellenes tu clave, los fragmentos muestran `<YOUR_KEY>` en su lugar.
 
 > [!tip]
-> **Empire material I/O** and **Plan material I/O (empire)** return the numbers from the last time PRUNplanner calculated that empire, which happens when you open it on the [Empire](/empire) page. The `updated_at` column shows when. Open the empire after you change its plans, and your sheet follows.
+> **I/O de materiales del imperio** e **I/O de materiales por plan (imperio)** devuelven las cifras de la última vez que PRUNplanner calculó ese imperio, lo que ocurre cuando lo abres en la página [Imperio](/empire). La columna `updated_at` indica cuándo. Abre el imperio después de cambiar sus planes, y tu hoja se pone al día.
 
-## Rate Limits {#rate-limits}
+## Límites de peticiones {#rate-limits}
 
-If you go over these limits, the request gets the answer _429 Too Many Requests_. Wait a minute and try again.
+Si superas estos límites, la petición recibe la respuesta _429 Too Many Requests_. Espera un minuto y vuelve a intentarlo.
 
-These limits sit well above normal use: the 240 per minute is about four times, and the FIO storage limit about twice, the busiest minute of normal use.
+Estos límites quedan muy por encima del uso normal: las 240 por minuto son unas cuatro veces, y el límite de almacenamiento de FIO unas dos veces, el minuto de más actividad de un uso normal.
 
-| Requests                                             | Limit          | Counted per                                              |
-| ---------------------------------------------------- | -------------- | -------------------------------------------------------- |
-| Everything you request with a key or while logged in | 240 per minute | account                                                  |
-| **FIO storage**                                      | 30 per minute  | account                                                  |
-| **Market history** (one material)                    | 120 per minute | IP address, or account when the request carries your key |
-| **Market history, every material**                   | 30 per minute  | IP address, or account when the request carries your key |
+| Peticiones                                               | Límite         | Se cuenta por                                            |
+| -------------------------------------------------------- | -------------- | -------------------------------------------------------- |
+| Todo lo que pides con una clave o con la sesión iniciada | 240 por minuto | cuenta                                                   |
+| **Almacenamiento FIO**                                   | 30 por minuto  | cuenta                                                   |
+| **Historial de mercado** (un material)                   | 120 por minuto | dirección IP, o cuenta cuando la petición lleva tu clave |
+| **Historial de mercado, todos los materiales**           | 30 por minuto  | dirección IP, o cuenta cuando la petición lleva tu clave |
 
-Market history needs no key, but sending one counts your requests on your account instead of your IP address, so others sharing that address (for example a sheet host) don't use up your limit. An invalid or revoked key is ignored there: the request still goes through, counted by IP address.
+El historial de mercado no necesita clave, pero si envías una, tus peticiones cuentan en tu cuenta en lugar de en tu dirección IP, así que otros que comparten esa dirección (por ejemplo, el servidor de una hoja de cálculo) no gastan tu límite. Ahí se ignora una clave no válida o revocada: la petición sigue adelante, contada por dirección IP.
 
-A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. One request for many rows, such as **Market history, every material**, is better than one request per material.
+Una hoja que actualiza muchas celdas con `IMPORTDATA` a la vez puede llegar a un límite. Una sola petición con muchas filas, como **Historial de mercado, todos los materiales**, es mejor que una petición por material.
 
-For example, if 40 **FIO storage** requests arrive within one minute, the first 30 go through and the other 10 get 429.
+Por ejemplo, si llegan 40 peticiones de **Almacenamiento FIO** en un minuto, las primeras 30 pasan y las otras 10 reciben 429.
 
-## Validity {#validity}
+## Validez {#validity}
 
-Keys have no expiry date. A key stops working when:
+Las claves no caducan. Una clave deja de funcionar cuando:
 
-- you revoke it,
-- you change or reset your password (every key created before then stops at once, so create new ones and update your sheets and scripts),
-- your account is deactivated.
+- la revocas,
+- cambias o restableces tu contraseña (todas las claves creadas antes dejan de funcionar al instante, así que crea otras nuevas y actualiza tus hojas y scripts),
+- se desactiva tu cuenta.
 
-So if someone else learnt your password and made a key with it, changing your password locks that key out too.
+Así que si otra persona conociera tu contraseña y hubiera creado una clave con ella, al cambiar tu contraseña esa clave también queda bloqueada.
 
-A request with a key that no longer works gets _401_ with "Invalid API Key". Keys stopped by a password change still appear in the list, and you can revoke them to tidy up.
+Una petición con una clave que ya no funciona recibe _401_ con «Invalid API Key». Las claves que dejaron de funcionar por un cambio de contraseña siguen apareciendo en la lista, y puedes revocarlas para ordenarla.
 
 > [!warning]
-> Treat a key like your password. Don't put it in public repositories or share it with services you don't trust. If a key may have leaked, revoke it and create a new one.
+> Trata una clave como tu contraseña. No la pongas en repositorios públicos ni la compartas con servicios en los que no confíes. Si una clave puede haberse filtrado, revócala y crea una nueva.
