@@ -3,10 +3,10 @@
 	"title": "Clés API",
 	"info": {
 		"description": {
-			"p1": "Read your PRUNplanner data from sheets, scripts and AI assistants. See the {link}.",
-			"link": "REST API reference",
-			"warning": "Treat a key like your password: it reads all your planning data, and a read & write key can also change it. {link}",
-			"warning_link": "How long keys stay valid"
+			"p1": "Lis tes données PRUNplanner depuis des tableurs, des scripts et des assistants IA. Consulte la {link}.",
+			"link": "référence de l'API REST",
+			"warning": "Traite une clé comme ton mot de passe : elle lit toutes tes données de planification, et une clé en lecture et écriture peut aussi les modifier. {link}",
+			"warning_link": "Combien de temps les clés restent valides"
 		}
 	},
 	"get_started": {
@@ -52,7 +52,7 @@
 		"copy": "Copier {what}",
 		"copied": "Copié",
 		"freshness": "Issu du dernier calcul de cet empire par PRUNplanner. La colonne updated_at indique quand.",
-		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
+		"key_warning": "Toute personne qui peut ouvrir ce tableur peut lire tes données avec cette clé. Une clé dans une URL ne peut que lire, mais utilise une clé en lecture seule distincte par tableur pour pouvoir la révoquer seule.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "E/S de matériaux de l'empire",
@@ -141,7 +141,7 @@
 		"table": {
 			"apikey_name": "Nom",
 			"apikey_prefix": "Préfixe",
-			"apikey_access": "Access",
+			"apikey_access": "Accès",
 			"apikey_created": "Créée",
 			"apikey_lastused": "Dernièrement utilisée"
 		}
@@ -153,26 +153,26 @@
 		"negative": "@:common.buttons.cancel"
 	},
 	"mcp": {
-		"title": "AI assistants (MCP)",
-		"description": "Connect Claude, ChatGPT/Codex, Copilot, Cursor and other assistants: they read and calculate your plans and empires with PRUNplanner's own engine.",
-		"server_url": "Server URL",
-		"header": "Header",
-		"copy_url": "Copy server URL",
-		"copied": "Server URL copied",
-		"download": "Download for Claude Desktop",
-		"keys": "A Read-only key reads and calculates; a Read & write key also saves plans, empires and preferences.",
-		"setup_link": "Set up Claude, ChatGPT/Codex, VS Code, Cursor and more"
+		"title": "Assistants IA (MCP)",
+		"description": "Connecte Claude, ChatGPT/Codex, Copilot, Cursor et d'autres assistants : ils lisent et calculent tes plans et empires avec le moteur de PRUNplanner.",
+		"server_url": "URL du serveur",
+		"header": "En-tête",
+		"copy_url": "Copier l'URL du serveur",
+		"copied": "URL du serveur copiée",
+		"download": "Télécharger pour Claude Desktop",
+		"keys": "Une clé en lecture seule lit et calcule ; une clé en lecture et écriture enregistre aussi les plans, empires et préférences.",
+		"setup_link": "Configurer Claude, ChatGPT/Codex, VS Code, Cursor et plus"
 	},
 	"create": {
 		"title": "Créer clé API",
 		"form": {
 			"key_name": "Nom de la clé",
-			"access": "Access",
-			"key_description": "Donnez à votre clé un nom descriptif pour aider à l'identifier plus tard.",
+			"access": "Accès",
+			"key_description": "Donne à ta clé un nom descriptif pour la retrouver plus tard.",
 			"success_title": "Clé générée",
-			"success_key": "Votre clé sécrète (Sauvegarde la maintenant !)",
-			"success_note": "Pour des raisons de sécurité, nous ne pouvons plus afficher cette clé. Si vous la perdez, vous devez la révoquer et en créer une nouvelle.",
-			"error": "Erreur lors de la création de votre clé API. Veuillez réessayer plus tard."
+			"success_key": "Ta clé secrète (sauvegarde-la maintenant !)",
+			"success_note": "Pour des raisons de sécurité, nous ne pouvons plus afficher cette clé. Si tu la perds, tu dois la révoquer et en créer une nouvelle.",
+			"error": "Erreur lors de la création de ta clé API. Réessaie plus tard."
 		},
 		"buttons": {
 			"create": "@:common.buttons.create",
@@ -184,11 +184,11 @@
 		"copied": "Clé copiée"
 	},
 	"scope": {
-		"read": "Read-only",
-		"read_write": "Read & write",
+		"read": "Lecture seule",
+		"read_write": "Lecture et écriture",
 		"hint": {
-			"read": "Reads your plans, empires and other data. Can't change anything.",
-			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+			"read": "Lit tes plans, empires et autres données. Ne peut rien modifier.",
+			"read_write": "Crée, modifie et supprime aussi tes plans, empires et autres données."
 		}
 	}
 }
