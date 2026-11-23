@@ -165,130 +165,137 @@
 </script>
 
 <template>
-	<div class="flex flex-col gap-3">
-		<!-- below sm each label sits above its input -->
-		<PForm class="max-sm:grid-cols-1">
-			<PFormItem :label="t('api_keys.builder.endpoint')">
-				<PSelect
-					v-model:value="endpointId"
-					:options="endpointOptions"
-					searchable
-					class="w-full" />
-			</PFormItem>
-			<PFormItem
-				v-if="formats.length > 1"
-				:label="t('api_keys.builder.format')">
-				<PSegmented
-					v-model:value="format"
-					:options="
-						formats.map((f) => ({
-							value: f,
-							label: f.toUpperCase(),
-						}))
-					"
-					:label="t('api_keys.builder.format')" />
-			</PFormItem>
-			<template
-				v-for="list in ['empire', 'plan', 'cx'] as const"
-				:key="list">
-				<PFormItem
-					v-if="needs(list) && lists[list]?.length"
-					:label="t(`api_keys.builder.params.${list}`)">
+	<!-- once the page gives it 48rem: choices left, snippets beside them -->
+	<div class="grid grid-cols-1 @3xl:grid-cols-2 gap-x-6 gap-y-3 items-start">
+		<div class="min-w-0 flex flex-col gap-3">
+			<!-- below sm each label sits above its input -->
+			<PForm class="max-sm:grid-cols-1">
+				<PFormItem :label="t('api_keys.builder.endpoint')">
 					<PSelect
-						v-model:value="values[list]"
-						:options="lists[list] ?? []"
+						v-model:value="endpointId"
+						:options="endpointOptions"
 						searchable
 						class="w-full" />
 				</PFormItem>
-			</template>
-			<PFormItem
-				v-if="needs('planet')"
-				:label="t('api_keys.builder.params.planet')">
-				<PInput
-					v-model:value="values.planet"
-					:placeholder="t('api_keys.builder.planet_placeholder')"
-					class="w-full" />
-			</PFormItem>
-			<PFormItem
-				v-if="needs('ticker')"
-				:label="t('api_keys.builder.params.ticker')">
-				<WrapperGameDataLoader minimal load-materials>
-					<PSelect
-						v-model:value="values.ticker"
-						:options="materialSelectOptions"
-						searchable
+				<PFormItem
+					v-if="formats.length > 1"
+					:label="t('api_keys.builder.format')">
+					<PSegmented
+						v-model:value="format"
+						:options="
+							formats.map((f) => ({
+								value: f,
+								label: f.toUpperCase(),
+							}))
+						"
+						:label="t('api_keys.builder.format')" />
+				</PFormItem>
+				<template
+					v-for="list in ['empire', 'plan', 'cx'] as const"
+					:key="list">
+					<PFormItem
+						v-if="needs(list) && lists[list]?.length"
+						:label="t(`api_keys.builder.params.${list}`)">
+						<PSelect
+							v-model:value="values[list]"
+							:options="lists[list] ?? []"
+							searchable
+							class="w-full" />
+					</PFormItem>
+				</template>
+				<PFormItem
+					v-if="needs('planet')"
+					:label="t('api_keys.builder.params.planet')">
+					<PInput
+						v-model:value="values.planet"
+						:placeholder="t('api_keys.builder.planet_placeholder')"
 						class="w-full" />
-				</WrapperGameDataLoader>
-			</PFormItem>
-			<PFormItem
-				v-if="needs('exchange')"
-				:label="t('api_keys.builder.params.exchange')">
-				<PSelect
-					v-model:value="values.exchange"
-					:options="exchangeOptions"
-					class="w-full" />
-			</PFormItem>
-			<PFormItem
-				v-if="needs('days')"
-				:label="t('api_keys.builder.params.days')">
-				<PSelect
-					v-model:value="values.days"
-					:options="dayOptions"
-					class="w-full" />
-			</PFormItem>
-		</PForm>
+				</PFormItem>
+				<PFormItem
+					v-if="needs('ticker')"
+					:label="t('api_keys.builder.params.ticker')">
+					<WrapperGameDataLoader minimal load-materials>
+						<PSelect
+							v-model:value="values.ticker"
+							:options="materialSelectOptions"
+							searchable
+							class="w-full" />
+					</WrapperGameDataLoader>
+				</PFormItem>
+				<PFormItem
+					v-if="needs('exchange')"
+					:label="t('api_keys.builder.params.exchange')">
+					<PSelect
+						v-model:value="values.exchange"
+						:options="exchangeOptions"
+						class="w-full" />
+				</PFormItem>
+				<PFormItem
+					v-if="needs('days')"
+					:label="t('api_keys.builder.params.days')">
+					<PSelect
+						v-model:value="values.days"
+						:options="dayOptions"
+						class="w-full" />
+				</PFormItem>
+			</PForm>
 
-		<p class="text-sm text-muted">{{ t(endpoint.descriptionKey) }}</p>
+			<p class="text-sm text-muted">{{ t(endpoint.descriptionKey) }}</p>
 
-		<PNotice v-if="emptyList" type="info">
-			{{ t(`api_keys.builder.empty.${emptyList}`) }}
-			<RouterLink to="/manage" class="text-link">
-				{{ t("api_keys.builder.empty_link") }}
-			</RouterLink>
-		</PNotice>
-		<template v-else-if="outputs.length">
-			<PNotice v-if="endpoint.freshnessKey" type="info">
-				{{ t(endpoint.freshnessKey) }}
+			<PNotice v-if="emptyList" type="info">
+				{{ t(`api_keys.builder.empty.${emptyList}`) }}
+				<RouterLink to="/manage" class="text-link">
+					{{ t("api_keys.builder.empty_link") }}
+				</RouterLink>
 			</PNotice>
-			<PNotice v-if="endpoint.needsKey && apiKey" type="warning">
-				{{ t("api_keys.builder.key_warning") }}
-			</PNotice>
-			<p v-else-if="endpoint.needsKey" class="text-xs text-muted">
-				{{
-					t("api_keys.builder.placeholder_note", {
-						placeholder: API_KEY_PLACEHOLDER,
-					})
-				}}
-			</p>
-		</template>
-		<p v-else-if="!emptyList" class="text-sm text-muted">
-			{{ t("api_keys.builder.incomplete") }}
-		</p>
-
-		<div
-			v-for="output in outputs"
-			:key="output.kind"
-			class="flex flex-col gap-1"
-			:data-snippet="output.kind">
-			<div class="flex flex-row items-center justify-between gap-3">
-				<span class="text-xs uppercase font-bold text-muted">
-					{{ t(`api_keys.builder.outputs.${output.kind}`) }}
-				</span>
-				<PButton
-					size="sm"
-					type="secondary"
-					:aria-label="
-						t('api_keys.builder.copy', {
-							what: t(`api_keys.builder.outputs.${output.kind}`),
+			<template v-else-if="outputs.length">
+				<PNotice v-if="endpoint.freshnessKey" type="info">
+					{{ t(endpoint.freshnessKey) }}
+				</PNotice>
+				<PNotice v-if="endpoint.needsKey && apiKey" type="warning">
+					{{ t("api_keys.builder.key_warning") }}
+				</PNotice>
+				<p v-else-if="endpoint.needsKey" class="text-xs text-muted">
+					{{
+						t("api_keys.builder.placeholder_note", {
+							placeholder: API_KEY_PLACEHOLDER,
 						})
-					"
-					@click="copy(output.kind, output.text)">
-					<template #icon><ContentCopySharp /></template>
-				</PButton>
+					}}
+				</p>
+			</template>
+			<p v-else-if="!emptyList" class="text-sm text-muted">
+				{{ t("api_keys.builder.incomplete") }}
+			</p>
+		</div>
+
+		<div v-if="outputs.length" class="min-w-0 flex flex-col gap-3">
+			<div
+				v-for="output in outputs"
+				:key="output.kind"
+				class="flex flex-col gap-1"
+				:data-snippet="output.kind">
+				<div class="flex flex-row items-center justify-between gap-3">
+					<span class="text-xs uppercase font-bold text-muted">
+						{{ t(`api_keys.builder.outputs.${output.kind}`) }}
+					</span>
+					<PButton
+						size="sm"
+						type="secondary"
+						:aria-label="
+							t('api_keys.builder.copy', {
+								what: t(
+									`api_keys.builder.outputs.${output.kind}`
+								),
+							})
+						"
+						@click="copy(output.kind, output.text)">
+						<template #icon><ContentCopySharp /></template>
+					</PButton>
+				</div>
+				<pre
+					class="ph-no-capture font-mono text-xs text-white/80 bg-gray-dark p-2 rounded border border-white/10 whitespace-pre-wrap break-all"
+					>{{ output.text }}</pre>
 			</div>
-			<pre
-				class="ph-no-capture font-mono text-xs text-white/80 bg-gray-dark p-2 rounded border border-white/10 whitespace-pre-wrap break-all"
-				>{{ output.text }}</pre>
 		</div>
 	</div>
 </template>
