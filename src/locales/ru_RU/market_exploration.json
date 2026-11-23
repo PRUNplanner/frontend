@@ -1,13 +1,13 @@
 {
-	"view_title": "Изучение рынка",
-	"title": "Изучение рынка",
+	"view_title": "Исследование рынка",
+	"title": "Исследование рынка",
 	"switch_material": "Сменить материал",
 	"kpis": {
 		"universe_vwap_7d": "VWAP вселенной @:terms.7d",
-		"universe_traded_7d": "Universe @:terms.traded_volume @:terms.7d",
+		"universe_traded_7d": "Объём торгов во вселенной @:terms.7d",
 		"universe_market_delta": "Дельта рынка вселенной",
-		"shortage": "Shortage",
-		"surplus": "Surplus",
+		"shortage": "Дефицит",
+		"surplus": "Профицит",
 		"percent_trend": "% Тренд",
 		"30d": "@:{'terms.30d'}:",
 		"supply": "@:{'terms.supply'}:",
@@ -15,42 +15,42 @@
 		"weighted_trend": "Взвешенный тренд",
 		"volume_adjusted_delta": "Дельта с поправкой на объём",
 		"price_cohesion": "Ценовая согласованность",
-		"variance_index": "Индекс разницы"
+		"variance_index": "Индекс дисперсии"
 	},
 	"chart": {
 		"title": "График рынка",
-		"exchange_label": "Exchange",
-		"interval_label": "Interval",
+		"exchange_label": "Биржа",
+		"interval_label": "Интервал",
 		"intervals": {
-			"daily": "Ежедневно",
-			"weekly": "Еженедельно",
-			"monthly": "Ежемесячно"
+			"daily": "По дням",
+			"weekly": "По неделям",
+			"monthly": "По месяцам"
 		},
 		"view": {
-			"candles": "Candles",
-			"exchanges": "All exchanges",
-			"label": "Chart view"
+			"candles": "Свечи",
+			"exchanges": "Все биржи",
+			"label": "Вид графика"
 		},
 		"metric": {
 			"vwap": "@:terms.vwap",
-			"low": "Low",
-			"high": "High",
-			"label": "Value"
+			"low": "Минимум",
+			"high": "Максимум",
+			"label": "Значение"
 		},
 		"range": {
-			"30": "30 d",
-			"90": "90 d",
-			"365": "1 y",
-			"all": "All",
-			"label": "Range"
+			"30": "30 д",
+			"90": "90 д",
+			"365": "1 г",
+			"all": "Все",
+			"label": "Период"
 		},
 		"exchanges": {
-			"label": "{metric} of {ticker} on every exchange",
-			"volume_title": "Traded volume, all exchanges",
-			"volume_unit": "units / day",
+			"label": "{metric} {ticker} на всех биржах",
+			"volume_title": "Объём торгов, все биржи",
+			"volume_unit": "ед. / день",
 			"volume": "@:terms.volume",
-			"empty": "No trades in this range",
-			"error": "Market data could not be loaded"
+			"empty": "Нет сделок за этот период",
+			"error": "Не удалось загрузить рыночные данные"
 		}
 	},
 	"market_data": {
@@ -65,11 +65,11 @@
 			"trend": "Тренд",
 			"volume_7d": "@:terms.traded_volume @:terms.7d",
 			"volume_30d": "@:terms.traded_volume @:terms.30d",
-			"details": "Детали",
-			"explore": "Explore",
-			"sparkline": "30 days",
-			"sparkline_hint": "Daily VWAP of the last 30 days. Direction only: every row has its own scale.",
-			"sparkline_label": "{ticker}, daily VWAP of the last 30 days"
+			"details": "Подробнее",
+			"explore": "Исследовать",
+			"sparkline": "30 дней",
+			"sparkline_hint": "Дневной VWAP за последние 30 дней. Показывает только направление: у каждой строки своя шкала.",
+			"sparkline_label": "{ticker}, дневной VWAP за последние 30 дней"
 		}
 	}
 }

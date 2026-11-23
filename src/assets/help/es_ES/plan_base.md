@@ -1,209 +1,209 @@
-The base setup decides which prices and bonuses apply to your base, how many workers are housed and fed, and what lifts your buildings' [[efficiency]]. In the Standard layout it's the group of parts on the left of a plan: **Empire & prices**, **Planet**, **Workforce**, **Infrastructure** and **Experts**. Together they hold everything about the base that isn't a production building, and every change here flows straight into [Production](/help/plan_production) and the [results](/help/plan_results).
+La configuración de la base decide qué precios y bonificaciones se aplican a tu base, cuántos trabajadores tienen alojamiento y comida, y qué aumenta la [[efficiency|eficiencia]] de tus edificios. En el diseño Estándar es el grupo de partes a la izquierda de un plan: **Imperio y precios**, **Planeta**, **Mano de obra**, **Infraestructura** y **Expertos**. Juntas reúnen todo lo de la base que no es un edificio de producción, y cada cambio aquí pasa directamente a [Producción](/help/plan_production) y a los [resultados](/help/plan_results).
 
-## A new plan {#new-plan}
+## Un plan nuevo {#new-plan}
 
-A new plan starts with these settings:
+Un plan nuevo empieza con estos ajustes:
 
-| Setting                | Starts as                                               |
-| ---------------------- | ------------------------------------------------------- |
-| COGC program           | The planet's current program; **None** when it has none |
-| **Corp. HQ**           | Off                                                     |
-| **Permits**            | 1 (area 500)                                            |
-| Luxuries               | Both on for every tier                                  |
-| Experts                | None                                                    |
-| **Auto** (habitations) | On                                                      |
-| Empire                 | See [Empire & prices](#empire-and-prices)               |
+| Ajuste              | Empieza como                                            |
+| ------------------- | ------------------------------------------------------- |
+| Programa de COGC    | El programa actual del planeta; **Ninguno** si no tiene |
+| **Sede corp.**      | Desactivado                                             |
+| **Permisos**        | 1 (área 500)                                            |
+| Lujos               | Ambos activados en todos los niveles                    |
+| Expertos            | Ninguno                                                 |
+| **Auto** (hábitats) | Activado                                                |
+| Imperio             | Consulta [Imperio y precios](#empire-and-prices)        |
 
-## Empire & prices {#empire-and-prices}
+## Imperio y precios {#empire-and-prices}
 
-A plan calculates with one [[empire]]. It takes that empire's [[faction]] and permits, and its [[exchange-preference|exchange preference]] for every price. So the empire decides which of your buildings get a faction bonus and how large it is (see [Faction bonus](#faction)), and every price the plan buys and sells at.
+Un plan calcula con un [[empire|imperio]]. Toma la [[faction|facción]] y los permisos de ese imperio, y su [[exchange-preference|preferencia de bolsa]] para todos los precios. Así que el imperio decide qué edificios tuyos reciben una bonificación de facción y de cuánto es (consulta [Bonificación de facción](#faction)), y todos los precios a los que el plan compra y vende.
 
-**Calculate with empire** lists your empires by name, and the ones the plan is in start with "»". It doesn't show on a read-only plan or when you have no empires.
+**Calcular con el imperio** lista tus imperios por nombre, y los que contienen el plan llevan delante el signo ». No aparece en un plan de solo lectura ni si no tienes imperios.
 
-When you open a plan, it picks your current empire if the plan is in it, otherwise the first empire the plan is in. A plan in no empire uses your first empire. Your current empire is the default empire from [Profile](/profile), and switching empires on the [Empire](/empire) page changes it.
+Al abrir un plan, se elige tu imperio actual si el plan está en él; si no, el primer imperio que contiene el plan. Un plan que no está en ningún imperio usa tu primer imperio. Tu imperio actual es el imperio por defecto de [Perfil](/profile), y cambiar de imperio en la página [Imperio](/empire) lo cambia.
 
-On a saved plan, picking another empire only changes how this page calculates. It doesn't add the plan to that empire or remove it from another, and it isn't saved. A new plan joins the empire you picked when you first save it. You set which empires hold a plan in [Management](/manage).
+En un plan guardado, elegir otro imperio solo cambia cómo calcula esta página. No añade el plan a ese imperio ni lo quita de otro, y no se guarda. Un plan nuevo se une al imperio que elegiste cuando lo guardas por primera vez. Qué imperios contienen un plan se decide en [Gestión](/manage).
 
-The note underneath ("Faction …, permits from the empire. Plan is in … empires.") names the faction whose bonus applies and how many empires hold the plan.
+La nota de debajo («Facción …, permisos del imperio. El plan está en … imperios.») indica la facción cuya bonificación se aplica y cuántos imperios contienen el plan.
 
-**Prices** shows the name of the empire's exchange preference, as a link to that preference in [Exchanges](/exchanges) for this planet. Without a preference it reads **Universe · VWAP 30D (no preference)**, which is the 30-day [[vwap|VWAP]] across all exchanges.
+**Precios** muestra el nombre de la preferencia de bolsa del imperio, como enlace a esa preferencia en [Bolsas](/exchanges) para este planeta. Sin preferencia pone **Universe · VWAP 30D (sin preferencia)**, que es el [[vwap|VWAP]] de 30 días de todas las bolsas.
 
-From this price book, the plan prices what it sells at the sell price. What it buys (inputs, workforce consumables, construction materials) it prices at the buy price. [Exchanges](/help/exchanges#how-a-price-is-found) explains how a price is found and how to fix prices or set them per planet.
-
-> [!tip]
-> Two empires with different exchange preferences can show very different profits for the same plan. Switch **Calculate with empire** to check a plan against the market where you'd really sell.
-
-### Faction bonus {#faction}
-
-A faction lifts the buildings of its [[expertise|expertises]]. PRUNplanner applies the bonus as a factor on the building's efficiency:
-
-1 + bonus × 2 × (3 − 2 × permits used ÷ permits total)
-
-The permits are the empire's, as set in its settings. If you use all of them, you get 1 + 2 × bonus. Using fewer gives more.
-
-| Faction        | Expertise and bonus                                       |
-| -------------- | --------------------------------------------------------- |
-| Antares        | Electronics 5 %                                           |
-| Benten         | Manufacturing 5 %                                         |
-| Hortus         | Agriculture 3 %, Food Industries 2 %                      |
-| Moria          | Metallurgy 2 %, Construction 3 %                          |
-| Outside Region | Chemistry, Fuel Refining and Resource Extraction 2 % each |
-
-For example, an Antares empire using all its permits gives Electronics buildings 1 + 0.05 × 2 = 1.10, so +10 %.
-
-## Planet {#planet}
-
-The **Planet** part sets what the planet gives your base: its COGC program, a corporation HQ, your permits and its resources.
-
-### COGC program {#cogc}
-
-The **COGC** select picks the planet's [[cogc|COGC]] program. You can choose **None**, one of the nine expertise programs (Agriculture to Resource Extraction) or one of the five workforce programs (Pioneers to Scientists).
-
-A new plan starts with the program the planet runs now. You can pick any other to plan ahead, since the residents vote on it and it can change every week.
-
-An expertise program multiplies the efficiency of every building of that expertise by 1.25 (+25 %). A workforce program multiplies the efficiency of every building that employs that tier by 1.1 (+10 %). In Production, a building's expertise turns green with ✓ when the program lifts it.
-
-### Corp. HQ {#corp-hq}
-
-Tick **Corp. HQ** when the [[corp-hq|corporation]] you belong to has its headquarters on this planet (your own company's HQ doesn't count). It multiplies the efficiency of every production building by 1.1 (+10 %), and it's off by default.
-
-### Permits and area {#permits}
-
-**Permits** (1 to 3) sets how many base permits you use on this planet. The area next to it is 250 + 250 × permits: 500, 750 or 1,000. The **Area** result shows how much of it the base uses (see [Results](/help/plan_results#area)). The [[core-module|core module]] always takes 25 of it, and every production building, habitation and storage building takes its own area × count.
-
-In the game, each upgrade of your company HQ's level gives you one more base permit. This field only sets the plan's area. The faction bonus counts the empire's permits instead (see [Faction bonus](#faction)).
-
-### Resources {#resources}
-
-**Resources** shows a tile for each resource of the planet. The number on it is what one extractor makes per day at 100 % efficiency.
-
-Click a tile to start extracting that resource. If the plan doesn't have the right extractor yet (EXT for minerals, COL for gases, RIG for liquids), PRUNplanner adds one with a count of 1. It also adds that resource's recipe as an order of 1, unless the extractor already runs it. Then you set the count in Production.
-
-With **Plan suggestions** on and planet insights available, a link under the tiles ("… plans on … · what others build here") opens what other players plan on this planet. More in [Layout](/help/plan_layout).
-
-### Fertility {#fertility}
-
-[[fertility|Fertility]] only matters for farms (FRM and ORC). Their efficiency gets the factor 1 + fertility × 10 ÷ 33, so positive fertility speeds them up and negative fertility slows them down. On a planet that isn't fertile at all, farms run at 0 % and Production says "Planet not fertile".
+Con esta lista de precios, el plan valora lo que vende al precio de venta. Lo que compra (insumos, consumibles de la mano de obra, materiales de construcción) lo valora al precio de compra. [Bolsas y preferencias de bolsa](/help/exchanges#how-a-price-is-found) explica cómo se encuentra un precio y cómo fijar precios o definirlos por planeta.
 
 > [!tip]
-> Every building also needs the planet's [[extra-building-materials|extra building materials]] for its surface, gravity, pressure and temperature. They're in the build cost behind **Payback** and in the Construction tool, so a harsh planet shows up as a longer payback.
+> Dos imperios con preferencias de bolsa distintas pueden mostrar beneficios muy diferentes para el mismo plan. Cambia **Calcular con el imperio** para comprobar un plan con el mercado donde de verdad venderías.
 
-## Workforce {#workforce}
+### Bonificación de facción {#faction}
 
-**Workforce** has an entry for each [[workforce]] tier the plan needs workers of. Each one shows:
+Una facción mejora los edificios de sus [[expertise|especializaciones]]. PRUNplanner aplica la bonificación como un factor sobre la eficiencia del edificio:
 
-- "need / housed": the workers your buildings need and the beds your habitations give, with a meter;
-- the tier's **Efficiency** in %;
-- **Luxuries**: two buttons, one per [[luxuries|luxury]], with its ticker, ✓ when supplied;
-- "… free": spare beds, red and negative when the tier is short.
+1 + bonificación × 2 × (3 − 2 × permisos usados ÷ permisos totales)
 
-A negative "… free" only means the tier has more workers than beds. Add habitations in [Infrastructure](#infrastructure), or turn on [Auto](#auto-habs) to have PRUNplanner pick them for you.
+Los permisos son los del imperio, tal como están en sus ajustes. Si los usas todos, obtienes 1 + 2 × bonificación. Usar menos da más.
 
-Tiers the plan doesn't need stay behind "Show … (not needed)". In the layout's **Display** options you can show Workforce as a table (**Tier**, **Need / housed**, **Free**, **Luxuries**, **Efficiency %**) or with every tier open (see [Layout](/help/plan_layout)).
+| Facción         | Especialización y bonificación                                             |
+| --------------- | -------------------------------------------------------------------------- |
+| Antares         | Electrónica 5 %                                                            |
+| Benten          | Manufacturas 5 %                                                           |
+| Hortus          | Agricultura 3 %, Industria Alimenticia 2 %                                 |
+| Moria           | Metalurgia 2 %, Construcción 3 %                                           |
+| Fuera de región | Química, Refinamiento de Combustible y Extracción de Recursos 2 % cada una |
 
-### How efficiency is worked out {#workforce-efficiency}
+Por ejemplo, un imperio de Antares que usa todos sus permisos da a los edificios de Electrónica 1 + 0,05 × 2 = 1,10, es decir, +10 %.
 
-A tier's efficiency is:
+## Planeta {#planet}
 
-- the share of its workers that have a bed (at most 100 %),
-- × 79.4 % as the base,
-- × 12/11 when its first luxury is supplied,
-- × 15/13 when its second luxury is supplied.
+La parte **Planeta** fija lo que el planeta aporta a tu base: su programa de COGC, una sede de corporación, tus permisos y sus recursos.
 
-| Luxuries supplied | Efficiency (all housed) |
-| ----------------- | ----------------------- |
-| None              | 79.4 %                  |
-| First only        | 86.7 %                  |
-| Second only       | 91.7 %                  |
-| Both              | 100 %                   |
+### Programa de COGC {#cogc}
 
-Missing beds lower the first factor. For example (made-up numbers), a plan that needs 100 Pioneers but has beds for 50 houses half of them: without luxuries, the tier runs at 50 % × 79.4 % = 39.7 %, and with both luxuries at 50 % × 100 % = 50 %.
+El selector **COGC** elige el programa de [[cogc|COGC]] del planeta. Puedes elegir **Ninguno**, uno de los nueve programas de especialización (de Agricultura a Extracción de Recursos) o uno de los cinco programas de mano de obra (de Pioneros a Científicos).
 
-A building's workforce factor is the average of its tiers' efficiencies, weighted by how many workers of each tier it employs.
+Un plan nuevo empieza con el programa que el planeta tiene ahora. Puedes elegir cualquier otro para planificar con antelación, ya que lo votan los residentes y puede cambiar cada semana.
 
-### Needs and luxuries {#needs}
+Un programa de especialización multiplica por 1,25 (+25 %) la eficiencia de todos los edificios de esa especialización. Un programa de mano de obra multiplica por 1,1 (+10 %) la eficiencia de todos los edificios que emplean ese nivel. En Producción, la especialización de un edificio se pone en verde con ✓ cuando el programa la mejora.
 
-Housed workers consume their needs every day. Workers without a bed consume nothing, but they don't work either. If you turn a luxury off, it isn't consumed or bought, and the tier's efficiency drops. Everything consumed shows in [Material I/O](/help/plan_results#material-io) and counts as cost.
+### Sede corp. {#corp-hq}
 
-Consumption per 100 workers per day, so 200 housed Pioneers drink 2 × 4 = 8 DW a day:
+Marca **Sede corp.** cuando la [[corp-hq|corporación]] a la que perteneces tiene su sede en este planeta (la sede de tu propia empresa no cuenta). Multiplica por 1,1 (+10 %) la eficiencia de todos los edificios de producción, y está desactivada por defecto.
 
-| Tier       | Needs                                    | Luxury 1 | Luxury 2 |
-| ---------- | ---------------------------------------- | -------- | -------- |
-| Pioneer    | DW 4, RAT 4, OVE 0.5                     | PWO 0.2  | COF 0.5  |
-| Settler    | DW 5, RAT 6, EXO 0.5, PT 0.5             | REP 0.2  | KOM 1    |
-| Technician | DW 7.5, RAT 7, MED 0.5, HMS 0.5, SCN 0.1 | SC 0.1   | ALE 1    |
-| Engineer   | DW 10, MED 0.5, FIM 7, HSS 0.2, PDA 0.1  | VG 0.2   | GIN 1    |
-| Scientist  | DW 10, MED 0.5, MEA 7, LC 0.2, WS 0.05   | NST 0.1  | WIN 1    |
+### Permisos y área {#permits}
 
-> [!tip]
-> A luxury pays off when the extra output of the faster buildings is worth more than the luxury itself. Toggle it and watch **Profit / day**: the luxury cost and the efficiency change both count.
+**Permisos** (de 1 a 3) fija cuántos permisos de base usas en este planeta. El área que aparece al lado es 250 + 250 × permisos: 500, 750 o 1.000. El resultado **Área** muestra cuánta usa la base (consulta [Resultados](/help/plan_results#area)). El [[core-module|módulo central]] siempre ocupa 25, y cada edificio de producción, hábitat y edificio de almacenamiento ocupa su propia área × su cantidad.
 
-## Infrastructure {#infrastructure}
+En el juego, cada mejora de nivel de la sede de tu empresa te da un permiso de base más. Este campo solo fija el área del plan. La bonificación de facción cuenta en cambio los permisos del imperio (consulta [Bonificación de facción](#faction)).
 
-**Infrastructure** has one field for each [[habs|habitation]] (HB1, HBB, HB2, HBC, HB3, HBM, HB4, HBL, HB5) and each [[storage]] building (STO, STA, STE, STV, STW).
+### Recursos {#resources}
 
-Beds per habitation:
+**Recursos** muestra un recuadro por cada recurso del planeta. El número que lleva es lo que produce un extractor al día con un 100 % de eficiencia.
 
-| Habitation              | Beds                                                         |
-| ----------------------- | ------------------------------------------------------------ |
-| HB1, HB2, HB3, HB4, HB5 | 100 Pioneers, Settlers, Technicians, Engineers or Scientists |
-| HBB                     | 75 Pioneers + 75 Settlers                                    |
-| HBC                     | 75 Settlers + 75 Technicians                                 |
-| HBM                     | 75 Technicians + 75 Engineers                                |
-| HBL                     | 75 Engineers + 75 Scientists                                 |
+Haz clic en un recuadro para empezar a extraer ese recurso. Si el plan aún no tiene el extractor adecuado (EXT para minerales, COL para gases, RIG para líquidos), PRUNplanner añade uno con cantidad 1. También añade la receta de ese recurso como una orden de 1, salvo que el extractor ya la tenga. Después ajustas la cantidad en Producción.
 
-Storage capacity, on top of the [[core-module|core module]]'s 1,500 t and 1,500 m³:
+Con **Sugerencias de plan** activado y datos del planeta disponibles, un enlace bajo los recuadros («… planes en … · lo que otros construyen aquí») abre lo que otros jugadores planifican en este planeta. Más información en [Diseño](/help/plan_layout).
 
-| Storage | Weight   | Volume    |
-| ------- | -------- | --------- |
-| STO     | 5,000 t  | 5,000 m³  |
-| STA     | 2,500 t  | 2,500 m³  |
-| STE     | 10,000 t | 10,000 m³ |
-| STV     | 2,500 t  | 7,500 m³  |
-| STW     | 7,500 t  | 2,500 m³  |
+### Fertilidad {#fertility}
 
-Habitations and storage take area and count in the build cost behind **Payback**, but not in degradation. Your storage sets the **Storage** result's days to full.
-
-### Auto and the optimiser {#auto-habs}
-
-**Auto** picks the habitations for you. While it's on, the habitation fields are locked, but storage stays yours to set. Whenever the workforce your buildings need changes, or the habitations' construction prices change, it picks the cheapest set of habitations that houses everyone and fits in the free area. If nothing fits, it picks the set that needs the least area, even if that's more than you have.
-
-**Auto** is on for new plans. Plans saved without this setting start with it off, and on a copy of someone's shared plan it starts off too. PRUNplanner remembers your choice per plan.
-
-With **Auto** off, **Cheapest** and **Least area** run the optimiser once. Cheapest finds the lowest construction cost at your buy prices, with no area limit. Least area finds the smallest area. If no set works, you get the message "Couldn't find a habitation setup for this workforce."
+La [[fertility|fertilidad]] solo importa para las granjas (FRM y ORC). Su eficiencia recibe el factor 1 + fertilidad × 10 ÷ 33, así que una fertilidad positiva las acelera y una negativa las frena. En un planeta que no es fértil en absoluto, las granjas funcionan al 0 % y Producción indica «Planeta no fértil».
 
 > [!tip]
-> Turn **Auto** off when you already have habitations built in the game and want the plan to match them. Use **Cheapest** or **Least area** once to get a starting point, then adjust.
+> Todo edificio necesita además los [[extra-building-materials|materiales de construcción adicionales]] del planeta según su superficie, gravedad, presión y temperatura. Están en el coste de construcción detrás de **Amortización** y en la herramienta Construcción, así que un planeta hostil se nota en una amortización más larga.
 
-## Experts {#experts}
+## Mano de obra {#workforce}
 
-[[experts|Experts]] lift every building of their expertise. **Experts** shows a field for each expertise your buildings use, with those buildings' tickers, and for any expertise that has experts placed. "+ … more fields" shows the rest, and **Fewer fields** hides them again.
+**Mano de obra** tiene una entrada por cada nivel de [[workforce|mano de obra]] del que el plan necesita trabajadores. Cada una muestra:
 
-Each field takes 0 to 5 experts, with the bonus shown under the name:
+- «necesarios / alojados»: los trabajadores que necesitan tus edificios y las camas que dan tus hábitats, con un medidor;
+- la **Eficiencia** del nivel en %;
+- **Lujos**: dos botones, uno por [[luxuries|lujo]], con su ticker, y ✓ cuando se suministra;
+- «… libres»: camas sobrantes, en rojo y negativas cuando al nivel le faltan.
 
-| Experts | Bonus   |
-| ------- | ------- |
-| 1       | 3.06 %  |
-| 2       | 6.96 %  |
-| 3       | 12.48 % |
-| 4       | 19.74 % |
-| 5       | 28.4 %  |
+Un «… libres» negativo solo significa que el nivel tiene más trabajadores que camas. Añade hábitats en [Infraestructura](#infrastructure), o activa [Auto](#auto-habs) para que PRUNplanner los elija por ti.
 
-A building of that expertise gets 1 + bonus as a factor on its efficiency. A base can hold at most 6 experts in all. If you enter more, a warning says "Maximum number of experts on a base is 6. You currently have … experts assigned.", but the plan still counts every expert you entered.
+Los niveles que el plan no necesita quedan tras «Mostrar … (no necesarios)». En las opciones de **Visualización** del diseño puedes mostrar Mano de obra como tabla (**Nivel**, **Necesarios / alojados**, **Libres**, **Lujos**, **Eficiencia %**) o con todos los niveles abiertos (consulta [Diseño](/help/plan_layout)).
 
-In the game, experts arrive over time from running buildings of that expertise. The more of those buildings you run, the faster they come.
+### Cómo se calcula la eficiencia {#workforce-efficiency}
 
-## How a building's efficiency comes together {#efficiency}
+La eficiencia de un nivel es:
 
-A production building's efficiency is the product of its factors. Because they multiply, one factor of 0, such as no workers housed or a farm on a planet that isn't fertile, stops the building whatever the others are.
+- la parte de sus trabajadores que tienen cama (como máximo el 100 %),
+- × 79,4 % como base,
+- × 12/11 cuando se suministra su primer lujo,
+- × 15/13 cuando se suministra su segundo lujo.
 
-| Factor                 | Value                                             | Set in                                                     |
-| ---------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
-| Workforce              | Its workers' tier efficiencies, weighted          | [Workforce](#workforce), [Infrastructure](#infrastructure) |
-| COGC                   | × 1.25 expertise program, × 1.1 workforce program | [COGC program](#cogc)                                      |
-| HQ                     | × 1.1                                             | [Corp. HQ](#corp-hq)                                       |
-| Experts                | × (1 + bonus)                                     | [Experts](#experts)                                        |
-| Faction                | × (1 + bonus × 2 × (3 − 2 × used ÷ total))        | [Empire & prices](#faction)                                |
-| Fertility (farms only) | × (1 + fertility × 10 ÷ 33), 0 if not fertile     | [Fertility](#fertility)                                    |
+| Lujos suministrados | Eficiencia (todos alojados) |
+| ------------------- | --------------------------- |
+| Ninguno             | 79,4 %                      |
+| Solo el primero     | 86,7 %                      |
+| Solo el segundo     | 91,7 %                      |
+| Ambos               | 100 %                       |
 
-Take a Metallurgy building with its workers fully housed and both luxuries supplied, a Metallurgy COGC, 2 Metallurgy experts and Corp. HQ, in an empire without a Metallurgy faction bonus. It runs at 1 × 1.25 × 1.0696 × 1.1 = 147.07 %. Hover **Eff.** in Production to see the factors of any building.
+Las camas que faltan reducen el primer factor. Por ejemplo (cifras inventadas), un plan que necesita 100 Pioneros pero tiene camas para 50 aloja a la mitad: sin lujos, el nivel funciona al 50 % × 79,4 % = 39,7 %, y con ambos lujos al 50 % × 100 % = 50 %.
+
+El factor de mano de obra de un edificio es la media de las eficiencias de sus niveles, ponderada por cuántos trabajadores de cada nivel emplea.
+
+### Necesidades y lujos {#needs}
+
+Los trabajadores alojados consumen sus necesidades cada día. Los trabajadores sin cama no consumen nada, pero tampoco trabajan. Si desactivas un lujo, no se consume ni se compra, y la eficiencia del nivel baja. Todo lo consumido aparece en [E/S de materiales](/help/plan_results#material-io) y cuenta como coste.
+
+Consumo por cada 100 trabajadores al día, así que 200 Pioneros alojados beben 2 × 4 = 8 DW al día:
+
+| Nivel      | Necesidades                              | Lujo 1  | Lujo 2  |
+| ---------- | ---------------------------------------- | ------- | ------- |
+| Pionero    | DW 4, RAT 4, OVE 0,5                     | PWO 0,2 | COF 0,5 |
+| Colono     | DW 5, RAT 6, EXO 0,5, PT 0,5             | REP 0,2 | KOM 1   |
+| Técnico    | DW 7,5, RAT 7, MED 0,5, HMS 0,5, SCN 0,1 | SC 0,1  | ALE 1   |
+| Ingeniero  | DW 10, MED 0,5, FIM 7, HSS 0,2, PDA 0,1  | VG 0,2  | GIN 1   |
+| Científico | DW 10, MED 0,5, MEA 7, LC 0,2, WS 0,05   | NST 0,1 | WIN 1   |
+
+> [!tip]
+> Un lujo compensa cuando la producción extra de los edificios más rápidos vale más que el propio lujo. Actívalo y desactívalo y mira **Beneficio / día**: cuentan tanto el coste del lujo como el cambio de eficiencia.
+
+## Infraestructura {#infrastructure}
+
+**Infraestructura** tiene un campo por cada [[habs|hábitat]] (HB1, HBB, HB2, HBC, HB3, HBM, HB4, HBL, HB5) y por cada edificio de [[storage|almacenamiento]] (STO, STA, STE, STV, STW).
+
+Camas por hábitat:
+
+| Hábitat                 | Camas                                                     |
+| ----------------------- | --------------------------------------------------------- |
+| HB1, HB2, HB3, HB4, HB5 | 100 Pioneros, Colonos, Técnicos, Ingenieros o Científicos |
+| HBB                     | 75 Pioneros + 75 Colonos                                  |
+| HBC                     | 75 Colonos + 75 Técnicos                                  |
+| HBM                     | 75 Técnicos + 75 Ingenieros                               |
+| HBL                     | 75 Ingenieros + 75 Científicos                            |
+
+Capacidad de almacenamiento, además de las 1.500 t y 1.500 m³ del [[core-module|módulo central]]:
+
+| Almacenamiento | Peso     | Volumen   |
+| -------------- | -------- | --------- |
+| STO            | 5.000 t  | 5.000 m³  |
+| STA            | 2.500 t  | 2.500 m³  |
+| STE            | 10.000 t | 10.000 m³ |
+| STV            | 2.500 t  | 7.500 m³  |
+| STW            | 7.500 t  | 2.500 m³  |
+
+Los hábitats y el almacenamiento ocupan área y cuentan en el coste de construcción detrás de **Amortización**, pero no en la degradación. Tu almacenamiento fija los días hasta llenarse del resultado **Almacenamiento**.
+
+### Auto y el optimizador {#auto-habs}
+
+**Auto** elige los hábitats por ti. Mientras está activado, los campos de hábitats quedan bloqueados, pero el almacenamiento lo sigues fijando tú. Cada vez que cambia la mano de obra que necesitan tus edificios, o cambian los precios de construcción de los hábitats, elige el conjunto de hábitats más barato que aloja a todos y cabe en el área libre. Si no cabe ninguno, elige el conjunto que necesita menos área, aunque sea más de la que tienes.
+
+**Auto** está activado en los planes nuevos. Los planes guardados sin este ajuste empiezan con él desactivado, y en una copia del plan compartido de otra persona también empieza desactivado. PRUNplanner recuerda tu elección en cada plan.
+
+Con **Auto** desactivado, **Más barata** y **Menos área** ejecutan el optimizador una vez. Más barata busca el menor coste de construcción a tus precios de compra, sin límite de área. Menos área busca la menor área. Si ningún conjunto sirve, aparece el mensaje «No se ha encontrado una configuración de hábitats para esta mano de obra.»
+
+> [!tip]
+> Desactiva **Auto** cuando ya tengas hábitats construidos en el juego y quieras que el plan coincida con ellos. Usa **Más barata** o **Menos área** una vez para tener un punto de partida y luego ajústalo.
+
+## Expertos {#experts}
+
+Los [[experts|expertos]] mejoran todos los edificios de su especialización. **Expertos** muestra un campo por cada especialización que usan tus edificios, con los tickers de esos edificios, y por cada especialización que tenga expertos asignados. «+ … campos más» muestra el resto, y **Menos campos** los vuelve a ocultar.
+
+Cada campo admite de 0 a 5 expertos, con la bonificación indicada bajo el nombre:
+
+| Expertos | Bonificación |
+| -------- | ------------ |
+| 1        | 3,06 %       |
+| 2        | 6,96 %       |
+| 3        | 12,48 %      |
+| 4        | 19,74 %      |
+| 5        | 28,4 %       |
+
+Un edificio de esa especialización recibe 1 + bonificación como factor sobre su eficiencia. Una base puede tener como máximo 6 expertos en total. Si introduces más, un aviso dice «El máximo de expertos en una base es 6. Ahora mismo tienes asignados … expertos.», pero el plan sigue contando todos los expertos que introdujiste.
+
+En el juego, los expertos llegan con el tiempo al tener en marcha edificios de esa especialización. Cuantos más de esos edificios tengas en marcha, antes llegan.
+
+## Cómo se forma la eficiencia de un edificio {#efficiency}
+
+La eficiencia de un edificio de producción es el producto de sus factores. Como se multiplican, un solo factor de 0, como no tener trabajadores alojados o una granja en un planeta que no es fértil, detiene el edificio sean cuales sean los demás.
+
+| Factor                    | Valor                                                              | Se fija en                                                     |
+| ------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------- |
+| Mano de obra              | Las eficiencias de los niveles de sus trabajadores, ponderadas     | [Mano de obra](#workforce), [Infraestructura](#infrastructure) |
+| COGC                      | × 1,25 programa de especialización, × 1,1 programa de mano de obra | [Programa de COGC](#cogc)                                      |
+| Sede                      | × 1,1                                                              | [Sede corp.](#corp-hq)                                         |
+| Expertos                  | × (1 + bonificación)                                               | [Expertos](#experts)                                           |
+| Facción                   | × (1 + bonificación × 2 × (3 − 2 × usados ÷ totales))              | [Imperio y precios](#faction)                                  |
+| Fertilidad (solo granjas) | × (1 + fertilidad × 10 ÷ 33), 0 si no es fértil                    | [Fertilidad](#fertility)                                       |
+
+Imagina un edificio de Metalurgia con sus trabajadores totalmente alojados y ambos lujos suministrados, un COGC de Metalurgia, 2 expertos de Metalurgia y Sede corp., en un imperio sin bonificación de facción para Metalurgia. Funciona al 1 × 1,25 × 1,0696 × 1,1 = 147,07 %. Pasa el puntero por **Efic.** en Producción para ver los factores de cualquier edificio.

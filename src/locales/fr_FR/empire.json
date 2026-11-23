@@ -115,9 +115,9 @@
 	},
 	"opportunities": {
 		"headline": "Opportunités de production",
-		"intro": "Identifiez des recettes permettant de transformer les matières premières excédentaires en d'autres produits. Cette vue met en évidence les opportunités de production où vos entrées/sorties de matières premières présentent un écart positif, classées par ordre de priorité selon la disponibilité des matières premières",
+		"intro": "Trouve des recettes pour transformer tes matériaux excédentaires en d'autres produits. Cette vue identifie les opportunités de production où tes E/S matières présentent un delta positif, classées selon la disponibilité des intrants",
 		"please_note": "Important à savoir :",
-		"note": "Ne vous fiez pas uniquement aux opportunités disponibles. Recoupez les volumes d'échanges et les aperçus des marchés (passez le curseur sur le matériau) pour évaluer la liquidité du marché et le retour sur investissement potentiel. Utilisez des indicateurs pour identifier le matériau qui freine votre potentiel de croissance ou pour déterminer si la vente de votre surplus est plus rentable que le passage à une autre production.",
+		"note": "Ne te fie pas uniquement aux opportunités disponibles. Recoupe les volumes d'échanges et les aperçus des échanges (au survol du matériau) pour évaluer la liquidité du marché et le ROI potentiel. Utilise les indicateurs pour identifier le matériau qui freine ta croissance, ou pour savoir si vendre ton delta disponible est plus rentable que de passer à une autre production.",
 		"tiles": {
 			"opportunities": "Opportunités",
 			"delta_required": "Delta obligatoire",

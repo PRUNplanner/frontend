@@ -1,4 +1,4 @@
-With an API key, a spreadsheet, dashboard or script can read your PRUNplanner data without your password. On the [API Keys](/apikey) page (**API** in the account menu) you create and revoke keys, and it builds ready-to-paste URLs, Google Sheets formulas, curl and Python snippets for you.
+With an API key, a spreadsheet, dashboard, script or AI assistant can read your PRUNplanner data without your password. On the [API Keys](/apikey) page (**API** in the account menu) you create and revoke keys, connect an [AI assistant](/help/mcp), and build ready-to-paste URLs, Google Sheets formulas, curl and Python snippets.
 
 ## What Keys Are For {#what-keys-are-for}
 
@@ -13,6 +13,24 @@ Public game data and exchange prices need no key. Everything that belongs to you
 Each key has an **Access**: **Read-only** or **Read & write**. See [Access](#access) for what each one allows.
 
 You'll find the full reference at [api.prunplanner.org/docs](https://api.prunplanner.org/docs). Its Authorize button takes a key, so you can try calls in the browser.
+
+## Creating a Key {#create}
+
+1. Press **Create New Key**.
+2. Enter a **Key Name** that tells you later where you use it, for example the sheet's name. Keep it to 50 characters at most. A longer name fails with a general error.
+3. Pick the **Access**: **Read-only** (already selected) or **Read & write**. The line below it says what the key will be able to do.
+4. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**, together with its access.
+5. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
+6. Press **I've saved my key**.
+
+> [!warning]
+> PRUNplanner can't show the key again, because it keeps only a hashed form of it, which can check a key but can't turn back into one. If you lose it, revoke it and create a new one.
+
+## Managing Keys {#manage-keys}
+
+**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Access**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
+
+**Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
 
 ## Access {#access}
 
@@ -43,18 +61,6 @@ When a key tries something it may not do, the answer is _403 Forbidden_ with a `
 
 Nothing is changed when this happens.
 
-## Creating a Key {#create}
-
-1. Press **Create New Key**.
-2. Enter a **Key Name** that tells you later where you use it, for example the sheet's name. Keep it to 50 characters at most. A longer name fails with a general error.
-3. Pick the **Access**: **Read-only** (already selected) or **Read & write**. The line below it says what the key will be able to do.
-4. Press **Create**. The key appears once, under **Your Secret Key (Save this Now!)**, together with its access.
-5. **Copy key** and store it somewhere safe, for example a password manager. **Use in URL builder** fills it into the URL builder below, for this visit only.
-6. Press **I've saved my key**.
-
-> [!warning]
-> PRUNplanner can't show the key again, because it keeps only a hashed form of it, which can check a key but can't turn back into one. If you lose it, revoke it and create a new one.
-
 ## Using a Key {#using-keys}
 
 Send the key with each request, in one of two ways:
@@ -67,6 +73,12 @@ Send the key with each request, in one of two ways:
 Anyone who can see a URL can see the key in it, for example everyone who can open your sheet. That's why a key in a URL can only read, even a **Read & write** one. Use a separate read-only key per sheet or script, so you can revoke one without breaking the others.
 
 Both ways work for every request a key may make, except that changes need the header. If a request carries both, PRUNplanner uses the header.
+
+## AI Assistants {#ai-assistants}
+
+A key also connects an AI assistant such as Claude, ChatGPT/Codex, Copilot or Cursor to PRUNplanner's MCP server, so it can read and calculate your plans and empires with PRUNplanner's own engine. The **AI assistants (MCP)** card on this page has the server address, the header and the download for Claude Desktop. [AI assistants (MCP)](/help/mcp) explains what the assistant can do and how to set up each client.
+
+A **Read-only** key is enough for questions and what-ifs; the assistant needs **Read & write** only to save for you.
 
 ## URL Builder {#url-builder}
 
@@ -95,22 +107,18 @@ If you go over these limits, the request gets the answer _429 Too Many Requests_
 
 These limits sit well above normal use: the 240 per minute is about four times, and the FIO storage limit about twice, the busiest minute of normal use.
 
-| Requests                                             | Limit          | Counted per |
-| ---------------------------------------------------- | -------------- | ----------- |
-| Everything you request with a key or while logged in | 240 per minute | account     |
-| **FIO storage**                                      | 30 per minute  | account     |
-| **Market history** (one material)                    | 120 per minute | IP address  |
-| **Market history, every material**                   | 30 per minute  | IP address  |
+| Requests                                             | Limit          | Counted per                                              |
+| ---------------------------------------------------- | -------------- | -------------------------------------------------------- |
+| Everything you request with a key or while logged in | 240 per minute | account                                                  |
+| **FIO storage**                                      | 30 per minute  | account                                                  |
+| **Market history** (one material)                    | 120 per minute | IP address, or account when the request carries your key |
+| **Market history, every material**                   | 30 per minute  | IP address, or account when the request carries your key |
+
+Market history needs no key, but sending one counts your requests on your account instead of your IP address, so others sharing that address (for example a sheet host) don't use up your limit. An invalid or revoked key is ignored there: the request still goes through, counted by IP address.
 
 A sheet that refreshes many `IMPORTDATA` cells at once can hit a limit. One request for many rows, such as **Market history, every material**, is better than one request per material.
 
 For example, if 40 **FIO storage** requests arrive within one minute, the first 30 go through and the other 10 get 429.
-
-## Managing Keys {#manage-keys}
-
-**PRUNplanner API Keys** lists your keys with their **Name**, **Prefix**, **Access**, **Created** and **Last Used**. The prefix is the first, non-secret part of the key, the part before the dot, so you can tell them apart. Last Used shows **Never** until the key is used. After that, it updates at most once every 5 minutes, so a request you sent a moment ago may not show yet.
-
-**Revoke** deletes a key after you confirm. Scripts and sheets using it stop working at once.
 
 ## Validity {#validity}
 

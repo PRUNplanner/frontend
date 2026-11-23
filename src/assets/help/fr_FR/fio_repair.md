@@ -1,64 +1,64 @@
-[FIO Repair](/fio/repair) tells you when each of your real bases is due for [[repair]], what the repair costs and what to load on the ship. It reads your buildings from [[FIO]], so you'll need a [FIO connection](/help/profile#fio-connection) first.
+[Réparer FIO](/fio/repair) t'indique quand chacune de tes vraies bases doit passer en [[repair|réparation]], ce que coûte la réparation et quoi charger dans le vaisseau. L'outil lit tes bâtiments depuis [[fio|FIO]] : il te faut donc d'abord une [connexion FIO](/help/profile#fio-connection).
 
-Use it before a repair trip: it shows which bases are due, and it builds the load and an XIT package for the flight. Where one of your plans matches a base, it takes the repair days from that plan's Repair Analysis.
+Utilise-le avant une tournée de réparation : il montre quelles bases sont à réparer, et il prépare le chargement et un paquet XIT pour le vol. Quand l'un de tes plans correspond à une base, il reprend les jours de réparation de l'analyse de réparation de ce plan.
 
-## Due Dates {#due-dates}
+## Échéances {#due-dates}
 
-FIO Repair reads each base's production buildings from FIO, with their condition and the day they were last repaired (or built, if they never were). Habitations, storage and the core module age too, but they need no repair materials, so they're left out.
+Réparer FIO lit depuis FIO les bâtiments de production de chaque base, avec leur état et le jour de leur dernière réparation (ou de leur construction s'ils n'ont jamais été réparés). Les habitations, le stockage et le module central vieillissent aussi, mais ils n'ont pas besoin de matériaux de réparation : ils sont donc laissés de côté.
 
 Chaque type de bâtiment arrive à échéance à un jour cible :
 
-- **With a matched plan**, the target is the type's best repair day from that plan's Repair Analysis (see [Plan tools](/help/plan_tools#repair)), priced with the exchange preference of the plan's empire. A building type the plan doesn't have uses the interval below.
-- **Without a plan**, the target is the interval from the settings (**Repair every** n days, default 60).
+- **Avec un plan associé**, la cible est le meilleur jour de réparation de ce type dans l'analyse de réparation de ce plan (voir [Outils du plan](/help/plan_tools#repair)), valorisé avec la préférence d'échange de l'empire du plan. Un type de bâtiment absent du plan utilise l'intervalle ci-dessous.
+- **Sans plan**, la cible est l'intervalle défini dans les réglages (**Réparer tous les** n jours, 60 par défaut).
 
-The oldest building of a type sets when that type is due, and a base comes due with its first building type. A base is _due soon_ when its target is at most **Due soon** days away (default 7). If a building has no date at all, its base shows **No repair date**. It counts as overdue and gets billed as a new building. Don't worry, this only means FIO sent no date for one of its buildings, and the bill counts that building at the most its repair can cost.
+Le bâtiment le plus ancien d'un type détermine quand ce type arrive à échéance, et une base arrive à échéance avec son premier type de bâtiment. Une base est _bientôt due_ quand sa cible est au plus à **Bientôt dû** jours (7 par défaut). Si un bâtiment n'a aucune date, sa base affiche **Aucune date de réparation**. Elle compte comme en retard et est facturée comme un bâtiment neuf. Pas d'inquiétude : cela signifie seulement que FIO n'a envoyé aucune date pour l'un de ses bâtiments, et la facture compte ce bâtiment au maximum de ce que sa réparation peut coûter.
 
-## Settings {#settings}
+## Réglages {#settings}
 
-The settings bar sits at the top:
+La barre des réglages se trouve en haut :
 
-| Setting                                      | Default             | What it does                                                                                                                                                           |
-| -------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Use matched plans**                        | on                  | Uses matched plans' best days. When it's off, every base repairs at the interval. It's on each time you open the page. |
-| **Repair every** / **Without a plan, every** | 60 days             | The interval for bases without a plan (1–180)                                                                                                       |
-| **Due soon**                                 | 7 days              | Days before the target day that count as due soon (0–60)                                                                                            |
-| **Exchange Preference**                      | your **Default CX** | Prices for the repair materials                                                                                                                                        |
+| Réglage                                        | Par défaut            | Ce qu'il fait                                                                                                                                                                                                    |
+| ---------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Utiliser les plans associés**                | activé                | Utilise les meilleurs jours des plans associés. Quand il est désactivé, chaque base est réparée selon l'intervalle. Il est activé à chaque ouverture de la page. |
+| **Réparer tous les** / **Sans plan, tous les** | 60 jours              | L'intervalle pour les bases sans plan (1–180)                                                                                                                                                 |
+| **Bientôt dû**                                 | 7 jours               | Les jours avant le jour cible qui comptent comme bientôt dus (0–60)                                                                                                                           |
+| **Préférence d'échange**                       | ton **CX par défaut** | Les prix des matériaux de réparation                                                                                                                                                                             |
 
-The interval, the due soon days and the exchange preference are the same settings you'll find in [Profile](/help/profile#preferences), and they're saved to your account.
+L'intervalle, les jours « bientôt dû » et la préférence d'échange sont les mêmes réglages que dans ton [Profil](/help/profile#preferences), et ils sont enregistrés sur ton compte.
 
-## Overview {#overview}
+## Aperçu {#overview}
 
-- **Overdue**, **Due within n d** and **Later** count your bases. Click one to filter the list. Overdue includes bases without a repair date.
-- **Repair what's due, today** is the cost, weight and volume of repairing every overdue and due-soon base today.
-- **Waiting costs** is how much more that repair costs for each day you wait. Each of those buildings younger than 180 days adds 1/180 of its construction cost. For example (made-up numbers), two such buildings that cost 90,000 ȼ and 180,000 ȼ to build add 500 + 1,000 = 1,500 ȼ for each day you wait.
-- **When bases come due** is a timeline that runs from the most overdue base to the last one due. Click a base to open it.
-- The **Bases** list shows each base's buildings, lowest condition, days since repair (or since built), next repair, and **Repair now**, the bill for repairing every production building today. Under the name you can see which plan sets the targets: "plan …", "likely plan …", "plan … (your choice)" or "no plan · every n d".
+- **En retard**, **Dû d'ici n j** et **Plus tard** comptent tes bases. Clique sur l'un d'eux pour filtrer la liste. En retard inclut les bases sans date de réparation.
+- **Réparer ce qui est dû, aujourd'hui** est le coût, le poids et le volume de la réparation aujourd'hui de toutes les bases en retard et bientôt dues.
+- **Coût de l'attente** est le surcoût de cette réparation pour chaque jour d'attente. Chacun de ces bâtiments âgé de moins de 180 jours ajoute 1/180 de son coût de construction. Par exemple (chiffres inventés), deux de ces bâtiments qui ont coûté 90 000 ȼ et 180 000 ȼ à construire ajoutent 500 + 1 000 = 1 500 ȼ pour chaque jour d'attente.
+- **Quand les bases arrivent à échéance** est une frise qui va de la base la plus en retard à la dernière à échéance. Clique sur une base pour l'ouvrir.
+- La liste **Bases** montre pour chaque base ses bâtiments, l'état le plus bas, les jours depuis la réparation (ou depuis la construction), la prochaine réparation, et **Réparer maintenant**, la facture pour réparer aujourd'hui tous les bâtiments de production. Sous le nom, tu vois quel plan fixe les cibles : « plan … », « plan probable … », « plan … (ton choix) » ou « aucun plan · tous les n j ».
 
-When your FIO data is more than a day old, a note tells you so. The buildings have aged since then, so conditions are lower and amounts higher than shown. Ages are always counted to today.
+Quand tes données FIO ont plus d'un jour, une note te le signale. Les bâtiments ont vieilli depuis : les états sont donc plus bas et les quantités plus élevées qu'affiché. Les âges sont toujours comptés jusqu'à aujourd'hui.
 
-## Matched Plans {#matched-plans}
+## Plans associés {#matched-plans}
 
-A plan matches a base when it's on the same planet and its production buildings match FIO well enough. Per building type, PRUNplanner counts the buildings both have and divides by the larger total (FIO's or the plan's). The plan matches from 80 %, so extra buildings in the plan lower the score too.
+Un plan correspond à une base quand il est sur la même planète et que ses bâtiments de production correspondent suffisamment à FIO. Pour chaque type de bâtiment, PRUNplanner compte les bâtiments présents des deux côtés et divise par le plus grand total (celui de FIO ou celui du plan). Le plan correspond à partir de 80 % : les bâtiments en trop dans le plan font donc aussi baisser le score.
 
-For example, a base has 4 FRM and 2 FP, and a plan on its planet has the same plus 1 PP1. They have 6 buildings in common, and the larger total is the plan's 7, so the score is 6 ÷ 7, about 86 %: a likely match. A plan with only the 4 FRM scores 4 ÷ 6, about 67 %, and doesn't match.
+Par exemple, une base a 4 FRM et 2 FP, et un plan sur sa planète a les mêmes plus 1 PP1. Ils ont 6 bâtiments en commun, et le plus grand total est celui du plan, 7 : le score est donc 6 ÷ 7, environ 86 %, une correspondance probable. Un plan avec seulement les 4 FRM obtient 4 ÷ 6, environ 67 %, et ne correspond pas.
 
-- **Matched**: all buildings match.
-- **Likely**: at least 80 % match. Check that it's the plan you run.
+- **Associé** : tous les bâtiments correspondent.
+- **Probable** : au moins 80 % correspondent. Vérifie que c'est bien le plan que tu utilises.
 
-When several plans qualify, the best score wins. On a tie, the plan in the empire that covers most of your bases wins. To pick another plan, or no plan, open a base and use **Repair target**, where each option shows its % match. PRUNplanner saves your pick for that base in your preferences, on every device. **Back to automatic match** undoes it. When none of your plans is on that planet, **Create a plan for {planet}** starts a new plan there.
+Quand plusieurs plans se qualifient, le meilleur score l'emporte. En cas d'égalité, le plan de l'empire qui couvre le plus de tes bases l'emporte. Pour choisir un autre plan, ou aucun plan, ouvre une base et utilise **Objectif de réparation**, où chaque option affiche son pourcentage de correspondance. PRUNplanner enregistre ton choix pour cette base dans tes préférences, sur tous tes appareils. **Retour à l'association automatique** l'annule. Quand aucun de tes plans n'est sur cette planète, **Créer un plan pour {planet}** démarre un nouveau plan sur place.
 
-## Repair Flight {#repair-flight}
+## Vol de réparation {#repair-flight}
 
-Open a base to plan the repair. Its table lists each building type with its target, days since repair, condition and due day.
+Ouvre une base pour planifier la réparation. Son tableau liste chaque type de bâtiment avec sa cible, les jours depuis la réparation, l'état et le jour d'échéance.
 
-Repairing gets more expensive every day. The bill grows until day 180, when it equals a new building. In **Repair flight**:
+La réparation coûte plus cher chaque jour. La facture augmente jusqu'au jour 180, où elle égale un bâtiment neuf. Dans **Vol de réparation** :
 
-- **Arrives in** n days (default 2, 0–30) sizes the bill for the day the ship unloads, and shows how much more that costs than repairing today. Add a day or two for long flights.
-- **Use what's already in the base store** takes off what the base already holds.
-- **Cargo weight** and **Cargo volume** show the load's total, and the load list shows each material's amount and price, plus the total price.
+- **Arrive dans** n jours (2 par défaut, 0–30) calcule la facture pour le jour où le vaisseau décharge, et montre combien cela coûte de plus qu'une réparation aujourd'hui. Ajoute un jour ou deux pour les longs vols.
+- **Utiliser ce qui est déjà dans le stock de la base** retire ce que la base contient déjà.
+- **Poids de la cargaison** et **Volume de la cargaison** montrent le total du chargement, et la liste de chargement indique la quantité et le prix de chaque matériau, ainsi que le prix total.
 
-**XIT Repair** builds an [[xit|XIT]] ACT package with the load for Refined PrUn to run. It uses the same XIT origin and "Buy from CX" setting as FIO Burn (you set both in [Profile](/help/profile#preferences)). The ship gets picked when the XIT runs, and it needs the load's tonnes and cubic metres of free cargo. Fly to the base, unload and run BRA to repair all its buildings.
+**XIT Réparation** crée un paquet [[xit|XIT]] ACT avec le chargement, que Refined PrUn exécute. Il utilise la même origine XIT et le même réglage « Acheter sur le CX » que Consommation FIO (tu règles les deux dans ton [Profil](/help/profile#preferences)). Le vaisseau est choisi au lancement du XIT, et il lui faut les tonnes et les mètres cubes de cargaison libre du chargement. Vole jusqu'à la base, décharge et lance BRA pour réparer tous ses bâtiments.
 
-## Prices {#prices}
+## Prix {#prices}
 
-Prices come from your **Default CX** (shown here as **Exchange Preference**), using only its all-planets rules and fixed prices. Planet exceptions aren't used. If you have no default, or it was deleted, prices are Universe · VWAP 30D. See [Exchanges & prices](/help/exchanges).
+Les prix viennent de ton **CX par défaut** (affiché ici comme **Préférence d'échange**), en utilisant seulement ses règles toutes planètes et ses prix fixes. Les exceptions par planète ne sont pas utilisées. Si tu n'as pas de CX par défaut, ou s'il a été supprimé, les prix sont Univers · VWAP 30j. Voir [Bourses et préférences d'échange](/help/exchanges).

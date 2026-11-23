@@ -1,117 +1,117 @@
-PRUNplanner keeps your work on a [[plan]] with saves, drafts of unsaved changes, undo, copies and named versions you can go back to. When the same plan changes in two places, it asks before it overwrites anything. To show a plan to someone else, see [Sharing a plan](/help/plan_sharing).
+PRUNplanner protège ton travail sur un [[plan|plan]] avec des enregistrements, des brouillons de modifications non enregistrées, l'annulation, des copies et des versions nommées auxquelles tu peux revenir. Quand le même plan change à deux endroits, il demande avant d'écraser quoi que ce soit. Pour montrer un plan à quelqu'un d'autre, voir [Partager un plan](/help/plan_sharing).
 
-Read it when you want to know whether your changes are safe, how to get back to an earlier state of a plan, or what a save message means.
+Lis cette page quand tu veux savoir si tes modifications sont en sécurité, comment revenir à un état antérieur d'un plan, ou ce que signifie un message d'enregistrement.
 
-## Saving and Undo {#saving-and-undo}
+## Enregistrer et annuler {#saving-and-undo}
 
-Name your plan with the pencil next to its name. Enter or clicking away keeps the name, and Esc cancels. Save it with **Save** (**Create** for a new plan) or Ctrl+S (Cmd+S on a Mac).
+Nomme ton plan avec le crayon à côté de son nom. Entrée ou un clic ailleurs garde le nom, et Échap annule. Enregistre-le avec **Enregistrer** (**Créer** pour un nouveau plan) ou Ctrl+S (Cmd+S sur Mac).
 
-- **Save** only shows while there's something to save, and it stays disabled until the plan has a name.
-- A new plan gets its own address once it's created, and your empires and links use that. Until then, PRUNplanner keeps nothing of it, not even a [draft](#drafts).
-- Undo, Redo, the plan's state and Save sit together in one control. On a phone, Undo and Redo stay in the header, and the state with Save sits above the bottom navigation.
+- **Enregistrer** n'apparaît que s'il y a quelque chose à enregistrer, et reste désactivé tant que le plan n'a pas de nom.
+- Un nouveau plan reçoit sa propre adresse une fois créé, et tes empires et tes liens utilisent celle-ci. D'ici là, PRUNplanner n'en conserve rien, pas même un [brouillon](#drafts).
+- Annuler, Rétablir, l'état du plan et Enregistrer sont réunis dans une seule commande. Sur téléphone, Annuler et Rétablir restent dans l'en-tête, et l'état avec Enregistrer se trouve au-dessus de la navigation du bas.
 
-The state tells you where the plan stands:
+L'état t'indique où en est le plan :
 
-| State                         | Meaning                                                                     |
-| ----------------------------- | --------------------------------------------------------------------------- |
-| "Saved …"                     | Saved at that time, followed by the version's name when it has one.         |
-| **Unsaved changes**           | You changed something since the last save. An amber dot marks it.           |
-| "Unsaved · draft kept …"      | Unsaved, but kept in a [draft](#drafts).                                    |
-| **Saving…**                   | The save is on its way.                                                     |
-| **Save failed**               | The save didn't go through. Your changes are kept, so click **Retry save**. |
-| **Draft not saved**           | Your unsaved changes aren't kept in a draft. Click it to try again.         |
-| "Name your plan to create it" | A new plan needs a name first.                                              |
+| État                                      | Signification                                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| « Enregistré … »                          | Enregistré à ce moment-là, suivi du nom de la version quand elle en a un.                                            |
+| **Modifications non enregistrées**        | Tu as modifié quelque chose depuis le dernier enregistrement. Un point orange le signale.                            |
+| « Non enregistré · brouillon conservé … » | Non enregistré, mais conservé dans un [brouillon](#drafts).                                                          |
+| **Enregistrement…**                       | L'enregistrement est en cours.                                                                                       |
+| **Échec de l'enregistrement**             | L'enregistrement n'a pas abouti. Tes modifications sont conservées, alors clique sur **Réessayer l'enregistrement**. |
+| **Brouillon non enregistré**              | Tes modifications non enregistrées ne sont pas conservées dans un brouillon. Clique dessus pour réessayer.           |
+| « Donne un nom à ton plan pour le créer » | Un nouveau plan a d'abord besoin d'un nom.                                                                           |
 
-Click the state of a saved plan to open its [versions](#versions).
-
-> [!tip]
-> **Reload saved version**, the icon next to Save, takes you back to the plan as last saved and drops the draft. If you have unsaved changes, it asks first.
-
-### Drafts {#drafts}
-
-Once a plan is created, PRUNplanner keeps its unsaved changes as a draft about 3 seconds after each change. A reload, a closed tab or a crash won't lose them.
-
-A draft isn't a save. It's kept with your account, but your empires and the plan's share link keep using the saved version until you save. That's why the versions list marks a draft "not in empires yet".
-
-When you open the plan again, it always shows as saved. A message ("You have unsaved changes from …") offers **Restore**. Your next change, or opening a version, closes the message, and your new changes replace the draft. If you want those changes back, click **Restore** before you edit anything.
-
-The page only warns you before you leave when the draft can't hold your changes. That happens when the plan isn't created yet, the last change is less than about 3 seconds old, or the draft failed.
-
-### Undo and Redo {#undo}
-
-You can undo any change with **Undo** and **Redo**, or with Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The keys don't work inside a text field.
-
-The history holds the last 50 changes. It starts fresh when you open, save or reload the plan, and when you discard changes. While you customise the layout, the keys undo layout changes instead (see [Layout](/help/plan_layout)).
-
-## Save as copy {#save-as-copy}
-
-For a saved, named plan, the arrow next to Save (**Save options**) has **Save as copy…**. It opens **Save As**:
-
-- **Name** starts as the plan's name with " (Copy)".
-- If you have empires, an empire select starts with the empire the plan calculates with, and the copy is added to it.
-- **Create** saves the plan as it is now, unsaved changes included, as a new plan and opens it in a new tab. Your original keeps its state and its unsaved changes.
+Clique sur l'état d'un plan enregistré pour ouvrir ses [versions](#versions).
 
 > [!tip]
-> A copy is how you try a different layout of the same base and keep both. Name the copies clearly, because they're separate plans from then on.
+> **Recharger la version enregistrée**, l'icône à côté d'Enregistrer, te ramène au plan tel qu'il a été enregistré pour la dernière fois et abandonne le brouillon. Si tu as des modifications non enregistrées, il demande d'abord.
+
+### Brouillons {#drafts}
+
+Une fois un plan créé, PRUNplanner conserve ses modifications non enregistrées dans un brouillon environ 3 secondes après chaque modification. Un rechargement, un onglet fermé ou un plantage ne les fera pas perdre.
+
+Un brouillon n'est pas un enregistrement. Il est conservé avec ton compte, mais tes empires et le lien de partage du plan continuent d'utiliser la version enregistrée jusqu'à ce que tu enregistres. C'est pourquoi la liste des versions marque un brouillon « pas encore dans un empire ».
+
+Quand tu rouvres le plan, il s'affiche toujours comme enregistré. Un message (« Tu as des modifications non enregistrées du … ») propose **Restaurer**. Ta modification suivante, ou l'ouverture d'une version, ferme le message, et tes nouvelles modifications remplacent le brouillon. Si tu veux récupérer ces modifications, clique sur **Restaurer** avant de modifier quoi que ce soit.
+
+La page ne t'avertit avant que tu partes que lorsque le brouillon ne peut pas contenir tes modifications. C'est le cas quand le plan n'est pas encore créé, que la dernière modification date de moins de 3 secondes environ, ou que le brouillon a échoué.
+
+### Annuler et Rétablir {#undo}
+
+Tu peux annuler n'importe quelle modification avec **Annuler** et **Rétablir**, ou avec Ctrl+Z et Ctrl+Maj+Z (Cmd sur Mac). Les raccourcis ne fonctionnent pas dans un champ de texte.
+
+L'historique contient les 50 dernières modifications. Il repart de zéro quand tu ouvres, enregistres ou recharges le plan, et quand tu abandonnes des modifications. Pendant que tu personnalises la disposition, les raccourcis annulent plutôt les modifications de disposition (voir [Disposition](/help/plan_layout)).
+
+## Enregistrer une copie {#save-as-copy}
+
+Pour un plan enregistré et nommé, la flèche à côté d'Enregistrer (**Options d'enregistrement**) contient **Enregistrer une copie…**. Cela ouvre **Enregistrer sous** :
+
+- **Nom** part du nom du plan suivi de « (copie) ».
+- Si tu as des empires, une liste d'empires part de l'empire avec lequel le plan est calculé, et la copie y est ajoutée.
+- **Créer** enregistre le plan tel qu'il est maintenant, modifications non enregistrées comprises, comme un nouveau plan et l'ouvre dans un nouvel onglet. Ton original garde son état et ses modifications non enregistrées.
+
+> [!tip]
+> Une copie te permet d'essayer une autre disposition de la même base et de garder les deux. Nomme clairement les copies, car ce sont désormais des plans distincts.
 
 ## Versions {#versions}
 
-Every save keeps a version of the plan. Click the state of a saved plan to open **Versions**.
+Chaque enregistrement conserve une version du plan. Clique sur l'état d'un plan enregistré pour ouvrir **Versions**.
 
-- **Named only** is on by default. The list shows your named versions and the active one, with "… unnamed hidden" at the bottom. Untick it to see them all.
-- **Active** marks the version your plan is now.
-- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept … · not in empires yet" or "Not kept in a draft".
-- **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
-- Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
+- **Nommées uniquement** est activé par défaut. La liste affiche tes versions nommées et la version active, avec « … sans nom masquées » en bas. Décoche-le pour les voir toutes.
+- **Active** marque la version qu'est ton plan actuellement.
+- Si tu as des modifications non enregistrées, la première ligne les affiche comme **Modifications non enregistrées**, avec « Brouillon conservé … · pas encore dans un empire » ou « Non conservé dans un brouillon ».
+- **Avant l'historique des versions** est le plan tel qu'il était avant l'existence des versions. **Modifiée par le support** marque une modification faite par le support de PRUNplanner.
+- Les versions nommées restent. PRUNplanner garde les 10 dernières versions sans nom, et les plus anciennes disparaissent.
 
-For example, when a plan is created and then saved 14 times without a name, the newest 10 of those 15 unnamed versions stay and the 5 oldest are gone, while every named version stays. To keep a state of the plan for good, give its version a name.
+Par exemple, quand un plan est créé puis enregistré 14 fois sans nom, les 10 plus récentes de ces 15 versions sans nom restent et les 5 plus anciennes disparaissent, tandis que chaque version nommée reste. Pour garder un état du plan pour de bon, donne un nom à sa version.
 
-### Naming versions {#naming-versions}
+### Nommer des versions {#naming-versions}
 
-Open **Save options** (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name in **Version name (optional)** and press Enter or **Save named**. A name can be up to 80 characters. This works for any saved, named plan, even with nothing unsaved, and names the plan as it is now.
+Ouvre **Options d'enregistrement** (ou appuie sur Ctrl+Alt+S, Cmd+Option+S sur Mac), tape un nom dans **Nom de la version (facultatif)** et appuie sur Entrée ou sur **Enregistrer avec un nom**. Un nom peut faire jusqu'à 80 caractères. Cela fonctionne pour tout plan enregistré et nommé, même sans rien de non enregistré, et nomme le plan tel qu'il est maintenant.
 
-To name a version later, or rename one, use **Name this version** in its ⋯ menu. An empty name removes the name.
+Pour nommer une version plus tard, ou en renommer une, utilise **Nommer cette version** dans son menu ⋯. Un nom vide retire le nom.
 
-A plan holds at most 20 named versions. At the limit, remove the name from one or delete one before you name another.
+Un plan contient au plus 20 versions nommées. À la limite, retire le nom de l'une d'elles ou supprime-en une avant d'en nommer une autre.
 
-### Preview, compare and restore {#preview}
+### Aperçu, comparaison et restauration {#preview}
 
-The eye on a version shows it read-only. A banner tells you which version you're looking at, and the results tiles show its numbers. From there:
+L'œil sur une version l'affiche en lecture seule. Une bannière t'indique quelle version tu regardes, et les tuiles de résultats affichent ses chiffres. De là :
 
-- **Compare with current** lists what differs from your plan now.
-- **Restore** loads it as unsaved changes. Undo takes it back, and saving makes it the active version.
-- **Open as new plan** copies it into a new plan in a new tab, named after the plan with the version's name or date. The copy isn't in any empire.
-- **Back to current** returns you to your plan as it was.
+- **Comparer avec l'actuel** liste ce qui diffère de ton plan actuel.
+- **Restaurer** la charge comme modifications non enregistrées. Annuler revient en arrière, et enregistrer en fait la version active.
+- **Ouvrir comme nouveau plan** la copie dans un nouveau plan dans un nouvel onglet, nommé d'après le plan avec le nom ou la date de la version. La copie n'est dans aucun empire.
+- **Retour à l'actuel** te ramène à ton plan tel qu'il était.
 
-### Make active and delete {#make-active}
+### Rendre active et supprimer {#make-active}
 
-**Make active**, in a version's ⋯ menu or in the preview banner, switches the plan to that version in one step. Your empires and the plan's share link use it right away. It goes on top as a new version ("Restored from …"), and the one you picked stays where it is. Any unsaved changes are discarded once you confirm.
+**Rendre active**, dans le menu ⋯ d'une version ou dans la bannière d'aperçu, fait passer le plan à cette version en une étape. Tes empires et le lien de partage du plan l'utilisent aussitôt. Elle s'ajoute en haut comme nouvelle version (« Restaurée depuis … »), et celle que tu as choisie reste à sa place. Les éventuelles modifications non enregistrées sont abandonnées une fois que tu confirmes.
 
-**Delete** in the same menu removes a version for good, after you confirm. You can't delete the active version.
+**Supprimer**, dans le même menu, retire une version pour de bon, après confirmation. Tu ne peux pas supprimer la version active.
 
-**Discard changes** in **Save options** drops your unsaved changes and goes back to the saved version, after you confirm.
+**Abandonner les modifications** dans **Options d'enregistrement** abandonne tes modifications non enregistrées et revient à la version enregistrée, après confirmation.
 
-## Save conflicts {#conflicts}
+## Conflits d'enregistrement {#conflicts}
 
-The same plan can be open in two tabs or on two devices. PRUNplanner never overwrites one with the other without asking.
+Le même plan peut être ouvert dans deux onglets ou sur deux appareils. PRUNplanner n'écrase jamais l'un avec l'autre sans demander.
 
-If another tab in this browser saves the plan and you have no unsaved changes here, this tab loads the new save. If you do have unsaved changes, a message says "Saved in another tab. Your edits are kept." with **Reload**.
+Si un autre onglet de ce navigateur enregistre le plan et que tu n'as pas de modifications non enregistrées ici, cet onglet charge le nouvel enregistrement. Si tu as des modifications non enregistrées, un message indique « Enregistré dans un autre onglet. Tes modifications sont conservées. » avec **Recharger**.
 
-If you save after the plan was saved elsewhere (another tab or another device), **Saved in another tab** opens. Don't worry, when it opens nothing has been overwritten yet. It lists what changed there and what you changed, and offers:
+Si tu enregistres après que le plan a été enregistré ailleurs (un autre onglet ou un autre appareil), **Enregistré dans un autre onglet** s'ouvre. Pas d'inquiétude, à l'ouverture de cette fenêtre, rien n'a encore été écrasé. Elle liste ce qui a changé là-bas et ce que tu as changé, et propose :
 
-| Option               | What it does                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Save as new plan** | Saves your edits as a copy ("… (copy)") in the plan's empire and opens it. The original keeps the other version. |
-| **Overwrite**        | Replaces the other version with yours.                                                                           |
-| **Reload**           | Drops your edits and loads the saved version.                                                                    |
-| **Keep editing**     | Closes the dialog without saving anything yet.                                                                   |
+| Option                             | Ce qu'elle fait                                                                                                                  |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Enregistrer comme nouveau plan** | Enregistre tes modifications comme une copie (« … (copie) ») dans l'empire du plan et l'ouvre. L'original garde l'autre version. |
+| **Écraser**                        | Remplace l'autre version par la tienne.                                                                                          |
+| **Recharger**                      | Abandonne tes modifications et charge la version enregistrée.                                                                    |
+| **Continuer à modifier**           | Ferme la fenêtre sans rien enregistrer pour l'instant.                                                                           |
 
-If the plan was deleted elsewhere, **Deleted in another tab** only offers **Save as new plan**.
+Si le plan a été supprimé ailleurs, **Supprimé dans un autre onglet** ne propose que **Enregistrer comme nouveau plan**.
 
-Drafts have their own checks:
+Les brouillons ont leurs propres vérifications :
 
-- **Draft saved elsewhere** means another tab or device kept a newer draft of this plan. Autosave pauses until you pick **Keep mine** or **Load the other draft**. **Decide later** closes the dialog and leaves autosave paused.
-- **Unsaved changes on an older version** means you left unsaved changes and the plan was saved again since. Pick **Keep my changes** (on top of the newer save), **Use the saved version** (deletes your unsaved changes) or **Decide later**.
+- **Brouillon enregistré ailleurs** veut dire qu'un autre onglet ou appareil a conservé un brouillon plus récent de ce plan. L'enregistrement automatique se met en pause jusqu'à ce que tu choisisses **Garder les miennes** ou **Charger l'autre brouillon**. **Décider plus tard** ferme la fenêtre et laisse l'enregistrement automatique en pause.
+- **Modifications non enregistrées sur une ancienne version** veut dire que tu as laissé des modifications non enregistrées et que le plan a été enregistré à nouveau depuis. Choisis **Garder mes modifications** (par-dessus l'enregistrement plus récent), **Utiliser la version enregistrée** (supprime tes modifications non enregistrées) ou **Décider plus tard**.
 
 > [!tip]
-> Working on one plan from two devices? Save before you switch. Then the other device only has to reload, and you never need the conflict dialog.
+> Tu travailles sur un plan depuis deux appareils ? Enregistre avant de changer d'appareil. L'autre appareil n'a alors qu'à recharger, et tu n'as jamais besoin de la fenêtre de conflit.

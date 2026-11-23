@@ -1,141 +1,141 @@
-Market Live lets you watch prices and order books on the [[cx|CX]] while you trade. It shows changes on the four commodity exchanges as they arrive and checks each one against alerts you set up, so you spot the moves you care about without refreshing anything.
+Mercado en vivo te permite vigilar los precios y los libros de órdenes de la [[cx|CX]] mientras negocias. Muestra los cambios de las cuatro bolsas de materias primas según llegan y compara cada uno con las alertas que configures, para que veas los movimientos que te interesan sin tener que recargar nada.
 
-## Where the data comes from {#data-stream-mechanics}
+## De dónde vienen los datos {#data-stream-mechanics}
 
-[[fio|FIO]] is the community service fed by players' game clients. It forwards exchange updates to PRUNplanner, which passes each one straight on to your browser. There's no fixed interval, since data arrives whenever FIO receives changes.
+[[fio|FIO]] es el servicio de la comunidad que alimentan los clientes del juego de los jugadores. Reenvía las actualizaciones de las bolsas a PRUNplanner, que pasa cada una directamente a tu navegador. No hay un intervalo fijo, ya que los datos llegan cada vez que FIO recibe cambios.
 
-- Only AI1, CI1, IC1 and NC1 are streamed.
-- A material and exchange only appear after FIO has sent an update for them. Quiet materials can stay missing for a long time.
-- PRUNplanner keeps about the last 500 changes. When you open the page you get those first, so the overview isn't empty, and then new ones as they come.
+- Solo se transmiten AI1, CI1, IC1 y NC1.
+- Un material y una bolsa solo aparecen después de que FIO haya enviado una actualización de ellos. Los materiales con poco movimiento pueden tardar mucho en aparecer.
+- PRUNplanner guarda los últimos 500 cambios aproximadamente. Al abrir la página recibes primero esos, para que el resumen no esté vacío, y después los nuevos según llegan.
 
 > [!warning]
-> The stored changes arrive in a burst when you open the page. They get the time they arrived in your browser, not the time they happened, and they run through your active alerts like new ones.
+> Los cambios guardados llegan todos de golpe al abrir la página. Reciben la hora a la que llegaron a tu navegador, no la hora en que ocurrieron, y pasan por tus alertas activas como si fueran nuevos.
 
-The status at the top right shows **Connected** (pulsing green), **Reconnecting** or **Disconnected**. If the connection drops, your browser reconnects by itself. If the server turns the stream away (for example when too many are open), the page tries again after 5 seconds, and waits longer after each failure, up to 60 seconds. The wait doubles each time, so the tries come after 5, 10, 20 and 40 seconds, then every 60 seconds. While the page waits, the status reads **Reconnecting**.
+El estado de arriba a la derecha muestra **Conectado** (verde parpadeante), **Reconectando** o **Desconectado**. Si se corta la conexión, tu navegador vuelve a conectarse solo. Si el servidor rechaza la transmisión (por ejemplo, cuando hay demasiadas abiertas), la página lo vuelve a intentar a los 5 segundos, y espera más tras cada fallo, hasta 60 segundos. La espera se duplica cada vez, así que los intentos llegan a los 5, 10, 20 y 40 segundos, y después cada 60 segundos. Mientras la página espera, el estado indica **Reconectando**.
 
-Don't worry if it reads **Disconnected** for a moment. It shows that until the stream first opens, and while your browser reconnects a dropped one.
+No te preocupes si indica **Desconectado** un momento. Lo muestra hasta que la transmisión se abre por primera vez, y mientras tu navegador vuelve a conectar una que se ha cortado.
 
-The server accepts up to 5 open streams per IP address, so close Market Live in tabs you don't need.
+El servidor acepta hasta 5 transmisiones abiertas por dirección IP, así que cierra Mercado en vivo en las pestañas que no necesites.
 
-## Live View {#live-view}
+## Vista en vivo {#live-view}
 
-The overview on the right (under the feed on narrower screens) lists every material and exchange received so far, as `DW.NC1`, sorted A to Z. **Hide Overview** and **Show Overview** toggle it.
+El resumen de la derecha (debajo del feed en pantallas más estrechas) lista todos los materiales y bolsas recibidos hasta ahora, como `DW.NC1`, ordenados de la A a la Z. **Ocultar resumen** y **Mostrar resumen** lo muestran u ocultan.
 
-| Column                           | What it shows                                                                                                                                                                      |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Ticker**                       | material and exchange                                                                                                                                                              |
-| **Price (ȼ)** | the price in the update                                                                                                                                                            |
-| **Bid (ȼ)**   | the highest buy order ([[bid]])                         |
-| **Ask (ȼ)**   | the lowest sell order ([[ask]])                         |
-| **Spread %**                     | (ask − bid) ÷ ask × 100 ([[spread]]) |
-| **Buy Vol.**     | units in all open buy orders                                                                                                                                                       |
-| **Sell Vol.**    | units in all open sell orders                                                                                                                                                      |
+| Columna                           | Qué muestra                                                                                                                                                                                     |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ticker**                        | material y bolsa                                                                                                                                                                                |
+| **Precio (ȼ)** | el precio de la actualización                                                                                                                                                                   |
+| **Bid (ȼ)**    | la orden de compra más alta ([[bid]])                                |
+| **Ask (ȼ)**    | la orden de venta más baja ([[ask]])                                 |
+| **Diferencial %**                 | (Ask − Bid) ÷ Ask × 100 ([[spread\|diferencial]]) |
+| **Vol. compra**   | unidades en todas las órdenes de compra abiertas                                                                                                                                                |
+| **Vol. venta**    | unidades en todas las órdenes de venta abiertas                                                                                                                                                 |
 
-Each change updates the fields it carries. When it has no price, bid or ask, the last value stays. Buy and sell volume are what sits in the order book, not what was traded.
+Cada cambio actualiza los campos que trae. Si no trae precio, Bid o Ask, se mantiene el último valor. El volumen de compra y de venta es lo que hay en el libro de órdenes, no lo que se ha negociado.
 
-For example, a bid of 90 ȼ and an ask of 100 ȼ give a **Spread %** of (100 − 90) ÷ 100 × 100 = 10 %. When the change has no bid or ask, the spread uses the best buy or sell order in its book instead.
+Por ejemplo, un Bid de 90 ȼ y un Ask de 100 ȼ dan un **Diferencial %** de (100 − 90) ÷ 100 × 100 = 10 %. Si el cambio no trae Bid o Ask, el diferencial usa en su lugar la mejor orden de compra o de venta de su libro.
 
-## Alert Feed {#alert-feed}
+## Feed de alertas {#alert-feed}
 
-The **Alert Feed** lists every alert that fired, newest first, up to 500. **Clear Feed** empties it. The feed lives only on this page. It's cleared when you leave Market Live, and nothing reaches you anywhere else: no notification, sound or email.
+El **Feed de alertas** lista todas las alertas que se han activado, de la más reciente a la más antigua, hasta 500. **Vaciar feed** lo vacía. El feed solo existe en esta página. Se vacía cuando sales de Mercado en vivo, y no te llega nada a ningún otro sitio: ni notificaciones, ni sonidos, ni correos.
 
-| Column             | What it shows                                                                           |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| **Ticker / Alert** | material and exchange, with the alert's name                                            |
-| **Severity**       | **LOW**, **MEDIUM** (amber) or **HIGH** (red row) |
-| **Trigger Logic**  | each condition that matched: field, value, operator, target             |
-| **Event**          | for number fields: the previous and the new value                       |
-| **Time**           | when the change arrived, as HH:mm:ss                    |
+| Columna                  | Qué muestra                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| **Ticker / Alerta**      | material y bolsa, con el nombre de la alerta                                             |
+| **Gravedad**             | **BAJA**, **MEDIA** (ámbar) o **ALTA** (fila roja) |
+| **Lógica de activación** | cada condición que se cumplió: campo, valor, operador, objetivo          |
+| **Evento**               | en campos numéricos: el valor anterior y el nuevo                        |
+| **Hora**                 | cuándo llegó el cambio, como HH:mm:ss                    |
 
-Hover a row to see the values of the change that fired it. You get price, bid, ask, spread, buy and sell volume with their [[vwap|VWAP]] and change, and a bar of buy against sell volume. Narrow screens hide some columns.
+Pasa el puntero por una fila para ver los valores del cambio que la activó. Verás el precio, el Bid, el Ask, el diferencial y el volumen de compra y de venta con su [[vwap|VWAP]] y su variación, y una barra del volumen de compra frente al de venta. En pantallas estrechas se ocultan algunas columnas.
 
-The bell (**Alert notifications**) pauses and resumes checking alerts for this visit. It's on when you open the page, and changes that arrive while it's off never fire.
+La campana (**Notificaciones de alertas**) pausa y reanuda la comprobación de alertas durante esta visita. Está activada al abrir la página, y los cambios que llegan mientras está desactivada nunca activan alertas.
 
-Until an alert fires, the feed shows **Waiting for market events triggering alerts...**.
+Hasta que se active una alerta, el feed muestra **Esperando eventos de mercado que activen alertas...**.
 
-## Data History {#data-history}
+## Historial de datos {#data-history}
 
-**Data History**, under the Alert Feed, groups the incoming changes by minute, showing how many materials and exchanges sent one ("Ticker received") and which ones. It keeps the last 25 minutes that had data.
+**Historial de datos**, bajo el Feed de alertas, agrupa los cambios entrantes por minuto y muestra cuántos materiales y bolsas enviaron uno («Ticker recibidos») y cuáles. Guarda los últimos 25 minutos que tuvieron datos.
 
-## Alert Engine {#alert-engine}
+## Motor de alertas {#alert-engine}
 
-An alert is a set of conditions. Every time a change arrives for a material and exchange, PRUNplanner checks each active alert against the new values and the previous values of that same material and exchange. When the conditions match, the alert adds a row to the feed.
+Una alerta es un conjunto de condiciones. Cada vez que llega un cambio para un material y una bolsa, PRUNplanner comprueba cada alerta activa con los valores nuevos y los valores anteriores de ese mismo material y esa misma bolsa. Cuando se cumplen las condiciones, la alerta añade una fila al feed.
 
-A condition reads its field's new value from the change that arrives, not from the overview. If that change doesn't carry the field, for example it has no price, a condition on **Price** doesn't match.
+Una condición lee el valor nuevo de su campo del cambio que llega, no del resumen. Si ese cambio no trae el campo, por ejemplo si no tiene precio, una condición sobre **Precio** no se cumple.
 
-PRUNplanner stores alerts in this browser, for your account only: "Alerts are currently stored on this device only and are not synced to your account." Another browser or device starts without them.
+PRUNplanner guarda las alertas en este navegador, solo para tu cuenta: «Las alertas se guardan por ahora solo en este dispositivo y no se sincronizan con tu cuenta.» Otro navegador u otro dispositivo empieza sin ellas.
 
-### Setup {#setup}
+### Configuración {#setup}
 
-A condition has three parts: a field, an operator and a target. For example, **Price** GT **Value** 100.
+Una condición tiene tres partes: un campo, un operador y un objetivo. Por ejemplo, **Precio** GT **Valor** 100.
 
-#### Fields {#fields}
+#### Campos {#fields}
 
-| Field                                                                                                                             | Meaning                                                          |
-| --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **Ticker**, **Exchange Code**                                                                                                     | the material ticker, the exchange code (text) |
-| **Price**, **Bid**, **Ask**                                                                                                       | price, bid and ask as in the overview                            |
-| **Price Change**, **Bid Change**, **Ask Change**                                                                                  | new value − previous value                                       |
-| **Price Change (Percent)**                                                                                     | Price Change ÷ previous price × 100                              |
-| **Demand**, **Supply**                                                                                                            | demand and supply as the change reports them                     |
-| **Traded**, **Volume**                                                                                                            | traded figures as the change reports them                        |
-| **Buy Volume**, **Sell Volume**                                                                                                   | units in all open buy or sell orders                             |
-| **Buy Volume Change (Abs.)**, **Sell Volume Change (Abs.)** | how much that volume changed, without sign                       |
-| **Buy VWAP**, **Sell VWAP**                                                                                                       | unit-weighted average price of the open buy or sell orders       |
-| **Best Bid Price**, **Best Ask Price**                                                                                            | highest buy order, lowest sell order in the book                 |
-| **Spread**, **Spread (Percent)**                                                                               | ask − bid, and that as a percentage of the ask                   |
+| Campo                                                                                                                                                 | Significado                                                                      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Ticker**, **Código de bolsa**                                                                                                                       | el ticker del material, el código de la bolsa (texto)         |
+| **Precio**, **Bid**, **Ask**                                                                                                                          | precio, Bid y Ask como en el resumen                                             |
+| **Cambio de precio**, **Cambio de Bid**, **Cambio de Ask**                                                                                            | valor nuevo − valor anterior                                                     |
+| **Cambio de precio (porcentaje)**                                                                                                  | Cambio de precio ÷ precio anterior × 100                                         |
+| **Demanda**, **Oferta**                                                                                                                               | la demanda y la oferta tal como las indica el cambio                             |
+| **Negociado**, **Volumen**                                                                                                                            | las cifras negociadas tal como las indica el cambio                              |
+| **Volumen de compra**, **Volumen de venta**                                                                                                           | unidades en todas las órdenes de compra o de venta abiertas                      |
+| **Cambio del volumen de compra (abs.)**, **Cambio del volumen de venta (abs.)** | cuánto cambió ese volumen, sin signo                                             |
+| **VWAP de compra**, **VWAP de venta**                                                                                                                 | precio medio ponderado por unidades de las órdenes de compra o de venta abiertas |
+| **Mejor precio Bid**, **Mejor precio Ask**                                                                                                            | la orden de compra más alta y la orden de venta más baja del libro               |
+| **Diferencial**, **Diferencial (porcentaje)**                                                                                      | Ask − Bid, y eso como porcentaje del Ask                                         |
 
-**Price Change**, **Bid Change**, **Ask Change** and **Price Change (Percent)** need a previous value, so they're empty on the first change of a material and exchange. The two volume change fields read 0 then.
+**Cambio de precio**, **Cambio de Bid**, **Cambio de Ask** y **Cambio de precio (porcentaje)** necesitan un valor anterior, así que están vacíos en el primer cambio de un material y una bolsa. Los dos campos de cambio de volumen marcan 0 en ese caso.
 
-For example, when the previous price was 200 ȼ and the new one is 210 ȼ, **Price Change** is 210 − 200 = 10 and **Price Change (Percent)** is 10 ÷ 200 × 100 = 5.
+Por ejemplo, si el precio anterior era 200 ȼ y el nuevo es 210 ȼ, **Cambio de precio** es 210 − 200 = 10 y **Cambio de precio (porcentaje)** es 10 ÷ 200 × 100 = 5.
 
-#### Comparisons {#comparisons}
+#### Comparaciones {#comparisons}
 
-Number fields offer:
+Los campos numéricos ofrecen:
 
-- GT: greater than
-- LT: less than
-- EQ: equal
-- NEQ: not equal
+- GT: mayor que
+- LT: menor que
+- EQ: igual
+- NEQ: distinto
 
-**Ticker** and **Exchange Code** only offer MATCHES, which means equal, ignoring upper and lower case. Their target is always fixed text (shown as **Text**).
+**Ticker** y **Código de bolsa** solo ofrecen MATCHES, que significa igual, sin distinguir mayúsculas y minúsculas. Su objetivo es siempre un texto fijo (se muestra como **Texto**).
 
-#### Comparison Targets {#comparison-targets}
+#### Objetivos de comparación {#comparison-targets}
 
-| Target       | Compares the field with                                                                               | Good for                                            |
-| ------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| **Value**    | a fixed number (or text) you enter                                                 | price floors and ceilings, one material or exchange |
-| **Previous** | the field's previous value for that material and exchange (**Previous Datapoint**) | any change at all, sudden jumps                     |
-| **Offset %** | the previous value × (1 + offset ÷ 100)                                            | moves of a given size                               |
+| Objetivo      | Compara el campo con                                                                             | Útil para                                          |
+| ------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
+| **Valor**     | un número (o texto) fijo que introduces                                       | precios mínimos y máximos, un material o una bolsa |
+| **Anterior**  | el valor anterior del campo para ese material y esa bolsa (**Dato anterior**) | cualquier cambio, saltos repentinos                |
+| **Desfase %** | el valor anterior × (1 + desfase ÷ 100)                                       | movimientos de un tamaño dado                      |
 
-**Previous** and **Offset %** never fire on the first change of a material and exchange, because there's nothing to compare with yet.
+**Anterior** y **Desfase %** nunca se activan con el primer cambio de un material y una bolsa, porque todavía no hay nada con qué comparar.
 
-For example, **Price** GT **Offset %** 2 fires when the price rises more than 2 % from the last change. **Price** LT **Offset %** −2 fires on a drop of more than 2 %. With a previous price of 100 ȼ, the first example's target is 100 × (1 + 2 ÷ 100) = 102 ȼ, so a new price of 102.50 ȼ fires and 101.90 ȼ doesn't.
+Por ejemplo, **Precio** GT **Desfase %** 2 se activa cuando el precio sube más de un 2 % respecto al último cambio. **Precio** LT **Desfase %** −2 se activa con una bajada de más del 2 %. Con un precio anterior de 100 ȼ, el objetivo del primer ejemplo es 100 × (1 + 2 ÷ 100) = 102 ȼ, así que un precio nuevo de 102,50 ȼ la activa y uno de 101,90 ȼ no.
 
-#### Logical Operators {#logical-operators}
+#### Operadores lógicos {#logical-operators}
 
-Conditions sit in a group, and **Match** sets how the group combines them:
+Las condiciones están en un grupo, y **Coincidencia** fija cómo las combina el grupo:
 
-- AND: every condition in the group must match.
-- OR: one matching condition is enough.
+- AND: todas las condiciones del grupo deben cumplirse.
+- OR: basta con que se cumpla una condición.
 
-A group can hold other groups (**Group**). That lets you build something like (**Ticker** MATCHES RAT AND (**Price Change (Percent)** GT 2 OR **Price Change (Percent)** LT −2)). The feed's **Trigger Logic** lists the conditions that made the alert fire. For OR, that's the first one that matched.
+Un grupo puede contener otros grupos (**Grupo**). Así puedes construir algo como (**Ticker** MATCHES RAT AND (**Cambio de precio (porcentaje)** GT 2 OR **Cambio de precio (porcentaje)** LT −2)). La columna **Lógica de activación** del feed lista las condiciones que hicieron saltar la alerta. Con OR, es la primera que se cumplió.
 
-An AND group without conditions counts as matched. So an active alert whose top group is still empty fires on every change.
+Un grupo AND sin condiciones cuenta como cumplido. Así que una alerta activa cuyo grupo principal sigue vacío se activa con cada cambio.
 
-### Setting up Alerts {#setting-up-alerts}
+### Crear alertas {#setting-up-alerts}
 
-Until you create one, the Alert Manager says "No alerts found. Start by creating your first detector signal".
+Hasta que crees una, el gestor de alertas dice «No se han encontrado alertas. Empieza creando tu primera señal de detección».
 
-1. Press **Open Alert Manager**.
-2. Press **Create New Alert**. A paused alert named **New Alert** with severity **LOW** and an empty AND group appears in the list right away.
-3. Hover the alert and press **Edit** to open **Edit Alert**.
-4. Set **Alert Name** and **Severity** (**LOW**, **MEDIUM**, **HIGH**).
-5. Under **Logic Configuration**, set **Match**. Add conditions with **Condition** (a new one starts as **Demand** EQ **Value** 0) or nested groups with **Group**. **Remove** deletes a condition or a nested group, but does nothing on the top group. A group without conditions shows **Empty Group**.
-6. Switch **Status** from **Paused** to **Active**.
-7. Press **Save**, or **Discard** to drop your changes.
+1. Pulsa **Abrir gestor de alertas**.
+2. Pulsa **Crear nueva alerta**. Aparece al momento en la lista una alerta en pausa llamada **Nueva alerta**, con gravedad **BAJA** y un grupo AND vacío.
+3. Pasa el puntero por la alerta y pulsa **Editar** para abrir **Editar alerta**.
+4. Fija **Nombre de la alerta** y **Gravedad** (**BAJA**, **MEDIA**, **ALTA**).
+5. En **Configuración de la lógica**, fija **Coincidencia**. Añade condiciones con **Condición** (una nueva empieza como **Demanda** EQ **Valor** 0) o grupos anidados con **Grupo**. **Quitar** elimina una condición o un grupo anidado, pero no hace nada en el grupo principal. Un grupo sin condiciones muestra **Grupo vacío**.
+6. Cambia **Estado** de **En pausa** a **Activa**.
+7. Pulsa **Guardar**, o **Descartar** para desechar tus cambios.
 
 > [!tip]
-> Add at least one condition before you set an alert **Active**. An active alert with an empty group fills the feed with every change.
+> Añade al menos una condición antes de poner una alerta en **Activa**. Una alerta activa con un grupo vacío llena el feed con todos los cambios.
 
-To change an alert later, hover it and press **Edit**. **Delete** removes it at once. The list shows each alert's name and whether it's **Active** or **Paused**, and **Close Alert Manager** hides the list again.
+Para cambiar una alerta más tarde, pasa el puntero por ella y pulsa **Editar**. **Eliminar** la borra al instante. La lista muestra el nombre de cada alerta y si está **Activa** o **En pausa**, y **Cerrar gestor de alertas** vuelve a ocultar la lista.

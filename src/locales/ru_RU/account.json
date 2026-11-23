@@ -1,54 +1,54 @@
 {
 	"components": {
 		"login": {
-			"title": "Back to your empire.",
-			"error": "Ошибка входа. Пожалуйста, проверьте имя пользователя и пароль.",
-			"throttled": "Too many login attempts. Please wait and try again later.",
+			"title": "Возвращайся к своей империи.",
+			"error": "Ошибка входа. Проверь имя пользователя и пароль.",
+			"throttled": "Слишком много попыток входа. Подожди и попробуй позже.",
 			"buttons": {
-				"login": "Log in"
+				"login": "Войти"
 			},
 			"form": {
 				"username": "Логин",
 				"password": "Пароль"
 			},
-			"tos": "Используя PRUNplanner вы соглашаетесь с {tos_link}.",
-			"tos_link": "Пользовательское Соглашение",
-			"forgot_link": "Forgot your password?"
+			"tos": "Используя PRUNplanner, ты принимаешь {tos_link}.",
+			"tos_link": "Условия использования",
+			"forgot_link": "Не помнишь пароль?"
 		},
 		"registration": {
-			"title": "Start planning, it's free.",
-			"tos": "PRUNplanner бесплатен в использовании. Создавая аккаунт, вы принимаете и соглашаетесь с {tos_link}.",
-			"tos_link": "Пользовательское Соглашение",
+			"title": "Начни планировать — это бесплатно.",
+			"tos": "PRUNplanner бесплатен. Создавая аккаунт, ты принимаешь {tos_link}.",
+			"tos_link": "Условия использования",
 			"result": {
 				"ok_header": "Добро пожаловать, {username}!",
-				"ok_message": "Registration successful. You can now log in to PRUNplanner.",
+				"ok_message": "Регистрация прошла успешно. Теперь можешь войти в PRUNplanner.",
 				"error": "Ошибка при регистрации.",
-				"fix_fields": "Please fix the fields marked below.",
-				"throttled": "Too many registration attempts. Please wait a minute and try again.",
-				"unknown": "Unknown error. Please try again later."
+				"fix_fields": "Исправь поля, отмеченные ниже.",
+				"throttled": "Слишком много попыток регистрации. Подожди минуту и попробуй снова.",
+				"unknown": "Неизвестная ошибка. Попробуй позже."
 			},
 			"buttons": {
-				"register": "Create account"
+				"register": "Создать аккаунт"
 			},
 			"form": {
 				"username": "Логин",
-				"username_info": "At least 3 characters, no spaces.",
+				"username_info": "Не меньше 3 символов, без пробелов.",
 				"password": "Пароль",
-				"password_info": "Должно быть не менее 8 символов.",
-				"email": "Электронная почта",
-				"email_info": "Not mandatory, but recommended. Increases your account security.",
-				"email_invalid": "This doesn't look like an email address. Leave it empty or fix it to create your account.",
-				"security_question": "Security question",
-				"question": "Enter the name of planet {planet}. To find it, open a new Prosperous Universe buffer with this command and read the planet's name under \"Name\".",
-				"planet_name": "Planet name",
-				"another_planet": "Use a different planet"
+				"password_info": "Не меньше 8 символов, не только цифры и не слишком распространённый пароль.",
+				"email": "Электронная почта (необязательно)",
+				"email_info": "Необязательно, но рекомендуется: повышает безопасность аккаунта.",
+				"email_invalid": "Это не похоже на адрес электронной почты. Оставь поле пустым или исправь его, чтобы создать аккаунт.",
+				"security_question": "Контрольный вопрос",
+				"question": "Введи название планеты {planet}. Чтобы его узнать, открой в Prosperous Universe новый буфер с этой командой и посмотри название планеты в поле «Name».",
+				"planet_name": "Название планеты",
+				"another_planet": "Другая планета"
 			}
 		},
 		"password_reset": {
 			"title": "Сбросить пароль",
-			"info": "Пожалуйста, введите код отправленный на вашу почту, а также новый пароль.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"error": "An error occured. Check your Email, Code and Password. Make sure your password is secure.",
+			"info": "Введи код, отправленный тебе на почту, и новый пароль.",
+			"throttled": "Слишком много попыток. Подожди несколько минут и попробуй снова.",
+			"error": "Произошла ошибка. Проверь почту, код и пароль. Убедись, что пароль надёжный.",
 			"buttons": {
 				"send": "Сброс пароля"
 			},
@@ -61,9 +61,9 @@
 		},
 		"request_password_reset": {
 			"title": "Запросить восстановление пароля",
-			"info": "Введите подтверждённый email адрес привязанный к вашему аккаунту PRUNplanner. Если мы его найдём, мы отправим вам код для сброса пароля.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"error": "The request failed. Please try again later.",
+			"info": "Введи подтверждённый адрес электронной почты, привязанный к твоему аккаунту PRUNplanner. Если мы его найдём, то отправим тебе код для сброса пароля.",
+			"throttled": "Слишком много попыток. Подожди несколько минут и попробуй снова.",
+			"error": "Запрос не удался. Попробуй позже.",
 			"form": {
 				"email_placeholder": "Адрес электронной почты"
 			},
@@ -73,84 +73,84 @@
 		},
 		"verify_email": {
 			"title": "Подтверждение электронной почты",
-			"info": "Пожалуйста, введите код подтверждения полученный на вашу электронную почту. Возможно, стоит проверить папку со спамом.",
+			"info": "Введи код подтверждения, который пришёл тебе на почту. Возможно, стоит проверить папку «Спам».",
 			"buttons": {
-				"send": "Подтвердите адрес электронной почты"
+				"send": "Подтвердить адрес"
 			},
 			"form": {
 				"code_placeholder": "Код верификации"
 			},
 			"result": {
-				"ok": "Адрес электронной почты подтвержден.",
-				"already_verified": "Your email address is already confirmed.",
-				"back": "Back to your empire"
+				"ok": "Адрес электронной почты подтверждён.",
+				"already_verified": "Твой адрес электронной почты уже подтверждён.",
+				"back": "Вернуться к империи"
 			}
 		},
 		"hints": {
-			"username": "e.g. your in-game name",
-			"password": "Your password",
-			"new_password": "At least 8 characters",
-			"email": "e.g. name{'@'}example.com",
-			"code": "Code from the email"
+			"username": "например, твоё имя в игре",
+			"password": "Твой пароль",
+			"new_password": "Не меньше 8 символов",
+			"email": "например, name{'@'}example.com",
+			"code": "Код из письма"
 		}
 	},
 	"email_nudge": {
 		"none": {
-			"title": "Add an email so you can't get locked out",
-			"body": "If you ever forget your password, an email is the only way back to your plan. It is only used for password resets: no newsletters, never shared. | If you ever forget your password, an email is the only way back to your {count} plans. It is only used for password resets: no newsletters, never shared.",
-			"body_plain": "If you ever forget your password, an email is the only way back to your plans. It is only used for password resets: no newsletters, never shared."
+			"title": "Добавь почту, чтобы не потерять доступ",
+			"body": "Если ты забудешь пароль, почта — единственный способ вернуться к твоему плану. Она нужна только для сброса пароля: никаких рассылок, никому не передаётся. | Если ты забудешь пароль, почта — единственный способ вернуться к твоим планам ({count}). Она нужна только для сброса пароля: никаких рассылок, никому не передаётся.",
+			"body_plain": "Если ты забудешь пароль, почта — единственный способ вернуться к твоим планам. Она нужна только для сброса пароля: никаких рассылок, никому не передаётся."
 		},
 		"unconfirmed": {
-			"title": "Confirm your email",
-			"body": "Password resets only go to a confirmed address. Enter the code we sent to {email}, or ask for a new one."
+			"title": "Подтверди почту",
+			"body": "Письма для сброса пароля приходят только на подтверждённый адрес. Введи код, который мы отправили на {email}, или запроси новый."
 		},
 		"buttons": {
-			"add": "Add email",
-			"later": "Not now",
-			"never": "Don't remind me",
-			"enter_code": "Enter code",
-			"resend": "Send new code",
-			"undo": "Undo"
+			"add": "Добавить почту",
+			"later": "Не сейчас",
+			"never": "Больше не напоминать",
+			"enter_code": "Ввести код",
+			"resend": "Отправить новый код",
+			"undo": "Отменить"
 		},
-		"never_toast": "No more reminders. You can add an email any time in Profile.",
-		"code_sent": "Code sent. Check your inbox, and your spam folder."
+		"never_toast": "Напоминаний больше не будет. Добавить почту можно в любой момент в профиле.",
+		"code_sent": "Код отправлен. Проверь входящие и папку «Спам»."
 	},
 	"email_dialog": {
 		"title": {
-			"email": "Add an email",
-			"code": "Confirm your email",
-			"done": "Email confirmed"
+			"email": "Добавить почту",
+			"code": "Подтверди почту",
+			"done": "Почта подтверждена"
 		},
-		"email_label": "Email address",
-		"password_label": "Current password",
+		"email_label": "Адрес электронной почты",
+		"password_label": "Текущий пароль",
 		"email_placeholder": "you{'@'}example.com",
-		"email_info": "Only used to reset your password. No newsletters, never shared. You can change or remove it any time in Profile.",
-		"email_code_info": "We'll send an 8-character code to confirm it's yours.",
-		"code_info": "We sent a code to {email}. It's valid for 24 hours. You can also click the link in the email, on any device.",
-		"code_label": "Code",
-		"code_placeholder": "8 characters",
-		"no_code": "Nothing arrived? Check spam, or",
-		"done_title": "You're covered",
-		"done_info": "If you forget your password, use “Forgot password” on the login screen and we'll send the reset to {email}.",
-		"confirmed_toast": "Email confirmed. Password resets now go to {email}.",
+		"email_info": "Нужна только для сброса пароля. Никаких рассылок, никому не передаётся. Изменить или удалить её можно в любой момент в профиле.",
+		"email_code_info": "Мы отправим код из 8 символов, чтобы убедиться, что это твой адрес.",
+		"code_info": "Мы отправили код на {email}. Он действует 24 часа. Можно также перейти по ссылке из письма на любом устройстве.",
+		"code_label": "Код",
+		"code_placeholder": "8 символов",
+		"no_code": "Ничего не пришло? Проверь «Спам» или",
+		"done_title": "Доступ под защитой",
+		"done_info": "Если забудешь пароль, нажми «Не помнишь пароль?» на экране входа, и мы отправим письмо для сброса на {email}.",
+		"confirmed_toast": "Почта подтверждена. Письма для сброса пароля теперь приходят на {email}.",
 		"buttons": {
-			"cancel": "Cancel",
-			"save": "Save and send code",
-			"change_email": "Change email",
-			"later": "Later",
-			"confirm": "Confirm",
-			"resend": "send a new code",
-			"done": "Done"
+			"cancel": "Отмена",
+			"save": "Сохранить и отправить код",
+			"change_email": "Изменить почту",
+			"later": "Позже",
+			"confirm": "Подтвердить",
+			"resend": "отправь новый код",
+			"done": "Готово"
 		},
 		"errors": {
-			"password_required": "Enter your current password to change your email.",
-			"password_invalid": "That password is not correct.",
-			"invalid_email": "This doesn't look like an email address.",
-			"invalid": "That code didn't work. Check it, or send a new one.",
-			"expired": "That code has expired. Send a new one.",
-			"no_code": "There is no code waiting for this account. Send a new one.",
-			"throttled": "Too many attempts. Please wait a few minutes and try again.",
-			"unknown": "Something went wrong. Please try again."
+			"password_required": "Введи текущий пароль, чтобы изменить почту.",
+			"password_invalid": "Неверный пароль.",
+			"invalid_email": "Это не похоже на адрес электронной почты.",
+			"invalid": "Код не подошёл. Проверь его или запроси новый.",
+			"expired": "Срок действия кода истёк. Запроси новый.",
+			"no_code": "Для этого аккаунта нет ожидающего кода. Запроси новый.",
+			"throttled": "Слишком много попыток. Подожди несколько минут и попробуй снова.",
+			"unknown": "Что-то пошло не так. Попробуй ещё раз."
 		}
 	}
 }

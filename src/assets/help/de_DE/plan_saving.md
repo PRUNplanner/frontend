@@ -1,117 +1,117 @@
-PRUNplanner keeps your work on a [[plan]] with saves, drafts of unsaved changes, undo, copies and named versions you can go back to. When the same plan changes in two places, it asks before it overwrites anything. To show a plan to someone else, see [Sharing a plan](/help/plan_sharing).
+PRUNplanner sichert deine Arbeit an einem [[plan|Plan]] mit Speicherständen, Entwürfen ungespeicherter Änderungen, Rückgängig, Kopien und benannten Versionen, zu denen du zurückkehren kannst. Wenn sich derselbe Plan an zwei Stellen ändert, fragt es nach, bevor es etwas überschreibt. Wie du einen Plan jemand anderem zeigst, steht unter [Einen Plan teilen](/help/plan_sharing).
 
-Read it when you want to know whether your changes are safe, how to get back to an earlier state of a plan, or what a save message means.
+Lies das, wenn du wissen willst, ob deine Änderungen sicher sind, wie du zu einem früheren Stand eines Plans zurückkommst oder was eine Speichermeldung bedeutet.
 
-## Saving and Undo {#saving-and-undo}
+## Speichern und Rückgängig {#saving-and-undo}
 
-Name your plan with the pencil next to its name. Enter or clicking away keeps the name, and Esc cancels. Save it with **Save** (**Create** for a new plan) or Ctrl+S (Cmd+S on a Mac).
+Gib deinem Plan mit dem Stift neben seinem Namen einen Namen. Enter oder ein Klick daneben übernimmt den Namen, Esc bricht ab. Speichern kannst du mit **Speichern** (**Erstellen** bei einem neuen Plan) oder Strg+S (Cmd+S auf einem Mac).
 
-- **Save** only shows while there's something to save, and it stays disabled until the plan has a name.
-- A new plan gets its own address once it's created, and your empires and links use that. Until then, PRUNplanner keeps nothing of it, not even a [draft](#drafts).
-- Undo, Redo, the plan's state and Save sit together in one control. On a phone, Undo and Redo stay in the header, and the state with Save sits above the bottom navigation.
+- **Speichern** erscheint nur, wenn es etwas zu speichern gibt, und bleibt deaktiviert, bis der Plan einen Namen hat.
+- Ein neuer Plan bekommt eine eigene Adresse, sobald er erstellt ist, und deine Imperien und Links nutzen diese. Bis dahin behält PRUNplanner nichts davon, nicht einmal einen [Entwurf](#drafts).
+- Rückgängig, Wiederholen, der Zustand des Plans und Speichern sitzen zusammen in einem Bedienelement. Auf einem Handy bleiben Rückgängig und Wiederholen in der Kopfzeile, und der Zustand mit Speichern sitzt über der unteren Navigation.
 
-The state tells you where the plan stands:
+Der Zustand sagt dir, wo der Plan steht:
 
-| State                         | Meaning                                                                     |
-| ----------------------------- | --------------------------------------------------------------------------- |
-| "Saved …"                     | Saved at that time, followed by the version's name when it has one.         |
-| **Unsaved changes**           | You changed something since the last save. An amber dot marks it.           |
-| "Unsaved · draft kept …"      | Unsaved, but kept in a [draft](#drafts).                                    |
-| **Saving…**                   | The save is on its way.                                                     |
-| **Save failed**               | The save didn't go through. Your changes are kept, so click **Retry save**. |
-| **Draft not saved**           | Your unsaved changes aren't kept in a draft. Click it to try again.         |
-| "Name your plan to create it" | A new plan needs a name first.                                              |
+| Zustand                                            | Bedeutung                                                                                                        |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| „Gespeichert …“                                    | Zu dieser Zeit gespeichert, gefolgt vom Namen der Version, wenn sie einen hat.                                   |
+| **Nicht gespeicherte Änderungen**                  | Du hast seit dem letzten Speichern etwas geändert. Ein bernsteinfarbener Punkt markiert das.                     |
+| „Ungespeichert · Entwurf behalten …“               | Nicht gespeichert, aber in einem [Entwurf](#drafts) behalten.                                                    |
+| **Speichern…**                                     | Das Speichern ist unterwegs.                                                                                     |
+| **Speichern fehlgeschlagen**                       | Das Speichern hat nicht geklappt. Deine Änderungen bleiben erhalten, also klick auf **Speichern wiederholen**.   |
+| **Entwurf nicht gespeichert**                      | Deine ungespeicherten Änderungen sind in keinem Entwurf gesichert. Klick darauf, um es noch einmal zu versuchen. |
+| „Gib deinem Plan einen Namen, um ihn zu erstellen“ | Ein neuer Plan braucht zuerst einen Namen.                                                                       |
 
-Click the state of a saved plan to open its [versions](#versions).
-
-> [!tip]
-> **Reload saved version**, the icon next to Save, takes you back to the plan as last saved and drops the draft. If you have unsaved changes, it asks first.
-
-### Drafts {#drafts}
-
-Once a plan is created, PRUNplanner keeps its unsaved changes as a draft about 3 seconds after each change. A reload, a closed tab or a crash won't lose them.
-
-A draft isn't a save. It's kept with your account, but your empires and the plan's share link keep using the saved version until you save. That's why the versions list marks a draft "not in empires yet".
-
-When you open the plan again, it always shows as saved. A message ("You have unsaved changes from …") offers **Restore**. Your next change, or opening a version, closes the message, and your new changes replace the draft. If you want those changes back, click **Restore** before you edit anything.
-
-The page only warns you before you leave when the draft can't hold your changes. That happens when the plan isn't created yet, the last change is less than about 3 seconds old, or the draft failed.
-
-### Undo and Redo {#undo}
-
-You can undo any change with **Undo** and **Redo**, or with Ctrl+Z and Ctrl+Shift+Z (Cmd on a Mac). The keys don't work inside a text field.
-
-The history holds the last 50 changes. It starts fresh when you open, save or reload the plan, and when you discard changes. While you customise the layout, the keys undo layout changes instead (see [Layout](/help/plan_layout)).
-
-## Save as copy {#save-as-copy}
-
-For a saved, named plan, the arrow next to Save (**Save options**) has **Save as copy…**. It opens **Save As**:
-
-- **Name** starts as the plan's name with " (Copy)".
-- If you have empires, an empire select starts with the empire the plan calculates with, and the copy is added to it.
-- **Create** saves the plan as it is now, unsaved changes included, as a new plan and opens it in a new tab. Your original keeps its state and its unsaved changes.
+Klick auf den Zustand eines gespeicherten Plans, um seine [Versionen](#versions) zu öffnen.
 
 > [!tip]
-> A copy is how you try a different layout of the same base and keep both. Name the copies clearly, because they're separate plans from then on.
+> **Gespeicherte Version neu laden**, das Symbol neben Speichern, bringt dich zum zuletzt gespeicherten Stand des Plans zurück und verwirft den Entwurf. Hast du ungespeicherte Änderungen, fragt es vorher nach.
 
-## Versions {#versions}
+### Entwürfe {#drafts}
 
-Every save keeps a version of the plan. Click the state of a saved plan to open **Versions**.
+Sobald ein Plan erstellt ist, sichert PRUNplanner seine ungespeicherten Änderungen etwa 3 Sekunden nach jeder Änderung als Entwurf. Ein Neuladen, ein geschlossener Tab oder ein Absturz verliert sie nicht.
 
-- **Named only** is on by default. The list shows your named versions and the active one, with "… unnamed hidden" at the bottom. Untick it to see them all.
-- **Active** marks the version your plan is now.
-- If you have unsaved changes, the top row shows them as **Unsaved changes**, with "Draft kept … · not in empires yet" or "Not kept in a draft".
-- **Before version history** is the plan as it was before versions existed. **Changed by support** marks a change made by PRUNplanner support.
-- Named versions stay. PRUNplanner keeps the last 10 unnamed ones, and older ones go.
+Ein Entwurf ist kein Speichern. Er wird bei deinem Konto aufbewahrt, aber deine Imperien und der Teilen-Link des Plans nutzen weiter die gespeicherte Version, bis du speicherst. Deshalb markiert die Versionsliste einen Entwurf mit „noch in keinem Imperium“.
 
-For example, when a plan is created and then saved 14 times without a name, the newest 10 of those 15 unnamed versions stay and the 5 oldest are gone, while every named version stays. To keep a state of the plan for good, give its version a name.
+Wenn du den Plan wieder öffnest, erscheint er immer als gespeichert. Eine Meldung („Du hast ungespeicherte Änderungen vom …“) bietet **Wiederherstellen** an. Deine nächste Änderung oder das Öffnen einer Version schließt die Meldung, und deine neuen Änderungen ersetzen den Entwurf. Wenn du die alten Änderungen zurückhaben willst, klick auf **Wiederherstellen**, bevor du etwas bearbeitest.
 
-### Naming versions {#naming-versions}
+Die Seite warnt dich nur dann vor dem Verlassen, wenn der Entwurf deine Änderungen nicht halten kann. Das ist der Fall, wenn der Plan noch nicht erstellt ist, die letzte Änderung weniger als etwa 3 Sekunden her ist oder der Entwurf fehlgeschlagen ist.
 
-Open **Save options** (or press Ctrl+Alt+S, Cmd+Option+S on a Mac), type a name in **Version name (optional)** and press Enter or **Save named**. A name can be up to 80 characters. This works for any saved, named plan, even with nothing unsaved, and names the plan as it is now.
+### Rückgängig und Wiederholen {#undo}
 
-To name a version later, or rename one, use **Name this version** in its ⋯ menu. An empty name removes the name.
+Du kannst jede Änderung mit **Widerrufen** und **Wiederherstellen** rückgängig machen und wiederholen, oder mit Strg+Z und Strg+Umschalt+Z (Cmd auf einem Mac). In einem Textfeld funktionieren die Tasten nicht.
 
-A plan holds at most 20 named versions. At the limit, remove the name from one or delete one before you name another.
+Der Verlauf hält die letzten 50 Änderungen. Er beginnt neu, wenn du den Plan öffnest, speicherst oder neu lädst und wenn du Änderungen verwirfst. Während du das Layout anpasst, machen die Tasten stattdessen Layout-Änderungen rückgängig (siehe [Layout](/help/plan_layout)).
 
-### Preview, compare and restore {#preview}
+## Als Kopie speichern {#save-as-copy}
 
-The eye on a version shows it read-only. A banner tells you which version you're looking at, and the results tiles show its numbers. From there:
+Bei einem gespeicherten, benannten Plan hat der Pfeil neben Speichern (**Speicheroptionen**) den Eintrag **Als Kopie speichern**. Er öffnet **Speichern als**:
 
-- **Compare with current** lists what differs from your plan now.
-- **Restore** loads it as unsaved changes. Undo takes it back, and saving makes it the active version.
-- **Open as new plan** copies it into a new plan in a new tab, named after the plan with the version's name or date. The copy isn't in any empire.
-- **Back to current** returns you to your plan as it was.
-
-### Make active and delete {#make-active}
-
-**Make active**, in a version's ⋯ menu or in the preview banner, switches the plan to that version in one step. Your empires and the plan's share link use it right away. It goes on top as a new version ("Restored from …"), and the one you picked stays where it is. Any unsaved changes are discarded once you confirm.
-
-**Delete** in the same menu removes a version for good, after you confirm. You can't delete the active version.
-
-**Discard changes** in **Save options** drops your unsaved changes and goes back to the saved version, after you confirm.
-
-## Save conflicts {#conflicts}
-
-The same plan can be open in two tabs or on two devices. PRUNplanner never overwrites one with the other without asking.
-
-If another tab in this browser saves the plan and you have no unsaved changes here, this tab loads the new save. If you do have unsaved changes, a message says "Saved in another tab. Your edits are kept." with **Reload**.
-
-If you save after the plan was saved elsewhere (another tab or another device), **Saved in another tab** opens. Don't worry, when it opens nothing has been overwritten yet. It lists what changed there and what you changed, and offers:
-
-| Option               | What it does                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Save as new plan** | Saves your edits as a copy ("… (copy)") in the plan's empire and opens it. The original keeps the other version. |
-| **Overwrite**        | Replaces the other version with yours.                                                                           |
-| **Reload**           | Drops your edits and loads the saved version.                                                                    |
-| **Keep editing**     | Closes the dialog without saving anything yet.                                                                   |
-
-If the plan was deleted elsewhere, **Deleted in another tab** only offers **Save as new plan**.
-
-Drafts have their own checks:
-
-- **Draft saved elsewhere** means another tab or device kept a newer draft of this plan. Autosave pauses until you pick **Keep mine** or **Load the other draft**. **Decide later** closes the dialog and leaves autosave paused.
-- **Unsaved changes on an older version** means you left unsaved changes and the plan was saved again since. Pick **Keep my changes** (on top of the newer save), **Use the saved version** (deletes your unsaved changes) or **Decide later**.
+- **Name** beginnt mit dem Namen des Plans plus „ (Copy)“.
+- Wenn du Imperien hast, beginnt eine Imperiumsauswahl mit dem Imperium, mit dem der Plan rechnet, und die Kopie wird diesem hinzugefügt.
+- **Erstellen** speichert den Plan so, wie er jetzt ist, ungespeicherte Änderungen eingeschlossen, als neuen Plan und öffnet ihn in einem neuen Tab. Dein Original behält seinen Zustand und seine ungespeicherten Änderungen.
 
 > [!tip]
-> Working on one plan from two devices? Save before you switch. Then the other device only has to reload, and you never need the conflict dialog.
+> Mit einer Kopie probierst du einen anderen Aufbau derselben Basis aus und behältst beide. Benenn die Kopien eindeutig, denn ab dann sind es getrennte Pläne.
+
+## Versionen {#versions}
+
+Jedes Speichern behält eine Version des Plans. Klick auf den Zustand eines gespeicherten Plans, um **Versionen** zu öffnen.
+
+- **Nur benannte** ist standardmäßig an. Die Liste zeigt deine benannten Versionen und die aktive, mit „… unbenannte ausgeblendet“ unten. Nimm das Häkchen heraus, um alle zu sehen.
+- **Aktiv** markiert die Version, die dein Plan gerade ist.
+- Hast du ungespeicherte Änderungen, zeigt die oberste Zeile sie als **Ungespeicherte Änderungen**, mit „Entwurf behalten … · noch in keinem Imperium“ oder „Nicht in einem Entwurf behalten“.
+- **Vor dem Versionsverlauf** ist der Plan, wie er war, bevor es Versionen gab. **Vom Support geändert** markiert eine Änderung durch den PRUNplanner-Support.
+- Benannte Versionen bleiben. PRUNplanner behält die letzten 10 unbenannten, ältere fallen weg.
+
+Wird zum Beispiel ein Plan erstellt und dann 14-mal ohne Namen gespeichert, bleiben die neuesten 10 dieser 15 unbenannten Versionen, und die 5 ältesten sind weg, während jede benannte Version bleibt. Um einen Stand des Plans dauerhaft zu behalten, gib seiner Version einen Namen.
+
+### Versionen benennen {#naming-versions}
+
+Öffne **Speicheroptionen** (oder drück Strg+Alt+S, Cmd+Option+S auf einem Mac), tipp einen Namen in **Versionsname (optional)** und drück Enter oder **Benannt speichern**. Ein Name kann bis zu 80 Zeichen lang sein. Das geht bei jedem gespeicherten, benannten Plan, auch wenn nichts ungespeichert ist, und benennt den Plan so, wie er jetzt ist.
+
+Um eine Version später zu benennen oder umzubenennen, nutze **Diese Version benennen** in ihrem ⋯-Menü. Ein leerer Name entfernt den Namen.
+
+Ein Plan hat höchstens 20 benannte Versionen. Am Limit entfernst du bei einer den Namen oder löschst eine, bevor du eine weitere benennst.
+
+### Vorschau, Vergleich und Wiederherstellen {#preview}
+
+Das Auge an einer Version zeigt sie schreibgeschützt an. Ein Banner sagt dir, welche Version du ansiehst, und die Ergebnis-Kacheln zeigen ihre Zahlen. Von dort aus:
+
+- **Mit aktueller vergleichen** listet auf, was sich von deinem jetzigen Plan unterscheidet.
+- **Wiederherstellen** lädt sie als ungespeicherte Änderungen. Rückgängig nimmt das zurück, und Speichern macht sie zur aktiven Version.
+- **Als neuen Plan öffnen** kopiert sie in einen neuen Plan in einem neuen Tab, benannt nach dem Plan mit dem Namen oder Datum der Version. Die Kopie ist in keinem Imperium.
+- **Zurück zur aktuellen** bringt dich zu deinem Plan zurück, wie er war.
+
+### Aktiv setzen und löschen {#make-active}
+
+**Aktiv setzen**, im ⋯-Menü einer Version oder im Vorschau-Banner, stellt den Plan in einem Schritt auf diese Version um. Deine Imperien und der Teilen-Link des Plans nutzen sie sofort. Sie kommt als neue Version nach oben („Wiederhergestellt aus …“), und die gewählte bleibt, wo sie ist. Ungespeicherte Änderungen werden nach deiner Bestätigung verworfen.
+
+**Löschen** im selben Menü entfernt eine Version endgültig, nachdem du bestätigt hast. Die aktive Version kannst du nicht löschen.
+
+**Änderungen verwerfen** in den **Speicheroptionen** verwirft deine ungespeicherten Änderungen und geht zurück zur gespeicherten Version, nachdem du bestätigt hast.
+
+## Speicherkonflikte {#conflicts}
+
+Derselbe Plan kann in zwei Tabs oder auf zwei Geräten offen sein. PRUNplanner überschreibt nie das eine mit dem anderen, ohne zu fragen.
+
+Speichert ein anderer Tab in diesem Browser den Plan und du hast hier keine ungespeicherten Änderungen, lädt dieser Tab den neuen Stand. Hast du ungespeicherte Änderungen, sagt eine Meldung „In einem anderen Tab gespeichert. Deine Änderungen bleiben erhalten.“ mit **Neu laden**.
+
+Speicherst du, nachdem der Plan woanders gespeichert wurde (in einem anderen Tab oder auf einem anderen Gerät), öffnet sich **In einem anderen Tab gespeichert**. Keine Sorge, wenn es sich öffnet, ist noch nichts überschrieben. Es listet auf, was dort geändert wurde und was du geändert hast, und bietet an:
+
+| Option                       | Was sie bewirkt                                                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Als neuen Plan speichern** | Speichert deine Änderungen als Kopie („… (copy)“) im Imperium des Plans und öffnet sie. Das Original behält die andere Version. |
+| **Überschreiben**            | Ersetzt die andere Version durch deine.                                                                                         |
+| **Neu laden**                | Verwirft deine Änderungen und lädt die gespeicherte Version.                                                                    |
+| **Weiter bearbeiten**        | Schließt den Dialog, ohne schon etwas zu speichern.                                                                             |
+
+Wurde der Plan woanders gelöscht, bietet **In einem anderen Tab gelöscht** nur **Als neuen Plan speichern** an.
+
+Entwürfe haben eigene Prüfungen:
+
+- **Entwurf woanders gespeichert** heißt, ein anderer Tab oder ein anderes Gerät hat einen neueren Entwurf dieses Plans gesichert. Das automatische Speichern pausiert, bis du **Meine behalten** oder **Anderen Entwurf laden** wählst. **Später entscheiden** schließt den Dialog und lässt das automatische Speichern pausiert.
+- **Ungespeicherte Änderungen an einer älteren Version** heißt, du hast ungespeicherte Änderungen hinterlassen, und der Plan wurde seitdem erneut gespeichert. Wähl **Meine Änderungen behalten** (auf dem neueren Speicherstand), **Gespeicherte Version nutzen** (löscht deine ungespeicherten Änderungen) oder **Später entscheiden**.
+
+> [!tip]
+> Du arbeitest von zwei Geräten an einem Plan? Speichere, bevor du wechselst. Dann muss das andere Gerät nur neu laden, und du brauchst den Konfliktdialog nie.

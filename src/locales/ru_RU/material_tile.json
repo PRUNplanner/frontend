@@ -5,48 +5,48 @@
 		"pct_max": "% / Макс"
 	},
 	"card": {
-		"label": "{ticker} market",
+		"label": "Рынок {ticker}",
 		"universe_vwap": "Universe VWAP 7D",
-		"vs_30d": "{trend} vs 30D",
-		"pinned": "Pinned",
-		"close": "Close the market card",
+		"vs_30d": "{trend} к 30D",
+		"pinned": "Закреплено",
+		"close": "Закрыть карточку рынка",
 		"facts": "{weight} t · {volume} m³",
 		"plan": {
-			"plan_buys": "This plan buys",
-			"plan_sells": "This plan sells",
-			"empire_buys": "The empire buys",
-			"empire_sells": "The empire sells",
-			"setup_buys": "This setup buys",
-			"setup_sells": "This setup sells",
-			"per_day": "{amount} / day",
-			"periods": "{d7} in 7 days · {d30} in 30 days",
-			"check": "Market check on your CX",
-			"check_universe": "No CX preference: checked against Universe",
-			"across": "Against each exchange’s daily volume"
+			"plan_buys": "Этот план покупает",
+			"plan_sells": "Этот план продаёт",
+			"empire_buys": "Империя покупает",
+			"empire_sells": "Империя продаёт",
+			"setup_buys": "Эта конфигурация покупает",
+			"setup_sells": "Эта конфигурация продаёт",
+			"per_day": "{amount} / день",
+			"periods": "{d7} за 7 дней · {d30} за 30 дней",
+			"check": "Проверка рынка на твоей CX",
+			"check_universe": "Нет настроек CX: проверено по Universe",
+			"across": "По сравнению с дневным объёмом каждой биржи"
 		},
 		"chip": {
-			"fine": "Fine: {share} of {cx}’s daily volume",
-			"watch": "Watch: {share} of {cx}’s daily volume",
-			"too_big": "Too big: {share} of {cx}’s daily volume",
-			"flag_share": "{flag}: {share} of {cx}’s daily volume"
+			"fine": "Норма: {share} дневного объёма {cx}",
+			"watch": "Внимание: {share} дневного объёма {cx}",
+			"too_big": "Слишком много: {share} дневного объёма {cx}",
+			"flag_share": "{flag}: {share} дневного объёма {cx}"
 		},
 		"others": {
-			"fine": "Fine on the other exchanges too",
-			"watch": "Elsewhere: watch on {list}",
-			"too_big": "Elsewhere: too big on {list}",
-			"mixed": "Elsewhere: too big on {red}, watch on {amber}"
+			"fine": "На других биржах тоже норма",
+			"watch": "На других: внимание на {list}",
+			"too_big": "На других: слишком много на {list}",
+			"mixed": "На других: слишком много на {red}, внимание на {amber}"
 		},
 		"cross": {
-			"fine": "Fine on all four exchanges",
-			"watch": "Watch on {list}",
-			"too_big": "Too big on {list}",
-			"largest": "Largest share: {share} of {cx}’s daily volume",
-			"largest_none": "Largest share: no trades on {cx} in 30 days"
+			"fine": "Норма на всех четырёх биржах",
+			"watch": "Внимание на {list}",
+			"too_big": "Слишком много на {list}",
+			"largest": "Наибольшая доля: {share} дневного объёма {cx}",
+			"largest_none": "Наибольшая доля: на {cx} не было сделок за 30 дней"
 		},
 		"verdict": {
-			"fine": "Fine",
-			"watch": "Watch",
-			"too_big": "Too big"
+			"fine": "Норма",
+			"watch": "Внимание",
+			"too_big": "Слишком много"
 		},
 		"columns": {
 			"cx": "CX",
@@ -56,116 +56,116 @@
 			"vwap_7d": "VWAP 7D",
 			"vwap_30d": "VWAP 30D",
 			"vwap": "VWAP 7D · 30D",
-			"trend": "7D vs 30D",
-			"history": "30 days",
-			"per_day": "Per day",
-			"plan": "Plan"
+			"trend": "7D к 30D",
+			"history": "30 дней",
+			"per_day": "В день",
+			"plan": "План"
 		},
-		"your_cx": "your CX",
+		"your_cx": "твоя CX",
 		"status": {
-			"INACTIVE": "inactive",
-			"STALE": "stale"
+			"INACTIVE": "неактивна",
+			"STALE": "устарела"
 		},
-		"no_bids": "no bids",
-		"no_asks": "no asks",
-		"no_trades": "no trades",
-		"shared_scale": "shared scale",
-		"spark_label": "{cx} VWAP over 30 days",
-		"rare": "Rarely traded: {units} units in 30 days on all four exchanges. Prices come from a few single trades.",
+		"no_bids": "нет Bid",
+		"no_asks": "нет Ask",
+		"no_trades": "нет сделок",
+		"shared_scale": "общая шкала",
+		"spark_label": "VWAP {cx} за 30 дней",
+		"rare": "Торгуется редко: {units} ед. за 30 дней на всех четырёх биржах. Цены основаны на нескольких отдельных сделках.",
 		"summary": {
-			"trend": "Rising on {rising} of 4 exchanges · {trend} weighted by volume",
-			"trend_none": "Rising on {rising} of 4 exchanges · no trades in the last 7 days",
-			"book": "Order books: {offered} offered · {wanted} wanted",
-			"book_label": "Offered {offered} against wanted {wanted}",
+			"trend": "Растёт на {rising} из 4 бирж · {trend} с учётом объёма",
+			"trend_none": "Растёт на {rising} из 4 бирж · за последние 7 дней сделок не было",
+			"book": "Книги заявок: предложено {offered} · запрошено {wanted}",
+			"book_label": "Предложено {offered} при спросе {wanted}",
 			"cohesion": {
-				"together": "Exchange prices move together ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
-				"little": "Exchange prices differ a little ({pct} variation) · cheapest {cheapest}, dearest {dearest}",
-				"apart": "Exchange prices differ a lot ({pct} variation) · cheapest {cheapest}, dearest {dearest}"
+				"together": "Цены бирж движутся вместе (разброс {pct}) · дешевле всего {cheapest}, дороже всего {dearest}",
+				"little": "Цены бирж немного различаются (разброс {pct}) · дешевле всего {cheapest}, дороже всего {dearest}",
+				"apart": "Цены бирж сильно различаются (разброс {pct}) · дешевле всего {cheapest}, дороже всего {dearest}"
 			}
 		},
-		"hint": "Click the ticker to pin · Esc closes",
-		"hint_details": "Click the ticker for Market details · Esc closes",
-		"hint_pinned": "Pinned · Esc or × closes",
-		"hint_click": "Esc closes",
-		"exploration": "Market Exploration ↗",
-		"details": "Market details →"
+		"hint": "Нажми на тикер, чтобы закрепить · Esc закрывает",
+		"hint_details": "Нажми на тикер, чтобы открыть подробности рынка · Esc закрывает",
+		"hint_pinned": "Закреплено · Esc или × закрывает",
+		"hint_click": "Esc закрывает",
+		"exploration": "Исследование рынка ↗",
+		"details": "Подробности рынка →"
 	},
 	"details": {
-		"title": "Market details",
-		"weight": "Weight",
-		"volume": "Volume",
-		"data_of": "Data of {date}",
-		"active": "Active {n} of 4",
-		"same_limits": "Same limits as Plan check: 10 % watch, 50 % too big.",
-		"exchanges": "Exchanges",
+		"title": "Подробности рынка",
+		"weight": "Вес",
+		"volume": "Объём",
+		"data_of": "Данные на {date}",
+		"active": "Активно {n} из 4",
+		"same_limits": "Те же пороги, что в проверке плана: 10 % — внимание, 50 % — слишком много.",
+		"exchanges": "Биржи",
 		"views": {
-			"label": "Exchange view",
-			"prices": "Prices",
-			"book": "Order books",
-			"volume": "Volume"
+			"label": "Вид бирж",
+			"prices": "Цены",
+			"book": "Книги заявок",
+			"volume": "Объём"
 		},
 		"columns": {
-			"spread_pct": "Spread %",
-			"vs_universe": "vs Universe 7D",
-			"offered": "Offered (supply)",
-			"wanted": "Wanted (demand)",
-			"delta": "Δ offered − wanted",
-			"ratio": "Wanted per offered",
-			"split": "Offered · wanted",
-			"traded_7d": "Traded 7D",
-			"traded_30d": "Traded 30D",
-			"share_7d": "Plan of 7D",
-			"share_30d": "Plan of 30D",
-			"verdict": "Verdict"
+			"spread_pct": "Спред %",
+			"vs_universe": "к Universe 7D",
+			"offered": "Предложено (предложение)",
+			"wanted": "Запрошено (спрос)",
+			"delta": "Δ предложено − запрошено",
+			"ratio": "Спрос на ед. предложения",
+			"split": "Предложено · запрошено",
+			"traded_7d": "Продано 7D",
+			"traded_30d": "Продано 30D",
+			"share_7d": "Доля плана 7D",
+			"share_30d": "Доля плана 30D",
+			"verdict": "Оценка"
 		},
-		"split_label": "{cx}: offered {offered}, wanted {wanted}",
+		"split_label": "{cx}: предложено {offered}, запрошено {wanted}",
 		"notes": {
-			"prices": "Spread % is the gap between ask and bid, relative to the ask. “vs Universe 7D” compares each exchange with the Universe VWAP of all four.",
-			"book": "Units waiting in each order book right now. Offered = sell orders (what a buyer can take), wanted = buy orders (what a seller can fill).",
-			"volume": "Units traded. Opened from a plan, two more columns show the plan’s share.",
-			"volume_plan": "Plan share = what is bought or sold in the period, against what the exchange traded in it."
+			"prices": "Спред % — разница между Ask и Bid относительно Ask. «к Universe 7D» сравнивает каждую биржу с Universe VWAP всех четырёх.",
+			"book": "Количество, которое прямо сейчас ждёт в каждой книге заявок. Предложено — заявки на продажу (то, что может забрать покупатель), запрошено — заявки на покупку (то, что может закрыть продавец).",
+			"volume": "Проданное количество. Если открыть из плана, две дополнительные колонки показывают долю плана.",
+			"volume_plan": "Доля плана — сколько куплено или продано за период по сравнению с объёмом торгов биржи за тот же период."
 		},
-		"history": "Last 30 days"
+		"history": "Последние 30 дней"
 	},
 	"health": {
-		"title": "Market health",
+		"title": "Состояние рынка",
 		"breadth": {
-			"label": "Breadth",
-			"value": "rising on {rising} of 4 exchanges",
-			"text": "Exchanges whose 7D VWAP is above their 30D VWAP. All of them moving together is a real trend; one alone is often a blip on that exchange."
+			"label": "Охват",
+			"value": "растёт на {rising} из 4 бирж",
+			"text": "Биржи, где VWAP 7D выше VWAP 30D. Если растут все сразу, это настоящий тренд; если одна, это часто случайный скачок на ней."
 		},
 		"trend": {
-			"label": "Volume-weighted trend",
-			"value": "7D against 30D VWAP",
-			"text": "Each exchange’s change counted by how much it traded in 7 days, so a big exchange matters more than a quiet one."
+			"label": "Тренд с учётом объёма",
+			"value": "VWAP 7D к 30D",
+			"text": "Изменение на каждой бирже учитывается по её объёму торгов за 7 дней, так что крупная биржа весит больше тихой."
 		},
 		"balance": {
-			"label": "Order book balance",
-			"value": "wanted per unit offered",
-			"buyers": "More is offered than wanted: good for buyers, sellers compete for few bids.",
-			"sellers": "More is wanted than offered: good for sellers, buyers compete for few offers.",
-			"even": "Offers and bids are about even."
+			"label": "Баланс книги заявок",
+			"value": "спрос на единицу предложения",
+			"buyers": "Предложение больше спроса: выгодно покупателям, продавцы борются за немногие заявки на покупку.",
+			"sellers": "Спрос больше предложения: выгодно продавцам, покупатели борются за немногие предложения.",
+			"even": "Предложение и спрос примерно равны."
 		},
 		"cohesion": {
-			"label": "Price cohesion",
-			"together": "prices move together",
-			"little": "prices differ a little",
-			"apart": "prices differ a lot",
-			"text": "How far the four 7D VWAPs spread around their mean. Under 1.5 % they move in lock-step; over 5 % the gaps can pay for shipping between exchanges."
+			"label": "Согласованность цен",
+			"together": "цены движутся вместе",
+			"little": "цены немного различаются",
+			"apart": "цены сильно различаются",
+			"text": "Насколько четыре VWAP 7D разбросаны вокруг своего среднего. При разбросе меньше 1,5 % они движутся синхронно; больше 5 % — разница может окупить доставку между биржами."
 		}
 	},
 	"chart": {
 		"metric": {
 			"vwap": "@:terms.vwap",
-			"low": "Low",
-			"high": "High",
+			"low": "Минимум",
+			"high": "Максимум",
 			"traded": "@:terms.traded_volume",
-			"label": "Chart value"
+			"label": "Показатель графика"
 		},
-		"label": "{metric} of {ticker} on every exchange, last 30 days",
-		"empty": "No trades in the last 30 days",
-		"error": "Market history could not be loaded",
-		"cheapest": "Cheapest now:",
-		"open_exploration": "Open in Market Exploration →"
+		"label": "{metric} {ticker} на всех биржах за последние 30 дней",
+		"empty": "Нет сделок за последние 30 дней",
+		"error": "Не удалось загрузить историю рынка",
+		"cheapest": "Сейчас дешевле всего:",
+		"open_exploration": "Открыть в исследовании рынка →"
 	}
 }

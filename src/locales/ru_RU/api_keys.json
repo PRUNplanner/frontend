@@ -3,138 +3,137 @@
 	"title": "Ключи API",
 	"info": {
 		"description": {
-			"p1": "Интерфейс {link} обеспечивает программный доступ ко всем вашим данным планирования, игровым метаданным (здания, рецепты, материалы) и расчётным рыночным показателям, таким как VWAP. Публичные эндпоинты остаются открытыми для использования сообществом, однако доступ к приватным данным планирования — включая конфигурации ваших планов — требует безопасной аутентификации.",
-			"p2": "Используя эти эндпоинты, вы можете синхронизировать свои операции планирования с внешними таблицами, пользовательскими панелями управления или даже алгоритмами оптимизации.",
-			"link": "PRUNplanner REST API",
-			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
+			"p1": "Читай свои данные PRUNplanner из таблиц, скриптов и ИИ-ассистентов. Подробнее — в {link}.",
+			"link": "справочнике REST API",
+			"warning": "Обращайся с ключом как с паролем: он читает все твои данные планирования, а ключ для чтения и записи может их ещё и изменять. {link}",
+			"warning_link": "Сколько действуют ключи"
 		}
 	},
 	"get_started": {
-		"title": "Get started",
-		"step_create": "Create a key below and save it somewhere safe.",
-		"step_pick": "Pick what you want in the URL builder, for example your empire's material I/O.",
-		"step_paste": "Copy the Google Sheets formula, the URL or a curl or Python snippet and paste it into your sheet or script."
+		"title": "С чего начать",
+		"step_create": "Создай ключ ниже и сохрани его в надёжном месте.",
+		"step_pick": "Выбери нужное в конструкторе URL, например I/O материалов твоей империи.",
+		"step_paste": "Скопируй формулу Google Sheets, URL или фрагмент кода curl или Python и вставь в свою таблицу или скрипт."
 	},
 	"builder": {
-		"title": "URL builder",
-		"endpoint": "Data",
-		"format": "Format",
+		"title": "Конструктор URL",
+		"endpoint": "Данные",
+		"format": "Формат",
 		"groups": {
-			"new": "Sheets-ready (CSV and JSON)",
-			"planning": "Your planning data (JSON)",
-			"public": "Public game data (JSON, no key)"
+			"new": "Для таблиц (CSV и JSON)",
+			"planning": "Твои данные планирования (JSON)",
+			"public": "Открытые игровые данные (JSON, без ключа)"
 		},
 		"params": {
-			"empire": "Empire",
-			"plan": "Plan",
-			"cx": "CX preference",
-			"planet": "Planet",
-			"ticker": "Material",
-			"exchange": "Exchange",
-			"days": "Days"
+			"empire": "Империя",
+			"plan": "План",
+			"cx": "Настройки CX",
+			"planet": "Планета",
+			"ticker": "Материал",
+			"exchange": "Биржа",
+			"days": "Дни"
 		},
-		"days_option": "Last day | Last {n} days",
-		"planet_placeholder": "Natural ID, e.g. OT-580b",
+		"days_option": "Последний день | Последние {n} дн.",
+		"planet_placeholder": "Natural ID, например OT-580b",
 		"empty": {
-			"empire": "You have no empires yet.",
-			"plan": "You have no plans yet.",
-			"cx": "You have no CX preferences yet."
+			"empire": "У тебя пока нет империй.",
+			"plan": "У тебя пока нет планов.",
+			"cx": "У тебя пока нет настроек CX."
 		},
-		"empty_link": "Create one in Manage",
-		"incomplete": "Fill in every input above to build the URL.",
-		"placeholder_note": "{placeholder} stands for your key. Create a key and choose \"Use in URL builder\" to fill it in.",
+		"empty_link": "Создать в разделе «Управление»",
+		"incomplete": "Заполни все поля выше, чтобы собрать URL.",
+		"placeholder_note": "{placeholder} обозначает твой ключ. Создай ключ и выбери «Использовать в конструкторе URL», чтобы подставить его.",
 		"outputs": {
 			"sheets": "Google Sheets",
 			"url": "URL",
 			"curl": "curl",
 			"python": "Python"
 		},
-		"copy": "Copy {what}",
-		"copied": "Copied",
-		"freshness": "From the last time PRUNplanner calculated this empire. The updated_at column shows when.",
-		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
+		"copy": "Копировать {what}",
+		"copied": "Скопировано",
+		"freshness": "По данным последнего расчёта этой империи в PRUNplanner. Когда он был, показывает колонка updated_at.",
+		"key_warning": "Любой, кто может открыть эту таблицу, может читать твои данные с этим ключом. Ключ в URL может только читать, но всё же используй для каждой таблицы отдельный ключ «Только чтение», чтобы отзывать их по одному.",
 		"endpoints": {
 			"empire_material_io": {
-				"label": "Empire material I/O",
-				"description": "Production, consumption and delta per material and day for one empire."
+				"label": "I/O материалов империи",
+				"description": "Производство, потребление и дельта по каждому материалу в день для одной империи."
 			},
 			"empire_plans_material_io": {
-				"label": "Plan material I/O (empire)",
-				"description": "Production, consumption and delta per plan and material for one empire."
+				"label": "I/O материалов по планам (империя)",
+				"description": "Производство, потребление и дельта по каждому плану и материалу для одной империи."
 			},
 			"empire_plans": {
-				"label": "Empire plan list",
-				"description": "The plans of one empire with planet, COGC, permits and CorpHQ."
+				"label": "Список планов империи",
+				"description": "Планы одной империи с планетой, COGC, разрешениями и CorpHQ."
 			},
 			"fio_storage": {
-				"label": "FIO storage",
-				"description": "Every material in your FIO storages, warehouses and ships."
+				"label": "Склады FIO",
+				"description": "Все материалы в твоих хранилищах FIO, складах и кораблях."
 			},
 			"exchanges": {
-				"label": "Exchange prices",
-				"description": "Prices and calculated metrics of every material on every exchange."
+				"label": "Цены бирж",
+				"description": "Цены и рассчитанные показатели каждого материала на каждой бирже."
 			},
 			"plans": {
-				"label": "All plans",
-				"description": "Every plan of your account with its full configuration."
+				"label": "Все планы",
+				"description": "Все планы твоего аккаунта с полной конфигурацией."
 			},
 			"plan": {
-				"label": "One plan",
-				"description": "One plan with its full configuration."
+				"label": "Один план",
+				"description": "Один план с полной конфигурацией."
 			},
 			"empires": {
-				"label": "All empires",
-				"description": "Every empire of your account with its plans."
+				"label": "Все империи",
+				"description": "Все империи твоего аккаунта с их планами."
 			},
 			"empire": {
-				"label": "One empire",
-				"description": "One empire with its configuration."
+				"label": "Одна империя",
+				"description": "Одна империя с её конфигурацией."
 			},
 			"cxs": {
-				"label": "CX preferences",
-				"description": "Every CX preference of your account."
+				"label": "Настройки CX",
+				"description": "Все настройки CX твоего аккаунта."
 			},
 			"cx": {
-				"label": "One CX preference",
-				"description": "One CX preference with its rules."
+				"label": "Одни настройки CX",
+				"description": "Одни настройки CX с их правилами."
 			},
 			"materials": {
-				"label": "Materials",
-				"description": "Every material in the game."
+				"label": "Материалы",
+				"description": "Все материалы в игре."
 			},
 			"recipes": {
-				"label": "Recipes",
-				"description": "Every recipe in the game."
+				"label": "Рецепты",
+				"description": "Все рецепты в игре."
 			},
 			"buildings": {
-				"label": "Buildings",
-				"description": "Every building in the game."
+				"label": "Здания",
+				"description": "Все здания в игре."
 			},
 			"planet": {
-				"label": "One planet",
-				"description": "Resources, environment and infrastructure of one planet."
+				"label": "Одна планета",
+				"description": "Ресурсы, окружающая среда и инфраструктура одной планеты."
 			},
 			"planet_popr": {
-				"label": "Planet population report",
-				"description": "The latest population report of one planet."
+				"label": "Отчёт о населении планеты",
+				"description": "Последний отчёт о населении одной планеты."
 			},
 			"market_history": {
-				"label": "Market history",
-				"description": "Daily price history of one material on one exchange."
+				"label": "История рынка",
+				"description": "История цен по дням для одного материала на одной бирже."
 			},
 			"market_daily": {
-				"label": "Market history, every material",
-				"description": "Daily prices of every material on one exchange for the last days, up to 31, in one request. Limited to 30 requests per minute."
+				"label": "История рынка, все материалы",
+				"description": "Дневные цены всех материалов на одной бирже за последние дни (до 31) одним запросом. Не больше 30 запросов в минуту."
 			}
 		}
 	},
 	"manage": {
-		"title": "API Ключи PRUNplanner",
-		"loading": "Loading API Keys.",
-		"empty": "No API Keys yet. Create your first API Key.",
-		"never": "Never",
-		"last_used_hint": "Requests with this key update this within a few minutes.",
+		"title": "Ключи API PRUNplanner",
+		"loading": "Загрузка ключей API.",
+		"empty": "Ключей API пока нет. Создай свой первый ключ API.",
+		"never": "Никогда",
+		"last_used_hint": "Запросы с этим ключом обновляют это значение в течение нескольких минут.",
 		"buttons": {
 			"new_apikey": "Создать новый ключ",
 			"revoke_apikey": "Отозвать"
@@ -142,48 +141,54 @@
 		"table": {
 			"apikey_name": "Имя",
 			"apikey_prefix": "Префикс",
-			"apikey_access": "Access",
+			"apikey_access": "Доступ",
 			"apikey_created": "Создано",
 			"apikey_lastused": "Последнее использование"
 		}
 	},
 	"confirm_revoke": {
-		"title": "Revoke {name}?",
-		"content": "Scripts and sheets using it stop working at once.",
+		"title": "Отозвать {name}?",
+		"content": "Скрипты и таблицы, которые его используют, сразу перестанут работать.",
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
-	"implementation": {
-		"title": "Внедрение авторизации",
-		"link": "Открыть справочник REST API →",
-		"authorize": "The REST API reference has an Authorize button: paste a key there to try calls in the browser."
+	"mcp": {
+		"title": "ИИ-ассистенты (MCP)",
+		"description": "Подключи Claude, ChatGPT/Codex, Copilot, Cursor и других ассистентов: они читают и рассчитывают твои планы и империи на собственном движке PRUNplanner.",
+		"server_url": "URL сервера",
+		"header": "Заголовок",
+		"copy_url": "Копировать URL сервера",
+		"copied": "URL сервера скопирован",
+		"download": "Скачать для Claude Desktop",
+		"keys": "Ключ «Только чтение» читает и рассчитывает; ключ «Чтение и запись» ещё и сохраняет планы, империи и настройки.",
+		"setup_link": "Настроить Claude, ChatGPT/Codex, VS Code, Cursor и другие"
 	},
 	"create": {
 		"title": "Создать ключ API",
 		"form": {
 			"key_name": "Имя ключа",
-			"access": "Access",
-			"key_description": "Дайте ключу понятное название, чтобы легко его идентифицировать в будущем.",
+			"access": "Доступ",
+			"key_description": "Дай ключу понятное название, чтобы потом легко его узнать.",
 			"success_title": "Ключ успешно создан",
-			"success_key": "Ваш секретный ключ (Сохраните его сейчас!)",
-			"success_note": "В целях безопасности мы не можем показать этот ключ повторно. Если вы его потеряете, необходимо отозвать его и создать новый.",
-			"error": "Ошибка при создании ключа API. Пожалуйста, повторите попытку позже."
+			"success_key": "Твой секретный ключ (сохрани его сейчас!)",
+			"success_note": "В целях безопасности мы не можем показать этот ключ повторно. Если ты его потеряешь, отзови его и создай новый.",
+			"error": "Ошибка при создании ключа API. Попробуй позже."
 		},
 		"buttons": {
 			"create": "@:common.buttons.create",
 			"cancel": "@:common.buttons.cancel",
-			"saved": "Я сохранил свой ключ",
-			"copy": "Copy key",
-			"use_in_builder": "Use in URL builder"
+			"saved": "Ключ сохранён",
+			"copy": "Копировать ключ",
+			"use_in_builder": "Использовать в конструкторе URL"
 		},
-		"copied": "Key copied"
+		"copied": "Ключ скопирован"
 	},
 	"scope": {
-		"read": "Read-only",
-		"read_write": "Read & write",
+		"read": "Только чтение",
+		"read_write": "Чтение и запись",
 		"hint": {
-			"read": "Reads your plans, empires and other data. Can't change anything.",
-			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+			"read": "Читает твои планы, империи и другие данные. Ничего не может изменить.",
+			"read_write": "Ещё и создаёт, изменяет и удаляет твои планы, империи и другие данные."
 		}
 	}
 }

@@ -1,120 +1,120 @@
-New to PRUNplanner? This guide takes about 15 minutes. By the end you'll have:
+¿Eres nuevo en PRUNplanner? Esta guía lleva unos 15 minutos. Al terminar tendrás:
 
-- your [[empire]] set up with your faction and permits,
-- prices that come from the exchange you pick,
-- a first saved [[plan]] whose profit and payback you can read.
+- tu [[empire|imperio]] configurado con tu facción y tus permisos,
+- precios que vienen de la bolsa que elijas,
+- un primer [[plan]] guardado cuyo beneficio y amortización sabes leer.
 
-It's a short walkthrough. The pages linked at the end of each step go deeper when you want the details.
+Es un recorrido corto. Las páginas enlazadas al final de cada paso profundizan cuando quieras los detalles.
 
-You need an account. A new one already comes with an empire and an [[exchange-preference|exchange preference]], so most of this is checking and adjusting.
+Necesitas una cuenta. Una cuenta nueva ya viene con un imperio y una [[exchange-preference|preferencia de bolsa]], así que casi todo consiste en revisar y ajustar.
 
-## 1. Check your empire {#step-1}
+## 1. Revisa tu imperio {#step-1}
 
-An empire is a group of plans that shares a faction, permits and an exchange preference, so what you set here applies to every plan in it.
+Un imperio es un grupo de planes que comparten facción, permisos y preferencia de bolsa, así que lo que configures aquí se aplica a todos sus planes.
 
-![The Your empire step on the Empire page of a new account, with Faction, Permits Total, Permits Used and Save](/images/help/guides/first-base-empire.webp)
+![El paso Tu imperio en la página Imperio de una cuenta nueva, con Facción, Permisos totales, Permisos usados y Guardar](/images/help/guides/first-base-empire.webp)
 
-Open [Empire](/empire). A new account has one empire, "My Empire", with no [[faction]] and 1 of 2 permits used. While it has no plans, the page shows three steps. The first one, **Your empire**, holds its settings.
+Abre [Imperio](/empire). Una cuenta nueva tiene un imperio, «My Empire», sin [[faction|facción]] y con 1 de 2 permisos usados. Mientras no tiene planes, la página muestra tres pasos. El primero, **Tu imperio**, contiene sus ajustes.
 
-1. Pick your **Faction**. It gives the buildings of its [[expertise]] a bonus in every plan of the empire.
-2. Set **Permits Total** and **Permits Used** to what your in-game `HQ` buffer shows. The fewer permits you use, the larger the faction bonus.
-3. Press **Save**.
+1. Elige tu **Facción**. Da una bonificación a los edificios de su [[expertise|especialización]] en todos los planes del imperio.
+2. Pon en **Permisos totales** y **Permisos usados** lo que muestra el búfer `HQ` del juego. Cuantos menos permisos uses, mayor es la bonificación de facción.
+3. Pulsa **Guardar**.
 
-When the step shows **Saved**, you're done here. Once the empire has plans, you'll find the same fields in the **Configuration** box on the Empire page.
-
-> [!tip]
-> Once the empire has plans, the **Configuration** box warns "Mismatch Detected" when **Permits Used** differs from the permits your plans add up to. It checks as you type, so it can show up while you edit. Don't worry, it's only a reminder to match the numbers to the game. The first-run step above doesn't show it.
+Cuando el paso muestra **Guardado**, has terminado aquí. Una vez que el imperio tiene planes, encontrarás los mismos campos en el recuadro **Configuración** de la página Imperio.
 
 > [!tip]
-> Want a second empire, for example to test an expansion without touching your real bases? Create it in [Management](/manage) with **New Empire**.
-
-Read more: [Empire configuration](/help/empire#configuration), [Faction bonus](/help/plan_base#faction).
-
-## 2. Set your home exchange {#step-2}
-
-Your prices come from your exchange preference, and every plan's revenue, costs and profit are worked out at those prices. A new account has "My Exchange Preference", which is already linked to "My Empire". It's set to **Universe · VWAP 30D**, the 30-day average across all four exchanges. You can also take all prices from one exchange instead.
-
-![Exchanges with All planets open: the Exchange price box with its presets, Same for buy and sell and the exchange buttons](/images/help/guides/first-base-exchange.webp)
-
-1. Open [Exchanges](/exchanges). It opens your preference. If you have several, **Switch Preference** picks another one.
-2. In the list on the left, open **All planets**.
-3. In the **Exchange price** box, keep **Same for buy and sell** and pick your home exchange: AI1 at Antares Station, CI1 at Benten, IC1 at Hortus or NC1 at Moria.
-4. Pick a price basis, or click the preset **Average · VWAP 30D**.
-5. Press **Save changes** in the bar at the bottom.
+> Una vez que el imperio tiene planes, el recuadro **Configuración** avisa con «Discrepancia detectada» cuando **Permisos usados** no coincide con los permisos que suman tus planes. Lo comprueba mientras escribes, así que puede aparecer mientras editas. No te preocupes, solo es un recordatorio para que cuadres las cifras con el juego. El paso inicial de arriba no lo muestra.
 
 > [!tip]
-> [[vwap|VWAP]] is the volume-weighted average price: the credits paid for a material ÷ the units traded. As an example, say an exchange saw 30 units traded at 200 ȼ, 40 at 210 ȼ, 10 at 215 ȼ and 20 at 220 ȼ. The VWAP is (6,000 + 8,400 + 2,150 + 4,400) ÷ 100 = 20,950 ÷ 100 = 209.50 ȼ. Prices with more units behind them count more.
+> ¿Quieres un segundo imperio, por ejemplo para probar una expansión sin tocar tus bases reales? Créalo en [Gestión](/manage) con **Nuevo imperio**.
+
+Más información: [Configuración del imperio](/help/empire#configuration), [Bonificación de facción](/help/plan_base#faction).
+
+## 2. Elige tu bolsa principal {#step-2}
+
+Tus precios vienen de tu preferencia de bolsa, y los ingresos, costes y beneficio de cada plan se calculan con esos precios. Una cuenta nueva tiene «My Exchange Preference», que ya está vinculada a «My Empire». Está configurada en **Universe · VWAP 30D**, la media de 30 días de las cuatro bolsas. También puedes tomar todos los precios de una sola bolsa.
+
+![Bolsas con Todos los planetas abierto: el recuadro Precio de bolsa con sus ajustes rápidos, Igual para compra y venta y los botones de las bolsas](/images/help/guides/first-base-exchange.webp)
+
+1. Abre [Bolsas](/exchanges). Se abre tu preferencia. Si tienes varias, **Cambiar preferencia** elige otra.
+2. En la lista de la izquierda, abre **Todos los planetas**.
+3. En el recuadro **Precio de bolsa**, deja **Igual para compra y venta** y elige tu bolsa principal: AI1 en Antares Station, CI1 en Benten, IC1 en Hortus o NC1 en Moria.
+4. Elige una base de precio, o haz clic en el ajuste rápido **Media · VWAP 30D**.
+5. Pulsa **Guardar cambios** en la barra de abajo.
+
+> [!tip]
+> El [[vwap|VWAP]] es el precio medio ponderado por volumen: los créditos pagados por un material ÷ las unidades negociadas. Por ejemplo, supón que en una bolsa se negociaron 30 unidades a 200 ȼ, 40 a 210 ȼ, 10 a 215 ȼ y 20 a 220 ȼ. El VWAP es (6.000 + 8.400 + 2.150 + 4.400) ÷ 100 = 20.950 ÷ 100 = 209,50 ȼ. Los precios con más unidades detrás cuentan más.
 >
-> VWAP 7D averages the trades of the last 7 days, VWAP 30D those of the last 30. A single exchange uses only the trades made there. Universe adds up the trades of AI1, CI1, IC1 and NC1 into one average.
+> El VWAP 7D hace la media de las operaciones de los últimos 7 días, el VWAP 30D la de los últimos 30. Una sola bolsa usa solo las operaciones hechas allí. Universe suma las operaciones de AI1, CI1, IC1 y NC1 en una sola media.
 
-If the **Overview** shows the new rule under **All planets**, it worked. Once you have plans, the Overview lists every price they use, and amber prices mark materials that count as 0 ȼ. That only means the exchange you picked has no price for them, and PRUNplanner doesn't take one from another exchange. With VWAP, that happens only after 30 days without a trade on that exchange. Before that, VWAP 7D falls back to the price of the last day it was traded.
+Si el **Resumen** muestra la nueva regla en **Todos los planetas**, ha funcionado. Cuando tengas planes, el Resumen lista todos los precios que usan, y los precios en ámbar marcan materiales que cuentan como 0 ȼ. Eso solo significa que la bolsa que elegiste no tiene precio para ellos, y PRUNplanner no toma uno de otra bolsa. Con VWAP, eso solo pasa tras 30 días sin operaciones en esa bolsa. Antes de eso, el VWAP 7D recurre al precio del último día en que se negoció.
 
-Empires you create later start without a preference and price at Universe · VWAP 30D. You give them one in [Management](/manage), in column **CX** of **Empire Configuration**.
+Los imperios que crees más adelante empiezan sin preferencia y se valoran a Universe · VWAP 30D. Les asignas una en [Gestión](/manage), en la columna **CX** de **Configuración de imperios**.
 
-Details: [Set up your prices](/help/guide_cx_prices), [Setting an exchange rule](/help/exchanges#exchange-rule).
+Detalles: [Configurar tus precios](/help/guide_cx_prices), [Definir una regla de bolsa](/help/exchanges#exchange-rule).
 
-## 3. Find a planet {#step-3}
+## 3. Encuentra un planeta {#step-3}
 
-Open [Planet Search](/search).
+Abre [Búsqueda de planetas](/search).
 
-![Planet Search with an FEO filter and a 5-jump limit from NC1, the filters on the left and the matching planets on the right](/images/help/guides/first-base-search.webp)
+![Búsqueda de planetas con un filtro de FEO y un límite de 5 saltos desde NC1, los filtros a la izquierda y los planetas que coinciden a la derecha](/images/help/guides/first-base-search.webp)
 
-1. Under Materials, use **+ add material…** to add what you want to make or extract. Each option shows how many planets you'd get.
-2. Under **Distance**, tick your home exchange under **Exchanges** and lower **Max jumps**, so supply flights stay short.
-3. Turn on **Plots** under **Columns** to see which planets still have free [[plots]].
+1. En Materiales, usa **+ añadir material…** para añadir lo que quieres producir o extraer. Cada opción muestra cuántos planetas obtendrías.
+2. En **Distancia**, marca tu bolsa principal en **Bolsas** y baja **Saltos máx.**, para que los vuelos de suministro sean cortos.
+3. Activa **Parcelas** en **Columnas** para ver qué planetas aún tienen [[plots|parcelas]] libres.
 
-You're looking for a short list where the material's tile is green or yellow (close to the best planet's output), with few jumps and free plots. A red ⊘ next to a name means the planet is full.
+Buscas una lista corta en la que la tarjeta del material esté en verde o amarillo (cerca de la producción del mejor planeta), con pocos saltos y parcelas libres. Un ⊘ rojo junto a un nombre significa que el planeta está lleno.
 
-More: [Find a planet for a material](/help/guide_find_planet), [Planet Search](/help/planet_search#materials).
+Más: [Encontrar un planeta para un material](/help/guide_find_planet), [Búsqueda de planetas](/help/planet_search#materials).
 
-## 4. Create the plan {#step-4}
+## 4. Crea el plan {#step-4}
 
-Click "+" on the planet's row. A new plan for that planet opens in a new tab, so you don't lose your search.
+Haz clic en «+» en la fila del planeta. Se abre un plan nuevo para ese planeta en una pestaña nueva, así no pierdes tu búsqueda.
 
-![A new plan with the results tiles at the top, Empire & prices, Planet and Production](/images/help/guides/first-base-plan.webp)
+![Un plan nuevo con las tarjetas de resultados arriba, Imperio y precios, Planeta y Producción](/images/help/guides/first-base-plan.webp)
 
-1. **Empire & prices**: **Calculate with empire** shows the empire the plan calculates with. A new plan starts with your first empire, and when you create the plan it joins the empire selected there. **Prices** names the exchange preference it uses.
-2. **Planet**: the **COGC** select starts with the program the planet runs now. For a first base, leave **Permits** at 1 (500 area).
-3. Production: pick a building in the building select, then click **+ Recipe** and pick a [[recipe]]. Set **Count** to how many you build. For extraction, click a resource tile under **Planet** instead. That adds the extractor and its recipe.
-4. **Infrastructure**: leave **Auto** on. It picks the cheapest habitations that house all your workers.
-
-> [!tip]
-> On a planet many players plan on, an empty plan offers a card "Start from a typical setup on …" with the buildings and experts others use there. It shows what others plan, not what earns most, so check the numbers before you keep it.
-
-Read more: [Base setup](/help/plan_base), [Production & recipes](/help/plan_production#adding-buildings).
-
-## 5. Read the results {#step-5}
-
-The tiles at the top update with every edit.
-
-![The results tiles of a plan: Profit / day, Payback, Workforce, Area and Storage, here with a loss and too much area in red](/images/help/guides/first-base-results.webp)
-
-| Tile             | What to look for                                                                                         |
-| ---------------- | -------------------------------------------------------------------------------------------------------- |
-| **Profit / day** | Positive. It's revenue minus bought materials, [[degradation]] and [[production-fees\|production fees]]. |
-| **Payback**      | Days until the base has paid for itself. "never" means it makes no profit.                               |
-| **Workforce**    | Red means a tier has fewer beds than workers.                                                            |
-| **Area**         | The used figure turns red when the base needs more area than your permits give.                          |
-| **Storage**      | Days until the storage is full, which tells you how often a ship must come.                              |
-
-[[material-io|Material I/O]] on the right lists what the base makes and uses per day. A positive Δ gets sold, a negative one bought. A flag after a material means the market may not take that amount. Click it to open Plan check.
+1. **Imperio y precios**: **Calcular con el imperio** muestra el imperio con el que se calcula el plan. Un plan nuevo empieza con tu primer imperio, y cuando creas el plan se une al imperio seleccionado ahí. **Precios** nombra la preferencia de bolsa que usa.
+2. **Planeta**: el selector **COGC** empieza con el programa que tiene activo ahora el planeta. Para una primera base, deja **Permisos** en 1 (500 de área).
+3. Producción: elige un edificio en el selector de edificios, luego haz clic en **+ Receta** y elige una [[recipe|receta]]. Pon en **Cantidad** cuántos construyes. Para extraer, haz clic en una tarjeta de recurso en **Planeta**. Eso añade el extractor y su receta.
+4. **Infraestructura**: deja **Auto** activado. Elige los hábitats más baratos que alojan a todos tus trabajadores.
 
 > [!tip]
-> Try one change at a time and watch **Profit / day**: another recipe, one more building, or a luxury turned off in **Workforce**. **Undo** (Ctrl+Z) takes a change back.
+> En un planeta donde planifican muchos jugadores, un plan vacío ofrece una tarjeta «Empieza con una configuración típica en …» con los edificios y expertos que usan otros allí. Muestra lo que planifican otros, no lo que más gana, así que revisa las cifras antes de quedártela.
 
-Details: [Results](/help/plan_results), [Plan check](/help/plan_check#market-check).
+Más información: [Configuración de la base](/help/plan_base), [Producción y recetas](/help/plan_production#adding-buildings).
 
-## 6. Save the plan {#step-6}
+## 5. Lee los resultados {#step-5}
 
-1. Click the pencil next to the plan's name and type a name.
-2. Press **Create** (or Ctrl+S, Cmd+S on a Mac).
+Las tarjetas de arriba se actualizan con cada cambio.
 
-Once the state reads "Saved …", the side menu lists the plan under **Plans** whenever it shows the plan's empire. From now on every save keeps a version, and PRUNplanner keeps unsaved changes as a draft, so closing the tab loses nothing.
+![Las tarjetas de resultados de un plan: Beneficio / día, Amortización, Mano de obra, Área y Almacenamiento, aquí con pérdidas y demasiada área en rojo](/images/help/guides/first-base-results.webp)
 
-More: [Saving & versions](/help/plan_saving).
+| Tarjeta             | Qué mirar                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Beneficio / día** | Positivo. Son los ingresos menos los materiales comprados, la [[degradation\|degradación]] y las [[production-fees\|tasas de producción]]. |
+| **Amortización**    | Días hasta que la base se ha pagado sola. «nunca» significa que no da beneficio.                                                           |
+| **Mano de obra**    | El rojo significa que un nivel tiene menos camas que trabajadores.                                                                         |
+| **Área**            | La cifra usada se pone en rojo cuando la base necesita más área de la que dan tus permisos.                                                |
+| **Almacenamiento**  | Días hasta que el almacenamiento se llena, lo que te dice cada cuánto debe venir una nave.                                                 |
 
-## Next {#next}
+La [[material-io|E/S de materiales]] de la derecha lista lo que la base produce y usa al día. Un Δ positivo se vende, uno negativo se compra. Una marca tras un material significa que el mercado quizá no absorba esa cantidad. Haz clic en ella para abrir la Revisión del plan.
 
-- [Find a planet for a material](/help/guide_find_planet): get the most out of every Planet Search filter.
-- [Set up your prices](/help/guide_cx_prices): buy and sell rules, planet exceptions and fixed prices.
-- [Grow to an empire](/help/guide_empire): for when you plan your second base.
+> [!tip]
+> Prueba un cambio cada vez y fíjate en **Beneficio / día**: otra receta, un edificio más o un lujo desactivado en **Mano de obra**. **Deshacer** (Ctrl+Z) revierte un cambio.
+
+Detalles: [Resultados](/help/plan_results), [Revisión del plan](/help/plan_check#market-check).
+
+## 6. Guarda el plan {#step-6}
+
+1. Haz clic en el lápiz junto al nombre del plan y escribe un nombre.
+2. Pulsa **Crear** (o Ctrl+S, Cmd+S en un Mac).
+
+Cuando el estado dice «Guardado …», el menú lateral lista el plan en **Planes** siempre que muestre el imperio del plan. A partir de ahora cada guardado conserva una versión, y PRUNplanner guarda los cambios sin guardar como borrador, así que cerrar la pestaña no hace perder nada.
+
+Más: [Guardado y versiones](/help/plan_saving).
+
+## Siguientes pasos {#next}
+
+- [Encontrar un planeta para un material](/help/guide_find_planet): saca el máximo partido a cada filtro de la Búsqueda de planetas.
+- [Configurar tus precios](/help/guide_cx_prices): reglas de compra y venta, excepciones por planeta y precios fijos.
+- [Crecer hasta un imperio](/help/guide_empire): para cuando planifiques tu segunda base.

@@ -1,117 +1,117 @@
-The [Empire](/empire) page lets you check that your bases work as a whole before you build them. It puts all plans of one [[empire]] together and shows what they earn and cost per day, which materials the empire makes and needs, how much of a market it would take, and which recipes could use what's left over.
+La page [Empire](/empire) te permet de vérifier que tes bases fonctionnent comme un tout avant de les construire. Elle réunit tous les plans d'un [[empire|empire]] et montre ce qu'ils rapportent et coûtent par jour, quels matériaux l'empire fabrique et consomme, quelle part d'un marché il occuperait, et quelles recettes pourraient utiliser ce qui reste.
 
-A plan on its own page only knows its own base. Here, what one base makes and another one uses is counted once, so you see what the empire as a whole buys and sells.
+Un plan sur sa propre page ne connaît que sa propre base. Ici, ce qu'une base fabrique et ce qu'une autre consomme n'est compté qu'une fois, donc tu vois ce que l'empire dans son ensemble achète et vend.
 
-## Getting Started {#getting-started}
+## Pour commencer {#getting-started}
 
-An empire groups your base [[plan|plans]] and holds your [[faction]] and [[area-permits|permits]]. Every new account has one, "My Empire". You create more, delete them and assign plans in [Management](/help/management).
+Un empire regroupe les [[plan|plans]] de tes bases et contient ta [[faction|faction]] et tes [[area-permits|permis]]. Chaque nouveau compte en a un, « My Empire ». Tu en crées d'autres, les supprimes et y attribues des plans dans la [Gestion](/help/management).
 
-- **Switch Empire** picks the empire to show. The one you pick also becomes your **Default Empire** (see [Profile](/help/profile#preferences)), so the page opens on it next time.
-- An empire without plans shows three steps to your first base. Check faction and permits, find a planet in [Planet Search](/search) (a plan you create there is added to this empire), and set your prices on [Exchanges](/exchanges).
-- If you have no empire at all, **Create empire** makes one with no faction and 1 of 2 permits used.
+- **Changer d'empire** choisit l'empire à afficher. Celui que tu choisis devient aussi ton **Empire par défaut** (voir [Profil](/help/profile#preferences)), donc la page s'ouvre dessus la prochaine fois.
+- Un empire sans plan affiche trois étapes vers ta première base. Vérifie la faction et les permis, trouve une planète dans la [Recherche de planètes](/search) (un plan que tu y crées est ajouté à cet empire), et définis tes prix sur [Bourses](/exchanges).
+- Si tu n'as aucun empire, **Créer un empire** en crée un sans faction et avec 1 permis utilisé sur 2.
 
-A progress bar shows while PRUNplanner calculates the plans. Prices come from the empire's [[exchange-preference|exchange preference]], with each plan's planet rules. An empire without a preference uses Universe · VWAP 30D. Details in [Exchanges & prices](/help/exchanges).
+Une barre de progression s'affiche pendant que PRUNplanner calcule les plans. Les prix viennent de la [[exchange-preference|préférence d'échange]] de l'empire, avec les règles de planète de chaque plan. Un empire sans préférence utilise Univers · VWAP 30j. Détails dans [Bourses et prix](/help/exchanges).
 
-## Overview Numbers {#overview-numbers}
+## Chiffres de l'aperçu {#overview-numbers}
 
-The tiles on top sum up the empire per day:
+Les tuiles en haut résument l'empire par jour :
 
-| Tile              | How it's calculated                                                                                                                                                                                                                                                                                                                                                                                            |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Revenue**       | The value of everything the empire sells, after netting (see below)                                                                                                                                                                                                                                                                                                                         |
-| **Cost**          | What the empire buys after netting, plus each plan's [[degradation]] (construction cost ÷ 180 per day) and [[production-fees\|production fees]]; also shown as % of revenue |
-| **Profit**        | Revenue − Cost, with the margin in %                                                                                                                                                                                                                                                                                                                                                                           |
-| **Profit / Area** | Profit ÷ the area all plans use                                                                                                                                                                                                                                                                                                                                                                                |
+| Tuile                   | Comment elle est calculée                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Recettes**            | La valeur de tout ce que l'empire vend, après compensation (voir plus bas)                                                                                                                                                                                                                                                                                                                                                             |
+| **Coût**                | Ce que l'empire achète après compensation, plus la [[degradation\|dégradation]] de chaque plan (coût de construction ÷ 180 par jour) et ses [[production-fees\|frais de production]] ; aussi affiché en % des recettes |
+| **Bénéfice**            | Recettes − Coût, avec la marge en %                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Bénéfices / Surface** | Bénéfice ÷ la surface utilisée par tous les plans                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-_Netting:_ the empire isn't a plain sum of its plans. For each material, what one plan makes and another uses cancels out first. Only the rest is sold or bought, at the average of the plans' prices for that material, weighted by each plan's amount. Workforce consumables count as materials here.
+_Compensation :_ l'empire n'est pas une simple somme de ses plans. Pour chaque matériau, ce qu'un plan fabrique et ce qu'un autre consomme s'annulent d'abord. Seul le reste est vendu ou acheté, à la moyenne des prix des plans pour ce matériau, pondérée par la quantité de chaque plan. Les consommables de la main-d'œuvre comptent ici comme des matériaux.
 
-For example (made-up numbers), plan A makes 100 units of a material a day at 80 ȼ each, and plan B uses 60 of them at 100 ȼ each. The empire sells only the 40 left over, at (100 × 80 + 60 × 100) ÷ (100 + 60) = 14,000 ÷ 160 = 87.50 ȼ each, so they add 40 × 87.50 = 3,500 ȼ a day to **Revenue**.
+Par exemple (chiffres inventés), le plan A fabrique 100 unités d'un matériau par jour à 80 ȼ l'unité, et le plan B en consomme 60 à 100 ȼ l'unité. L'empire ne vend que les 40 restantes, à (100 × 80 + 60 × 100) ÷ (100 + 60) = 14 000 ÷ 160 = 87,50 ȼ l'unité, donc elles ajoutent 40 × 87,50 = 3 500 ȼ par jour aux **Recettes**.
 
-The bar below splits the revenue into production inputs, workforce, degradation, production fees and profit, each in % of revenue. When the empire makes a loss, the bar shows the parts as a share of cost instead, with a hatched part for the cost that revenue doesn't cover.
+La barre en dessous répartit les recettes entre intrants de production, main-d'œuvre, dégradation, frais de production et bénéfice, chacun en % des recettes. Quand l'empire est en perte, la barre affiche plutôt les parts en proportion du coût, avec une partie hachurée pour le coût que les recettes ne couvrent pas.
 
-**Shipping** shows the tonnes and cubic metres per day your plans ship in (import) and out (export), added up over the plans.
+**Transport** affiche les tonnes et mètres cubes par jour que tes plans font entrer (importation) et sortir (exportation), additionnés sur les plans.
 
-## Plan List and Configuration {#plan-list}
+## Liste des plans et configuration {#plan-list}
 
-The plan list shows every plan of the empire with its planets, [[cogc|COGC]], permits and **Profit (ȼ)**. Click a plan to open it. The footer adds up the permits your plans use. On wide screens, **Hide plan list** folds away the whole left column: the tiles, the plan list and Configuration.
+La liste des plans affiche chaque plan de l'empire avec ses planètes, son [[cogc|COGC]], ses permis et son **Bénéfice (ȼ)**. Clique sur un plan pour l'ouvrir. Le pied de liste additionne les permis utilisés par tes plans. Sur les écrans larges, **Masquer la liste des plans** replie toute la colonne de gauche : les tuiles, la liste des plans et la Configuration.
 
 ### Configuration {#configuration}
 
-The **Configuration** box holds the empire's **Name**, **Faction**, **Permits Total** (at least 2) and **Permits Used** (at least 1). **Save** stores them, and **Reload** drops your edits and loads the saved values.
+Le cadre **Configuration** contient le **Nom** de l'empire, sa **Faction**, **Permis total** (au moins 2) et **Permis utilisés** (au moins 1). **Enregistrer** les enregistre, et **Recharger** abandonne tes modifications et charge les valeurs enregistrées.
 
-**Permits Total** is how many base permits your company has, and **Permits Used** is how many of them your bases take up. In the game, each [[hq-level|HQ level]] upgrade gives you one more permit.
+**Permis total** est le nombre de permis de base de ta société, et **Permis utilisés** le nombre de ceux qu'occupent tes bases. Dans le jeu, chaque amélioration de [[hq-level|niveau de QG]] te donne un permis de plus.
 
-Faction and permits change your production. A building whose expertise your faction favours gets a bonus of `1 + bonus × 2 × (3 − 2 × Permits Used ÷ Permits Total)`, so fewer used permits mean a larger bonus. The [glossary](/help/glossary#faction) explains factions.
+La faction et les permis modifient ta production. Un bâtiment dont l'expertise est favorisée par ta faction obtient un bonus de `1 + bonus × 2 × (3 − 2 × Permits Used ÷ Permits Total)` : moins de permis utilisés signifie donc un bonus plus grand. Le [glossaire](/help/glossary#faction) explique les factions.
 
-For example (made-up numbers), with a base bonus of 0.05 and 2 of 4 permits used, PRUNplanner calculates 1 + 0.05 × 2 × (3 − 2 × 2 ÷ 4) = 1 + 0.05 × 2 × 2 = 1.20, so +20 %. With all 4 used, it calculates 1 + 0.05 × 2 × 1 = 1.10, so +10 %. The page calculates every plan with the saved values, so the numbers change once you **Save**.
+Par exemple (chiffres inventés), avec un bonus de base de 0,05 et 2 permis utilisés sur 4, PRUNplanner calcule 1 + 0,05 × 2 × (3 − 2 × 2 ÷ 4) = 1 + 0,05 × 2 × 2 = 1,20, soit +20 %. Avec les 4 utilisés, il calcule 1 + 0,05 × 2 × 1 = 1,10, soit +10 %. La page calcule chaque plan avec les valeurs enregistrées, donc les chiffres changent une fois que tu as cliqué sur **Enregistrer**.
 
-When **Permits Used** differs from the permits your plans add up to, a warning tells you ("Mismatch Detected"). The box compares **Permits Used** with the total in the plan list's footer, where each plan counts the permits set in its own [Base setup](/help/plan_base#permits), and it checks again as you type. For example, three plans with 1, 1 and 2 permits add up to 4, so with **Permits Used** at 3 the warning reads "Mismatch Detected: 3 configured vs. 4 planned permits".
+Quand **Permis utilisés** diffère du total des permis de tes plans, un avertissement te le signale (« Écart détecté »). Le cadre compare **Permis utilisés** au total du pied de la liste des plans, où chaque plan compte les permis définis dans sa propre [Configuration de la base](/help/plan_base#permits), et il revérifie pendant que tu tapes. Par exemple, trois plans avec 1, 1 et 2 permis font 4 au total, donc avec **Permis utilisés** à 3 l'avertissement indique « Écart détecté : 3 permis configurés contre 4 planifiés ».
 
-Don't worry, the warning doesn't block anything: you can still save, and your plans still calculate. It's there because the faction bonus uses **Permits Used**, so a value that doesn't match the bases you'll run gives the wrong bonus. Change **Permits Used**, or the permits in your plans, until they agree. Take the right values from your in-game HQ buffer. The first-run "Your empire" step doesn't show the warning.
+Pas d'inquiétude, l'avertissement ne bloque rien : tu peux toujours enregistrer, et tes plans sont toujours calculés. Il est là parce que le bonus de faction utilise **Permis utilisés** : une valeur qui ne correspond pas aux bases que tu feras tourner donne un mauvais bonus. Modifie **Permis utilisés**, ou les permis de tes plans, jusqu'à ce qu'ils concordent. Prends les bonnes valeurs dans ton buffer HQ en jeu. L'étape « Ton empire » du premier lancement n'affiche pas l'avertissement.
 
-If the empire was saved in another tab or on another device in the meantime, you choose whether to overwrite it or reload the saved version.
+Si l'empire a été enregistré entre-temps dans un autre onglet ou sur un autre appareil, tu choisis de l'écraser ou de recharger la version enregistrée.
 
-## Material I/O {#material-io}
+## E/S matières {#material-io}
 
-**Material I/O** (one of the page's views) lists every material of the empire with these columns:
+**E/S matières** (l'une des vues de la page) liste chaque matériau de l'empire avec ces colonnes :
 
-- **Delta**: made minus used per day. Above zero, the empire sells the rest, and below zero, it buys what's missing.
-- **Production** and **Consumption**.
-- **ȼ Delta**: the delta's value per day.
-- **Produced by** and **Consumed by**: which plans make and use the most of it.
+- **Delta** : fabriqué moins consommé par jour. Au-dessus de zéro, l'empire vend le reste, et en dessous de zéro, il achète ce qui manque.
+- **Production** et **Consommation**.
+- **Delta ȼ** : la valeur du delta par jour.
+- **Produit par** et **Consommé par** : quels plans en fabriquent et en consomment le plus.
 
-Expand a row to see the plans behind it. **Detail view** switches between producers and consumers and **Net per planet**, which adds up plans on the same planet into a surplus or a need.
+Déplie une ligne pour voir les plans derrière elle. **Vue détaillée** bascule entre producteurs et consommateurs et **Net par planète**, qui additionne les plans d'une même planète en un excédent ou un besoin.
 
-These filters are shared with Analysis:
+Ces filtres sont partagés avec l'Analyse :
 
-- **Display**: **All**, or **Loadbalance** for materials the empire both makes and uses.
-- **Consumables**: **Show** or **Hide** workforce consumables.
-- **Planets** (Material I/O only): **Summary**, or **Expand all** rows.
-- **Materials** and **Planets**: show only the ones you pick.
+- **Affichage** : **Tous**, ou **Répartition de charge** pour les matériaux que l'empire fabrique et consomme à la fois.
+- **Consommables** : **Afficher** ou **Masquer** les consommables de la main-d'œuvre.
+- **Planètes** (E/S matières uniquement) : **Résumé**, ou **Tout développer** pour toutes les lignes.
+- **Matériaux** et **Planètes** : n'affichent que ceux que tu choisis.
 
-Hover any [[ticker]] for its market card (see [Exchanges & prices](/help/exchanges#market-card)).
+Survole n'importe quel [[ticker|ticker]] pour voir sa fiche de marché (voir [Bourses et prix](/help/exchanges#market-card)).
 
-After each calculation, PRUNplanner also saves the empire's Material I/O to your account. That copy is what the API's "Empire material I/O" returns (see [API keys](/help/api_keys#url-builder)).
+Après chaque calcul, PRUNplanner enregistre aussi les E/S matières de l'empire dans ton compte. C'est cette copie que renvoie l'entrée « E/S de matériaux de l'empire » de l'API (voir [Clés API](/help/api_keys#url-builder)).
 
-### Market Check {#market-check}
+### Contrôle du marché {#market-check}
 
-Above the table, **Market check on the empire's net flow** checks what the empire as a whole sells or buys against the exchange's trading. Made-and-used materials net out first, so they're only flagged on what reaches the market. Each plan's own [Plan check](/help/plan_check#market-check) still flags them.
+Au-dessus du tableau, **Contrôle du marché sur le flux net de l'empire** compare ce que l'empire dans son ensemble vend ou achète aux transactions de l'échange. Les matériaux fabriqués et consommés se compensent d'abord, donc ils ne sont signalés que sur ce qui atteint le marché. Le [Contrôle du plan](/help/plan_check#market-check) de chaque plan les signale toujours.
 
-| Chip                                               | Flags                                                                                                                                                                                                      |
-| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Red: "can't trade as planned"      | No price; no trades in 7 days; no offers (when buying) or no buyers (when selling); 50 % or more of the exchange's average daily volume (30 days) |
-| Amber: "large share of the market" | 10 % or more of the average daily volume                                                                                                                                                                   |
-| Muted: "other notes"               | All exchanges, no exchange set; data older than 2 days                                                                                                                                                     |
+| Pastille                                                         | Signale                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rouge : « ne peut pas être échangé comme prévu » | Aucun prix ; aucune transaction en 7 jours ; aucune offre (à l'achat) ou aucun acheteur (à la vente) ; 50 % ou plus du volume quotidien moyen de l'échange (30 jours) |
+| Orange : « grande part du marché »               | 10 % ou plus du volume quotidien moyen                                                                                                                                                                                         |
+| Grisée : « autres remarques »                    | Tous les échanges, aucun échange défini ; données de plus de 2 jours                                                                                                                                                           |
 
-Click a chip to see only the materials of that level, and click it again to see all of them.
+Clique sur une pastille pour ne voir que les matériaux de ce niveau, et clique à nouveau pour les voir tous.
 
-The empire check only uses the _all-planets_ rules of the empire's exchange preference. A planet exception still counts for the empire's prices, but the check doesn't see it, so check those materials in each plan's Plan check.
+Le contrôle de l'empire n'utilise que les règles _de toutes les planètes_ de la préférence d'échange de l'empire. Une exception de planète compte toujours pour les prix de l'empire, mais le contrôle ne la voit pas : vérifie donc ces matériaux dans le Contrôle du plan de chaque plan.
 
-## Analysis {#analysis}
+## Analyse {#analysis}
 
-**Analysis** shows charts. The material charts follow the filters, and the plan charts don't.
+**Analyse** affiche des graphiques. Les graphiques de matériaux suivent les filtres, ceux des plans non.
 
-- **Where each plan's revenue goes** shows the revenue split, margin and revenue per day for each plan. You see the top 10 plans by profit and every loss-making plan, and the rest go into "Other". These are each plan's own numbers, not netted.
-- **Materials moving the most ȼ** shows the 10 materials with the most ȼ per day, what the empire buys on the left and what it sells on the right, in **ȼ / day** or **Units / day**. A button below shows all of them. Click a material to open it in Material I/O.
-- **More charts** stays open or closed the way you left it in this browser. It holds **Plan Profit (ȼ)**, **Material Profits (ȼ)**, **Material Costs (ȼ)**, **Net Production**, **Net Consumption**, **Exclusive Production** (made but never used in the empire) and **Exclusive Consumption** (used but never made).
+- **Où vont les recettes de chaque plan** affiche la répartition des recettes, la marge et les recettes par jour de chaque plan. Tu vois les 10 plans au plus gros bénéfice et chaque plan en perte, et le reste va dans « Autres ». Ce sont les chiffres propres à chaque plan, sans compensation.
+- **Matériaux qui déplacent le plus de ȼ** affiche les 10 matériaux qui représentent le plus de ȼ par jour, ce que l'empire achète à gauche et ce qu'il vend à droite, en **ȼ / jour** ou **Unités / jour**. Un bouton en dessous les affiche tous. Clique sur un matériau pour l'ouvrir dans E/S matières.
+- **Plus de graphiques** reste ouvert ou fermé comme tu l'as laissé dans ce navigateur. Il contient **Bénéfice du plan (ȼ)**, **Bénéfices matériels**, **Coûts des matériaux**, **Production nette**, **Consommation nette**, **Production exclusive** (fabriqué mais jamais consommé dans l'empire) et **Consommation exclusive** (consommé mais jamais fabriqué).
 
-## Production Opportunities {#production-opportunities}
+## Opportunités de production {#production-opportunities}
 
-**Production Opportunities** looks for [[recipe|recipes]] that could use what your empire has left over. It lists every recipe with at least one input the empire has a positive delta of, sorted by the share of inputs in surplus, then by **Potential Batches**.
+**Opportunités de production** cherche des [[recipe|recettes]] qui pourraient utiliser ce qui reste à ton empire. Il liste chaque recette dont au moins un intrant a un delta positif dans l'empire, triée par la part des intrants en excédent, puis par **Lots possibles**.
 
-The three tiles count them:
+Les trois tuiles les comptent :
 
-| Tile                 | Meaning                                                        |
-| -------------------- | -------------------------------------------------------------- |
-| **Opportunities**    | Every input is in surplus, enough for at least 1 batch per day |
-| **Delta Required**   | Every input is in surplus, but not enough for 1 batch per day  |
-| **Material Missing** | At least one input isn't in surplus                            |
+| Tuile                 | Signification                                                      |
+| --------------------- | ------------------------------------------------------------------ |
+| **Opportunités**      | Chaque intrant est en excédent, assez pour au moins 1 lot par jour |
+| **Delta obligatoire** | Chaque intrant est en excédent, mais pas assez pour 1 lot par jour |
+| **Matériau manquant** | Au moins un intrant n'est pas en excédent                          |
 
-**Potential Batches** is how many runs of the recipe per day your surplus covers. For each input, PRUNplanner divides the daily surplus by the amount the recipe needs and takes the lowest result. It doesn't account for recipe time, how many buildings you'd need, or their efficiency. Read it as "how much input is there", not "how much you can make".
+**Lots possibles** est le nombre de cycles de la recette par jour que ton excédent couvre. Pour chaque intrant, PRUNplanner divise l'excédent quotidien par la quantité dont la recette a besoin et prend le résultat le plus bas. Il ne tient pas compte de la durée de la recette, du nombre de bâtiments nécessaires ni de leur efficacité. Lis-le comme « combien d'intrants il y a », pas « combien tu peux fabriquer ».
 
-For example (made-up numbers), a recipe needs 10 of one input and 5 of another per run, and the empire has 30 and 10 of them left over a day. That's 30 ÷ 10 = 3 and 10 ÷ 5 = 2 runs, so **Potential Batches** is 2, because the second input runs out first.
+Par exemple (chiffres inventés), une recette a besoin de 10 d'un intrant et de 5 d'un autre par cycle, et l'empire en a 30 et 10 en trop par jour. Cela fait 30 ÷ 10 = 3 et 10 ÷ 5 = 2 cycles, donc **Lots possibles** vaut 2, parce que le second intrant s'épuise en premier.
 
-For full matches, **Sell Inputs** and **Sell Outputs** compare selling the inputs as they are with selling what the recipe would make from them (sell price × amount × batches). The better one is green. Prices are sell prices from the empire's exchange preference, all-planets rules only. The list uses the unfiltered Material I/O.
+Pour les correspondances complètes, **Vente des entrées** et **Vente des sorties** comparent la vente des intrants tels quels avec la vente de ce que la recette en tirerait (prix de vente × quantité × lots). Le meilleur des deux est en vert. Les prix sont les prix de vente de la préférence d'échange de l'empire, règles de toutes les planètes uniquement. La liste utilise les E/S matières non filtrées.
 
 > [!tip]
-> Before you build for an opportunity, open the market card of its outputs, because a thin market can't take the extra amount. [Production Chains](/help/tools_production_chain) plans the buildings it would take.
+> Avant de construire pour une opportunité, ouvre la fiche de marché de ses produits, car un marché peu profond ne peut pas absorber la quantité en plus. [Chaînes de production](/help/tools_production_chain) planifie les bâtiments qu'il faudrait.

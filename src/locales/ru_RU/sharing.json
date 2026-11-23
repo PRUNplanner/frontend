@@ -1,51 +1,51 @@
 {
-	"info": "This will create a unique link that can be shared with others. They can look at your plan and try changes on their own copy, but they never change your plan. The link becomes unavailable once you choose to stop sharing or delete the plan.",
-	"share_count": "В настоящее время вы делитесь этим планом. Просмотров {count} раз",
+	"info": "Будет создана уникальная ссылка, которой можно поделиться с другими. По ней можно посмотреть твой план и попробовать изменения на своей копии, но твой план они никогда не изменят. Ссылка перестанет работать, когда ты прекратишь общий доступ или удалишь план.",
+	"share_count": "Ты делишься этим планом. Просмотров: {count}",
 	"buttons": {
 		"create_link": "Создать ссылку общего доступа",
 		"copy_url": "Копировать адрес",
 		"stop_sharing": "Остановить общий доступ",
-		"views": "{count} просмотров"
+		"views": "Просмотров: {count}"
 	},
-	"title": "Share Plan",
+	"title": "Поделиться планом",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Try changes on your own copy. The shared plan never changes.",
-		"changed": "Changed from the shared version",
-		"prices": "Prices: {source}.",
-		"prices_hint": "The person who shared it may see different numbers.",
-		"price_universe": "universe 30-day average",
-		"price_cx": "your exchange settings: {name}",
-		"reset": "Reset to shared version",
-		"copy": "Copy changes",
-		"copied": "Changes copied, paste them into Discord",
-		"copy_failed": "Couldn't copy the changes",
-		"save": "Save to my plans",
-		"signup": "Sign up to save this"
+		"title": "Общий план",
+		"info": "Пробуй изменения на своей копии. Общий план никогда не меняется.",
+		"changed": "Изменено относительно общей версии",
+		"prices": "Цены: {source}.",
+		"prices_hint": "Тот, кто поделился планом, может видеть другие цифры.",
+		"price_universe": "среднее по вселенной за 30 дней",
+		"price_cx": "твои настройки биржи: {name}",
+		"reset": "Вернуть общую версию",
+		"copy": "Копировать изменения",
+		"copied": "Изменения скопированы, вставь их в Discord",
+		"copy_failed": "Не удалось скопировать изменения",
+		"save": "Сохранить в мои планы",
+		"signup": "Зарегистрируйся, чтобы сохранить"
 	},
 	"compare": {
-		"label": "vs. shared:",
-		"profit": "{delta} ȼ/day",
+		"label": "по сравнению с общим:",
+		"profit": "{delta} ȼ/день",
 		"roi": "ROI {from} → {to}",
-		"area": "Area {delta}",
-		"workforce": "Workforce {delta}",
-		"buildings": "Buildings {delta}",
-		"added": "new",
-		"new": "new",
-		"amount": "amount changed",
-		"recipe": "recipe changed",
-		"removed": "removed"
+		"area": "Площадь {delta}",
+		"workforce": "Рабочая сила {delta}",
+		"buildings": "Здания {delta}",
+		"added": "новое",
+		"new": "новое",
+		"amount": "количество изменено",
+		"recipe": "рецепт изменён",
+		"removed": "удалено"
 	},
 	"changes": {
-		"recipe": "{label} recipes {from} → {to}",
-		"profit": "Profit: {from} → {to} ȼ/day",
+		"recipe": "{label}: рецепты {from} → {to}",
+		"profit": "Прибыль: {from} → {to} ȼ/день",
 		"roi": "ROI: {from} → {to}",
-		"prices": "Prices: {source}",
-		"more": "…and {n} more"
+		"prices": "Цены: {source}",
+		"more": "…и ещё {n}"
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "Этот общий план больше недоступен",
+		"text": "Владелец прекратил общий доступ или удалил план, либо ссылка неполная.",
+		"home": "Перейти в PRUNplanner"
 	}
 }

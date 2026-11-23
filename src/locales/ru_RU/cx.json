@@ -1,67 +1,67 @@
 {
 	"market_flags": {
 		"flags": {
-			"no_price": "No price",
-			"no_trades": "No trades in 7 days",
-			"no_offers": "No offers",
-			"no_buyers": "No buyers",
-			"bigger": "Bigger than the market",
-			"large_share": "Large share of the market",
-			"all_exchanges": "All exchanges, no exchange set",
-			"stale": "Data older than 2 days"
+			"no_price": "Нет цены",
+			"no_trades": "Нет сделок за 7 дней",
+			"no_offers": "Нет предложений",
+			"no_buyers": "Нет покупателей",
+			"bigger": "Больше рынка",
+			"large_share": "Большая доля рынка",
+			"all_exchanges": "Все биржи, биржа не задана",
+			"stale": "Данные старше 2 дней"
 		},
 		"title": "{ticker}: {flag}",
 		"popover": {
-			"you_sell": "You sell",
-			"you_buy": "You buy",
-			"empire_sells": "The empire sells",
-			"empire_buys": "The empire buys",
-			"per_day": "{value} / day",
-			"traded": "Traded on {exchange}, last 30 days",
-			"traded_value": "{total} ({daily} / day)",
-			"share": "Your share of that",
-			"empire_share": "Empire share",
-			"bid_ask": "Bid · ask",
-			"spread": "{spread} % spread",
+			"you_sell": "Ты продаёшь",
+			"you_buy": "Ты покупаешь",
+			"empire_sells": "Империя продаёт",
+			"empire_buys": "Империя покупает",
+			"per_day": "{value} / день",
+			"traded": "Продано на {exchange} за последние 30 дней",
+			"traded_value": "{total} ({daily} / день)",
+			"share": "Твоя доля",
+			"empire_share": "Доля империи",
+			"bid_ask": "Bid · Ask",
+			"spread": "спред {spread} %",
 			"none": "—",
-			"caveat": "CX volume only. Sales on local markets or by contract aren't counted.",
-			"open": "Open Plan check →"
+			"caveat": "Только объём CX. Продажи на местных рынках и по контрактам не учитываются.",
+			"open": "Открыть проверку плана →"
 		},
-		"all_exchanges": "all exchanges",
+		"all_exchanges": "все биржи",
 		"summary": {
-			"red": "{n} material can't trade as planned | {n} materials can't trade as planned",
-			"amber": "{n} is a large share of its market | {n} are a large share of their market",
-			"link": "Plan check →"
+			"red": "{n} материалов не торгуются по плану | {n} материал не торгуется по плану | {n} материала не торгуются по плану | {n} материалов не торгуются по плану",
+			"amber": "{n} занимают большую долю своего рынка | {n} занимает большую долю своего рынка | {n} занимают большую долю своего рынка | {n} занимают большую долю своего рынка",
+			"link": "Проверка плана →"
 		},
 		"exchange": {
-			"one": "Exchange {exchange}",
-			"many": "Exchanges {exchange}",
-			"all": "All exchanges",
-			"from_plan": "from the plan's CX preference",
-			"from_empire": "from the empire's CX preference",
-			"no_cx": "no CX preference set",
-			"set_cx": "Set one"
+			"one": "Биржа {exchange}",
+			"many": "Биржи {exchange}",
+			"all": "Все биржи",
+			"from_plan": "из настроек CX плана",
+			"from_empire": "из настроек CX империи",
+			"no_cx": "настройки CX не заданы",
+			"set_cx": "Задать"
 		},
 		"means": {
-			"no_price": "The plan has no price for {ticker}, so it counts it at 0 ȼ.",
-			"no_trades": "Nobody traded {ticker} on {exchange} in the last 7 days.",
-			"no_offers": "Nobody offers {ticker} on {exchange} right now.",
-			"no_buyers": "Nobody bids for {ticker} on {exchange} right now.",
-			"bigger_sell": "You'd sell {share} of what {exchange} trades in {ticker}. Expect to wait for buyers or sell below the bid.",
-			"bigger_buy": "You'd buy {share} of what {exchange} trades in {ticker}. Expect to wait for sellers or pay above the ask.",
-			"large_share_sell": "You'd sell {share} of what {exchange} trades in {ticker}, enough to move its price.",
-			"large_share_buy": "You'd buy {share} of what {exchange} trades in {ticker}, enough to move its price."
+			"no_price": "У плана нет цены для {ticker}, поэтому он считается по 0 ȼ.",
+			"no_trades": "За последние 7 дней с {ticker} на {exchange} не было сделок.",
+			"no_offers": "Сейчас никто не продаёт {ticker} на {exchange}.",
+			"no_buyers": "Сейчас никто не выставляет Bid на {ticker} на {exchange}.",
+			"bigger_sell": "Ты будешь продавать {share} от объёма торгов {ticker} на {exchange}. Придётся ждать покупателей или продавать ниже Bid.",
+			"bigger_buy": "Ты будешь покупать {share} от объёма торгов {ticker} на {exchange}. Придётся ждать продавцов или платить выше Ask.",
+			"large_share_sell": "Ты будешь продавать {share} от объёма торгов {ticker} на {exchange} — этого достаточно, чтобы сдвинуть цену.",
+			"large_share_buy": "Ты будешь покупать {share} от объёма торгов {ticker} на {exchange} — этого достаточно, чтобы сдвинуть цену."
 		},
 		"empire": {
-			"title": "Market check on the empire's net flow",
+			"title": "Проверка рынка по чистому потоку империи",
 			"chip": {
-				"red": "{n} can't trade as planned",
-				"amber": "{n} large share of the market",
-				"muted": "{n} other note | {n} other notes"
+				"red": "не торгуются по плану: {n}",
+				"amber": "большая доля рынка: {n}",
+				"muted": "{n} других примечаний | {n} другое примечание | {n} других примечания | {n} других примечаний"
 			},
-			"filter_label": "Show only flagged materials",
-			"net_note": "Materials made and used inside the empire net out, so they are only flagged on what reaches the market. Each plan's own Material I/O still flags them.",
-			"plan_shares": "Each plan's share"
+			"filter_label": "Показывать только отмеченные материалы",
+			"net_note": "Материалы, которые производятся и потребляются внутри империи, взаимно компенсируются, поэтому отмечается только то, что попадает на рынок. В I/O материалов каждого плана они по-прежнему отмечаются.",
+			"plan_shares": "Доля каждого плана"
 		}
 	}
 }

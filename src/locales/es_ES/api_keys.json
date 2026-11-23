@@ -3,11 +3,10 @@
 	"title": "Claves API",
 	"info": {
 		"description": {
-			"p1": "La {link} da acceso programático a todos tus datos de planificación, a los metadatos del juego (edificios, recetas, materiales) y a métricas de mercado calculadas como el VWAP. Los endpoints públicos siguen abiertos a la comunidad, pero el acceso a datos privados de planificación, incluidas las configuraciones de tus planes, requiere autenticación segura.",
-			"p2": "Con estos endpoints puedes sincronizar tu planificación con hojas de cálculo externas, paneles personalizados o incluso algoritmos de optimización.",
-			"link": "API REST de PRUNplanner",
-			"warning": "Every API key reads all your planning data, and a read & write key can also change and delete it. Keys stay valid until you revoke them, change your password or your account is deactivated. Treat them like your password: never commit keys to public repositories or share them with unverified third-party services. If a key is compromised, revoke it immediately and generate a replacement.",
-			"warning_sheets": "A key in a Google Sheets URL is visible to everyone who can open the sheet, and a key in a URL can only read. Use a separate read-only key per sheet so you can revoke it alone."
+			"p1": "Lee tus datos de PRUNplanner desde hojas de cálculo, scripts y asistentes de IA. Consulta la {link}.",
+			"link": "referencia de la API REST",
+			"warning": "Trata una clave como tu contraseña: lee todos tus datos de planificación, y una clave de lectura y escritura también puede cambiarlos. {link}",
+			"warning_link": "Cuánto tiempo siguen siendo válidas las claves"
 		}
 	},
 	"get_started": {
@@ -53,7 +52,7 @@
 		"copy": "Copiar {what}",
 		"copied": "Copiado",
 		"freshness": "Desde la última vez que PRUNplanner calculó este imperio. La columna updated_at indica cuándo.",
-		"key_warning": "Anyone who can open this sheet can read your data with this key. A key in a URL can only read, but use a separate read-only key per sheet so you can revoke it alone.",
+		"key_warning": "Cualquiera que pueda abrir esta hoja puede leer tus datos con esta clave. Una clave en una URL solo puede leer, pero usa una clave de solo lectura distinta por hoja para poder revocarla por separado.",
 		"endpoints": {
 			"empire_material_io": {
 				"label": "I/O de materiales del imperio",
@@ -142,7 +141,7 @@
 		"table": {
 			"apikey_name": "Nombre",
 			"apikey_prefix": "Prefijo",
-			"apikey_access": "Access",
+			"apikey_access": "Acceso",
 			"apikey_created": "Creada",
 			"apikey_lastused": "Último uso"
 		}
@@ -153,16 +152,22 @@
 		"positive": "@:api_keys.manage.buttons.revoke_apikey",
 		"negative": "@:common.buttons.cancel"
 	},
-	"implementation": {
-		"title": "Implementación de la autorización",
-		"link": "Ver la referencia de la API REST →",
-		"authorize": "La referencia de la API REST tiene un botón Authorize: pega ahí una clave para probar llamadas en el navegador."
+	"mcp": {
+		"title": "Asistentes de IA (MCP)",
+		"description": "Conecta Claude, ChatGPT/Codex, Copilot, Cursor y otros asistentes: leen y calculan tus planes e imperios con el motor propio de PRUNplanner.",
+		"server_url": "URL del servidor",
+		"header": "Cabecera",
+		"copy_url": "Copiar URL del servidor",
+		"copied": "URL del servidor copiada",
+		"download": "Descargar para Claude Desktop",
+		"keys": "Una clave de solo lectura lee y calcula; una clave de lectura y escritura también guarda planes, imperios y preferencias.",
+		"setup_link": "Configurar Claude, ChatGPT/Codex, VS Code, Cursor y más"
 	},
 	"create": {
 		"title": "Crear clave API",
 		"form": {
 			"key_name": "Nombre de la clave",
-			"access": "Access",
+			"access": "Acceso",
 			"key_description": "Ponle a tu clave un nombre descriptivo para identificarla más tarde.",
 			"success_title": "Clave generada correctamente",
 			"success_key": "Tu clave secreta (¡guárdala ahora!)",
@@ -179,11 +184,11 @@
 		"copied": "Clave copiada"
 	},
 	"scope": {
-		"read": "Read-only",
-		"read_write": "Read & write",
+		"read": "Solo lectura",
+		"read_write": "Lectura y escritura",
 		"hint": {
-			"read": "Reads your plans, empires and other data. Can't change anything.",
-			"read_write": "Also creates, changes and deletes your plans, empires and other data."
+			"read": "Lee tus planes, imperios y otros datos. No puede cambiar nada.",
+			"read_write": "También crea, cambia y elimina tus planes, imperios y otros datos."
 		}
 	}
 }

@@ -5,7 +5,7 @@
 	"save_status": {
 		"unsaved": "Cambios sin guardar",
 		"saving": "Guardando…",
-		"saved_at": "Guardado a las {time}",
+		"saved_at": "Guardado {time}",
 		"failed": "Error al guardar",
 		"saved": "Guardado",
 		"retry": "Reintentar guardado",
@@ -140,7 +140,7 @@
 			"key_figures": {
 				"title": "Cifras clave",
 				"output": "Valor de producción",
-				"costs": "Costes incl. degradación",
+				"costs": "Costes incl. degradación y tasas",
 				"margin": "Margen",
 				"earner": "aporta {share} del valor de producción. Su precio decide este plan.",
 				"cost": "es el mayor coste, con {share} del valor de producción.",
@@ -349,7 +349,7 @@
 		"cogm": {
 			"title": "Coste de bienes fabricados",
 			"cogm": "@:terms.cogm",
-			"info": "Por unidad de producción, a partir de la eficiencia, el tiempo de ejecución, la degradación, los precios de los insumos y la mano de obra de este plan, por cantidad o con asignación del coste completo.",
+			"info": "Por unidad de producción, a partir de la eficiencia, el tiempo de ejecución, la degradación, las tasas de producción, los precios de los insumos y la mano de obra de este plan, por cantidad o con asignación del coste completo.",
 			"workforce_note": "Los costes de mano de obra siguen los hábitats y lujos de este plan: los trabajadores sin vivienda y los lujos desactivados no cuestan nada.",
 			"prices_from": "Los precios proceden de {preference}.",
 			"prices_from_empire": "Los precios proceden de {preference}, la preferencia del imperio activo {empire}.",
@@ -651,7 +651,7 @@
 			}
 		},
 		"production_building": {
-			"no_recipe": "Sin @:terms.recipes_plural activas",
+			"no_recipe": "Sin recetas activas",
 			"no_recipe_available": "No hay recetas disponibles para este edificio",
 			"zero_reason": {
 				"FERTILITY": "Planeta no fértil",
@@ -684,7 +684,7 @@
 	},
 	"results": {
 		"profit": "Beneficio / día",
-		"revenue_cost": "Ingresos {revenue} · coste {cost} incl. {degradation} de degradación",
+		"revenue_cost": "Ingresos {revenue} · coste {cost} incl. {degradation} de degradación y {fees} de tasas de producción",
 		"payback": "Amortización",
 		"build_cost": "ȼ coste de construcción",
 		"profit_per_area": "ȼ beneficio / área",
@@ -896,7 +896,7 @@
 		"undo": "Deshacer",
 		"reset": "Volver a Estándar",
 		"save": "Guardar",
-		"saved": "Saved as Custom Layout, used for all your plans in this tab",
+		"saved": "Guardado como diseño personalizado, se usa en todos tus planes en todos tus dispositivos",
 		"replace_question": "Esto reemplaza tu diseño personalizado actual.",
 		"replace": "Reemplazar diseño personalizado",
 		"keep_editing": "Seguir editando",

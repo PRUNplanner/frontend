@@ -1,106 +1,106 @@
-Use Resource ROI to pick a planet for an extraction base. It finds every planet where a resource can be extracted and works out what a base full of RIG, EXT or COL earns there. When a planet looks good, open it as a plan to fine-tune it.
+Utilise ROI ressource pour choisir une planète pour une base d'extraction. L'outil trouve toutes les planètes où une ressource peut être extraite et calcule ce qu'y rapporte une base remplie de RIG, EXT ou COL. Quand une planète semble intéressante, ouvre-la comme plan pour l'affiner.
 
-## How to use it {#how-to-use}
+## Comment l'utiliser {#how-to-use}
 
-1. Pick the resource under **Select Resource** (36 planet resources, ALO through ZIR).
-2. Check **CX Preference**, which decides the prices (see [Prices](#prices)).
-3. Press **Search & Calculate**.
+1. Choisis la ressource sous **Sélectionner Ressource** (36 ressources planétaires, de ALO à ZIR).
+2. Vérifie la **Préférence CX**, qui détermine les prix (voir [Prix](#prices)).
+3. Appuie sur **Rechercher et calculer**.
 
-PRUNplanner first searches every planet with that resource, showing "Awaiting backend response". Then it calculates each one, with a progress bar that reads **Calculating resource ROI for planets.** You get the results sorted by daily yield, highest first.
+PRUNplanner cherche d'abord toutes les planètes qui ont cette ressource, en affichant « En attente de la réponse du backend ». Puis il calcule chacune d'elles, avec une barre de progression qui indique **Calcul du ROI de la ressource pour les planètes.** Tu obtiens les résultats triés par rendement quotidien, du plus élevé au plus faible.
 
-If you change the resource or the exchange preference, the table doesn't recalculate on its own. Press **Search & Calculate** again.
+Si tu changes la ressource ou la préférence d'échange, le tableau ne se recalcule pas tout seul. Appuie à nouveau sur **Rechercher et calculer**.
 
-## What it calculates {#what-it-calculates}
+## Ce qui est calculé {#what-it-calculates}
 
-On each planet with the resource, PRUNplanner looks at every extraction building whose recipes there produce it. For each of those buildings it builds a plan from the building's stored layout (see [Optimal Setups](#optimal-setups)). So each row is one planet and one building that can extract the resource there.
+Sur chaque planète qui a la ressource, PRUNplanner examine chaque bâtiment d'extraction dont les recettes y produisent cette ressource. Pour chacun de ces bâtiments, il construit un plan à partir de la configuration enregistrée du bâtiment (voir [Configurations optimales](#optimal-setups)). Chaque ligne correspond donc à une planète et à un bâtiment qui peut y extraire la ressource.
 
-Every plan uses these settings:
+Chaque plan utilise ces réglages :
 
-| Setting                                                                                                                        | Value                                                                                                                                                                                                                                                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Planet                                                                                                                         | the real planet, with its resource concentration, [[extra-building-materials\|extra construction materials]] and [[production-fees\|production fees]] |
-| [[cogc\|COGC]] program | Resource Extraction, on every planet                                                                                                                                                                                                                                                                                                                                  |
-| [[experts\|Experts]]   | 5 in every expertise                                                                                                                                                                                                                                                                                                                                                  |
-| Workforce                                                                                                                      | fully housed by the layout's habitations                                                                                                                                                                                                                                                                                                                              |
+| Réglage                                                                                                                          | Valeur                                                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Planète                                                                                                                          | la vraie planète, avec sa concentration de ressource, ses [[extra-building-materials\|matériaux de construction supplémentaires]] et ses [[production-fees\|frais de production]] |
+| Programme [[cogc\|COGC]] | Extraction de ressources, sur chaque planète                                                                                                                                                                                                                                                                                                                                                      |
+| [[experts\|Experts]]     | 5 dans chaque expertise                                                                                                                                                                                                                                                                                                                                                                           |
+| Main-d'œuvre                                                                                                                     | entièrement logée par les habitations de la configuration                                                                                                                                                                                                                                                                                                                                         |
 
 > [!warning]
-> Every plan assumes the planet runs the Resource Extraction program, whatever it really runs. The **COGC** column shows the program the planet has today. Where that's different, the real numbers are lower.
+> Chaque plan suppose que la planète applique le programme Extraction de ressources, quel que soit celui qu'elle applique réellement. La colonne **COGC** montre le programme actuel de la planète. Là où il est différent, les vrais chiffres sont plus bas.
 
-## Columns {#columns}
+## Colonnes {#columns}
 
-The table shows 50 rows per page. The planet column stays pinned, and on narrow screens the table scrolls sideways. Click a numeric column's header to sort by it.
+Le tableau affiche 50 lignes par page. La colonne des planètes reste épinglée, et sur les écrans étroits, le tableau défile horizontalement. Clique sur l'en-tête d'une colonne numérique pour trier selon elle.
 
-| Group             | Column                                  | What it shows                                                                                                                                                                                                                      |
-| ----------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|                   | **Planet**                              | name and ID. The link opens a new plan on that planet                                                                                                                                                              |
-| **Production**    | **Building**                            | RIG, EXT or COL                                                                                                                                                                                                                    |
-|                   | **Daily**                               | units of the resource the layout extracts per day                                                                                                                                                                                  |
-|                   | **% Max.**              | Daily as a percentage of the best Daily in the results, with a bar                                                                                                                                                                 |
-| **Cost / Profit** | **COGM**                                | opens the cost breakdown per unit ([[cogm\|COGM]])                                                      |
-|                   | **Plan Cost (ȼ)**    | what it costs to build the whole layout on that planet                                                                                                                                                                             |
-|                   | **Daily Profit (ȼ)** | what the layout earns per day, with a bar scaled to the best row                                                                                                                                                                   |
-|                   | **Plan ROI (d)**     | Plan Cost ÷ Daily Profit, in days                                                                                                                                                                                                  |
-| **Planet**        | **POPR**                                | the planet's latest population report (see [POPR](#popr))                                                                                                                                                       |
-|                   | **COGC**                                | the program the planet runs today, or "—" if it has none                                                                                                                                                                           |
-|                   | **Environment**                         | the extra construction materials the planet needs, as tiles                                                                                                                                                                        |
-|                   | **Infrastructure**                      | LM, COGC, WAR, ADM and SHY, where the planet has them                                                                                                                                                                              |
-| **Distances**     | AI1, CI1, IC1, NC1                      | [[jumps]] to each exchange. The nearest one is bold in its exchange colour, and "—" means there's no route |
+| Groupe              | Colonne                                       | Ce qu'elle montre                                                                                                                                                                                                                                                          |
+| ------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                     | **Planète**                                   | le nom et l'ID. Le lien ouvre un nouveau plan sur cette planète                                                                                                                                                                                            |
+| **Production**      | **Bâtiment**                                  | RIG, EXT ou COL                                                                                                                                                                                                                                                            |
+|                     | **Quotidien**                                 | les unités de la ressource que la configuration extrait par jour                                                                                                                                                                                                           |
+|                     | **% max.**                    | Quotidien en pourcentage du meilleur Quotidien des résultats, avec une barre                                                                                                                                                                                               |
+| **Coût / Bénéfice** | **COGM**                                      | ouvre le détail du coût par unité ([[cogm\|COGM]])                                                                                              |
+|                     | **Plan Coût (ȼ)**          | ce que coûte la construction de toute la configuration sur cette planète                                                                                                                                                                                                   |
+|                     | **Bénéfice quotidien (ȼ)** | ce que rapporte la configuration par jour, avec une barre mise à l'échelle de la meilleure ligne                                                                                                                                                                           |
+|                     | **ROI du plan (j)**        | Coût du plan ÷ Bénéfice quotidien, en jours                                                                                                                                                                                                                                |
+| **Planète**         | **POPR**                                      | le dernier rapport de population de la planète (voir [POPR](#popr))                                                                                                                                                                                     |
+|                     | **COGC**                                      | le programme que la planète applique actuellement, ou « — » si elle n'en a pas                                                                                                                                                                                             |
+|                     | **Environnement**                             | les matériaux de construction supplémentaires dont la planète a besoin, sous forme de tuiles                                                                                                                                                                               |
+|                     | **Infrastructures**                           | LM, COGC, WAR, ADM et SHY, quand la planète les possède                                                                                                                                                                                                                    |
+| **Distances**       | AI1, CI1, IC1, NC1                            | les [[jumps\|sauts]] jusqu'à chaque échange. Le plus proche est en gras dans la couleur de son échange, et « — » signifie qu'il n'y a pas de route |
 
-Daily Profit and Plan Cost follow the same rules as [Recipe ROI](/help/tools_roi_overview#calculation). Outputs count at the sell price and consumables at the buy price, with [[degradation]] and the planet's production fees included.
+Le bénéfice quotidien et le coût du plan suivent les mêmes règles que [RSI recette](/help/tools_roi_overview#calculation). Les produits comptent au prix de vente et les consommables au prix d'achat, avec la [[degradation|dégradation]] et les frais de production de la planète inclus.
 
-**Plan ROI (d)** shows the raw number. A negative value means the plan loses money and never pays back. Its bar fills up as the payback approaches 20 days, so a longer bar means a slower payback. For example, a 10-day payback fills half the bar, and 20 days or more fill all of it.
+**ROI du plan (j)** affiche le nombre brut. Une valeur négative signifie que le plan perd de l'argent et ne s'amortit jamais. Sa barre se remplit à mesure que l'amortissement approche de 20 jours : une barre plus longue signifie donc un amortissement plus lent. Par exemple, un amortissement de 10 jours remplit la moitié de la barre, et 20 jours ou plus la remplissent entièrement.
 
-**% Max.** compares each row with the best one. For example, if the best layout extracts 200 units a day, a row with a Daily of 150 shows 150 ÷ 200 = 75 %.
+**% max.** compare chaque ligne à la meilleure. Par exemple, si la meilleure configuration extrait 200 unités par jour, une ligne avec un Quotidien de 150 affiche 150 ÷ 200 = 75 %.
 
-## Filters {#filters}
+## Filtres {#filters}
 
-- **Planet** and **Building** narrow the table to the one planet or building you pick.
-- **Positive ROI** hides the plans that lose money.
-- **Searched Material** shows the resource picked under **Select Resource**. If you change it without pressing **Search & Calculate**, the rows are still those of the earlier resource.
+- **Planète** et **Bâtiment** limitent le tableau à la planète ou au bâtiment que tu choisis.
+- **ROI positif** masque les plans qui perdent de l'argent.
+- **Matériau recherché** affiche la ressource choisie sous **Sélectionner Ressource**. Si tu la changes sans appuyer sur **Rechercher et calculer**, les lignes restent celles de la ressource précédente.
 
-The chart below shows the same rows as the filtered table.
+Le graphique en dessous montre les mêmes lignes que le tableau filtré.
 
-## Payback vs. distance {#chart}
+## Amortissement vs distance {#chart}
 
-After a search, **Chart** opens the **Payback vs. distance** chart under the table, and your browser remembers whether it's open. To make it taller or shorter, drag its top edge, or focus the edge and use the arrow keys.
+Après une recherche, **Graphique** ouvre le graphique **Amortissement vs distance** sous le tableau, et ton navigateur retient s'il est ouvert. Pour l'agrandir ou le réduire, fais glisser son bord supérieur, ou place le focus sur ce bord et utilise les flèches.
 
-- The horizontal axis is the plan ROI in days. The vertical axis is the jumps to the nearest exchange, or to the one you pick in **Distance to** (**Nearest CX** by default).
-- A dot's size is its daily profit, and its colour is the exchange its jumps count to (the nearest one by default).
-- Highlighted dots are the best trade-offs: no other planet both pays back faster and is closer. For example, a planet with 10 days at 4 jumps and one with 12 days at 2 jumps are both highlighted, since neither beats the other on both. A planet with 14 days at 5 jumps isn't, because the first one beats it on both.
-- A line under the chart names the highlighted planets and their jumps. It also names the planet that earns the most per day, if that one isn't among them.
-- Hover a dot to scroll its row into view.
+- L'axe horizontal est le ROI du plan en jours. L'axe vertical est le nombre de sauts jusqu'à l'échange le plus proche, ou jusqu'à celui que tu choisis dans **Distance vers** (**CX le plus proche** par défaut).
+- La taille d'un point est son bénéfice quotidien, et sa couleur est l'échange vers lequel ses sauts sont comptés (le plus proche par défaut).
+- Les points mis en évidence sont les meilleurs compromis : aucune autre planète ne s'amortit à la fois plus vite et n'est plus proche. Par exemple, une planète à 10 jours et 4 sauts et une autre à 12 jours et 2 sauts sont toutes les deux mises en évidence, car aucune ne bat l'autre sur les deux critères. Une planète à 14 jours et 5 sauts ne l'est pas, car la première la bat sur les deux.
+- Une ligne sous le graphique nomme les planètes mises en évidence et leurs sauts. Elle nomme aussi la planète qui rapporte le plus par jour, si elle n'en fait pas partie.
+- Survole un point pour faire défiler sa ligne jusqu'à elle.
 
-Not every row becomes a dot. The chart leaves out rows that never pay back, have no route to the exchange, or take more than twice the fastest payback, and it counts them below the chart. So if the fastest row pays back in 10 days, rows over 20 days are counted but not drawn. Don't worry when dots seem missing: they're still in the table.
+Toutes les lignes ne deviennent pas des points. Le graphique écarte les lignes qui ne s'amortissent jamais, qui n'ont pas de route vers l'échange ou qui mettent plus de deux fois le temps de l'amortissement le plus rapide, et il les compte sous le graphique. Ainsi, si la ligne la plus rapide s'amortit en 10 jours, les lignes au-delà de 20 jours sont comptées mais pas dessinées. Pas d'inquiétude si des points semblent manquer : ils sont toujours dans le tableau.
 
 > [!tip]
-> A planet a few jumps further out that pays back almost as fast is often the better base, since shipping to and from an exchange costs time and fuel every week.
+> Une planète quelques sauts plus loin qui s'amortit presque aussi vite est souvent la meilleure base, car les trajets vers et depuis un échange coûtent du temps et du carburant chaque semaine.
 
 ## POPR {#popr}
 
-The **POPR** button loads the planet's latest population report ([[popr|POPR]]) and opens it per workforce tier:
+Le bouton **POPR** charge le dernier rapport de population de la planète ([[popr|POPR]]) et l'ouvre par niveau de main-d'œuvre :
 
-| Row                   | What it shows                                |
-| --------------------- | -------------------------------------------- |
-| **Total Population**  | the tier's population figure from the report |
-| **Free Population**   | workers without a job                        |
-| **Free Population %** | free workers as a percentage                 |
-| **Unfilled Jobs**     | jobs that bases on the planet have open      |
+| Ligne                       | Ce qu'elle montre                                   |
+| --------------------------- | --------------------------------------------------- |
+| **Population totale**       | le chiffre de population du niveau dans le rapport  |
+| **Population disponible**   | les travailleurs sans emploi                        |
+| **% Population disponible** | les travailleurs disponibles en pourcentage         |
+| **Emplois non pourvus**     | les emplois que les bases de la planète ont ouverts |
 
-If a planet has no report, the button turns into a red, disabled **No POPR** when you press it. Inside a plan, the POPR tool shows the same report with your plan's need next to it (see [Plan tools](/help/plan_tools)).
+Si une planète n'a pas de rapport, le bouton devient un **Pas de POPR** rouge et désactivé quand tu appuies dessus. Dans un plan, l'outil POPR montre le même rapport avec les besoins de ton plan à côté (voir [Outils du plan](/help/plan_tools)).
 
-## Optimal Setups {#optimal-setups}
+## Configurations optimales {#optimal-setups}
 
-PRUNplanner uses a fixed table of layouts, the same one [Recipe ROI](/help/tools_roi_overview#layouts) uses:
+PRUNplanner utilise un tableau fixe de configurations, le même que celui de [RSI recette](/help/tools_roi_overview#layouts) :
 
-- RIG: 35 RIG, 11 HB1, 1 STO
-- EXT: 14 EXT, 8 HB1, 1 HBB, 1 STO
-- COL: 22 COL, 11 HB1, 1 STO
+- RIG : 35 RIG, 11 HB1, 1 STO
+- EXT : 14 EXT, 8 HB1, 1 HBB, 1 STO
+- COL : 22 COL, 11 HB1, 1 STO
 
-Together with the core module, each one fits a base of 500 area.
+Avec le module central, chacune tient dans une base de 500 de surface.
 
-## Prices {#prices}
+## Prix {#prices}
 
-**CX Preference** picks the [[exchange-preference|exchange preference]] the prices come from. "None - Universe 30D" uses the [[universe|Universe]] 30-day [[vwap|VWAP]].
+**Préférence CX** choisit la [[exchange-preference|préférence d'échange]] d'où viennent les prix. « None - Universe 30D » utilise le [[vwap|VWAP]] sur 30 jours de l'[[universe|Univers]].
 
 > [!warning]
-> Picking an exchange preference here also makes it your default exchange preference for every page.
+> Choisir une préférence d'échange ici en fait aussi ta préférence d'échange par défaut pour toutes les pages.

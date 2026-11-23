@@ -1,6 +1,6 @@
 {
 	"info": "Cela crée un lien unique à partager avec d'autres personnes. Elles peuvent consulter ton plan et tester des modifications sur leur propre copie, mais ne modifient jamais ton plan. Le lien devient indisponible dès que tu arrêtes de partager ou supprimes le plan.",
-	"share_count": "Vous partagez actuellement ce plan. Il a été consulté {count} fois",
+	"share_count": "Tu partages actuellement ce plan. Il a été consulté {count} fois",
 	"buttons": {
 		"create_link": "Créer un lien pour partager",
 		"copy_url": "Copier l'URL",

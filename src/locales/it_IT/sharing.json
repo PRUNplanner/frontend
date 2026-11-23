@@ -1,51 +1,51 @@
 {
-	"info": "This will create a unique link that can be shared with others. They can look at your plan and try changes on their own copy, but they never change your plan. The link becomes unavailable once you choose to stop sharing or delete the plan.",
-	"share_count": "You're currently sharing this plan. It has been viewed {count} times",
+	"info": "Questo crea un link unico da condividere con altri. Potranno vedere il tuo piano e provare modifiche su una loro copia, ma non modificheranno mai il tuo piano. Il link non sarà più disponibile quando smetti di condividerlo o elimini il piano.",
+	"share_count": "Stai condividendo questo piano. È stato visualizzato {count} volte",
 	"buttons": {
-		"create_link": "Create Sharing Link",
-		"copy_url": "Copy URL",
-		"stop_sharing": "Stop Sharing",
-		"views": "{count} Views"
+		"create_link": "Crea link di condivisione",
+		"copy_url": "Copia URL",
+		"stop_sharing": "Interrompi condivisione",
+		"views": "{count} visualizzazioni"
 	},
-	"title": "Share Plan",
+	"title": "Condividi piano",
 	"banner": {
-		"title": "Shared plan",
-		"info": "Try changes on your own copy. The shared plan never changes.",
-		"changed": "Changed from the shared version",
-		"prices": "Prices: {source}.",
-		"prices_hint": "The person who shared it may see different numbers.",
-		"price_universe": "universe 30-day average",
-		"price_cx": "your exchange settings: {name}",
-		"reset": "Reset to shared version",
-		"copy": "Copy changes",
-		"copied": "Changes copied, paste them into Discord",
-		"copy_failed": "Couldn't copy the changes",
-		"save": "Save to my plans",
-		"signup": "Sign up to save this"
+		"title": "Piano condiviso",
+		"info": "Prova le modifiche sulla tua copia. Il piano condiviso non cambia mai.",
+		"changed": "Modificato rispetto alla versione condivisa",
+		"prices": "Prezzi: {source}.",
+		"prices_hint": "Chi l'ha condiviso potrebbe vedere numeri diversi.",
+		"price_universe": "media dell'universo a 30 giorni",
+		"price_cx": "le tue impostazioni di borsa: {name}",
+		"reset": "Ripristina la versione condivisa",
+		"copy": "Copia modifiche",
+		"copied": "Modifiche copiate, incollale su Discord",
+		"copy_failed": "Impossibile copiare le modifiche",
+		"save": "Salva nei miei piani",
+		"signup": "Registrati per salvarlo"
 	},
 	"compare": {
-		"label": "vs. shared:",
-		"profit": "{delta} ȼ/day",
+		"label": "rispetto al condiviso:",
+		"profit": "{delta} ȼ/giorno",
 		"roi": "ROI {from} → {to}",
 		"area": "Area {delta}",
-		"workforce": "Workforce {delta}",
-		"buildings": "Buildings {delta}",
-		"added": "new",
-		"new": "new",
-		"amount": "amount changed",
-		"recipe": "recipe changed",
-		"removed": "removed"
+		"workforce": "Lavoratori {delta}",
+		"buildings": "Edifici {delta}",
+		"added": "nuovo",
+		"new": "nuovo",
+		"amount": "quantità modificata",
+		"recipe": "ricetta modificata",
+		"removed": "rimosso"
 	},
 	"changes": {
-		"recipe": "{label} recipes {from} → {to}",
-		"profit": "Profit: {from} → {to} ȼ/day",
+		"recipe": "{label} ricette {from} → {to}",
+		"profit": "Profitto: {from} → {to} ȼ/giorno",
 		"roi": "ROI: {from} → {to}",
-		"prices": "Prices: {source}",
-		"more": "…and {n} more"
+		"prices": "Prezzi: {source}",
+		"more": "…e altri {n}"
 	},
 	"unavailable": {
-		"title": "This shared plan is no longer available",
-		"text": "Its owner stopped sharing it or deleted the plan, or the link is incomplete.",
-		"home": "Go to PRUNplanner"
+		"title": "Questo piano condiviso non è più disponibile",
+		"text": "Il proprietario ha smesso di condividerlo o ha eliminato il piano, oppure il link è incompleto.",
+		"home": "Vai a PRUNplanner"
 	}
 }

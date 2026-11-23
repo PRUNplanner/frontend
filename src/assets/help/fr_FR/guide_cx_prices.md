@@ -1,96 +1,96 @@
-Every profit, cost and payback in PRUNplanner depends on the prices you choose. In about 15 minutes this guide walks you through your [[exchange-preference|exchange preference]]. By the end you'll have:
+Chaque bénéfice, coût et amortissement dans PRUNplanner dépend des prix que tu choisis. En 15 minutes environ, ce guide te fait parcourir ta [[exchange-preference|préférence d'échange]]. À la fin, tu auras :
 
-- a home exchange and a price basis for all your planets,
-- separate buy and sell rules, if you buy and sell on different exchanges,
-- exceptions for single planets, and [[fixed-price|fixed prices]] for what you make yourself,
-- an Overview of every price your plans use and the rule behind it.
+- un échange principal et une base de prix pour toutes tes planètes,
+- des règles d'achat et de vente séparées, si tu achètes et vends sur des échanges différents,
+- des exceptions pour certaines planètes, et des [[fixed-price|prix fixes]] pour ce que tu fabriques toi-même,
+- un Aperçu de chaque prix utilisé par tes plans et de la règle qui le fixe.
 
-It's for anyone who wants their plans to match how they really trade. You need an account. The pages linked at the end of each step go deeper.
+Il s'adresse à tous ceux qui veulent que leurs plans reflètent leur façon réelle de commercer. Tu as besoin d'un compte. Les pages en lien à la fin de chaque étape vont plus loin.
 
-## 1. Open your exchange preference {#step-1}
+## 1. Ouvre ta préférence d'échange {#step-1}
 
-Open [Exchanges](/exchanges). It shows one preference at a time, and **Switch Preference** picks another. Below the select you see which [[empire|empires]] use it.
+Ouvre [Bourses](/exchanges). La page affiche une préférence à la fois, et **Changer de préférence** en choisit une autre. Sous la liste déroulante, tu vois quels [[empire|empires]] l'utilisent.
 
-![Exchanges: Switch Preference and the empires that use it on the left, the Overview of the prices your plans use on the right](/images/help/guides/cx-prices-overview.webp)
+![Bourses : Changer de préférence et les empires qui l'utilisent à gauche, l'Aperçu des prix utilisés par tes plans à droite](/images/help/guides/cx-prices-overview.webp)
 
-A new account has "My Exchange Preference", which "My Empire" uses, set to **Universe · VWAP 30D**. A [[plan]] has no prices of its own. It uses the preference of the empire it calculates with. Each empire uses one preference, and several empires can share one. To give an empire another preference, pick it in column CX of **Empire Configuration** in [Management](/manage).
+Un nouveau compte a « My Exchange Preference », utilisée par « My Empire » et réglée sur **Universe · VWAP 30j**. Un [[plan|plan]] n'a pas de prix à lui. Il utilise la préférence de l'empire avec lequel il est calculé. Chaque empire utilise une préférence, et plusieurs empires peuvent en partager une. Pour donner une autre préférence à un empire, choisis-la dans la colonne CX de **Configuration de l'empire** dans la [Gestion](/manage).
 
-Read more: [Exchange preferences](/help/exchanges#exchange-preferences), [Management](/help/management#cx-configuration).
+Pour en savoir plus : [Préférences d'échange](/help/exchanges#exchange-preferences), [Gestion](/help/management#cx-configuration).
 
-## 2. Set your home exchange with a preset {#step-2}
+## 2. Définis ton échange principal avec un préréglage {#step-2}
 
-1. Open **All planets** in the list on the left. Its rules apply to every planet that doesn't have its own.
-2. In the **Exchange price** box, pick your home exchange: AI1, CI1, IC1 or NC1.
-3. Click a preset:
-   - **Average · VWAP 30D** buys and sells at the 30-day [[vwap|VWAP]] of that exchange, a steady average of what was traded. [Your first base](/help/guide_first_base#step-2) works through a VWAP example.
-   - **Trade now · buy Ask, sell Bid** buys at the cheapest offer and sells to the highest buyer right now. That's the price of trading at once.
+1. Ouvre **Toutes les planètes** dans la liste de gauche. Ses règles s'appliquent à chaque planète qui n'a pas les siennes.
+2. Dans le cadre **Prix d'échange**, choisis ton échange principal : AI1, CI1, IC1 ou NC1.
+3. Clique sur un préréglage :
+   - **Moyenne · VWAP 30j** achète et vend au [[vwap|VWAP]] sur 30 jours de cet échange, une moyenne stable de ce qui s'est échangé. [Ta première base](/help/guide_first_base#step-2) détaille un exemple de VWAP.
+   - **Échange immédiat · achat à l'Ask, vente au Bid** achète à l'offre la moins chère et vend à l'acheteur le plus offrant à cet instant. C'est le prix d'un échange immédiat.
 
-![All planets on Exchanges: the Exchange price box with the presets, and the Fixed prices table below](/images/help/guides/cx-prices-rule.webp)
+![Toutes les planètes sur Bourses : le cadre Prix d'échange avec les préréglages, et le tableau Prix fixes en dessous](/images/help/guides/cx-prices-rule.webp)
 
-The box tells you which exchange the presets work on ("Presets on NC1:").
+Le cadre t'indique sur quel échange s'appliquent les préréglages (« Préréglages sur NC1 : »).
 
-More: [Presets](/help/exchanges#presets).
+Pour aller plus loin : [Préréglages](/help/exchanges#presets).
 
-## 3. Choose buy, sell or both, and the price basis {#step-3}
+## 3. Choisis achat, vente ou les deux, et la base de prix {#step-3}
 
-In the **Exchange price** box:
+Dans le cadre **Prix d'échange** :
 
-- **Same for buy and sell** uses one exchange and basis for both sides.
-- **Separate buy and sell** gives each side its own exchange and basis, for example buy on CI1 and sell on NC1. A side left **Not set** falls through to the next rule, down to Universe · VWAP 30D.
+- **Identique pour l'achat et la vente** utilise un échange et une base pour les deux côtés.
+- **Achat et vente séparés** donne à chaque côté son propre échange et sa propre base, par exemple acheter sur CI1 et vendre sur NC1. Un côté laissé **Non défini** passe à la règle suivante, jusqu'à Univers · VWAP 30j.
 
-| Basis             | Use it when                                                |
-| ----------------- | ---------------------------------------------------------- |
-| VWAP 7D, VWAP 30D | You want a steady average. 7D follows recent moves faster. |
-| Ask               | You buy at once, from the cheapest offer.                  |
-| Bid               | You sell at once, to the highest buyer.                    |
+| Base              | Utilise-la quand                                                         |
+| ----------------- | ------------------------------------------------------------------------ |
+| VWAP 7j, VWAP 30j | Tu veux une moyenne stable. Le 7j suit plus vite les mouvements récents. |
+| Ask               | Tu achètes tout de suite, à l'offre la moins chère.                      |
+| Bid               | Tu vends tout de suite, à l'acheteur le plus offrant.                    |
 
-[[Universe]] only has the two VWAPs.
+L'[[universe|Univers]] n'a que les deux VWAP.
 
 > [!warning]
-> When the chosen exchange has no price for a material (nobody offers it, nobody bids, or for VWAP no trade there in the last 30 days), it counts as 0 ȼ. PRUNplanner doesn't fall back to another exchange. The page shows such prices in amber and lists them in its notes.
+> Quand l'échange choisi n'a pas de prix pour un matériau (personne ne le propose, personne n'en demande, ou, pour le VWAP, aucune transaction sur cet échange ces 30 derniers jours), il compte pour 0 ȼ. PRUNplanner ne se rabat pas sur un autre échange. La page affiche ces prix en orange et les liste dans ses notes.
 >
-> Without a trade in the last 7 days, VWAP 7D uses the price of the last day within those 30 days that the material was traded. If an amber material is one your plans buy or sell, you can set a planet rule on another exchange for the planet that uses it (step 4) or give it a fixed price (step 5).
+> Sans transaction ces 7 derniers jours, le VWAP 7j utilise le prix du dernier jour, dans ces 30 jours, où le matériau a été échangé. Si un matériau en orange est acheté ou vendu par tes plans, tu peux définir une règle de planète sur un autre échange pour la planète qui l'utilise (étape 4) ou lui donner un prix fixe (étape 5).
 
-Details: [Price basis](/help/exchanges#price-basis-vwap-ask-and-bid), [Buy, sell or both](/help/exchanges#buy-sell-or-both).
+Détails : [Base de prix](/help/exchanges#price-basis-vwap-ask-and-bid), [Achat, vente ou les deux](/help/exchanges#buy-sell-or-both).
 
-## 4. Add exceptions for single planets {#step-4}
+## 4. Ajoute des exceptions pour certaines planètes {#step-4}
 
-If one base sells somewhere else, say because it's closer to another exchange, give its planet its own rule.
+Si une base vend ailleurs, par exemple parce qu'elle est plus proche d'un autre échange, donne à sa planète sa propre règle.
 
-1. Open the planet in the list (under **Using all-planets rules**).
-2. In its **Exchange price** box, switch from **Use all-planets rule** to **Same for buy and sell** or **Separate buy and sell**, and set the rule.
+1. Ouvre la planète dans la liste (sous **Utilisent les règles de toutes les planètes**).
+2. Dans son cadre **Prix d'échange**, passe de **Utiliser la règle de toutes les planètes** à **Identique pour l'achat et la vente** ou **Achat et vente séparés**, et définis la règle.
 
-The planet then moves to **Planets with their own rules**. Its rule beats the all-planets rule, with one exception: all-planets fixed prices still win. The prices list below the rules shows what that planet's plans buy and sell, and at which price.
+La planète passe alors dans **Planètes avec leurs propres règles**. Sa règle l'emporte sur celle de toutes les planètes, à une exception près : les prix fixes de toutes les planètes l'emportent toujours. La liste des prix sous les règles montre ce que les plans de cette planète achètent et vendent, et à quel prix.
 
-Read more: [Planet exceptions](/help/exchanges#planet-exceptions), [How a price is found](/help/exchanges#how-a-price-is-found).
+Pour en savoir plus : [Exceptions de planète](/help/exchanges#planet-exceptions), [Comment un prix est trouvé](/help/exchanges#how-a-price-is-found).
 
-## 5. Fix prices for what you make yourself {#step-5}
+## 5. Fixe les prix de ce que tu fabriques toi-même {#step-5}
 
-A material you make in one base and use in another shouldn't cost the market price. It costs what you pay to make it, your [[cogm|COGM]].
+Un matériau que tu fabriques dans une base et utilises dans une autre ne devrait pas coûter le prix du marché. Il coûte ce que tu paies pour le fabriquer, ton [[cogm|COGM]].
 
-- In a plan, open **COGM** on the order that makes the material and click **Use as buy price on all planets** (offered while the material has no fixed price), then **Save changes**. This sets a fixed buy price at _that plan's_ COGM for every planet of the preference.
-- Or, on **All planets** in Exchanges, add the material to **Fixed prices** with **Add material** and type a price. For materials your plans make, the **COGM in your plans** column shows the lowest COGM, and **Use** copies it into the buy price.
+- Dans un plan, ouvre **COGM** sur l'ordre qui fabrique le matériau et clique sur **Utiliser comme prix d'achat sur toutes les planètes** (proposé tant que le matériau n'a pas de prix fixe), puis sur **Enregistrer les modifications**. Cela définit un prix d'achat fixe au COGM de _ce plan_ pour chaque planète de la préférence.
+- Ou bien, sur **Toutes les planètes** dans Bourses, ajoute le matériau aux **Prix fixes** avec **Ajouter un matériau** et saisis un prix. Pour les matériaux que tes plans fabriquent, la colonne **COGM dans tes plans** affiche le COGM le plus bas, et **Utiliser** le copie dans le prix d'achat.
 
-Leave a side empty to keep the exchange price for it.
+Laisse un côté vide pour garder le prix de l'échange pour ce côté.
 
 > [!tip]
-> Keep fixed prices in step with your production. The Overview notes when a fixed buy price is more than 2 % off the lowest COGM, and the COGM dialog offers to update it.
+> Garde tes prix fixes alignés sur ta production. L'Aperçu signale quand un prix d'achat fixe s'écarte de plus de 2 % du COGM le plus bas, et la boîte de dialogue COGM propose de le mettre à jour.
 >
-> As an example, say your lowest COGM for RAT is 95 ȼ and its fixed buy price is 100 ȼ. That's 5 ÷ 95 ≈ 5.3 % off, so the Overview notes it. At 96 ȼ it'd be 1 ÷ 95 ≈ 1.1 % off, and there's no note.
+> Par exemple, disons que ton COGM le plus bas pour RAT est de 95 ȼ et son prix d'achat fixe de 100 ȼ. Cela fait un écart de 5 ÷ 95 ≈ 5,3 %, donc l'Aperçu le signale. À 96 ȼ, l'écart serait de 1 ÷ 95 ≈ 1,1 %, et il n'y aurait pas de note.
 
-More: [Fixed prices and COGM](/help/exchanges#fixed-prices-and-cogm), [Using COGM as a buy price](/help/plan_tools#cogm-buy-price).
+Pour aller plus loin : [Prix fixes et COGM](/help/exchanges#fixed-prices-and-cogm), [Utiliser le COGM comme prix d'achat](/help/plan_tools#cogm-buy-price).
 
-## 6. Save and check the result {#step-6}
+## 6. Enregistre et vérifie le résultat {#step-6}
 
-1. Press **Save changes** in the bar at the bottom. Your plans only use the new rules once you save.
-2. Open the **Overview**. It lists every material your plans buy or sell, its price and the rule behind it. Read the notes on top first, where warnings come first.
-3. Open a plan. **Prices** under **Empire & prices** names the preference. Then open **Plan check**: **Market check** checks each material on the exchange your preference uses, and **At real prices** shows the profit at today's ask and bid.
+1. Appuie sur **Enregistrer les modifications** dans la barre en bas. Tes plans n'utilisent les nouvelles règles qu'une fois enregistrées.
+2. Ouvre l'**Aperçu**. Il liste chaque matériau que tes plans achètent ou vendent, son prix et la règle qui le fixe. Lis d'abord les notes en haut, où les avertissements viennent en premier.
+3. Ouvre un plan. **Prix** sous **Empire et prix** nomme la préférence. Ouvre ensuite **Contrôle du plan** : **Contrôle du marché** vérifie chaque matériau sur l'échange qu'utilise ta préférence, et **Aux prix réels** montre le bénéfice aux Ask et Bid du jour.
 
-You're done when the materials you trade show no amber 0 ȼ prices and the profit at real prices is one you can live with.
+Tu as terminé quand les matériaux que tu échanges n'affichent plus de prix à 0 ȼ en orange et que le bénéfice aux prix réels te convient.
 
-Details: [Overview](/help/exchanges#overview), [Plan check](/help/plan_check#market-check).
+Détails : [Aperçu](/help/exchanges#overview), [Contrôle du plan](/help/plan_check#market-check).
 
-## Next {#next}
+## Ensuite {#next}
 
-- [From a chain to bases](/help/guide_chain_to_bases): plan a whole chain at these prices.
-- [Grow to an empire](/help/guide_empire): check all your bases together.
+- [D'une chaîne à des bases](/help/guide_chain_to_bases) : planifie toute une chaîne à ces prix.
+- [Grandir jusqu'à un empire](/help/guide_empire) : vérifie toutes tes bases ensemble.

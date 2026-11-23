@@ -13,145 +13,145 @@
 		}
 	},
 	"change_profile": {
-		"throttled": "Too many updates. Please wait a minute and try again.",
+		"throttled": "Слишком много изменений. Подожди минуту и попробуй снова.",
 		"buttons": {
-			"enter_code": "Enter code",
+			"enter_code": "Ввести код",
 			"resend_code": "Отправить код повторно"
 		},
 		"form": {
-			"fio_apikey": "FIO API Key",
+			"fio_apikey": "Ключ API FIO",
 			"prun_username": "Имя пользователя PrUn",
-			"email_info": "Указывать email необязательно, но настоятельно рекомендуется для повышения безопасности аккаунта и восстановления пароля.",
+			"email_info": "Необязательно. Нужна только для сброса пароля: никаких рассылок, никому не передаётся.",
 			"email_address": "Адрес электронной почты",
-			"fio_status": "FIO Status"
+			"fio_status": "Статус FIO"
 		},
-		"fio_connected": "Connected. Your data will appear in a few minutes.",
+		"fio_connected": "Подключено. Твои данные появятся через несколько минут.",
 		"fio_status": {
-			"none": "Not connected. Enter your FIO API key and PrUn username.",
-			"syncing": "Connected, loading your FIO data.",
-			"ok": "Connected. Last FIO update {time}.",
-			"no_data": "Connected, but FIO has no data for you yet. Open Prosperous Universe with the FIO extension running.",
-			"invalid_credentials": "FIO rejected your API key. Enter a valid key and save again.",
-			"error": "FIO updates are failing right now. Check your FIO key and username."
+			"none": "Не подключено. Введи ключ API FIO и имя пользователя PrUn.",
+			"syncing": "Подключено, загружаем твои данные FIO.",
+			"ok": "Подключено. Последнее обновление FIO: {time}.",
+			"no_data": "Подключено, но в FIO пока нет твоих данных. Открой Prosperous Universe с запущенным расширением FIO.",
+			"invalid_credentials": "FIO отклонил твой ключ API. Введи действительный ключ и сохрани снова.",
+			"error": "Обновления FIO сейчас не проходят. Проверь ключ FIO и имя пользователя."
 		},
 		"fio_errors": {
-			"fio_required": "Enter both the FIO API key and the PrUn username.",
-			"fio_invalid_key": "FIO doesn't accept this API key.",
-			"fio_username_mismatch": "This API key belongs to a different PrUn username.",
-			"unknown": "Saving failed. Please try again."
+			"fio_required": "Введи и ключ API FIO, и имя пользователя PrUn.",
+			"fio_invalid_key": "FIO не принимает этот ключ API.",
+			"fio_username_mismatch": "Этот ключ API принадлежит другому имени пользователя PrUn.",
+			"unknown": "Не удалось сохранить. Попробуй ещё раз."
 		},
-		"code_sent_notice": "Saved. We sent a code to the new address; resets go there once it's confirmed.",
+		"code_sent_notice": "Сохранено. Мы отправили код на новый адрес; письма для сброса пароля будут приходить туда после подтверждения.",
 		"recovery": {
-			"label": "Account recovery",
-			"not_set_up": "Not set up",
-			"not_set_up_info": "Without an email, a forgotten password can't be reset.",
-			"waiting": "Waiting for confirmation",
-			"ready": "Ready",
-			"ready_info": "Password resets go to this address."
+			"label": "Восстановление аккаунта",
+			"not_set_up": "Не настроено",
+			"not_set_up_info": "Без почты забытый пароль нельзя сбросить.",
+			"waiting": "Ожидает подтверждения",
+			"ready": "Готово",
+			"ready_info": "Письма для сброса пароля приходят на этот адрес."
 		}
 	},
 	"storage_data": {
 		"title": "Хранилище браузера",
-		"description": "PRUNplanner минимизирует количество запросов к API, сохраняя данные локально в вашем браузере. Данные обновляются автоматически с заданными интервалами.",
-		"total": "{size} MB in {records} records",
+		"description": "PRUNplanner сокращает число запросов к API, сохраняя данные локально в твоём браузере. Данные обновляются автоматически через заданные интервалы.",
+		"total": "{size} MB, записей: {records}",
 		"table": {
 			"storage": "Хранилище",
 			"records": "Записи",
 			"size": "Приблизительный размер"
 		},
 		"stores": {
-			"materials": "Materials",
-			"buildings": "Buildings",
-			"recipes": "Recipes",
-			"planets": "Planets",
-			"exchanges": "Exchanges",
-			"plans": "Plans",
-			"empires": "Empires",
-			"cxs": "Exchange Preferences",
-			"shared": "Sharings",
-			"fio_storage_planets": "FIO Storage Planets",
-			"fio_storage_ships": "FIO Storage Ships",
-			"fio_storage_warehouses": "FIO Storage Warehouses",
-			"fio_sites_planets": "FIO Sites Planets"
+			"materials": "Материалы",
+			"buildings": "Здания",
+			"recipes": "Рецепты",
+			"planets": "Планеты",
+			"exchanges": "Биржи",
+			"plans": "Планы",
+			"empires": "Империи",
+			"cxs": "Настройки биржи",
+			"shared": "Общий доступ",
+			"fio_storage_planets": "Склады FIO: планеты",
+			"fio_storage_ships": "Склады FIO: корабли",
+			"fio_storage_warehouses": "Склады FIO: хранилища",
+			"fio_sites_planets": "Базы FIO: планеты"
 		}
 	},
 	"fio_information": {
-		"guide": "How to get a FIO API key",
+		"guide": "Как получить ключ API FIO",
 		"help": {
-			"p1": "FIO — это разработанный сообществом {link}, который собирает данные вашей игры, делает их доступными за пределами Prosperous Universe и полностью бесплатен в использовании.",
+			"p1": "FIO — это созданное сообществом {link}, которое собирает данные твоей игры, делает их доступными за пределами Prosperous Universe и полностью бесплатно.",
 			"steps": {
-				"1": "Скачать и установить {link}",
-				"2": "Откройте игру, нажмите кнопку расширений и зарегистрируйте свой аккаунт FIO",
-				"3": "Перейдите на сайт FIO, откройте {link} и создайте API-ключ для PRUNplanner",
-				"4": "Скопируйте и введите ваш API-ключ, а также имя пользователя в Prosperous Universe в профиль выше и нажмите кнопку «Обновить профиль»",
-				"5": "Подождите несколько минут пока PRUNplanner загрузит ваши данные и наслаждайтесь расширенными возможностями планирования. Ваши данные будут обновляться автоматически в фоновом режиме — никаких дополнительных действий не требуется."
+				"1": "Скачай и установи {link}",
+				"2": "Открой игру, нажми кнопку расширений и зарегистрируй аккаунт FIO",
+				"3": "Перейди на сайт FIO, открой {link} и создай ключ API для PRUNplanner",
+				"4": "Введи ключ API и имя пользователя Prosperous Universe выше и нажми «Сохранить».",
+				"5": "Подожди несколько минут, пока PRUNplanner загрузит твои данные, и пользуйся расширенными возможностями планирования. Данные обновляются автоматически в фоне, ничего делать не нужно."
 			},
-			"refined_prun": "Пока вы улучшаете игровой процесс, также обратите внимание на {link}: ещё одно расширение для браузера, которое значительно упрощает интерфейс и добавляет множество функций."
+			"refined_prun": "Раз уж ты улучшаешь игровой процесс, загляни и в {link}: это ещё одно расширение для браузера, которое заметно упрощает интерфейс и добавляет массу функций."
 		},
 		"links": {
-			"browser_extension": "Расширение для браузера",
-			"fio_extension": "Расширение FIO для браузера",
-			"settings_short": "Настройки",
+			"browser_extension": "расширение для браузера",
+			"fio_extension": "расширение FIO для браузера",
+			"settings_short": "настройки",
 			"refined_prun": "Refined PrUn"
 		}
 	},
 	"preferences": {
 		"title": "Параметры",
-		"description": "Use this panel to review and customize your PRUNplanner settings.",
+		"description": "Сохраняются в твоём аккаунте сразу после изменения.",
 		"form": {
 			"tool_preferences": "Настройки инструментов",
 			"language": "Язык",
-			"color_palette": "Color palette",
-			"palette_default": "Default (green / red)",
-			"palette_colorblind": "Color-blind (blue / orange)",
-			"market_card": "Market card",
-			"market_card_hover": "On hover",
-			"market_card_click": "On click only",
-			"market_card_help": "On click only: hovering a material shows nothing; click it for prices.",
-			"language_note": "Мы хотим сделать PRUNplanner доступным для всех. Если вы хотите видеть инструмент на своём родном языке или помочь улучшить существующий перевод — присоединяйтесь к нашему проекту локализации на {link}.",
+			"color_palette": "Цветовая палитра",
+			"palette_default": "По умолчанию (зелёный / красный)",
+			"palette_colorblind": "Для дальтоников (синий / оранжевый)",
+			"market_card": "Карточка рынка",
+			"market_card_hover": "При наведении",
+			"market_card_click": "Только по клику",
+			"market_card_help": "Только по клику: при наведении на материал ничего не показывается; нажми на него, чтобы увидеть цены.",
+			"language_note": "Мы хотим, чтобы PRUNplanner был доступен всем. Если хочешь видеть его на своём родном языке или помочь улучшить существующий перевод, присоединяйся к нашему проекту локализации на {link}.",
 			"default_empire": "Империя по умолчанию",
 			"default_cx": "CX по умолчанию",
 			"fio_burn": "Расход FIO",
-			"red_threshold": "Красный Порог",
+			"red_threshold": "Красный порог",
 			"yellow_threshold": "Жёлтый порог",
 			"resupply_days": "Дней до пополнения",
 			"xit_origin": "Источник XIT",
-			"buy_from_cx": "Купить XIT через CX",
-			"fio_repair": "FIO Repair",
-			"fio_repair_interval": "Repair every (no plan)",
-			"fio_repair_due_soon": "Due soon",
-			"fio_repair_arrival": "Arrival days",
-			"fio_repair_note": "The XIT origin and \"Buy from CX\" are shared with FIO Burn.",
-			"plan_suggestions": "Plan suggestions",
-			"plan_suggestions_help": "Popular buildings and recipes on the planet, planet insights and a typical setup for empty plans",
-			"privacy": "Privacy",
-			"analytics": "Usage analytics",
-			"analytics_note": "Allows PRUNplanner to collect usage events, error reports and session recordings. This choice is stored in this browser only, so set it on each device you use.",
-			"analytics_dnt": "Your browser sends a Do-Not-Track or Global Privacy Control signal, so usage analytics stays off.",
+			"buy_from_cx": "XIT: покупать на CX",
+			"fio_repair": "Ремонт FIO",
+			"fio_repair_interval": "Ремонт каждые (без плана)",
+			"fio_repair_due_soon": "Скоро",
+			"fio_repair_arrival": "Дней в пути",
+			"fio_repair_note": "Источник XIT и «Покупать на CX» общие с «Расходом FIO».",
+			"plan_suggestions": "Подсказки для плана",
+			"plan_suggestions_help": "Популярные здания и рецепты на планете, сведения о планете и типовая конфигурация для пустых планов",
+			"privacy": "Конфиденциальность",
+			"analytics": "Аналитика использования",
+			"analytics_note": "Разрешает PRUNplanner собирать события использования, отчёты об ошибках и записи сессий. Этот выбор хранится только в этом браузере, поэтому задай его на каждом устройстве, которым пользуешься.",
+			"analytics_dnt": "Твой браузер отправляет сигнал Do-Not-Track или Global Privacy Control, поэтому аналитика использования выключена.",
 			"plan_specific": "Индивидуальные настройки плана",
-			"plan_specific_description": "Эти настройки управляются в рамках отдельных планов. Данный раздел предоставляет обзор настроек которые вы уже изменили — чтобы их изменить, перейдите к соответствующему плану.",
+			"plan_specific_description": "Эти настройки задаются в отдельных планах. Здесь собраны настройки, которые уже изменены в твоих планах; чтобы изменить их, открой соответствующий план.",
 			"plan": "План",
 			"preferences": "Параметры",
-			"planning": "Planning",
-			"plan_specific_empty": "No plan has its own settings yet."
+			"planning": "Планирование",
+			"plan_specific_empty": "Ни у одного плана пока нет собственных настроек."
 		},
 		"plan_settings": {
-			"include_cm": "Include CM",
-			"visitation_exclusions": "Visitation Material Exclusions",
-			"construction_built": "Construction Cart: Built",
-			"auto_optimize_inactive": "Auto-Optimize Inactive"
+			"include_cm": "Учитывать CM",
+			"visitation_exclusions": "Исключения материалов для визитов",
+			"construction_built": "Корзина строительства: построено",
+			"auto_optimize_inactive": "Автооптимизация жилья выключена"
 		}
 	},
 	"buttons": {
-		"save": "Save"
+		"save": "Сохранить"
 	},
 	"sections": {
 		"fio": {
-			"title": "FIO connection",
-			"description": "Imports your storage, sites and ships from FIO. PRUNplanner refreshes it in the background."
+			"title": "Подключение FIO",
+			"description": "Импортирует твои склады, базы и корабли из FIO. PRUNplanner обновляет данные в фоне."
 		},
 		"account": {
-			"title": "Account"
+			"title": "Аккаунт"
 		}
 	}
 }

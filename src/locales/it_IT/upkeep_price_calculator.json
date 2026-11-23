@@ -1,12 +1,12 @@
 {
-	"view_title": "Upkeep Price Calculator",
-	"title": "Upkeep Price Calculator",
+	"view_title": "Prezzi mantenimento",
+	"title": "Calcolatrice prezzi di mantenimento",
 	"form": {
-		"cx_preference": "CX Preference"
+		"cx_preference": "Preferenza CX"
 	},
 	"calculator": {
-		"calculating": "Calculating Upkeep Material Prices",
-		"need_label": "Need",
+		"calculating": "Calcolo dei prezzi dei materiali di mantenimento",
+		"need_label": "Necessità",
 		"needs": {
 			"safety": "@:game.upkeep.safety",
 			"health": "@:game.upkeep.health",
@@ -15,13 +15,13 @@
 			"education": "@:game.upkeep.education"
 		},
 		"details": {
-			"title": "Material Details",
+			"title": "Dettagli materiali",
 			"table": {
 				"material": "@:terms.materials",
 				"building": "@:terms.buildings",
-				"price_need": "ȼ/Need",
-				"cx_price": "@:terms.cx Price (ȼ)",
-				"qty_day": "Qty/Day"
+				"price_need": "ȼ/necessità",
+				"cx_price": "Prezzo @:terms.cx (ȼ)",
+				"qty_day": "Qtà/giorno"
 			}
 		}
 	}

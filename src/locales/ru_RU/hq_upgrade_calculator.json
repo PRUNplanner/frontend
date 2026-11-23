@@ -4,13 +4,13 @@
 	"form": {
 		"from_level": "С уровня HQ",
 		"to_level": "До уровня HQ",
-		"cx_preference": "Установки @:terms.cx",
+		"cx_preference": "Настройки @:terms.cx",
 		"show_locations": "Показать местоположение"
 	},
 	"cost": {
-		"total_cost": "Всего @:terms.cost",
-		"total_weight": "Всего @:terms.weight",
-		"total_volume": "Всего @:terms.volume"
+		"total_cost": "Общая стоимость",
+		"total_weight": "Общий вес",
+		"total_volume": "Общий объём"
 	},
 	"table": {
 		"material": "@:terms.materials",
@@ -18,9 +18,9 @@
 		"storage": "@:terms.storage",
 		"override_stock": "Переопределить запас",
 		"required": "Требуется",
-		"cost_unit": "Cost / Unit (ȼ)",
-		"cost_total": "Total Cost (ȼ)",
-		"storage_locations": "@:terms.storage Местоположения",
-		"override_label": "Override stock for {ticker}"
+		"cost_unit": "Стоимость / ед. (ȼ)",
+		"cost_total": "Общая стоимость (ȼ)",
+		"storage_locations": "Места хранения",
+		"override_label": "Переопределить запас {ticker}"
 	}
 }

@@ -2,7 +2,7 @@
 	"components": {
 		"login": {
 			"title": "Retour à ton empire.",
-			"error": "Erreur de connexion. Veuillez vérifier votre nom d'utilisateur et mot de passe.",
+			"error": "Erreur de connexion. Vérifie ton nom d'utilisateur et ton mot de passe.",
 			"throttled": "Trop de tentatives de connexion. Patiente un moment et réessaie plus tard.",
 			"buttons": {
 				"login": "Se connecter"
@@ -11,13 +11,13 @@
 				"username": "Nom d'utilisateur",
 				"password": "Mot de passe"
 			},
-			"tos": "En utilisant PRUNplanner vous acceptez les {tos_link}.",
+			"tos": "En utilisant PRUNplanner, tu acceptes les {tos_link}.",
 			"tos_link": "Conditions d'utilisation",
 			"forgot_link": "Mot de passe oublié ?"
 		},
 		"registration": {
 			"title": "Commence à planifier, c'est gratuit.",
-			"tos": "PRUNplanner est un outil gratuit. En créant un compte, vous reconnaissez et acceptez les {tos_link}.",
+			"tos": "PRUNplanner est un outil gratuit. En créant un compte, tu reconnais et acceptes les {tos_link}.",
 			"tos_link": "Conditions d'utilisation",
 			"result": {
 				"ok_header": "Bienvenue {username} !",
@@ -34,8 +34,8 @@
 				"username": "Nom d'utilisateur",
 				"username_info": "Au moins 3 caractères, sans espaces.",
 				"password": "Mot de passe",
-				"password_info": "Doit comporter au moins 8 caractères.",
-				"email": "E-mail",
+				"password_info": "Au moins 8 caractères, pas uniquement des chiffres, et pas un mot de passe courant.",
+				"email": "E-mail (facultatif)",
 				"email_info": "Facultatif, mais recommandé. Renforce la sécurité de ton compte.",
 				"email_invalid": "Cela ne ressemble pas à une adresse e-mail. Laisse le champ vide ou corrige-le pour créer ton compte.",
 				"security_question": "Question de sécurité",
@@ -45,8 +45,8 @@
 			}
 		},
 		"password_reset": {
-			"title": "Réinitialisez votre mot de passe",
-			"info": "Veuillez entrer le code reçu par e-mail ainsi que votre nouveau mot de passe.",
+			"title": "Réinitialise ton mot de passe",
+			"info": "Entre le code reçu par e-mail ainsi que ton nouveau mot de passe.",
 			"throttled": "Trop de tentatives. Patiente quelques minutes et réessaie.",
 			"error": "Une erreur s'est produite. Vérifie ton e-mail, le code et le mot de passe. Assure-toi que ton mot de passe est sûr.",
 			"buttons": {
@@ -61,19 +61,19 @@
 		},
 		"request_password_reset": {
 			"title": "Demande de réinitialisation de mot de passe",
-			"info": "Entrez l'adresse e-mail vérifiée associée à votre compte PRUNplanner. Si nous la reconnaissons, nous vous enverrons un code pour réinitialiser votre mot de passe.",
+			"info": "Entre l'adresse e-mail vérifiée associée à ton compte PRUNplanner. Si nous la reconnaissons, nous t'enverrons un code pour réinitialiser ton mot de passe.",
 			"throttled": "Trop de tentatives. Patiente quelques minutes et réessaie.",
 			"error": "La demande a échoué. Réessaie plus tard.",
 			"form": {
 				"email_placeholder": "Adresse e-mail"
 			},
 			"buttons": {
-				"send": "Demande de réinitialisation de mot de passe"
+				"send": "Demander la réinitialisation du mot de passe"
 			}
 		},
 		"verify_email": {
 			"title": "Vérification de l'e-mail",
-			"info": "Veuillez entrer le code de vérification que vous avez reçu par e-mail. Vérifier aussi vos spams.",
+			"info": "Entre le code de vérification reçu par e-mail. Pense à vérifier tes spams.",
 			"buttons": {
 				"send": "Vérifiez l'adresse e-mail"
 			},
@@ -81,7 +81,7 @@
 				"code_placeholder": "Code de vérification"
 			},
 			"result": {
-				"ok": "Adresse e-mail vérifiée.",
+				"ok": "Adresse e-mail confirmée.",
 				"already_verified": "Ton adresse e-mail est déjà confirmée.",
 				"back": "Retour à ton empire"
 			}
