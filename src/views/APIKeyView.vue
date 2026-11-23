@@ -265,34 +265,40 @@
 			<h1 class="text-2xl font-bold">{{ $t("api_keys.title") }}</h1>
 			<HelpPanel article="api_keys" />
 		</div>
-		<div class="min-w-0 max-w-5xl flex flex-col gap-3 px-6 py-3">
-			<i18n-t keypath="api_keys.info.description.p1" tag="p">
-				<template #link>
-					<a
-						:href="docsUrl"
-						target="_blank"
-						class="font-bold underline hover:text-prunplanner"
-						>{{ $t("api_keys.info.description.link") }}</a
-					>
-				</template>
-			</i18n-t>
-			<div
-				class="bg-prunplanner/10 border-l-4 border-prunplanner p-3 text-xs"
-				data-testid="key-warning">
-				<i18n-t keypath="api_keys.info.description.warning" tag="p">
+		<!-- lg+: keys and builder on the left, MCP and the steps beside them;
+		DOM order (keys, MCP, builder) stays the order on small screens.
+		The last row takes the slack so a tall aside never spreads the rows -->
+		<div
+			class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] lg:grid-rows-[auto_auto_1fr] gap-x-6 gap-y-3 items-start px-6 py-3">
+			<div class="min-w-0 flex flex-col gap-3 lg:col-start-1">
+				<i18n-t keypath="api_keys.info.description.p1" tag="p">
 					<template #link>
-						<RouterLink
-							to="/help/api_keys#validity"
+						<a
+							:href="docsUrl"
+							target="_blank"
 							class="font-bold underline hover:text-prunplanner"
-							>{{
-								$t("api_keys.info.description.warning_link")
-							}}</RouterLink
+							>{{ $t("api_keys.info.description.link") }}</a
 						>
 					</template>
 				</i18n-t>
+				<div
+					class="bg-prunplanner/10 border-l-4 border-prunplanner p-3 text-xs"
+					data-testid="key-warning">
+					<i18n-t keypath="api_keys.info.description.warning" tag="p">
+						<template #link>
+							<RouterLink
+								to="/help/api_keys#validity"
+								class="font-bold underline hover:text-prunplanner"
+								>{{
+									$t("api_keys.info.description.warning_link")
+								}}</RouterLink
+							>
+						</template>
+					</i18n-t>
+				</div>
 			</div>
 
-			<section data-testid="manage-keys">
+			<section data-testid="manage-keys" class="min-w-0 lg:col-start-1">
 				<div
 					class="flex flex-row flex-wrap gap-3 justify-between items-center pt-3 pb-3">
 					<h2 class="text-lg font-bold">
@@ -506,23 +512,26 @@
 				</div>
 			</section>
 
-			<APIMCPCard />
+			<aside
+				class="min-w-0 flex flex-col gap-6 lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:sticky lg:top-3">
+				<APIMCPCard />
 
-			<section class="flex flex-col gap-1 pt-3">
-				<h2 class="text-lg font-bold">
-					{{ $t("api_keys.get_started.title") }}
-				</h2>
-				<ol class="list-decimal pl-6 flex flex-col gap-1">
-					<li>{{ $t("api_keys.get_started.step_create") }}</li>
-					<li>{{ $t("api_keys.get_started.step_pick") }}</li>
-					<li>{{ $t("api_keys.get_started.step_paste") }}</li>
-				</ol>
-			</section>
+				<section class="flex flex-col gap-1">
+					<h2 class="text-lg font-bold">
+						{{ $t("api_keys.get_started.title") }}
+					</h2>
+					<ol class="list-decimal pl-6 flex flex-col gap-1">
+						<li>{{ $t("api_keys.get_started.step_create") }}</li>
+						<li>{{ $t("api_keys.get_started.step_pick") }}</li>
+						<li>{{ $t("api_keys.get_started.step_paste") }}</li>
+					</ol>
+				</section>
+			</aside>
 
 			<section
 				id="api-builder"
 				ref="builderRef"
-				class="flex flex-col gap-3 pt-3 scroll-mt-3">
+				class="@container min-w-0 flex flex-col gap-3 pt-3 scroll-mt-3 lg:col-start-1">
 				<h2 class="text-lg font-bold">
 					{{ $t("api_keys.builder.title") }}
 				</h2>
