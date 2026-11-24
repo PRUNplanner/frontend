@@ -32,7 +32,7 @@ La barre du haut contient :
 - **Éléments · N** : N parties ne sont pas placées dans l'agencement affiché.
 - **Annuler** (aussi Ctrl/⌘+Z), **Revenir à Standard** (Large comme Standard, Téléphone automatique, et tu peux l'annuler), **Annuler** et **Enregistrer**.
 
-Si tu as modifié quelque chose, **Annuler** (ou Échap) demande « Abandonner tes modifications de disposition ? ». **Abandonner les modifications** les supprime et **Continuer à modifier** te ramène en arrière. Pendant un glisser-déposer, Échap annule seulement ce déplacement. **Enregistrer** enregistre les deux agencements comme ta disposition personnalisée. Si tu enregistres la copie de Standard par-dessus une disposition personnalisée existante, PRUNplanner te demande d'abord : **Remplacer la disposition personnalisée** ou **Continuer à modifier**.
+Si tu as modifié quelque chose, **Annuler** (ou Échap) demande « Abandonner tes modifications de disposition ? ». ». **Abandonner les modifications** les supprime et **Continuer à modifier** te ramène en arrière. Pendant un glisser-déposer, Échap annule seulement ce déplacement. **Enregistrer** enregistre les deux agencements comme ta disposition personnalisée. Si tu enregistres la copie de Standard par-dessus une disposition personnalisée existante, PRUNplanner te demande d'abord : **Remplacer la disposition personnalisée** ou **Continuer à modifier**.
 
 > [!tip]
 > Masquer une partie, joindre des parties, les séparer à nouveau ou réinitialiser affiche un message avec **Annuler**. Tu peux aussi appuyer sur Ctrl/⌘+Z à tout moment pendant la personnalisation. Il n'y a pas de rétablissement pour la disposition.

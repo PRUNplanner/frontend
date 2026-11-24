@@ -6,25 +6,25 @@ Il te suffit d'une [clé API](/help/api_keys) et de quelques lignes de configura
 
 L'assistant dispose d'un ensemble d'outils, regroupés ci-dessous selon leur usage. Tu ne les appelles jamais toi-même ; leurs noms figurent ici pour que tu les reconnaisses quand ton assistant indique quel outil il utilise.
 
-_Lire tes plans et tes empires._ « Laquelle de mes bases rapporte le plus par jour ? » ou « Qu'est-ce que mon empire importe chaque jour ? »
+_Lire tes plans et tes empires._ « Laquelle de mes bases rapporte le plus par jour ? » ou « Qu'est-ce que mon empire importe chaque jour ?
 `list_empires`, `list_plans`, `get_plan`, `get_empire`, `compare_plans`, `list_plan_versions`, `diff_plan_versions`
 
-_Des scénarios, sans rien enregistrer._ « Et si ma base agricole avait 5 experts ? » ou « Combien rapporterait un nouveau plan avec 4 FRM sur cette planète ? »
+_Des scénarios, sans rien enregistrer._ « Et si ma base agricole avait 5 experts ? » ou « Combien rapporterait un nouveau plan avec 4 FRM sur cette planète ?
 `calculate_plan_variant`, `calculate_new_plan`, `calculate_empire_variant`
 
-_Des alternatives._ « Quelle recette de mon FP rapporte le plus ? » ou « Dois-je fabriquer ou acheter les intrants de mon DW ? »
+_Des alternatives._ « Quelle recette de mon FP rapporte le plus ? » ou « Dois-je fabriquer ou acheter les intrants de mon DW ?
 `rank_recipes`, `get_production_cost`, `check_make_or_buy`, `lookup_material`
 
-_Où construire._ « Où devrais-je extraire de l'ALO près de Moria ? » ou « Laquelle de ces planètes convient le mieux à une base de fonderie ? »
+_Où construire._ « Où devrais-je extraire de l'ALO près de Moria ? » ou « Laquelle de ces planètes convient le mieux à une base de fonderie ?
 `find_planets`, `get_planet`, `get_distances`, `suggest_base`, `rank_bases`
 
-_Le prix est-il réel ?_ « Le marché de mes produits est-il assez profond ? » ou « Comment le prix du RAT a-t-il évolué ce mois-ci ? »
+_Le prix est-il réel ?_ « Le marché de mes produits est-il assez profond ? » ou « Comment le prix du RAT a-t-il évolué ce mois-ci ?
 `check_plan_market`, `get_material_prices`, `get_market_report`, `get_price_history`
 
-_Passer le relais au jeu._ « Donne-moi l'action [[xit|XIT]] pour approvisionner ma base pour 7 jours. »
+_Passer le relais au jeu._ « Donne-moi l'action [[xit|XIT]] pour approvisionner ma base pour 7 jours.
 `get_xit_action`
 
-_Plans partagés._ « Regarde ce plan partagé et compare-le avec le mien. »
+_Plans partagés._ « Regarde ce plan partagé et compare-le avec le mien.
 `get_shared_plan`
 
 _Modifications_, uniquement avec une clé en lecture et écriture (voir [Quelle clé](#keys)). « Enregistre cette variante comme mon plan. » ou « Partage mon plan agricole. »
