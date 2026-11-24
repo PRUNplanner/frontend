@@ -1,3 +1,12 @@
+# 2026-11-24 - v. 0.37.0
+
+This release has two headlines: **PRUNplanner in your AI assistant**, and a **help centre** that explains the whole tool.
+
+- **AI assistants (MCP)**: connect Claude, ChatGPT/Codex, Cursor or another MCP client with an API key and ask about your plans and empires in plain words: compare bases, try what-ifs without saving, find a planet, check make-or-buy or market depth. It calculates with PRUNplanner's own plan engine and your CX preferences, so its numbers match the plan page. With a **Read & write** key it can also save plans. The **API Keys** page has the server address and a download for Claude Desktop, and the new help article has the setup for each client [[PR-768]](https://github.com/PRUNplanner/frontend/pull/768)
+- **Help centre**: `/help` is now a searchable help centre you can open without logging in. Every article was checked against the code and corrected, and help grew from about 10,000 to 50,000 words. New: six "Start here" guides, articles on Base setup, Plan tools, Sharing, Market report and API keys, and a glossary of 57 terms you can hover in any article. Every **Help** button opens at the right section [[PR-748]](https://github.com/PRUNplanner/frontend/pull/748)
+- **API key access**: new keys are **Read-only** unless you choose **Read & write**, and older keys stay read & write. A key in a URL can only read, and no key can manage keys or change account settings [[PR-758]](https://github.com/PRUNplanner/frontend/pull/758)
+- **Plan layouts**: a tab can hold any number of parts, all below or all beside each other, and a one-tab card can hide its title bar to show only its content [[PR-744]](https://github.com/PRUNplanner/frontend/pull/744)
+
 # 2026-11-10 - v. 0.36.0
 
 The headline of this release is **plan layouts**: arrange the plan page the way you work.

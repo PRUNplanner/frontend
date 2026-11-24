@@ -20,7 +20,7 @@ export const HELP_AREAS: HelpArea[] = [
 export const WHATS_NEW = "whats-new";
 
 // the release every article was last checked against the code
-const CHECKED = "0.36.0";
+const CHECKED = "0.37.0";
 
 /** a plan-page article: its panel shows the others as chips */
 const plan = (id: string, related: string[]): IHelpArticle => ({
