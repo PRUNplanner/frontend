@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 import { flushPromises, RouterLinkStub } from "@vue/test-utils";
 
 import HelpView from "@/views/HelpView.vue";
@@ -54,9 +55,14 @@ describe("HelpView", () => {
 	it("shows the latest release only", async () => {
 		const { wrapper } = await mountView();
 		const card = wrapper.find("[data-testid=help-whats-new]");
-		expect(card.text()).toContain("0.36.0");
-		expect(card.text()).toContain("Plan layouts");
-		expect(card.text()).not.toContain("0.35.1");
+		// the newest two releases in the changelog, so a release bump needs no edit here
+		const [latest, previous] = [
+			...readFileSync("src/assets/help/changelog.md", "utf8").matchAll(
+				/^# .* - v\. (\S+)$/gm
+			),
+		].map((m) => m[1]);
+		expect(card.text()).toContain(latest);
+		expect(card.text()).not.toContain(previous);
 	});
 
 	it("starts with the guides and has a glossary card", async () => {
