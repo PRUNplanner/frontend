@@ -24,22 +24,19 @@
 		traceText,
 		traceTree,
 	} from "@/features/planning/calcDebug.util";
-	import { TRACE_PHASES } from "@/features/planning/engine/trace";
+	import { TRACE_PHASES } from "@prunplanner/engine";
 	import { formatNumber } from "@/util/numbers";
 
 	// Components
 	import PLayerClose from "@/ui/components/PLayerClose.vue";
 
 	// Types & Interfaces
-	import type {
-		ITraceEntry,
-		TracePhase,
-	} from "@/features/planning/engine/engine.types";
+	import type { ITraceEntry, TracePhase } from "@prunplanner/engine";
 	import type {
 		IOverviewData,
 		IPlanResult,
 		IPlanTraceRun,
-	} from "@/features/planning/usePlanCalculation.types";
+	} from "@prunplanner/engine";
 	import type {
 		ICalcDebugMeta,
 		ICalcDebugPlan,

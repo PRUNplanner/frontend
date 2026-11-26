@@ -4,7 +4,7 @@ import { describe, it, expect } from "vitest";
 import { extractionOptions } from "@/features/production_chain/engine/chainExtraction";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 
 // Fixtures
 import { index } from "@/tests/features/production_chain/chain.fixtures";

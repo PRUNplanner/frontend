@@ -6,7 +6,7 @@ import { cogcTextMapping } from "@/features/planning_data/usePlan";
 import { formatNumber } from "@/util/numbers";
 
 // Types & Interfaces
-import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+import type { InfrastructureType } from "@prunplanner/engine/schemas";
 import type { ElementId } from "@/features/planning/layout/planLayout.types";
 import type { IPlanViewContext } from "@/features/planning/usePlanView.types";
 

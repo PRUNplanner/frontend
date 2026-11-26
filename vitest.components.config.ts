@@ -8,6 +8,8 @@ export default {
 	...baseConfig,
 	test: {
 		...baseConfig.test,
+		// app only, without the engine project
+		projects: undefined,
 		include: [`${COMPONENT_TESTS}/*.test.ts`],
 		// mounting is slow and v8 coverage slows it further; 5s/10s flake under load
 		testTimeout: 15_000,

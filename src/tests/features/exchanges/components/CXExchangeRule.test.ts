@@ -6,7 +6,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import type { CXDataExchangeOption } from "@/features/api/schemas/cxData.schemas";
+import type { CXDataExchangeOption } from "@prunplanner/engine/schemas";
 import type { DOMWrapper } from "@vue/test-utils";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

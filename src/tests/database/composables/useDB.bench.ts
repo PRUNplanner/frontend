@@ -5,7 +5,7 @@ import { ref, type Ref } from "vue";
 import { useDB } from "@/database/composables/useDB";
 
 // Types & Interfaces
-import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Material } from "@prunplanner/engine/schemas";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";

@@ -10,7 +10,7 @@ import {
 } from "@/features/planet_search/planetSearch.engine";
 
 // Schemas
-import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
+import { PlanetCOGCProgramTypeSchema } from "@prunplanner/engine/schemas";
 import {
 	PlanetSearchExtraSchema,
 	PlanetSearchInfrastructureSchema,

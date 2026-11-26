@@ -15,7 +15,7 @@ import {
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

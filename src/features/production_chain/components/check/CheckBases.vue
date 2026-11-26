@@ -27,7 +27,7 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
-	import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
+	import type { ExpertType } from "@prunplanner/engine/schemas";
 	import type {
 		CheckVerdict,
 		ICheckBase,

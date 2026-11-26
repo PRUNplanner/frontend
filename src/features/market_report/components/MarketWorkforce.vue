@@ -30,7 +30,7 @@
 	import {
 		WorkforceTypeSchema,
 		type WorkforceType,
-	} from "@/features/api/schemas/planningData.schemas";
+	} from "@prunplanner/engine/schemas";
 	import type { IPriceSeries } from "@/features/market_report/marketReport.types";
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 

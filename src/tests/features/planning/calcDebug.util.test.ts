@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { createPlanTracer } from "@/features/planning/engine/trace";
+import { calculatePlan, createPlanTracer } from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Util
@@ -21,9 +20,9 @@ import type {
 	IPlanCalculation,
 	IPlanContext,
 	ITraceEntry,
-} from "@/features/planning/engine/engine.types";
-import type { IPlanTraceRun } from "@/features/planning/usePlanCalculation.types";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+	IPlanTraceRun,
+} from "@prunplanner/engine";
+import type { Plan } from "@prunplanner/engine/schemas";
 import type { ICalcDebugMeta } from "@/features/planning/calcDebug.types";
 
 // test data

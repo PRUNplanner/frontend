@@ -16,17 +16,19 @@ import { reportError } from "@/lib/analytics/useAnalytics";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
 // Engine
-import { createPriceBook, type IPriceBook } from "@/features/cx/priceBook";
-import { groupRecipesByBuilding } from "@/features/planning/engine/buildings";
+import {
+	createPriceBook,
+	type IPriceBook,
+	groupRecipesByBuilding,
+} from "@prunplanner/engine";
 
 // Types & Interfaces
+import type { IGameData, IPlanContext } from "@prunplanner/engine";
 import type {
-	IGameData,
-	IPlanContext,
-} from "@/features/planning/engine/engine.types";
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	Recipe,
+	PlanEmpire,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 
 // recipes grouped by building, for the recipe array loaded last
 let groupedRecipes:
@@ -47,6 +49,14 @@ export function getActiveEmpire(
 	if (!empireUuid) return undefined;
 	return empireOptions?.find((e) => e.uuid === empireUuid);
 }
+
+/**
+ * The engine's data warnings (an unknown recipe id) go to the console in
+ * development only; production builds and the MCP stay silent
+ */
+export const devWarn: Pick<IPlanContext, "warn"> = import.meta.env.DEV
+	? { warn: console.warn }
+	: {};
 
 /**
  * Builds the planning engine's context from the data layer: game data as
@@ -138,6 +148,7 @@ export function usePlanContext() {
 			...gameData,
 			planet: await getPlanet(planetNaturalId),
 			prices: createPrices(planetNaturalId, cxUuid),
+			...devWarn,
 		};
 	}
 

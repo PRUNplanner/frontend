@@ -2,7 +2,7 @@ import type {
 	IMaterialIO,
 	IProductionBuilding,
 	IRecipeBuildingOption,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 export type PickerMode = "change" | "add";
 // within one building ȼ/area and payback order the recipes like ȼ/day:

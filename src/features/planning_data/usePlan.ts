@@ -7,7 +7,8 @@ import type {
 	Plan,
 	PlanCreateData,
 	PlanSaveCreateResponse,
-} from "@/features/api/schemas/planningData.schemas";
+	PlanetCOGCProgramType,
+} from "@prunplanner/engine/schemas";
 import type {
 	IPlanDefinition,
 	IPlanSaved,
@@ -18,7 +19,6 @@ import { getSaveError } from "@/features/save_conflict/saveConflict.util";
 import { mapPlanetToPlanType } from "@/features/planning_data/planCOGC.util";
 import { apiFieldMessage, isApiError } from "@/lib/apiError";
 import { reportError } from "@/lib/analytics/useAnalytics";
-import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
 
 // moved to the pure planCOGC.util (the MCP server uses it), kept here for its importers
 export { cogcTextMapping } from "@/features/planning_data/planCOGC.util";

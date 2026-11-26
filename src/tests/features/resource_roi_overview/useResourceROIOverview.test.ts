@@ -23,7 +23,7 @@ import {
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
 import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -57,10 +57,8 @@ vi.mock("@/features/planning/usePlanCalculation", async () => {
 // record every engine result, to check the workforce cost they use
 const planResults = vi.hoisted(() => [] as IPlanResult[]);
 
-vi.mock("@/features/planning/engine/calculatePlan", async () => {
-	const actual: any = await vi.importActual(
-		"@/features/planning/engine/calculatePlan"
-	);
+vi.mock("@prunplanner/engine", async () => {
+	const actual: any = await vi.importActual("@prunplanner/engine");
 
 	return {
 		...actual,

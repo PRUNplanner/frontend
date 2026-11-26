@@ -10,7 +10,7 @@ import type {
 	IBurnXITActionOptions,
 	IXITActionMaterialElement,
 } from "@/features/xit/xitAction.types";
-import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Material } from "@prunplanner/engine/schemas";
 
 interface IWeightVolume {
 	totalWeight: number;

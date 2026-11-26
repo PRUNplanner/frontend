@@ -1,5 +1,5 @@
 // Engine
-import { resourceBuildingTicker } from "@/features/planning/engine/buildings";
+import { resourceBuildingTicker } from "@prunplanner/engine";
 
 // Util
 import { planetDisplayName } from "@/util/planetName";
@@ -8,7 +8,7 @@ import { planetDisplayName } from "@/util/planetName";
 import type {
 	PlanetResource,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	IChainExtractionOptions,
 	IChainExtractionSite,

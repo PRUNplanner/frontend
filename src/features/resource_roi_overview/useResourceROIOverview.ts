@@ -7,12 +7,14 @@ import { useQuery } from "@/lib/query_cache/useQuery";
 // Composables
 import { usePlan } from "@/features/planning_data/usePlan";
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { getBuildingRecipes } from "@/features/planning/engine/buildings";
+import {
+	calculatePlan,
+	getBuildingRecipes,
+	optimalProduction,
+} from "@prunplanner/engine";
 import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Static
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Util
 import {
@@ -21,13 +23,13 @@ import {
 } from "@/features/planet_search/environmentExtras.util";
 
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Planet } from "@prunplanner/engine/schemas";
 import type {
 	IGameData,
 	IPlanContext,
-} from "@/features/planning/engine/engine.types";
+	IStaticOptimalProduction,
+} from "@prunplanner/engine";
 import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-import type { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 import { usePathfinder } from "../pathfinding/usePathfinder";
 import { type IRun, useRunProgress } from "@/util/runProgress";
 

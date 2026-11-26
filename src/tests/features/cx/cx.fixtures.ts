@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData } from "@prunplanner/engine/schemas";
 import type { UserProfile } from "@/features/api/schemas/user.schemas";
 
 /** An exchange preference, without any rules unless `cx_data` sets them */

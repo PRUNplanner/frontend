@@ -13,10 +13,10 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { fioProfile } from "@/tests/features/cx/cx.fixtures";
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 // test data
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";

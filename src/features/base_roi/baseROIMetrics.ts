@@ -1,5 +1,5 @@
 // Engine
-import { calculateExpertBonus } from "@/features/planning/engine/efficiency";
+import { calculateExpertBonus } from "@prunplanner/engine";
 
 // Static
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";

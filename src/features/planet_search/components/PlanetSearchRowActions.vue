@@ -13,7 +13,7 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
-	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { buttonConfig } from "@/ui/styles";

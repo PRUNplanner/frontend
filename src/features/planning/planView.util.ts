@@ -1,4 +1,4 @@
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO } from "@prunplanner/engine";
 import { toCsv } from "@/util/download";
 
 export type PlanTool =

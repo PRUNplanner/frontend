@@ -32,7 +32,7 @@ import {
 
 // Types & Interfaces
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { IPlanCalculation } from "@prunplanner/engine";
 
 interface IEmpirePlanRow {
 	uuid: string;

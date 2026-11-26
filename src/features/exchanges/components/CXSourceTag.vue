@@ -10,7 +10,7 @@
 	} from "@/features/exchanges/exchangeLabel.util";
 
 	// Types & Interfaces
-	import type { IPriceSource } from "@/features/cx/priceBook";
+	import type { IPriceSource } from "@prunplanner/engine";
 
 	// UI
 	import { PTag } from "@/ui";

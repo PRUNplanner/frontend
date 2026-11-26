@@ -16,7 +16,7 @@ import {
 	PlanSaveCreateResponseSchema,
 	PlanSaveDataSchema,
 	PlanSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 import {
 	UserPreferencePatchSchema,
 	UserPreferenceSchema,
@@ -25,7 +25,7 @@ import {
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
 import type { IVariant } from "@/mcp/variant";
-import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
+import type { PlanCreateData } from "@prunplanner/engine/schemas";
 
 const PlanNameSchema = z.string().trim().min(1).max(100);
 

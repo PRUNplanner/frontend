@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { MARKET_FLAG_LEVEL, marketCheck } from "@/features/cx/marketCheck.util";
 import {
 	breakEven,

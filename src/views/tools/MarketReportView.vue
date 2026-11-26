@@ -65,7 +65,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+	import type { WorkforceType } from "@prunplanner/engine/schemas";
 	import type {
 		MarketGapBasis,
 		MarketIndexView,

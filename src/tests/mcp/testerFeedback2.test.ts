@@ -15,9 +15,12 @@ import {
 } from "@/tests/mcp/fakeBackend";
 
 // Types & Interfaces
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type {
+	IPriceBook,
+	IPriceSource,
+	IMaterialIO,
+} from "@prunplanner/engine";
+import type { Exchange } from "@prunplanner/engine/schemas";
 import type { IToolEnv } from "@/mcp/tools/shared";
 
 /** the beta testers' gaps of 2026-11-20, part 2 (items 1, 3, 6, 7, 9) */

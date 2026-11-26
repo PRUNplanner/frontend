@@ -5,7 +5,7 @@
 	import PlanCOGM from "@/features/planning/components/tools/PlanCOGM.vue";
 
 	import { PButton, PModal } from "@/ui";
-	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuildingRecipeCOGM } from "@prunplanner/engine";
 	import { AnalyticsOutlined } from "@vicons/material";
 
 	defineProps<{ cogmData?: IProductionBuildingRecipeCOGM }>();

@@ -17,7 +17,7 @@ import { makeOverview } from "@/tests/features/material_tile/marketOverview";
 import type {
 	EXCHANGES_TYPE,
 	IMaterialExchangeOverview,
-} from "@/database/services/useExchangeData.types";
+} from "@prunplanner/engine";
 import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 
 const CXS: EXCHANGES_TYPE[] = ["AI1", "CI1", "IC1", "NC1", "UNIVERSE"];

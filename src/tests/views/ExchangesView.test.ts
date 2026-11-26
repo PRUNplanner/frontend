@@ -17,7 +17,7 @@ import { buildPayload, setPlanetRules } from "@/features/exchanges/cxEdit.util";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData } from "@prunplanner/engine/schemas";
 import type { IExchangeNote } from "@/features/exchanges/exchangeNotes.util";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));

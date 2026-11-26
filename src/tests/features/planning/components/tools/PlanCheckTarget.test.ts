@@ -8,8 +8,11 @@ import { mountComponent } from "@/tests/mountComponent";
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
+import type {
+	IPlanContext,
+	IPriceBook,
+	IPriceSource,
+} from "@prunplanner/engine";
 import type { ISensitivityRow } from "@/features/planning/util/whatIf.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

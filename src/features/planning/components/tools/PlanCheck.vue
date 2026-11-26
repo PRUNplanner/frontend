@@ -27,9 +27,9 @@
 	import PlanCheckTarget from "@/features/planning/components/tools/PlanCheckTarget.vue";
 
 	// Types & Interfaces
-	import type { Planet } from "@/features/api/schemas/gameData.schemas";
-	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-	import type { IPlanInput } from "@/features/planning/engine/engine.types";
+	import type { Planet } from "@prunplanner/engine/schemas";
+	import type { PlanEmpire } from "@prunplanner/engine/schemas";
+	import type { IPlanInput } from "@prunplanner/engine";
 	import type {
 		BreakEven,
 		ISensitivityRow,

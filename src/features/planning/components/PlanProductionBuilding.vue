@@ -13,11 +13,8 @@
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import type {
-		IMaterialIO,
-		IProductionBuilding,
-	} from "@/features/planning/usePlanCalculation.types";
-	import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
+	import type { IMaterialIO, IProductionBuilding } from "@prunplanner/engine";
+	import type { PlanDataBuilding } from "@prunplanner/engine/schemas";
 	import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { IBuildingChange } from "@/features/sharing/sharedPlan.types";
 
@@ -31,7 +28,7 @@
 
 	// Util
 	import { formatNumber, formatPercent } from "@/util/numbers";
-	import { zeroEfficiencyReason } from "@/features/planning/engine/efficiency";
+	import { zeroEfficiencyReason } from "@prunplanner/engine";
 
 	// UI
 	import { PTooltip, PButton, PIcon, PInputNumber, PValue } from "@/ui";

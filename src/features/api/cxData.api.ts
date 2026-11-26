@@ -7,14 +7,10 @@ import {
 	CXListSchema,
 	CXPutSchema,
 	CXSchema,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
-import type {
-	CX,
-	CXData,
-	CXEmpireJunction,
-} from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData, CXEmpireJunction } from "@prunplanner/engine/schemas";
 
 /**
  * Gets all cx preferences a user has defined

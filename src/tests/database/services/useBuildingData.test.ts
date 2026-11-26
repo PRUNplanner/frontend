@@ -4,10 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildingsStore, recipesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
-import type {
-	Building,
-	PlanetResource,
-} from "@/features/api/schemas/gameData.schemas";
+import type { Building, PlanetResource } from "@prunplanner/engine/schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";

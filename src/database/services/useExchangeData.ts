@@ -2,13 +2,13 @@ import { exchangesStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 
 // Types & Interfaces
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange } from "@prunplanner/engine/schemas";
 import type {
 	EXCHANGES_TYPE,
 	IMaterialExchangeOverview,
 	IMaterialExchangeVWAPAnalysis,
 	SIGNIFICANCE_LEVEL,
-} from "@/database/services/useExchangeData.types";
+} from "@prunplanner/engine";
 
 export function useExchangeData() {
 	const exchangeTypesArray: EXCHANGES_TYPE[] = [

@@ -10,7 +10,7 @@ import plan from "@/locales/en_US/plan.json";
 import common from "@/locales/en_US/common.json";
 
 // Types & Interfaces
-import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+import type { PlanVersionListItem } from "@prunplanner/engine/schemas";
 
 const { trackEvent } = vi.hoisted(() => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/analytics/useAnalytics", async (original) => ({

@@ -4,7 +4,7 @@ import CXPriceLadder from "@/features/exchanges/components/CXPriceLadder.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 // FE has no asks on NC1, Universe trades it at 71.53
 const exchanges: Record<string, object> = {

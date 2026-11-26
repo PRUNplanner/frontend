@@ -5,7 +5,7 @@ import { usePlanFoldSummaries } from "@/features/planning/usePlanFoldSummaries";
 import { mountComposable } from "@/tests/mountComponent";
 import { building } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import { planViewContext } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 import plan from "@/locales/en_US/plan.json";
 import game from "@/locales/en_US/game.json";
 
@@ -14,8 +14,8 @@ import type { IPlanViewContext } from "@/features/planning/usePlanView.types";
 import type {
 	IPlanResult,
 	IProductionBuildingRecipe,
-} from "@/features/planning/usePlanCalculation.types";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+} from "@prunplanner/engine";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 function result(): IPlanResult {
 	const r = structuredClone(planEmptyResult) as IPlanResult;

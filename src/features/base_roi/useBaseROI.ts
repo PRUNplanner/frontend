@@ -8,7 +8,7 @@ import { measured } from "@/lib/query_cache/queries/queries.util";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
-import { usePlanContext } from "@/features/planning/usePlanContext";
+import { devWarn, usePlanContext } from "@/features/planning/usePlanContext";
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 import { useExchangeData } from "@/database/services/useExchangeData";
 import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
@@ -26,7 +26,7 @@ import {
 	hqStepCost,
 } from "@/features/base_roi/baseROIMetrics";
 import { baseStaffing } from "@/features/base_roi/baseROIPopulation";
-import { getExchangeCodeKey } from "@/features/cx/priceBook";
+import { getExchangeCodeKey } from "@prunplanner/engine";
 
 // Static
 import {
@@ -46,15 +46,9 @@ import type {
 	IBaseROISeries,
 	IBaseROIStaffing,
 } from "@/features/base_roi/baseROI.types";
-import type {
-	IGameData,
-	IPlanContext,
-} from "@/features/planning/engine/engine.types";
+import type { IGameData, IPlanContext } from "@prunplanner/engine";
 import { type IRun, useRunProgress } from "@/util/runProgress";
-import type {
-	Planet,
-	PopulationReport,
-} from "@/features/api/schemas/gameData.schemas";
+import type { Planet, PopulationReport } from "@prunplanner/engine/schemas";
 
 type EngineSettings = Pick<
 	BaseROISettings,
@@ -303,6 +297,7 @@ export function useBaseROI(
 		const recipes = recipeCandidates(gameData);
 		const standard: IPlanContext = {
 			...gameData,
+			...devWarn,
 			planet: STANDARD_PLANET,
 			prices: createPrices(
 				STANDARD_PLANET.planet_natural_id,
@@ -357,6 +352,7 @@ export function useBaseROI(
 						if (!ctx) {
 							ctx = {
 								...gameData!,
+								...devWarn,
 								planet,
 								prices: createPrices(
 									planet.planet_natural_id,
@@ -463,6 +459,7 @@ export function useBaseROI(
 		}).execute();
 		const ctx: IPlanContext = {
 			...gameData,
+			...devWarn,
 			planet,
 			prices: createPrices(planetNaturalId, cxUuid.value),
 		};

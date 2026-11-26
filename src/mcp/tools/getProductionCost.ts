@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { empireSurplus } from "@/features/production_chain/engine/chainHave";
 import { encodeChain } from "@/features/production_chain/engine/chainUrl";
 import { baseBuildings } from "@/features/production_chain/engine/chainBases";
@@ -31,7 +31,7 @@ import {
 } from "@/mcp/tools/shared";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 import type {
 	ChainRowSource,

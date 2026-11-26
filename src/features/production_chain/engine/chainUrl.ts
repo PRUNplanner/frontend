@@ -1,16 +1,13 @@
 // Engine
 import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
 import { MAX_AREAS } from "@/features/production_chain/engine/chainAutoLayout";
-import {
-	MAX_EXPERTS_PER_TYPE,
-	MAX_EXPERTS_TOTAL,
-} from "@/features/planning/engine/efficiency";
+import { MAX_EXPERTS_PER_TYPE, MAX_EXPERTS_TOTAL } from "@prunplanner/engine";
 
 // Schemas
 import {
 	ExpertTypeSchema,
 	PlanCOGCProgramSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type {

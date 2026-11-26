@@ -2,11 +2,11 @@ import { describe, it, expect } from "vitest";
 
 import PlanetPOPRTable from "@/features/government/components/PlanetPOPRTable.vue";
 import { mountComponent } from "@/tests/mountComponent";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
-import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+import type { PopulationReport } from "@prunplanner/engine/schemas";
+import type { IWorkforceRecord } from "@prunplanner/engine";
 
 // test data
 import popr from "@/tests/test_data/api_data_popr_latest.json";

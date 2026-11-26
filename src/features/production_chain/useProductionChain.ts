@@ -63,10 +63,12 @@ import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/reso
 import { ChainStorageSchema } from "@/features/production_chain/productionChain.schemas";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
-import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
+	PlanetSearchIndexEntry,
+	PlanCreateData,
+	PlanEmpireElement,
+	Planet,
+} from "@prunplanner/engine/schemas";
 import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 import type { ProductionChainAction } from "@/lib/analytics/useAnalytics.types";
 import type {

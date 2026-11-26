@@ -48,7 +48,10 @@ vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 	passThrough("WrapperGameDataLoader")
 );
-vi.mock("@/features/planning/engine/calculatePlan", () => ({ calculatePlan }));
+vi.mock("@prunplanner/engine", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@prunplanner/engine")>()),
+	calculatePlan,
+}));
 vi.mock("@/features/planning/usePlanContext", async (importOriginal) => ({
 	...(await importOriginal<
 		typeof import("@/features/planning/usePlanContext")

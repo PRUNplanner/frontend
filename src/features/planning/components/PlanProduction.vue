@@ -24,16 +24,16 @@
 	import PlanStarterSetup from "@/features/plan_analytics/components/PlanStarterSetup.vue";
 
 	// Types & Interfaces
-	import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetResource } from "@prunplanner/engine/schemas";
 	import type {
 		IExpertRecord,
 		IMaterialIO,
 		IProductionResult,
-	} from "@/features/planning/usePlanCalculation.types";
+	} from "@prunplanner/engine";
 	import type {
 		PlanCOGCProgram,
 		PlanDataBuilding,
-	} from "@/features/api/schemas/planningData.schemas";
+	} from "@prunplanner/engine/schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 	import type { IPlanChanges } from "@/features/sharing/sharedPlan.types";

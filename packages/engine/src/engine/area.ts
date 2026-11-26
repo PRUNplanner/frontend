@@ -1,0 +1,140 @@
+// Engine
+import { getBuilding } from "./buildings";
+import {
+	infrastructureBuildingNames,
+	storageBuildingNames,
+} from "../calculations/infrastructureCalculations";
+
+// Types & Interfaces
+import type { Building } from "../schemas/gameData.schemas";
+import type {
+	IAreaResult,
+	IInfrastructureRecord,
+	IStorageRecord,
+} from "../planCalculation.types";
+import type {
+	PlanData,
+	PlanDataInfrastructure,
+} from "../schemas/planningData.schemas";
+import type { IPlanTracer } from "./engine.types";
+
+/**
+ * Calculates the plans area result by determining the total amount of
+ * usable area based on permits and the used area by infrastructure
+ * and production buildings.
+ *
+ * @remark Core Modul Area of 25 is always included
+ *
+ * @param {PlanData} data Plan Data
+ * @param {number} permits Permits used
+ * @param {ReadonlyMap<string, Building>} buildings Building data
+ * @param {IPlanTracer} [trace] Tracer
+ * @returns {IAreaResult} Area
+ */
+export function calculateArea(
+	data: PlanData,
+	permits: number,
+	buildings: ReadonlyMap<string, Building>,
+	trace?: IPlanTracer
+): IAreaResult {
+	// Core Module holds 25 area
+	let areaUsed: number = 25;
+	const areaTotal: number = 250 + permits * 250;
+
+	// calculate area used based on production and infrastructure buildings
+	for (const infrastructure of data.infrastructure) {
+		if (infrastructure.amount > 0) {
+			const cost: number = getBuilding(
+				buildings,
+				infrastructure.building
+			).area_cost;
+			areaUsed += cost * infrastructure.amount;
+			trace?.step({
+				phase: "area",
+				label: `${infrastructure.building} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: infrastructure.amount },
+				value: cost * infrastructure.amount,
+				scope: { building: infrastructure.building },
+			});
+		}
+	}
+
+	for (const building of data.buildings) {
+		if (building.amount > 0) {
+			const cost: number = getBuilding(
+				buildings,
+				building.name
+			).area_cost;
+			areaUsed += cost * building.amount;
+			trace?.step({
+				phase: "area",
+				label: `${building.name} area`,
+				formula: "area_cost × amount",
+				inputs: { area_cost: cost, amount: building.amount },
+				value: cost * building.amount,
+				scope: { building: building.name },
+			});
+		}
+	}
+
+	const areaLeft: number = areaTotal - areaUsed;
+
+	trace?.step({
+		phase: "area",
+		label: "area used",
+		formula: "25 core module + Σ area cost × amount",
+		value: areaUsed,
+	});
+	trace?.step({
+		phase: "area",
+		label: "area total",
+		formula: "250 + permits × 250",
+		inputs: { permits },
+		value: areaTotal,
+	});
+	trace?.step({
+		phase: "area",
+		label: "area left",
+		formula: "total − used",
+		inputs: { total: areaTotal, used: areaUsed },
+		value: areaLeft,
+		level: areaLeft < 0 ? "warn" : "info",
+		note: areaLeft < 0 ? "more area than the permits allow" : undefined,
+	});
+
+	return {
+		permits: permits,
+		areaUsed: areaUsed,
+		areaTotal: areaTotal,
+		areaLeft: areaLeft,
+	};
+}
+
+function amountsOf(data: PlanData, names: string[]): Record<string, number> {
+	return Object.fromEntries(
+		names.map((key) => {
+			const currentInf: PlanDataInfrastructure | undefined =
+				data.infrastructure.find((e) => e.building === key);
+
+			return [key, currentInf ? currentInf.amount : 0];
+		})
+	);
+}
+
+/**
+ * A record with all infrastructure buildings and their amount in the plan
+ */
+export function calculateInfrastructure(data: PlanData): IInfrastructureRecord {
+	return amountsOf(
+		data,
+		infrastructureBuildingNames
+	) as IInfrastructureRecord;
+}
+
+/**
+ * A record with all storage buildings and their amount in the plan
+ */
+export function calculateStorage(data: PlanData): IStorageRecord {
+	return amountsOf(data, storageBuildingNames) as IStorageRecord;
+}

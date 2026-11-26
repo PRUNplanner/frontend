@@ -13,7 +13,7 @@
 	import { useI18n } from "vue-i18n";
 
 	// Types & Interfaces
-	import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanSummary } from "@prunplanner/engine/schemas";
 
 	const { t } = useI18n();
 	const toast = useToast();

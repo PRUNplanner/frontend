@@ -32,7 +32,7 @@ import type {
 	PlanCreateData,
 	PlanDraft,
 	PlanDraftSaveData,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { IPlanDiffable } from "@/features/planning_data/planDiff";
 import type { IPlanDraftOptions } from "@/features/planning/usePlanDraft.types";
 

@@ -6,7 +6,7 @@ import PlanInfrastructure from "@/features/planning/components/PlanInfrastructur
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IInfrastructureRecord } from "@prunplanner/engine";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

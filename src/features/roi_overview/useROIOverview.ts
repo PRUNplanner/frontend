@@ -2,26 +2,27 @@ import { type Ref, ref } from "vue";
 
 // Composables
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import {
+	calculatePlan,
+	TOTALMSDAY,
+	optimalProduction,
+} from "@prunplanner/engine";
 import { useBuildingData } from "@/database/services/useBuildingData";
-import { TOTALMSDAY } from "@/features/planning/engine/materialIO";
 
 // Util
 import { deepClone } from "@/util/data";
 import { useRunProgress } from "@/util/runProgress";
 
 // Static
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { PlanCOGCProgram, Recipe } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
 import type {
+	IPlanContext,
 	IROIResult,
 	IStaticOptimalProduction,
-} from "@/features/roi_overview/useROIOverview.types";
+} from "@prunplanner/engine";
 
 export function useROIOverview(
 	definition: Ref<IPlanDefinition>,

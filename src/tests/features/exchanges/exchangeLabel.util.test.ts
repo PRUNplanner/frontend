@@ -8,7 +8,7 @@ import {
 } from "@/features/exchanges/exchangeLabel.util";
 
 // Types & Interfaces
-import type { IPriceSource } from "@/features/cx/priceBook";
+import type { IPriceSource } from "@prunplanner/engine";
 
 import exchanges from "@/locales/en_US/exchanges.json";
 

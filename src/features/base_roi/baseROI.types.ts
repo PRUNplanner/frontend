@@ -1,13 +1,15 @@
 // Types & Interfaces
 import type { IPlanetPlotFields } from "@/features/planet_search/planetPlots.util";
-import type { IPriceSource } from "@/features/cx/priceBook";
-import type { BuildingExpertise } from "@/features/api/schemas/gameData.schemas";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
 import type {
+	IPriceSource,
 	IInfrastructureRecord,
 	IPlanResult,
-} from "@/features/planning/usePlanCalculation.types";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+	IPlanCalculation,
+} from "@prunplanner/engine";
+import type {
+	BuildingExpertise,
+	WorkforceType,
+} from "@prunplanner/engine/schemas";
 
 /** the engine result of one base and the layout it ended with */
 export interface IBaseCalculation extends IPlanCalculation {

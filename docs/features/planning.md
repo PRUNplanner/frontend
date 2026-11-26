@@ -70,8 +70,8 @@ the folder layout and the editor.
 - **Elements don't compute anything.** They read `result` slices from
   `usePlanView()` and call its `handle*`. Components never write into
   `result`.
-- **Put new math in `engine/`** as exported plain functions with tests in
-  `src/tests/features/planning/engine/`.
+- **Put new math in the engine package** (`packages/engine/src/engine/`) as
+  exported plain functions with tests in `packages/engine/tests/`.
 - **`disabled` means read-only**: panels hide edit-only controls (add
   building, recipe picker, steppers…) instead of greying them out; value
   inputs stay, disabled.

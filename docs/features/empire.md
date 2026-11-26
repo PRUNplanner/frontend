@@ -23,7 +23,7 @@ I/O and production opportunities.
   surplus, priced at SELL.
 - `empireAnalysis.util.ts` (revenue split, butterfly), `util/` (Material I/O
   and shipping demand helpers), `empire.types.ts` (frontend-only shapes; wire
-  shapes in `api/schemas/empireData.schemas.ts`), `empire.constants.ts`.
+  shapes in `packages/engine/src/schemas/empireData.schemas.ts`), `empire.constants.ts`.
 - `components/`: `EmpireCostOverview`, `EmpirePlanList`,
   `EmpireConfiguration(Form)`, `EmpireOnboarding` (0 plans), `EmpireEmpty`
   (no empires), `EmpireAnalysis` (+ `EmpireRevenueSplit`,

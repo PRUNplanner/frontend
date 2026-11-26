@@ -4,7 +4,7 @@ import { baseStaffing, isStaffed } from "@/features/base_roi/baseROIPopulation";
 import { filterRows } from "@/features/base_roi/baseROIMetrics";
 
 // Types & Interfaces
-import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
+import type { PopulationReport } from "@prunplanner/engine/schemas";
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
 
 const report = {

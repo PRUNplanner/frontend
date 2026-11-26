@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import type {
 	CXDataExchangeOption,
 	CXDataTickerOption,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 import { useCXImportExport } from "@/features/exchanges/useCXImportExport";
 import type { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 

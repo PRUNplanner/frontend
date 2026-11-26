@@ -4,7 +4,8 @@
 through the plan engine on a precomputed optimal base layout per building.
 
 **Used by.** `views/tools/ROIOverviewView.vue` (`/roi-overview`).
-`assets/optimalProduction.ts` also feeds `resource_roi_overview`, `base_roi`
+`optimalProduction` (in the engine package, `packages/engine/src/roi/optimalProduction.ts`)
+also feeds `resource_roi_overview`, `base_roi`
 and the plan engine (`recipeOptions.ts`); `COGMButton` is reused by
 `resource_roi_overview`.
 
@@ -13,7 +14,7 @@ and the plan engine (`recipeOptions.ts`); `COGMButton` is reused by
 | File | Role |
 | --- | --- |
 | `useROIOverview.ts` | `calculate()` (a newer run supersedes a running one), `calculateItem()`, `resultData`, `progress`, `formatOptimal()` |
-| `assets/optimalProduction.ts` | Each building's optimal count plus the habs and storage that fill one base |
+| `packages/engine/src/roi/optimalProduction.ts` | Each building's optimal count plus the habs and storage that fill one base (imported from `@prunplanner/engine`) |
 | `components/` | `ROIOverviewTable` (runs the composable), filters, `COGMButton` (COGM breakdown) |
 
 `calculate()` skips extractors and `FRM`; per building × recipe it sets

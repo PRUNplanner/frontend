@@ -21,7 +21,7 @@ import {
 	callMarketSummary,
 	callPlanetLastPOPR,
 } from "@/features/api/gameData.api";
-import type { PlanetSearchAdvancedPayload } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchAdvancedPayload } from "@prunplanner/engine/schemas";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";

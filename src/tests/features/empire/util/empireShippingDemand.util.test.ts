@@ -3,10 +3,7 @@ import { describe, it, expect } from "vitest";
 import { calculateEmpireShippingDemand } from "@/features/empire/util/empireShippingDemand.util";
 
 // Types & Interfaces
-import type {
-	IMaterialIO,
-	IPlanResult,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO, IPlanResult } from "@prunplanner/engine";
 
 const io = (delta: number, totalWeight: number, totalVolume: number) =>
 	({ delta, totalWeight, totalVolume }) as IMaterialIO;

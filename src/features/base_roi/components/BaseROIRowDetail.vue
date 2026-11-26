@@ -17,7 +17,7 @@
 	import { useCXData } from "@/features/cx/useCXData";
 
 	// Engine
-	import { calculateBuildingFactionBonus } from "@/features/planning/engine/efficiency";
+	import { calculateBuildingFactionBonus } from "@prunplanner/engine";
 
 	// Util
 	import { copyToClipboard } from "@/util/data";
@@ -56,7 +56,7 @@
 		IBaseROIRow,
 		IBaseROISeries,
 	} from "@/features/base_roi/baseROI.types";
-	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 	import type { ILineSeries } from "@/ui/charts/charts.types";
 

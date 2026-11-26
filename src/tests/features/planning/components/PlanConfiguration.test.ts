@@ -6,7 +6,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent, piniaWithCX } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+import type { PlanEmpire } from "@prunplanner/engine/schemas";
 
 const empire = (uuid: string, name: string): PlanEmpire => ({
 	uuid,

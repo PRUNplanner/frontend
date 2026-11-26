@@ -5,7 +5,7 @@ import { usePlanIO } from "@/features/planning/usePlanIO";
 import { mountComposable } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 
 const { trackEvent } = vi.hoisted(() => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/analytics/useAnalytics", async (original) => ({

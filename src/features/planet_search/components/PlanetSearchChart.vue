@@ -34,7 +34,7 @@
 	import type {
 		PlanetCOGCProgramType,
 		PlanetSearchIndexEntry,
-	} from "@/features/api/schemas/gameData.schemas";
+	} from "@prunplanner/engine/schemas";
 	import type {
 		PlanetSearchFilter,
 		PlanetSearchReference,

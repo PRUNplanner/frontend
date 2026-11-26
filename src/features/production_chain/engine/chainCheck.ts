@@ -15,21 +15,21 @@ import {
 	workerUpkeep,
 } from "@/features/production_chain/engine/chainSolver";
 import { BASE_IDS } from "@/features/production_chain/engine/chainBases";
-import { resourceBuildingTicker } from "@/features/planning/engine/buildings";
 import {
+	resourceBuildingTicker,
 	calculateBuildingWorkforceEfficiency,
 	calculateExpertBonus,
 	expertNames,
-} from "@/features/planning/engine/efficiency";
+} from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
 import type {
+	PlanetSearchIndexEntry,
 	ExpertType,
 	PlanCOGCProgram,
 	WorkforceType,
-} from "@/features/api/schemas/planningData.schemas";
-import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine/schemas";
+import type { IWorkforceRecord } from "@prunplanner/engine";
 import type {
 	ChainExperts,
 	ChainLux,

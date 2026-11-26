@@ -14,14 +14,14 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Schemas
-	import { PlanFactionSchema } from "@/features/api/schemas/planningData.schemas";
+	import { PlanFactionSchema } from "@prunplanner/engine/schemas";
 
 	// Types & Interfaces
 	import type {
 		PlanCreateData,
 		PlanFaction,
-	} from "@/features/api/schemas/planningData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	} from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type {
 		IChainBaseResult,
 		IChainResult,

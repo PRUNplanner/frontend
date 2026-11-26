@@ -15,7 +15,7 @@ import {
 import { providePlanView } from "@/features/planning/usePlanView";
 import { usePlanIO } from "@/features/planning/usePlanIO";
 import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 import {
 	building,
 	io,
@@ -27,7 +27,7 @@ import { partRoomKey } from "@/features/planning/layout/planGrid.util";
 // Types & Interfaces
 import { provide, ref } from "vue";
 import type { Component } from "vue";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 import type { PlanTool } from "@/features/planning/planView.util";
 
 // heavy children have their own tests

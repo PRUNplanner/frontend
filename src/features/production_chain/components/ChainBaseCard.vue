@@ -24,19 +24,19 @@
 	import {
 		MAX_EXPERTS_PER_TYPE,
 		MAX_EXPERTS_TOTAL,
-	} from "@/features/planning/engine/efficiency";
+	} from "@prunplanner/engine";
 	import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 	import { formatNumber } from "@/util/numbers";
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Schemas
-	import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
+	import { PlanCOGCProgramSchema } from "@prunplanner/engine/schemas";
 
 	// Types & Interfaces
 	import type {
 		ExpertType,
 		PlanCOGCProgram,
-	} from "@/features/api/schemas/planningData.schemas";
+	} from "@prunplanner/engine/schemas";
 	import type {
 		ChainBaseCOGC,
 		ChainExperts,

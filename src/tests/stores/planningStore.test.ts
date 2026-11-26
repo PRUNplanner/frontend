@@ -6,7 +6,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 // stores
 import { usePlanningStore } from "@/stores/planningStore";
 import { memoryStorage } from "@/tests/memoryStorage";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";

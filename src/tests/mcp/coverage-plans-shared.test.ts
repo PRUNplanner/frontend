@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // MCP
 import { createBackend } from "@/mcp/backend";
@@ -24,10 +24,13 @@ import {
 import { API_KEY, PLAN_UUID, fakeBackend } from "@/tests/mcp/fakeBackend";
 
 // Types & Interfaces
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
-import type { IProductionBuildingRecipe } from "@/features/planning/usePlanCalculation.types";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type {
+	IPriceBook,
+	IPriceSource,
+	IPlanCalculation,
+	IProductionBuildingRecipe,
+} from "@prunplanner/engine";
+import type { Planet } from "@prunplanner/engine/schemas";
 
 const DAY = 86_400_000;
 let setup: IPlanSetup;

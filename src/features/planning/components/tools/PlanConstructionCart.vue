@@ -29,15 +29,15 @@
 	import { relativeFromDate } from "@/util/date";
 	import { useRunProgress } from "@/util/runProgress";
 	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
-	import { workforceTypeNames } from "@/features/planning/engine/workforce";
+	import { workforceTypeNames } from "@prunplanner/engine";
 
 	// Types & Interfaces
-	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+	import type { InfrastructureType } from "@prunplanner/engine/schemas";
 	import type {
 		IBuildingConstruction,
 		IProductionBuilding,
-	} from "@/features/planning/usePlanCalculation.types";
-	import type { Building } from "@/features/api/schemas/gameData.schemas";
+	} from "@prunplanner/engine";
+	import type { Building } from "@prunplanner/engine/schemas";
 	import type { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 	import {
 		constructionTotals,

@@ -1,15 +1,14 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Util
 import { profitBreakdown } from "@/features/planning/util/profitBreakdown.util";
 
 // Types & Interfaces
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
-import type { IOverviewData } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanContext, IOverviewData } from "@prunplanner/engine";
 import type { IProfitBreakdown } from "@/features/planning/util/profitBreakdown.types";
 
 // test data

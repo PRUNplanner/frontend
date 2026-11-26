@@ -23,7 +23,7 @@ import {
 	CHUNK_SIZE,
 	STANDARD_PLANET,
 } from "@/features/base_roi/baseROI.constants";
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+import { optimalProduction } from "@prunplanner/engine";
 
 // Test Data
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
@@ -34,7 +34,7 @@ import planetTemplate from "@/tests/test_data/api_data_planet_etherwind.json";
 import type {
 	Planet,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 import type {
 	IBaseROICandidate,
@@ -42,7 +42,7 @@ import type {
 	IBaseROIRowInput,
 	IBaseROISeries,
 } from "@/features/base_roi/baseROI.types";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { IPlanContext } from "@prunplanner/engine";
 
 /**
  * Base ROI benchmarks (B10), run with `pnpm vitest bench --run`. Node +
@@ -56,10 +56,8 @@ import type { IPlanContext } from "@/features/planning/engine/engine.types";
 
 const counters = vi.hoisted(() => ({ runs: 0, recipeOptions: 0 }));
 
-vi.mock("@/features/planning/engine/calculatePlan", async () => {
-	const actual: any = await vi.importActual(
-		"@/features/planning/engine/calculatePlan"
-	);
+vi.mock("@prunplanner/engine", async () => {
+	const actual: any = await vi.importActual("@prunplanner/engine");
 	return {
 		...actual,
 		calculatePlan: (...args: unknown[]) => {

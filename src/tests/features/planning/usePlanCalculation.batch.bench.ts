@@ -16,16 +16,14 @@ import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan, optimalProduction } from "@prunplanner/engine";
 import { combineEmpireMaterialIO } from "@/features/empire/util/empireMaterialIO.util";
 
 // Static
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
+import type { IPlanCalculation } from "@prunplanner/engine";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -53,10 +51,8 @@ import { empireLike } from "@/tests/features/planning/usePlanCalculation.bench.e
 
 const counters = vi.hoisted(() => ({ runs: 0, recipeOptions: 0 }));
 
-vi.mock("@/features/planning/engine/calculatePlan", async () => {
-	const actual: any = await vi.importActual(
-		"@/features/planning/engine/calculatePlan"
-	);
+vi.mock("@prunplanner/engine", async () => {
+	const actual: any = await vi.importActual("@prunplanner/engine");
 	return {
 		...actual,
 		calculatePlan: (...args: unknown[]) => {

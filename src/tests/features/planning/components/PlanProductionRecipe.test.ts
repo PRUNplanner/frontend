@@ -15,7 +15,7 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { IProductionBuildingRecipe } from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuildingRecipe } from "@prunplanner/engine";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";

@@ -19,7 +19,7 @@ import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculat
 
 // Types & Interfaces
 import type { VueWrapper } from "@vue/test-utils";
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData } from "@prunplanner/engine/schemas";
 import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

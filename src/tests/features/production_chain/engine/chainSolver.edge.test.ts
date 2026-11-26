@@ -8,14 +8,10 @@ import {
 	solveChain,
 } from "@/features/production_chain/engine/chainSolver";
 import { layoutChain } from "@/features/production_chain/engine/chainLayout";
-import { createPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type {
-	Building,
-	Exchange,
-	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+import type { Building, Exchange, Recipe } from "@prunplanner/engine/schemas";
 import type { IChainContext } from "@/features/production_chain/engine/chainSolver.types";
 
 // Fixtures

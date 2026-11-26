@@ -1,6 +1,5 @@
 // Types & Interfaces
-import type { PlanFaction } from "@/features/api/schemas/planningData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { PlanFaction, Planet } from "@prunplanner/engine/schemas";
 import type { ChainHave } from "@/features/production_chain/engine/chainSolver.types";
 import type { IChainHaveSupply } from "@/features/production_chain/engine/chainHave";
 

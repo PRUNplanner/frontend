@@ -8,7 +8,7 @@ import { deepClone } from "@/util/data";
 import { changedScopes } from "@/features/exchanges/cxEdit.util";
 
 // Types & Interfaces
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CX, CXData } from "@prunplanner/engine/schemas";
 
 const EMPTY: CXData = {
 	cx_empire: [],

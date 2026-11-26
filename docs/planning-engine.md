@@ -6,28 +6,62 @@ production, material flow, cost, revenue and profit per day.
 
 ```
 PlanView ─ usePlanCalculation (adapter, sync computed) ─┐
-batch views ─ usePlanContext + calculatePlan per plan ──┴─> engine/calculatePlan(input, ctx)
+batch views ─ usePlanContext + calculatePlan per plan ──┴─> @prunplanner/engine calculatePlan(input, ctx)
 ```
 
-## The engine (`src/features/planning/engine/`)
+## The engine package (`packages/engine/`, `@prunplanner/engine`)
 
 ```ts
+import { calculatePlan } from "@prunplanner/engine";
+import type { Plan } from "@prunplanner/engine/schemas";
+
 const { result, overview } = calculatePlan(input, ctx);
 ```
 
+The engine, the price book and the wire schemas they are built on live in
+the workspace package `@prunplanner/engine` (`frontend/packages/engine`),
+imported by the app, the MCP server and the tests like any npm package.
+
+- **Two entry points.** `@prunplanner/engine` (`src/index.ts`): the
+  calculation API, price book, engine types and `optimalProduction`.
+  `@prunplanner/engine/schemas` (`src/schemas/index.ts`): the Zod schemas
+  `gameData`, `planningData`, `empireData`, `cxData` and their inferred
+  types (still hand-written, still the source of truth for those wire
+  shapes), so the API layer doesn't load the engine. Each entry exports
+  exactly what the app and MCP use; `tests/publicApi.test.ts` snapshots
+  the names, so a change to the surface is a visible diff. Import only
+  from the entries, never from a file inside the package.
+- **It imports only itself and `zod`** (`zod` is a peer dependency, one
+  instance with the app). ESLint fails on any other import in
+  `packages/engine/src/`, including `@/` and paths above `src/`; its own
+  `tsconfig.json` has no DOM lib and no Node types, and `pnpm tsc` checks
+  it. `production_chain/engine/` stays in the app (no Vue, Pinia,
+  `@/stores/*` except `*.types`, `@/database/*`) and imports the package.
+- **Layout** (`packages/engine/src/`): `engine/` (the files below),
+  `calculations/` (extraction, infrastructure, bonus and workforce
+  types), `planCalculation.types.ts` (result types), `cx/` (price book,
+  price and exchange types), `schemas/`, `util/` (`boundary.ts`,
+  `numbers.types.ts`), `roi/` (`optimalProduction.ts`).
+- **Built like a real package, not published** (`"private": true`). The
+  workspace `exports` point at `src/`, so dev, Vite, Vitest and the MCP
+  bundle need no build. `pnpm --filter @prunplanner/engine build` (tsdown)
+  writes ESM and `.d.ts` to `dist/`, which `publishConfig.exports` points
+  at; `pnpm pack && pnpm smoke` there imports the packed `dist/` in plain
+  Node and checks a golden result (CI `build.yml`).
 - **Pure and synchronous.** Plain data in and out, never mutates its input.
-  ESLint forbids `vue`, `pinia`, `@vue/*`, `vue-*`, `@/stores/*` (except
-  `*.types`) and `@/database/*` in `engine/` and `production_chain/engine/`.
 - **`input: IPlanInput`**: `plan` (`plan_data`, `plan_cogc`, `plan_corphq`,
   `plan_permits_used`), `empire` (faction bonus) and `cxUuid`, all explicit.
   `recipeOptions: false` skips recipe options.
 - **`ctx: IPlanContext`**: game data maps (`buildings`, `recipesByBuilding`,
   `materials`), the `planet`, an `IPriceBook` for the plan's CX and planet,
-  and an optional `trace`. Build it with `usePlanContext()`.
+  an optional `trace` and an optional `warn` (data problems the result
+  works around, e.g. an unknown recipe id; silent without it). Build it
+  with `usePlanContext()`, which passes `console.warn` in development only
+  (`devWarn`); the MCP passes none.
 - **Output** (`IPlanCalculation`): `result: IPlanResult` and `overview:
   IOverviewData`. `calculateVisitation(result)` gives `IVisitationData`.
   `IPlanResult` and its sub-records are typed in
-  `usePlanCalculation.types.ts`.
+  `planCalculation.types.ts`.
 
 | File | Concern |
 | --- | --- |
@@ -168,7 +202,7 @@ server) and pushes the material I/O to the backend (`PatchEmpireState`).
 ## Prices: `IPriceBook` and `usePrice`
 
 `createPriceBook(getCXData, planetNaturalId, getExchange, onError?)`
-(`src/features/cx/priceBook.ts`) resolves prices synchronously from
+(`packages/engine/src/cx/priceBook.ts`) resolves prices synchronously from
 preloaded exchange data. Each `(ticker, BUY/SELL)` resolves once per book
 and the CX is read once, so **create a new book per calculation** to see
 changes. `usePrice(cxUuidRef, planetNaturalIdRef)` gives components async
@@ -186,12 +220,23 @@ A CX preference (`CX.cx_data`) resolves first match wins:
 `BOTH` applies to buy and sell. An unresolvable price is 0; the book
 reports its first failure to `onError` (`reportError` in the app).
 
-`src/features/planning/calculations/` holds the hab/storage lists,
-`calculateExtraction` and the `yalps` LP hab solver (`optimizeHabs`).
+`src/features/planning/calculations/` holds the hab/storage lists and the
+`yalps` LP hab solver (`optimizeHabs`); `calculateExtraction` and the
+infrastructure calculations are in the package (`calculations/`).
 
 ## Tests and benchmarks
 
-- Engine unit tests: `src/tests/features/planning/engine/`.
+- Engine unit tests: `packages/engine/tests/`, mirroring the package's
+  `src/`, run in plain Node (project `engine` of `pnpm test`, no app
+  setup). Game data JSON comes from `src/tests/test_data/` through one
+  helper, `tests/fixtures/gameData.ts`; `tests/fixtures/context.ts` builds
+  an `IPlanContext` from it without stores or IndexedDB.
+- Golden in Node: `calculatePlan.node.golden.test.ts` snapshots two full
+  results (`tests/__snapshots__/calculatePlan.*.golden.json`); the app's
+  `src/tests/features/planning/integration/engineContext.test.ts`
+  calculates the same plans through `usePlanContext` and must match them.
+- Integration tests (engine with `usePlanContext`, stores, IndexedDB):
+  `src/tests/features/planning/integration/`.
 - `usePlanCalculation.characterization.test.ts` snapshots the full result
   for 11 plan cases, through the adapter and through the engine, against
   the same files in `__snapshots__/usePlanCalculation.characterization/`.
@@ -211,5 +256,6 @@ reports its first failure to `onError` (`reportError` in the app).
   inert clones; edit a copy.
 - **Results depend on context.** Empire (faction, permits) and CX (prices)
   change the numbers, so a cache key must include both.
-- **New math goes into `engine/`** as a plain function with a unit test in
-  `src/tests/features/planning/engine/`.
+- **New math goes into the package** (`packages/engine/src/engine/`) as a
+  plain function with a unit test in `packages/engine/tests/`; export it
+  from `src/index.ts` only when the app or MCP uses it.

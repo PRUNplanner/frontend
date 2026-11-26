@@ -8,14 +8,14 @@
 	// Utils
 	import { capitalizeString } from "@/util/text";
 	import { formatAmount, formatNumber } from "@/util/numbers";
-	import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce";
+	import { WORKFORCE_CONSUMPTION_MAP } from "@prunplanner/engine";
 
 	// Types & Interfaces
-	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+	import type { WorkforceType } from "@prunplanner/engine/schemas";
 	import type {
 		IWorkforceElement,
 		IWorkforceRecord,
-	} from "@/features/planning/usePlanCalculation.types";
+	} from "@prunplanner/engine";
 
 	// UI
 	import { PButton, PTable } from "@/ui";

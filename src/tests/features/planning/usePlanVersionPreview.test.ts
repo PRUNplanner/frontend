@@ -10,7 +10,7 @@ import { mountComposable } from "@/tests/mountComponent";
 // Types & Interfaces
 import type { IPlanCalculation } from "@/features/planning/planView.types";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import type { PlanVersion } from "@/features/api/schemas/planningData.schemas";
+import type { PlanVersion } from "@prunplanner/engine/schemas";
 
 const m = vi.hoisted(() => ({
 	query: vi.fn(),

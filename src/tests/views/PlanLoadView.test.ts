@@ -10,10 +10,7 @@ import { useUserStore } from "@/stores/userStore";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type {
-	Plan,
-	PlanShare,
-} from "@/features/api/schemas/planningData.schemas";
+import type { Plan, PlanShare } from "@prunplanner/engine/schemas";
 
 // vi.mock factories are hoisted, so are their helpers. __esModule lets
 // defineAsyncComponent pick the default export of a mocked module

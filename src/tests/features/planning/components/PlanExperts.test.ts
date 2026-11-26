@@ -4,11 +4,11 @@ import type { VueWrapper } from "@vue/test-utils";
 import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import { mountComponent } from "@/tests/mountComponent";
-import { ExpertTypeSchema } from "@/features/api/schemas/planningData.schemas";
+import { ExpertTypeSchema } from "@prunplanner/engine/schemas";
 import { experts } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { IExpertRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IExpertRecord } from "@prunplanner/engine";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

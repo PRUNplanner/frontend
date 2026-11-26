@@ -17,7 +17,7 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 
 import type { PSelectOption } from "@/ui/ui.types";
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
 import type { IChainInput } from "@/features/production_chain/engine/chainSolver.types";
 
 const ctx = testContext();

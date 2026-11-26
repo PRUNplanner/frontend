@@ -16,7 +16,7 @@ import {
 } from "@/tests/features/production_chain/chain.fixtures";
 import messages from "@/locales/en_US/production_chains.json";
 
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 const result = fixtureCheck();
 const nameOf = (id: string) => `Plan ${id}`;

@@ -14,7 +14,7 @@ import {
 } from "@/lib/query_cache/queries/queries.util";
 import { gamedataMetaStore } from "@/database/stores";
 
-import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Material } from "@prunplanner/engine/schemas";
 
 function material(ticker: string): Material {
 	return {

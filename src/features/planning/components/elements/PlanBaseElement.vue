@@ -12,7 +12,7 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { PlanetResourceType } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetResourceType } from "@prunplanner/engine/schemas";
 	import type { BaseSection } from "@/features/planning/planView.util";
 
 	// Components

@@ -1,12 +1,6 @@
 // Types & Interfaces
-import type {
-	ITraceEntry,
-	TracePhase,
-} from "@/features/planning/engine/engine.types";
-import type {
-	PlanCreateData,
-	PlanEmpire,
-} from "@/features/api/schemas/planningData.schemas";
+import type { ITraceEntry, TracePhase } from "@prunplanner/engine";
+import type { PlanCreateData, PlanEmpire } from "@prunplanner/engine/schemas";
 
 /** the plan as save sends it, with its id, empires and save version */
 export interface ICalcDebugPlan extends Omit<PlanCreateData, "plan_summary"> {

@@ -1,5 +1,13 @@
 {
-	"include": ["src/**/*", "src/vite-env.d.ts", "src/**/*.json"],
+	// the engine package's own check is packages/engine/tsconfig.json; its
+	// files are listed here because engineContext.test.ts imports its fixtures
+	"include": [
+		"src/**/*",
+		"src/vite-env.d.ts",
+		"src/**/*.json",
+		"packages/engine/src/**/*",
+		"packages/engine/tests/fixtures/**/*"
+	],
 	"exclude": ["dist/**/*", "coverage/**/*", ".vscode/**/*", ".github/**/*"],
 	"compilerOptions": {
 		"target": "ESNext",

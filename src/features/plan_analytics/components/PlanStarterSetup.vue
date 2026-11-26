@@ -19,7 +19,7 @@
 	import { formatPercent } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetResource } from "@prunplanner/engine/schemas";
 	import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 
 	// UI

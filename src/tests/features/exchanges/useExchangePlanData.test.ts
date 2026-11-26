@@ -3,12 +3,15 @@ import { effectScope, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 
 import { useExchangePlanData } from "@/features/exchanges/useExchangePlanData";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type {
+	CX,
+	CXData,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
@@ -42,11 +45,9 @@ vi.mock("@/lib/query_cache/useQuery", () => ({
 	useQuery: vi.fn(() => ({ execute })),
 }));
 
-vi.mock("@/features/planning/engine/calculatePlan", async () => {
-	const actual: any = await vi.importActual(
-		"@/features/planning/engine/calculatePlan"
-	);
-	return { calculatePlan: vi.fn(actual.calculatePlan) };
+vi.mock("@prunplanner/engine", async () => {
+	const actual: any = await vi.importActual("@prunplanner/engine");
+	return { ...actual, calculatePlan: vi.fn(actual.calculatePlan) };
 });
 
 const linked = etherwindPlan();
@@ -347,8 +348,8 @@ describe("useExchangePlanData", () => {
 
 		it("drops the result of a run stopped before it finished", async () => {
 			const actual = await vi.importActual<
-				typeof import("@/features/planning/engine/calculatePlan")
-			>("@/features/planning/engine/calculatePlan");
+				typeof import("@prunplanner/engine")
+			>("@prunplanner/engine");
 			const { scope, data } = start(source());
 			vi.mocked(calculatePlan).mockImplementationOnce((...args) => {
 				// the page is left while the last plan is calculated

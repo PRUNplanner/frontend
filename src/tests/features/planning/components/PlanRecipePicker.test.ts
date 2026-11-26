@@ -14,7 +14,7 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
+import type { IRecipeBuildingOption } from "@prunplanner/engine";
 
 const insights = vi.hoisted(() => ({
 	available: false,

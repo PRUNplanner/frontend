@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 

@@ -3,7 +3,7 @@ import { cogcTextMapping } from "@/features/planning_data/planCOGC.util";
 import { factionOptions } from "@/features/empire/empire.constants";
 
 // Types & Interfaces
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
 type Translate = (

@@ -1,5 +1,5 @@
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import {
 	combineEmpireMaterialIO,
 	empireStateOf,
@@ -16,14 +16,12 @@ import {
 import { getPlanet, loadGameData, preloadPlanets } from "@/mcp/gameData";
 
 // Schemas
-import { EmpireMaterialIOStateSchema } from "@/features/api/schemas/empireData.schemas";
+import { EmpireMaterialIOStateSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
 import type { IMcpGameData } from "@/mcp/gameData";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX, PlanEmpireElement, Plan } from "@prunplanner/engine/schemas";
 
 /**
  * Every plan of an empire calculated in it (its faction and CX), as the

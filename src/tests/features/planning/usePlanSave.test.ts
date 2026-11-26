@@ -13,11 +13,10 @@ import type {
 	IPlanCalculation,
 	IPlanViewProps,
 } from "@/features/planning/planView.types";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement, PlanDraft } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
 import type { IPlanDraftOptions } from "@/features/planning/usePlanDraft.types";
-import type { PlanDraft } from "@/features/api/schemas/planningData.schemas";
 import plan from "@/locales/en_US/plan.json";
 
 const m = vi.hoisted(() => ({

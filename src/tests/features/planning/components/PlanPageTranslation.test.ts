@@ -4,8 +4,8 @@ import { flushPromises, type VueWrapper } from "@vue/test-utils";
 
 import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 import PlanKpiElement from "@/features/planning/components/elements/PlanKpiElement.vue";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
+import type { IPlanResult } from "@prunplanner/engine";
 import {
 	planViewContext,
 	provideContext,

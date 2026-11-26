@@ -8,12 +8,11 @@ import type {
 	IOverviewData,
 	IPlanResult,
 	IVisitationData,
-} from "@/features/planning/usePlanCalculation.types";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine";
+import type { Planet, PlanEmpire } from "@prunplanner/engine/schemas";
 
 // Util
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 import { providePlanView } from "@/features/planning/usePlanView";
 import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
 

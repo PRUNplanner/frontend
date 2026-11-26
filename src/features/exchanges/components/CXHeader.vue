@@ -13,7 +13,7 @@
 	import { downloadFile } from "@/util/download";
 
 	// Types & Interfaces
-	import type { CXData } from "@/features/api/schemas/cxData.schemas";
+	import type { CXData } from "@prunplanner/engine/schemas";
 
 	// UI
 	import {

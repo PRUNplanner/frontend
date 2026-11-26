@@ -8,12 +8,9 @@ import {
 import { changeLineText } from "@/features/save_conflict/changeLineText";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { Plan } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import type {
-	IOverviewData,
-	IPlanResult,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IOverviewData, IPlanResult } from "@prunplanner/engine";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 import type {
 	IBuildingChange,

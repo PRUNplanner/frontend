@@ -11,7 +11,7 @@
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import type { IProductionBuildingRecipe } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuildingRecipe } from "@prunplanner/engine";
 
 	// Util
 	import { trackEvent } from "@/lib/analytics/useAnalytics";

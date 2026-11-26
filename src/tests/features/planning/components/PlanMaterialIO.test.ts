@@ -6,13 +6,12 @@ import planMessages from "@/locales/en_US/plan.json";
 import cxMessages from "@/locales/en_US/cx.json";
 import { flushPromises, type VueWrapper } from "@vue/test-utils";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
-import { createPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook } from "@prunplanner/engine";
 import { marketCheck } from "@/features/cx/marketCheck.util";
 
 // Types & Interfaces
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { IMaterialIO } from "@prunplanner/engine";
+import type { CXData, Exchange } from "@prunplanner/engine/schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

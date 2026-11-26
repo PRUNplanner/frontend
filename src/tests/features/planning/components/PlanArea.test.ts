@@ -6,7 +6,7 @@ import PlanArea from "@/features/planning/components/PlanArea.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
+import type { IAreaResult } from "@prunplanner/engine";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

@@ -1,7 +1,4 @@
-import type {
-	ExpertType,
-	PlanDataBuilding,
-} from "@/features/api/schemas/planningData.schemas";
+import type { ExpertType, PlanDataBuilding } from "@prunplanner/engine/schemas";
 
 export interface ITypicalRecipes {
 	/** % of the planet's plans with this building that run it */

@@ -15,8 +15,8 @@
 	import { formatAmount } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
-	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
+	import type { IWorkforceRecord } from "@prunplanner/engine";
+	import type { PopulationReport } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PSpin } from "@/ui";

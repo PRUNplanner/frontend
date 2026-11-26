@@ -10,7 +10,7 @@ import PCheckbox from "@/ui/components/PCheckbox.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { PlanetResource } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetResource } from "@prunplanner/engine/schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";

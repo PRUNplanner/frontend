@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
 /** The saved fields of a CX */

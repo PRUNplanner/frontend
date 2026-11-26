@@ -7,7 +7,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { Plan } from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

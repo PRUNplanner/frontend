@@ -40,7 +40,7 @@
 
 	// Types & Interfaces
 	import type { PDataTableColumn, PSelectOption } from "@/ui/ui.types";
-	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { IMaterialExchangeOverview } from "@prunplanner/engine";
 
 	// UI
 	import {

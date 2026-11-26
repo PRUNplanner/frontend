@@ -8,8 +8,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { FIOStorage } from "@/features/api/schemas/gameData.schemas";
+import type { Plan, FIOStorage } from "@prunplanner/engine/schemas";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";

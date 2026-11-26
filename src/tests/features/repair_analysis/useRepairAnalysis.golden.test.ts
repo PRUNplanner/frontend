@@ -7,10 +7,10 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
 
 // test data

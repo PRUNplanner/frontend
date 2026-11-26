@@ -12,7 +12,7 @@ import PLineChart from "@/ui/charts/PLineChart.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 import fixture from "@/tests/test_data/api_data_market_summary.json";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange } from "@prunplanner/engine/schemas";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
 vi.mock("@/features/api/gameData.api", async (importOriginal) => ({

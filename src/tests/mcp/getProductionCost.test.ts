@@ -2,8 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { createPriceBook } from "@/features/cx/priceBook";
+import { calculatePlan, createPriceBook } from "@prunplanner/engine";
 import {
 	groupRecipesByOutput,
 	solveChain,
@@ -27,10 +26,12 @@ import {
 
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type {
+	CX,
+	Planet,
+	Plan,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 import type {
 	IChainContext,

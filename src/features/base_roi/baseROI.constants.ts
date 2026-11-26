@@ -1,6 +1,5 @@
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+import type { Planet, WorkforceType } from "@prunplanner/engine/schemas";
 import type {
 	BaseROIColumn,
 	BaseROIPreset,

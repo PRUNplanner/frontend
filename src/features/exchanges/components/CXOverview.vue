@@ -22,8 +22,8 @@
 	import CXSourceTag from "@/features/exchanges/components/CXSourceTag.vue";
 
 	// Types & Interfaces
-	import type { CXData } from "@/features/api/schemas/cxData.schemas";
-	import type { PriceType } from "@/features/cx/priceBook";
+	import type { CXData } from "@prunplanner/engine/schemas";
+	import type { PriceType } from "@prunplanner/engine";
 	import type { IExchangeNote } from "@/features/exchanges/exchangeNotes.util";
 	import type {
 		IMaterialPriceRow,

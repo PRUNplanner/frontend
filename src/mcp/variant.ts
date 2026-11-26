@@ -2,7 +2,7 @@ import { z } from "zod";
 import { uuidArg } from "@/mcp/tools/shared";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { storageForDays } from "@/features/base_roi/baseROIRows";
 
 // Util
@@ -27,20 +27,22 @@ import {
 } from "@/mcp/tools/planEdit";
 
 // Schemas
-import { PlanFactionSchema } from "@/features/api/schemas/planningData.schemas";
+import { PlanFactionSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
 import type { IEmpireCX, IPlanSetup } from "@/mcp/context";
 import type { IMcpGameData } from "@/mcp/gameData";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type {
+	CX,
+	Planet,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 import type {
 	IPlanCalculation,
 	IPlanContext,
 	IPlanInput,
-} from "@/features/planning/engine/engine.types";
+} from "@prunplanner/engine";
 
 /** every change a variant can make to a saved plan */
 export const VariantChangesSchema = PlanFieldChangesSchema.extend({

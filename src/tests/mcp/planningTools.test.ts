@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { pickerOptions } from "@/features/planning/recipePicker.util";
 
 // MCP

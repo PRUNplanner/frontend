@@ -12,11 +12,8 @@
 	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import type { ExpertType } from "@/features/api/schemas/planningData.schemas";
-	import type {
-		IExpertElement,
-		IExpertRecord,
-	} from "@/features/planning/usePlanCalculation.types";
+	import type { ExpertType } from "@prunplanner/engine/schemas";
+	import type { IExpertElement, IExpertRecord } from "@prunplanner/engine";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";

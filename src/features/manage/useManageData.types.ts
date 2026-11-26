@@ -1,9 +1,7 @@
 import type { ComputedRef, Ref } from "vue";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, CX, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 /** A Manage section with unsaved edits, saved and discarded by the save bar */
 export interface IManageSection {

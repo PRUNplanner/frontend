@@ -6,8 +6,8 @@
 	import { poprCovers } from "@/features/government/popr.util";
 
 	// Types & Interfaces
-	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
-	import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+	import type { PopulationReport } from "@prunplanner/engine/schemas";
+	import type { IWorkforceRecord } from "@prunplanner/engine";
 
 	// UI
 	import { PTable, PIcon } from "@/ui";

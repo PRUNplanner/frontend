@@ -7,7 +7,7 @@ import { apiFieldMessage, isApiError } from "@/lib/apiError";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
-import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+import type { PlanVersionListItem } from "@prunplanner/engine/schemas";
 
 // Util
 import { versionLabel } from "@/features/planning/planVersions.util";

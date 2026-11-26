@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // Util
 import {
@@ -26,8 +26,7 @@ import {
 
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 /**
  * Every plan calculated as get_plan does (in the given empire, else its

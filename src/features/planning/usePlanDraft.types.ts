@@ -1,10 +1,7 @@
 import type { ComputedRef } from "vue";
 
 // Types & Interfaces
-import type {
-	PlanCreateData,
-	PlanDraft,
-} from "@/features/api/schemas/planningData.schemas";
+import type { PlanCreateData, PlanDraft } from "@prunplanner/engine/schemas";
 import type { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
 
 export interface IPlanDraftOptions {

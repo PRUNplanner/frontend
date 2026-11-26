@@ -16,7 +16,7 @@ import { sortPlans } from "@/layout/components/navigation/navigation.util";
 import { pickEmpire } from "@/features/empire/util/planEmpire.util";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type {
 	INavGroup,
 	INavItem,

@@ -9,7 +9,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 import type { IXITActionElement } from "@/features/xit/xitAction.types";
 
 // test data

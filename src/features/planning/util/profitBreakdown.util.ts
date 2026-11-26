@@ -3,7 +3,7 @@ import type {
 	IMaterialIO,
 	IOverviewData,
 	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 import type {
 	IProfitBreakdown,
 	IProfitBreakdownItem,

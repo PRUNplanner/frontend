@@ -24,7 +24,7 @@
 	import MarketTickerChip from "@/features/market_report/components/MarketTickerChip.vue";
 
 	// Types & Interfaces
-	import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+	import type { Exchange } from "@prunplanner/engine/schemas";
 	import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
 	const {

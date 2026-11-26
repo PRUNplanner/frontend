@@ -13,10 +13,7 @@ import {
 } from "@/features/planning/planVersions.util";
 
 // Types & Interfaces
-import type {
-	Plan,
-	PlanVersion,
-} from "@/features/api/schemas/planningData.schemas";
+import type { Plan, PlanVersion } from "@prunplanner/engine/schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 import type { IPlanCalculation } from "@/features/planning/planView.types";
 

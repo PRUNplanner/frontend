@@ -12,7 +12,7 @@ import type {
 	IEmpireMaterialIO,
 	IEmpireMaterialIOPlanet,
 } from "@/features/empire/empire.types";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 
 const plan = (
 	planetId: string,

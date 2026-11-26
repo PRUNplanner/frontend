@@ -1,8 +1,5 @@
 // Types & Interfaces
-import type {
-	IOverviewData,
-	IPlanResult,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IOverviewData, IPlanResult } from "@prunplanner/engine";
 
 export type PlanCheckView = "market" | "sensitivity" | "compare";
 

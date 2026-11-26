@@ -22,7 +22,7 @@ import type {
 	Material,
 	Planet,
 	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 
 export function useGameDataLoader(
 	props: GameDataLoaderProps,

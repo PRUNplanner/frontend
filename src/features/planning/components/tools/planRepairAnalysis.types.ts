@@ -1,4 +1,4 @@
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIOMinimal } from "@prunplanner/engine";
 
 export interface IPlanRepairAnalysisDataProp {
 	name: string;

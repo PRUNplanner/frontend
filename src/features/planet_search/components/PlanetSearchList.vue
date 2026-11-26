@@ -28,7 +28,7 @@
 	import PlanetSearchSortHeader from "@/features/planet_search/components/PlanetSearchSortHeader.vue";
 
 	// Types & Interfaces
-	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+	import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 	import type {
 		PlanetSearchColumn,
 		PlanetSearchFilter,

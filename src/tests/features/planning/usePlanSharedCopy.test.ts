@@ -11,7 +11,7 @@ import type {
 	IPlanCalculation,
 	IPlanViewProps,
 } from "@/features/planning/planView.types";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 
 const { trackEvent, toast, buildChangeSummary } = vi.hoisted(() => ({

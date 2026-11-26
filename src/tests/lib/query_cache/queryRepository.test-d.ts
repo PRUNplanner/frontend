@@ -7,11 +7,7 @@ import type {
 } from "@/lib/query_cache/queryRepository.types";
 
 // Types & Interfaces
-import type { Material } from "@/features/api/schemas/gameData.schemas";
-import type {
-	Plan,
-	PlanSaveData,
-} from "@/features/api/schemas/planningData.schemas";
+import type { Material, Plan, PlanSaveData } from "@prunplanner/engine/schemas";
 
 // type-level only: run by `vitest --typecheck`, checks the inferred repository
 describe("query repository types", () => {

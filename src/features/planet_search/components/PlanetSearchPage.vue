@@ -81,8 +81,8 @@
 	);
 
 	// Types & Interfaces
-	import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type {
 		PlanetSearchFilter,
 		PlanetSearchReference,

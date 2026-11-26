@@ -5,7 +5,7 @@ import EmpireOpportunities from "@/features/empire/components/EmpireOpportunitie
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { Recipe } from "@prunplanner/engine/schemas";
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 import type { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 

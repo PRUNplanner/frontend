@@ -1,0 +1,2938 @@
+{
+ "result": {
+  "done": true,
+  "corphq": false,
+  "cogc": "RESOURCE_EXTRACTION",
+  "workforce": {
+   "pioneer": {
+    "name": "pioneer",
+    "required": 2170,
+    "capacity": 2200,
+    "left": 30,
+    "lux1": true,
+    "lux2": true,
+    "efficiency": 1
+   },
+   "settler": {
+    "name": "settler",
+    "required": 220,
+    "capacity": 300,
+    "left": 80,
+    "lux1": true,
+    "lux2": true,
+    "efficiency": 1
+   },
+   "technician": {
+    "name": "technician",
+    "required": 0,
+    "capacity": 0,
+    "left": 0,
+    "lux1": false,
+    "lux2": false,
+    "efficiency": 0
+   },
+   "engineer": {
+    "name": "engineer",
+    "required": 0,
+    "capacity": 0,
+    "left": 0,
+    "lux1": false,
+    "lux2": false,
+    "efficiency": 0
+   },
+   "scientist": {
+    "name": "scientist",
+    "required": 0,
+    "capacity": 0,
+    "left": 0,
+    "lux1": false,
+    "lux2": false,
+    "efficiency": 0
+   }
+  },
+  "area": {
+   "permits": 3,
+   "areaUsed": 994,
+   "areaTotal": 1000,
+   "areaLeft": 6
+  },
+  "infrastructure": {
+   "HB1": 22,
+   "HB2": 3,
+   "HB3": 0,
+   "HB4": 0,
+   "HB5": 0,
+   "HBB": 0,
+   "HBC": 0,
+   "HBM": 0,
+   "HBL": 0,
+   "STO": 1,
+   "STA": 0,
+   "STE": 0,
+   "STV": 0,
+   "STW": 0
+  },
+  "storage": {
+   "STO": 1,
+   "STA": 0,
+   "STE": 0,
+   "STV": 0,
+   "STW": 0
+  },
+  "experts": {
+   "Agriculture": {
+    "name": "Agriculture",
+    "amount": 3,
+    "bonus": 0.1248
+   },
+   "Chemistry": {
+    "name": "Chemistry",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Construction": {
+    "name": "Construction",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Electronics": {
+    "name": "Electronics",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Food_Industries": {
+    "name": "Food_Industries",
+    "amount": 2,
+    "bonus": 0.0696
+   },
+   "Fuel_Refining": {
+    "name": "Fuel_Refining",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Manufacturing": {
+    "name": "Manufacturing",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Metallurgy": {
+    "name": "Metallurgy",
+    "amount": 0,
+    "bonus": 0
+   },
+   "Resource_Extraction": {
+    "name": "Resource_Extraction",
+    "amount": 1,
+    "bonus": 0.0306
+   }
+  },
+  "production": {
+   "buildings": [
+    {
+     "name": "EXT",
+     "amount": 1,
+     "areaUsed": 25,
+     "activeRecipes": [
+      {
+       "recipeId": "EXT#SIO",
+       "amount": 1,
+       "dailyShare": 1,
+       "time": 35130713.03,
+       "recipe": {
+        "recipe_id": "EXT#SIO",
+        "building_ticker": "EXT",
+        "recipe_name": "EXT",
+        "time_ms": 45257141.06,
+        "inputs": [],
+        "outputs": [
+         {
+          "material_ticker": "SIO",
+          "material_amount": 11
+         }
+        ],
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 35130713.03,
+        "runtimeShare": 0.4066054749,
+        "efficiency": 1.28825,
+        "degradation": 180.8367962,
+        "degradationShare": 73.52923138,
+        "workforceCost": 419.4181449,
+        "workforceCostTotal": 1031.511307,
+        "inputCost": [],
+        "inputTotal": 0,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "SIO",
+          "amount": 11,
+          "costSplit": 44.81339784,
+          "costTotal": 44.81339784
+         }
+        ],
+        "totalCost": 492.9473763,
+        "outputRevenue": 1907.148524,
+        "totalProfit": 1414.201148
+       }
+      }
+     ],
+     "recipeOptions": [
+      {
+       "recipe_id": "EXT#SIO",
+       "recipe_name": "EXT",
+       "building_ticker": "EXT",
+       "time_ms": 35130713.03,
+       "inputs": [],
+       "outputs": [
+        {
+         "material_ticker": "SIO",
+         "material_amount": 11
+        }
+       ],
+       "dailyRevenue": 3478.067157,
+       "roi": 9.358825418,
+       "profitPerArea": 100.6052483
+      }
+     ],
+     "totalEfficiency": 1.28825,
+     "efficiencyElements": [
+      {
+       "efficiencyType": "COGC",
+       "value": 1.25
+      },
+      {
+       "efficiencyType": "EXPERT",
+       "value": 1.0306
+      },
+      {
+       "efficiencyType": "WORKFORCE",
+       "value": 1
+      }
+     ],
+     "totalBatchTime": 35130713.03,
+     "constructionMaterials": [
+      {
+       "ticker": "BSE",
+       "input": 16,
+       "output": 0
+      },
+      {
+       "ticker": "MCG",
+       "input": 100,
+       "output": 0
+      }
+     ],
+     "constructionCost": -32550.62331,
+     "workforceMaterials": [
+      {
+       "ticker": "DW",
+       "input": 2.4,
+       "output": 0
+      },
+      {
+       "ticker": "RAT",
+       "input": 2.4,
+       "output": 0
+      },
+      {
+       "ticker": "OVE",
+       "input": 0.3,
+       "output": 0
+      },
+      {
+       "ticker": "PWO",
+       "input": 0.12,
+       "output": 0
+      },
+      {
+       "ticker": "COF",
+       "input": 0.3,
+       "output": 0
+      }
+     ],
+     "workforceDailyCost": -1031.511307,
+     "weightedProductionFee": 0,
+     "dailyProductionFee": 0,
+     "dailyRevenue": 3478.067157,
+     "expertise": "RESOURCE_EXTRACTION"
+    },
+    {
+     "name": "FP",
+     "amount": 19,
+     "areaUsed": 228,
+     "activeRecipes": [
+      {
+       "recipeId": "FP#10xH2O=>7xDW",
+       "amount": 2,
+       "dailyShare": 0.2666666667,
+       "time": 16155572.18,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "H2O",
+          "material_amount": 10
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "DW",
+          "material_amount": 7
+         }
+        ],
+        "recipe_id": "FP#10xH2O=>7xDW",
+        "recipe_name": "10xH2O=>7xDW",
+        "building_ticker": "FP",
+        "time_ms": 8640000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 8077786.088,
+        "runtimeShare": 0.09349289454,
+        "efficiency": 1.0696,
+        "degradation": 121.5568691,
+        "degradationShare": 11.36470354,
+        "workforceCost": 64.29265191,
+        "workforceCostTotal": 687.6742048,
+        "inputCost": [
+         {
+          "ticker": "H2O",
+          "amount": 10,
+          "costUnit": 47.12785009,
+          "costTotal": 471.2785009
+         }
+        ],
+        "inputTotal": 471.2785009,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "DW",
+          "amount": 7,
+          "costSplit": 78.13369377,
+          "costTotal": 78.13369377
+         }
+        ],
+        "totalCost": 546.9358564,
+        "outputRevenue": 789.1410247,
+        "totalProfit": 242.2051683
+       }
+      },
+      {
+       "recipeId": "FP#1xCAF 3xDW=>3xCOF",
+       "amount": 1,
+       "dailyShare": 0.4,
+       "time": 24233358.26,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "DW",
+          "material_amount": 3
+         },
+         {
+          "material_ticker": "CAF",
+          "material_amount": 1
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "COF",
+          "material_amount": 3
+         }
+        ],
+        "recipe_id": "FP#1xCAF 3xDW=>3xCOF",
+        "recipe_name": "1xCAF 3xDW=>3xCOF",
+        "building_ticker": "FP",
+        "time_ms": 25920000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 24233358.26,
+        "runtimeShare": 0.2804786836,
+        "efficiency": 1.0696,
+        "degradation": 121.5568691,
+        "degradationShare": 34.09411063,
+        "workforceCost": 192.8779557,
+        "workforceCostTotal": 687.6742048,
+        "inputCost": [
+         {
+          "ticker": "CAF",
+          "amount": 1,
+          "costUnit": 1765.035903,
+          "costTotal": 1765.035903
+         },
+         {
+          "ticker": "DW",
+          "amount": 3,
+          "costUnit": 112.7344321,
+          "costTotal": 338.2032963
+         }
+        ],
+        "inputTotal": 2103.239199,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "COF",
+          "amount": 3,
+          "costSplit": 776.7370886,
+          "costTotal": 776.7370886
+         }
+        ],
+        "totalCost": 2330.211266,
+        "outputRevenue": 2907.37636,
+        "totalProfit": 577.1650944
+       }
+      },
+      {
+       "recipeId": "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
+       "amount": 1,
+       "dailyShare": 0.3333333333,
+       "time": 20194465.22,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "VEG",
+          "material_amount": 1
+         },
+         {
+          "material_ticker": "MAI",
+          "material_amount": 1
+         },
+         {
+          "material_ticker": "MUS",
+          "material_amount": 1
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "RAT",
+          "material_amount": 10
+         }
+        ],
+        "recipe_id": "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
+        "recipe_name": "1xMUS 1xVEG 1xMAI=>10xRAT",
+        "building_ticker": "FP",
+        "time_ms": 21600000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 20194465.22,
+        "runtimeShare": 0.2337322364,
+        "efficiency": 1.0696,
+        "degradation": 121.5568691,
+        "degradationShare": 28.41175886,
+        "workforceCost": 160.7316298,
+        "workforceCostTotal": 687.6742048,
+        "inputCost": [
+         {
+          "ticker": "MAI",
+          "amount": 1,
+          "costUnit": 411.2085693,
+          "costTotal": 411.2085693
+         },
+         {
+          "ticker": "MUS",
+          "amount": 1,
+          "costUnit": 293.6334815,
+          "costTotal": 293.6334815
+         },
+         {
+          "ticker": "VEG",
+          "amount": 1,
+          "costUnit": 386.1205572,
+          "costTotal": 386.1205572
+         }
+        ],
+        "inputTotal": 1090.962608,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "RAT",
+          "amount": 10,
+          "costSplit": 128.0105997,
+          "costTotal": 128.0105997
+         }
+        ],
+        "totalCost": 1280.105997,
+        "outputRevenue": 1632.169818,
+        "totalProfit": 352.0638211
+       }
+      }
+     ],
+     "recipeOptions": [
+      {
+       "recipe_id": "FP#10xH2O 1xPG=>10xDW",
+       "recipe_name": "10xH2O 1xPG=>10xDW",
+       "building_ticker": "FP",
+       "time_ms": 16155572.18,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 10
+        },
+        {
+         "material_ticker": "PG",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "DW",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 2443.432451,
+       "roi": 8.954713042,
+       "profitPerArea": 137.9357029
+      },
+      {
+       "recipe_id": "FP#10xH2O=>7xDW",
+       "recipe_name": "10xH2O=>7xDW",
+       "building_ticker": "FP",
+       "time_ms": 8077786.088,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 10
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "DW",
+         "material_amount": 7
+        }
+       ],
+       "dailyRevenue": 2590.626481,
+       "roi": 8.4459248,
+       "profitPerArea": 146.2450433
+      },
+      {
+       "recipe_id": "FP#1xALG 1xH2O 1xBEA=>6xPPA",
+       "recipe_name": "1xALG 1xH2O 1xBEA=>6xPPA",
+       "building_ticker": "FP",
+       "time_ms": 40388930.44,
+       "inputs": [
+        {
+         "material_ticker": "BEA",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "ALG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "H2O",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "PPA",
+         "material_amount": 6
+        }
+       ],
+       "dailyRevenue": 1473.243208,
+       "roi": 14.85174771,
+       "profitPerArea": 83.16695529
+      },
+      {
+       "recipe_id": "FP#1xCAF 3xDW=>3xCOF",
+       "recipe_name": "1xCAF 3xDW=>3xCOF",
+       "building_ticker": "FP",
+       "time_ms": 24233358.26,
+       "inputs": [
+        {
+         "material_ticker": "DW",
+         "material_amount": 3
+        },
+        {
+         "material_ticker": "CAF",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "COF",
+         "material_amount": 3
+        }
+       ],
+       "dailyRevenue": 2057.78595,
+       "roi": 10.63290205,
+       "profitPerArea": 116.1653359
+      },
+      {
+       "recipe_id": "FP#1xGRN 1xALG 1xNUT=>10xRAT",
+       "recipe_name": "1xGRN 1xALG 1xNUT=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "ALG",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1418.484891,
+       "roi": 15.42507543,
+       "profitPerArea": 80.07575996
+      },
+      {
+       "recipe_id": "FP#1xGRN 1xALG 1xVEG=>10xRAT",
+       "recipe_name": "1xGRN 1xALG 1xVEG=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "ALG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1335.979182,
+       "roi": 16.37767769,
+       "profitPerArea": 75.41817963
+      },
+      {
+       "recipe_id": "FP#1xGRN 1xBEA 1xNUT=>10xRAT",
+       "recipe_name": "1xGRN 1xBEA 1xNUT=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "BEA",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1436.071143,
+       "roi": 15.23617862,
+       "profitPerArea": 81.06853227
+      },
+      {
+       "recipe_id": "FP#1xGRN 1xBEA 1xVEG=>10xRAT",
+       "recipe_name": "1xGRN 1xBEA 1xVEG=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "BEA",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1353.565434,
+       "roi": 16.16489007,
+       "profitPerArea": 76.41095193
+      },
+      {
+       "recipe_id": "FP#1xMAI 1xALG 1xNUT=>10xRAT",
+       "recipe_name": "1xMAI 1xALG 1xNUT=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "ALG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1405.758116,
+       "roi": 15.56472354,
+       "profitPerArea": 79.357313
+      },
+      {
+       "recipe_id": "FP#1xMAI 1xALG 1xVEG=>10xRAT",
+       "recipe_name": "1xMAI 1xALG 1xVEG=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "ALG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1323.252407,
+       "roi": 16.53519489,
+       "profitPerArea": 74.69973267
+      },
+      {
+       "recipe_id": "FP#1xMAI 1xBEA 1xNUT=>10xRAT",
+       "recipe_name": "1xMAI 1xBEA 1xNUT=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "BEA",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1423.344368,
+       "roi": 15.37241228,
+       "profitPerArea": 80.3500853
+      },
+      {
+       "recipe_id": "FP#1xMAI 1xBEA 1xVEG=>10xRAT",
+       "recipe_name": "1xMAI 1xBEA 1xVEG=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "BEA",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1340.838659,
+       "roi": 16.31832159,
+       "profitPerArea": 75.69250497
+      },
+      {
+       "recipe_id": "FP#1xMUS 1xNUT 1xGRN=>10xRAT",
+       "recipe_name": "1xMUS 1xNUT 1xGRN=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MUS",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1601.502336,
+       "roi": 13.66231941,
+       "profitPerArea": 90.40738992
+      },
+      {
+       "recipe_id": "FP#1xMUS 1xNUT 1xMAI=>10xRAT",
+       "recipe_name": "1xMUS 1xNUT 1xMAI=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "NUT",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MUS",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1588.775561,
+       "roi": 13.77176045,
+       "profitPerArea": 89.68894296
+      },
+      {
+       "recipe_id": "FP#1xMUS 1xVEG 1xGRN=>10xRAT",
+       "recipe_name": "1xMUS 1xVEG 1xGRN=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MUS",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "GRN",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1518.996627,
+       "roi": 14.40440094,
+       "profitPerArea": 85.74980958
+      },
+      {
+       "recipe_id": "FP#1xMUS 1xVEG 1xMAI=>10xRAT",
+       "recipe_name": "1xMUS 1xVEG 1xMAI=>10xRAT",
+       "building_ticker": "FP",
+       "time_ms": 20194465.22,
+       "inputs": [
+        {
+         "material_ticker": "VEG",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MAI",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "MUS",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 10
+        }
+       ],
+       "dailyRevenue": 1506.269852,
+       "roi": 14.5261066,
+       "profitPerArea": 85.03136262
+      },
+      {
+       "recipe_id": "FP#2xALG 1xH2O=>4xPPA",
+       "recipe_name": "2xALG 1xH2O=>4xPPA",
+       "building_ticker": "FP",
+       "time_ms": 24233358.26,
+       "inputs": [
+        {
+         "material_ticker": "ALG",
+         "material_amount": 2
+        },
+        {
+         "material_ticker": "H2O",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "PPA",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 861.461972,
+       "roi": 25.39895799,
+       "profitPerArea": 48.63091777
+      },
+      {
+       "recipe_id": "FP#2xBEA 1xH2O=>4xPPA",
+       "recipe_name": "2xBEA 1xH2O=>4xPPA",
+       "building_ticker": "FP",
+       "time_ms": 24233358.26,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 1
+        },
+        {
+         "material_ticker": "BEA",
+         "material_amount": 2
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "PPA",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 890.7723923,
+       "roi": 24.56321798,
+       "profitPerArea": 50.28553828
+      },
+      {
+       "recipe_id": "FP#2xFIM 1xMTP=>2xMEA",
+       "recipe_name": "2xFIM 1xMTP=>2xMEA",
+       "building_ticker": "FP",
+       "time_ms": 52505609.57,
+       "inputs": [
+        {
+         "material_ticker": "FIM",
+         "material_amount": 2
+        },
+        {
+         "material_ticker": "MTP",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "MEA",
+         "material_amount": 2
+        }
+       ],
+       "dailyRevenue": 2512.091692,
+       "roi": 8.70996728,
+       "profitPerArea": 141.8116278
+      },
+      {
+       "recipe_id": "FP#2xRAT 1xHER=>2xFIM",
+       "recipe_name": "2xRAT 1xHER=>2xFIM",
+       "building_ticker": "FP",
+       "time_ms": 40388930.44,
+       "inputs": [
+        {
+         "material_ticker": "RAT",
+         "material_amount": 2
+        },
+        {
+         "material_ticker": "HER",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "FIM",
+         "material_amount": 2
+        }
+       ],
+       "dailyRevenue": 1966.248106,
+       "roi": 11.12791228,
+       "profitPerArea": 110.997877
+      },
+      {
+       "recipe_id": "FP#5xNUT 5xMAI 5xVEG=>16xFOD",
+       "recipe_name": "5xNUT 5xMAI 5xVEG=>16xFOD",
+       "building_ticker": "FP",
+       "time_ms": 40388930.44,
+       "inputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 5
+        },
+        {
+         "material_ticker": "NUT",
+         "material_amount": 5
+        },
+        {
+         "material_ticker": "VEG",
+         "material_amount": 5
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "FOD",
+         "material_amount": 16
+        }
+       ],
+       "dailyRevenue": 1212.816739,
+       "roi": 18.04084305,
+       "profitPerArea": 68.46546108
+      }
+     ],
+     "totalEfficiency": 1.0696,
+     "efficiencyElements": [
+      {
+       "efficiencyType": "EXPERT",
+       "value": 1.0696
+      },
+      {
+       "efficiencyType": "WORKFORCE",
+       "value": 1
+      }
+     ],
+     "totalBatchTime": 60583395.66,
+     "constructionMaterials": [
+      {
+       "ticker": "BBH",
+       "input": 3,
+       "output": 0
+      },
+      {
+       "ticker": "BDE",
+       "input": 3,
+       "output": 0
+      },
+      {
+       "ticker": "BSE",
+       "input": 3,
+       "output": 0
+      },
+      {
+       "ticker": "MCG",
+       "input": 48,
+       "output": 0
+      }
+     ],
+     "constructionCost": -21880.23644,
+     "workforceMaterials": [
+      {
+       "ticker": "DW",
+       "input": 1.6,
+       "output": 0
+      },
+      {
+       "ticker": "RAT",
+       "input": 1.6,
+       "output": 0
+      },
+      {
+       "ticker": "OVE",
+       "input": 0.2,
+       "output": 0
+      },
+      {
+       "ticker": "PWO",
+       "input": 0.08,
+       "output": 0
+      },
+      {
+       "ticker": "COF",
+       "input": 0.2,
+       "output": 0
+      }
+     ],
+     "workforceDailyCost": -687.6742048,
+     "weightedProductionFee": 0,
+     "dailyProductionFee": 0,
+     "dailyRevenue": 38304.72312,
+     "expertise": "FOOD_INDUSTRIES"
+    },
+    {
+     "name": "HYF",
+     "amount": 11,
+     "areaUsed": 165,
+     "activeRecipes": [
+      {
+       "recipeId": "HYF#22xH2O 3xNS=>2xCAF",
+       "amount": 6,
+       "dailyShare": 0.2884615385,
+       "time": 115220483.6,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "H2O",
+          "material_amount": 22
+         },
+         {
+          "material_ticker": "NS",
+          "material_amount": 3
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "CAF",
+          "material_amount": 2
+         }
+        ],
+        "recipe_id": "HYF#22xH2O 3xNS=>2xCAF",
+        "recipe_name": "22xH2O 3xNS=>2xCAF",
+        "building_ticker": "HYF",
+        "time_ms": 21600000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 19203413.94,
+        "runtimeShare": 0.2222617354,
+        "efficiency": 1.1248,
+        "degradation": 666.7996251,
+        "degradationShare": 148.2040419,
+        "workforceCost": 293.5656078,
+        "workforceCostTotal": 1320.810382,
+        "inputCost": [
+         {
+          "ticker": "H2O",
+          "amount": 22,
+          "costUnit": 47.12785009,
+          "costTotal": 1036.812702
+         },
+         {
+          "ticker": "NS",
+          "amount": 3,
+          "costUnit": 399.7323913,
+          "costTotal": 1199.197174
+         }
+        ],
+        "inputTotal": 2236.009876,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "CAF",
+          "amount": 2,
+          "costSplit": 1338.889763,
+          "costTotal": 1338.889763
+         }
+        ],
+        "totalCost": 2677.779525,
+        "outputRevenue": 3530.071806,
+        "totalProfit": 852.2922807
+       }
+      },
+      {
+       "recipeId": "HYF#14xH2O 1xNS=>8xHCP",
+       "amount": 3,
+       "dailyShare": 0.2307692308,
+       "time": 92176386.91,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "H2O",
+          "material_amount": 14
+         },
+         {
+          "material_ticker": "NS",
+          "material_amount": 1
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "HCP",
+          "material_amount": 8
+         }
+        ],
+        "recipe_id": "HYF#14xH2O 1xNS=>8xHCP",
+        "recipe_name": "14xH2O 1xNS=>8xHCP",
+        "building_ticker": "HYF",
+        "time_ms": 34560000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 30725462.3,
+        "runtimeShare": 0.3556187767,
+        "efficiency": 1.1248,
+        "degradation": 666.7996251,
+        "degradationShare": 237.126467,
+        "workforceCost": 469.7049724,
+        "workforceCostTotal": 1320.810382,
+        "inputCost": [
+         {
+          "ticker": "H2O",
+          "amount": 14,
+          "costUnit": 47.12785009,
+          "costTotal": 659.7899013
+         },
+         {
+          "ticker": "NS",
+          "amount": 1,
+          "costUnit": 399.7323913,
+          "costTotal": 399.7323913
+         }
+        ],
+        "inputTotal": 1059.522293,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "HCP",
+          "amount": 8,
+          "costSplit": 220.7942165,
+          "costTotal": 220.7942165
+         }
+        ],
+        "totalCost": 1766.353732,
+        "outputRevenue": 3265.055111,
+        "totalProfit": 1498.701379
+       }
+      },
+      {
+       "recipeId": "HYF#4xNS=>12xMUS",
+       "amount": 1,
+       "dailyShare": 0.09615384615,
+       "time": 38406827.88,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "NS",
+          "material_amount": 4
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "MUS",
+          "material_amount": 12
+         }
+        ],
+        "recipe_id": "HYF#4xNS=>12xMUS",
+        "recipe_name": "4xNS=>12xMUS",
+        "building_ticker": "HYF",
+        "time_ms": 43200000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 38406827.88,
+        "runtimeShare": 0.4445234708,
+        "efficiency": 1.1248,
+        "degradation": 666.7996251,
+        "degradationShare": 296.4080837,
+        "workforceCost": 587.1312155,
+        "workforceCostTotal": 1320.810382,
+        "inputCost": [
+         {
+          "ticker": "NS",
+          "amount": 4,
+          "costUnit": 399.7323913,
+          "costTotal": 1598.929565
+         }
+        ],
+        "inputTotal": 1598.929565,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "MUS",
+          "amount": 12,
+          "costSplit": 206.8724054,
+          "costTotal": 206.8724054
+         }
+        ],
+        "totalCost": 2482.468864,
+        "outputRevenue": 3523.601778,
+        "totalProfit": 1041.132914
+       }
+      },
+      {
+       "recipeId": "HYF#16xH2O 1xNS=>6xVEG",
+       "amount": 2,
+       "dailyShare": 0.07692307692,
+       "time": 30725462.3,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "H2O",
+          "material_amount": 16
+         },
+         {
+          "material_ticker": "NS",
+          "material_amount": 1
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "VEG",
+          "material_amount": 6
+         }
+        ],
+        "recipe_id": "HYF#16xH2O 1xNS=>6xVEG",
+        "recipe_name": "16xH2O 1xNS=>6xVEG",
+        "building_ticker": "HYF",
+        "time_ms": 17280000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 15362731.15,
+        "runtimeShare": 0.1778093883,
+        "efficiency": 1.1248,
+        "degradation": 666.7996251,
+        "degradationShare": 118.5632335,
+        "workforceCost": 234.8524862,
+        "workforceCostTotal": 1320.810382,
+        "inputCost": [
+         {
+          "ticker": "H2O",
+          "amount": 16,
+          "costUnit": 47.12785009,
+          "costTotal": 754.0456015
+         },
+         {
+          "ticker": "NS",
+          "amount": 1,
+          "costUnit": 399.7323913,
+          "costTotal": 399.7323913
+         }
+        ],
+        "inputTotal": 1153.777993,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "VEG",
+          "amount": 6,
+          "costSplit": 251.1989521,
+          "costTotal": 251.1989521
+         }
+        ],
+        "totalCost": 1507.193712,
+        "outputRevenue": 2316.723343,
+        "totalProfit": 809.5296307
+       }
+      },
+      {
+       "recipeId": "HYF#20xH2O 2xNS=>12xMAI",
+       "amount": 2,
+       "dailyShare": 0.3076923077,
+       "time": 122901849.2,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "NS",
+          "material_amount": 2
+         },
+         {
+          "material_ticker": "H2O",
+          "material_amount": 20
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "MAI",
+          "material_amount": 12
+         }
+        ],
+        "recipe_id": "HYF#20xH2O 2xNS=>12xMAI",
+        "recipe_name": "20xH2O 2xNS=>12xMAI",
+        "building_ticker": "HYF",
+        "time_ms": 69120000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 61450924.61,
+        "runtimeShare": 0.7112375533,
+        "efficiency": 1.1248,
+        "degradation": 666.7996251,
+        "degradationShare": 474.252934,
+        "workforceCost": 939.4099448,
+        "workforceCostTotal": 1320.810382,
+        "inputCost": [
+         {
+          "ticker": "H2O",
+          "amount": 20,
+          "costUnit": 47.12785009,
+          "costTotal": 942.5570018
+         },
+         {
+          "ticker": "NS",
+          "amount": 2,
+          "costUnit": 399.7323913,
+          "costTotal": 799.4647825
+         }
+        ],
+        "inputTotal": 1742.021784,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "MAI",
+          "amount": 12,
+          "costSplit": 262.9737219,
+          "costTotal": 262.9737219
+         }
+        ],
+        "totalCost": 3155.684663,
+        "outputRevenue": 4934.502832,
+        "totalProfit": 1778.818169
+       }
+      }
+     ],
+     "recipeOptions": [
+      {
+       "recipe_id": "HYF#10xH2O 4xNS=>2xRCO",
+       "recipe_name": "10xH2O 4xNS=>2xRCO",
+       "building_ticker": "HYF",
+       "time_ms": 16899004.27,
+       "inputs": [
+        {
+         "material_ticker": "NS",
+         "material_amount": 4
+        },
+        {
+         "material_ticker": "H2O",
+         "material_amount": 10
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "RCO",
+         "material_amount": 2
+        }
+       ],
+       "dailyRevenue": 1832.424539,
+       "roi": 65.50006835,
+       "profitPerArea": 77.42638896
+      },
+      {
+       "recipe_id": "HYF#14xH2O 1xNS=>8xHCP",
+       "recipe_name": "14xH2O 1xNS=>8xHCP",
+       "building_ticker": "HYF",
+       "time_ms": 30725462.3,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 14
+        },
+        {
+         "material_ticker": "NS",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "HCP",
+         "material_amount": 8
+        }
+       ],
+       "dailyRevenue": 4214.348277,
+       "roi": 28.47983238,
+       "profitPerArea": 178.071054
+      },
+      {
+       "recipe_id": "HYF#16xH2O 1xNS=>6xVEG",
+       "recipe_name": "16xH2O 1xNS=>6xVEG",
+       "building_ticker": "HYF",
+       "time_ms": 15362731.15,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 16
+        },
+        {
+         "material_ticker": "NS",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "VEG",
+         "material_amount": 6
+        }
+       ],
+       "dailyRevenue": 4552.794643,
+       "roi": 26.36269411,
+       "profitPerArea": 192.3716046
+      },
+      {
+       "recipe_id": "HYF#16xH2O 2xNS=>12xALG",
+       "recipe_name": "16xH2O 2xNS=>12xALG",
+       "building_ticker": "HYF",
+       "time_ms": 34566145.09,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 16
+        },
+        {
+         "material_ticker": "NS",
+         "material_amount": 2
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "ALG",
+         "material_amount": 12
+        }
+       ],
+       "dailyRevenue": 4219.827038,
+       "roi": 28.44285594,
+       "profitPerArea": 178.3025509
+      },
+      {
+       "recipe_id": "HYF#1xNS=>4xMUS",
+       "recipe_name": "1xNS=>4xMUS",
+       "building_ticker": "HYF",
+       "time_ms": 23044096.73,
+       "inputs": [
+        {
+         "material_ticker": "NS",
+         "material_amount": 1
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "MUS",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 917.3792134,
+       "roi": 130.8334991,
+       "profitPerArea": 38.76250198
+      },
+      {
+       "recipe_id": "HYF#20xH2O 2xNS=>12xMAI",
+       "recipe_name": "20xH2O 2xNS=>12xMAI",
+       "building_ticker": "HYF",
+       "time_ms": 61450924.61,
+       "inputs": [
+        {
+         "material_ticker": "NS",
+         "material_amount": 2
+        },
+        {
+         "material_ticker": "H2O",
+         "material_amount": 20
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 12
+        }
+       ],
+       "dailyRevenue": 2501.018346,
+       "roi": 47.99002484,
+       "profitPerArea": 105.6768315
+      },
+      {
+       "recipe_id": "HYF#22xH2O 3xNS=>2xCAF",
+       "recipe_name": "22xH2O 3xNS=>2xCAF",
+       "building_ticker": "HYF",
+       "time_ms": 19203413.94,
+       "inputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 22
+        },
+        {
+         "material_ticker": "NS",
+         "material_amount": 3
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "CAF",
+         "material_amount": 2
+        }
+       ],
+       "dailyRevenue": 3834.63343,
+       "roi": 31.29997553,
+       "profitPerArea": 162.0267646
+      },
+      {
+       "recipe_id": "HYF#4xNS=>12xMUS",
+       "recipe_name": "4xNS=>12xMUS",
+       "building_ticker": "HYF",
+       "time_ms": 38406827.88,
+       "inputs": [
+        {
+         "material_ticker": "NS",
+         "material_amount": 4
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "MUS",
+         "material_amount": 12
+        }
+       ],
+       "dailyRevenue": 2342.132603,
+       "roi": 51.24557524,
+       "profitPerArea": 98.96334942
+      }
+     ],
+     "totalEfficiency": 1.1248,
+     "efficiencyElements": [
+      {
+       "efficiencyType": "EXPERT",
+       "value": 1.1248
+      },
+      {
+       "efficiencyType": "WORKFORCE",
+       "value": 1
+      }
+     ],
+     "totalBatchTime": 399431010,
+     "constructionMaterials": [
+      {
+       "ticker": "TRU",
+       "input": 4,
+       "output": 0
+      },
+      {
+       "ticker": "BSE",
+       "input": 2,
+       "output": 0
+      },
+      {
+       "ticker": "MHL",
+       "input": 16,
+       "output": 0
+      },
+      {
+       "ticker": "LBH",
+       "input": 4,
+       "output": 0
+      },
+      {
+       "ticker": "MCG",
+       "input": 60,
+       "output": 0
+      }
+     ],
+     "constructionCost": -120023.9325,
+     "workforceMaterials": [
+      {
+       "ticker": "DW",
+       "input": 2.6,
+       "output": 0
+      },
+      {
+       "ticker": "RAT",
+       "input": 2.8,
+       "output": 0
+      },
+      {
+       "ticker": "OVE",
+       "input": 0.2,
+       "output": 0
+      },
+      {
+       "ticker": "PWO",
+       "input": 0.08,
+       "output": 0
+      },
+      {
+       "ticker": "COF",
+       "input": 0.2,
+       "output": 0
+      },
+      {
+       "ticker": "EXO",
+       "input": 0.1,
+       "output": 0
+      },
+      {
+       "ticker": "PT",
+       "input": 0.1,
+       "output": 0
+      },
+      {
+       "ticker": "REP",
+       "input": 0.04,
+       "output": 0
+      },
+      {
+       "ticker": "KOM",
+       "input": 0.2,
+       "output": 0
+      }
+     ],
+     "workforceDailyCost": -1320.810382,
+     "weightedProductionFee": 0,
+     "dailyProductionFee": 0,
+     "dailyRevenue": 37660.15336,
+     "expertise": "AGRICULTURE"
+    },
+    {
+     "name": "INC",
+     "amount": 7,
+     "areaUsed": 70,
+     "activeRecipes": [
+      {
+       "recipeId": "INC#4xHCP 2xMAI=>4xC",
+       "amount": 1,
+       "dailyShare": 1,
+       "time": 44264700.17,
+       "recipe": {
+        "inputs": [
+         {
+          "material_ticker": "HCP",
+          "material_amount": 4
+         },
+         {
+          "material_ticker": "MAI",
+          "material_amount": 2
+         }
+        ],
+        "outputs": [
+         {
+          "material_ticker": "C",
+          "material_amount": 4
+         }
+        ],
+        "recipe_id": "INC#4xHCP 2xMAI=>4xC",
+        "recipe_name": "4xHCP 2xMAI=>4xC",
+        "building_ticker": "INC",
+        "time_ms": 57024000,
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 44264700.17,
+        "runtimeShare": 0.5123229187,
+        "efficiency": 1.28825,
+        "degradation": 125.0283462,
+        "degradationShare": 64.05488726,
+        "workforceCost": 352.3112557,
+        "workforceCostTotal": 687.6742048,
+        "inputCost": [
+         {
+          "ticker": "HCP",
+          "amount": 4,
+          "costUnit": 408.1318888,
+          "costTotal": 1632.527555
+         },
+         {
+          "ticker": "MAI",
+          "amount": 2,
+          "costUnit": 411.2085693,
+          "costTotal": 822.4171387
+         }
+        ],
+        "inputTotal": 2454.944694,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "C",
+          "amount": 4,
+          "costSplit": 717.8277093,
+          "costTotal": 717.8277093
+         }
+        ],
+        "totalCost": 2871.310837,
+        "outputRevenue": 3884.43556,
+        "totalProfit": 1013.124723
+       }
+      }
+     ],
+     "recipeOptions": [
+      {
+       "recipe_id": "INC#4xGRN=>4xC",
+       "recipe_name": "4xGRN=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 67067727.54,
+       "inputs": [
+        {
+         "material_ticker": "GRN",
+         "material_amount": 4
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 2087.792212,
+       "roi": 10.77937842,
+       "profitPerArea": 136.3456139
+      },
+      {
+       "recipe_id": "INC#4xHCP 2xGRN 2xMAI=>4xC",
+       "recipe_name": "4xHCP 2xGRN 2xMAI=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 22132350.09,
+       "inputs": [
+        {
+         "material_ticker": "HCP",
+         "material_amount": 4
+        },
+        {
+         "material_ticker": "MAI",
+         "material_amount": 2
+        },
+        {
+         "material_ticker": "GRN",
+         "material_amount": 2
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 1580.409373,
+       "roi": 14.2400461,
+       "profitPerArea": 103.210408
+      },
+      {
+       "recipe_id": "INC#4xHCP 2xGRN=>4xC",
+       "recipe_name": "4xHCP 2xGRN=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 44264700.17,
+       "inputs": [
+        {
+         "material_ticker": "HCP",
+         "material_amount": 4
+        },
+        {
+         "material_ticker": "GRN",
+         "material_amount": 2
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 1989.124439,
+       "roi": 11.31407461,
+       "profitPerArea": 129.9020042
+      },
+      {
+       "recipe_id": "INC#4xHCP 2xMAI=>4xC",
+       "recipe_name": "4xHCP 2xMAI=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 44264700.17,
+       "inputs": [
+        {
+         "material_ticker": "HCP",
+         "material_amount": 4
+        },
+        {
+         "material_ticker": "MAI",
+         "material_amount": 2
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 1977.512008,
+       "roi": 11.38051361,
+       "profitPerArea": 129.1436413
+      },
+      {
+       "recipe_id": "INC#4xHCP=>4xC",
+       "recipe_name": "4xHCP=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 67067727.54,
+       "inputs": [
+        {
+         "material_ticker": "HCP",
+         "material_amount": 4
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 2088.317937,
+       "roi": 10.77666476,
+       "profitPerArea": 136.3799469
+      },
+      {
+       "recipe_id": "INC#4xMAI=>4xC",
+       "recipe_name": "4xMAI=>4xC",
+       "building_ticker": "INC",
+       "time_ms": 67067727.54,
+       "inputs": [
+        {
+         "material_ticker": "MAI",
+         "material_amount": 4
+        }
+       ],
+       "outputs": [
+        {
+         "material_ticker": "C",
+         "material_amount": 4
+        }
+       ],
+       "dailyRevenue": 2072.463802,
+       "roi": 10.85910514,
+       "profitPerArea": 135.3445748
+      }
+     ],
+     "totalEfficiency": 1.28825,
+     "efficiencyElements": [
+      {
+       "efficiencyType": "COGC",
+       "value": 1.25
+      },
+      {
+       "efficiencyType": "EXPERT",
+       "value": 1.0306
+      },
+      {
+       "efficiencyType": "WORKFORCE",
+       "value": 1
+      }
+     ],
+     "totalBatchTime": 44264700.17,
+     "constructionMaterials": [
+      {
+       "ticker": "BDE",
+       "input": 2,
+       "output": 0
+      },
+      {
+       "ticker": "BSE",
+       "input": 4,
+       "output": 0
+      },
+      {
+       "ticker": "BBH",
+       "input": 3,
+       "output": 0
+      },
+      {
+       "ticker": "BTA",
+       "input": 1,
+       "output": 0
+      },
+      {
+       "ticker": "MCG",
+       "input": 40,
+       "output": 0
+      }
+     ],
+     "constructionCost": -22505.10232,
+     "workforceMaterials": [
+      {
+       "ticker": "DW",
+       "input": 1.6,
+       "output": 0
+      },
+      {
+       "ticker": "RAT",
+       "input": 1.6,
+       "output": 0
+      },
+      {
+       "ticker": "OVE",
+       "input": 0.2,
+       "output": 0
+      },
+      {
+       "ticker": "PWO",
+       "input": 0.08,
+       "output": 0
+      },
+      {
+       "ticker": "COF",
+       "input": 0.2,
+       "output": 0
+      }
+     ],
+     "workforceDailyCost": -687.6742048,
+     "weightedProductionFee": 0,
+     "dailyProductionFee": 0,
+     "dailyRevenue": 13842.58405,
+     "expertise": "RESOURCE_EXTRACTION"
+    },
+    {
+     "name": "RIG",
+     "amount": 21,
+     "areaUsed": 210,
+     "activeRecipes": [
+      {
+       "recipeId": "RIG#H2O",
+       "amount": 1,
+       "dailyShare": 1,
+       "time": 14371655.33,
+       "recipe": {
+        "recipe_id": "RIG#H2O",
+        "building_ticker": "RIG",
+        "recipe_name": "RIG",
+        "time_ms": 18514284.98,
+        "inputs": [],
+        "outputs": [
+         {
+          "material_ticker": "H2O",
+          "material_amount": 9
+         }
+        ],
+        "dailyRevenue": 0,
+        "roi": 0,
+        "profitPerArea": 0
+       },
+       "cogm": {
+        "runtime": 14371655.33,
+        "runtimeShare": 0.1663386034,
+        "efficiency": 1.28825,
+        "degradation": 128.7944574,
+        "degradationShare": 21.42349016,
+        "workforceCost": 85.79007509,
+        "workforceCostTotal": 515.7556536,
+        "inputCost": [],
+        "inputTotal": 0,
+        "productionFee": 0,
+        "outputCOGM": [
+         {
+          "ticker": "H2O",
+          "amount": 9,
+          "costSplit": 11.91261836,
+          "costTotal": 11.91261836
+         }
+        ],
+        "totalCost": 107.2135653,
+        "outputRevenue": 424.1506508,
+        "totalProfit": 316.9370856
+       }
+      }
+     ],
+     "recipeOptions": [
+      {
+       "recipe_id": "RIG#H2O",
+       "recipe_name": "RIG",
+       "building_ticker": "RIG",
+       "time_ms": 14371655.33,
+       "inputs": [],
+       "outputs": [
+        {
+         "material_ticker": "H2O",
+         "material_amount": 9
+        }
+       ],
+       "dailyRevenue": 1905.373011,
+       "roi": 12.16717262,
+       "profitPerArea": 133.3761108
+      }
+     ],
+     "totalEfficiency": 1.28825,
+     "efficiencyElements": [
+      {
+       "efficiencyType": "COGC",
+       "value": 1.25
+      },
+      {
+       "efficiencyType": "EXPERT",
+       "value": 1.0306
+      },
+      {
+       "efficiencyType": "WORKFORCE",
+       "value": 1
+      }
+     ],
+     "totalBatchTime": 14371655.33,
+     "constructionMaterials": [
+      {
+       "ticker": "BSE",
+       "input": 12,
+       "output": 0
+      },
+      {
+       "ticker": "MCG",
+       "input": 40,
+       "output": 0
+      }
+     ],
+     "constructionCost": -23183.00233,
+     "workforceMaterials": [
+      {
+       "ticker": "DW",
+       "input": 1.2,
+       "output": 0
+      },
+      {
+       "ticker": "RAT",
+       "input": 1.2,
+       "output": 0
+      },
+      {
+       "ticker": "OVE",
+       "input": 0.15,
+       "output": 0
+      },
+      {
+       "ticker": "PWO",
+       "input": 0.06,
+       "output": 0
+      },
+      {
+       "ticker": "COF",
+       "input": 0.15,
+       "output": 0
+      }
+     ],
+     "workforceDailyCost": -515.7556536,
+     "weightedProductionFee": 0,
+     "dailyProductionFee": 0,
+     "dailyRevenue": 40012.83324,
+     "expertise": "RESOURCE_EXTRACTION"
+    }
+   ],
+   "materialio": [
+    {
+     "ticker": "SIO",
+     "input": 0,
+     "output": 27.05325107
+    },
+    {
+     "ticker": "H2O",
+     "input": 1127.259282,
+     "output": 1136.236545
+    },
+    {
+     "ticker": "DW",
+     "input": 81.2896,
+     "output": 379.3514667
+    },
+    {
+     "ticker": "CAF",
+     "input": 27.09653333,
+     "output": 28.55261538
+    },
+    {
+     "ticker": "VEG",
+     "input": 27.09653333,
+     "output": 28.55261538
+    },
+    {
+     "ticker": "MAI",
+     "input": 54.42304848,
+     "output": 57.10523077
+    },
+    {
+     "ticker": "MUS",
+     "input": 27.09653333,
+     "output": 28.55261538
+    },
+    {
+     "ticker": "COF",
+     "input": 0,
+     "output": 81.2896
+    },
+    {
+     "ticker": "RAT",
+     "input": 0,
+     "output": 270.9653333
+    },
+    {
+     "ticker": "NS",
+     "input": 73.76092308,
+     "output": 0
+    },
+    {
+     "ticker": "HCP",
+     "input": 54.6530303,
+     "output": 57.10523077
+    },
+    {
+     "ticker": "C",
+     "input": 0,
+     "output": 54.6530303
+    }
+   ]
+  },
+  "materialio": [
+   {
+    "ticker": "C",
+    "input": 0,
+    "output": 54.6530303,
+    "delta": 54.6530303,
+    "individualWeight": 2.25,
+    "individualVolume": 1,
+    "totalWeight": 122.9693182,
+    "totalVolume": 54.6530303,
+    "price": 53074.0436
+   },
+   {
+    "ticker": "CAF",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 0.8600000143,
+    "individualVolume": 1,
+    "totalWeight": 1.252230585,
+    "totalVolume": 1.456082051,
+    "price": 2570.037098
+   },
+   {
+    "ticker": "COF",
+    "input": 10.85,
+    "output": 81.2896,
+    "delta": 70.4396,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 7.043960105,
+    "totalVolume": 7.043960105,
+    "price": 68264.80929
+   },
+   {
+    "ticker": "DW",
+    "input": 179.0896,
+    "output": 379.3514667,
+    "delta": 200.2618667,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 20.02618697,
+    "totalVolume": 20.02618697,
+    "price": 22576.40781
+   },
+   {
+    "ticker": "EXO",
+    "input": 1.1,
+    "output": 0,
+    "delta": -1.1,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.05000000075,
+    "totalWeight": -0.1100000016,
+    "totalVolume": -0.05500000082,
+    "price": -342.8792697
+   },
+   {
+    "ticker": "H2O",
+    "input": 1127.259282,
+    "output": 1136.236545,
+    "delta": 8.977263099,
+    "individualWeight": 0.200000003,
+    "individualVolume": 0.200000003,
+    "totalWeight": 1.795452646,
+    "totalVolume": 1.795452646,
+    "price": 423.0791095
+   },
+   {
+    "ticker": "HCP",
+    "input": 54.6530303,
+    "output": 57.10523077,
+    "delta": 2.452200466,
+    "individualWeight": 0.8000000119,
+    "individualVolume": 1,
+    "totalWeight": 1.961760402,
+    "totalVolume": 2.452200466,
+    "price": 1000.821208
+   },
+   {
+    "ticker": "KOM",
+    "input": 2.2,
+    "output": 0,
+    "delta": -2.2,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": -0.2200000033,
+    "totalVolume": -0.2200000033,
+    "price": -2295.578694
+   },
+   {
+    "ticker": "MAI",
+    "input": 54.42304848,
+    "output": 57.10523077,
+    "delta": 2.682182284,
+    "individualWeight": 1.299999952,
+    "individualVolume": 1,
+    "totalWeight": 3.486836842,
+    "totalVolume": 2.682182284,
+    "price": 1102.93634
+   },
+   {
+    "ticker": "MUS",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 0.8000000119,
+    "individualVolume": 1,
+    "totalWeight": 1.164865658,
+    "totalVolume": 1.456082051,
+    "price": 427.5544421
+   },
+   {
+    "ticker": "NS",
+    "input": 73.76092308,
+    "output": 0,
+    "delta": -73.76092308,
+    "individualWeight": 0.6000000238,
+    "individualVolume": 0.5,
+    "totalWeight": -44.2565556,
+    "totalVolume": -36.88046154,
+    "price": -29484.63016
+   },
+   {
+    "ticker": "OVE",
+    "input": 10.85,
+    "output": 0,
+    "delta": -10.85,
+    "individualWeight": 0.01999999955,
+    "individualVolume": 0.02500000037,
+    "totalWeight": -0.2169999951,
+    "totalVolume": -0.271250004,
+    "price": -1324.094014
+   },
+   {
+    "ticker": "PT",
+    "input": 1.1,
+    "output": 0,
+    "delta": -1.1,
+    "individualWeight": 0.25,
+    "individualVolume": 0.200000003,
+    "totalWeight": -0.275,
+    "totalVolume": -0.2200000033,
+    "price": -609.2164368
+   },
+   {
+    "ticker": "PWO",
+    "input": 4.34,
+    "output": 0,
+    "delta": -4.34,
+    "individualWeight": 0.05000000075,
+    "individualVolume": 0.05000000075,
+    "totalWeight": -0.2170000032,
+    "totalVolume": -0.2170000032,
+    "price": -1514.637703
+   },
+   {
+    "ticker": "RAT",
+    "input": 100,
+    "output": 270.9653333,
+    "delta": 170.9653333,
+    "individualWeight": 0.2099999934,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 35.90271888,
+    "totalVolume": 17.09653359,
+    "price": 27904.4457
+   },
+   {
+    "ticker": "REP",
+    "input": 0.44,
+    "output": 0,
+    "delta": -0.44,
+    "individualWeight": 0.006000000052,
+    "individualVolume": 0.002000000095,
+    "totalWeight": -0.002640000023,
+    "totalVolume": -0.0008800000418,
+    "price": -322.2806406
+   },
+   {
+    "ticker": "SIO",
+    "input": 0,
+    "output": 27.05325107,
+    "delta": 27.05325107,
+    "individualWeight": 1.789999962,
+    "individualVolume": 1,
+    "totalWeight": 48.42531839,
+    "totalVolume": 27.05325107,
+    "price": 4690.41526
+   },
+   {
+    "ticker": "VEG",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 1.100000024,
+    "individualVolume": 1,
+    "totalWeight": 1.601690291,
+    "totalVolume": 1.456082051,
+    "price": 562.2232129
+   }
+  ],
+  "workforceMaterialIO": [
+   {
+    "ticker": "COF",
+    "input": 10.85,
+    "output": 0,
+    "delta": -10.85,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": -1.085000016,
+    "totalVolume": -1.085000016,
+    "price": -10515.01117
+   },
+   {
+    "ticker": "DW",
+    "input": 97.8,
+    "output": 0,
+    "delta": -97.8,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": -9.780000146,
+    "totalVolume": -9.780000146,
+    "price": -11025.42746
+   },
+   {
+    "ticker": "EXO",
+    "input": 1.1,
+    "output": 0,
+    "delta": -1.1,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.05000000075,
+    "totalWeight": -0.1100000016,
+    "totalVolume": -0.05500000082,
+    "price": -342.8792697
+   },
+   {
+    "ticker": "KOM",
+    "input": 2.2,
+    "output": 0,
+    "delta": -2.2,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": -0.2200000033,
+    "totalVolume": -0.2200000033,
+    "price": -2295.578694
+   },
+   {
+    "ticker": "OVE",
+    "input": 10.85,
+    "output": 0,
+    "delta": -10.85,
+    "individualWeight": 0.01999999955,
+    "individualVolume": 0.02500000037,
+    "totalWeight": -0.2169999951,
+    "totalVolume": -0.271250004,
+    "price": -1324.094014
+   },
+   {
+    "ticker": "PT",
+    "input": 1.1,
+    "output": 0,
+    "delta": -1.1,
+    "individualWeight": 0.25,
+    "individualVolume": 0.200000003,
+    "totalWeight": -0.275,
+    "totalVolume": -0.2200000033,
+    "price": -609.2164368
+   },
+   {
+    "ticker": "PWO",
+    "input": 4.34,
+    "output": 0,
+    "delta": -4.34,
+    "individualWeight": 0.05000000075,
+    "individualVolume": 0.05000000075,
+    "totalWeight": -0.2170000032,
+    "totalVolume": -0.2170000032,
+    "price": -1514.637703
+   },
+   {
+    "ticker": "RAT",
+    "input": 100,
+    "output": 0,
+    "delta": -100,
+    "individualWeight": 0.2099999934,
+    "individualVolume": 0.1000000015,
+    "totalWeight": -20.99999934,
+    "totalVolume": -10.00000015,
+    "price": -16321.69818
+   },
+   {
+    "ticker": "REP",
+    "input": 0.44,
+    "output": 0,
+    "delta": -0.44,
+    "individualWeight": 0.006000000052,
+    "individualVolume": 0.002000000095,
+    "totalWeight": -0.002640000023,
+    "totalVolume": -0.0008800000418,
+    "price": -322.2806406
+   }
+  ],
+  "productionMaterialIO": [
+   {
+    "ticker": "C",
+    "input": 0,
+    "output": 54.6530303,
+    "delta": 54.6530303,
+    "individualWeight": 2.25,
+    "individualVolume": 1,
+    "totalWeight": 122.9693182,
+    "totalVolume": 54.6530303,
+    "price": 53074.0436
+   },
+   {
+    "ticker": "CAF",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 0.8600000143,
+    "individualVolume": 1,
+    "totalWeight": 1.252230585,
+    "totalVolume": 1.456082051,
+    "price": 2570.037098
+   },
+   {
+    "ticker": "COF",
+    "input": 0,
+    "output": 81.2896,
+    "delta": 81.2896,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 8.128960121,
+    "totalVolume": 8.128960121,
+    "price": 78779.82046
+   },
+   {
+    "ticker": "DW",
+    "input": 81.2896,
+    "output": 379.3514667,
+    "delta": 298.0618667,
+    "individualWeight": 0.1000000015,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 29.80618711,
+    "totalVolume": 29.80618711,
+    "price": 33601.83527
+   },
+   {
+    "ticker": "H2O",
+    "input": 1127.259282,
+    "output": 1136.236545,
+    "delta": 8.977263099,
+    "individualWeight": 0.200000003,
+    "individualVolume": 0.200000003,
+    "totalWeight": 1.795452646,
+    "totalVolume": 1.795452646,
+    "price": 423.0791095
+   },
+   {
+    "ticker": "HCP",
+    "input": 54.6530303,
+    "output": 57.10523077,
+    "delta": 2.452200466,
+    "individualWeight": 0.8000000119,
+    "individualVolume": 1,
+    "totalWeight": 1.961760402,
+    "totalVolume": 2.452200466,
+    "price": 1000.821208
+   },
+   {
+    "ticker": "MAI",
+    "input": 54.42304848,
+    "output": 57.10523077,
+    "delta": 2.682182284,
+    "individualWeight": 1.299999952,
+    "individualVolume": 1,
+    "totalWeight": 3.486836842,
+    "totalVolume": 2.682182284,
+    "price": 1102.93634
+   },
+   {
+    "ticker": "MUS",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 0.8000000119,
+    "individualVolume": 1,
+    "totalWeight": 1.164865658,
+    "totalVolume": 1.456082051,
+    "price": 427.5544421
+   },
+   {
+    "ticker": "NS",
+    "input": 73.76092308,
+    "output": 0,
+    "delta": -73.76092308,
+    "individualWeight": 0.6000000238,
+    "individualVolume": 0.5,
+    "totalWeight": -44.2565556,
+    "totalVolume": -36.88046154,
+    "price": -29484.63016
+   },
+   {
+    "ticker": "RAT",
+    "input": 0,
+    "output": 270.9653333,
+    "delta": 270.9653333,
+    "individualWeight": 0.2099999934,
+    "individualVolume": 0.1000000015,
+    "totalWeight": 56.90271822,
+    "totalVolume": 27.09653374,
+    "price": 44226.14387
+   },
+   {
+    "ticker": "SIO",
+    "input": 0,
+    "output": 27.05325107,
+    "delta": 27.05325107,
+    "individualWeight": 1.789999962,
+    "individualVolume": 1,
+    "totalWeight": 48.42531839,
+    "totalVolume": 27.05325107,
+    "price": 4690.41526
+   },
+   {
+    "ticker": "VEG",
+    "input": 27.09653333,
+    "output": 28.55261538,
+    "delta": 1.456082051,
+    "individualWeight": 1.100000024,
+    "individualVolume": 1,
+    "totalWeight": 1.601690291,
+    "totalVolume": 1.456082051,
+    "price": 562.2232129
+   }
+  ],
+  "profit": 133298.3609,
+  "cost": 49298.41214,
+  "revenue": 182596.7731,
+  "infrastructureCosts": {
+   "HB1": 21377.66409,
+   "HB2": 19220.93313,
+   "HB3": 158536.0945,
+   "HB4": 496865.0725,
+   "HB5": 880261.1048,
+   "HBB": 55449.76941,
+   "HBC": 177654.6256,
+   "HBM": 784941.0274,
+   "HBL": 1220806.04,
+   "STO": 35236.25657,
+   "STA": 17688.41201,
+   "STE": 5454872.383,
+   "STV": 171967.5716,
+   "STW": 578210.9748
+  },
+  "constructionMaterials": [
+   {
+    "ticker": "EXT",
+    "materials": [
+     {
+      "ticker": "BSE",
+      "input": 16,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 100,
+      "output": 0
+     }
+    ],
+    "amount": 1
+   },
+   {
+    "ticker": "FP",
+    "materials": [
+     {
+      "ticker": "BBH",
+      "input": 3,
+      "output": 0
+     },
+     {
+      "ticker": "BDE",
+      "input": 3,
+      "output": 0
+     },
+     {
+      "ticker": "BSE",
+      "input": 3,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 48,
+      "output": 0
+     }
+    ],
+    "amount": 19
+   },
+   {
+    "ticker": "HYF",
+    "materials": [
+     {
+      "ticker": "TRU",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "BSE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "MHL",
+      "input": 16,
+      "output": 0
+     },
+     {
+      "ticker": "LBH",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 60,
+      "output": 0
+     }
+    ],
+    "amount": 11
+   },
+   {
+    "ticker": "INC",
+    "materials": [
+     {
+      "ticker": "BDE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BSE",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "BBH",
+      "input": 3,
+      "output": 0
+     },
+     {
+      "ticker": "BTA",
+      "input": 1,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 40,
+      "output": 0
+     }
+    ],
+    "amount": 7
+   },
+   {
+    "ticker": "RIG",
+    "materials": [
+     {
+      "ticker": "BSE",
+      "input": 12,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 40,
+      "output": 0
+     }
+    ],
+    "amount": 21
+   },
+   {
+    "ticker": "CM",
+    "materials": [
+     {
+      "ticker": "PSL",
+      "input": 12,
+      "output": 0
+     },
+     {
+      "ticker": "LDE",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "TRU",
+      "input": 8,
+      "output": 0
+     },
+     {
+      "ticker": "LTA",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "LSE",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 100,
+      "output": 0
+     }
+    ],
+    "amount": 1
+   },
+   {
+    "ticker": "HB1",
+    "materials": [
+     {
+      "ticker": "BTA",
+      "input": 1,
+      "output": 0
+     },
+     {
+      "ticker": "BDE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BSE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BBH",
+      "input": 4,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 40,
+      "output": 0
+     }
+    ],
+    "amount": 22
+   },
+   {
+    "ticker": "HB2",
+    "materials": [
+     {
+      "ticker": "BSE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BBH",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BDE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BTA",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "TRU",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 48,
+      "output": 0
+     }
+    ],
+    "amount": 3
+   },
+   {
+    "ticker": "STO",
+    "materials": [
+     {
+      "ticker": "BSE",
+      "input": 2,
+      "output": 0
+     },
+     {
+      "ticker": "BDE",
+      "input": 6,
+      "output": 0
+     },
+     {
+      "ticker": "BBH",
+      "input": 6,
+      "output": 0
+     },
+     {
+      "ticker": "MCG",
+      "input": 60,
+      "output": 0
+     }
+    ],
+    "amount": 1
+   }
+  ]
+ },
+ "overview": {
+  "dailyCost": 35893.31692,
+  "dailyProfit": 182596.7731,
+  "totalConstructionCost": 3150741.046,
+  "dailyDegradationCost": 13405.09521,
+  "dailyProductionFeeCost": 0,
+  "profit": 133298.3609,
+  "roi": 23.6367576
+ }
+}

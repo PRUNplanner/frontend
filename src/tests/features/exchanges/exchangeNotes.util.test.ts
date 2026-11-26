@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { createPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook } from "@prunplanner/engine";
 import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 import {
 	COGM_DRIFT_THRESHOLD,
@@ -8,8 +8,7 @@ import {
 } from "@/features/exchanges/exchangeNotes.util";
 
 // Types & Interfaces
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { Exchange, CXData } from "@prunplanner/engine/schemas";
 import type {
 	IExchangePlanBase,
 	IMaterialCOGM,

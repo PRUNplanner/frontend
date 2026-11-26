@@ -16,7 +16,7 @@
 	import type {
 		EXCHANGES_TYPE,
 		IMaterialExchangeOverview,
-	} from "@/database/services/useExchangeData.types";
+	} from "@prunplanner/engine";
 	import type {
 		IMarketRow,
 		IMarketTrend,

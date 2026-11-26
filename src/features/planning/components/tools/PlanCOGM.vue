@@ -47,13 +47,13 @@
 	);
 
 	// Types & Interfaces
-	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+	import type { IProductionBuildingRecipeCOGM } from "@prunplanner/engine";
 	import type {
 		CX,
 		CXData,
 		CXDataTickerOption,
-	} from "@/features/api/schemas/cxData.schemas";
-	import type { PriceType } from "@/features/cx/priceBook";
+	} from "@prunplanner/engine/schemas";
+	import type { PriceType } from "@prunplanner/engine";
 	import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 	// UI

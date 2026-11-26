@@ -30,7 +30,7 @@
 	import type {
 		PlanetCOGCProgramType,
 		PlanetSearchIndexEntry,
-	} from "@/features/api/schemas/gameData.schemas";
+	} from "@prunplanner/engine/schemas";
 	import type { PlanetSearchCX } from "@/features/planet_search/planetSearch.schemas";
 	import type {
 		IChainExtractionOptions,

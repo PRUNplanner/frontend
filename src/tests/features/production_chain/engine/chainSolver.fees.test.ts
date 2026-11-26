@@ -12,7 +12,7 @@ import {
 import {
 	productionFeePerRun,
 	weightedProductionFee,
-} from "@/features/planning/engine/fees";
+} from "@prunplanner/engine";
 
 // Fixtures
 import {

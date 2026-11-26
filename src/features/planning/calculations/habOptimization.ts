@@ -12,9 +12,11 @@ import {
 import {
 	HabTypeSchema,
 	type InfrastructureType,
-} from "@/features/api/schemas/planningData.schemas";
-import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
-import type { IInfrastructureCosts } from "@/features/cx/usePrice.types";
+} from "@prunplanner/engine/schemas";
+import type {
+	IWorkforceRecord,
+	IInfrastructureCosts,
+} from "@prunplanner/engine";
 export type HabSolverGoal = "auto" | "cost" | "area";
 
 const HabArea = {

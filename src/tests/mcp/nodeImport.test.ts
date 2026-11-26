@@ -17,11 +17,11 @@ vi.mock("@/database/stores", forbidden("@/database/stores"));
 vi.mock("@/stores/planningStore", forbidden("@/stores/planningStore"));
 
 describe("MCP Node import guard", () => {
-	it("imports the server, engine and price book without the app", async () => {
+	it("imports the server and the engine package without the app", async () => {
 		const modules = await Promise.all([
 			import("@/mcp/app"),
-			import("@/features/planning/engine/calculatePlan"),
-			import("@/features/cx/priceBook"),
+			import("@prunplanner/engine"),
+			import("@prunplanner/engine/schemas"),
 		]);
 		expect(modules.every(Boolean)).toBe(true);
 	});

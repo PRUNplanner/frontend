@@ -16,7 +16,7 @@ import { building } from "@/tests/features/planning/usePlanCalculation.fixtures"
 import type {
 	IProductionBuilding,
 	IProductionBuildingRecipe,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";

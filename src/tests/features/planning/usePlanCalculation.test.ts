@@ -42,17 +42,14 @@ import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 // counts engine runs, still the real engine
-vi.mock("@/features/planning/engine/calculatePlan", async (importOriginal) => {
-	const actual =
-		await importOriginal<
-			typeof import("@/features/planning/engine/calculatePlan")
-		>();
+vi.mock("@prunplanner/engine", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@prunplanner/engine")>();
 	return { ...actual, calculatePlan: vi.fn(actual.calculatePlan) };
 });
 

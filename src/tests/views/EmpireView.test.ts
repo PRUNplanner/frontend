@@ -12,7 +12,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { usePreferences } from "@/features/preferences/usePreferences";
 import empire from "@/locales/en_US/empire.json";
 import { usePlanningStore } from "@/stores/planningStore";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 
@@ -83,7 +83,10 @@ vi.mock("@/features/wrapper/components/WrapperPlanningDataLoader.vue", () =>
 vi.mock("@/features/wrapper/components/WrapperGameDataLoader.vue", () =>
 	passThrough("WrapperGameDataLoader")
 );
-vi.mock("@/features/planning/engine/calculatePlan", () => ({ calculatePlan }));
+vi.mock("@prunplanner/engine", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@prunplanner/engine")>()),
+	calculatePlan,
+}));
 vi.mock("@/features/planning/usePlanContext", async (importOriginal) => ({
 	...(await importOriginal<
 		typeof import("@/features/planning/usePlanContext")

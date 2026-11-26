@@ -7,7 +7,7 @@ import { getQueryDefinition } from "@/lib/query_cache/queryRepository";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 
 // Types & Interfaces
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange } from "@prunplanner/engine/schemas";
 
 /**
  * The market report's order books (/data/exchanges/), shared by In short,

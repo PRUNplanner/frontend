@@ -8,7 +8,7 @@ import type { PSelectOption } from "@/ui/ui.types";
 import type {
 	FIOStorageElement,
 	FIOStorageItem,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
 
 export function useFIOStorage() {

@@ -4,9 +4,8 @@ import { computed, type ComputedRef, type Ref } from "vue";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import type { FIOStorageElement } from "@/features/api/schemas/gameData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { IPlanResult } from "@prunplanner/engine";
+import type { FIOStorageElement, Plan } from "@prunplanner/engine/schemas";
 import type {
 	IFIOBurnPlanetTableElement,
 	IFIOBurnTableElement,

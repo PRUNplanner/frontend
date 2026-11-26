@@ -6,7 +6,7 @@ import { PTag } from "@/ui";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
+import type { IPriceBook, IPriceSource } from "@prunplanner/engine";
 
 vi.mock(
 	"@/features/material_tile/components/MaterialTile.vue",

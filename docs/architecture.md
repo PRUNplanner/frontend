@@ -84,10 +84,22 @@ serves `/plan/:planetNaturalId/:planUuid?` and `/shared/:sharedPlanUuid`
 (a working copy that never saves over the shared plan; an owner opening
 their own share link is sent to `/plan/…`).
 
+Outside `src/`, `packages/engine/` is the workspace package
+`@prunplanner/engine`: the plan engine, price book and the four wire
+schemas it is built on (`gameData`, `planningData`, `empireData`,
+`cxData`), imported as `@prunplanner/engine` and
+`@prunplanner/engine/schemas` ([planning-engine.md](planning-engine.md)).
+`pnpm-workspace.yaml` lists it; `pnpm install` links it.
+
 ## Build & tooling notes
 
 - **Alias** `@` → `src/` in `tsconfig.app.json`, `vite.config.ts` and
-  `vitest.config.ts`.
+  `vitest.config.ts`. The engine package resolves through `node_modules`
+  (its `exports` point at `src/`), so it needs no alias or build.
+- **Workspace package.** `pnpm tsc` also runs `tsc -p packages/engine`
+  (no DOM lib), `pnpm test` runs its tests as the Vitest project `engine`,
+  knip checks it as a workspace, and the Dockerfile copies its
+  `package.json` before `pnpm install`.
 - **`__INDEXEDDB_VERSION__`** is derived from `dbVersion` in `package.json`
   (not the app `version`). Bumping it wipes and rebuilds the IndexedDB
   stores. In tests it is `Date.now()`.

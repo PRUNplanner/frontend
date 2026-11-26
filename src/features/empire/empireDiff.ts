@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { EmpirePayload } from "@/features/api/schemas/empireData.schemas";
+import type { EmpirePayload } from "@prunplanner/engine/schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
 /** The configuration fields of an empire */

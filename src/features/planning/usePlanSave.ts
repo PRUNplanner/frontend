@@ -52,9 +52,9 @@ import type {
 	PlanCreateData,
 	PlanDraft,
 	PlanVersionListItem,
-} from "@/features/api/schemas/planningData.schemas";
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 import type { usePlanVersionPreview } from "@/features/planning/usePlanVersionPreview";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 import type { IPlanDiffable } from "@/features/planning_data/planDiff";
 import type {
 	IPlanDefinition,

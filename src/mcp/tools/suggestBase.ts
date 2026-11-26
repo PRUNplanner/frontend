@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { getBuildingRecipes } from "@/features/planning/engine/buildings";
+import { getBuildingRecipes } from "@prunplanner/engine";
 
 // Util
 import { getPlanet, loadGameData, resolvePlanetId } from "@/mcp/gameData";

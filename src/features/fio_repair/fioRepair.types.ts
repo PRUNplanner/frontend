@@ -1,6 +1,5 @@
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type { IRepairMaterialList } from "@/features/repair_analysis/useRepairAnalysis.types";
 
 /** unknown: a building without any repair or construction date */

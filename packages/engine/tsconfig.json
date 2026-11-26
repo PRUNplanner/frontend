@@ -1,0 +1,15 @@
+{
+	// The engine runs anywhere: no DOM, no Node or Vite globals (`types: []`)
+	"compilerOptions": {
+		"target": "ES2024",
+		"lib": ["ES2024"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"types": []
+	},
+	"include": ["src", "tests", "scripts", "*.config.ts"]
+}

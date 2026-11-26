@@ -11,12 +11,19 @@ const alias = { "@": path.resolve(__dirname, "./src") };
 export const COMPONENT_TESTS = "src/tests/{**/components,views}/**";
 
 export default defineConfig({
+	// the app's options below, test.projects adds the engine package
 	define: {
 		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
 		__APP_VERSION__: JSON.stringify(pkg.version),
 		__BUILD_ID__: JSON.stringify("dev"),
 	},
 	test: {
+		// "app" is this config; "engine" is packages/engine's own (plain Node,
+		// no app setup). Coverage and reporters are shared by both.
+		projects: [
+			{ extends: true, test: { name: "app" } },
+			"packages/engine/vitest.config.ts",
+		],
 		// Node 25+ has its own empty localStorage, which hides jsdom's
 		execArgv: ["--no-experimental-webstorage"],
 		setupFiles: "./src/tests/vitest.setup.ts",
@@ -31,6 +38,7 @@ export default defineConfig({
 			"**/.{idea,git,cache,output,temp}/**",
 			"**/.claude/**",
 			"**/*.md",
+			"packages/**",
 			COMPONENT_TESTS,
 		],
 		environment: "jsdom",
@@ -53,14 +61,15 @@ export default defineConfig({
 		coverage: {
 			enabled: false,
 			provider: "v8",
-			// lcov paths relative to src/, which is how Codacy maps them
+			// lcov paths relative to the repo root (src/…, packages/engine/src/…),
+			// the format Codacy expects
 			reporter: [
-				["lcov", { projectRoot: "./src" }],
+				["lcov", { projectRoot: "." }],
 				["html"],
 				"text-summary",
 			],
 			// every file counts, also those without a test (they show as 0%)
-			include: ["src/**"],
+			include: ["src/**", "packages/engine/src/**"],
 			// only tests, types, the entry point and static data
 			exclude: [
 				"src/tests/**",

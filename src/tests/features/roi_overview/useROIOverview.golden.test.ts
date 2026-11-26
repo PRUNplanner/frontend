@@ -9,10 +9,10 @@ import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { usePlan } from "@/features/planning_data/usePlan";
 
 // Static
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+import { optimalProduction } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

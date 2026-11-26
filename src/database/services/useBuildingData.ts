@@ -9,18 +9,18 @@ import {
 	getBuildingRecipes as getRecipes,
 	getTotalWorkforce,
 	resourceBuildingTicker,
-} from "@/features/planning/engine/buildings";
-import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
+	getBuildingWorkforceMaterials,
+} from "@prunplanner/engine";
 
 // Types & Interfaces
 import type {
 	Building,
 	PlanetResource,
 	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+	PlanCOGCProgram,
+} from "@prunplanner/engine/schemas";
 import type { PSelectOption } from "@/ui/ui.types";
 import { formatPercent } from "@/util/numbers";
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
 
 const buildingsCache = new Map<string, Building>();
 

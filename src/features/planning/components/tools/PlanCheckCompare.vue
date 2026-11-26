@@ -16,6 +16,7 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useCXData } from "@/features/cx/useCXData";
 	import {
+		devWarn,
 		getActiveEmpire,
 		usePlanContext,
 	} from "@/features/planning/usePlanContext";
@@ -24,7 +25,7 @@
 	import { planEmpireUuid } from "@/features/empire/util/planEmpire.util";
 
 	// Engine
-	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+	import { calculatePlan } from "@prunplanner/engine";
 
 	// Util
 	import {
@@ -46,15 +47,9 @@
 	import MarketFlagIcon from "@/features/cx/components/MarketFlagIcon.vue";
 
 	// Types & Interfaces
-	import type { Planet } from "@/features/api/schemas/gameData.schemas";
-	import type {
-		Plan,
-		PlanEmpire,
-	} from "@/features/api/schemas/planningData.schemas";
-	import type {
-		IPlanCalculation,
-		IPlanInput,
-	} from "@/features/planning/engine/engine.types";
+	import type { Planet } from "@prunplanner/engine/schemas";
+	import type { Plan, PlanEmpire } from "@prunplanner/engine/schemas";
+	import type { IPlanCalculation, IPlanInput } from "@prunplanner/engine";
 	import type {
 		CompareFigure,
 		ICompareRow,
@@ -183,6 +178,7 @@
 			},
 			{
 				...getGameData(),
+				...devWarn,
 				planet: props.planet,
 				prices: createPrices(
 					props.planet.planet_natural_id,
@@ -223,6 +219,7 @@
 		]);
 		const ctx = {
 			...gameData,
+			...devWarn,
 			planet,
 			prices: createPrices(plan.planet_natural_id, cxUuid),
 		};

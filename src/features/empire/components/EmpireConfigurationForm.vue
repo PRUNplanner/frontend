@@ -3,7 +3,7 @@
 	const { t } = useI18n();
 
 	// Types & Interfaces
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import { factionOptions } from "@/features/empire/empire.constants";
 
 	// UI

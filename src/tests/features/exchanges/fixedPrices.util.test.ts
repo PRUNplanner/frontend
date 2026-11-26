@@ -8,10 +8,7 @@ import {
 } from "@/features/exchanges/fixedPrices.util";
 
 // Types & Interfaces
-import type {
-	CXData,
-	CXDataTickerOption,
-} from "@/features/api/schemas/cxData.schemas";
+import type { CXData, CXDataTickerOption } from "@prunplanner/engine/schemas";
 
 const stored: CXDataTickerOption[] = [
 	{ type: "BOTH", ticker: "H2O", value: 9 },

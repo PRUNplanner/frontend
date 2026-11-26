@@ -3,11 +3,10 @@ import {
 	getActiveEmpire,
 	usePlanContext,
 } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 /**
  * B6 workload: calculates plans the way EmpireView.calculateEmpire does,

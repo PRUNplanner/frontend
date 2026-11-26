@@ -11,8 +11,7 @@ import { mountComponent } from "@/tests/mountComponent";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX, Plan } from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

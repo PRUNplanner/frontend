@@ -1,8 +1,5 @@
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
-import type {
-	IMaterialIO,
-	IVisitationData,
-} from "@/features/planning/usePlanCalculation.types";
+import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
+import type { IMaterialIO, IVisitationData } from "@prunplanner/engine";
 
 /** ¢ per day: costs positive, revenue − inputs − workforce − degradation − fees = profit */
 export interface IEmpireSplitParts {

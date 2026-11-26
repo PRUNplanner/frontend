@@ -13,7 +13,7 @@ import { formatMaterialName, materialCategoryClass } from "@/util/text";
 import { mountComponent } from "@/tests/mountComponent";
 
 import fixture from "@/tests/test_data/api_data_market_summary.json";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange } from "@prunplanner/engine/schemas";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

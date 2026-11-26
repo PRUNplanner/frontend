@@ -3,13 +3,14 @@ import { formatNumber, formatPercent } from "@/util/numbers";
 import { toCsv } from "@/util/download";
 
 // Types & Interfaces
-import type { Material, Recipe } from "@/features/api/schemas/gameData.schemas";
-import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
-import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 import type {
+	Material,
+	Recipe,
 	ExpertType,
 	PlanCOGCProgram,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
+import type { IChainResult } from "@/features/production_chain/engine/chainSolver.types";
+import type { IChainOwn } from "@/features/production_chain/productionChain.types";
 
 /** a quantity: no decimals from 100, one from 10, else two */
 export function formatQty(n: number): string {
