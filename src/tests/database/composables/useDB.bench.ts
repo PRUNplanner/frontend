@@ -8,7 +8,7 @@ import { useDB } from "@/database/composables/useDB";
 import type { Material } from "@prunplanner/engine/schemas";
 
 // test data
-import materials from "@/tests/test_data/api_data_materials.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
 
 /**
  * Material select options and the ticker → material map, built from game

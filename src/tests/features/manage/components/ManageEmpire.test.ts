@@ -21,8 +21,8 @@ import { mountComponent, tableRows } from "@/tests/mountComponent";
 import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
 // test data
-import empireList from "@/tests/test_data/api_data_empire_list.json";
-import cxList from "@/tests/test_data/api_data_cx_list.json";
+import empireList from "@prunplanner/test-data/api_data_empire_list.json";
+import cxList from "@prunplanner/test-data/api_data_cx_list.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

@@ -20,9 +20,9 @@ import type {
 } from "@prunplanner/engine";
 
 // test data
-import recipes from "@/tests/test_data/api_data_recipes.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 /**
  * Golden: the ticker order the engine's COGM and material IO functions

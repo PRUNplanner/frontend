@@ -14,12 +14,12 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import materials from "@/tests/test_data/api_data_materials.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import plan_etherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { usePlan } from "@/features/planning_data/usePlan";
 import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";

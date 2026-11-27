@@ -1,12 +1,14 @@
 {
 	// the engine package's own check is packages/engine/tsconfig.json; its
-	// files are listed here because engineContext.test.ts imports its fixtures
+	// files are listed here because engineContext.test.ts imports its fixtures;
+	// packages/test-data for the fixture JSON and golden.ts that src/tests imports
 	"include": [
 		"src/**/*",
 		"src/vite-env.d.ts",
 		"src/**/*.json",
 		"packages/engine/src/**/*",
-		"packages/engine/tests/fixtures/**/*"
+		"packages/engine/tests/fixtures/**/*",
+		"packages/test-data/**/*"
 	],
 	"exclude": ["dist/**/*", "coverage/**/*", ".vscode/**/*", ".github/**/*"],
 	"compilerOptions": {

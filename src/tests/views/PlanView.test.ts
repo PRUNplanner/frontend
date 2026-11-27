@@ -69,7 +69,7 @@ import {
 import { useUnsavedGuard } from "@/lib/useUnsavedGuard";
 import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { etherwindPlan } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 const activeTab = (wrapper: VueWrapper) =>
 	wrapper.find("nav button[aria-pressed='true']").text();

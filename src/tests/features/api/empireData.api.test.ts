@@ -17,8 +17,8 @@ import {
 } from "@/features/api/empireData.api";
 
 // test data
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
-import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
+import plan_etherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
 import type { EmpireMaterialIOState } from "@prunplanner/engine/schemas";
 
 // mock apiService client

@@ -26,8 +26,8 @@ import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type { IPlanCalculation } from "@prunplanner/engine";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
 import {
 	etherwindPlan,
 	largePlan,

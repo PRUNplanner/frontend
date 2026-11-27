@@ -20,7 +20,7 @@ import type {
 import type { Plan } from "@prunplanner/engine/schemas";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 import {
 	emptyPlan,
 	etherwindPlan,

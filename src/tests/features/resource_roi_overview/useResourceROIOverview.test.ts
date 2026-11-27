@@ -26,12 +26,12 @@ import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalcul
 import type { IPlanResult } from "@prunplanner/engine";
 
 // test data
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import materials from "@/tests/test_data/api_data_materials.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import planet_search_results from "@/tests/test_data/api_data_planet_search.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import planet_search_results from "@prunplanner/test-data/api_data_planet_search.json";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);

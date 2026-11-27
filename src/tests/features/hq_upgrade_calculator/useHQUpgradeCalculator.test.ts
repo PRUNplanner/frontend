@@ -11,8 +11,8 @@ import { materialsStore, exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
 // test data
-import materials from "@/tests/test_data/api_data_materials.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
 
 describe("useHQUpgradeCalculator", async () => {
 	const refStart = ref(1);

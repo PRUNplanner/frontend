@@ -14,7 +14,7 @@ import { STANDARD_PLANET } from "@/features/base_roi/baseROI.constants";
 
 // Test Data
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import planetTemplate from "@/tests/test_data/api_data_planet_etherwind.json";
+import planetTemplate from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 // Types & Interfaces
 import type { Planet } from "@prunplanner/engine/schemas";

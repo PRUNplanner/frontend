@@ -1,15 +1,15 @@
 import { vi } from "vitest";
 
 // Test data
-import materials from "@/tests/test_data/api_data_materials.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import planet from "@/tests/test_data/api_data_planet_etherwind.json";
-import plan from "@/tests/test_data/api_data_plan_etherwind.json";
-import empires from "@/tests/test_data/api_data_empire_list.json";
-import cxs from "@/tests/test_data/api_data_cx_list.json";
-import searchIndex from "@/tests/test_data/api_data_planet_search_index.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import planet from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import plan from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import empires from "@prunplanner/test-data/api_data_empire_list.json";
+import cxs from "@prunplanner/test-data/api_data_cx_list.json";
+import searchIndex from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 export const PLAN_UUID = plan.uuid;
 // the plan's first empire, Sky Productions, priced with "PRUN CX REAL"

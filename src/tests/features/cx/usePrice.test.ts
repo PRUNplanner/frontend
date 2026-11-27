@@ -8,9 +8,9 @@ import { exchangesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
 import { flushPromises } from "@vue/test-utils";
 
 const fakeCXUuid: string = "2a83a2ca-db0c-49d2-9c43-0db08c1675bb";

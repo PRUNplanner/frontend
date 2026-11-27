@@ -4,7 +4,7 @@ import { exchangesStore } from "@/database/stores";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
 
 describe("useExchangeData", () => {
 	beforeEach(async () => {

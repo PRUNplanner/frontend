@@ -18,8 +18,8 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

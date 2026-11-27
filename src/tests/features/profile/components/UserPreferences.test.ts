@@ -31,8 +31,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // test data
-import empireList from "@/tests/test_data/api_data_empire_list.json";
-import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
+import empireList from "@prunplanner/test-data/api_data_empire_list.json";
+import plan_etherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
 
 // the selector reads CX data, its own wiring isn't under test here
 vi.mock("@/features/exchanges/components/CXPreferenceSelector.vue", () => ({

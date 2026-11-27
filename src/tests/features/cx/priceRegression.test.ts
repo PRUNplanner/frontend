@@ -10,8 +10,8 @@ import type { CXData } from "@prunplanner/engine/schemas";
 import type { IPlanContext } from "@prunplanner/engine";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
 import {
 	etherwindPlan,
 	largePlan,

@@ -8,7 +8,7 @@ import { mountComponent } from "@/tests/mountComponent";
 vi.mock("@/lib/clientErrors", () => ({ reportClientError: vi.fn() }));
 
 // test data
-import planet from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

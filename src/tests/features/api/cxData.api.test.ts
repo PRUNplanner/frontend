@@ -16,8 +16,8 @@ import {
 import type { CXData } from "@prunplanner/engine/schemas";
 
 // test data
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
-import cx_patch from "@/tests/test_data/api_data_exchange_patch.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
+import cx_patch from "@prunplanner/test-data/api_data_exchange_patch.json";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);

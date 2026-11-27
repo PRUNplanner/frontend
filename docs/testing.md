@@ -12,9 +12,9 @@ also `pnpm vitest run -t "name"` (by test name) and `pnpm test:watch` /
 - The engine package's tests live in `packages/engine/tests/`, mirroring
   its `src/`, and run in plain Node without the app's setup file (Vitest
   project `engine`; `pnpm test` runs both projects,
-  `pnpm vitest --run --project engine` only the package). They read game
-  data through `tests/fixtures/gameData.ts` and build an engine context
-  with `tests/fixtures/context.ts`. Tests that need the app around the
+  `pnpm vitest --run --project engine` only the package). They import game
+  data and `golden` from `@prunplanner/test-data` and build an engine
+  context with `tests/fixtures/context.ts`. Tests that need the app around the
   engine (`usePlanContext`, stores, IndexedDB) stay in `src/tests/`, e.g.
   `src/tests/features/planning/integration/`.
 - API tests are `src/tests/features/api/*.api.test.ts`, schema tests are in
@@ -22,8 +22,15 @@ also `pnpm vitest run -t "name"` (by test name) and `pnpm test:watch` /
   tested in `packages/engine/tests/schemas/`). `backendContract.test.ts` there pins
   what the frontend sends and which backend shapes it accepts; extend it
   when a request or response shape changes.
-- **Fixtures**: real backend payloads in `src/tests/test_data/`
-  (`api_data_*.json`). Import them directly. **Never mutate a fixture**:
+- **Fixtures**: real backend payloads (`api_data_*.json`), imported
+  directly. A fixture whose content a schema in `@prunplanner/engine/schemas`
+  validates (game, planning, empire and CX data, FIO storage, planet search,
+  POPR, shares) lives in the private workspace package
+  `packages/test-data/data/` and is imported as
+  `@prunplanner/test-data/<file>.json`, so the app's and the engine's tests
+  share it. Everything else (market summary, exploration, SSE stream, …)
+  stays in `src/tests/test_data/`. Lint forbids `@prunplanner/test-data` in
+  app code (`src/` outside `src/tests/`) and in `packages/engine/src/`. **Never mutate a fixture**:
   module imports are shared, so clone first (`structuredClone` /
   `deepClone`).
 - **Coverage** is off for `pnpm test`; see AGENTS.md for how
@@ -85,7 +92,7 @@ real: `vi.mock("@prunplanner/engine", async (importOriginal) => ({ ...(await imp
 ### Characterization snapshots and benchmarks
 
 - **Golden tests** (`*.golden.test.ts`) freeze calculated numbers with
-  `toMatchFileSnapshot(golden(value))` (`src/tests/golden.ts`, 10
+  `toMatchFileSnapshot(golden(value))` (`@prunplanner/test-data/golden`, 10
   significant digits). The plan engine's contract is
   `usePlanCalculation.characterization.test.ts` (see
   [planning-engine.md](planning-engine.md#tests-and-benchmarks)). A changed

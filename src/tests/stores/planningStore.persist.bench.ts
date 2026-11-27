@@ -11,8 +11,8 @@ import { usePlanningStore } from "@/stores/planningStore";
 import type { Plan, FIOStorage } from "@prunplanner/engine/schemas";
 
 // test data
-import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+import plan_etherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
 
 /**
  * Baseline: one plan save with 100 plans and FIO storage in the store,

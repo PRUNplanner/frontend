@@ -123,6 +123,46 @@
 			}
 		},
 		{
+			"files": ["packages/engine/tests/**", "packages/engine/scripts/**"],
+			"rules": {
+				"no-restricted-imports": [
+					"error",
+					{
+						"patterns": [
+							{
+								"regex": "^(?!\\.\\.?/|zod$|vitest$|node:|@prunplanner/test-data(/|$))",
+								"message": "Engine tests import the package, zod, vitest, node: and @prunplanner/test-data."
+							},
+							{
+								"regex": "^\\.\\./\\.\\./(\\.\\./|(?!src/))",
+								"message": "Engine tests import the package, zod, vitest, node: and @prunplanner/test-data."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"files": ["src/**"],
+			"excludedFiles": ["src/tests/**"],
+			"rules": {
+				"no-restricted-imports": [
+					"error",
+					{
+						"patterns": [
+							{
+								"group": [
+									"@prunplanner/test-data",
+									"@prunplanner/test-data/*"
+								],
+								"message": "@prunplanner/test-data is for tests only."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
 			"files": ["src/features/production_chain/engine/**"],
 			"rules": {
 				"no-restricted-imports": [
@@ -150,6 +190,13 @@
 									"@/database/*"
 								],
 								"message": "The planning engine gets its data through IPlanContext."
+							},
+							{
+								"group": [
+									"@prunplanner/test-data",
+									"@prunplanner/test-data/*"
+								],
+								"message": "@prunplanner/test-data is for tests only."
 							}
 						]
 					}
@@ -195,6 +242,13 @@
 							{
 								"regex": "^@/(stores|database)/(?!.*\\.types$)",
 								"message": "The MCP server runs in Node without the app."
+							},
+							{
+								"group": [
+									"@prunplanner/test-data",
+									"@prunplanner/test-data/*"
+								],
+								"message": "@prunplanner/test-data is for tests only."
 							}
 						]
 					}

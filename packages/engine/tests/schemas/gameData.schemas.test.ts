@@ -8,11 +8,11 @@ import {
 } from "../../src/schemas/gameData.schemas";
 
 // test data
-import { recipes } from "../fixtures/gameData";
-import { buildings } from "../fixtures/gameData";
-import { materials } from "../fixtures/gameData";
-import { exchanges } from "../fixtures/gameData";
-import { planets } from "../fixtures/gameData";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import planets from "@prunplanner/test-data/api_data_planets.json";
 
 describe("RecipeSchema validation", () => {
 	recipes.forEach((recipe: any) => {

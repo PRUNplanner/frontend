@@ -14,7 +14,7 @@ import type { Planet, PlanEmpire } from "@prunplanner/engine/schemas";
 // Util
 import { planEmptyResult } from "@prunplanner/engine";
 import { providePlanView } from "@/features/planning/usePlanView";
-import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
+import planetFixture from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 export const OVERVIEW: IOverviewData = {
 	dailyCost: 3765.5,

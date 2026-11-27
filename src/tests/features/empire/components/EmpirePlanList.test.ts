@@ -10,7 +10,7 @@ import { mountComponent, tableRows } from "@/tests/mountComponent";
 import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 
 // test data
-import planets from "@/tests/test_data/api_data_planets.json";
+import planets from "@prunplanner/test-data/api_data_planets.json";
 
 const plan = (
 	uuid: string,

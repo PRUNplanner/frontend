@@ -13,9 +13,9 @@ import type { CX } from "@prunplanner/engine/schemas";
 import type { IXITActionElement } from "@/features/xit/xitAction.types";
 
 // test data
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 /**
  * Golden: the burn resupply table, its weight, volume and price totals

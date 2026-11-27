@@ -5,9 +5,9 @@ import { calculatePlan, type IPlanContext } from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 import { goldenPlans } from "../../../../../packages/engine/tests/fixtures/context";
 
 vi.mock("@/database/services/usePlanetData", async () => {

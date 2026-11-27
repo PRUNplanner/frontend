@@ -52,8 +52,8 @@ import { ExplorationPayloadSchema } from "@/features/market_exploration/marketEx
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // test data
-import planet_single from "@/tests/test_data/api_data_planet_single.json";
-import planetSearchIndex from "@/tests/test_data/api_data_planet_search_index.json";
+import planet_single from "@prunplanner/test-data/api_data_planet_single.json";
+import planetSearchIndex from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

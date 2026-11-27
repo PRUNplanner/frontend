@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
 
 // Util
 import {

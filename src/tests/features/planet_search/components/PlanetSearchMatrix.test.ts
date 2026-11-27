@@ -12,7 +12,7 @@ import { environmentExtras } from "@/features/planet_search/environmentExtras.ut
 import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 
 // test data
-import fixture from "@/tests/test_data/api_data_planet_search_index.json";
+import fixture from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 vi.mock("@/features/material_tile/components/MaterialTile.vue", () => ({
 	default: {

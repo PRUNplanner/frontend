@@ -12,5 +12,6 @@ pnpm-lock.yaml
 # dont prettify certain jsons
 fio_systemstars.json
 src/tests/test_data
+packages/test-data/data
 **/__snapshots__
 dist-mcp

@@ -17,11 +17,11 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 import type { CX } from "@prunplanner/engine/schemas";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import planet_search from "@/tests/test_data/api_data_planet_search.json";
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import planet_search from "@prunplanner/test-data/api_data_planet_search.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

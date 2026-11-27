@@ -15,7 +15,7 @@ import type {
 } from "@/features/planet_search/planetSearch.schemas";
 
 // test data
-import fixture from "@/tests/test_data/api_data_planet_search_index.json";
+import fixture from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 const route = reactive({ query: {} as Record<string, string> });
 const replace = vi.fn();

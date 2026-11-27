@@ -25,10 +25,10 @@ import type {
 import type { IExpertRecord, IWorkforceRecord } from "@prunplanner/engine";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
 import {
 	emptyPlan,
 	etherwindPlan,

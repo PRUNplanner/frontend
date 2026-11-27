@@ -13,7 +13,7 @@ import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import type { ISensitivityRow } from "@/features/planning/util/whatIf.types";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 import {
 	emptyPlan,
 	etherwindPlan,

@@ -17,7 +17,7 @@ import {
 import type { IMaterialIO } from "@prunplanner/engine";
 
 // test data
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
 
 // consumption has negative delta and price, unit prices: RAT 50, DW 50, H2O 20
 const RAT = io("RAT", -100, {

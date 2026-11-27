@@ -9,7 +9,7 @@ import type { PopulationReport } from "@prunplanner/engine/schemas";
 import type { IWorkforceRecord } from "@prunplanner/engine";
 
 // test data
-import popr from "@/tests/test_data/api_data_popr_latest.json";
+import popr from "@prunplanner/test-data/api_data_popr_latest.json";
 
 const poprData = popr as PopulationReport;
 

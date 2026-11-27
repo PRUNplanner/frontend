@@ -13,9 +13,9 @@ import { useExchangeData } from "@/database/services/useExchangeData";
 import { useProductionOpportunities } from "@/features/empire/useProductionOpportunities";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
 import { ref } from "vue";
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 

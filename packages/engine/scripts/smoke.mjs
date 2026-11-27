@@ -5,6 +5,7 @@
 // Usage: node scripts/smoke.mjs [tarball] (default: the newest *.tgz here)
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -43,7 +44,9 @@ if (!schemas.PlanSchema) throw new Error("schemas entry has no PlanSchema");
 const data = (name) =>
 	JSON.parse(
 		fs.readFileSync(
-			path.join(root, "../../src/tests/test_data", `${name}.json`),
+			createRequire(import.meta.url).resolve(
+				`@prunplanner/test-data/${name}.json`
+			),
 			"utf8"
 		)
 	);
@@ -68,7 +71,7 @@ const result = calculatePlan(
 	ctx
 );
 
-// same normalisation as src/tests/golden.ts
+// same normalisation as @prunplanner/test-data/golden
 const normalize = (v) =>
 	typeof v === "number"
 		? Number.isFinite(v)

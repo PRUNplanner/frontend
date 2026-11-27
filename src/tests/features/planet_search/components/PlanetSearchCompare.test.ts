@@ -20,8 +20,8 @@ import type {
 import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch.types";
 
 // test data
-import fixture from "@/tests/test_data/api_data_planet_search_index.json";
-import popr from "@/tests/test_data/api_data_popr_latest.json";
+import fixture from "@prunplanner/test-data/api_data_planet_search_index.json";
+import popr from "@prunplanner/test-data/api_data_popr_latest.json";
 
 const { execute, useQuery } = vi.hoisted(() => {
 	const execute = vi.fn();

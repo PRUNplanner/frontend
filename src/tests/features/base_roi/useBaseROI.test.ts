@@ -10,9 +10,9 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Test Data
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import planetIndex from "@/tests/test_data/api_data_planet_search_index.json";
-import planetTemplate from "@/tests/test_data/api_data_planet_etherwind.json";
-import cxList from "@/tests/test_data/api_data_cx_list.json";
+import planetIndex from "@prunplanner/test-data/api_data_planet_search_index.json";
+import planetTemplate from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cxList from "@prunplanner/test-data/api_data_cx_list.json";
 
 // empire preference AI1 7D
 const CX_AI1 = "4907f10d-982e-4f6c-b068-221bd0fb8b86";

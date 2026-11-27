@@ -14,14 +14,14 @@ import type {
 } from "@prunplanner/engine/schemas";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
 import {
 	etherwindPlan,
 	setupPlanningTestData,
 	smallPlan,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 // every planet is Etherwind under its own id
 vi.mock("@/database/services/usePlanetData", async () => {

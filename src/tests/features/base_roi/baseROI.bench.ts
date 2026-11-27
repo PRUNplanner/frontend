@@ -27,8 +27,8 @@ import { optimalProduction } from "@prunplanner/engine";
 
 // Test Data
 import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import planetIndex from "@/tests/test_data/api_data_planet_search_index.json";
-import planetTemplate from "@/tests/test_data/api_data_planet_etherwind.json";
+import planetIndex from "@prunplanner/test-data/api_data_planet_search_index.json";
+import planetTemplate from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 // Types & Interfaces
 import type {

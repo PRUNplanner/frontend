@@ -21,8 +21,8 @@ vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 }));
 
 // test data
-import plan from "@/tests/test_data/api_data_plan_etherwind.json";
-import planet from "@/tests/test_data/api_data_planet_etherwind.json";
+import plan from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import planet from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

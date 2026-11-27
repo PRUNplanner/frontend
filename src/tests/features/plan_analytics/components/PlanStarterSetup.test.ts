@@ -13,8 +13,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import type { PlanetResource } from "@prunplanner/engine/schemas";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import recipes from "@/tests/test_data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
 
 const popular = (ticker: string, percentage: number, median_amount = 1) => ({
 	ticker,
