@@ -17,7 +17,7 @@ import { toasts } from "@/ui/useToast";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 import { jwt } from "@/tests/jwt";
-import cxList from "@/tests/test_data/api_data_cx_list.json";
+import cxList from "@prunplanner/test-data/api_data_cx_list.json";
 import { mountComponent } from "@/tests/mountComponent";
 import {
 	index,

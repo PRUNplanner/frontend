@@ -31,9 +31,9 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import type { PlanEmpireElement, CX } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
 
 vi.mock("@unhead/vue", () => ({
 	useHead: (...args: unknown[]) => mocks.useHead(...args),

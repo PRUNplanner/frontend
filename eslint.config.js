@@ -3,6 +3,13 @@ import vue from "eslint-plugin-vue";
 import ts from "typescript-eslint";
 import globals from "globals";
 
+// app code never imports test fixtures; repeated in every block below that
+// sets no-restricted-imports for src/ files (a later block replaces the rule)
+const noTestData = {
+	group: ["@prunplanner/test-data", "@prunplanner/test-data/*"],
+	message: "@prunplanner/test-data is for tests only.",
+};
+
 export default [
 	{
 		ignores: [
@@ -129,6 +136,42 @@ export default [
 		},
 	},
 
+	// the engine's tests and scripts stay inside the package too: its own
+	// files, zod, vitest, node: builtins and the fixtures package
+	{
+		files: ["packages/engine/tests/**", "packages/engine/scripts/**"],
+		rules: {
+			"no-restricted-imports": [
+				"error",
+				{
+					patterns: [
+						{
+							regex: "^(?!\\.\\.?/|zod$|vitest$|node:|@prunplanner/test-data(/|$))",
+							message:
+								"Engine tests import the package, zod, vitest, node: and @prunplanner/test-data.",
+						},
+						{
+							// tests/ is at most one folder deep: ../../../ leaves the
+							// package, and so does ../../ unless it goes into src/
+							regex: "^\\.\\./\\.\\./(\\.\\./|(?!src/))",
+							message:
+								"Engine tests import the package, zod, vitest, node: and @prunplanner/test-data.",
+						},
+					],
+				},
+			],
+		},
+	},
+
+	// fixtures (@prunplanner/test-data) are for tests only, never app code
+	{
+		files: ["src/**"],
+		ignores: ["src/tests/**"],
+		rules: {
+			"no-restricted-imports": ["error", { patterns: [noTestData] }],
+		},
+	},
+
 	// production chain engine: plain TypeScript, no Vue, stores or data layer
 	{
 		files: ["src/features/production_chain/engine/**"],
@@ -154,6 +197,7 @@ export default [
 							message:
 								"The planning engine gets its data through IPlanContext.",
 						},
+						noTestData,
 					],
 				},
 			],
@@ -194,6 +238,7 @@ export default [
 							message:
 								"The MCP server runs in Node without the app.",
 						},
+						noTestData,
 					],
 				},
 			],

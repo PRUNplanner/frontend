@@ -4,7 +4,7 @@ import { calculatePlan } from "../src/engine/calculatePlan";
 
 // test data
 import { fixtureContext, goldenPlans } from "./fixtures/context";
-import { golden } from "./fixtures/gameData";
+import { golden } from "@prunplanner/test-data/golden";
 
 /**
  * Golden: full plan results calculated in plain Node from fixture JSON.

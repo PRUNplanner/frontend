@@ -20,7 +20,7 @@ import type {
 } from "@prunplanner/engine/schemas";
 
 // test data
-import fixture from "@/tests/test_data/api_data_planet_search_index.json";
+import fixture from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 const ctx = { now: 0, refJumps: () => undefined };
 

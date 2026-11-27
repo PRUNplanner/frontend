@@ -6,7 +6,7 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
-import fixture from "@/tests/test_data/api_data_planet_search_index.json";
+import fixture from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 const session = vi.hoisted(() => ({ loggedIn: true }));
 vi.mock("@/stores/userStore", () => ({

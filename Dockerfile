@@ -39,6 +39,7 @@ ENV BUILD_REVISION=$BUILD_REVISION \
 # Copy package manager files (and the workspace packages' manifests)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/engine/package.json packages/engine/
+COPY packages/test-data/package.json packages/test-data/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile

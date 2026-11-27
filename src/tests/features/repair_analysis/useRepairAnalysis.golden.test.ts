@@ -14,13 +14,13 @@ import type { CX } from "@prunplanner/engine/schemas";
 import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
 import {
 	etherwindPlan,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(

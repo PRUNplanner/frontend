@@ -20,7 +20,7 @@
 | `assets/help/<locale>/*.md` | Help centre articles (parsed at build time, `vite.help.ts`); `assets/help/changelog.md` is What's new |
 | `assets/static/` | Large static data, e.g. `fio_systemstars.json` for pathfinding |
 | `util/` | Small pure helpers (`data.ts` clone/redact, `numbers.ts`, `date.ts`, `planetName.ts`, …) and `axiosSetup.ts` (auth interceptors) |
-| `tests/` | Vitest suites mirroring `src/`, plus `test_data/` fixtures |
+| `tests/` | Vitest suites mirroring `src/`, plus app-only `test_data/` fixtures (shared ones: `packages/test-data/`, see [testing.md](testing.md)) |
 | `globals.d.ts`, `vite-env.d.ts` | Build-time globals (`__APP_VERSION__`, `__BUILD_ID__`, `__INDEXEDDB_VERSION__`, `window.__APP_CONFIG__`) and `VITE_*` env types |
 
 ## Bootstrap (`src/main.ts`)

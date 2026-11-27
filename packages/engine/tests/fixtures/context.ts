@@ -13,14 +13,12 @@ import type {
 import type { Plan, PlanEmpire } from "../../src/schemas/planningData.schemas";
 
 // test data
-import {
-	buildings,
-	exchanges,
-	materials,
-	planEtherwind,
-	planetEtherwind,
-	recipes,
-} from "./gameData";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import planEtherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import planetEtherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
 
 /**
  * An engine context from the fixture JSON in plain Node: the same maps the

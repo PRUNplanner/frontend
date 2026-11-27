@@ -19,7 +19,7 @@ import type {
 } from "@/features/empire/empire.types";
 
 // test data
-import materials from "@/tests/test_data/api_data_materials.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
 
 const { trackEvent } = vi.hoisted(() => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/analytics/useAnalytics", () => ({

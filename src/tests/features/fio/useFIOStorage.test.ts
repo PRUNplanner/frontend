@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { useFIOStorage } from "@/features/fio/useFIOStorage";
 
 // test data
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
 
 // stores
 import { usePlanningStore } from "@/stores/planningStore";

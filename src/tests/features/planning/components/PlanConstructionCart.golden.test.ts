@@ -19,14 +19,14 @@ import { calculatePlan } from "@prunplanner/engine";
 import type { CX } from "@prunplanner/engine/schemas";
 
 // test data
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
 import {
 	etherwindPlan,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 vi.mock("@/database/services/usePlanetData", async () => {
 	const actual: any = await vi.importActual(

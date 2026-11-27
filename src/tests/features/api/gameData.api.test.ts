@@ -24,17 +24,17 @@ import {
 import type { PlanetSearchAdvancedPayload } from "@prunplanner/engine/schemas";
 
 // test data
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import materials from "@/tests/test_data/api_data_materials.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import planets from "@/tests/test_data/api_data_planets.json";
-import planet_single from "@/tests/test_data/api_data_planet_single.json";
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
-import planet_search_results from "@/tests/test_data/api_data_planet_search.json";
-import planet_search_index from "@/tests/test_data/api_data_planet_search_index.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import planets from "@prunplanner/test-data/api_data_planets.json";
+import planet_single from "@prunplanner/test-data/api_data_planet_single.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
+import planet_search_results from "@prunplanner/test-data/api_data_planet_search.json";
+import planet_search_index from "@prunplanner/test-data/api_data_planet_search_index.json";
 import exploration_7d_dw from "@/tests/test_data/api_data_exploration_7d_dw.json";
-import latest_popr from "@/tests/test_data/api_data_popr_latest.json";
+import latest_popr from "@prunplanner/test-data/api_data_popr_latest.json";
 import market_summary from "@/tests/test_data/api_data_market_summary.json";
 
 // mock apiService client

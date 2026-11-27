@@ -10,8 +10,8 @@ import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import type { Plan } from "@prunplanner/engine/schemas";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_definition from "@prunplanner/test-data/api_data_cx_definition.json";
 import {
 	etherwindPlan,
 	findRecipeSwap,

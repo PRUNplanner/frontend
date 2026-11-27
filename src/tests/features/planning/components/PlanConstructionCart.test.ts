@@ -17,7 +17,7 @@ import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculat
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // test data
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
 
 // lets a test hold back price lookups, to finish calculations out of order
 const priceGate = vi.hoisted(() => ({

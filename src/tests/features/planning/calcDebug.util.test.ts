@@ -26,7 +26,7 @@ import type { Plan } from "@prunplanner/engine/schemas";
 import type { ICalcDebugMeta } from "@/features/planning/calcDebug.types";
 
 // test data
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
 import {
 	emptyPlan,
 	etherwindPlan,

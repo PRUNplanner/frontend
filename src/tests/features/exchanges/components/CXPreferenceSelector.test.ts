@@ -9,7 +9,7 @@ import PSelect from "@/ui/components/PSelect.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
-import cxList from "@/tests/test_data/api_data_cx_list.json";
+import cxList from "@prunplanner/test-data/api_data_cx_list.json";
 
 const [REAL, SHARE, NORWICK] = cxList;
 const NONE = { label: "None - Universe 30D", value: undefined };

@@ -6,8 +6,8 @@ import { buildingsStore, recipesStore } from "@/database/stores";
 import type { PlanDataBuilding } from "@prunplanner/engine/schemas";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import recipes from "@/tests/test_data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";

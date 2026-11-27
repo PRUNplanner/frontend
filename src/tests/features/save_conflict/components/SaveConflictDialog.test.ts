@@ -10,7 +10,7 @@ import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import save_conflict from "@/locales/en_US/save_conflict.json";
 import game from "@/locales/en_US/game.json";
-import planets from "@/tests/test_data/api_data_planets.json";
+import planets from "@prunplanner/test-data/api_data_planets.json";
 
 // Types & Interfaces
 import type {

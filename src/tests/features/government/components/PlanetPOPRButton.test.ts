@@ -12,7 +12,7 @@ import PButton from "@/ui/components/PButton.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // test data
-import popr from "@/tests/test_data/api_data_popr_latest.json";
+import popr from "@prunplanner/test-data/api_data_popr_latest.json";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

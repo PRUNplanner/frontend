@@ -3,8 +3,8 @@ import { effectScope, nextTick, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
 
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
@@ -31,8 +31,9 @@ const { calculatePlan, getPriceBook, getPlanet, loadGameData, priced } =
 
 vi.mock("@/database/services/useBuildingData", async () => {
 	const { ref: vueRef } = await import("vue");
-	const data = (await import("@/tests/test_data/api_data_buildings.json"))
-		.default;
+	const data = (
+		await import("@prunplanner/test-data/api_data_buildings.json")
+	).default;
 	return {
 		useBuildingData: () => ({
 			buildingsMap: vueRef(

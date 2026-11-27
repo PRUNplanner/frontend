@@ -116,6 +116,9 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.13.0(jiti@2.7.0))
+      '@prunplanner/test-data':
+        specifier: workspace:*
+        version: link:packages/test-data
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -200,12 +203,17 @@ importers:
 
   packages/engine:
     devDependencies:
+      '@prunplanner/test-data':
+        specifier: workspace:*
+        version: link:../test-data
       tsdown:
         specifier: ^0.23.7
         version: 0.23.7(@volar/typescript@2.4.28)(@vue/language-core@3.3.13)(oxc-resolver@11.24.2)(typescript@6.0.3)(vue-tsc@3.3.13(typescript@6.0.3))
       zod:
         specifier: ^4.6.7
         version: 4.6.7
+
+  packages/test-data: {}
 
 packages:
 

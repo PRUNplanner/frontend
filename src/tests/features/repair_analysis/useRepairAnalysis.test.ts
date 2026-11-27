@@ -13,9 +13,9 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // test data
-import buildingsData from "@/tests/test_data/api_data_buildings.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import materials from "@/tests/test_data/api_data_materials.json";
+import buildingsData from "@prunplanner/test-data/api_data_buildings.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
 
 // Composables
 import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";

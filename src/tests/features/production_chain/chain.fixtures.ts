@@ -48,11 +48,11 @@ import type {
 } from "@/features/production_chain/engine/chainSolver.types";
 
 // test data
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import materials from "@/tests/test_data/api_data_materials.json";
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import planetIndex from "@/tests/test_data/api_data_planet_search_index.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import materials from "@prunplanner/test-data/api_data_materials.json";
+import exchanges from "@prunplanner/test-data/api_data_exchanges.json";
+import planetIndex from "@prunplanner/test-data/api_data_planet_search_index.json";
 
 export const index = planetIndex as unknown as PlanetSearchIndexEntry[];
 

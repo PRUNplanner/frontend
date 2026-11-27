@@ -11,7 +11,7 @@ import {
 import { diffPlan } from "@/features/planning_data/planDiff";
 
 // test data
-import plan from "@/tests/test_data/api_data_plan_etherwind.json";
+import plan from "@prunplanner/test-data/api_data_plan_etherwind.json";
 
 // renders the key and its params, so tests can see what went in
 const t = (key: string, params: Record<string, string | number> = {}) =>

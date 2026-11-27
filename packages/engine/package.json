@@ -33,6 +33,7 @@
 		"zod": "^4"
 	},
 	"devDependencies": {
+		"@prunplanner/test-data": "workspace:*",
 		"tsdown": "^0.23.7",
 		"zod": "^4.6.7"
 	}

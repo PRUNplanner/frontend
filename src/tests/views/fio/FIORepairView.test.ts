@@ -3,7 +3,7 @@ import { createPinia, type Pinia, setActivePinia } from "pinia";
 import type { Slots } from "vue";
 
 import fio from "@/locales/en_US/fio.json";
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
 
 import FIORepairView from "@/views/fio/FIORepairView.vue";
 import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";

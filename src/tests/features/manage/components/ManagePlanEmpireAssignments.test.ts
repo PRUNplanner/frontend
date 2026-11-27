@@ -23,8 +23,8 @@ import { mountComponent } from "@/tests/mountComponent";
 import { manageDataHost } from "@/tests/features/manage/manageData.helper";
 
 // test data
-import empireList from "@/tests/test_data/api_data_empire_list.json";
-import plan from "@/tests/test_data/api_data_plan_etherwind.json";
+import empireList from "@prunplanner/test-data/api_data_empire_list.json";
+import plan from "@prunplanner/test-data/api_data_plan_etherwind.json";
 
 // planet names come from IndexedDB, resolved once per planet
 const planetData = vi.hoisted(() => ({

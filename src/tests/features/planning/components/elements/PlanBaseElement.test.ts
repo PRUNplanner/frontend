@@ -18,7 +18,7 @@ import {
 	provideContext,
 } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
 import plan from "@/locales/en_US/plan.json";
-import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
+import planetFixture from "@prunplanner/test-data/api_data_planet_etherwind.json";
 
 // Types & Interfaces
 import type { Planet, PlanEmpire } from "@prunplanner/engine/schemas";

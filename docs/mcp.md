@@ -222,7 +222,7 @@ container `prunplanner-mcp`), not here.
 - **Logs** carry the key's prefix (the part before the `.`), never the key,
   the `Authorization` header or tool arguments.
 
-Tests: `src/tests/mcp/` (Node environment, backend faked from `test_data`).
+Tests: `src/tests/mcp/` (Node environment, backend faked from the fixtures in `@prunplanner/test-data` and `src/tests/test_data/`).
 Evals: `.claude/skills/e2e/mcp-evals/` in the workspace runs realistic player tasks through Claude
 against a running stack (how well a model uses the tools, not only whether the numbers are right); run
 it after changing tools, descriptions or instructions.

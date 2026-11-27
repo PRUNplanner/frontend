@@ -7,9 +7,9 @@ import { useBuildingData } from "@/database/services/useBuildingData";
 import type { Building, PlanetResource } from "@prunplanner/engine/schemas";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
-import recipes from "@/tests/test_data/api_data_recipes.json";
-import building_single_tnp from "@/tests/test_data/api_data_building_single_tnp.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
+import recipes from "@prunplanner/test-data/api_data_recipes.json";
+import building_single_tnp from "@prunplanner/test-data/api_data_building_single_tnp.json";
 
 vi.mock("@/features/game_data/usePlanetData", async () => {
 	return {

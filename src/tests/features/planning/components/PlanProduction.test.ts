@@ -19,7 +19,7 @@ import type {
 } from "@prunplanner/engine";
 
 // test data
-import buildings from "@/tests/test_data/api_data_buildings.json";
+import buildings from "@prunplanner/test-data/api_data_buildings.json";
 
 const insights = vi.hoisted(() => ({
 	available: { value: false },

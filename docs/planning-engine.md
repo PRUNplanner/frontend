@@ -228,8 +228,10 @@ infrastructure calculations are in the package (`calculations/`).
 
 - Engine unit tests: `packages/engine/tests/`, mirroring the package's
   `src/`, run in plain Node (project `engine` of `pnpm test`, no app
-  setup). Game data JSON comes from `src/tests/test_data/` through one
-  helper, `tests/fixtures/gameData.ts`; `tests/fixtures/context.ts` builds
+  setup). Game data JSON and the `golden` normaliser come from the
+  devDependency `@prunplanner/test-data` (`packages/test-data/`), so the
+  package's tests import nothing outside it (lint enforces it; they pass with
+  `src/tests/` removed); `tests/fixtures/context.ts` builds
   an `IPlanContext` from it without stores or IndexedDB.
 - Golden in Node: `calculatePlan.node.golden.test.ts` snapshots two full
   results (`tests/__snapshots__/calculatePlan.*.golden.json`); the app's

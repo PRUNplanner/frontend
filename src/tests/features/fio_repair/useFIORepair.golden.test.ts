@@ -16,15 +16,15 @@ import { FIOStorageSchema } from "@prunplanner/engine/schemas";
 import type { CX, Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // test data
-import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
-import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
+import fio_storage from "@prunplanner/test-data/api_data_fio_storage.json";
+import planet_etherwind from "@prunplanner/test-data/api_data_planet_etherwind.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
 import {
 	etherwindPlan,
 	setupPlanningTestData,
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { golden } from "@/tests/golden";
+import { golden } from "@prunplanner/test-data/golden";
 
 // Etherwind (KW-688c) is the only planet loaded, as the FIO base there
 vi.mock("@/database/services/usePlanetData", async () => {

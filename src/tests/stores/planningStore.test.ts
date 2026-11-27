@@ -9,9 +9,9 @@ import { memoryStorage } from "@/tests/memoryStorage";
 import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // test data
-import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
-import empire_list from "@/tests/test_data/api_data_empire_list.json";
-import cx_list from "@/tests/test_data/api_data_cx_list.json";
+import plan_etherwind from "@prunplanner/test-data/api_data_plan_etherwind.json";
+import empire_list from "@prunplanner/test-data/api_data_empire_list.json";
+import cx_list from "@prunplanner/test-data/api_data_cx_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
 import profile from "@/locales/en_US/profile.json";
 

@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // test data
-import planet_search_index from "@/tests/test_data/api_data_planet_search_index.json";
+import planet_search_index from "@prunplanner/test-data/api_data_planet_search_index.json";
 import { largePlan } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 const plans = Array.from({ length: 200 }, (_, i) => ({
