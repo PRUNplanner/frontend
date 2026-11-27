@@ -1,12 +1,11 @@
-import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce.constants";
+import { WORKFORCE_CONSUMPTION_MAP } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange, WorkforceType } from "@prunplanner/engine/schemas";
 import type {
 	MarketMaterial,
 	MarketSummary,
 } from "@/features/api/schemas/marketSummary.schemas";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
 import type {
 	IMarketBookStats,
 	IMarketBrief,

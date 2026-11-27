@@ -16,8 +16,10 @@ import {
 import { usePreferences } from "@/features/preferences/usePreferences";
 
 // Util
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { getBuildingConstructionMaterials } from "@/features/planning/engine/buildings";
+import {
+	calculatePlan,
+	getBuildingConstructionMaterials,
+} from "@prunplanner/engine";
 import { planResultCacheKey } from "@/features/empire/empire.util";
 import { priceRepairMaterials } from "@/features/repair_analysis/repairAnalysis.util";
 import {
@@ -37,11 +39,12 @@ import { useRunProgress } from "@/util/runProgress";
 import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import type { IPriceBook } from "@/features/cx/priceBook";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IPriceBook, IMaterialIOMinimal } from "@prunplanner/engine";
+import type {
+	Planet,
+	Plan,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 import type { IRepairMaterialList } from "@/features/repair_analysis/useRepairAnalysis.types";
 import type {
 	IFIORepairBase,

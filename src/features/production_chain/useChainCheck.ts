@@ -33,8 +33,10 @@ import { encodeChain } from "@/features/production_chain/engine/chainUrl";
 import { RESOURCE_MATERIAL_OPTIONS } from "@/features/resource_roi_overview/resourceROIOverview.constants";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type {
+	PlanetSearchIndexEntry,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
 import type { ProductionChainAction } from "@/lib/analytics/useAnalytics.types";
 import type { IChainContext } from "@/features/production_chain/engine/chainSolver.types";
 import type {

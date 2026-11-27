@@ -9,7 +9,7 @@ import { defaultFilter } from "@/features/planet_search/planetSearch.engine";
 import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 
 // test data
 import fixture from "@/tests/test_data/api_data_planet_search_index.json";

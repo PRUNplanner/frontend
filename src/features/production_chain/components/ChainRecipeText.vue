@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	// Types & Interfaces
-	import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+	import type { Recipe } from "@prunplanner/engine/schemas";
 
 	const { recipe, ticker } = defineProps<{
 		recipe: Recipe;

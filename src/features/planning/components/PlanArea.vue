@@ -7,7 +7,7 @@
 	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import type { IAreaResult } from "@/features/planning/usePlanCalculation.types";
+	import type { IAreaResult } from "@prunplanner/engine";
 
 	// UI
 	import { PInputNumber } from "@/ui";

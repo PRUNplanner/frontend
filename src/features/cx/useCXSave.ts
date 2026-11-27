@@ -13,7 +13,7 @@ import {
 import { diffCX, type ICXDiffable } from "@/features/cx/cxDiff";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 /**
  * Saves a CX edited on the Exchanges page or in a plan's COGM tool. The

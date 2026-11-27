@@ -10,10 +10,7 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type {
-	IOverviewData,
-	IProductionBuilding,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IOverviewData, IProductionBuilding } from "@prunplanner/engine";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

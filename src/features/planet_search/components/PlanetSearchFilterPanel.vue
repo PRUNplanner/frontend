@@ -26,7 +26,7 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type {
 		PlanetSearchFilter,
 		PlanetSearchMaterialGroup,

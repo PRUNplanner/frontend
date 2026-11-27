@@ -2,8 +2,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 // Engine
-import { createPriceBook } from "@/features/cx/priceBook";
-import { groupRecipesByBuilding } from "@/features/planning/engine/buildings";
+import { createPriceBook, groupRecipesByBuilding } from "@prunplanner/engine";
 import {
 	calculateBase,
 	recipeCandidates,
@@ -29,16 +28,15 @@ import {
 
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { IPlanContext } from "@prunplanner/engine";
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { Exchange, CX } from "@prunplanner/engine/schemas";
 import {
 	BuildingPayloadSchema,
 	ExchangePayloadSchema,
 	MaterialPayloadSchema,
 	RecipePayloadSchema,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 
 let backend: IFakeBackend;
 let env: IToolEnv;

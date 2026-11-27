@@ -14,9 +14,8 @@ import { basisBook, type PriceBasis } from "@/mcp/priceBasis";
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
 import type { IMcpGameData } from "@/mcp/gameData";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { CX, Plan } from "@prunplanner/engine/schemas";
+import type { IPlanCalculation } from "@prunplanner/engine";
 import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 import type {
 	IChainContext,

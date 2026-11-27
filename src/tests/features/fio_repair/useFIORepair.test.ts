@@ -14,12 +14,11 @@ import { useUserStore } from "@/stores/userStore";
 import { useFIORepair } from "@/features/fio_repair/useFIORepair";
 
 // Schemas
-import { FIOStorageSchema } from "@/features/api/schemas/gameData.schemas";
+import { FIOStorageSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
+import type { IMaterialIOMinimal } from "@prunplanner/engine";
 
 const { calculatePlan, getPriceBook, getPlanet, loadGameData, priced } =
 	vi.hoisted(() => ({
@@ -66,7 +65,10 @@ vi.mock("@/features/planning/useMaterialIOUtil", () => ({
 			})),
 	}),
 }));
-vi.mock("@/features/planning/engine/calculatePlan", () => ({ calculatePlan }));
+vi.mock("@prunplanner/engine", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@prunplanner/engine")>()),
+	calculatePlan,
+}));
 vi.mock("@/features/planning/usePlanContext", async (importOriginal) => ({
 	...(await importOriginal<
 		typeof import("@/features/planning/usePlanContext")

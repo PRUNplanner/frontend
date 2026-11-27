@@ -14,12 +14,12 @@ import {
 } from "@/features/repair_analysis/repairAnalysis.util";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Types & Interfaces
 import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { IPlanContext } from "@prunplanner/engine";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

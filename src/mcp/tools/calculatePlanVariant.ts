@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { paybackOfDifference } from "@/features/planning/util/whatIf.util";
 
 // Util
@@ -31,8 +31,7 @@ import {
 } from "@/mcp/tools/shared";
 
 // Types & Interfaces
-import type { IPriceBook } from "@/features/cx/priceBook";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { IPriceBook, IPlanCalculation } from "@prunplanner/engine";
 
 const PriceOverrideSchema = z.object({
 	ticker: z.string(),

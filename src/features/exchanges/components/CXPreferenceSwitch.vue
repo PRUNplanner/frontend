@@ -5,7 +5,7 @@
 	import { useCXData } from "@/features/cx/useCXData";
 
 	// Types & Interfaces
-	import type { CX } from "@/features/api/schemas/cxData.schemas";
+	import type { CX } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";

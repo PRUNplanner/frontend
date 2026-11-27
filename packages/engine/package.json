@@ -1,0 +1,39 @@
+{
+	"name": "@prunplanner/engine",
+	"version": "0.1.0",
+	"private": true,
+	"description": "PRUNplanner's plan engine: production, cost and profit of Prosperous Universe bases",
+	"license": "MIT",
+	"type": "module",
+	"sideEffects": false,
+	"exports": {
+		".": "./src/index.ts",
+		"./schemas": "./src/schemas/index.ts"
+	},
+	"publishConfig": {
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"./schemas": {
+				"types": "./dist/schemas/index.d.ts",
+				"default": "./dist/schemas/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"smoke": "node scripts/smoke.mjs"
+	},
+	"peerDependencies": {
+		"zod": "^4"
+	},
+	"devDependencies": {
+		"tsdown": "^0.23.7",
+		"zod": "^4.6.7"
+	}
+}

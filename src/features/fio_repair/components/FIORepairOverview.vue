@@ -27,8 +27,8 @@
 	import FIORepairTimeline from "@/features/fio_repair/components/FIORepairTimeline.vue";
 
 	// Types & Interfaces
-	import type { Plan } from "@/features/api/schemas/planningData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { Plan } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type { FIORepairFilter } from "@/features/fio_repair/fioRepair.types";
 
 	// UI

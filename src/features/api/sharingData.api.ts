@@ -12,7 +12,7 @@ import {
 	type SharedCloneResponse,
 	type SharedCreateResponse,
 } from "@/features/api/schemas/sharingData.schemas";
-import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
+import type { PlanSummary } from "@prunplanner/engine/schemas";
 
 /**
  * Fetches all shared plan information for user from API

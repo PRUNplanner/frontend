@@ -11,7 +11,7 @@ import axiosSetup from "@/util/axiosSetup";
 import { useEmpireForm } from "@/features/empire/useEmpireForm";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 const mock = new AxiosMockAdapter(apiService.client);
 

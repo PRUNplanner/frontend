@@ -15,7 +15,7 @@ import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
 import type { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
+import type { IProductionBuildingRecipeCOGM } from "@prunplanner/engine";
 
 // the table only renders the composable's result, which the view passes in
 // as a prop; useResourceROIOverview.test.ts covers the calculation

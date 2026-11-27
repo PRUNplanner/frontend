@@ -47,7 +47,7 @@ import {
 	FIOStorageSchema,
 	PlanetSchema,
 	PlanetSearchIndexSchema,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import { ExplorationPayloadSchema } from "@/features/market_exploration/marketExploration.schemas";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
 

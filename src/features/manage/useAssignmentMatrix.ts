@@ -4,7 +4,7 @@ import { computed, shallowRef } from "vue";
 import type {
 	PlanEmpireElement,
 	PlanEmpireJunction,
-} from "@/features/api/schemas/empireData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { IAssignmentChanges } from "@/features/manage/useAssignmentMatrix.types";
 
 /**

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 // Engine
 import { hqStepCost } from "@/features/base_roi/baseROIMetrics";
-import { SHIP_SIZES, shipDays } from "@/features/planning/engine/visitation";
+import { SHIP_SIZES, shipDays } from "@prunplanner/engine";
 
 // MCP
 import { createBackend } from "@/mcp/backend";
@@ -24,9 +24,12 @@ import {
 } from "@/tests/mcp/fakeBackend";
 
 // Types & Interfaces
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type {
+	IPriceBook,
+	IPriceSource,
+	IMaterialIO,
+} from "@prunplanner/engine";
+import type { Exchange } from "@prunplanner/engine/schemas";
 import type { IToolEnv } from "@/mcp/tools/shared";
 
 /** the beta testers' gaps of 2026-11-20 (items 2, 4, 5, 8, 10, 11, 12) */

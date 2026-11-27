@@ -64,7 +64,7 @@ import type {
 	PlanetSearchIndexEntry,
 	PlanetPopulationReport,
 	PopulationReport,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 import type { AnalyticsPlanetInsightsPayload } from "@/features/api/schemas/analyticsData.schemas";
 import type { IGameDataLoadProperties } from "@/lib/analytics/useAnalytics.types";

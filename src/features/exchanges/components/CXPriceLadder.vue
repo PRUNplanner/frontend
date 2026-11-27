@@ -7,12 +7,12 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
-	import { explainPrice, type PriceType } from "@/features/cx/priceBook";
+	import { explainPrice, type PriceType } from "@prunplanner/engine";
 	import { exchangeBasisLabel } from "@/features/exchanges/exchangeLabel.util";
 	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 
 	// Types & Interfaces
-	import type { CXData } from "@/features/api/schemas/cxData.schemas";
+	import type { CXData } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PButton } from "@/ui";

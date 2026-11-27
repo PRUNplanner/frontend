@@ -13,7 +13,7 @@ import {
 	callPatchCX,
 	callUpdateCXJunctions,
 } from "@/features/api/cxData.api";
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 // test data
 import cx_list from "@/tests/test_data/api_data_cx_list.json";

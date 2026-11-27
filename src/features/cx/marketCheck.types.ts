@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
+import type { EXCHANGES_TYPE } from "@prunplanner/engine";
 
 /** a reason a material can't be traded as planned, worst first */
 export type MarketFlag =

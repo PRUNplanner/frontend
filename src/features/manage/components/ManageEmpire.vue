@@ -18,12 +18,9 @@
 	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import type {
-		CX,
-		CXEmpireJunction,
-	} from "@/features/api/schemas/cxData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type { PlanFaction } from "@/features/api/schemas/planningData.schemas";
+	import type { CX, CXEmpireJunction } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
+	import type { PlanFaction } from "@prunplanner/engine/schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Util

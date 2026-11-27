@@ -27,7 +27,7 @@
 
 	// Types & Interfaces
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-	import type { IROIResult } from "@/features/roi_overview/useROIOverview.types";
+	import type { IROIResult } from "@prunplanner/engine";
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// UI

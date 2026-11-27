@@ -21,7 +21,7 @@ const CX_AI1 = "4907f10d-982e-4f6c-b068-221bd0fb8b86";
 import type {
 	Planet,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

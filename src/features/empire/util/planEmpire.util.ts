@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // which empire a plan calculates in, as the app picks it; pure, so the MCP
 // server picks the same

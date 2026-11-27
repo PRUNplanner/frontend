@@ -16,7 +16,7 @@ import {
 } from "@/features/planet_search/planetSearch.engine";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 import type { PlanetSearchFilter } from "@/features/planet_search/planetSearch.schemas";
 
 const filter: PlanetSearchFilter = {

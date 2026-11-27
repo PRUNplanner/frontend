@@ -17,8 +17,8 @@
 	import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 
 	// Types & Interfaces
-	import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
-	import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
+	import type { IProductionBuildingRecipeCOGM } from "@prunplanner/engine";
+	import type { IPriceBook, IPriceSource } from "@prunplanner/engine";
 
 	// UI
 	import { PTable, PTag } from "@/ui";

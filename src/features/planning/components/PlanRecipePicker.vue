@@ -31,10 +31,7 @@
 	import { formatNumber, formatPayback, formatPercent } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type {
-		IMaterialIO,
-		IProductionBuilding,
-	} from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIO, IProductionBuilding } from "@prunplanner/engine";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";

@@ -5,10 +5,10 @@ import { planetsStore } from "@/database/stores";
 import { planetLabel } from "@/util/planetName";
 
 // Engine
-import { getPlanetSpecialMaterials } from "@/features/planning/engine/buildings";
+import { getPlanetSpecialMaterials } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Planet } from "@prunplanner/engine/schemas";
 
 export function usePlanetData() {
 	const { allData, get, preload } = useDB(planetsStore);

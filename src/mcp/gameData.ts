@@ -1,5 +1,5 @@
 // Engine
-import { groupRecipesByBuilding } from "@/features/planning/engine/buildings";
+import { groupRecipesByBuilding } from "@prunplanner/engine";
 
 // Schemas
 import {
@@ -11,7 +11,7 @@ import {
 	PlanetSchema,
 	PlanetSearchIndexSchema,
 	RecipePayloadSchema,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Util
 import { ToolError } from "@/mcp/backend";
@@ -25,7 +25,7 @@ import { ExplorationPayloadSchema } from "@/features/market_exploration/marketEx
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 import type { Exploration } from "@/features/market_exploration/marketExploration.schemas";
 import type { IBackend } from "@/mcp/backend";
-import type { IGameData } from "@/features/planning/engine/engine.types";
+import type { IGameData } from "@prunplanner/engine";
 import type {
 	Building,
 	CXSparklines,
@@ -34,7 +34,7 @@ import type {
 	Planet,
 	PlanetSearchIndexEntry,
 	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 
 /** game data plus the lookups the tools need besides the engine's maps */
 export interface IMcpGameData extends IGameData {

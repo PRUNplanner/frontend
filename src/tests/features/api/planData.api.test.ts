@@ -29,7 +29,7 @@ import {
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import shared from "@/tests/test_data/api_data_shared.json";
-import type { PlanCreateData } from "@/features/api/schemas/planningData.schemas";
+import type { PlanCreateData } from "@prunplanner/engine/schemas";
 
 // mock apiService client
 const mock = new AxiosMockAdapter(apiService.client);

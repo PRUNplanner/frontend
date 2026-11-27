@@ -27,7 +27,7 @@
 		IMaterialIO,
 		IOverviewData,
 		IProductionBuilding,
-	} from "@/features/planning/usePlanCalculation.types";
+	} from "@prunplanner/engine";
 	import type { IProfitBreakdownItem } from "@/features/planning/util/profitBreakdown.types";
 	import type {
 		IWaterfallColumn,

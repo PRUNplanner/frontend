@@ -33,8 +33,8 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Interfaces & Types
-	import type { Material } from "@/features/api/schemas/gameData.schemas";
-	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { Material } from "@prunplanner/engine/schemas";
+	import type { IMaterialExchangeOverview } from "@prunplanner/engine";
 	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 	import type { DailyContext } from "@/features/material_tile/materialMarket.types";
 

@@ -7,21 +7,22 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useBuildingData } from "@/database/services/useBuildingData";
-import { calculateBuildingEfficiency } from "@/features/planning/engine/efficiency";
+import {
+	calculateBuildingEfficiency,
+	calculatePlan,
+	calculateVisitation,
+	WORKFORCE_CONSUMPTION_MAP,
+} from "@prunplanner/engine";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { usePlanContext } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { calculateVisitation } from "@/features/planning/engine/visitation";
-import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Building } from "@/features/api/schemas/gameData.schemas";
 import type {
-	IExpertRecord,
-	IWorkforceRecord,
-} from "@/features/planning/usePlanCalculation.types";
+	Plan,
+	PlanEmpireElement,
+	Building,
+} from "@prunplanner/engine/schemas";
+import type { IExpertRecord, IWorkforceRecord } from "@prunplanner/engine";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

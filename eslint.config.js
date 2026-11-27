@@ -73,7 +73,11 @@ export default [
 	// annotate them as `z.ZodType<…>` (only recursive schemas may, with a
 	// disable comment saying why)
 	{
-		files: ["src/features/api/schemas/**", "src/**/*.schemas.ts"],
+		files: [
+			"src/features/api/schemas/**",
+			"src/**/*.schemas.ts",
+			"packages/engine/src/schemas/**",
+		],
 		rules: {
 			"no-restricted-syntax": [
 				"error",
@@ -89,7 +93,7 @@ export default [
 
 	// tests: loose typing on mock data is fine, dead assertions are not
 	{
-		files: ["src/tests/**"],
+		files: ["src/tests/**", "packages/engine/tests/**"],
 		rules: {
 			"@typescript-eslint/no-explicit-any": "off",
 			"@typescript-eslint/ban-ts-comment": [
@@ -99,12 +103,35 @@ export default [
 		},
 	},
 
-	// planning engine: plain TypeScript, no Vue, stores or data layer
+	// the engine package (@prunplanner/engine) runs anywhere: it imports only
+	// its own files (never above packages/engine/src) and zod
 	{
-		files: [
-			"src/features/planning/engine/**",
-			"src/features/production_chain/engine/**",
-		],
+		files: ["packages/engine/src/**"],
+		rules: {
+			"no-restricted-imports": [
+				"error",
+				{
+					patterns: [
+						{
+							regex: "^(?!\\.\\.?/|zod$)",
+							message:
+								"The engine package only imports itself and zod.",
+						},
+						{
+							// src/ is at most one folder deep, so ../../ leaves it
+							regex: "^\\.\\./\\.\\./",
+							message:
+								"The engine package only imports itself and zod.",
+						},
+					],
+				},
+			],
+		},
+	},
+
+	// production chain engine: plain TypeScript, no Vue, stores or data layer
+	{
+		files: ["src/features/production_chain/engine/**"],
 		rules: {
 			"no-restricted-imports": [
 				"error",
@@ -133,10 +160,10 @@ export default [
 		},
 	},
 
-	// MCP server and the price book it shares with the app: Node only, no
-	// Vue, i18n, stores, data layer or UI (docs/mcp.md)
+	// MCP server: Node only, no Vue, i18n, stores, data layer or UI
+	// (docs/mcp.md)
 	{
-		files: ["src/mcp/**", "src/features/cx/priceBook.ts"],
+		files: ["src/mcp/**"],
 		rules: {
 			"no-restricted-imports": [
 				"error",

@@ -6,7 +6,7 @@ import { ToolError } from "@/mcp/backend";
 import { defineTool } from "@/mcp/tools/shared";
 
 // Types & Interfaces
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { Recipe } from "@prunplanner/engine/schemas";
 
 const recipe = (r: Recipe) => ({
 	recipe_id: r.recipe_id,

@@ -64,9 +64,9 @@
 	);
 
 	// Types & Interfaces
-	import type { Plan } from "@/features/api/schemas/planningData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-	import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+	import type { Plan } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
+	import type { IPlanResult } from "@prunplanner/engine";
 	import type {
 		IEmpireCostOverview,
 		IEmpireMaterialIO,

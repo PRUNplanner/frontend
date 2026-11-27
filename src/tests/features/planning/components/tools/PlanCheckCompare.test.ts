@@ -17,7 +17,7 @@ import { usePlanCheckView } from "@/features/planning/usePlanCheckView";
 import { PSelect, PSpin } from "@/ui";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { Plan } from "@prunplanner/engine/schemas";
 import type { PSelectOption } from "@/ui/ui.types";
 import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 import type {

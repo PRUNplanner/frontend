@@ -1,8 +1,8 @@
 // Engine
-import { calculateVisitation } from "@/features/planning/engine/visitation";
+import { calculateVisitation } from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 import type { IEmpireShippingDemand } from "@/features/empire/empire.types";
 
 /**

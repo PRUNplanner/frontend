@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { combineEmpireMaterialIO } from "@/features/empire/util/empireMaterialIO.util";
 import { empireSurplus } from "@/features/production_chain/engine/chainHave";
 import {
@@ -43,9 +43,7 @@ import {
 import type { IBackend } from "@/mcp/backend";
 import type { IMcpGameData } from "@/mcp/gameData";
 import type { PriceBasis } from "@/mcp/priceBasis";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX, PlanEmpireElement, Plan } from "@prunplanner/engine/schemas";
 
 /**
  * The user's plans outside an empire that make one of its inputs (net

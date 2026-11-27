@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import { buildingsStore, recipesStore } from "@/database/stores";
-import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
+import type { PlanDataBuilding } from "@prunplanner/engine/schemas";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";

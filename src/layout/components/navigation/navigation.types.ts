@@ -1,6 +1,6 @@
 import type { Component } from "vue";
 
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 export type INavPlan = PlanEmpireElement["plans"][number];
 

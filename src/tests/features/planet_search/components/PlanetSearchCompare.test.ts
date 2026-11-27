@@ -12,7 +12,7 @@ import game from "@/locales/en_US/game.json";
 import type {
 	PlanetPopulationReport,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	PlanetSearchFilter,
 	PlanetSearchReference,

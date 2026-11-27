@@ -1,8 +1,7 @@
 import type { ComputedRef, Ref } from "vue";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { PlanEmpireElement, Planet } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { IPlanCalculation } from "@/features/planning/planView.types";
 import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";

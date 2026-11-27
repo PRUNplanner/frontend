@@ -2,8 +2,8 @@
 import type {
 	CXDataExchangeOption,
 	CXExchangeOptionType,
-} from "@/features/api/schemas/cxData.schemas";
-import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
+} from "@prunplanner/engine/schemas";
+import type { EXCHANGES_TYPE } from "@prunplanner/engine";
 
 /*
  * The exchange rule of one scope (all planets or a planet) as the

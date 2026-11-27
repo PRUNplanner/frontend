@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
-import { createPriceBook } from "@/features/cx/priceBook";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { createPriceBook, calculatePlan } from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { useExchangeData } from "@/database/services/useExchangeData";
 
@@ -14,8 +13,8 @@ import {
 } from "@/features/exchanges/exchangePlanData.util";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { CXData } from "@prunplanner/engine/schemas";
+import type { IPlanContext } from "@prunplanner/engine";
 import type { IExchangePlanBase } from "@/features/exchanges/useExchangePlanData.types";
 
 // test data

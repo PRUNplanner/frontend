@@ -22,7 +22,7 @@ import {
 	callGetPlanlist,
 	callSavePlan,
 } from "@/features/api/planData.api";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { Plan } from "@prunplanner/engine/schemas";
 import type { JSONValue } from "@/lib/query_cache/queryCache.types";
 import { callGetEmpireList } from "@/features/api/empireData.api";
 

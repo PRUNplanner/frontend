@@ -2,7 +2,7 @@
 import type {
 	EXCHANGES_TYPE,
 	IMaterialExchangeOverview,
-} from "@/database/services/useExchangeData.types";
+} from "@prunplanner/engine";
 
 const CXS: EXCHANGES_TYPE[] = ["AI1", "CI1", "IC1", "NC1", "UNIVERSE"];
 

@@ -17,7 +17,7 @@ import type {
 	PlanFaction,
 	PlanVersionListItem,
 	WorkforceType,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	PlanetSearchColumn,
 	PlanetSearchView,

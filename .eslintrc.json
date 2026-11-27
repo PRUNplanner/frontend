@@ -77,7 +77,11 @@
 	},
 	"overrides": [
 		{
-			"files": ["src/features/api/schemas/**", "src/**/*.schemas.ts"],
+			"files": [
+				"src/features/api/schemas/**",
+				"src/**/*.schemas.ts",
+				"packages/engine/src/schemas/**"
+			],
 			"rules": {
 				"no-restricted-syntax": [
 					"error",
@@ -89,7 +93,7 @@
 			}
 		},
 		{
-			"files": ["src/tests/**"],
+			"files": ["src/tests/**", "packages/engine/tests/**"],
 			"rules": {
 				"@typescript-eslint/no-explicit-any": "off",
 				"@typescript-eslint/ban-ts-comment": [
@@ -99,10 +103,27 @@
 			}
 		},
 		{
-			"files": [
-				"src/features/planning/engine/**",
-				"src/features/production_chain/engine/**"
-			],
+			"files": ["packages/engine/src/**"],
+			"rules": {
+				"no-restricted-imports": [
+					"error",
+					{
+						"patterns": [
+							{
+								"regex": "^(?!\\.\\.?/|zod$)",
+								"message": "The engine package only imports itself and zod."
+							},
+							{
+								"regex": "^\\.\\./\\.\\./",
+								"message": "The engine package only imports itself and zod."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"files": ["src/features/production_chain/engine/**"],
 			"rules": {
 				"no-restricted-imports": [
 					"error",
@@ -136,7 +157,7 @@
 			}
 		},
 		{
-			"files": ["src/mcp/**", "src/features/cx/priceBook.ts"],
+			"files": ["src/mcp/**"],
 			"rules": {
 				"no-restricted-imports": [
 					"error",

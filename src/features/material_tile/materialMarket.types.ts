@@ -1,6 +1,6 @@
 // Types & Interfaces
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
-import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
+import type { Exchange } from "@prunplanner/engine/schemas";
+import type { EXCHANGES_TYPE } from "@prunplanner/engine";
 import type { MarketFlagLevel } from "@/features/cx/marketCheck.types";
 
 /** a plan's share of an exchange's daily volume, as Market check judges it */

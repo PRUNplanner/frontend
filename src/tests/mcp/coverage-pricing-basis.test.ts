@@ -15,8 +15,7 @@ import { API_KEY, fakeBackend, fixtures } from "@/tests/mcp/fakeBackend";
 
 // Types & Interfaces
 import type { IMcpGameData } from "@/mcp/gameData";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { CX, Exchange } from "@prunplanner/engine/schemas";
 
 /** game data with only the exchange rows the price books read */
 function stubGameData(rows: Record<string, Partial<Exchange>>): IMcpGameData {

@@ -90,7 +90,7 @@ container `prunplanner-mcp`), not here.
 | --- | --- |
 | `server.ts` | Entry: `node:http` server, env |
 | `app.ts` | `/healthz`, `/mcp` and `/` (stateless Streamable HTTP, a fresh `McpServer` per request), API key check, logging per tool call, server instructions |
-| `backend.ts` | `fetch` client: `get` and, for the write tools, `send` (POST, PUT, PATCH, DELETE; the body checked with the app's payload schema first); answers validated with `features/api/schemas/*`; maps a read-only key's 403 to `read_only_key`, a 409 to `conflict`, a 400 to the backend's reason; sends `User-Agent: PRUNplanner-MCP/<version> (<client>)` |
+| `backend.ts` | `fetch` client: `get` and, for the write tools, `send` (POST, PUT, PATCH, DELETE; the body checked with the app's payload schema first); answers validated with `features/api/schemas/*` and `@prunplanner/engine/schemas`; maps a read-only key's 403 to `read_only_key`, a 409 to `conflict`, a 400 to the backend's reason; sends `User-Agent: PRUNplanner-MCP/<version> (<client>)` |
 | `gameData.ts` | Game data shared by all users, in memory with the app's TTLs (exchanges 30 min, planets 180, the rest 1440); `getPlanet` takes an id in any case or a planet name (via the planet search index) |
 | distances | `get_distances`: jumps between any planets, plans and exchanges with the app's pathfinder (`features/pathfinding/pathfinder.ts`, as Planet Search counts exchange distance), the order's total and optionally the systems on the way; no fuel or flight time (ship routes stay parked) |
 | XIT | `get_xit_action` builds the XIT ACT package the app's XIT buttons build (`features/xit/xitAction.util.ts` `transferAction`, the station-to-exchange map) from a plan's Construction or Supply cart (`features/planning/util/carts.util.ts`, shared with the cart components) or a list; origin, buy and supply days default to the user's saved settings; FIO stock and FIO-built buildings are not subtracted |
@@ -112,9 +112,12 @@ container `prunplanner-mcp`), not here.
 
 - **Exchange distances** come from `features/pathfinding/pathfinder.ts`, the
   pure pathfinder `usePathfinder` wraps.
-- **No app code paths.** `src/mcp/`, the engine and `features/cx/priceBook.ts`
-  import no Vue, Pinia, vue-i18n, stores, `@/database`, `@/lib`, `@/ui` or
-  `@/util/numbers` (ESLint, and `src/tests/mcp/nodeImport.test.ts`). Pure
+- **No app code paths.** `src/mcp/` imports no Vue, Pinia, vue-i18n,
+  stores, `@/database`, `@/lib`, `@/ui` or `@/util/numbers` (ESLint, and
+  `src/tests/mcp/nodeImport.test.ts`). The engine and price book come from
+  the package `@prunplanner/engine` (schemas from
+  `@prunplanner/engine/schemas`), which imports only itself and `zod`;
+  `vite.mcp.ts` bundles it into `server.js` (`ssr.noExternal`). Pure
   helpers they need live in `*.util.ts`; formatting for the UI goes in
   `*.format.ts` next to them (`marketCheck.format.ts`, `whatIf.format.ts`).
 - **Same numbers as the app.** Tools call the engine (`calculatePlan`,
@@ -185,7 +188,7 @@ container `prunplanner-mcp`), not here.
     per building-hour (`runTime()`), in the summary too.
   - `warnings()` flags experts over 5 per type or 6 per base.
   - `shipping()` gives `trips_per_week` for the Visitation frequency ships
-    (`SHIP_SIZES`, `shipDays()` in `engine/visitation.ts`, shared with the tool).
+    (`SHIP_SIZES`, `shipDays()` in the package's `engine/visitation.ts`, shared with the tool).
   - `fixedPriceDrift()` flags a fixed CX-preference price more than 10 % on
     the plan's side of its exchange's ask/bid. It is a warning in plan
     results and variants, and `fixed_price_drift` in `check_plan_market`.

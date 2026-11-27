@@ -9,7 +9,7 @@ import {
 } from "@/features/exchanges/cxEdit.util";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 const loaded: CXData = {
 	cx_empire: [{ type: "BOTH", exchange: "NC1_30D" }],

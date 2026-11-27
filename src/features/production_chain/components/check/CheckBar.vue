@@ -15,7 +15,7 @@
 	import { formatMaterialName } from "@/util/text";
 
 	// Types & Interfaces
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type { ICheckSold } from "@/features/production_chain/engine/chainCheck.types";
 
 	// UI

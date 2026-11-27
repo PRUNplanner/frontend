@@ -6,8 +6,8 @@ import { ALL_PLANETS } from "@/features/exchanges/cxEdit.util";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
+import type { CXData } from "@prunplanner/engine/schemas";
+import type { IPriceBook, IPriceSource } from "@prunplanner/engine";
 import type { IExchangeNote } from "@/features/exchanges/exchangeNotes.util";
 
 // the children have their own tests; the stubs show what they are given

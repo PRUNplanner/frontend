@@ -9,7 +9,7 @@ import { wf } from "@/tests/features/planning/usePlanCalculation.fixtures";
 import plan from "@/locales/en_US/plan.json";
 
 // Types & Interfaces
-import type { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
+import type { IWorkforceRecord } from "@prunplanner/engine";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({
 	reportError: vi.fn(),

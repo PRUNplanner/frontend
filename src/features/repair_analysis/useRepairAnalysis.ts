@@ -7,7 +7,7 @@ import { usePrice } from "@/features/cx/usePrice";
 import { useRunProgress } from "@/util/runProgress";
 
 // Util
-import type { IPriceBook } from "@/features/cx/priceBook";
+import type { IPriceBook, IMaterialIOMinimal } from "@prunplanner/engine";
 import {
 	goodRange,
 	priceRepairMaterials,
@@ -20,7 +20,6 @@ import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import type { IPlanRepairAnalysisDataProp } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 import type {
 	IRepairBuilding,
 	IRepairMaterialList,

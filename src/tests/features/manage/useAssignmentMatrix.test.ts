@@ -12,7 +12,7 @@ import {
 } from "@/features/manage/useAssignmentMatrix";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 const planRef = (uuid: string) => ({
 	uuid,

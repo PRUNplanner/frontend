@@ -13,7 +13,7 @@
 
 	// Types & Interfaces
 	import type { IEmpirePlanListData } from "@/features/empire/empire.types";
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
 	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
 	import type { PDataTableColumn } from "@/ui/ui.types";

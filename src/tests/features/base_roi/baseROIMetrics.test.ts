@@ -16,7 +16,7 @@ import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import knottly from "@/tests/features/base_roi/knottly_ai1_rows.json";
 
 // Types & Interfaces
-import type { IPriceSource } from "@/features/cx/priceBook";
+import type { IPriceSource } from "@prunplanner/engine";
 import type {
 	IBaseROIMaterial,
 	IBaseROIRow,

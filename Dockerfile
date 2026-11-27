@@ -36,8 +36,9 @@ ENV BUILD_REVISION=$BUILD_REVISION \
     VITE_GAME_DATA_WRITE_DELAY_MS=$VITE_GAME_DATA_WRITE_DELAY_MS \
     VITE_INDEXEDDB_DBNAME=$VITE_INDEXEDDB_DBNAME
 
-# Copy package manager files
+# Copy package manager files (and the workspace packages' manifests)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/engine/package.json packages/engine/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile

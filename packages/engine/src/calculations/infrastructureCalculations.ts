@@ -1,0 +1,50 @@
+import {
+	InfrastructureTypeSchema,
+	StorageTypeSchema,
+	type StorageType,
+} from "../schemas/planningData.schemas";
+
+export const storageBuildingNames: string[] = StorageTypeSchema.options;
+
+export const infrastructureBuildingNames: string[] =
+	InfrastructureTypeSchema.options;
+
+const STORAGE_WEIGHT_MAP: Record<StorageType, number> = {
+	STO: 5000,
+	STA: 2500,
+	STE: 10000,
+	STV: 2500,
+	STW: 7500,
+};
+
+const STORAGE_VOLUME_MAP: Record<StorageType, number> = {
+	STO: 5000,
+	STA: 2500,
+	STE: 10000,
+	STV: 7500,
+	STW: 2500,
+};
+
+export function isStorageInfrastructure(inf: string): boolean {
+	return storageBuildingNames.includes(inf);
+}
+
+export function getWeightOfAllStorages(
+	storages: Record<StorageType, number>
+): number {
+	return Object.entries(storages).reduce(
+		(sum, [key, amount]) =>
+			sum + (STORAGE_WEIGHT_MAP?.[key as StorageType] ?? 0) * amount,
+		1500
+	);
+}
+
+export function getVolumeOfAllStorages(
+	storages: Record<StorageType, number>
+): number {
+	return Object.entries(storages).reduce(
+		(sum, [key, amount]) =>
+			sum + (STORAGE_VOLUME_MAP?.[key as StorageType] ?? 0) * amount,
+		1500
+	);
+}

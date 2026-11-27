@@ -1,12 +1,12 @@
 import type {
 	CXDataExchangeOption,
 	CXDataTickerOption,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { ICXPlanetMap } from "./manageCX.types";
 import {
 	CXDataExchangeOptionSchema,
 	CXDataTickerOptionSchema,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 
 import Papa from "papaparse";
 

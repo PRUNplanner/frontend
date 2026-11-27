@@ -6,15 +6,15 @@ import { getObjectSize, inertClone } from "@/util/data";
 import { persistSerializer, persistStorage } from "@/lib/persistStorage";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 import type {
+	Plan,
+	CX,
+	PlanEmpireElement,
 	FIOSitePlanet,
 	FIOStorage,
 	FIOStorageElement,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
+import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 /**
  * Read model for plans, empires, CX, shared plans and FIO storage. Written

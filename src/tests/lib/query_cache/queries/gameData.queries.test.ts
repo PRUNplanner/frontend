@@ -5,7 +5,7 @@ import type {
 	Exchange,
 	Material,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { MarketSummary } from "@/features/api/schemas/marketSummary.schemas";
 import { memoryStorage } from "@/tests/memoryStorage";
 import market_summary from "@/tests/test_data/api_data_market_summary.json";

@@ -8,10 +8,7 @@ import PSelectMultiple from "@/ui/components/PSelectMultiple.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type {
-	IMaterialIO,
-	IStorageRecord,
-} from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO, IStorageRecord } from "@prunplanner/engine";
 import { io } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 const PLAN_UUID = "plan-uuid";

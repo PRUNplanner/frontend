@@ -37,7 +37,7 @@
 	import { planetDisplayName } from "@/util/planetName";
 
 	// Types & Interfaces
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
 	import type {
 		ChainBaseCOGC,
 		ChainExperts,

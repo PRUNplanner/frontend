@@ -5,8 +5,7 @@ import PlanCalcDebug from "@/features/planning/components/debug/PlanCalcDebug.vu
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { ITraceEntry } from "@/features/planning/engine/engine.types";
-import type { IPlanTraceRun } from "@/features/planning/usePlanCalculation.types";
+import type { ITraceEntry, IPlanTraceRun } from "@prunplanner/engine";
 import type { ICalcDebugReport } from "@/features/planning/calcDebug.types";
 
 const { trackEvent, setCalcDebug, checks } = vi.hoisted(() => ({

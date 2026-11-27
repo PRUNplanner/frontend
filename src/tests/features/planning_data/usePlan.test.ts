@@ -10,7 +10,7 @@ import * as analytics from "@/lib/analytics/useAnalytics";
 
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { Plan } from "@prunplanner/engine/schemas";
 
 import {
 	callCreatePlan,

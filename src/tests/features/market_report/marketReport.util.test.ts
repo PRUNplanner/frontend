@@ -30,7 +30,7 @@ import {
 	MarketSummarySchema,
 	type MarketMaterial,
 } from "@/features/api/schemas/marketSummary.schemas";
-import type { Exchange } from "@/features/api/schemas/gameData.schemas";
+import type { Exchange } from "@prunplanner/engine/schemas";
 
 import fixture from "@/tests/test_data/api_data_market_summary.json";
 import tuningWeek from "@/tests/test_data/market_gaps_2026-10-29.json";

@@ -1,7 +1,7 @@
 import type {
 	CXDataExchangeOption,
 	CXDataTickerOption,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 
 export type ICXPlanetMap = Record<
 	string,

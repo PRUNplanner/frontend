@@ -1,20 +1,14 @@
 // Types & Interfaces
-import {
-	type ExpertType,
-	ExpertTypeSchema,
-} from "@/features/api/schemas/planningData.schemas";
+import { type ExpertType, ExpertTypeSchema } from "@prunplanner/engine/schemas";
 import type {
 	AnalyticsPlanetInsightsBuilding,
 	AnalyticsPlanetInsightsData,
 } from "@/features/api/schemas/analyticsData.schemas";
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { Recipe } from "@prunplanner/engine/schemas";
 import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
 
 // Engine
-import {
-	MAX_EXPERTS_PER_TYPE,
-	MAX_EXPERTS_TOTAL,
-} from "@/features/planning/engine/efficiency";
+import { MAX_EXPERTS_PER_TYPE, MAX_EXPERTS_TOTAL } from "@prunplanner/engine";
 
 /** buildings the starter card lists, most planned first */
 export const STARTER_MAX_BUILDINGS = 8;

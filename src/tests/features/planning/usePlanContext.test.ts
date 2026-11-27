@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { getActiveEmpire } from "@/features/planning/usePlanContext";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 describe("getActiveEmpire", () => {
 	const options = [{ uuid: "foo" }, { uuid: "bar" }] as PlanEmpireElement[];

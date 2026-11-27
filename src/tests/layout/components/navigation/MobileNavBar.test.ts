@@ -15,7 +15,7 @@ import { relativeFromDate } from "@/util/date";
 import VersionUpdateChip from "@/layout/components/VersionUpdateChip.vue";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 const route = reactive({
 	name: "empire" as string,

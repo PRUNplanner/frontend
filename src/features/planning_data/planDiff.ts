@@ -5,7 +5,7 @@ import { diffByKey } from "@/features/save_conflict/saveConflict.util";
 
 // Types & Interfaces
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import type { PlanDataBuilding } from "@/features/api/schemas/planningData.schemas";
+import type { PlanDataBuilding } from "@prunplanner/engine/schemas";
 import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
 /** The saved fields of a plan */

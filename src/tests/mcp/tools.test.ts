@@ -2,12 +2,14 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { createPriceBook } from "@/features/cx/priceBook";
-import { groupRecipesByBuilding } from "@/features/planning/engine/buildings";
+import {
+	calculatePlan,
+	createPriceBook,
+	groupRecipesByBuilding,
+	calculateVisitation,
+} from "@prunplanner/engine";
 import { marketCheck } from "@/features/cx/marketCheck.util";
 import { calculateScaled } from "@/features/planning/util/whatIf.util";
-import { calculateVisitation } from "@/features/planning/engine/visitation";
 import {
 	defaultFilter,
 	defaultSort,
@@ -19,7 +21,7 @@ import { createSearchContext } from "@/features/planet_search/planetSearchContex
 // MCP
 import { createBackend } from "@/mcp/backend";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { IPlanCalculation } from "@prunplanner/engine";
 import { autoExperts } from "@/mcp/tools/planEdit";
 import { loadPlanSetup } from "@/mcp/context";
 import { TOOLS } from "@/mcp/tools";
@@ -37,12 +39,15 @@ const CX_UUID = fixtures.cxs.find((c) => c.cx_name === "PRUN CX REAL")!.uuid;
 
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";
-import type { Exchange, Planet } from "@/features/api/schemas/gameData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
-import { ExchangePayloadSchema } from "@/features/api/schemas/gameData.schemas";
+import type {
+	Exchange,
+	Planet,
+	CX,
+	Plan,
+	PlanEmpireElement,
+	PlanetSearchIndexEntry,
+} from "@prunplanner/engine/schemas";
+import { ExchangePayloadSchema } from "@prunplanner/engine/schemas";
 
 const APP = "https://app.test";
 let backend: IFakeBackend;

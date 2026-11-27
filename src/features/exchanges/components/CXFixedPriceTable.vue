@@ -20,8 +20,8 @@
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Types & Interfaces
-	import type { CXDataTickerOption } from "@/features/api/schemas/cxData.schemas";
-	import type { IPriceSource, PriceType } from "@/features/cx/priceBook";
+	import type { CXDataTickerOption } from "@prunplanner/engine/schemas";
+	import type { IPriceSource, PriceType } from "@prunplanner/engine";
 	import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
 
 	// UI

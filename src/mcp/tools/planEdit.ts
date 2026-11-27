@@ -1,19 +1,19 @@
 import { z } from "zod";
 
 // Engine
-import { getBuildingRecipes } from "@/features/planning/engine/buildings";
-import { infrastructureBuildingNames } from "@/features/planning/calculations/infrastructureCalculations";
+import {
+	getBuildingRecipes,
+	infrastructureBuildingNames,
+	expertNames,
+	MAX_EXPERTS_PER_TYPE,
+	MAX_EXPERTS_TOTAL,
+} from "@prunplanner/engine";
 import {
 	calculateAvailableArea,
 	optimizeHabs,
 	type HabSolverGoal,
 } from "@/features/planning/calculations/habOptimization";
 
-import {
-	expertNames,
-	MAX_EXPERTS_PER_TYPE,
-	MAX_EXPERTS_TOTAL,
-} from "@/features/planning/engine/efficiency";
 import {
 	bestExpertSplit,
 	expertTypeOf,
@@ -29,20 +29,17 @@ import {
 	InfrastructureTypeSchema,
 	PlanCOGCProgramSchema,
 	WorkforceTypeSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type { IMcpGameData } from "@/mcp/gameData";
+import type { IPlanCalculation, IPlanInput } from "@prunplanner/engine";
 import type {
-	IPlanCalculation,
-	IPlanInput,
-} from "@/features/planning/engine/engine.types";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type {
+	Planet,
 	ExpertType,
 	InfrastructureType,
 	PlanData,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 export const BuildingChangeSchema = z.object({
 	ticker: z

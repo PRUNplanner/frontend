@@ -36,7 +36,7 @@ import {
 import { calculateMetrics } from "@/features/base_roi/baseROIMetrics";
 import { defaultBaseROISettings } from "@/features/base_roi/useBaseROISettings";
 import { STANDARD_PLANET } from "@/features/base_roi/baseROI.constants";
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+import { optimalProduction } from "@prunplanner/engine";
 
 // Test Data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -47,14 +47,11 @@ import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import planetIndex from "@/tests/test_data/api_data_planet_search_index.json";
 
 // Types & Interfaces
-import type {
-	IGameData,
-	IPlanContext,
-} from "@/features/planning/engine/engine.types";
+import type { IGameData, IPlanContext } from "@prunplanner/engine";
 import type {
 	Planet,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { IBaseROICandidate } from "@/features/base_roi/baseROI.types";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 

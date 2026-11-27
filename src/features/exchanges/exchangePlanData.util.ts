@@ -3,13 +3,13 @@ import {
 	getMaterialIOTotalPrice,
 	type IPriceBook,
 	type PriceType,
-} from "@/features/cx/priceBook";
+	calculateCOGM,
+} from "@prunplanner/engine";
 
 // Engine
-import { calculateCOGM } from "@/features/planning/engine/cogm";
 
 // Types & Interfaces
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { IPlanCalculation } from "@prunplanner/engine";
 import type {
 	IExchangePlanBase,
 	IMaterialCOGM,

@@ -13,7 +13,7 @@ import {
 	planViewContext,
 	provideContext,
 } from "@/tests/features/planning/components/elements/planViewContext.fixtures";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 import { formatPayback } from "@/util/numbers";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 import plan from "@/locales/en_US/plan.json";
@@ -29,7 +29,7 @@ import type {
 	IExpertRecord,
 	IPlanResult,
 	IWorkforceRecord,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 import type { ResultTile } from "@/features/planning/planView.util";
 
 const AREA: IAreaResult = {

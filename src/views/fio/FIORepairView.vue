@@ -29,8 +29,8 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import type { Plan } from "@/features/api/schemas/planningData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { Plan } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PNotice } from "@/ui";

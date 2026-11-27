@@ -12,8 +12,8 @@
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
-	import type { IPlanContext } from "@/features/planning/engine/engine.types";
+	import type { EXCHANGES_TYPE } from "@prunplanner/engine";
+	import type { IPlanContext } from "@prunplanner/engine";
 	import type { ISensitivityRow } from "@/features/planning/util/whatIf.types";
 	import type { PSelectOption } from "@/ui/ui.types";
 

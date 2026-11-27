@@ -14,7 +14,7 @@ import {
 import { createSearchContext } from "@/features/planet_search/planetSearchContext.util";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 import type {
 	PlanetSearchFilter,
 	PlanetSearchReference,

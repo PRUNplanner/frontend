@@ -1,4 +1,4 @@
-import { PositiveOrZeroNumber } from "@/util/zodValidators";
+import { PositiveOrZeroNumber } from "@prunplanner/engine/schemas";
 import { describe, expect, it } from "vitest";
 
 describe("Util: zodValidator", () => {

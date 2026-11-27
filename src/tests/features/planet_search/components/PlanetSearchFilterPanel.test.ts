@@ -14,8 +14,10 @@ import {
 
 // Types & Interfaces
 import type { PlanetSearchFilter } from "@/features/planet_search/planetSearch.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type {
+	PlanEmpireElement,
+	PlanetSearchIndexEntry,
+} from "@prunplanner/engine/schemas";
 
 // test data
 import fixture from "@/tests/test_data/api_data_planet_search_index.json";

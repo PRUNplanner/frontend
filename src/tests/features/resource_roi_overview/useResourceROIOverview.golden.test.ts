@@ -14,7 +14,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

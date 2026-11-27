@@ -19,8 +19,8 @@ import { preferenceDefaults } from "@/features/preferences/userDefaults";
 import {
 	PlanCreateDataSchema,
 	PlanSaveDataSchema,
-} from "@/features/api/schemas/planningData.schemas";
-import { EmpireMaterialIOStateSchema } from "@/features/api/schemas/empireData.schemas";
+	EmpireMaterialIOStateSchema,
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";

@@ -28,7 +28,7 @@ import { STANDARD_PLANET } from "@/features/base_roi/baseROI.constants";
 import { BaseROISettingsSchema } from "@/features/base_roi/baseROI.schemas";
 
 // Types & Interfaces
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { IPlanContext } from "@prunplanner/engine";
 import type { IBaseROIRow } from "@/features/base_roi/baseROI.types";
 
 /** Infinity (never) as null, the rest rounded */

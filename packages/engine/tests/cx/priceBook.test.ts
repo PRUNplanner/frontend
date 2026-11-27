@@ -1,0 +1,233 @@
+import { describe, it, expect, vi } from "vitest";
+
+import { createPriceBook, scaledPriceBook } from "../../src/cx/priceBook";
+
+// Types & Interfaces
+import type { Exchange } from "../../src/schemas/gameData.schemas";
+import type { CXData } from "../../src/schemas/cxData.schemas";
+
+const exchange = (vwap_30d: number, vwap_7d: number = 0) =>
+	({ vwap_30d, vwap_7d }) as Exchange;
+
+const exchanges: Record<string, Exchange> = {
+	"RAT.UNIVERSE": exchange(100),
+	"RAT.NC1": exchange(0, 120),
+	"DW.UNIVERSE": exchange(50),
+};
+const getExchange = vi.fn((id: string) => {
+	if (!exchanges[id]) throw new Error(`Exchange '${id}' not found.`);
+	return exchanges[id];
+});
+
+const cx: CXData = {
+	cx_empire: [{ type: "BOTH", exchange: "NC1_7D" }],
+	cx_planets: [],
+	ticker_empire: [{ type: "BUY", ticker: "DW", value: 42 }],
+	ticker_planets: [
+		{
+			planet: "KW-688c",
+			preferences: [{ type: "SELL", ticker: "DW", value: 7 }],
+		},
+	],
+};
+
+describe("createPriceBook", () => {
+	it("uses the Universe VWAP 30d without CX", () => {
+		const book = createPriceBook(undefined, "KW-688c", getExchange);
+		expect(book.getPrice("RAT", "BUY")).toBe(100);
+	});
+
+	it("applies planet ticker, empire ticker and exchange preferences", () => {
+		const book = createPriceBook(() => cx, "KW-688c", getExchange);
+		expect(book.getPrice("DW", "SELL")).toBe(7);
+		expect(book.getPrice("DW", "BUY")).toBe(42);
+		expect(book.getPrice("RAT", "BUY")).toBe(120);
+	});
+
+	it("resolves each ticker and type once and reads the CX once", () => {
+		getExchange.mockClear();
+		const getCX = vi.fn(() => cx);
+		const book = createPriceBook(getCX, undefined, getExchange);
+
+		book.getPrice("RAT", "BUY");
+		book.getPrice("RAT", "BUY");
+		book.getPrice("RAT", "SELL");
+
+		expect(getCX).toHaveBeenCalledTimes(1);
+		expect(getExchange).toHaveBeenCalledTimes(2);
+	});
+
+	it("returns 0 and reports when a price can't be resolved", () => {
+		const onError = vi.fn();
+		const book = createPriceBook(
+			undefined,
+			undefined,
+			getExchange,
+			onError
+		);
+
+		expect(book.getPrice("FOO", "BUY")).toBe(0);
+		expect(onError).toHaveBeenCalledOnce();
+	});
+
+	it("applies a planet exchange preference only on its own planet", () => {
+		const ci1 = { ask: 130, bid: 90 } as Exchange;
+		const lookup = (id: string) =>
+			id === "RAT.CI1" ? ci1 : getExchange(id);
+		const planets: CXData = {
+			cx_empire: [{ type: "BOTH", exchange: "UNIVERSE_30D" }],
+			cx_planets: [
+				{
+					planet: "OT-580b",
+					preferences: [{ type: "BOTH", exchange: "NC1_7D" }],
+				},
+				{
+					planet: "KW-688c",
+					preferences: [{ type: "BOTH", exchange: "CI1_ASK" }],
+				},
+			],
+			ticker_empire: [],
+			ticker_planets: [],
+		};
+		const price = (planet: string) =>
+			createPriceBook(() => planets, planet, lookup).getPrice(
+				"RAT",
+				"BUY"
+			);
+
+		expect(price("KW-688c")).toBe(130);
+		expect(price("OT-580b")).toBe(120);
+		expect(price("ZV-307d")).toBe(100);
+	});
+
+	it("uses the empire exchange preference of the requested type", () => {
+		const ci1 = { ask: 130, bid: 90 } as Exchange;
+		const split: CXData = {
+			cx_empire: [
+				{ type: "SELL", exchange: "CI1_BID" },
+				{ type: "BUY", exchange: "CI1_ASK" },
+			],
+			cx_planets: [],
+			ticker_empire: [],
+			ticker_planets: [],
+		};
+		const book = createPriceBook(
+			() => split,
+			undefined,
+			() => ci1
+		);
+
+		expect(book.getPrice("RAT", "BUY")).toBe(130);
+		expect(book.getPrice("RAT", "SELL")).toBe(90);
+	});
+});
+
+describe("scaledPriceBook", () => {
+	it("multiplies one ticker's BUY and SELL price and keeps the rest", () => {
+		const book = scaledPriceBook(
+			createPriceBook(() => cx, "KW-688c", getExchange),
+			"DW",
+			1.5
+		);
+		expect(book.getPrice("DW", "SELL")).toBe(10.5);
+		expect(book.getPrice("DW", "BUY")).toBe(63);
+		expect(book.getPrice("RAT", "BUY")).toBe(120);
+	});
+});
+
+describe("getPriceSource", () => {
+	const ci1 = { ask: 0, bid: 90, vwap_30d: 100 } as Exchange;
+	const lookup = (id: string) => (id === "RAT.CI1" ? ci1 : getExchange(id));
+	const prefs: CXData = {
+		cx_empire: [{ type: "BOTH", exchange: "NC1_7D" }],
+		cx_planets: [
+			{
+				planet: "KW-688c",
+				preferences: [{ type: "BUY", exchange: "CI1_ASK" }],
+			},
+		],
+		ticker_empire: [{ type: "BUY", ticker: "DW", value: 42 }],
+		ticker_planets: [
+			{
+				planet: "KW-688c",
+				preferences: [{ type: "SELL", ticker: "DW", value: 7 }],
+			},
+		],
+	};
+	const book = createPriceBook(() => prefs, "KW-688c", lookup);
+
+	it("names the level, exchange and key of each resolution path", () => {
+		expect(book.getPriceSource("DW", "SELL")).toEqual({
+			level: "planet_ticker",
+			exchange: null,
+			key: null,
+			zero: false,
+			volume: "NC1",
+		});
+		expect(book.getPriceSource("DW", "BUY")).toEqual({
+			level: "empire_ticker",
+			exchange: null,
+			key: null,
+			zero: false,
+			volume: "CI1",
+		});
+		expect(book.getPriceSource("RAT", "BUY")).toEqual({
+			level: "planet_exchange",
+			exchange: "CI1",
+			key: "ask",
+			zero: true,
+			volume: "CI1",
+		});
+		expect(book.getPriceSource("RAT", "SELL")).toEqual({
+			level: "empire_exchange",
+			exchange: "NC1",
+			key: "vwap_7d",
+			zero: false,
+			volume: "NC1",
+		});
+		expect(
+			createPriceBook(undefined, undefined, lookup).getPriceSource(
+				"RAT",
+				"BUY"
+			)
+		).toEqual({
+			level: "fallback",
+			exchange: "UNIVERSE",
+			key: "vwap_30d",
+			zero: false,
+			volume: "UNIVERSE",
+		});
+	});
+
+	it("reports one failed lookup per book", () => {
+		const onError = vi.fn();
+		const book = createPriceBook(
+			undefined,
+			undefined,
+			() => {
+				throw new Error("missing");
+			},
+			onError
+		);
+
+		book.getPrice("DW", "BUY");
+		book.getPrice("RAT", "BUY");
+
+		expect(onError).toHaveBeenCalledOnce();
+	});
+
+	it("is unresolved and zero when the lookup throws", () => {
+		const source = createPriceBook(
+			undefined,
+			undefined,
+			getExchange
+		).getPriceSource("FOO", "BUY");
+		expect(source).toMatchObject({ level: "unresolved", zero: true });
+	});
+
+	it("passes through a scaled book", () => {
+		expect(
+			scaledPriceBook(book, "RAT", 2).getPriceSource("RAT", "BUY")
+		).toBe(book.getPriceSource("RAT", "BUY"));
+	});
+});

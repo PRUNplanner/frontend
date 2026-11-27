@@ -28,10 +28,10 @@ import type { StepState } from "@/features/wrapper/dataLoader.types";
 import type {
 	Plan,
 	PlanShare,
-} from "@/features/api/schemas/planningData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+	CX,
+	PlanEmpireElement,
+	Planet,
+} from "@prunplanner/engine/schemas";
 import type { Shared } from "@/features/api/schemas/sharingData.schemas";
 
 export function usePlanningDataLoader(

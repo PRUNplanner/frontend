@@ -9,7 +9,7 @@ import {
 	signed,
 	clamp,
 } from "@/util/numbers";
-import { boundaryDescriptor } from "@/util/boundary";
+import { boundaryDescriptor } from "@prunplanner/engine";
 
 describe("Util: text", () => {
 	describe("formatNumber", () => {

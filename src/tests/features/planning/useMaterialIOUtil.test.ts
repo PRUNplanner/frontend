@@ -11,7 +11,7 @@ import {
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIOMinimal } from "@prunplanner/engine";
 import type {
 	IEmpireMaterialIO,
 	IEmpirePlanMaterialIO,
@@ -25,7 +25,7 @@ import { materialsStore } from "@/database/stores";
 import { exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 describe("Util: materialIO ", async () => {
 	beforeEach(async () => {

@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 /** the all-planets scope; planet scopes are planet natural ids */
 export const ALL_PLANETS = "all";

@@ -40,14 +40,14 @@ import {
 	planetBuckets,
 } from "@/features/planet_search/environmentExtras.util";
 import { createSearchContext } from "@/features/planet_search/planetSearchContext.util";
-import { getPlanetSpecialMaterials } from "@/features/planning/engine/buildings";
+import { getPlanetSpecialMaterials } from "@prunplanner/engine";
 
 // Types & Interfaces
 import type {
 	Planet,
 	PlanetEnvironmentType,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	IPlanetSearchContext,
 	IPlanetSearchSection,

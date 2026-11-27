@@ -1,9 +1,11 @@
 // Schemas
-import { PlanCOGCProgramSchema } from "@/features/api/schemas/planningData.schemas";
+import { PlanCOGCProgramSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
-import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
+import type {
+	PlanCOGCProgram,
+	PlanetCOGCProgramType,
+} from "@prunplanner/engine/schemas";
 
 const cogcValues: readonly string[] = PlanCOGCProgramSchema.options;
 

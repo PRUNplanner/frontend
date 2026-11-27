@@ -14,7 +14,7 @@ import {
 	runningCOGC,
 	workerUpkeep,
 } from "@/features/production_chain/engine/chainSolver";
-import { productionFeePerRun } from "@/features/planning/engine/fees";
+import { productionFeePerRun } from "@prunplanner/engine";
 
 // Fixtures
 import {
@@ -40,7 +40,7 @@ import {
 import type {
 	PlanetProductionFees,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	ICheckInput,
 	ICheckLocationFinding,

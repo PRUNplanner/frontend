@@ -5,7 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useExchangeEdit } from "@/features/exchanges/useExchangeEdit";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 const CX1 = {
 	uuid: "cx-1",

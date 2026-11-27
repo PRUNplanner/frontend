@@ -13,9 +13,9 @@
 	import type { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
-	import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
-	import type { IInfrastructureRecord } from "@/features/planning/usePlanCalculation.types";
-	import { isStorageInfrastructure } from "@/features/planning/calculations/infrastructureCalculations";
+	import type { InfrastructureType } from "@prunplanner/engine/schemas";
+	import type { IInfrastructureRecord } from "@prunplanner/engine";
+	import { isStorageInfrastructure } from "@prunplanner/engine";
 
 	// UI
 	import { PButton, PCheckbox, PInputNumber, PTooltip } from "@/ui";

@@ -1,9 +1,9 @@
 // Types & Interfaces
-import type { IPriceSource } from "@/features/cx/priceBook";
 import type {
+	IPriceSource,
 	IMaterialIOMinimal,
 	IProductionBuildingRecipe,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 /** what a calculated plan contributes that doesn't depend on prices */
 export interface IExchangePlanBase {

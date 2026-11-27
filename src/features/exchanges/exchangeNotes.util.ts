@@ -5,7 +5,7 @@ import {
 	findExchangeRule,
 	type IPriceBook,
 	type PriceType,
-} from "@/features/cx/priceBook";
+} from "@prunplanner/engine";
 
 // Util
 import {
@@ -18,7 +18,7 @@ import type {
 	CXData,
 	CXDataExchangeOption,
 	CXExchangeOptionType,
-} from "@/features/api/schemas/cxData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	IExchangePlanBase,
 	IMaterialCOGM,

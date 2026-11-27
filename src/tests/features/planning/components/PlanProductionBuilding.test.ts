@@ -22,7 +22,7 @@ import {
 import type {
 	IProductionBuilding,
 	IRecipeBuildingOption,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 import type { ITypicalRecipes } from "@/features/plan_analytics/usePlanetInsights.types";
 

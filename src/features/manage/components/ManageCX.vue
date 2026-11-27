@@ -11,7 +11,7 @@
 	import { trackEvent, reportError } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
-	import type { CX } from "@/features/api/schemas/cxData.schemas";
+	import type { CX } from "@prunplanner/engine/schemas";
 
 	// Util
 	import { inertClone } from "@/util/data";

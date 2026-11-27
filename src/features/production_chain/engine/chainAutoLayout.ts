@@ -13,8 +13,10 @@ import {
 } from "@/features/production_chain/engine/chainSolver";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
-import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+import type {
+	PlanetSearchIndexEntry,
+	PlanCOGCProgram,
+} from "@prunplanner/engine/schemas";
 import type {
 	ChainBaseShare,
 	ChainMaxArea,

@@ -1,5 +1,5 @@
-import type { IProductionBuildingRecipeCOGM } from "@/features/planning/usePlanCalculation.types";
-import type { PlanetCOGCProgramType } from "@/features/api/schemas/gameData.schemas";
+import type { IProductionBuildingRecipeCOGM } from "@prunplanner/engine";
+import type { PlanetCOGCProgramType } from "@prunplanner/engine/schemas";
 
 export interface IResourceROIResult {
 	planetNaturalId: string;

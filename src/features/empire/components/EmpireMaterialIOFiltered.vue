@@ -37,7 +37,7 @@
 		MarketFlagLevel,
 	} from "@/features/cx/marketCheck.types";
 	import type { PSelectOption } from "@/ui/ui.types";
-	import { WORKFORCE_CONSUMPTION_MAP } from "@/features/planning/engine/workforce";
+	import { WORKFORCE_CONSUMPTION_MAP } from "@prunplanner/engine";
 
 	const props = defineProps<{
 		content: "materialio" | "analysis" | "opportunities";

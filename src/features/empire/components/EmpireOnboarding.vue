@@ -14,7 +14,7 @@
 	);
 
 	// Types & Interfaces
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PButton, PIcon } from "@/ui";

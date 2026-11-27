@@ -16,8 +16,7 @@ import { preferenceDefaults } from "@/features/preferences/userDefaults";
 
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 const KEY_PAGE = "https://prunplanner.org/apikey";
 const plan = fixtures.plan as unknown as Plan;

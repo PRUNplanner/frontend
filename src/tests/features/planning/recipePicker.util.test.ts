@@ -6,7 +6,7 @@ import {
 	pickerOptions,
 	recipeConsumers,
 } from "@/features/planning/recipePicker.util";
-import type { IRecipeBuildingOption } from "@/features/planning/usePlanCalculation.types";
+import type { IRecipeBuildingOption } from "@prunplanner/engine";
 import {
 	activeRecipe,
 	building,

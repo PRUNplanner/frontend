@@ -3,7 +3,7 @@ import { RouterLinkStub } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import { usePlanningStore } from "@/stores/planningStore";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import PlanCheckMarket from "@/features/planning/components/tools/PlanCheckMarket.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 import { cxFixture } from "@/tests/features/cx/cx.fixtures";
@@ -19,8 +19,7 @@ import {
 
 // Types & Interfaces
 import type { IMarketCheck } from "@/features/cx/marketCheck.types";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
-import type { IPlanInput } from "@/features/planning/engine/engine.types";
+import type { IPlanContext, IPlanInput } from "@prunplanner/engine";
 
 type WhatIf = typeof import("@/features/planning/util/whatIf.util");
 

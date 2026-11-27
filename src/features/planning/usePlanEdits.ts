@@ -19,7 +19,7 @@ import {
 } from "@/features/planning/calculations/habOptimization";
 
 // Types & Interfaces
-import type { InfrastructureType } from "@/features/api/schemas/planningData.schemas";
+import type { InfrastructureType } from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 import type { IPlanCalculation } from "@/features/planning/planView.types";

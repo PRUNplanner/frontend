@@ -12,11 +12,9 @@ import {
 	EmpireSaveResponseSchema,
 	PlanEmpireElementListSchema,
 	PlanEmpireJunctionListSchema,
-} from "@/features/api/schemas/empireData.schemas";
-import {
 	PlanEmpireSchema,
 	PlanFactionSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 export const saveEmpire = defineTool({
 	name: "save_empire",

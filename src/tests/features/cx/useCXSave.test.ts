@@ -10,7 +10,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
+import type { CX } from "@prunplanner/engine/schemas";
 
 vi.mock("@/lib/analytics/useAnalytics", async (importOriginal) => ({
 	...(await importOriginal<typeof import("@/lib/analytics/useAnalytics")>()),

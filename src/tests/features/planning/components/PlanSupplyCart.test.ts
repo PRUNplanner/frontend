@@ -14,7 +14,7 @@ import {
 } from "@/tests/features/planning/usePlanCalculation.fixtures";
 
 // Types & Interfaces
-import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIO } from "@prunplanner/engine";
 
 // test data
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";

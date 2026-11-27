@@ -22,12 +22,12 @@
 	const planningStore = usePlanningStore();
 
 	// Types & Interfaces
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 	import type {
 		PlanSummary,
 		PlanVersionListItem,
-	} from "@/features/api/schemas/planningData.schemas";
-	import type { Planet } from "@/features/api/schemas/gameData.schemas";
+	} from "@prunplanner/engine/schemas";
+	import type { Planet } from "@prunplanner/engine/schemas";
 	import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 	import type { ICalcDebugPlan } from "@/features/planning/calcDebug.types";
 	import type { IPlanViewProps } from "@/features/planning/planView.types";

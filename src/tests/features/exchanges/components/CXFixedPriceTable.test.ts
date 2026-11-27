@@ -8,9 +8,9 @@ import { trackEvent } from "@/lib/analytics/useAnalytics";
 import { formatNumber } from "@/util/numbers";
 
 // Types & Interfaces
-import type { CXDataTickerOption } from "@/features/api/schemas/cxData.schemas";
+import type { CXDataTickerOption } from "@prunplanner/engine/schemas";
 import type { IMaterialCOGM } from "@/features/exchanges/useExchangePlanData.types";
-import type { IPriceSource } from "@/features/cx/priceBook";
+import type { IPriceSource } from "@prunplanner/engine";
 import type { PSelectOption } from "@/ui/ui.types";
 
 vi.mock("@/lib/analytics/useAnalytics", () => ({

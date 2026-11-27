@@ -1,7 +1,7 @@
 import type {
 	PlanetCOGCProgramType,
 	PlanetEnvironmentType,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	PlanetSearchExtra,
 	PlanetSearchFilter,

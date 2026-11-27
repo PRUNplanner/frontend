@@ -9,8 +9,17 @@ also `pnpm vitest run -t "name"` (by test name) and `pnpm test:watch` /
 
 - Tests live in `src/tests/`, mirroring `src/`
   (`src/features/cx/usePrice.ts` → `src/tests/features/cx/usePrice.test.ts`).
+- The engine package's tests live in `packages/engine/tests/`, mirroring
+  its `src/`, and run in plain Node without the app's setup file (Vitest
+  project `engine`; `pnpm test` runs both projects,
+  `pnpm vitest --run --project engine` only the package). They read game
+  data through `tests/fixtures/gameData.ts` and build an engine context
+  with `tests/fixtures/context.ts`. Tests that need the app around the
+  engine (`usePlanContext`, stores, IndexedDB) stay in `src/tests/`, e.g.
+  `src/tests/features/planning/integration/`.
 - API tests are `src/tests/features/api/*.api.test.ts`, schema tests are in
-  `src/tests/features/api/schemas/`. `backendContract.test.ts` there pins
+  `src/tests/features/api/schemas/` (the engine's four wire schemas are
+  tested in `packages/engine/tests/schemas/`). `backendContract.test.ts` there pins
   what the frontend sends and which backend shapes it accepts; extend it
   when a request or response shape changes.
 - **Fixtures**: real backend payloads in `src/tests/test_data/`
@@ -18,7 +27,9 @@ also `pnpm vitest run -t "name"` (by test name) and `pnpm test:watch` /
   module imports are shared, so clone first (`structuredClone` /
   `deepClone`).
 - **Coverage** is off for `pnpm test`; see AGENTS.md for how
-  `pnpm test:coverage` and CI merge the two suites.
+  `pnpm test:coverage` and CI merge the two suites. The package's files
+  count too; `coverage/lcov.info` paths are relative to the repo root
+  (`src/…`, `packages/engine/src/…`).
 
 ## Environment
 
@@ -67,6 +78,9 @@ Planning tests share `setupPlanningTestData()`, plan builders
 `src/tests/features/planning/usePlanCalculation.fixtures.ts`; CX
 preferences come from `cxFixture()` (`src/tests/features/cx/cx.fixtures.ts`).
 Reference: `src/tests/features/planning/usePlanCalculation.test.ts`.
+
+To spy on the engine, mock the package partially, so the rest of it stays
+real: `vi.mock("@prunplanner/engine", async (importOriginal) => ({ ...(await importOriginal()), calculatePlan }))`.
 
 ### Characterization snapshots and benchmarks
 

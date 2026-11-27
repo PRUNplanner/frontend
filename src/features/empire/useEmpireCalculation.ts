@@ -13,15 +13,14 @@ import {
 	getActiveEmpire,
 	usePlanContext,
 } from "@/features/planning/usePlanContext";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { planResultCacheKey } from "@/features/empire/empire.util";
 import { type IRun, useRunProgress } from "@/util/runProgress";
 import { reportError } from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { IPlanCalculation } from "@/features/planning/engine/engine.types";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
+import type { IPlanCalculation } from "@prunplanner/engine";
 
 /** a finished run: what it calculated with */
 export interface IEmpireCalculationRun {

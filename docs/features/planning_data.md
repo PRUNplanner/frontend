@@ -25,7 +25,7 @@ save calls, the COGC mapping and plan diffs.
   drafts, version preview and shared-plan summaries.
 - `usePlan.types.ts`: `IPlanDefinition` (the plan as the editor holds it)
   and the save result types. Payload schemas are in
-  `api/schemas/planningData.schemas.ts`.
+  `packages/engine/src/schemas/planningData.schemas.ts`.
 
 ## Gotchas
 

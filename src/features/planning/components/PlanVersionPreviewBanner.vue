@@ -15,7 +15,7 @@
 	} from "@/features/planning/planVersions.util";
 
 	// Types & Interfaces
-	import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanVersionListItem } from "@prunplanner/engine/schemas";
 	import type { IChangeLine } from "@/features/save_conflict/saveConflict.types";
 
 	// UI

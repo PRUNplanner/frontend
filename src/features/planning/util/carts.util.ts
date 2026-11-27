@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { IBuildingConstruction } from "@/features/planning/usePlanCalculation.types";
+import type { IBuildingConstruction } from "@prunplanner/engine";
 
 /**
  * What a supply covering `days` ships of a material used per day: the

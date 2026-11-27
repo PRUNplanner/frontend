@@ -7,7 +7,7 @@ import type {
 	Material,
 	Planet,
 	Recipe,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type { IGameDataMeta } from "@/database/stores.types";
 
 export const materialsStore = useIndexedDBStore<Material, "ticker">(

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { useCXImportExport } from "@/features/exchanges/useCXImportExport";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 // real papaparse: an exported file imports back to the same rules
 const cx: CXData = {

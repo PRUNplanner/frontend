@@ -11,7 +11,7 @@ import PlanExperts from "@/features/planning/components/PlanExperts.vue";
 import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import { building } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import { planEmptyResult } from "@/features/planning/usePlanCalculation.types";
+import { planEmptyResult } from "@prunplanner/engine";
 import {
 	type IContextOptions,
 	planViewContext,
@@ -21,9 +21,8 @@ import plan from "@/locales/en_US/plan.json";
 import planetFixture from "@/tests/test_data/api_data_planet_etherwind.json";
 
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { Planet, PlanEmpire } from "@prunplanner/engine/schemas";
+import type { IPlanResult } from "@prunplanner/engine";
 import type { BaseSection } from "@/features/planning/planView.util";
 
 // every child has its own test: stubs that declare their props

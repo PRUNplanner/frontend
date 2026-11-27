@@ -23,7 +23,7 @@ import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
 import { usePlan } from "@/features/planning_data/usePlan";
 import { expectFullWorkforceCost } from "@/tests/features/planning/usePlanCalculation.fixtures";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 import { deepClone } from "@/util/data";
 
 vi.mock("@/database/services/usePlanetData", async () => {
@@ -61,10 +61,8 @@ vi.mock("@/features/planning/usePlanCalculation", async () => {
 // record every engine result, to check the workforce cost they use
 const planResults = vi.hoisted(() => [] as IPlanResult[]);
 
-vi.mock("@/features/planning/engine/calculatePlan", async () => {
-	const actual: any = await vi.importActual(
-		"@/features/planning/engine/calculatePlan"
-	);
+vi.mock("@prunplanner/engine", async () => {
+	const actual: any = await vi.importActual("@prunplanner/engine");
 
 	return {
 		...actual,
@@ -76,7 +74,7 @@ vi.mock("@/features/planning/engine/calculatePlan", async () => {
 	};
 });
 
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+import { optimalProduction } from "@prunplanner/engine";
 
 describe("useROIOverview", async () => {
 	const original = deepClone(plan_etherwind);

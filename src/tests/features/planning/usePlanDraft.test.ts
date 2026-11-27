@@ -11,10 +11,7 @@ import { useUserStore } from "@/stores/userStore";
 import { mountComposable } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type {
-	PlanCreateData,
-	PlanDraft,
-} from "@/features/api/schemas/planningData.schemas";
+import type { PlanCreateData, PlanDraft } from "@prunplanner/engine/schemas";
 import type { useSaveConflict } from "@/features/save_conflict/useSaveConflict";
 
 const m = vi.hoisted(() => ({

@@ -3,7 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { expect } from "vitest";
 
 // Engine
-import { getBuildingWorkforceMaterials } from "@/features/planning/engine/workforce";
+import { getBuildingWorkforceMaterials } from "@prunplanner/engine";
 
 import {
 	materialsStore,
@@ -21,10 +21,10 @@ import {
 	type ExpertType,
 	type Plan,
 	type WorkforceType,
-} from "@/features/api/schemas/planningData.schemas";
-import type { Building, Planet } from "@/features/api/schemas/gameData.schemas";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+} from "@prunplanner/engine/schemas";
+import type { Building, Planet } from "@prunplanner/engine/schemas";
 import type {
+	IPlanContext,
 	IExpertRecord,
 	IMaterialIO,
 	IPlanResult,
@@ -32,7 +32,7 @@ import type {
 	IProductionBuildingRecipe,
 	IRecipeBuildingOption,
 	IWorkforceElement,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";

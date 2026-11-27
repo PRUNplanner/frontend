@@ -1,6 +1,6 @@
 // Types & Interfaces
 import type { IPlanRepairAnalysisElement } from "@/features/planning/components/tools/planRepairAnalysis.types";
-import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import type { IMaterialIOMinimal } from "@prunplanner/engine";
 
 /** one building type of the plan, its curve per single building */
 export interface IRepairBuilding {

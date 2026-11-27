@@ -16,6 +16,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 // Composables
 import { usePlanetData } from "@/database/services/usePlanetData";
 import {
+	devWarn,
 	getActiveEmpire,
 	usePlanContext,
 } from "@/features/planning/usePlanContext";
@@ -25,32 +26,13 @@ import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculati
 import { usePlanHistory } from "@/features/planning/usePlanHistory";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import {
+	calculatePlan,
 	calculateConstructionMaterials,
 	calculateTotalConstructionCost,
-} from "@/features/planning/engine/construction";
-import { calculateFinance } from "@/features/planning/engine/finance";
-import { calculateVisitation } from "@/features/planning/engine/visitation";
-import { createPlanTracer } from "@/features/planning/engine/trace";
-import { buildPlanSummary } from "@/features/planning/planSummary.util";
-
-// Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
-import type {
-	IPlanCalculation,
-	IPlanContext,
-	IPlanInput,
-} from "@/features/planning/engine/engine.types";
-import type {
-	InfrastructureType,
-	PlanCreateData,
-	PlanData,
-	PlanEmpire,
-	PlanSummary,
-} from "@/features/api/schemas/planningData.schemas";
-import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import {
+	calculateFinance,
+	calculateVisitation,
+	createPlanTracer,
 	type IMaterialIO,
 	type IOverviewData,
 	type IPlanResult,
@@ -58,9 +40,26 @@ import {
 	type IProductionResult,
 	type IVisitationData,
 	planEmptyResult,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
+import { buildPlanSummary } from "@/features/planning/planSummary.util";
+
+// Types & Interfaces
+import type {
+	Planet,
+	InfrastructureType,
+	PlanCreateData,
+	PlanData,
+	PlanEmpire,
+	PlanSummary,
+	PlanEmpireElement,
+} from "@prunplanner/engine/schemas";
+import type {
+	IPlanCalculation,
+	IPlanContext,
+	IPlanInput,
+} from "@prunplanner/engine";
+import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
 import { reportError } from "@/lib/analytics/useAnalytics";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
 
 const overviewEmpty: IOverviewData = {
 	dailyCost: 0,
@@ -156,6 +155,7 @@ export function usePlanCalculation(
 			...getGameData(),
 			planet: loadedPlanet,
 			prices: createPrices(planetNaturalId.value, cxUuid.value),
+			...devWarn,
 		};
 	}
 

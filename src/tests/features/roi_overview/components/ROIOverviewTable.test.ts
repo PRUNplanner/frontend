@@ -12,7 +12,7 @@ import PProgressBar from "@/ui/components/PProgressBar.vue";
 import { mountComponent, tableRows } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { IROIResult } from "@/features/roi_overview/useROIOverview.types";
+import type { IROIResult } from "@prunplanner/engine";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";

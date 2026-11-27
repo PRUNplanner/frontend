@@ -20,7 +20,7 @@
 	import { usePreferences } from "@/features/preferences/usePreferences";
 
 	// Types & Interfaces
-	import type { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIO } from "@prunplanner/engine";
 
 	interface ISupplyCartElement extends IMaterialIO {
 		workforce: boolean;

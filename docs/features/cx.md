@@ -1,7 +1,8 @@
 # cx
 
 **Purpose.** Material price resolution and CX helpers. Every price in the app
-comes from a `PriceBook` (`priceBook.ts`); components use `usePrice`.
+comes from a `PriceBook` (`priceBook.ts`, in the engine package
+`@prunplanner/engine`); components use `usePrice`.
 
 **Used by.** The plan engine (`usePlanContext` builds a book per
 calculation), empire, all ROI/cost tools, XIT burn, `material_tile`,
@@ -9,7 +10,7 @@ exchanges and the production chain.
 
 ## Key files
 
-- `priceBook.ts` (plain TS): `createPriceBook(getCXData, planet, getExchange,
+- `priceBook.ts` (`packages/engine/src/cx/`, plain TS): `createPriceBook(getCXData, planet, getExchange,
   onError?)` → synchronous `getPrice(ticker, "BUY" | "SELL")` and
   `getPriceSource()` (level, exchange, key, `zero`, `volume` exchange).
   Order: planet ticker → empire ticker → planet exchange → empire exchange →

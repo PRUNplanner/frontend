@@ -14,10 +14,10 @@ import type {
 	PlanDataInfrastructure,
 	PlanDataWorkforce,
 	WorkforceType,
-} from "@/features/api/schemas/planningData.schemas";
+	Building,
+} from "@prunplanner/engine/schemas";
 import type { IPlanDefinition } from "@/features/planning_data/usePlan.types";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
-import type { Building } from "@/features/api/schemas/gameData.schemas";
+import type { IPlanResult } from "@prunplanner/engine";
 import type { IStarterSetup } from "@/features/plan_analytics/usePlanetInsights.types";
 
 // Util

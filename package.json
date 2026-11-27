@@ -8,7 +8,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build && vite build --ssr src/prerender.ts --outDir .prerender && node scripts/prerender.mjs",
-		"tsc": "vue-tsc --project tsconfig.typecheck.json",
+		"tsc": "vue-tsc --project tsconfig.typecheck.json && tsc -p packages/engine",
 		"tsc:watch": "vue-tsc --project tsconfig.typecheck.json --watch",
 		"preview": "vite preview",
 		"test": "vitest --run --silent",
@@ -36,6 +36,7 @@
 		"@modelcontextprotocol/node": "2.1.2",
 		"@modelcontextprotocol/server": "2.4.0",
 		"@popperjs/core": "^2.11.8",
+		"@prunplanner/engine": "workspace:*",
 		"@tailwindcss/vite": "^4.3.3",
 		"@unhead/vue": "^3.4.3",
 		"@vue/devtools-api": "^8.2.1",

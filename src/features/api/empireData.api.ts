@@ -5,27 +5,23 @@ import { apiService } from "@/lib/apiService";
 import {
 	PlanEmpireSchema,
 	PlanListSchema,
-} from "@/features/api/schemas/planningData.schemas";
-import {
 	EmpireMaterialIOStateSchema,
 	EmpirePayloadSchema,
 	EmpireSaveResponseSchema,
 	PlanEmpireElementListSchema,
 	PlanEmpireJunctionListSchema,
-} from "@/features/api/schemas/empireData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type {
 	Plan,
 	PlanEmpire,
-} from "@/features/api/schemas/planningData.schemas";
-import type {
 	EmpireMaterialIOState,
 	EmpirePayload,
 	EmpireSaveResponse,
 	PlanEmpireElement,
 	PlanEmpireJunction,
-} from "@/features/api/schemas/empireData.schemas";
+} from "@prunplanner/engine/schemas";
 
 /**
  * Gets all empires a user has defined

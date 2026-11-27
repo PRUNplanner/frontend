@@ -3,7 +3,7 @@
 **Purpose.** Ranks every way to run one base by break-even: resources per
 planet, farming recipes per fertile planet, and every other production
 recipe on a standard planet. Rows use the static layouts of
-`roi_overview/assets/optimalProduction.ts`, the plan engine and the selected
+`packages/engine/src/roi/optimalProduction.ts`, the plan engine and the selected
 CX, plus expert ramp, stock buffer, HQ add-on, logistics and market limits,
 volatility scenarios and a 90-day profit history.
 

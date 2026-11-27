@@ -10,7 +10,7 @@ import {
 } from "@/features/base_roi/baseROIHistory";
 
 // Types & Interfaces
-import type { IPriceSource } from "@/features/cx/priceBook";
+import type { IPriceSource } from "@prunplanner/engine";
 import type { IBaseROIMaterial } from "@/features/base_roi/baseROI.types";
 
 const source = (key: IPriceSource["key"]): IPriceSource => ({

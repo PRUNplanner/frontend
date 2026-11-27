@@ -13,7 +13,7 @@ import {
 } from "@/features/exchanges/exchangeRule.util";
 
 // Types & Interfaces
-import type { CXDataExchangeOption } from "@/features/api/schemas/cxData.schemas";
+import type { CXDataExchangeOption } from "@prunplanner/engine/schemas";
 
 const valid = (options: CXDataExchangeOption[]) => {
 	const types = options.map((o) => o.type);

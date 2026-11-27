@@ -4,7 +4,7 @@ import { materialsStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 import { materialCategoryClass } from "@/util/text";
 
-import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Material } from "@prunplanner/engine/schemas";
 import type { PSelectOption } from "@/ui/ui.types";
 
 const materialCache = new Map<string, Material>();

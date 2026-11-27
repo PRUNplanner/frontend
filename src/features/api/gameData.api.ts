@@ -16,7 +16,7 @@ import {
 	PlanetPopulationReportsSchema,
 	PopulationReportSchema,
 	RecipePayloadSchema,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // types
 import type {
@@ -32,7 +32,7 @@ import type {
 	PlanetSearchIndexEntry,
 	PlanetPopulationReport,
 	PopulationReport,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import {
 	ExplorationPayloadSchema,
 	type Exploration,

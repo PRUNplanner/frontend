@@ -6,9 +6,12 @@ import { flushPromises } from "@vue/test-utils";
 import { useExchangePlanData } from "@/features/exchanges/useExchangePlanData";
 
 // Types & Interfaces
-import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type {
+	CX,
+	CXData,
+	PlanEmpireElement,
+	Plan,
+} from "@prunplanner/engine/schemas";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

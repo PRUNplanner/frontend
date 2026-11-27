@@ -6,7 +6,7 @@ import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
-import type { Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { Recipe } from "@prunplanner/engine/schemas";
 import type { IOpportunityStats } from "@/features/empire/useProductionOpportunities.types";
 
 interface IPriceSellMap {

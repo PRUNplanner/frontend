@@ -12,11 +12,10 @@ import { useUserStore } from "@/stores/userStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Schemas
-import { FIOStorageSchema } from "@/features/api/schemas/gameData.schemas";
+import { FIOStorageSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
+import type { CX, Plan } from "@prunplanner/engine/schemas";
 
 // test data
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";

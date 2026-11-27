@@ -24,14 +24,14 @@
 	import { planetLabel } from "@/util/planetName";
 
 	// Schemas
-	import { WorkforceTypeSchema } from "@/features/api/schemas/planningData.schemas";
+	import { WorkforceTypeSchema } from "@prunplanner/engine/schemas";
 
 	// Types & Interfaces
 	import type {
 		PlanetPopulationReport,
 		PlanetSearchIndexEntry,
-	} from "@/features/api/schemas/gameData.schemas";
-	import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+	} from "@prunplanner/engine/schemas";
+	import type { WorkforceType } from "@prunplanner/engine/schemas";
 	import type {
 		PlanetSearchFilter,
 		PlanetSearchReference,

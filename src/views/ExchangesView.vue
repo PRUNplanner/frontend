@@ -54,9 +54,9 @@
 	);
 
 	// Types & Interfaces
-	import type { CX, CXData } from "@/features/api/schemas/cxData.schemas";
-	import type { Plan } from "@/features/api/schemas/planningData.schemas";
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { CX, CXData } from "@prunplanner/engine/schemas";
+	import type { Plan } from "@prunplanner/engine/schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { useConfirm } from "@/ui";

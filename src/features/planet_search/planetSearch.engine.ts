@@ -11,13 +11,13 @@
 import { environmentExtras } from "@/features/planet_search/environmentExtras.util";
 import { planetPlots } from "@/features/planet_search/planetPlots.util";
 import { planetDisplayName, systemName } from "@/util/planetName";
-import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
+import { PlanetCOGCProgramTypeSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type {
 	PlanetCOGCProgramType,
 	PlanetSearchIndexEntry,
-} from "@/features/api/schemas/gameData.schemas";
+} from "@prunplanner/engine/schemas";
 import type {
 	IPlanetSearchChip,
 	IPlanetSearchContext,

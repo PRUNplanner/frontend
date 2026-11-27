@@ -8,12 +8,11 @@ import {
 } from "@/features/planning/usePlanContext";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { baseLetter } from "@/features/production_chain/engine/chainCheck";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { PlanEmpireElement, Planet } from "@prunplanner/engine/schemas";
 import type { ICheckPlan } from "@/features/production_chain/engine/chainCheck.types";
 
 /**

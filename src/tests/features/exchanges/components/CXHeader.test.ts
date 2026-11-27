@@ -8,7 +8,7 @@ import { pendingConfirm, settleConfirm } from "@/ui/useConfirm";
 import { toasts } from "@/ui/useToast";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 
 const { push, parse } = vi.hoisted(() => ({ push: vi.fn(), parse: vi.fn() }));
 

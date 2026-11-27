@@ -7,7 +7,7 @@ import { defaultFilter } from "@/features/planet_search/planetSearch.engine";
 import { PSelect } from "@/ui";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 
 const results = [
 	{ resources: [{ material_ticker: "AR" }, { material_ticker: "FEO" }] },

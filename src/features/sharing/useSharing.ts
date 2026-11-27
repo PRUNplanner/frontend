@@ -10,7 +10,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 import config from "@/lib/config";
 
 // Types & Interfaces
-import type { PlanSummary } from "@/features/api/schemas/planningData.schemas";
+import type { PlanSummary } from "@prunplanner/engine/schemas";
 
 export function useSharing(planUuid: string) {
 	const planningStore = usePlanningStore();

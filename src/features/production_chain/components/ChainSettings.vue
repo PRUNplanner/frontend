@@ -12,7 +12,7 @@
 		ChainRawSource,
 	} from "@/features/production_chain/engine/chainSolver.types";
 
-	import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+	import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PInputNumber, PSegmented, PSelect, PSpin } from "@/ui";

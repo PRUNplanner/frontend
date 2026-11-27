@@ -30,8 +30,8 @@
 	import { formatNumber, formatSmallNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import type { Material } from "@/features/api/schemas/gameData.schemas";
-	import type { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
+	import type { Material } from "@prunplanner/engine/schemas";
+	import type { IMaterialExchangeOverview } from "@prunplanner/engine";
 	import type { IMarketCheck } from "@/features/cx/marketCheck.types";
 	import type {
 		DailyContext,

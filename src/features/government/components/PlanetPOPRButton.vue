@@ -12,7 +12,7 @@
 	import PlanetPOPRTable from "./PlanetPOPRTable.vue";
 
 	// Typoes & Interfaces
-	import type { PopulationReport } from "@/features/api/schemas/gameData.schemas";
+	import type { PopulationReport } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PButton, PModal } from "@/ui";

@@ -14,7 +14,7 @@ import {
 import { downloadFile } from "@/util/download";
 
 // Types & Interfaces
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 
 /**
  * Plan's Material I/O pane: which flow, which rows and which value per

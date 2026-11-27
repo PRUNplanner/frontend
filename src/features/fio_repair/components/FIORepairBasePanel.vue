@@ -21,7 +21,7 @@
 		FIORepairConfidence,
 		IFIORepairBase,
 	} from "@/features/fio_repair/fioRepair.types";
-	import type { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+	import type { IMaterialIOMinimal } from "@prunplanner/engine";
 	import type { IRepairMaterialList } from "@/features/repair_analysis/useRepairAnalysis.types";
 	import type { PSelectOption } from "@/ui/ui.types";
 

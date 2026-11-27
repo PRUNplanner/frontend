@@ -8,11 +8,11 @@ import type {
 	IEmpireMaterialIOSide,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
-import type { IPlanResult } from "@/features/planning/usePlanCalculation.types";
+import type { IPlanResult } from "@prunplanner/engine";
 import type {
 	EmpireMaterialIOState,
 	PlanEmpireElement,
-} from "@/features/api/schemas/empireData.schemas";
+} from "@prunplanner/engine/schemas";
 
 const round2 = (v: number): number => Math.round(v * 100) / 100 || 0;
 

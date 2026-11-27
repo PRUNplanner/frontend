@@ -21,7 +21,7 @@ import {
 	PlanVersionListSchema,
 	PlanVersionRenameSchema,
 	PlanVersionSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type {
@@ -34,7 +34,7 @@ import type {
 	PlanShare,
 	PlanVersion,
 	PlanVersionListItem,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 /**
  * Fetches data of a shared plans uuid from the API

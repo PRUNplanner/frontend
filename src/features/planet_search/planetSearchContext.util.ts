@@ -2,7 +2,7 @@
 import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 // Types & Interfaces
-import type { PlanetSearchIndexEntry } from "@/features/api/schemas/gameData.schemas";
+import type { PlanetSearchIndexEntry } from "@prunplanner/engine/schemas";
 import type { IPlanetSearchContext } from "@/features/planet_search/planetSearch.types";
 import type { PlanetSearchCX } from "@/features/planet_search/planetSearch.schemas";
 

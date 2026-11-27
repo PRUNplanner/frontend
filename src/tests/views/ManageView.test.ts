@@ -6,9 +6,7 @@ import ManageView from "@/views/ManageView.vue";
 import SaveBar from "@/features/save_bar/components/SaveBar.vue";
 import { mountComponent } from "@/tests/mountComponent";
 import type { IManageData } from "@/features/manage/useManageData.types";
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, CX, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 vi.mock("@unhead/vue", () => ({ useHead: () => {} }));
 

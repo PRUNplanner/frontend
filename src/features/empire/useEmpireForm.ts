@@ -17,7 +17,7 @@ import {
 import { diffEmpire, type IEmpireDiffable } from "@/features/empire/empireDiff";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 /** The configuration fields a save sends */
 function config(empire: PlanEmpireElement): IEmpireDiffable {

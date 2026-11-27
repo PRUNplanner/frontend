@@ -14,10 +14,7 @@
 	import { isOwnPlan } from "@/features/sharing/sharedPlan.util";
 
 	// Types & Interfaces
-	import type {
-		Plan,
-		PlanShare,
-	} from "@/features/api/schemas/planningData.schemas";
+	import type { Plan, PlanShare } from "@prunplanner/engine/schemas";
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";

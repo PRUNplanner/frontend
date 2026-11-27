@@ -1,5 +1,5 @@
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Planet } from "@prunplanner/engine/schemas";
 
 export type IPlanetPlotFields = Pick<
 	Planet,

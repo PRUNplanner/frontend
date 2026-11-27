@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
 	getBuildingRecipes,
 	groupRecipesByBuilding,
-} from "@/features/planning/engine/buildings";
+} from "@prunplanner/engine";
 import {
 	starterCandidates,
 	starterExperts,
@@ -24,7 +24,7 @@ import {
 
 // Types & Interfaces
 import type { IToolEnv } from "@/mcp/tools/shared";
-import type { Planet, Recipe } from "@/features/api/schemas/gameData.schemas";
+import type { Planet, Recipe } from "@prunplanner/engine/schemas";
 import type { AnalyticsPlanetInsightsBuilding } from "@/features/api/schemas/analyticsData.schemas";
 
 const PLANET = "KW-688c";

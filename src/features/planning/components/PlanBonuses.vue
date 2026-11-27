@@ -6,7 +6,7 @@
 
 	import { trackPlanEdit } from "@/lib/analytics/useAnalytics";
 	// Types & Interfaces
-	import type { PlanCOGCProgram } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanCOGCProgram } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PCheckbox, PSelect, PTooltip } from "@/ui";

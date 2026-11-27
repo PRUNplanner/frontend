@@ -8,7 +8,7 @@ import { getShares, shareUrl } from "@/mcp/tools/sharing";
 import { storeEmpireStates } from "@/mcp/empireState";
 
 // Schemas
-import { PlanVersionListSchema } from "@/features/api/schemas/planningData.schemas";
+import { PlanVersionListSchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type { IBackend } from "@/mcp/backend";

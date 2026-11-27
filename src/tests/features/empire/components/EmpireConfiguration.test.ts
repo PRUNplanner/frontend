@@ -11,7 +11,7 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type { IEmpirePlanListData } from "@/features/empire/empire.types";
 
 const mock = new AxiosMockAdapter(apiService.client);

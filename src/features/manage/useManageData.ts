@@ -12,9 +12,7 @@ import {
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { CX } from "@/features/api/schemas/cxData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, CX, PlanEmpireElement } from "@prunplanner/engine/schemas";
 import type {
 	IManageData,
 	IManageSection,

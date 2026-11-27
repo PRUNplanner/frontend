@@ -7,8 +7,7 @@ import {
 	workerUpkeep,
 } from "@/features/production_chain/engine/chainSolver";
 import { planDrafts } from "@/features/production_chain/engine/chainBases";
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
-import { calculateExpertBonus } from "@/features/planning/engine/efficiency";
+import { calculatePlan, calculateExpertBonus } from "@prunplanner/engine";
 import {
 	decodeChain,
 	encodeChain,
@@ -28,7 +27,7 @@ import type {
 	ChainLux,
 	IChainBase,
 } from "@/features/production_chain/engine/chainSolver.types";
-import type { WorkforceType } from "@/features/api/schemas/planningData.schemas";
+import type { WorkforceType } from "@prunplanner/engine/schemas";
 
 const ctx = testContext();
 const ESSENTIALS = 0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);

@@ -1,7 +1,4 @@
-import type {
-	Plan,
-	PlanSaveData,
-} from "@/features/api/schemas/planningData.schemas";
+import type { Plan, PlanSaveData } from "@prunplanner/engine/schemas";
 
 /**
  * A plan as the editor holds it. A blank definition has no uuid or name

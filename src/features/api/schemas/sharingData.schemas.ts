@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 // Util
-import { PositiveOrZeroNumber } from "@/util/zodValidators";
-import { PlanSummarySchema } from "@/features/api/schemas/planningData.schemas";
+import {
+	PositiveOrZeroNumber,
+	PlanSummarySchema,
+} from "@prunplanner/engine/schemas";
 
 export const SharedSchema = z.object({
 	uuid: z.uuid(),

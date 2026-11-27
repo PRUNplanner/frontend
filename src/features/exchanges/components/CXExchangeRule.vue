@@ -27,8 +27,8 @@
 	} from "@/features/exchanges/exchangeRule.util";
 
 	// Types & Interfaces
-	import type { CXDataExchangeOption } from "@/features/api/schemas/cxData.schemas";
-	import type { EXCHANGES_TYPE } from "@/database/services/useExchangeData.types";
+	import type { CXDataExchangeOption } from "@prunplanner/engine/schemas";
+	import type { EXCHANGES_TYPE } from "@prunplanner/engine";
 
 	// UI
 	import { PButton, PSegmented, PSelect, PTooltip } from "@/ui";

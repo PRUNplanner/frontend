@@ -17,7 +17,7 @@
 	import PlanVersionsPopover from "@/features/planning/components/PlanVersionsPopover.vue";
 
 	// Types & Interfaces
-	import type { PlanVersionListItem } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanVersionListItem } from "@prunplanner/engine/schemas";
 
 	// UI
 	import { PButton, PButtonGroup, PSpin, PTooltip } from "@/ui";

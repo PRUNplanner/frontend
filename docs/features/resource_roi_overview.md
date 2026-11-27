@@ -21,7 +21,7 @@ ROI of extracting it there on the optimal extractor layout (`RIG`, `EXT`,
 
 Per planet, `getPlanetEnvironment` derives the infrastructure materials
 (`planet_search/environmentExtras.util.ts`), then a blank plan (experts 5)
-per extractor layout from `roi_overview/assets/optimalProduction.ts` is run
+per extractor layout from `packages/engine/src/roi/optimalProduction.ts` is run
 through `calculatePlan` if its recipes output the material. Planets run via
 `pLimit(128)` with cooperative yielding, sorted by `dailyYield`.
 

@@ -1,16 +1,16 @@
 // Util
-import { boundaryDescriptor } from "@/util/boundary";
 import {
+	boundaryDescriptor,
 	boundaryGravityHigh,
 	boundaryGravityLow,
 	boundaryPressureHigh,
 	boundaryPressureLow,
 	boundaryTemperatureHigh,
 	boundaryTemperatureLow,
-} from "@/features/planning/engine/buildings";
+} from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Planet } from "@prunplanner/engine/schemas";
 import type {
 	IPlanetEnvironmentBuckets,
 	IPlanetEnvironmentExtra,

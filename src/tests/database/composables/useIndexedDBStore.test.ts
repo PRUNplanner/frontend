@@ -11,7 +11,7 @@ import {
 } from "@/database/composables/useIndexedDBStore";
 import { DB_SCHEMA } from "@/database/schema";
 
-import type { Material } from "@/features/api/schemas/gameData.schemas";
+import type { Material } from "@prunplanner/engine/schemas";
 
 const fakeMaterial_1: Material = {
 	material_id: "foo",

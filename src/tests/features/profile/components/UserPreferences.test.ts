@@ -28,8 +28,7 @@ import PInputNumber from "@/ui/components/PInputNumber.vue";
 import { mountComponent } from "@/tests/mountComponent";
 
 // Types & Interfaces
-import type { Plan } from "@/features/api/schemas/planningData.schemas";
-import type { PlanEmpireElement } from "@/features/api/schemas/empireData.schemas";
+import type { Plan, PlanEmpireElement } from "@prunplanner/engine/schemas";
 
 // test data
 import empireList from "@/tests/test_data/api_data_empire_list.json";

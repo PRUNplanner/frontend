@@ -2,7 +2,7 @@ import { basisText } from "@/mcp/priceBasis";
 import { z } from "zod";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import { calculatePlan } from "@prunplanner/engine";
 import { diffPlan } from "@/features/planning_data/planDiff";
 import { changeLineText } from "@/features/save_conflict/changeLineText";
 
@@ -24,7 +24,7 @@ import {
 	PlanVersionActivatePayloadSchema,
 	PlanVersionListSchema,
 	PlanVersionSchema,
-} from "@/features/api/schemas/planningData.schemas";
+} from "@prunplanner/engine/schemas";
 
 // English texts, as the app shows change lines
 import gameMessages from "@/locales/en_US/game.json";
@@ -34,7 +34,7 @@ import saveConflictMessages from "@/locales/en_US/save_conflict.json";
 import type { IBackend } from "@/mcp/backend";
 import type { IPlanSetup } from "@/mcp/context";
 import type { IPlanDiffable } from "@/features/planning_data/planDiff";
-import type { PlanData } from "@/features/api/schemas/planningData.schemas";
+import type { PlanData } from "@prunplanner/engine/schemas";
 
 const versionsPath = (planUuid: string): string =>
 	`/planning/plan/${encodeURIComponent(planUuid)}/versions/`;

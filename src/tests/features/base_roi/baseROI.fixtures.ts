@@ -17,13 +17,13 @@ import { setupPlanningTestData } from "@/tests/features/planning/usePlanCalculat
 import planetTemplate from "@/tests/test_data/api_data_planet_etherwind.json";
 
 // Types & Interfaces
-import type { Planet } from "@/features/api/schemas/gameData.schemas";
+import type { Planet } from "@prunplanner/engine/schemas";
 import type { BaseROISettings } from "@/features/base_roi/baseROI.schemas";
 import type {
 	IBaseROICandidate,
 	IBaseROIRow,
 } from "@/features/base_roi/baseROI.types";
-import type { IPlanContext } from "@/features/planning/engine/engine.types";
+import type { IPlanContext } from "@prunplanner/engine";
 
 /**
  * Real Base ROI rows from the test game data: recipe rows of a few

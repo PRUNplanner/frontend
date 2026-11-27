@@ -3,10 +3,9 @@ import { describe, it, expect, beforeAll, vi } from "vitest";
 // Engine
 import { usePlanContext } from "@/features/planning/usePlanContext";
 import { useExchangeData } from "@/database/services/useExchangeData";
-import { createPriceBook } from "@/features/cx/priceBook";
+import { createPriceBook, calculatePlan } from "@prunplanner/engine";
 
 // Util
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
 import {
 	breakEven,
 	calculateScaled,
@@ -21,15 +20,13 @@ import {
 import { compareVerdict } from "@/features/planning/util/whatIf.format";
 
 // Types & Interfaces
-import type { CXData } from "@/features/api/schemas/cxData.schemas";
+import type { CXData } from "@prunplanner/engine/schemas";
 import type {
 	IPlanCalculation,
 	IPlanContext,
-} from "@/features/planning/engine/engine.types";
-import type {
 	IMaterialIO,
 	IOverviewData,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";

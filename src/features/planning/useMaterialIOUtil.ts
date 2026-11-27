@@ -3,20 +3,20 @@ import type { IEmpireMaterialIO } from "@/features/empire/empire.types";
 import type {
 	EmpireMaterialIOState,
 	PlanEmpireElement,
-} from "@/features/api/schemas/empireData.schemas";
+	Material,
+} from "@prunplanner/engine/schemas";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { empireStateOf } from "@/features/empire/util/empireMaterialIO.util";
 import {
 	combineMaterialIOMinimal,
 	enhanceMaterialIOMinimal,
-} from "@/features/planning/engine/materialIO";
+} from "@prunplanner/engine";
 
 // Types & Interfaces
-import type { Material } from "@/features/api/schemas/gameData.schemas";
 import type {
 	IMaterialIOMaterial,
 	IMaterialIOMinimal,
-} from "@/features/planning/usePlanCalculation.types";
+} from "@prunplanner/engine";
 
 export function useMaterialIOUtil() {
 	const { materialsMap } = useMaterialData();

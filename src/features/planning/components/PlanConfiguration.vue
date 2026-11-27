@@ -9,7 +9,7 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Types & Interfaces
-	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
+	import type { PlanEmpire } from "@prunplanner/engine/schemas";
 	import type { PSelectOption } from "@/ui/ui.types";
 
 	// Util

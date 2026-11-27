@@ -1,8 +1,5 @@
 // Types & Interfaces
-import type {
-	CXData,
-	CXDataTickerOption,
-} from "@/features/api/schemas/cxData.schemas";
+import type { CXData, CXDataTickerOption } from "@prunplanner/engine/schemas";
 
 /*
  * Fixed prices as one row per material with a buy and a sell side, and

@@ -17,7 +17,7 @@ import { encodeSearch } from "@/features/planet_search/planetSearchUrl.util";
 import {
 	getBuildingRecipes,
 	resourceBuildingTicker,
-} from "@/features/planning/engine/buildings";
+} from "@prunplanner/engine";
 import { planetPlots } from "@/features/planet_search/planetPlots.util";
 
 // Util
@@ -39,7 +39,7 @@ import {
 } from "@/mcp/tools/shared";
 
 // Schemas
-import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
+import { PlanetCOGCProgramTypeSchema } from "@prunplanner/engine/schemas";
 import {
 	PlanetSearchCXSchema,
 	PlanetSearchExtraSchema,

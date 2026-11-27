@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { PlanetCOGCProgramTypeSchema } from "@/features/api/schemas/gameData.schemas";
+import { PlanetCOGCProgramTypeSchema } from "@prunplanner/engine/schemas";
 
 /*
  * The search filter is stored in localStorage (saved searches), so its

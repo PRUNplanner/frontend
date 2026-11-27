@@ -8,10 +8,13 @@
 
 	// Composables
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	import { usePlanContext } from "@/features/planning/usePlanContext";
+	import {
+		devWarn,
+		usePlanContext,
+	} from "@/features/planning/usePlanContext";
 
 	// Engine
-	import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+	import { calculatePlan } from "@prunplanner/engine";
 
 	// Util
 	import {
@@ -33,9 +36,9 @@
 	import PInlineBar from "@/ui/charts/PInlineBar.vue";
 
 	// Types & Interfaces
-	import type { Planet } from "@/features/api/schemas/gameData.schemas";
-	import type { PlanEmpire } from "@/features/api/schemas/planningData.schemas";
-	import type { IPlanInput } from "@/features/planning/engine/engine.types";
+	import type { Planet } from "@prunplanner/engine/schemas";
+	import type { PlanEmpire } from "@prunplanner/engine/schemas";
+	import type { IPlanInput } from "@prunplanner/engine";
 	import type {
 		IMarketCheck,
 		MarketFlag,
@@ -71,6 +74,7 @@
 		};
 		const ctx = {
 			...getGameData(),
+			...devWarn,
 			planet: props.planet,
 			prices: createPrices(props.planet.planet_natural_id, props.cxUuid),
 		};

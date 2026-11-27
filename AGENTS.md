@@ -39,7 +39,7 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip && pnpm knip:prod
   `main` only).
 - Coverage: `coverage.yml` merges both suites into one report for Codacy;
   the thresholds in `vitest.config.ts` apply to that merged report. Every
-  file in `src/` counts. Don't exclude files to raise the number; raise the
+  file in `src/` and `packages/engine/src/` counts. Don't exclude files to raise the number; raise the
   thresholds when coverage grows.
 - `.eslintrc.json` exists only for Codacy (ESLint 8). Keep it in step with
   `eslint.config.js`.
@@ -63,7 +63,8 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip && pnpm knip:prod
    `/dev/kit`, `features/planning/components/debug/`, `lib/debugMode.ts`)
    stays English only.
 4. **Backend calls follow one chain:** `call*()` in
-   `src/features/api/*.api.ts` → Zod schema in `src/features/api/schemas/` →
+   `src/features/api/*.api.ts` → Zod schema in `src/features/api/schemas/`
+   (or `@prunplanner/engine/schemas`) →
    named `defineQuery()` / `defineMutation()` in
    `src/lib/query_cache/queries/*.queries.ts`. Components and composables
    use `useQuery("Name", params).execute()`, not axios or `call*()`, so
@@ -75,15 +76,19 @@ pnpm test && pnpm tsc && pnpm lint && pnpm knip && pnpm knip:prod
    the `features/wrapper` gates. Don't fetch it again.
 6. **The plan engine is the single source of truth** for production, cost
    and profit numbers: `usePlanCalculation` in the editor, `calculatePlan`
-   with `usePlanContext` in batch views. Don't duplicate the math. Lint keeps
-   `planning/engine/` and `production_chain/engine/` free of Vue, Pinia,
+   with `usePlanContext` in batch views. Don't duplicate the math. The engine,
+   price book and their four wire schemas are the workspace package
+   `packages/engine` (`@prunplanner/engine`, `@prunplanner/engine/schemas`):
+   import only those two entries; inside the package lint allows only its own
+   files and `zod`. Lint keeps `production_chain/engine/` free of Vue, Pinia,
    `@/stores` (except `*.types`) and `@/database`. See
    [planning-engine.md](docs/planning-engine.md).
 7. **Keep knip green:** delete dead code rather than leaving it exported.
 8. **Don't mutate shared module state** (`preferenceDefaults`, JSON
    fixtures, objects from `planningStore.getCX` or a plan query). Clone with
    `deepClone` / `inertClone` (`src/util/data.ts`) and save through a query.
-9. **Test new logic** in `src/tests/`, mirroring the `src/` path. See
+9. **Test new logic** in `src/tests/`, mirroring the `src/` path; engine
+   package logic in `packages/engine/tests/`, mirroring its `src/`. See
    [testing.md](docs/testing.md).
 
 ## Conventions
@@ -120,8 +125,8 @@ Every shape has exactly one definition.
   localStorage): the Zod schema is
   the source of truth. `export const ThingSchema = z.object({...})` with
   `export type Thing = z.infer<typeof ThingSchema>` next to it, in
-  `src/features/api/schemas/<domain>.schemas.ts` or the feature's
-  `*.schemas.ts`. Derive variants with `.extend/.pick/.omit/.partial`; use
+  `src/features/api/schemas/<domain>.schemas.ts` (game, planning, empire and
+  CX data: `packages/engine/src/schemas/`) or the feature's `*.schemas.ts`. Derive variants with `.extend/.pick/.omit/.partial`; use
   `z.input` for payloads callers build; enums are `z.enum([...])`. Don't
   annotate `z.ZodType<…>`: it widens the inferred type (recursive schemas
   are the exception, with a comment).

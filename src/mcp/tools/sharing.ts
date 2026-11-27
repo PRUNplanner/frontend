@@ -31,7 +31,7 @@ import {
 import { buildPlanSummary } from "@/features/planning/planSummary.util";
 
 // Schemas
-import { PlanShareSchema } from "@/features/api/schemas/planningData.schemas";
+import { PlanShareSchema } from "@prunplanner/engine/schemas";
 import {
 	SharedCreatePayloadSchema,
 	SharedCreateResponseSchema,

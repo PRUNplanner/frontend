@@ -22,12 +22,22 @@ function getStyleImports(content: string): string {
 }
 
 const config = {
-	entry: [
-		"src/prerender.ts!",
-		"src/mcp/server.ts!",
-		"src/mcp/bridge/index.ts!",
-	],
-	project: ["src/**/*.{ts,vue}!", "!src/tests/**!"],
+	workspaces: {
+		".": {
+			entry: [
+				"src/prerender.ts!",
+				"src/mcp/server.ts!",
+				"src/mcp/bridge/index.ts!",
+			],
+			project: ["src/**/*.{ts,vue}!", "!src/tests/**!"],
+			ignore: ["src/globals.d.ts", "src/router/router.d.ts"],
+		},
+		// @prunplanner/engine: its entry points come from package.json exports
+		"packages/engine": {
+			entry: ["scripts/*.mjs"],
+			project: ["src/**/*.ts!"],
+		},
+	},
 	compilers: {
 		vue: (text: string, filename: string) => {
 			const { descriptor } = parse(text, { filename, sourceMap: false });
@@ -40,7 +50,6 @@ const config = {
 			].join("\n");
 		},
 	},
-	ignore: ["src/globals.d.ts", "src/router/router.d.ts"],
 	include: [
 		"exports",
 		"types",

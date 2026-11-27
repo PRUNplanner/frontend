@@ -1,25 +1,26 @@
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
 // Engine
-import { calculatePlan } from "@/features/planning/engine/calculatePlan";
+import {
+	calculatePlan,
+	type IMaterialIO,
+	planEmptyResult,
+} from "@prunplanner/engine";
 import { usePlanContext } from "@/features/planning/usePlanContext";
 
 // Util
 import { buildPlanSummary } from "@/features/planning/planSummary.util";
 
 // Schemas
-import { PlanSummarySchema } from "@/features/api/schemas/planningData.schemas";
+import { PlanSummarySchema } from "@prunplanner/engine/schemas";
 
 // Types & Interfaces
 import type {
 	IPlanCalculation,
 	IPlanContext,
-} from "@/features/planning/engine/engine.types";
-import type { IPriceBook, IPriceSource } from "@/features/cx/priceBook";
-import {
-	type IMaterialIO,
-	planEmptyResult,
-} from "@/features/planning/usePlanCalculation.types";
+	IPriceBook,
+	IPriceSource,
+} from "@prunplanner/engine";
 
 // test data
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
