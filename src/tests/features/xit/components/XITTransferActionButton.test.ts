@@ -267,6 +267,26 @@ describe("XITTransferActionButton", () => {
 		delete navigator.clipboard;
 	});
 
+	it("copies the displayed table without headers", async () => {
+		const writeText = vi.fn((_text: string) => Promise.resolve());
+		Object.defineProperty(navigator, "clipboard", {
+			value: { writeText },
+			configurable: true,
+		});
+		onTestFinished(() => {
+			// @ts-expect-error jsdom has no clipboard
+			delete navigator.clipboard;
+		});
+		const { wrapper } = await mountButton();
+		await open(wrapper);
+		await body()
+			.findAll("[role=dialog] button")
+			.filter((b) => b.text() === "xit.buttons.copy")
+			.at(-1)!
+			.trigger("click");
+		expect(writeText).toHaveBeenCalledWith("BBH\t12\nMCG\t1500");
+	});
+
 	it("renders an empty transfer without elements", async () => {
 		const { wrapper } = await mountButton({ elements: [] });
 		await open(wrapper);

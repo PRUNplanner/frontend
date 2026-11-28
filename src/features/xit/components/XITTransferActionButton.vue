@@ -207,5 +207,19 @@
 				</tr>
 			</tbody>
 		</PTable>
+		<PButton
+			class="mt-3"
+			@click="
+				copyToClipboard(
+					localElements
+						.map(
+							(e) =>
+								`${e.ticker}\t${formatAmount(e.value).replaceAll(',', '')}`
+						)
+						.join('\n')
+				)
+			">
+			{{ $t("xit.buttons.copy") }}
+		</PButton>
 	</PDrawer>
 </template>

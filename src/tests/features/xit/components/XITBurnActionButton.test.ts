@@ -354,6 +354,26 @@ describe("XITBurnActionButton", () => {
 		delete navigator.clipboard;
 	});
 
+	it("copies only the displayed tickers and amounts", async () => {
+		const writeText = vi.fn((_text: string) => Promise.resolve());
+		Object.defineProperty(navigator, "clipboard", {
+			value: { writeText },
+			configurable: true,
+		});
+		onTestFinished(() => {
+			// @ts-expect-error jsdom has no clipboard
+			delete navigator.clipboard;
+		});
+		const { wrapper } = await mountButton();
+		await open(wrapper);
+		await rowInputs(wrapper).at(0)!.find("input").setValue("555");
+		await body()
+			.findAll("[role=dialog] button")
+			.find((b) => b.text() === "xit.buttons.copy")!
+			.trigger("click");
+		expect(writeText).toHaveBeenCalledWith("DW\t555\nRAT\t1950");
+	});
+
 	it("renders an empty table without elements", async () => {
 		const { wrapper } = await mountButton({ elements: [] });
 		await open(wrapper);

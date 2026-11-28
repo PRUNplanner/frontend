@@ -350,5 +350,20 @@
 				</tr>
 			</tbody>
 		</PTable>
+		<PButton
+			class="mt-3"
+			@click="
+				copyToClipboard(
+					materialTable
+						.filter((e) => Number.isFinite(e.total) && e.total > 0)
+						.map(
+							(e) =>
+								`${e.ticker}\t${formatAmount(e.total).replaceAll(',', '')}`
+						)
+						.join('\n')
+				)
+			">
+			{{ $t("xit.buttons.copy") }}
+		</PButton>
 	</PDrawer>
 </template>
